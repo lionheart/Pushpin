@@ -1,0 +1,127 @@
+{
+  "tests": [
+    {
+      "name": "Multiple inverted sections per template should be permitted.",
+      "data": { "t": false, "two": "2" },
+      "template": "<{{^t}}1{{/t}}{{two}}{{^t}}3{{/t}}>",
+      "expected": "<123>"
+    },
+    
+    // Boolean interpretation
+    
+    {
+      "name": "Missing key should trigger the inverted section rendering.",
+      "data": { },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "Null should trigger the inverted section rendering.",
+      "data": { "subject": null },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "False should trigger the inverted section rendering.",
+      "data": { "subject": false },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "Empty string should trigger the inverted section rendering.",
+      "data": { "subject": "" },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "Empty list should trigger the inverted section rendering.",
+      "data": { "subject": [] },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "Zero should trigger the inverted section rendering.",
+      "data": { "subject": 0 },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<--->"
+    },
+    {
+      "name": "True should trigger the inverted section omission.",
+      "data": { "subject": true },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<>"
+    },
+    {
+      "name": "Object should trigger the inverted section omission.",
+      "data": { "subject": { } },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<>"
+    },
+    {
+      "name": "Non-empty string should trigger the inverted section omission.",
+      "data": { "subject": "---" },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<>"
+    },
+    {
+      "name": "Non-empty blank string should trigger the inverted section omission.",
+      "data": { "subject": " " },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<>"
+    },
+    {
+      "name": "Non-empty list should trigger the inverted section omission.",
+      "data": { "subject": [ { "n": 1 }, { "n": 2 }, { "n": 3 } ] },
+      "template": "<{{^subject}}---{{/subject}}>",
+      "expected": "<>"
+    },
+    
+    // Whitespace Insensitivity
+
+    {
+      "name": "Whitespace in tag should be ignored.",
+      "data": { "subject": false },
+      "template": "<{{^ subject }}---{{/ subject }}>",
+      "expected": "<--->"
+    },
+
+    // Whitespace Sensitivity
+    
+    {
+      "name": "Single left outer whitespace should be honored when inverted section is rendered.",
+      "data": { },
+      "template": "< {{^subject}}---{{/subject}}>",
+      "expected": "< --->"
+    },
+    {
+      "name": "Single right outer whitespace should be honored when inverted section is rendered.",
+      "data": { },
+      "template": "<{{^subject}}---{{/subject}} >",
+      "expected": "<--- >"
+    },
+    {
+      "name": "Single left inner whitespace should be honored when inverted section is rendered.",
+      "data": { },
+      "template": "<{{^subject}} ---{{/subject}}>",
+      "expected": "< --->"
+    },
+    {
+      "name": "Single right inner whitespace should be honored when inverted section is rendered.",
+      "data": { },
+      "template": "<{{^subject}}--- {{/subject}}>",
+      "expected": "<--- >"
+    },
+    {
+      "name": "Single left outer whitespace should be honored when inverted section is omitted.",
+      "data": { "subject": true },
+      "template": "< {{^subject}}---{{/subject}}--->",
+      "expected": "< --->"
+    },
+    {
+      "name": "Single right outer whitespace should be honored when inverted section is omitted.",
+      "data": { "subject": true },
+      "template": "<---{{^subject}}---{{/subject}} >",
+      "expected": "<--- >"
+    }
+  ]
+}

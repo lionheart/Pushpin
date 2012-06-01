@@ -12,3 +12,21 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+#define API_ENDPOINT @"https://api.pinboard.in/"
+
+#define __FILENAME__ (strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1
+
+#ifdef DEBUG
+#define DLog(fmt, ...) NSLog((@"%s:%d - " fmt), __FILENAME__, __LINE__, ##__VA_ARGS__);
+#else
+#define DLog(...)
+#endif
+
+#define ALog(fmt, ...) NSLog((@"%s:%d - " fmt), __FILENAME__, __LINE__, ##__VA_ARGS__);
+
+#define HEX(c) [UIColor colorWithRed:((c>>24)&0xff)/255.0 green:((c>>16)&0xff)/255.0 blue:((c>>8)&0xff)/255.0 alpha:((c)&0xff)/255.0]
+
+#define MPTrackProperties(event, ...) [[MixpanelAPI sharedAPI] track:event properties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
+#define MPTrack(event) [[MixpanelAPI sharedAPI] track:event]
+#define MPSetProperties(...) [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]

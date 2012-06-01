@@ -7,45 +7,72 @@
 //
 
 #import "AppDelegate.h"
+#import "PinboardClient.h"
+#import "BookmarkViewController.h"
 
 @implementation AppDelegate
 
-@synthesize window = _window;
+@synthesize window;
+@synthesize username = _username;
+@synthesize password = _password;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (void)setUsername:(NSString *)username {
+    _username = username;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:username forKey:@"PinboardUsername"];
+    [defaults synchronize];
+}
+
+- (void)setPassword:(NSString *)password {
+    _password = password;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:password forKey:@"PinboardPassword"];
+    [defaults synchronize];
+}
+
+- (NSString *)username {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:@"PinboardUsername"];
+    if (_username != nil) {
+        return _username;
+    }
+
+}
+
+- (NSString *)password {
+    if (_password != nil) {
+        return _password;
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:@"PinboardPassword"];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    id navigationBarAppearance = [UINavigationBar appearance];
+    [navigationBarAppearance setBackgroundImage:[UIImage imageNamed:@"navigationbar.png"]
+                                  forBarMetrics:UIBarMetricsDefault];
+    
+    [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
+                          animated:NO];
+
+    self.username = @"dlo";
+    self.password = @"papa c6h12o5a 0P";
+
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:10], @"results", @"json", @"format", nil];
+
+    BookmarkViewController *postViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain
+                                                                                   url:@"v1/posts/all"
+                                                                            parameters:parameters];
+    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:postViewController];
+
+    [self.window setRootViewController:postViewContainer];
     [self.window makeKeyAndVisible];
     return YES;
-}
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 @end
