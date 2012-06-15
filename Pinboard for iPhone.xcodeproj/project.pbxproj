@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37076D3E158AD0AB002566CD /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 37076D3B158AD0AB002566CD /* NSAttributedString+Attributes.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		37076D3F158AD0AB002566CD /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 37076D3D158AD0AB002566CD /* OHAttributedLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -36,6 +38,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		37076D3A158AD0AB002566CD /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
+		37076D3B158AD0AB002566CD /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
+		37076D3C158AD0AB002566CD /* OHAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
+		37076D3D158AD0AB002566CD /* OHAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -98,6 +104,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37076D41158AD0B1002566CD /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				37076D3A158AD0AB002566CD /* NSAttributedString+Attributes.h */,
+				37076D3B158AD0AB002566CD /* NSAttributedString+Attributes.m */,
+				37076D3C158AD0AB002566CD /* OHAttributedLabel.h */,
+				37076D3D158AD0AB002566CD /* OHAttributedLabel.m */,
+			);
+			name = Vendor;
+			sourceTree = "<group>";
+		};
 		3715EEC415787CA100FD21EE /* Stylesheets */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +138,7 @@
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
+				37076D41158AD0B1002566CD /* Vendor */,
 			);
 			sourceTree = "<group>";
 		};
@@ -294,6 +312,8 @@
 				37FEEBD415745786003F2B77 /* PinboardClient.m in Sources */,
 				37FEEBD715747E86003F2B77 /* BookmarkViewController.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
+				37076D3E158AD0AB002566CD /* NSAttributedString+Attributes.m in Sources */,
+				37076D3F158AD0AB002566CD /* OHAttributedLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

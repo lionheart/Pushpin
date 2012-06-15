@@ -10,6 +10,7 @@
 #import "PinboardClient.h"
 #import "BookmarkCell.h"
 #import "GRMustache.h"
+#import "NSAttributedString+Attributes.h"
 
 @interface BookmarkViewController ()
 
@@ -19,20 +20,16 @@
 
 @synthesize url = _url;
 @synthesize parameters = _parameters;
-@synthesize heights;
 @synthesize posts;
-@synthesize webViews;
-@synthesize loadedWebViews;
+@synthesize labels;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters {
     self = [super initWithStyle:style];
     if (self) {
         _url = url;
         _parameters = parameters;
-        self.heights = [NSMutableDictionary dictionary];
-        self.webViews = [NSMutableArray array];
         self.posts = [NSMutableArray array];
-        self.loadedWebViews = [NSMutableArray array];
+        self.labels = [NSMutableArray array];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:nil
@@ -44,22 +41,21 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     for (int i=0; i<10; i++) {
-        UIWebView *webView = [[UIWebView alloc] init];
-        webView.delegate = self;
+        OHAttributedLabel *label;
+        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"Hello there!"];
+        [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18]];
+        label.attributedText = attributedString;
+        [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:NSMakeRange(0, 5)];
+        label.textAlignment = UITextAlignmentLeft;
 
-        webView.scalesPageToFit = false;
-        webView.scrollView.scrollEnabled = false;
-        webView.scrollView.bounces = false;
-
+        /*
         NSString *rendering = [GRMustacheTemplate renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"ID Theives Loot Tax Checks, Filing Early and Often", @"description", @"MIAMI — Besieged by identity theft, Florida now faces a fast-spreading form of fraud so simple and lucrative that some violent criminals have traded their guns for laptops. And the target is the…", @"extension", nil]
                                                   fromResource:@"Bookmark"
                                                         bundle:nil
                                                          error:NULL];
+        */
 
-        NSString *path = [[NSBundle mainBundle] bundlePath];
-        NSURL *baseURL = [NSURL fileURLWithPath:path];
-        [webView loadHTMLString:rendering baseURL:baseURL];
-        [self.webViews addObject:webView];
+        [self.labels addObject:label];
     }
     return;
     
@@ -108,39 +104,15 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.loadedWebViews.count;
+    return self.labels.count;
 }
 
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIWebView *webView = [self.loadedWebViews objectAtIndex:indexPath.row];
-    NSString *output = [webView stringByEvaluatingJavaScriptFromString:@"window.content.scrollHeight;"];
-    return [output floatValue] + 5.;
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    if ([[[request URL] scheme] isEqualToString:@"pinboard"]) {
-        UIViewController *controller = [[UIViewController alloc] init];
-        UIWebView *webView = [[UIWebView alloc] init];
-        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://google.com"]]];
-        controller.view = webView;
-        [self.navigationController pushViewController:controller
-                                             animated:YES];
-        return NO;
-    }
-    return YES;
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [self.loadedWebViews addObject:webView];
-    
-    if (self.loadedWebViews.count == self.webViews.count) {
-        [self.tableView reloadData];
-    }
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView {
+    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
+    CGSize size = [label.attributedText sizeConstrainedToSize:CGSizeMake(320, 20)];
+    return size.height;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

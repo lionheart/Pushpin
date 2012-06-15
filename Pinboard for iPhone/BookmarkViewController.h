@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate>
+#import "OHAttributedLabel.h"
+
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, OHAttributedLabelDelegate>
 
 @property (nonatomic, retain) NSMutableArray *posts;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSDictionary *parameters;
-@property (nonatomic, retain) NSMutableDictionary *heights;
-@property (nonatomic, retain) NSMutableArray *webViews;
-@property (nonatomic, retain) NSMutableArray *loadedWebViews;
+@property (nonatomic, retain) NSMutableArray *labels;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
 
