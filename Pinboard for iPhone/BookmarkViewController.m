@@ -11,6 +11,7 @@
 #import "BookmarkCell.h"
 #import "GRMustache.h"
 #import "NSAttributedString+Attributes.h"
+#import "TTTAttributedLabel.h"
 
 @interface BookmarkViewController ()
 
@@ -41,12 +42,18 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     for (int i=0; i<10; i++) {
-        OHAttributedLabel *label;
-        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"Hello there!"];
+        OHAttributedLabel *label = [[OHAttributedLabel alloc] init];
+        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"ID Theives Loot Tax Checks, Filing Early and Often"];
         [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18]];
+        [attributedString setTextColor:[UIColor blackColor]];
+        [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByCharWrapping];
         label.attributedText = attributedString;
         [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:NSMakeRange(0, 5)];
         label.textAlignment = UITextAlignmentLeft;
+        
+        CGSize size = [label.attributedText sizeConstrainedToSize:CGSizeMake(320, 1000)];
+        [label setFrame:CGRectMake(0, 0, size.width, size.height)];
+        [label setNeedsDisplay];
 
         /*
         NSString *rendering = [GRMustacheTemplate renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"ID Theives Loot Tax Checks, Filing Early and Often", @"description", @"MIAMI — Besieged by identity theft, Florida now faces a fast-spreading form of fraud so simple and lucrative that some violent criminals have traded their guns for laptops. And the target is the…", @"extension", nil]
@@ -55,8 +62,11 @@
                                                          error:NULL];
         */
 
+        NSLog(@"%@", label);
         [self.labels addObject:label];
     }
+    
+    [self.tableView reloadData];
     return;
     
     PinboardClient *client = [PinboardClient sharedClient];
@@ -92,11 +102,6 @@
          }];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -104,15 +109,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.labels.count;
+    return [self.labels count];
 }
 
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    CGSize size = [label.attributedText sizeConstrainedToSize:CGSizeMake(320, 20)];
-    return size.height;
+    return label.frame.size.height;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -120,7 +124,6 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSString *identifier = [NSString stringWithFormat:@"Cell_%d", indexPath.row];
     static NSString *identifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
@@ -128,13 +131,11 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:identifier];
     }
-    
-    UIWebView *webView = [self.loadedWebViews objectAtIndex:indexPath.row];
-    webView.frame = cell.contentView.frame;
-    webView.scalesPageToFit = YES;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    [cell.contentView addSubview:webView];
 
+    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
+    NSLog(@"%@", label.attributedText);
+    [cell setAutoresizingMask:UIViewAutoresizingNone];
+    [cell.contentView addSubview:label];
     return cell;
 }
 
