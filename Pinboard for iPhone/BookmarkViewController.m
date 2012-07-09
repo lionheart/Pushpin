@@ -46,7 +46,7 @@
         NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"ID Theives Loot Tax Checks, Filing Early and Often"];
         [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18]];
         [attributedString setTextColor:[UIColor blackColor]];
-        [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByCharWrapping];
+        [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
         label.attributedText = attributedString;
         [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:NSMakeRange(0, 5)];
         label.textAlignment = UITextAlignmentLeft;
