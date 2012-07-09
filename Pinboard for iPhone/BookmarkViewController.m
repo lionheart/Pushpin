@@ -62,7 +62,7 @@
                                                          error:NULL];
         */
 
-        NSLog(@"%@", label);
+        //        NSLog(@"%@", label);
         [self.labels addObject:label];
     }
     
@@ -133,7 +133,7 @@
     }
 
     OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    NSLog(@"%@", label.attributedText);
+    //    NSLog(@"%@", label.attributedText);
     [cell setAutoresizingMask:UIViewAutoresizingNone];
     [cell.contentView addSubview:label];
     return cell;

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Pinboard.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, PinboardDelegate>
 
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *password;

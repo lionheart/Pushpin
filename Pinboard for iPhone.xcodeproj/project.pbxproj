@@ -17,7 +17,9 @@
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		378646631577401400A1D5F8 /* GRMustache.h in Sources */ = {isa = PBXBuildFile; fileRef = 3786466215773FF500A1D5F8 /* GRMustache.h */; };
+		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
 		37DC66EC15AB678A00DD75C5 /* ASPinboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DC66E815AB677600DD75C5 /* ASPinboard.framework */; };
+		37DC670C15AB764C00DD75C5 /* PinboardClient.h in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD215745786003F2B77 /* PinboardClient.h */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF31158AF3FC00ED71B1 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1F158AF3FC00ED71B1 /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -72,7 +74,9 @@
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
+		37AFB01015AB7CCA00900254 /* recent.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = recent.xml; sourceTree = "<group>"; };
 		37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASPinboard.xcodeproj; path = ../ASPinboard/ASPinboard.xcodeproj; sourceTree = "<group>"; };
+		37DC670F15AB768100DD75C5 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pinboard.h; path = ../ASPinboard/ASPinboard/Pinboard.h; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		37DCCF1C158AF3FC00ED71B1 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -100,7 +104,7 @@
 		37DCCF3C158AF40900ED71B1 /* OHAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OHAttributedLabel.m; path = Vendor/OHAttributedLabel.m; sourceTree = "<group>"; };
 		37DCCF43158B854C00ED71B1 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		37DCCF44158B854C00ED71B1 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
-		37FEEB8E15745488003F2B77 /* Pinboard for iPhone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pinboard for iPhone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pinboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -217,7 +221,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pinboard for iPhone.app */,
+				37FEEB8E15745488003F2B77 /* Pinboard.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,6 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */,
+				37DC670F15AB768100DD75C5 /* Pinboard.h */,
 				3786466215773FF500A1D5F8 /* GRMustache.h */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
@@ -273,6 +278,7 @@
 				374D3D5015AB60AE003E1592 /* cog-white@2x.png */,
 				374D3D5115AB60AE003E1592 /* cog.png */,
 				374D3D5215AB60AE003E1592 /* cog@2x.png */,
+				37AFB01015AB7CCA00900254 /* recent.xml */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -280,9 +286,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37FEEB8D15745488003F2B77 /* Pinboard for iPhone */ = {
+		37FEEB8D15745488003F2B77 /* Pinboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard for iPhone" */;
+			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */;
 			buildPhases = (
 				37FEEB8A15745488003F2B77 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
@@ -293,9 +299,9 @@
 			dependencies = (
 				37DC66EB15AB677E00DD75C5 /* PBXTargetDependency */,
 			);
-			name = "Pinboard for iPhone";
+			name = Pinboard;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pinboard for iPhone.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pinboard.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -324,7 +330,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				37FEEB8D15745488003F2B77 /* Pinboard for iPhone */,
+				37FEEB8D15745488003F2B77 /* Pinboard */,
 			);
 		};
 /* End PBXProject section */
@@ -353,6 +359,7 @@
 				374D3D5415AB60AE003E1592 /* cog-white@2x.png in Resources */,
 				374D3D5515AB60AE003E1592 /* cog.png in Resources */,
 				374D3D5615AB60AE003E1592 /* cog@2x.png in Resources */,
+				37AFB01115AB7CCA00900254 /* recent.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,6 +370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37DC670C15AB764C00DD75C5 /* PinboardClient.h in Sources */,
 				378646631577401400A1D5F8 /* GRMustache.h in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
@@ -494,7 +502,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard for iPhone" */ = {
+		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA715745488003F2B77 /* Debug */,

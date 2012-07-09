@@ -14,8 +14,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "37FEEB8D15745488003F2B77"
-               BuildableName = "Pinboard for iPhone.app"
-               BlueprintName = "Pinboard for iPhone"
+               BuildableName = "Pinboard.app"
+               BlueprintName = "Pinboard"
                ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,8 +32,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
-            BuildableName = "Pinboard for iPhone.app"
-            BlueprintName = "Pinboard for iPhone"
+            BuildableName = "Pinboard.app"
+            BlueprintName = "Pinboard"
             ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
-            BuildableName = "Pinboard for iPhone.app"
-            BlueprintName = "Pinboard for iPhone"
+            BuildableName = "Pinboard.app"
+            BlueprintName = "Pinboard"
             ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -69,8 +69,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
-            BuildableName = "Pinboard for iPhone.app"
-            BlueprintName = "Pinboard for iPhone"
+            BuildableName = "Pinboard.app"
+            BlueprintName = "Pinboard"
             ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
