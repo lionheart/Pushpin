@@ -10,6 +10,7 @@
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
+		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
 		374D3D5415AB60AE003E1592 /* cog-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5015AB60AE003E1592 /* cog-white@2x.png */; };
 		374D3D5515AB60AE003E1592 /* cog.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5115AB60AE003E1592 /* cog.png */; };
@@ -67,6 +68,8 @@
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		374D3D4F15AB60AE003E1592 /* cog-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white.png"; sourceTree = "<group>"; };
 		374D3D5015AB60AE003E1592 /* cog-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white@2x.png"; sourceTree = "<group>"; };
 		374D3D5115AB60AE003E1592 /* cog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cog.png; sourceTree = "<group>"; };
@@ -251,6 +254,8 @@
 				37FEEBD615747E85003F2B77 /* BookmarkViewController.m */,
 				371BCAFD15772B4400BDA996 /* BookmarkCell.h */,
 				371BCAFE15772B4400BDA996 /* BookmarkCell.m */,
+				372E2B3515ABE90B007514D8 /* HomeViewController.h */,
+				372E2B3615ABE90B007514D8 /* HomeViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
 			path = "Pinboard for iPhone";
@@ -390,6 +395,7 @@
 				37DCCF3D158AF40900ED71B1 /* NSAttributedString+Attributes.m in Sources */,
 				37DCCF3E158AF40900ED71B1 /* OHAttributedLabel.m in Sources */,
 				37DCCF45158B854C00ED71B1 /* TTTAttributedLabel.m in Sources */,
+				372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

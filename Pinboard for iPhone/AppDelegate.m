@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "PinboardClient.h"
 #import "BookmarkViewController.h"
+#import "HomeViewController.h"
 #import "Pinboard.h"
 
 @implementation AppDelegate
@@ -57,8 +58,6 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     id navigationBarAppearance = [UINavigationBar appearance];
-    [navigationBarAppearance setBackgroundImage:[UIImage imageNamed:@"navigationbar.png"]
-                                  forBarMetrics:UIBarMetricsDefault];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
                           animated:NO];
@@ -74,7 +73,9 @@
     BookmarkViewController *postViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain
                                                                                    url:@"v1/posts/all"
                                                                             parameters:parameters];
-    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:postViewController];
+    HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    homeViewController.title = @"Pinboard";
+    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
 
     [self.window setRootViewController:postViewContainer];
     [self.window makeKeyAndVisible];
