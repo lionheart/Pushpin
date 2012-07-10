@@ -66,7 +66,7 @@
     self.username = @"dlo";
     self.password = @"papa c6h12o5a 0P";
     
-    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"https://api.pinboard.in/v1/posts/recent?count=10" delegate:self];
+    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
     [pinboard parse];
 
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:10], @"results", @"json", @"format", nil];
