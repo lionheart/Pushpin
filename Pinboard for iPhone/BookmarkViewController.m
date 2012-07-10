@@ -43,11 +43,12 @@
     [super viewDidAppear:animated];
     for (int i=0; i<10; i++) {
         OHAttributedLabel *label = [[OHAttributedLabel alloc] init];
-        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"ID Theives Loot Tax Checks, Filing Early and Often"];
+        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:@"ID Theives Loot Tax Checks, Filing Early and Often\ntest test test"];
         [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18]];
         [attributedString setTextColor:[UIColor blackColor]];
         [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
         label.attributedText = attributedString;
+        label.lineBreakMode = kCTLineBreakByWordWrapping;
         [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:NSMakeRange(0, 5)];
         label.textAlignment = UITextAlignmentLeft;
         
@@ -67,39 +68,6 @@
     }
     
     [self.tableView reloadData];
-    return;
-    
-    PinboardClient *client = [PinboardClient sharedClient];
-    [client path:self.url
-      parameters:self.parameters
-         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-             for (id post in JSON) {
-                 [self.posts addObject:post];
-             }
-             /*
-             for (id post in JSON) {
-                 UIWebView *webView = [[UIWebView alloc] init];
-                 webView.delegate = self;
-                 
-                 webView.scalesPageToFit = false;
-                 //        webView.userInteractionEnabled = false;
-                 webView.scrollView.scrollEnabled = false;
-                 webView.scrollView.bounces = false;
-                 
-                 NSString *rendering = [GRMustacheTemplate renderObject:[NSDictionary dictionaryWithObjectsAndKeys:[post objectForKey:@"description"], @"description", [post objectForKey:@"extension"], @"extension", nil]
-                                                           fromResource:@"Bookmark"
-                                                                 bundle:nil
-                                                                  error:NULL];
-                 
-                 NSString *path = [[NSBundle mainBundle] bundlePath];
-                 NSURL *baseURL = [NSURL fileURLWithPath:path];
-                 [webView loadHTMLString:rendering baseURL:baseURL];
-                 [self.webViews addObject:webView];
-                 */
-             [self.tableView reloadData];
-         }
-         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         }];
 }
 
 #pragma mark - Table view data source
@@ -130,6 +98,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier:identifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
     OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
