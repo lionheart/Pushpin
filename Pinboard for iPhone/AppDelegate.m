@@ -75,7 +75,7 @@
                                                                             parameters:parameters];
     HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
     homeViewController.title = @"Pinboard";
-    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:postViewController];
+    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
 
     [self.window setRootViewController:postViewContainer];
     [self.window makeKeyAndVisible];

@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Pinboard.h"
 #import "OHAttributedLabel.h"
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, OHAttributedLabelDelegate>
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, OHAttributedLabelDelegate, PinboardDelegate>
 
-@property (nonatomic, retain) NSMutableArray *posts;
+@property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSDictionary *parameters;
 @property (nonatomic, retain) NSMutableArray *labels;

@@ -7,6 +7,7 @@
 //
 
 #import "HomeViewController.h"
+#import "BookmarkViewController.h"
 
 @interface HomeViewController ()
 
@@ -62,7 +63,7 @@
                 case 1:
                     cell.textLabel.text = @"Private";
                     cell.detailTextLabel.text = @"829";
-                    break;
+                    break;  
                 case 2:
                     cell.textLabel.text = @"Public";
                     cell.detailTextLabel.text = @"104";
@@ -104,6 +105,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"" parameters:nil];
+    [self.navigationController pushViewController:bookmarkViewController animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
