@@ -18,8 +18,16 @@
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		378646631577401400A1D5F8 /* GRMustache.h in Sources */ = {isa = PBXBuildFile; fileRef = 3786466215773FF500A1D5F8 /* GRMustache.h */; };
+		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
+		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
+		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
+		3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE615B49989008A477A /* Icon-settings@2x.png */; };
+		3787FFED15B49989008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE715B49989008A477A /* Icon.png */; };
+		3787FFEE15B49989008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE815B49989008A477A /* Icon@2x.png */; };
+		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
+		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
 		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
-		37DC66EC15AB678A00DD75C5 /* ASPinboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DC66E815AB677600DD75C5 /* ASPinboard.framework */; };
+		37DC66EC15AB678A00DD75C5 /* libASPinboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DC66E815AB677600DD75C5 /* libASPinboard.a */; };
 		37DC670C15AB764C00DD75C5 /* PinboardClient.h in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD215745786003F2B77 /* PinboardClient.h */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -58,7 +66,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 37187B4A15AB664F00DC5338;
+			remoteGlobalIDString = 3787000015B49A69008A477A;
 			remoteInfo = ASPinboard;
 		};
 /* End PBXContainerItemProxy section */
@@ -77,6 +85,14 @@
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
+		3787002A15B49B17008A477A /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		3787002C15B49B23008A477A /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		3787FFE515B49989008A477A /* Icon-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings.png"; path = "Assets/Icon-settings.png"; sourceTree = "<group>"; };
+		3787FFE615B49989008A477A /* Icon-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings@2x.png"; path = "Assets/Icon-settings@2x.png"; sourceTree = "<group>"; };
+		3787FFE715B49989008A477A /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Assets/Icon.png; sourceTree = "<group>"; };
+		3787FFE815B49989008A477A /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Assets/Icon@2x.png"; sourceTree = "<group>"; };
+		3787FFE915B49989008A477A /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Assets/iTunesArtwork.png; sourceTree = "<group>"; };
+		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		37AFB01015AB7CCA00900254 /* recent.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = recent.xml; sourceTree = "<group>"; };
 		37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASPinboard.xcodeproj; path = ../ASPinboard/ASPinboard.xcodeproj; sourceTree = "<group>"; };
 		37DC670F15AB768100DD75C5 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pinboard.h; path = ../ASPinboard/ASPinboard/Pinboard.h; sourceTree = "<group>"; };
@@ -130,7 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37DC66EC15AB678A00DD75C5 /* ASPinboard.framework in Frameworks */,
+				37DC66EC15AB678A00DD75C5 /* libASPinboard.a in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
@@ -175,7 +191,7 @@
 		37DC66E115AB677600DD75C5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37DC66E815AB677600DD75C5 /* ASPinboard.framework */,
+				37DC66E815AB677600DD75C5 /* libASPinboard.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -212,6 +228,8 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				3787002C15B49B23008A477A /* Icon@2x.png */,
+				3787002A15B49B17008A477A /* Icon.png */,
 				37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */,
 				37FEEB9815745488003F2B77 /* Pinboard for iPhone */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
@@ -284,6 +302,12 @@
 				374D3D5115AB60AE003E1592 /* cog.png */,
 				374D3D5215AB60AE003E1592 /* cog@2x.png */,
 				37AFB01015AB7CCA00900254 /* recent.xml */,
+				3787FFE515B49989008A477A /* Icon-settings.png */,
+				3787FFE615B49989008A477A /* Icon-settings@2x.png */,
+				3787FFE715B49989008A477A /* Icon.png */,
+				3787FFE815B49989008A477A /* Icon@2x.png */,
+				3787FFE915B49989008A477A /* iTunesArtwork.png */,
+				3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -341,10 +365,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		37DC66E815AB677600DD75C5 /* ASPinboard.framework */ = {
+		37DC66E815AB677600DD75C5 /* libASPinboard.a */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.framework.static;
-			path = ASPinboard.framework;
+			fileType = archive.ar;
+			path = libASPinboard.a;
 			remoteRef = 37DC66E715AB677600DD75C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -365,6 +389,14 @@
 				374D3D5515AB60AE003E1592 /* cog.png in Resources */,
 				374D3D5615AB60AE003E1592 /* cog@2x.png in Resources */,
 				37AFB01115AB7CCA00900254 /* recent.xml in Resources */,
+				3787FFEB15B49989008A477A /* Icon-settings.png in Resources */,
+				3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */,
+				3787FFED15B49989008A477A /* Icon.png in Resources */,
+				3787FFEE15B49989008A477A /* Icon@2x.png in Resources */,
+				3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */,
+				3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */,
+				3787002B15B49B17008A477A /* Icon.png in Resources */,
+				3787002D15B49B23008A477A /* Icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
