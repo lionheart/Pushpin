@@ -98,8 +98,11 @@
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    return label.frame.size.height;
+    UIFont *font = [UIFont fontWithName:@"Helvetica" size:16];
+    
+    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+    CGSize textSize = [bookmark.description sizeWithFont:font constrainedToSize:CGSizeMake(280-16, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
+    return textSize.height + 20;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -107,19 +110,24 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    static NSString *identifier = @"BookmarkCell";
+    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:identifier];
+        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                        reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
-    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    //    NSLog(@"%@", label.attributedText);
-    [cell setAutoresizingMask:UIViewAutoresizingNone];
-    [cell.contentView addSubview:label];
+    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, 0)];
+    cell.textView = textView;
+    [cell.contentView addSubview:textView];
+
+    [cell.textView setText:bookmark.description];
+    [cell.textView setTextColor:[UIColor blackColor]];
+    [cell.textView setFont:[UIFont fontWithName:@"Helvetica" size:16]];
+    [cell resizeTextView];
     return cell;
 }
 

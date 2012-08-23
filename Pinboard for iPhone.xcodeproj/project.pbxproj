@@ -15,6 +15,10 @@
 		374D3D5415AB60AE003E1592 /* cog-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5015AB60AE003E1592 /* cog-white@2x.png */; };
 		374D3D5515AB60AE003E1592 /* cog.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5115AB60AE003E1592 /* cog.png */; };
 		374D3D5615AB60AE003E1592 /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5215AB60AE003E1592 /* cog@2x.png */; };
+		376A4F6215E5796B00D8E073 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5B15E5796B00D8E073 /* Bookmark.m */; };
+		376A4F6315E5796B00D8E073 /* BookmarkList.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5D15E5796B00D8E073 /* BookmarkList.m */; };
+		376A4F6415E5796B00D8E073 /* Pinboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5F15E5796B00D8E073 /* Pinboard.m */; };
+		376A4F6515E5796B00D8E073 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F6115E5796B00D8E073 /* Tag.m */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		378646631577401400A1D5F8 /* GRMustache.h in Sources */ = {isa = PBXBuildFile; fileRef = 3786466215773FF500A1D5F8 /* GRMustache.h */; };
@@ -27,7 +31,6 @@
 		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
 		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
-		37DC66EC15AB678A00DD75C5 /* libASPinboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DC66E815AB677600DD75C5 /* libASPinboard.a */; };
 		37DC670C15AB764C00DD75C5 /* PinboardClient.h in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD215745786003F2B77 /* PinboardClient.h */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -54,23 +57,6 @@
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		37DC66E715AB677600DD75C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 37187B4B15AB664F00DC5338;
-			remoteInfo = ASPinboard;
-		};
-		37DC66EA15AB677E00DD75C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 3787000015B49A69008A477A;
-			remoteInfo = ASPinboard;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
@@ -82,6 +68,14 @@
 		374D3D5015AB60AE003E1592 /* cog-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white@2x.png"; sourceTree = "<group>"; };
 		374D3D5115AB60AE003E1592 /* cog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cog.png; sourceTree = "<group>"; };
 		374D3D5215AB60AE003E1592 /* cog@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog@2x.png"; sourceTree = "<group>"; };
+		376A4F5A15E5796B00D8E073 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
+		376A4F5B15E5796B00D8E073 /* Bookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
+		376A4F5C15E5796B00D8E073 /* BookmarkList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkList.h; sourceTree = "<group>"; };
+		376A4F5D15E5796B00D8E073 /* BookmarkList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkList.m; sourceTree = "<group>"; };
+		376A4F5E15E5796B00D8E073 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pinboard.h; sourceTree = "<group>"; };
+		376A4F5F15E5796B00D8E073 /* Pinboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pinboard.m; sourceTree = "<group>"; };
+		376A4F6015E5796B00D8E073 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
+		376A4F6115E5796B00D8E073 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
@@ -94,7 +88,6 @@
 		3787FFE915B49989008A477A /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Assets/iTunesArtwork.png; sourceTree = "<group>"; };
 		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		37AFB01015AB7CCA00900254 /* recent.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = recent.xml; sourceTree = "<group>"; };
-		37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASPinboard.xcodeproj; path = ../ASPinboard/ASPinboard.xcodeproj; sourceTree = "<group>"; };
 		37DC670F15AB768100DD75C5 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pinboard.h; path = ../ASPinboard/ASPinboard/Pinboard.h; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
@@ -146,7 +139,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37DC66EC15AB678A00DD75C5 /* libASPinboard.a in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
@@ -168,6 +160,14 @@
 				37DCCF3C158AF40900ED71B1 /* OHAttributedLabel.m */,
 				37DCCF43158B854C00ED71B1 /* TTTAttributedLabel.h */,
 				37DCCF44158B854C00ED71B1 /* TTTAttributedLabel.m */,
+				376A4F5A15E5796B00D8E073 /* Bookmark.h */,
+				376A4F5B15E5796B00D8E073 /* Bookmark.m */,
+				376A4F5C15E5796B00D8E073 /* BookmarkList.h */,
+				376A4F5D15E5796B00D8E073 /* BookmarkList.m */,
+				376A4F5E15E5796B00D8E073 /* Pinboard.h */,
+				376A4F5F15E5796B00D8E073 /* Pinboard.m */,
+				376A4F6015E5796B00D8E073 /* Tag.h */,
+				376A4F6115E5796B00D8E073 /* Tag.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -186,14 +186,6 @@
 				3786465E15773E6700A1D5F8 /* Bookmark.mustache */,
 			);
 			name = Templates;
-			sourceTree = "<group>";
-		};
-		37DC66E115AB677600DD75C5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				37DC66E815AB677600DD75C5 /* libASPinboard.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		37DCCF19158AF3FC00ED71B1 /* AFNetworking */ = {
@@ -230,7 +222,6 @@
 			children = (
 				3787002C15B49B23008A477A /* Icon@2x.png */,
 				3787002A15B49B17008A477A /* Icon.png */,
-				37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */,
 				37FEEB9815745488003F2B77 /* Pinboard for iPhone */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
@@ -326,7 +317,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				37DC66EB15AB677E00DD75C5 /* PBXTargetDependency */,
 			);
 			name = Pinboard;
 			productName = "Pinboard for iPhone";
@@ -351,28 +341,12 @@
 			mainGroup = 37FEEB8315745488003F2B77;
 			productRefGroup = 37FEEB8F15745488003F2B77 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 37DC66E115AB677600DD75C5 /* Products */;
-					ProjectRef = 37DC66E015AB677600DD75C5 /* ASPinboard.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pinboard */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		37DC66E815AB677600DD75C5 /* libASPinboard.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libASPinboard.a;
-			remoteRef = 37DC66E715AB677600DD75C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		37FEEB8C15745488003F2B77 /* Resources */ = {
@@ -428,18 +402,14 @@
 				37DCCF3E158AF40900ED71B1 /* OHAttributedLabel.m in Sources */,
 				37DCCF45158B854C00ED71B1 /* TTTAttributedLabel.m in Sources */,
 				372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */,
+				376A4F6215E5796B00D8E073 /* Bookmark.m in Sources */,
+				376A4F6315E5796B00D8E073 /* BookmarkList.m in Sources */,
+				376A4F6415E5796B00D8E073 /* Pinboard.m in Sources */,
+				376A4F6515E5796B00D8E073 /* Tag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		37DC66EB15AB677E00DD75C5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ASPinboard;
-			targetProxy = 37DC66EA15AB677E00DD75C5 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		37FEEB9B15745488003F2B77 /* InfoPlist.strings */ = {

@@ -12,18 +12,22 @@
 
 @implementation BookmarkCell
 
-@synthesize webView;
+@synthesize textView;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier delegate:(id<UIWebViewDelegate>)delegate {
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        /*
-        self.webView = [[UIWebView alloc] initWithFrame:self.contentView.frame];
-        self.webView.delegate = delegate;
-        [self.contentView addSubview:self.webView];
-         */
+        self.textView = [[UITextView alloc] init];
+        self.textView.backgroundColor = [UIColor blackColor];
+        [self.contentView addSubview:self.textView];
     }
     return self;
+}
+
+- (void)resizeTextView {
+    CGRect frame = self.textView.frame;
+    frame.size.height = self.textView.contentSize.height;
+    self.textView.frame = frame;
 }
 
 @end

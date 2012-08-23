@@ -10,8 +10,8 @@
 
 @interface BookmarkCell : UITableViewCell
 
-@property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) UITextView *textView;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier delegate:(id <UIWebViewDelegate>)delegate;
+- (void)resizeTextView;
 
 @end
