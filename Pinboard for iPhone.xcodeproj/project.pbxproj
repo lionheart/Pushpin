@@ -474,6 +474,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -484,7 +485,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -493,6 +494,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6F159F92-B29D-4A73-A0B6-F1E7A8D3048D";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
