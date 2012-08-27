@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
 @interface BookmarkCell : UITableViewCell
 
-@property (nonatomic, retain) UITextView *textView;
+@property (nonatomic, retain) TTTAttributedLabel *textView;
 
 - (void)resizeTextView;
++ (CGFloat)heightForCellWithText:(NSString *)text;
 
 @end

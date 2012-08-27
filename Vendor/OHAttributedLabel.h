@@ -35,15 +35,13 @@
 
 
 
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: Utility Functions
-/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Utility Functions
 
 CTTextAlignment CTTextAlignmentFromUITextAlignment(UITextAlignment alignment);
 CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode);
 
-/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
 @class OHAttributedLabel;
 @protocol OHAttributedLabelDelegate <NSObject>
@@ -52,18 +50,20 @@ CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode
 -(UIColor*)colorForLink:(NSTextCheckingResult*)linkInfo underlineStyle:(int32_t*)underlineStyle; //!< Combination of CTUnderlineStyle and CTUnderlineStyleModifiers
 @end
 
-#define UITextAlignmentJustify ((UITextAlignment)kCTJustifiedTextAlignment)
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
+extern const int UITextAlignmentJustify
+__attribute__((deprecated("You should use 'setTextAlignment:lineBreakMode:' on your NSAttributedString instead.")));
+#else
+extern const int UITextAlignmentJustify
+__attribute__((unavailable("Since iOS6 SDK, you have to use 'setTextAlignment:lineBreakMode:' on your NSAttributedString instead.")));
+#endif
 
-/////////////////////////////////////////////////////////////////////////////
 
-@interface OHAttributedLabel : UILabel {
-	NSMutableAttributedString* _attributedText; //!< Internally mutable, but externally immutable copy access only
-	CTFrameRef textFrame;
-	CGRect drawingRect;
-	NSMutableArray* customLinks;
-	NSTextCheckingResult* activeLink;
-	CGPoint touchStartPoint;
-}
+
+/////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Public Interface
+
+@interface OHAttributedLabel : UILabel
 
 /* Attributed String accessors */
 @property(nonatomic, copy) NSAttributedString* attributedText; //!< Use this instead of the "text" property inherited from UILabel to set and get text
@@ -71,13 +71,13 @@ CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode
 
 /* Links configuration */
 @property(nonatomic, assign) NSTextCheckingTypes automaticallyAddLinksForType; //!< Defaults to NSTextCheckingTypeLink, + NSTextCheckingTypePhoneNumber if "tel:" scheme supported
-@property(nonatomic, retain) UIColor* linkColor; //!< Defaults to [UIColor blueColor]. See also OHAttributedLabelDelegate
-@property(nonatomic, retain) UIColor* highlightedLinkColor; //[UIColor colorWithWhite:0.2 alpha:0.5]
+@property(nonatomic, strong) UIColor* linkColor; //!< Defaults to [UIColor blueColor]. See also OHAttributedLabelDelegate
+@property(nonatomic, strong) UIColor* highlightedLinkColor; //[UIColor colorWithWhite:0.2 alpha:0.5]
 @property(nonatomic, assign) BOOL underlineLinks; //!< Defaults to YES. See also OHAttributedLabelDelegate
 -(void)addCustomLink:(NSURL*)linkUrl inRange:(NSRange)range;
 -(void)removeAllCustomLinks;
 
-@property(nonatomic, assign) BOOL onlyCatchTouchesOnLinks; //!< If YES, pointInside will only return YES if the touch is on a link. If NO, pointInside will always return YES (Defaults to NO)
+@property(nonatomic, assign) BOOL onlyCatchTouchesOnLinks; //!< If YES, pointInside will only return YES if the touch is on a link. If NO, pointInside will always return YES (Defaults to YES)
 @property(nonatomic, assign) IBOutlet id<OHAttributedLabelDelegate> delegate;
 
 @property(nonatomic, assign) BOOL centerVertically;

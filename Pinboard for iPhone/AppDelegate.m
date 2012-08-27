@@ -57,27 +57,51 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    id navigationBarAppearance = [UINavigationBar appearance];
-    
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
                           animated:NO];
 
     self.username = @"dlo";
     self.password = @"papa c6h12o5a 0P";
     
+    /*
     Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
     [pinboard parse];
-
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:10], @"results", @"json", @"format", nil];
-
-    BookmarkViewController *postViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain
-                                                                                   url:@"v1/posts/all"
-                                                                            parameters:parameters];
+     */
+    
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"" parameters:nil];
+    bookmarkViewController.title = @"All Bookmarks";
+    
     HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    homeViewController.title = @"Pinboard";
-    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    homeViewController.title = @"Browse";
 
-    [self.window setRootViewController:postViewContainer];
+    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, bookmarkViewController, nil]];
+    [postViewContainer popToViewController:bookmarkViewController animated:NO];
+
+    postViewContainer.tabBarItem.title = @"Browse";
+    postViewContainer.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
+    [postViewContainer.tabBarItem setBadgeValue:@"2"];
+    
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    vc1.tabBarItem.title = @"Settings";
+    vc1.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
+    
+    UIViewController *vc2 = [[UIViewController alloc] init];
+    vc2.tabBarItem.title = @"Add";
+    vc2.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
+    
+    UIViewController *vc3 = [[UIViewController alloc] init];
+    vc3.tabBarItem.title = @"Community";
+    vc3.tabBarItem.image = [UIImage imageNamed:@"112-group"];
+    
+    UIViewController *vc4 = [[UIViewController alloc] init];
+    vc4.tabBarItem.title = @"Notes";
+    vc4.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
+
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    [tabBarController setViewControllers:[NSArray arrayWithObjects:postViewContainer, vc4, vc2, vc3, vc1, nil]];
+
+    [self.window setRootViewController:tabBarController];
     [self.window makeKeyAndVisible];
     return YES;
 

@@ -13,6 +13,8 @@
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
 
+static NSString *const kFontName = @"Helvetica";
+
 @interface BookmarkViewController ()
 
 @end
@@ -22,43 +24,38 @@
 @synthesize url = _url;
 @synthesize parameters = _parameters;
 @synthesize bookmarks;
-@synthesize labels;
+@synthesize strings;
+@synthesize heights;
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
     self.bookmarks = [response copy];
-    
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:17];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:14];
+
     for (int i=0; i<10; i++) {
-        OHAttributedLabel *label = [[OHAttributedLabel alloc] init];
         Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
-        NSString *content = [NSString stringWithFormat:@"%@\n%@", bookmark.description, bookmark.extended];
+        
+        CGFloat height = 10.0f;
+        height += ceilf([bookmark.description sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        height += ceilf([bookmark.extended sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        [self.heights addObject:[NSNumber numberWithFloat:height]];
+
+        NSString *content;
+        if (![bookmark.extended isEqualToString:@""]) {
+            content = [NSString stringWithFormat:@"%@\n%@", bookmark.description, bookmark.extended];
+        }
+        else {
+            content = [NSString stringWithFormat:@"%@", bookmark.description];
+        }
+
         NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
 
-        [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18] range:[content rangeOfString:bookmark.description]];
-        [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:16] range:[content rangeOfString:bookmark.extended]];
-
+        [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark.description]];
+        [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark.extended]];
         [attributedString setTextColor:[UIColor blackColor]];
         [attributedString setTextColor:HEX(0x5511aa) range:[content rangeOfString:bookmark.description]];
-
         [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-        label.attributedText = attributedString;
-        label.lineBreakMode = kCTLineBreakByWordWrapping;
-        [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:[content rangeOfString:bookmark.description]];
-        label.textAlignment = UITextAlignmentLeft;
-        label.underlineLinks = false;
-        
-        CGSize size = [label.attributedText sizeConstrainedToSize:CGSizeMake(320, 1000)];
-        [label setFrame:CGRectMake(0, 0, size.width, size.height)];
-        [label setNeedsDisplay];
-        
-        /*
-         NSString *rendering = [GRMustacheTemplate renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"ID Theives Loot Tax Checks, Filing Early and Often", @"description", @"MIAMI — Besieged by identity theft, Florida now faces a fast-spreading form of fraud so simple and lucrative that some violent criminals have traded their guns for laptops. And the target is the…", @"extension", nil]
-         fromResource:@"Bookmark"
-         bundle:nil
-         error:NULL];
-         */
-        
-        //        NSLog(@"%@", label);
-        [self.labels addObject:label];
+        [self.strings addObject:attributedString];
     }
 
     [self.tableView reloadData];
@@ -70,7 +67,8 @@
         _url = url;
         _parameters = parameters;
         self.bookmarks = [NSMutableArray array];
-        self.labels = [NSMutableArray array];
+        self.strings = [NSMutableArray array];
+        self.heights = [NSMutableArray array];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:nil
@@ -92,21 +90,17 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.labels count];
+    return [self.strings count];
 }
 
 #pragma mark - Table view delegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIFont *font = [UIFont fontWithName:@"Helvetica" size:16];
-    
-    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
-    CGSize textSize = [bookmark.description sizeWithFont:font constrainedToSize:CGSizeMake(280-16, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
-    return textSize.height + 20;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [[self.heights objectAtIndex:indexPath.row] floatValue];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -114,20 +108,15 @@
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
-        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                        reuseIdentifier:identifier];
+        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-
-    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
-    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, 0)];
-    cell.textView = textView;
-    [cell.contentView addSubview:textView];
-
-    [cell.textView setText:bookmark.description];
-    [cell.textView setTextColor:[UIColor blackColor]];
-    [cell.textView setFont:[UIFont fontWithName:@"Helvetica" size:16]];
-    [cell resizeTextView];
+    
+    NSAttributedString *string = [self.strings objectAtIndex:indexPath.row];
+    [cell.textView setText:string];
+    cell.textView.delegate = self;
+    cell.textView.userInteractionEnabled = YES;
+    [cell layoutSubviews];
     return cell;
 }
 
