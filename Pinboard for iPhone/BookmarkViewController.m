@@ -21,6 +21,7 @@ static NSString *const kFontName = @"Helvetica";
 
 @implementation BookmarkViewController
 
+@synthesize context;
 @synthesize url = _url;
 @synthesize parameters = _parameters;
 @synthesize bookmarks;
@@ -29,6 +30,7 @@ static NSString *const kFontName = @"Helvetica";
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
     self.bookmarks = [response copy];
+
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:17];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:14];
 
@@ -66,6 +68,7 @@ static NSString *const kFontName = @"Helvetica";
     if (self) {
         _url = url;
         _parameters = parameters;
+        self.context = [[NSManagedObjectContext alloc] init];
         self.bookmarks = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
@@ -94,10 +97,6 @@ static NSString *const kFontName = @"Helvetica";
 }
 
 #pragma mark - Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [[self.heights objectAtIndex:indexPath.row] floatValue];

@@ -62,7 +62,7 @@
 
     self.username = @"dlo";
     self.password = @"papa c6h12o5a 0P";
-    
+
     /*
     Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
     [pinboard parse];

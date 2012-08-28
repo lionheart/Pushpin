@@ -10,9 +10,11 @@
 #import "Pinboard.h"
 #import "OHAttributedLabel.h"
 #import "TTTAttributedLabel.h"
+#import <CoreData/CoreData.h>
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, OHAttributedLabelDelegate, PinboardDelegate>
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PinboardDelegate>
 
+@property (nonatomic, retain) NSManagedObjectContext *context;
 @property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSDictionary *parameters;

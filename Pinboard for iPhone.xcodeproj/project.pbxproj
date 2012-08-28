@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37098F3815EC7D17005D84B1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 37098F3615EC7D17005D84B1 /* Model.xcdatamodeld */; };
+		37098F3B15EC81D7005D84B1 /* tags.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37098F3A15EC81D7005D84B1 /* tags.xml */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -84,6 +86,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		37098F3715EC7D17005D84B1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		37098F3A15EC81D7005D84B1 /* tags.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = tags.xml; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -306,6 +310,7 @@
 		37FEEB9815745488003F2B77 /* Pinboard for iPhone */ = {
 			isa = PBXGroup;
 			children = (
+				37098F3615EC7D17005D84B1 /* Model.xcdatamodeld */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
 				37FEEBD215745786003F2B77 /* PinboardClient.h */,
@@ -375,6 +380,7 @@
 				3787FFE815B49989008A477A /* Icon@2x.png */,
 				3787FFE915B49989008A477A /* iTunesArtwork.png */,
 				3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */,
+				37098F3A15EC81D7005D84B1 /* tags.xml */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -472,6 +478,7 @@
 				3779D0B415EC0C83009E564A /* 104-index-cards@2x.png in Resources */,
 				3779D0B715EC0DA8009E564A /* 112-group.png in Resources */,
 				3779D0B815EC0DA8009E564A /* 112-group@2x.png in Resources */,
+				37098F3B15EC81D7005D84B1 /* tags.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +515,7 @@
 				376A4F6315E5796B00D8E073 /* BookmarkList.m in Sources */,
 				376A4F6415E5796B00D8E073 /* Pinboard.m in Sources */,
 				376A4F6515E5796B00D8E073 /* Tag.m in Sources */,
+				37098F3815EC7D17005D84B1 /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -622,6 +630,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		37098F3615EC7D17005D84B1 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				37098F3715EC7D17005D84B1 /* Model.xcdatamodel */,
+			);
+			currentVersion = 37098F3715EC7D17005D84B1 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 37FEEB8515745488003F2B77 /* Project object */;
 }
