@@ -11,6 +11,7 @@
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"
 #import "Pinboard.h"
+#import "ASManagedObject.h"
 
 @implementation AppDelegate
 
@@ -105,6 +106,10 @@
     [self.window makeKeyAndVisible];
     return YES;
 
+}
+
++ (AppDelegate *)sharedDelegate {
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 @end

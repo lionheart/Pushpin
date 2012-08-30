@@ -12,6 +12,7 @@
 #import "GRMustache.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
+#import "ASManagedObject.h"
 
 static NSString *const kFontName = @"Helvetica";
 
@@ -21,7 +22,6 @@ static NSString *const kFontName = @"Helvetica";
 
 @implementation BookmarkViewController
 
-@synthesize context;
 @synthesize url = _url;
 @synthesize parameters = _parameters;
 @synthesize bookmarks;
@@ -68,17 +68,38 @@ static NSString *const kFontName = @"Helvetica";
     if (self) {
         _url = url;
         _parameters = parameters;
-        self.context = [[NSManagedObjectContext alloc] init];
         self.bookmarks = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
                                                                                   style:UIBarButtonItemStylePlain
-                                                                                 target:nil
-                                                                                 action:nil];
+                                                                                 target:self
+                                                                                 action:@selector(addNewBookmark)];
     }
     return self;
 }
+
+- (void)addNewBookmark {
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    Bookmark *bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"there was an error saving");
+    }
+
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Bookmark" inManagedObjectContext:context];
+    [request setEntity:entity];
+
+    error = nil;
+    NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
+    if (mutableFetchResults == nil) {
+    }
+
+    NSLog(@"%d", [mutableFetchResults count]);
+}
+
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
