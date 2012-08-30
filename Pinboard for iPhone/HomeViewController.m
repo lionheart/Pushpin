@@ -105,7 +105,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"" parameters:nil];
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"posts/recent" parameters:nil];
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

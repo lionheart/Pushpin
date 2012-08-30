@@ -16,11 +16,10 @@
 @property (nonatomic, retain) NSString * meta;
 @property (nonatomic, retain) NSNumber * others;
 @property (nonatomic, retain) NSNumber * read;
+@property (nonatomic, retain) NSNumber * shared;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) NSString * pinboard_hash;
 @property (nonatomic, retain) NSManagedObject *tags;
-
-+ (Bookmark *)bookmarkWithAttributes:(NSDictionary *)attributes;
 
 @end

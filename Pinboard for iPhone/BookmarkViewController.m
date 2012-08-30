@@ -9,12 +9,14 @@
 #import "BookmarkViewController.h"
 #import "PinboardClient.h"
 #import "BookmarkCell.h"
-#import "GRMustache.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
 #import "ASManagedObject.h"
+#import "Bookmark.h"
 
 static NSString *const kFontName = @"Helvetica";
+static float kLargeFontSize = 16.0f;
+static float kSmallFontSize = 13.0f;
 
 @interface BookmarkViewController ()
 
@@ -29,33 +31,87 @@ static NSString *const kFontName = @"Helvetica";
 @synthesize heights;
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
-    self.bookmarks = [response copy];
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    NSMutableArray *hashes = [NSMutableArray array];
+    
+    for (NSDictionary *element in response) {
+        [hashes addObject:[element objectForKey:@"hash"]];
+    }
+    
+    [hashes sortUsingComparator:(NSComparator)^(id obj1, id obj2) {
+        return [obj1 caseInsensitiveCompare:obj2];
+    }];
 
-    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:17];
-    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:14];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"pinboard_hash in %@", hashes]];
+    [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"pinboard_hash" ascending:YES]]];
+    
+    NSError *error = nil;
+    NSArray *fetchRequestResponse = [context executeFetchRequest:request error:&error];
 
-    for (int i=0; i<10; i++) {
-        Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
+    int i = 0;
+    int j = 0;
+    bool update_existing;
+    Bookmark *bookmark;
+    while (i < [hashes count]) {
+        update_existing = false;
+        NSString *hash = [hashes objectAtIndex:i];
+        if (j < [fetchRequestResponse count]) {
+            bookmark = [fetchRequestResponse objectAtIndex:j];
+            update_existing = [bookmark.pinboard_hash isEqualToString:hash];
+        }
         
+        if (update_existing) {
+            j++;
+        }
+        else {
+            bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+        }
+
+        NSDictionary *element = [response objectAtIndex:i];
+        bookmark.url = [element objectForKey:@"href"];
+        bookmark.title = [element objectForKey:@"description"];
+        bookmark.extended = [element objectForKey:@"extended"];
+        bookmark.pinboard_hash = [element objectForKey:@"hash"];
+        bookmark.read = [NSNumber numberWithBool:([[element objectForKey:@"toread"] isEqualToString:@"no"])];
+        bookmark.shared = [NSNumber numberWithBool:([[element objectForKey:@"shared"] isEqualToString:@"yes"])];
+        [self.bookmarks addObject:bookmark];
+        i++;
+    }
+
+    [context save:nil];
+
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+
+    for (int i=0; i<[hashes count]; i++) {
+        Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
+
         CGFloat height = 10.0f;
-        height += ceilf([bookmark.description sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        height += ceilf([bookmark.title sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
         height += ceilf([bookmark.extended sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
         [self.heights addObject:[NSNumber numberWithFloat:height]];
 
         NSString *content;
         if (![bookmark.extended isEqualToString:@""]) {
-            content = [NSString stringWithFormat:@"%@\n%@", bookmark.description, bookmark.extended];
+            content = [NSString stringWithFormat:@"%@\n%@", bookmark.title, bookmark.extended];
         }
         else {
-            content = [NSString stringWithFormat:@"%@", bookmark.description];
+            content = [NSString stringWithFormat:@"%@", bookmark.title];
         }
 
         NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
 
-        [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark.description]];
+        [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark.title]];
         [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark.extended]];
-        [attributedString setTextColor:[UIColor blackColor]];
-        [attributedString setTextColor:HEX(0x5511aa) range:[content rangeOfString:bookmark.description]];
+        [attributedString setTextColor:HEX(0x555555ff)];
+
+        if (bookmark.read.boolValue) {
+            [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark.title]];
+        }
+        else {
+            [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark.title]];
+        }
         [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
         [self.strings addObject:attributedString];
     }
@@ -66,8 +122,8 @@ static NSString *const kFontName = @"Helvetica";
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters {
     self = [super initWithStyle:style];
     if (self) {
-        _url = url;
-        _parameters = parameters;
+        self.url = url;
+        self.parameters = parameters;
         self.bookmarks = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
@@ -81,29 +137,17 @@ static NSString *const kFontName = @"Helvetica";
 
 - (void)addNewBookmark {
     NSManagedObjectContext *context = [ASManagedObject sharedContext];
-    Bookmark *bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
-
     NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"there was an error saving");
-    }
-
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Bookmark" inManagedObjectContext:context];
-    [request setEntity:entity];
-
-    error = nil;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
     NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
-    if (mutableFetchResults == nil) {
-    }
-
     NSLog(@"%d", [mutableFetchResults count]);
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
+
+    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:self.url delegate:self];
     [pinboard parse];
 }
 

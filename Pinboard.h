@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Bookmark.h"
 
+@class Bookmark;
 @protocol PinboardDelegate;
 
 @interface Pinboard : NSObject <NSXMLParserDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, NSURLConnectionDownloadDelegate>
@@ -19,7 +19,6 @@
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *datetime;
 @property (nonatomic, retain) NSMutableArray *response;
-@property (nonatomic, retain) Bookmark *bookmark;
 @property (nonatomic, retain) id <PinboardDelegate> delegate;
 
 + (Pinboard *)pinboardWithEndpoint:(NSString *)endpoint delegate:(id <PinboardDelegate>)delegate;

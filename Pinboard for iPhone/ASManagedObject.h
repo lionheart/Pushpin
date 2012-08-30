@@ -15,5 +15,6 @@
 + (NSPersistentStoreCoordinator *)sharedCoordinator;
 + (NSManagedObjectModel* )sharedModel;
 + (NSURL *)persistentStoreURL;
++ (void)resetPersistentStore:(NSPersistentStore *)store withURL:(NSURL *)url;
 
 @end

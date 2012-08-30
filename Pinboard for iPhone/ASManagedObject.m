@@ -24,24 +24,34 @@ static NSString *const kURIRepresentationKey = @"URIRepresentation";
     return __managedObjectContext;
 }
 
++ (void)resetPersistentStore:(NSPersistentStore *)store withURL:(NSURL *)url {
+    NSError *error = nil;
+    [[self sharedCoordinator] removePersistentStore:store error:&error];
+    [[NSFileManager defaultManager] removeItemAtPath:url.path error:&error];
+}
+
 + (NSPersistentStoreCoordinator *)sharedCoordinator {
     if (!__persistentStoreCoordinator) {
         __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self sharedModel]];
+        
+        NSURL *storeUrl = [self persistentStoreURL];
+        
+        NSError *error = nil;
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                                 [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+
+
+        if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
+            // Handle error
+            NSLog(@"%@", error);
+        }
+
+        [self resetPersistentStore:[__persistentStoreCoordinator.persistentStores lastObject] withURL:storeUrl];
+        [__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error];
     }
+
     return __persistentStoreCoordinator;
-
-    NSURL *storeUrl = [self persistentStoreURL];
-
-    NSError *error = nil;
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
-        // Handle error
-    }
-
-    return persistentStoreCoordinator;
 }
 
 + (NSURL *)persistentStoreURL {

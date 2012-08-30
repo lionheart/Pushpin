@@ -80,7 +80,7 @@
     [postViewContainer popToViewController:bookmarkViewController animated:NO];
 
     postViewContainer.tabBarItem.title = @"Browse";
-    postViewContainer.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
+    postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
     [postViewContainer.tabBarItem setBadgeValue:@"2"];
     
     UIViewController *vc1 = [[UIViewController alloc] init];
@@ -92,8 +92,8 @@
     vc2.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
     
     UIViewController *vc3 = [[UIViewController alloc] init];
-    vc3.tabBarItem.title = @"Community";
-    vc3.tabBarItem.image = [UIImage imageNamed:@"112-group"];
+    vc3.tabBarItem.title = @"Tags";
+    vc3.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
     
     UIViewController *vc4 = [[UIViewController alloc] init];
     vc4.tabBarItem.title = @"Notes";

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		37098F3815EC7D17005D84B1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 37098F3615EC7D17005D84B1 /* Model.xcdatamodeld */; };
 		37098F3B15EC81D7005D84B1 /* tags.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37098F3A15EC81D7005D84B1 /* tags.xml */; };
+		370ACB5B15F01863001A0058 /* 71-compass.png in Resources */ = {isa = PBXBuildFile; fileRef = 370ACB5915F01863001A0058 /* 71-compass.png */; };
+		370ACB5C15F01863001A0058 /* 71-compass@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 370ACB5A15F01863001A0058 /* 71-compass@2x.png */; };
 		370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370EE75115ED108300B262E2 /* CoreData.framework */; };
 		370EE75A15ED2A4D00B262E2 /* ASManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 370EE75915ED2A4D00B262E2 /* ASManagedObject.m */; };
 		370EE75B15ED2FDD00B262E2 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 370EE75515ED226900B262E2 /* Bookmark.m */; };
@@ -90,6 +92,9 @@
 /* Begin PBXFileReference section */
 		37098F3715EC7D17005D84B1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		37098F3A15EC81D7005D84B1 /* tags.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = tags.xml; sourceTree = "<group>"; };
+		370ACB5715F01039001A0058 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
+		370ACB5915F01863001A0058 /* 71-compass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "71-compass.png"; sourceTree = "<group>"; };
+		370ACB5A15F01863001A0058 /* 71-compass@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "71-compass@2x.png"; sourceTree = "<group>"; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370EE75415ED226900B262E2 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
 		370EE75515ED226900B262E2 /* Bookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
@@ -234,6 +239,8 @@
 		370EE75715ED23F300B262E2 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				370ACB5915F01863001A0058 /* 71-compass.png */,
+				370ACB5A15F01863001A0058 /* 71-compass@2x.png */,
 				3779D0B515EC0DA8009E564A /* 112-group.png */,
 				3779D0B615EC0DA8009E564A /* 112-group@2x.png */,
 				3779D0B115EC0C83009E564A /* 104-index-cards.png */,
@@ -496,6 +503,8 @@
 				3779D0B715EC0DA8009E564A /* 112-group.png in Resources */,
 				3779D0B815EC0DA8009E564A /* 112-group@2x.png in Resources */,
 				37098F3B15EC81D7005D84B1 /* tags.xml in Resources */,
+				370ACB5B15F01863001A0058 /* 71-compass.png in Resources */,
+				370ACB5C15F01863001A0058 /* 71-compass@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,6 +662,7 @@
 		37098F3615EC7D17005D84B1 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				370ACB5715F01039001A0058 /* Model 2.xcdatamodel */,
 				37098F3715EC7D17005D84B1 /* Model.xcdatamodel */,
 			);
 			currentVersion = 37098F3715EC7D17005D84B1 /* Model.xcdatamodel */;

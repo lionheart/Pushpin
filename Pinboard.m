@@ -7,13 +7,14 @@
 //
 
 #import "Pinboard.h"
+#import "Bookmark.h"
+#import "ASManagedObject.h"
 
 @implementation Pinboard
 
 @synthesize response;
 @synthesize datetime;
 @synthesize username;
-@synthesize bookmark;
 @synthesize data = _data;
 @synthesize delegate = _delegate;
 @synthesize parser;
@@ -27,12 +28,8 @@
 }
 
 - (void)parse {
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"recent" 
-                                                     ofType:@"xml"];
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    [self parseWithData:data];
-    return;
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/%@", self.endpoint]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/%@?auth_token=dlo:ZJAYZDFKNTQ4OTQ4MZC1&format=json", self.endpoint]];
+    NSLog(@"%@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
@@ -53,7 +50,8 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [self parseWithData:self.data];
+    NSDictionary *r = [NSJSONSerialization JSONObjectWithData:self.data options:NSJSONReadingMutableContainers error:nil];
+    [self.delegate pinboard:self didReceiveResponse:[r objectForKey:@"posts"]];
 }
 
 - (void)parseWithData:(NSData *)data {
@@ -74,12 +72,8 @@
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-
     if ([elementName isEqualToString:@"post"]) {
-        [self.response addObject:[Bookmark bookmarkWithAttributes:attributeDict]];
-    }
-    else if ([elementName isEqualToString:@"tag"]) {
-        
+        [self.response addObject:attributeDict];
     }
 }
 
