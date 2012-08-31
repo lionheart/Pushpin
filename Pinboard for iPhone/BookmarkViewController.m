@@ -31,6 +31,7 @@ static float kSmallFontSize = 13.0f;
 @synthesize webView;
 @synthesize endpoint = _endpoint;
 @synthesize predicate = _predicate;
+@synthesize date_formatter;
 
 - (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes {
     bookmark.url = [attributes objectForKey:@"href"];
@@ -39,6 +40,8 @@ static float kSmallFontSize = 13.0f;
     bookmark.pinboard_hash = [attributes objectForKey:@"hash"];
     bookmark.read = [NSNumber numberWithBool:([[attributes objectForKey:@"toread"] isEqualToString:@"no"])];
     bookmark.shared = [NSNumber numberWithBool:([[attributes objectForKey:@"shared"] isEqualToString:@"yes"])];
+    bookmark.created_on = [self.date_formatter dateFromString:[attributes objectForKey:@"time"]];
+    NSLog(@"%@, %@", bookmark.created_on, [attributes objectForKey:@"time"]);
     return bookmark;
 }
 
@@ -96,6 +99,9 @@ static float kSmallFontSize = 13.0f;
 - (void)processBookmarks {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+    
+    [self.strings removeAllObjects];
+    [self.heights removeAllObjects];
 
     for (int i=0; i<[self.bookmarks count]; i++) {
         Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
@@ -141,6 +147,9 @@ static float kSmallFontSize = 13.0f;
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
         self.predicate = predicate;
+        self.date_formatter = [[NSDateFormatter alloc] init];
+        [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
@@ -159,6 +168,7 @@ static float kSmallFontSize = 13.0f;
     [self.bookmarks removeAllObjects];
     [request setPredicate:self.predicate];
     self.bookmarks = [NSMutableArray arrayWithArray:[context executeFetchRequest:request error:&error]];
+
     if ([self.bookmarks count] == 0) {
         Pinboard *pinboard = [Pinboard pinboardWithEndpoint:self.endpoint delegate:self];
         [pinboard parse];
@@ -195,6 +205,7 @@ static float kSmallFontSize = 13.0f;
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark.url]];
     [self.webView loadRequest:request];
     UIViewController *viewController = [[UIViewController alloc] init];
+    viewController.title = bookmark.title;
     viewController.view = self.webView;
     [self.navigationController pushViewController:viewController animated:YES];
 }

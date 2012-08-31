@@ -14,11 +14,12 @@
     </entity>
     <entity name="Note" syncable="YES">
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="pinboard_hash" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Tag" syncable="YES">
         <attribute name="count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -26,8 +27,8 @@
         <relationship name="bookmarks" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Bookmark" inverseName="tags" inverseEntity="Bookmark" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Bookmark" positionX="0" positionY="0" width="128" height="180"/>
-        <element name="Note" positionX="0" positionY="0" width="128" height="135"/>
-        <element name="Tag" positionX="0" positionY="0" width="128" height="90"/>
+        <element name="Bookmark" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Note" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Tag" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

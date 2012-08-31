@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSMutableArray *heights;
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSPredicate *predicate;
+@property (nonatomic, retain) NSDateFormatter *date_formatter;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
 - (id)initWithEndpoint:(NSString *)endpoint predicate:(NSPredicate *)predicate parameters:(NSDictionary *)parameters;
