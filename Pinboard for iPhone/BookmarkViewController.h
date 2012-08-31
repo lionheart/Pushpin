@@ -15,12 +15,17 @@
 @interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PinboardDelegate>
 
 @property (nonatomic, retain) NSMutableArray *bookmarks;
-@property (nonatomic, retain) NSString *url;
+@property (nonatomic, retain) NSString *endpoint;
 @property (nonatomic, retain) NSDictionary *parameters;
 @property (nonatomic, retain) NSMutableArray *strings;
 @property (nonatomic, retain) NSMutableArray *heights;
+@property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) NSPredicate *predicate;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
-- (void)addNewBookmark;
+- (id)initWithEndpoint:(NSString *)endpoint predicate:(NSPredicate *)predicate parameters:(NSDictionary *)parameters;
+- (void)refreshBookmarks;
+- (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes;
+- (void)processBookmarks;
 
 @end

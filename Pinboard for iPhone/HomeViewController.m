@@ -24,7 +24,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 6;
+            return 5;
             break;
         case 1:
             return 4;
@@ -76,9 +76,6 @@
                     cell.textLabel.text = @"Untagged";
                     cell.detailTextLabel.text = @"323";
                     break;
-                case 5:
-                    cell.textLabel.text = @"Custom";
-                    break;
             }
             break;
         }
@@ -105,7 +102,44 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"posts/recent" parameters:nil];
+    BookmarkViewController *bookmarkViewController;
+
+    switch (indexPath.section) {
+        case 0: {
+            switch (indexPath.row) {
+                case 0:
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
+                    break;
+                case 1:
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"shared = NO"] parameters:nil];
+                    break;
+                case 2:
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"shared = YES"] parameters:nil];
+                    break;
+                case 3:
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"read = NO"] parameters:nil];
+                    break;
+                case 4:
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"] parameters:nil];
+                    break;
+            }
+            break;
+        }
+        case 1: {
+            switch (indexPath.row) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+            break;
+        }
+    }
+    
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

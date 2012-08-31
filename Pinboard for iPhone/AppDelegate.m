@@ -69,7 +69,7 @@
     [pinboard parse];
      */
     
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithStyle:UITableViewStylePlain url:@"" parameters:nil];
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
     bookmarkViewController.title = @"All Bookmarks";
     
     HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];

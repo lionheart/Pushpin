@@ -47,8 +47,10 @@ static NSString *const kURIRepresentationKey = @"URIRepresentation";
             NSLog(@"%@", error);
         }
 
+        /*
         [self resetPersistentStore:[__persistentStoreCoordinator.persistentStores lastObject] withURL:storeUrl];
         [__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error];
+         */
     }
 
     return __persistentStoreCoordinator;
