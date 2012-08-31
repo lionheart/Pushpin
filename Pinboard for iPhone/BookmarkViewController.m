@@ -9,9 +9,14 @@
 #import "BookmarkViewController.h"
 #import "PinboardClient.h"
 #import "BookmarkCell.h"
-#import "GRMustache.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
+#import "ASManagedObject.h"
+#import "Bookmark.h"
+
+static NSString *const kFontName = @"Helvetica";
+static float kLargeFontSize = 16.0f;
+static float kSmallFontSize = 13.0f;
 
 @interface BookmarkViewController ()
 
@@ -19,71 +24,162 @@
 
 @implementation BookmarkViewController
 
-@synthesize url = _url;
 @synthesize parameters = _parameters;
 @synthesize bookmarks;
-@synthesize labels;
+@synthesize strings;
+@synthesize heights;
+@synthesize webView;
+@synthesize endpoint = _endpoint;
+@synthesize predicate = _predicate;
+@synthesize date_formatter;
+
+- (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes {
+    bookmark.url = [attributes objectForKey:@"href"];
+    bookmark.title = [attributes objectForKey:@"description"];
+    bookmark.extended = [attributes objectForKey:@"extended"];
+    bookmark.pinboard_hash = [attributes objectForKey:@"hash"];
+    bookmark.read = [NSNumber numberWithBool:([[attributes objectForKey:@"toread"] isEqualToString:@"no"])];
+    bookmark.shared = [NSNumber numberWithBool:([[attributes objectForKey:@"shared"] isEqualToString:@"yes"])];
+    bookmark.created_on = [self.date_formatter dateFromString:[attributes objectForKey:@"time"]];
+    NSLog(@"%@, %@", bookmark.created_on, [attributes objectForKey:@"time"]);
+    return bookmark;
+}
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
-    self.bookmarks = [response copy];
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    NSMutableArray *hashes = [NSMutableArray array];
     
-    for (int i=0; i<10; i++) {
-        OHAttributedLabel *label = [[OHAttributedLabel alloc] init];
+    for (NSDictionary *element in response) {
+        [hashes addObject:[element objectForKey:@"hash"]];
+    }
+    
+    [hashes sortUsingComparator:(NSComparator)^(id obj1, id obj2) {
+        return [obj1 caseInsensitiveCompare:obj2];
+    }];
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
+    NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:self.predicate, [NSPredicate predicateWithFormat:@"pinboard_hash in %@", hashes], nil]];
+    [request setPredicate:compoundPredicate];
+    [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"pinboard_hash" ascending:YES]]];
+    
+    NSError *error = nil;
+    NSArray *fetchRequestResponse = [context executeFetchRequest:request error:&error];
+
+    int i = 0;
+    int j = 0;
+    bool update_existing;
+    Bookmark *bookmark;
+    [self.bookmarks removeAllObjects];
+    while (i < [hashes count]) {
+        update_existing = false;
+        NSString *hash = [hashes objectAtIndex:i];
+        if (j < [fetchRequestResponse count]) {
+            bookmark = [fetchRequestResponse objectAtIndex:j];
+            update_existing = [bookmark.pinboard_hash isEqualToString:hash];
+        }
+        
+        if (update_existing) {
+            j++;
+        }
+        else {
+            bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+        }
+
+        NSDictionary *attributes = [response objectAtIndex:i];
+
+        [self updateBookmark:bookmark withAttributes:attributes];
+        [self.bookmarks addObject:bookmark];
+        i++;
+    }
+
+    [context save:nil];
+    [self processBookmarks];
+}
+
+- (void)processBookmarks {
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+    
+    [self.strings removeAllObjects];
+    [self.heights removeAllObjects];
+
+    for (int i=0; i<[self.bookmarks count]; i++) {
         Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
-        NSString *content = [NSString stringWithFormat:@"%@\n%@", bookmark.description, bookmark.extended];
+
+        CGFloat height = 10.0f;
+        height += ceilf([bookmark.title sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        height += ceilf([bookmark.extended sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        [self.heights addObject:[NSNumber numberWithFloat:height]];
+
+        NSString *content;
+        if (![bookmark.extended isEqualToString:@""]) {
+            content = [NSString stringWithFormat:@"%@\n%@", bookmark.title, bookmark.extended];
+        }
+        else {
+            content = [NSString stringWithFormat:@"%@", bookmark.title];
+        }
+
         NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
 
-        [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:18] range:[content rangeOfString:bookmark.description]];
-        [attributedString setFont:[UIFont fontWithName:@"Helvetica" size:16] range:[content rangeOfString:bookmark.extended]];
+        [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark.title]];
+        [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark.extended]];
+        [attributedString setTextColor:HEX(0x555555ff)];
 
-        [attributedString setTextColor:[UIColor blackColor]];
-        [attributedString setTextColor:HEX(0x5511aa) range:[content rangeOfString:bookmark.description]];
-
+        if (bookmark.read.boolValue) {
+            [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark.title]];
+        }
+        else {
+            [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark.title]];
+        }
         [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-        label.attributedText = attributedString;
-        label.lineBreakMode = kCTLineBreakByWordWrapping;
-        [label addCustomLink:[NSURL URLWithString:@"http://google.com/"] inRange:[content rangeOfString:bookmark.description]];
-        label.textAlignment = UITextAlignmentLeft;
-        label.underlineLinks = false;
-        
-        CGSize size = [label.attributedText sizeConstrainedToSize:CGSizeMake(320, 1000)];
-        [label setFrame:CGRectMake(0, 0, size.width, size.height)];
-        [label setNeedsDisplay];
-        
-        /*
-         NSString *rendering = [GRMustacheTemplate renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"ID Theives Loot Tax Checks, Filing Early and Often", @"description", @"MIAMI — Besieged by identity theft, Florida now faces a fast-spreading form of fraud so simple and lucrative that some violent criminals have traded their guns for laptops. And the target is the…", @"extension", nil]
-         fromResource:@"Bookmark"
-         bundle:nil
-         error:NULL];
-         */
-        
-        //        NSLog(@"%@", label);
-        [self.labels addObject:label];
+        [self.strings addObject:attributedString];
     }
 
     [self.tableView reloadData];
 }
 
-- (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters {
-    self = [super initWithStyle:style];
+- (id)initWithEndpoint:(NSString *)endpoint predicate:(NSPredicate *)predicate parameters:(NSDictionary *)parameters {
+    self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        _url = url;
-        _parameters = parameters;
+        self.endpoint = endpoint;
         self.bookmarks = [NSMutableArray array];
-        self.labels = [NSMutableArray array];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
+        self.parameters = [NSMutableArray array];
+        self.strings = [NSMutableArray array];
+        self.heights = [NSMutableArray array];
+        self.predicate = predicate;
+        self.date_formatter = [[NSDateFormatter alloc] init];
+        [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
                                                                                   style:UIBarButtonItemStylePlain
-                                                                                 target:nil
-                                                                                 action:nil];
+                                                                                 target:self
+                                                                                 action:@selector(refreshBookmarks)];
     }
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
-    [pinboard parse];
+- (void)refreshBookmarks {
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    NSError *error = nil;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
+    NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
+    NSLog(@"%d", [mutableFetchResults count]);
+
+    [self.bookmarks removeAllObjects];
+    [request setPredicate:self.predicate];
+    self.bookmarks = [NSMutableArray arrayWithArray:[context executeFetchRequest:request error:&error]];
+
+    if ([self.bookmarks count] == 0) {
+        Pinboard *pinboard = [Pinboard pinboardWithEndpoint:self.endpoint delegate:self];
+        [pinboard parse];
+    }
+    else {
+        [self processBookmarks];
+    }
 }
+
+#pragma mark - Web View Delegate
+
 
 #pragma mark - Table view data source
 
@@ -92,34 +188,42 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.labels count];
+    return [self.strings count];
 }
 
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    return label.frame.size.height;
+    return [[self.heights objectAtIndex:indexPath.row] floatValue];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.webView = [[UIWebView alloc] init];
+    self.webView.delegate = self;
+    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark.url]];
+    [self.webView loadRequest:request];
+    UIViewController *viewController = [[UIViewController alloc] init];
+    viewController.title = bookmark.title;
+    viewController.view = self.webView;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    static NSString *identifier = @"BookmarkCell";
+    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
-
-    OHAttributedLabel *label = [self.labels objectAtIndex:indexPath.row];
-    //    NSLog(@"%@", label.attributedText);
-    [cell setAutoresizingMask:UIViewAutoresizingNone];
-    [cell.contentView addSubview:label];
+    
+    NSAttributedString *string = [self.strings objectAtIndex:indexPath.row];
+    [cell.textView setText:string];
+    cell.textView.delegate = self;
+    cell.textView.userInteractionEnabled = YES;
+    [cell layoutSubviews];
     return cell;
 }
 

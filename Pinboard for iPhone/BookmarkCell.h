@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
 @interface BookmarkCell : UITableViewCell
 
-@property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) TTTAttributedLabel *textView;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier delegate:(id <UIWebViewDelegate>)delegate;
+- (void)resizeTextView;
++ (CGFloat)heightForCellWithText:(NSString *)text;
 
 @end
