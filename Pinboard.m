@@ -28,7 +28,10 @@
 }
 
 - (void)parse {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/%@?auth_token=dlo:ZJAYZDFKNTQ4OTQ4MZC1&format=json", self.endpoint]];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"recent" ofType:@"xml"];
+    NSLog(@"%@", path);
+    NSURL *url = [NSURL fileURLWithPath:path];
+//    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/%@?auth_token=dlo:ZJAYZDFKNTQ4OTQ4MZC1&format=json", self.endpoint]];
     NSLog(@"%@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -50,8 +53,9 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSDictionary *r = [NSJSONSerialization JSONObjectWithData:self.data options:NSJSONReadingMutableContainers error:nil];
-    [self.delegate pinboard:self didReceiveResponse:[r objectForKey:@"posts"]];
+//    NSDictionary *r = [NSJSONSerialization JSONObjectWithData:self.data options:NSJSONReadingMutableContainers error:nil];
+//    [self.delegate pinboard:self didReceiveResponse:[r objectForKey:@"posts"]];
+    [self parseWithData:self.data];
 }
 
 - (void)parseWithData:(NSData *)data {

@@ -32,6 +32,36 @@ static float kSmallFontSize = 13.0f;
 @synthesize endpoint = _endpoint;
 @synthesize predicate = _predicate;
 @synthesize date_formatter;
+@synthesize savedSearchTerm;
+@synthesize filteredBookmarks;
+@synthesize searchWasActive;
+@synthesize searchDisplayController;
+
+- (void)viewDidLoad {
+    // create a filtered list that will contain products for the search results table.
+	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
+	
+	// restore search settings if they were saved in didReceiveMemoryWarning.
+    if (self.savedSearchTerm)
+	{
+        [self.searchDisplayController setActive:searchWasActive];
+        [self.searchDisplayController.searchBar setText:self.savedSearchTerm];
+        
+        self.savedSearchTerm = nil;
+    }
+
+	[self.tableView reloadData];
+	self.tableView.scrollEnabled = YES;
+}
+
+- (void)viewDidUnload {
+    self.filteredBookmarks = nil;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+}
 
 - (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes {
     bookmark.url = [attributes objectForKey:@"href"];
@@ -41,7 +71,6 @@ static float kSmallFontSize = 13.0f;
     bookmark.read = [NSNumber numberWithBool:([[attributes objectForKey:@"toread"] isEqualToString:@"no"])];
     bookmark.shared = [NSNumber numberWithBool:([[attributes objectForKey:@"shared"] isEqualToString:@"yes"])];
     bookmark.created_on = [self.date_formatter dateFromString:[attributes objectForKey:@"time"]];
-    NSLog(@"%@, %@", bookmark.created_on, [attributes objectForKey:@"time"]);
     return bookmark;
 }
 
@@ -150,6 +179,14 @@ static float kSmallFontSize = 13.0f;
         self.date_formatter = [[NSDateFormatter alloc] init];
         [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+
+        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+        self.searchDisplayController.searchResultsDataSource = self;
+        self.searchDisplayController.searchResultsDelegate = self;
+        self.searchDisplayController.delegate = self;
+        [self.tableView addSubview:searchBar];
+        
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
