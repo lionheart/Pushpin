@@ -75,6 +75,7 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
+    NSLog(@"%@", response);
     NSManagedObjectContext *context = [ASManagedObject sharedContext];
     NSMutableArray *hashes = [NSMutableArray array];
     

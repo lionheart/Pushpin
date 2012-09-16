@@ -11,6 +11,7 @@
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"
 #import "Pinboard.h"
+#import "NoteViewController.h"
 #import "ASManagedObject.h"
 
 @implementation AppDelegate
@@ -61,14 +62,6 @@
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
                           animated:NO];
 
-    self.username = @"dlo";
-    self.password = @"papa c6h12o5a 0P";
-
-    /*
-    Pinboard *pinboard = [Pinboard pinboardWithEndpoint:@"posts/recent?count=10" delegate:self];
-    [pinboard parse];
-     */
-    
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
     bookmarkViewController.title = @"All Bookmarks";
     
@@ -95,12 +88,12 @@
     vc3.tabBarItem.title = @"Tags";
     vc3.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
     
-    UIViewController *vc4 = [[UIViewController alloc] init];
-    vc4.tabBarItem.title = @"Notes";
-    vc4.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
+    NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
+    noteViewController.tabBarItem.title = @"Notes";
+    noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController setViewControllers:[NSArray arrayWithObjects:postViewContainer, vc4, vc2, vc3, vc1, nil]];
+    [tabBarController setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewController, vc2, vc3, vc1, nil]];
 
     [self.window setRootViewController:tabBarController];
     [self.window makeKeyAndVisible];
