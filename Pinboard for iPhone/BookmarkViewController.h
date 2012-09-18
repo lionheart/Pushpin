@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSPredicate *predicate;
 @property (nonatomic, retain) NSDateFormatter *date_formatter;
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
+@property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchWasActive;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;

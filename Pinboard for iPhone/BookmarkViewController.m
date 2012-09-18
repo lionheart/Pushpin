@@ -36,6 +36,7 @@ static float kSmallFontSize = 13.0f;
 @synthesize filteredBookmarks;
 @synthesize searchWasActive;
 @synthesize searchDisplayController;
+@synthesize searchBar = _searchBar;
 
 - (void)viewDidLoad {
     // create a filtered list that will contain products for the search results table.
@@ -75,7 +76,6 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
-    NSLog(@"%@", response);
     NSManagedObjectContext *context = [ASManagedObject sharedContext];
     NSMutableArray *hashes = [NSMutableArray array];
     
@@ -182,12 +182,14 @@ static float kSmallFontSize = 13.0f;
         [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+        self.searchBar = searchBar;
+        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
         self.searchDisplayController.searchResultsDataSource = self;
         self.searchDisplayController.searchResultsDelegate = self;
         self.searchDisplayController.delegate = self;
-        [self.tableView addSubview:searchBar];
-        
+
+        self.tableView.tableHeaderView = self.searchBar;
+
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
@@ -201,7 +203,6 @@ static float kSmallFontSize = 13.0f;
     NSError *error = nil;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
     NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
-    NSLog(@"%d", [mutableFetchResults count]);
 
     [self.bookmarks removeAllObjects];
     [request setPredicate:self.predicate];
@@ -214,6 +215,9 @@ static float kSmallFontSize = 13.0f;
     else {
         [self processBookmarks];
     }
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
 #pragma mark - Web View Delegate
@@ -262,6 +266,8 @@ static float kSmallFontSize = 13.0f;
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     [cell layoutSubviews];
+    
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     return cell;
 }
 
