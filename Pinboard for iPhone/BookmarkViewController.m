@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "BookmarkViewController.h"
-#import "PinboardClient.h"
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
@@ -91,7 +91,7 @@ static float kSmallFontSize = 13.0f;
     NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:self.predicate, [NSPredicate predicateWithFormat:@"pinboard_hash in %@", hashes], nil]];
     [request setPredicate:compoundPredicate];
     [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"pinboard_hash" ascending:YES]]];
-    
+
     NSError *error = nil;
     NSArray *fetchRequestResponse = [context executeFetchRequest:request error:&error];
 
@@ -199,11 +199,15 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)refreshBookmarks {
+    [[AppDelegate sharedDelegate] updateBookmarks];
+    
     NSManagedObjectContext *context = [ASManagedObject sharedContext];
     NSError *error = nil;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
     NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
 
+    NSLog(@"%d", mutableFetchResults.count);
+    return;
     [self.bookmarks removeAllObjects];
     [request setPredicate:self.predicate];
     self.bookmarks = [NSMutableArray arrayWithArray:[context executeFetchRequest:request error:&error]];

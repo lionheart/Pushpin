@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1487" systemVersion="12B19" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1810" systemVersion="12C54" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Bookmark" representedClassName="Bookmark" syncable="YES">
         <attribute name="created_on" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="extended" optional="YES" attributeType="String" syncable="YES"/>
@@ -10,7 +10,7 @@
         <attribute name="shared" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="tags" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Tag" inverseName="bookmarks" inverseEntity="Tag" syncable="YES"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="bookmarks" inverseEntity="Tag" syncable="YES"/>
     </entity>
     <entity name="Note" syncable="YES">
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
@@ -21,14 +21,14 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
-    <entity name="Tag" syncable="YES">
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
         <attribute name="count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="bookmarks" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Bookmark" inverseName="tags" inverseEntity="Bookmark" syncable="YES"/>
+        <relationship name="bookmarks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Bookmark" inverseName="tags" inverseEntity="Bookmark" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Bookmark" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Note" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Tag" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Bookmark" positionX="9" positionY="27" width="128" height="193"/>
+        <element name="Note" positionX="-162" positionY="32" width="128" height="148"/>
+        <element name="Tag" positionX="-308" positionY="128" width="128" height="88"/>
     </elements>
 </model>

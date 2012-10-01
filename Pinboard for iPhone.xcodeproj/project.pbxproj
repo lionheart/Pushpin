@@ -13,18 +13,18 @@
 		370ACB6015F044FF001A0058 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 370ACB5E15F044FF001A0058 /* Model.xcdatamodeld */; };
 		370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370EE75115ED108300B262E2 /* CoreData.framework */; };
 		370EE75A15ED2A4D00B262E2 /* ASManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 370EE75915ED2A4D00B262E2 /* ASManagedObject.m */; };
-		370EE75B15ED2FDD00B262E2 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 370EE75515ED226900B262E2 /* Bookmark.m */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
+		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
+		37483C5B16194A82000EE5D1 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5A16194A82000EE5D1 /* Bookmark.m */; };
+		37483C5E16194A93000EE5D1 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5D16194A93000EE5D1 /* Tag.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
 		374D3D5415AB60AE003E1592 /* cog-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5015AB60AE003E1592 /* cog-white@2x.png */; };
 		374D3D5515AB60AE003E1592 /* cog.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5115AB60AE003E1592 /* cog.png */; };
 		374D3D5615AB60AE003E1592 /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5215AB60AE003E1592 /* cog@2x.png */; };
 		376A4F6315E5796B00D8E073 /* BookmarkList.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5D15E5796B00D8E073 /* BookmarkList.m */; };
-		376A4F6415E5796B00D8E073 /* Pinboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5F15E5796B00D8E073 /* Pinboard.m */; };
-		376A4F6515E5796B00D8E073 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F6115E5796B00D8E073 /* Tag.m */; };
 		3779D08815EC0928009E564A /* icon_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D08715EC0928009E564A /* icon_bookmark.png */; };
 		3779D08A15EC0982009E564A /* 14-tag.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D08915EC0982009E564A /* 14-tag.png */; };
 		3779D08C15EC098E009E564A /* 14-tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D08B15EC098E009E564A /* 14-tag@2x.png */; };
@@ -52,7 +52,6 @@
 		3779D0B815EC0DA8009E564A /* 112-group@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D0B615EC0DA8009E564A /* 112-group@2x.png */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
-		378646631577401400A1D5F8 /* GRMustache.h in Sources */ = {isa = PBXBuildFile; fileRef = 3786466215773FF500A1D5F8 /* GRMustache.h */; };
 		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
 		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
@@ -61,6 +60,11 @@
 		3787FFEE15B49989008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE815B49989008A477A /* Icon@2x.png */; };
 		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
+		37919F1B16091D5B007708EF /* Pinboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5F15E5796B00D8E073 /* Pinboard.m */; };
+		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
+		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
+		37919F2B16092492007708EF /* pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2916092492007708EF /* pin.png */; };
+		37919F2C16092492007708EF /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2A16092492007708EF /* pin@2x.png */; };
 		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
 		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -82,7 +86,6 @@
 		37FEEB9D15745488003F2B77 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEB9B15745488003F2B77 /* InfoPlist.strings */; };
 		37FEEB9F15745488003F2B77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* AppDelegate.m */; };
-		37FEEBD415745786003F2B77 /* PinboardClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD315745786003F2B77 /* PinboardClient.m */; };
 		37FEEBD715747E86003F2B77 /* BookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD615747E85003F2B77 /* BookmarkViewController.m */; };
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
@@ -94,8 +97,6 @@
 		370ACB5A15F01863001A0058 /* 71-compass@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "71-compass@2x.png"; sourceTree = "<group>"; };
 		370ACB5F15F044FF001A0058 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		370EE75415ED226900B262E2 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
-		370EE75515ED226900B262E2 /* Bookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
 		370EE75815ED2A4D00B262E2 /* ASManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASManagedObject.h; sourceTree = "<group>"; };
 		370EE75915ED2A4D00B262E2 /* ASManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASManagedObject.m; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
@@ -104,6 +105,12 @@
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
+		37483C5616194575000EE5D1 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
+		37483C5916194A81000EE5D1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
+		37483C5A16194A82000EE5D1 /* Bookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bookmark.m; sourceTree = "<group>"; };
+		37483C5C16194A93000EE5D1 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
+		37483C5D16194A93000EE5D1 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
 		374D3D4F15AB60AE003E1592 /* cog-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white.png"; sourceTree = "<group>"; };
 		374D3D5015AB60AE003E1592 /* cog-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white@2x.png"; sourceTree = "<group>"; };
 		374D3D5115AB60AE003E1592 /* cog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cog.png; sourceTree = "<group>"; };
@@ -112,8 +119,6 @@
 		376A4F5D15E5796B00D8E073 /* BookmarkList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkList.m; sourceTree = "<group>"; };
 		376A4F5E15E5796B00D8E073 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pinboard.h; sourceTree = "<group>"; };
 		376A4F5F15E5796B00D8E073 /* Pinboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pinboard.m; sourceTree = "<group>"; };
-		376A4F6015E5796B00D8E073 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
-		376A4F6115E5796B00D8E073 /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
 		3779D08715EC0928009E564A /* icon_bookmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bookmark.png; sourceTree = "<group>"; };
 		3779D08915EC0982009E564A /* 14-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "14-tag.png"; sourceTree = "<group>"; };
 		3779D08B15EC098E009E564A /* 14-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "14-tag@2x.png"; sourceTree = "<group>"; };
@@ -150,10 +155,14 @@
 		3787FFE815B49989008A477A /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Assets/Icon@2x.png"; sourceTree = "<group>"; };
 		3787FFE915B49989008A477A /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Assets/iTunesArtwork.png; sourceTree = "<group>"; };
 		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
+		37919F1C16091DF5007708EF /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		37919F1D16091DF5007708EF /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		37919F2916092492007708EF /* pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pin.png; path = Assets/pin.png; sourceTree = "<group>"; };
+		37919F2A16092492007708EF /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pin@2x.png"; path = "Assets/pin@2x.png"; sourceTree = "<group>"; };
 		37A25A2015FC42B5009716BB /* NoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteViewController.h; sourceTree = "<group>"; };
 		37A25A2115FC42B5009716BB /* NoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteViewController.m; sourceTree = "<group>"; };
 		37AFB01015AB7CCA00900254 /* recent.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = recent.xml; sourceTree = "<group>"; };
-		37DC670F15AB768100DD75C5 /* Pinboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pinboard.h; path = ../ASPinboard/ASPinboard/Pinboard.h; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		37DCCF1C158AF3FC00ED71B1 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -191,8 +200,6 @@
 		37FEEBA015745488003F2B77 /* Pinboard for iPhone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pinboard for iPhone-Prefix.pch"; sourceTree = "<group>"; };
 		37FEEBA115745488003F2B77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		37FEEBA215745488003F2B77 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		37FEEBD215745786003F2B77 /* PinboardClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardClient.h; sourceTree = "<group>"; };
-		37FEEBD315745786003F2B77 /* PinboardClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardClient.m; sourceTree = "<group>"; };
 		37FEEBD515747E85003F2B77 /* BookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkViewController.h; sourceTree = "<group>"; };
 		37FEEBD615747E85003F2B77 /* BookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkViewController.m; sourceTree = "<group>"; };
 		37FEEBD815748BA2003F2B77 /* navigationbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navigationbar.png; path = Assets/navigationbar.png; sourceTree = "<group>"; };
@@ -204,6 +211,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
@@ -230,8 +238,6 @@
 				376A4F5D15E5796B00D8E073 /* BookmarkList.m */,
 				376A4F5E15E5796B00D8E073 /* Pinboard.h */,
 				376A4F5F15E5796B00D8E073 /* Pinboard.m */,
-				376A4F6015E5796B00D8E073 /* Tag.h */,
-				376A4F6115E5796B00D8E073 /* Tag.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -317,7 +323,6 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
-				370EE75115ED108300B262E2 /* CoreData.framework */,
 				3787002C15B49B23008A477A /* Icon@2x.png */,
 				3787002A15B49B17008A477A /* Icon.png */,
 				37FEEB9815745488003F2B77 /* Pinboard for iPhone */,
@@ -340,8 +345,9 @@
 			isa = PBXGroup;
 			children = (
 				3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */,
-				37DC670F15AB768100DD75C5 /* Pinboard.h */,
 				3786466215773FF500A1D5F8 /* GRMustache.h */,
+				37919F1F16092198007708EF /* QuartzCore.framework */,
+				370EE75115ED108300B262E2 /* CoreData.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
 				37FEEB9415745488003F2B77 /* Foundation.framework */,
@@ -354,14 +360,14 @@
 			isa = PBXGroup;
 			children = (
 				370ACB5E15F044FF001A0058 /* Model.xcdatamodeld */,
+				37483C5C16194A93000EE5D1 /* Tag.h */,
+				37483C5D16194A93000EE5D1 /* Tag.m */,
+				37483C5916194A81000EE5D1 /* Bookmark.h */,
+				37483C5A16194A82000EE5D1 /* Bookmark.m */,
 				370EE75815ED2A4D00B262E2 /* ASManagedObject.h */,
 				370EE75915ED2A4D00B262E2 /* ASManagedObject.m */,
-				370EE75415ED226900B262E2 /* Bookmark.h */,
-				370EE75515ED226900B262E2 /* Bookmark.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
-				37FEEBD215745786003F2B77 /* PinboardClient.h */,
-				37FEEBD315745786003F2B77 /* PinboardClient.m */,
 				37FEEBD515747E85003F2B77 /* BookmarkViewController.h */,
 				37FEEBD615747E85003F2B77 /* BookmarkViewController.m */,
 				37A25A2015FC42B5009716BB /* NoteViewController.h */,
@@ -370,6 +376,10 @@
 				371BCAFE15772B4400BDA996 /* BookmarkCell.m */,
 				372E2B3515ABE90B007514D8 /* HomeViewController.h */,
 				372E2B3615ABE90B007514D8 /* HomeViewController.m */,
+				37919F1C16091DF5007708EF /* LoginViewController.h */,
+				37919F1D16091DF5007708EF /* LoginViewController.m */,
+				37483C5516194575000EE5D1 /* TabBarViewController.h */,
+				37483C5616194575000EE5D1 /* TabBarViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
 			path = "Pinboard for iPhone";
@@ -407,6 +417,8 @@
 				3787FFE915B49989008A477A /* iTunesArtwork.png */,
 				3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */,
 				37098F3A15EC81D7005D84B1 /* tags.xml */,
+				37919F2916092492007708EF /* pin.png */,
+				37919F2A16092492007708EF /* pin@2x.png */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -507,6 +519,8 @@
 				37098F3B15EC81D7005D84B1 /* tags.xml in Resources */,
 				370ACB5B15F01863001A0058 /* 71-compass.png in Resources */,
 				370ACB5C15F01863001A0058 /* 71-compass@2x.png in Resources */,
+				37919F2B16092492007708EF /* pin.png in Resources */,
+				37919F2C16092492007708EF /* pin@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,11 +531,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				370EE75B15ED2FDD00B262E2 /* Bookmark.m in Sources */,
-				378646631577401400A1D5F8 /* GRMustache.h in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
-				37FEEBD415745786003F2B77 /* PinboardClient.m in Sources */,
 				37FEEBD715747E86003F2B77 /* BookmarkViewController.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
 				37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */,
@@ -539,11 +550,14 @@
 				37DCCF45158B854C00ED71B1 /* TTTAttributedLabel.m in Sources */,
 				372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */,
 				376A4F6315E5796B00D8E073 /* BookmarkList.m in Sources */,
-				376A4F6415E5796B00D8E073 /* Pinboard.m in Sources */,
-				376A4F6515E5796B00D8E073 /* Tag.m in Sources */,
+				37919F1B16091D5B007708EF /* Pinboard.m in Sources */,
 				370EE75A15ED2A4D00B262E2 /* ASManagedObject.m in Sources */,
 				370ACB6015F044FF001A0058 /* Model.xcdatamodeld in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
+				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
+				37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */,
+				37483C5B16194A82000EE5D1 /* Bookmark.m in Sources */,
+				37483C5E16194A93000EE5D1 /* Tag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,7 +607,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -602,7 +616,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6F159F92-B29D-4A73-A0B6-F1E7A8D3048D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

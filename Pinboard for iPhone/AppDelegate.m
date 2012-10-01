@@ -7,53 +7,21 @@
 //
 
 #import "AppDelegate.h"
-#import "PinboardClient.h"
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"
 #import "Pinboard.h"
 #import "NoteViewController.h"
 #import "ASManagedObject.h"
+#import "LoginViewController.h"
+#import "Bookmark.h"
+#import "Tag.h"
 
 @implementation AppDelegate
 
 @synthesize window;
-@synthesize username = _username;
-@synthesize password = _password;
+@synthesize token = _token;
+@synthesize lastUpdated = _lastUpdated;
 
-- (void)setUsername:(NSString *)username {
-    _username = username;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:username forKey:@"PinboardUsername"];
-    [defaults synchronize];
-}
-
-- (void)setPassword:(NSString *)password {
-    _password = password;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:password forKey:@"PinboardPassword"];
-    [defaults synchronize];
-}
-
-- (NSString *)username {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults objectForKey:@"PinboardUsername"];
-    if (_username != nil) {
-        return _username;
-    }
-
-}
-
-- (NSString *)password {
-    if (_password != nil) {
-        return _password;
-    }
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults objectForKey:@"PinboardPassword"];
-}
-
-- (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -62,40 +30,10 @@
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
                           animated:NO];
 
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
-    bookmarkViewController.title = @"All Bookmarks";
-    
-    HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    homeViewController.title = @"Browse";
 
-    UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-    [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, bookmarkViewController, nil]];
-    [postViewContainer popToViewController:bookmarkViewController animated:NO];
 
-    postViewContainer.tabBarItem.title = @"Browse";
-    postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
-    [postViewContainer.tabBarItem setBadgeValue:@"2"];
-    
-    UIViewController *vc1 = [[UIViewController alloc] init];
-    vc1.tabBarItem.title = @"Settings";
-    vc1.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
-    
-    UIViewController *vc2 = [[UIViewController alloc] init];
-    vc2.tabBarItem.title = @"Add";
-    vc2.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
-    
-    UIViewController *vc3 = [[UIViewController alloc] init];
-    vc3.tabBarItem.title = @"Tags";
-    vc3.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
-    
-    NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
-    noteViewController.tabBarItem.title = @"Notes";
-    noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
-
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewController, vc2, vc3, vc1, nil]];
-
-    [self.window setRootViewController:tabBarController];
+    LoginViewController *loginViewController = [[LoginViewController alloc] init];
+    [self.window setRootViewController:loginViewController];
     [self.window makeKeyAndVisible];
     return YES;
 
@@ -104,5 +42,176 @@
 + (AppDelegate *)sharedDelegate {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
+
+- (void)setLastUpdated:(NSDate *)lastUpdated {
+    _lastUpdated = lastUpdated;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:lastUpdated forKey:@"com.aurora.pinboard.LastUpdated"];
+    [defaults synchronize];
+}
+
+- (NSDate *)lastUpdated {
+    return nil;
+    if (!_lastUpdated) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _lastUpdated = [defaults objectForKey:@"com.aurora.pinboard.LastUpdated"];
+    }
+    return _lastUpdated;
+}
+
+- (void)setToken:(NSString *)token {
+    _token = token;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:token forKey:@"com.aurora.pinboard.Token"];
+    [defaults synchronize];
+}
+
+- (NSString *)token {
+    if (!_token) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _token = [defaults objectForKey:@"com.aurora.pinboard.Token"];
+    }
+    return _token;
+}
+
+- (void)deleteBookmarks {
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"Bookmark" inManagedObjectContext:context]];
+    [fetchRequest setIncludesPropertyValues:NO];
+    
+    NSError *error = nil;
+    NSArray *items = [context executeFetchRequest:fetchRequest error:&error];
+    
+    for (NSManagedObject *item in items) {
+        [context deleteObject:item];
+    }
+    NSError *saveError = nil;
+    [context save:&saveError];
+}
+
+- (void)updateBookmarks {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+
+    NSString *endpoint;
+    if ([self lastUpdated]) {
+        endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?fromdt=%@&format=json&auth_token=%@", [dateFormatter stringFromDate:[self lastUpdated]], [self token]];
+
+    }
+    else {
+        endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
+    }
+    
+    NSLog(@"%@", endpoint);
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
+
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (error.code == NSURLErrorUserCancelledAuthentication) {
+
+                               }
+                               else {
+                                   NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   Bookmark *bookmark;
+                                   Tag *tag;
+
+                                   [self deleteBookmarks];
+
+                                   NSManagedObjectContext *context = [ASManagedObject sharedContext];
+
+                                   for (id element in elements) {
+                                       bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+                                       bookmark.url = [element objectForKey:@"href"];
+                                       bookmark.title = [element objectForKey:@"description"];
+                                       bookmark.extended = [element objectForKey:@"extended"];
+                                       bookmark.meta = [element objectForKey:@"meta"];
+                                       bookmark.pinboard_hash = [element objectForKey:@"hash"];
+                                       bookmark.read = [NSNumber numberWithBool:([[element objectForKey:@"toread"] isEqualToString:@"no"])];
+                                       bookmark.shared = [NSNumber numberWithBool:([[element objectForKey:@"shared"] isEqualToString:@"yes"])];
+                                       bookmark.created_on = [dateFormatter dateFromString:[element objectForKey:@"time"]];
+
+                                       for (id tagName in [[element objectForKey:@"tags"] componentsSeparatedByString:@" "]) {
+                                           if ([tagName isEqualToString:@""]) {
+                                               continue;
+                                           }
+
+                                           NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
+                                           [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name in %@", tagName]];
+                                           NSError *e = nil;
+                                           NSArray *fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&e];
+                                           NSLog(@"%@", e);
+
+                                           if (!fetchRequestResponse) {
+                                               tag = (Tag *)[NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:context];
+                                           }
+                                           else {
+                                               tag = [fetchRequestResponse objectAtIndex:0];
+                                           }
+                                           [tag addBookmarksObject:bookmark];
+                                       }
+
+                                       NSLog(@"%@", bookmark);
+                                   }
+                                   
+                                   NSError *error = nil;
+                                   [context save:&error];
+                                   
+                                   if (!error) {
+                                       [self setLastUpdated:[NSDate date]];
+                                   }
+                               }
+                           }];
+    return;
+}
+
+- (void)processBookmarks {
+    /*
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+    
+    [self.strings removeAllObjects];
+    [self.heights removeAllObjects];
+    
+    for (int i=0; i<[self.bookmarks count]; i++) {
+        Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
+        
+        CGFloat height = 10.0f;
+        height += ceilf([bookmark.title sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        height += ceilf([bookmark.extended sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        [self.heights addObject:[NSNumber numberWithFloat:height]];
+        
+        NSString *content;
+        if (![bookmark.extended isEqualToString:@""]) {
+            content = [NSString stringWithFormat:@"%@\n%@", bookmark.title, bookmark.extended];
+        }
+        else {
+            content = [NSString stringWithFormat:@"%@", bookmark.title];
+        }
+        
+        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+        
+        [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark.title]];
+        [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark.extended]];
+        [attributedString setTextColor:HEX(0x555555ff)];
+        
+        if (bookmark.read.boolValue) {
+            [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark.title]];
+        }
+        else {
+            [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark.title]];
+        }
+        [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+        [self.strings addObject:attributedString];
+    }
+    
+    [self.tableView reloadData];
+     */
+}
+
 
 @end
