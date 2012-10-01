@@ -119,6 +119,7 @@
                                    NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    Bookmark *bookmark;
                                    Tag *tag;
+                                   NSError *error = nil;
 
                                    [self deleteBookmarks];
 
@@ -142,9 +143,7 @@
 
                                            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
                                            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name in %@", tagName]];
-                                           NSError *e = nil;
-                                           NSArray *fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&e];
-                                           NSLog(@"%@", e);
+                                           NSArray *fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&error];
 
                                            if (!fetchRequestResponse) {
                                                tag = (Tag *)[NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:context];
@@ -157,8 +156,6 @@
 
                                        NSLog(@"%@", bookmark);
                                    }
-                                   
-                                   NSError *error = nil;
                                    [context save:&error];
                                    
                                    if (!error) {
