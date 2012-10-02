@@ -106,15 +106,27 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                NSManagedObjectContext *context = [ASManagedObject sharedContext];
+                               NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Note"];
+                               NSArray *fetchRequestResponse = nil;
                                Note *note;
                                
                                for (id element in elements) {
+                                   [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"id = %@", element[@"id"]]];
+                                   fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&error];
+                                   
+                                   if (fetchRequestResponse.count == 0) {
+                                       note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:context];
+                                       note.id = element[@"id"];
+                                   }
+                                   else {
+                                       note = fetchRequestResponse[0];
+                                   }
+
                                    note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:context];
                                    note.title = element[@"title"];
                                    note.length = element[@"length"];
                                    note.pinboard_hash = element[@"hash"];
                                    note.text = element[@"text"];
-                                   note.id = element[@"id"];
                                    note.created_at = [dateFormatter dateFromString:element[@"created_on"]];
                                    note.updated_at = [dateFormatter dateFromString:element[@"updated_on"]];
                                }
@@ -160,7 +172,7 @@
                                    for (id element in elements) {
                                        [bookmarkFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"pinboard_hash = %@", element[@"hash"]]];
                                        fetchRequestResponse = [context executeFetchRequest:bookmarkFetchRequest error:&error];
-
+                                       
                                        if (fetchRequestResponse.count == 0) {
                                            bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
                                            bookmark.pinboard_hash = element[@"hash"];
@@ -168,7 +180,7 @@
                                        else {
                                            bookmark = fetchRequestResponse[0];
                                        }
-
+                                       
                                        bookmark.url = element[@"href"];
                                        bookmark.title = element[@"description"];
                                        bookmark.extended = element[@"extended"];
