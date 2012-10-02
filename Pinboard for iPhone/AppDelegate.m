@@ -151,16 +151,28 @@
                                    Bookmark *bookmark;
                                    Tag *tag;
                                    NSError *error = nil;
+                                   NSFetchRequest *tagFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
+                                   NSFetchRequest *bookmarkFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
+                                   NSArray *fetchRequestResponse = nil;
 
                                    NSManagedObjectContext *context = [ASManagedObject sharedContext];
 
                                    for (id element in elements) {
-                                       bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+                                       [bookmarkFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"pinboard_hash = %@", element[@"hash"]]];
+                                       fetchRequestResponse = [context executeFetchRequest:bookmarkFetchRequest error:&error];
+
+                                       if (fetchRequestResponse.count == 0) {
+                                           bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
+                                           bookmark.pinboard_hash = element[@"hash"];
+                                       }
+                                       else {
+                                           bookmark = fetchRequestResponse[0];
+                                       }
+
                                        bookmark.url = element[@"href"];
                                        bookmark.title = element[@"description"];
                                        bookmark.extended = element[@"extended"];
                                        bookmark.meta = element[@"meta"];
-                                       bookmark.pinboard_hash = element[@"hash"];
                                        bookmark.read = @([element[@"toread"] isEqualToString:@"no"]);
                                        bookmark.shared = @([element[@"shared"] isEqualToString:@"yes"]);
                                        bookmark.created_on = [dateFormatter dateFromString:element[@"time"]];
@@ -170,9 +182,8 @@
                                                continue;
                                            }
 
-                                           NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
-                                           [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name == %@", tagName]];
-                                           NSArray *fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&error];
+                                           [tagFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name == %@", tagName]];
+                                           fetchRequestResponse = [context executeFetchRequest:tagFetchRequest error:&error];
 
                                            if (fetchRequestResponse.count == 0) {
                                                tag = (Tag *)[NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:context];
