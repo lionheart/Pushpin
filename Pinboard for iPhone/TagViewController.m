@@ -23,6 +23,7 @@
 @synthesize sortedTitles;
 @synthesize searchDisplayController;
 @synthesize searchBar = _searchBar;
+@synthesize filteredTags;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,8 +46,6 @@
         if (![self.titleToTags objectForKey:firstLetter]) {
             firstLetter = @"#";
         }
-        
-        NSLog(@"%@", firstLetter);
 
         NSMutableArray *temp = [self.titleToTags objectForKey:firstLetter];
         [temp addObject:tag];
@@ -57,6 +56,7 @@
     self.sortedTitles = @[UITableViewIndexSearch, @"#", @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
 
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.searchBar.delegate = self;
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
     self.searchDisplayController.searchResultsDataSource = self;
     self.searchDisplayController.searchResultsDelegate = self;
@@ -76,7 +76,12 @@
         }
     }
     else {
-        return 1;
+        if (section == 0) {
+            return [self.filteredTags count];
+        }
+        else {
+            return 0;
+        }
     }
 }
 
@@ -100,22 +105,17 @@
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
     if (title == UITableViewIndexSearch) {
-        [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:YES];
+        [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:NO];
         return -1;
     }
     return index;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView) {
-        if (section == 0) {
-            return nil;
-        }
+    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
         return [self.sortedTitles objectAtIndex:section];
     }
-    else {
-        return nil;
-    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -126,16 +126,48 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
+    
+    Tag *tag;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        tag = [self.filteredTags objectAtIndex:indexPath.row];
+    }
+    else {
+        tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
+    }
 
-    Tag *tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
     cell.textLabel.text = tag.name;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", tag.bookmarks.count];
     return cell;
 }
 
+- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSLog(@"%@", searchBar.text);
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    NSError *error = nil;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
+    [request setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES] ]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText]];
+    self.filteredTags = [context executeFetchRequest:request error:&error];
+    [self.tableView reloadData];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    Tag *tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
+    Tag *tag;
+    if (tableView == self.tableView) {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
+    }
+    else {
+        [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
+        tag = [self.filteredTags objectAtIndex:indexPath.row];
+    }
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"ANY tags.name = %@", tag.name]];
     bookmarkViewController.title = tag.name;
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
