@@ -49,10 +49,11 @@
         tagViewController.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
         
         NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
-        noteViewController.tabBarItem.title = @"Notes";
+        UINavigationController *noteViewNavigationController = [[UINavigationController alloc] initWithRootViewController:noteViewController];
+        noteViewController.title = @"Notes";
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
-        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewController, vc2, tagViewNavigationController, vc1, nil]];
+        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, vc2, tagViewNavigationController, vc1, nil]];
     }
     return self;
 }

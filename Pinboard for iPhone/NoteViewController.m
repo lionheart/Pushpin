@@ -7,6 +7,9 @@
 //
 
 #import "NoteViewController.h"
+#import "Note.h"
+#import "ASManagedObject.h"
+#import "AppDelegate.h"
 
 @interface NoteViewController ()
 
@@ -19,12 +22,25 @@
 
 #pragma mark - Table view data source
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
-    if (self) {
-        self.notes = [NSMutableArray arrayWithObjects:@"one", @"two", @"three", nil];
-    }
-    return self;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?format=json&auth_token=%@", [[AppDelegate sharedDelegate] token]];
+    NSLog(@"%@", endpoint);
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               self.notes = payload[@"notes"];
+                               NSLog(@"%@", self.notes);
+                               [self.tableView reloadData];
+                           }];
+    
+    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.tableView.tableHeaderView = searchBar;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -32,7 +48,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.notes count] + 1;
+    return [self.notes count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -43,17 +59,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
-    
-    if (indexPath.row > 0) {
-        cell.textLabel.text = [self.notes objectAtIndex:indexPath.row - 1];
-    }
-    else {
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        [cell.contentView addSubview:searchBar];
-    }
-    
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 
+    cell.textLabel.text = self.notes[indexPath.row][@"title"];
     return cell;
 }
 

@@ -76,17 +76,6 @@ static float kSmallFontSize = 13.0f;
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
 }
 
-- (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes {
-    bookmark.url = [attributes objectForKey:@"href"];
-    bookmark.title = [attributes objectForKey:@"description"];
-    bookmark.extended = [attributes objectForKey:@"extended"];
-    bookmark.pinboard_hash = [attributes objectForKey:@"hash"];
-    bookmark.read = [NSNumber numberWithBool:([[attributes objectForKey:@"toread"] isEqualToString:@"no"])];
-    bookmark.shared = [NSNumber numberWithBool:([[attributes objectForKey:@"shared"] isEqualToString:@"yes"])];
-    bookmark.created_on = [self.date_formatter dateFromString:[attributes objectForKey:@"time"]];
-    return bookmark;
-}
-
 - (void)processBookmarks {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
@@ -95,12 +84,12 @@ static float kSmallFontSize = 13.0f;
     [self.heights removeAllObjects];
 
     for (int i=0; i<[self.bookmarks count]; i++) {
-        Bookmark *bookmark = [self.bookmarks objectAtIndex:i];
+        Bookmark *bookmark = self.bookmarks[i];
 
         CGFloat height = 10.0f;
         height += ceilf([bookmark.title sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
         height += ceilf([bookmark.extended sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-        [self.heights addObject:[NSNumber numberWithFloat:height]];
+        [self.heights addObject:@(height)];
 
         NSString *content;
         if (![bookmark.extended isEqualToString:@""]) {
@@ -201,7 +190,7 @@ static float kSmallFontSize = 13.0f;
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [[self.heights objectAtIndex:indexPath.row] floatValue];
+    return [self.heights[indexPath.row] floatValue];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -212,7 +201,7 @@ static float kSmallFontSize = 13.0f;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         self.webView = [[UIWebView alloc] init];
         self.webView.delegate = self;
-        Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+        Bookmark *bookmark = self.bookmarks[indexPath.row];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark.url]];
         [self.webView loadRequest:request];
         UIViewController *viewController = [[UIViewController alloc] init];
@@ -232,7 +221,7 @@ static float kSmallFontSize = 13.0f;
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
-        Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+        Bookmark *bookmark = self.bookmarks[indexPath.row];
         [[UIPasteboard generalPasteboard] setString:bookmark.url];
     }
 }
@@ -246,8 +235,8 @@ static float kSmallFontSize = 13.0f;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
-    NSAttributedString *string = [self.strings objectAtIndex:indexPath.row];
-    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+    NSAttributedString *string = self.strings[indexPath.row];
+    Bookmark *bookmark = self.bookmarks[indexPath.row];
     [cell.textView setText:string];
 
     if (bookmark.shared.boolValue == NO) {

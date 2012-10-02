@@ -19,5 +19,6 @@
 + (AppDelegate *)sharedDelegate;
 - (void)updateBookmarks;
 - (void)deleteBookmarks;
+- (void)updateNotes;
 
 @end

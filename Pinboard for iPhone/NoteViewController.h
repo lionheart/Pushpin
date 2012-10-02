@@ -10,7 +10,7 @@
 
 @interface NoteViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
 
-@property (nonatomic, retain) NSMutableArray *notes;
+@property (nonatomic, retain) NSArray *notes;
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 
 @end

@@ -71,8 +71,8 @@
             return 0;
         }
         else {
-            NSString *key = [self.sortedTitles objectAtIndex:section];
-            return [(NSMutableArray *)[self.titleToTags objectForKey:key] count];
+            NSString *key = self.sortedTitles[section];
+            return [(NSMutableArray *)self.titleToTags[key] count];
         }
     }
     else {
@@ -113,7 +113,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        return [self.sortedTitles objectAtIndex:section];
+        return self.sortedTitles[section];
     }
     return nil;
 }
@@ -129,10 +129,10 @@
     
     Tag *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        tag = [self.filteredTags objectAtIndex:indexPath.row];
+        tag = self.filteredTags[indexPath.row];
     }
     else {
-        tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
+        tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
     }
 
     cell.textLabel.text = tag.name;
@@ -162,11 +162,11 @@
     Tag *tag;
     if (tableView == self.tableView) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        tag = [[self.titleToTags objectForKey:[self tableView:tableView titleForHeaderInSection:indexPath.section]] objectAtIndex:indexPath.row];
+        tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
     }
     else {
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
-        tag = [self.filteredTags objectAtIndex:indexPath.row];
+        tag = self.filteredTags[indexPath.row];
     }
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"ANY tags.name = %@", tag.name]];
     bookmarkViewController.title = tag.name;

@@ -34,7 +34,6 @@
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
 - (id)initWithPredicate:(NSPredicate *)predicate;
 - (void)refreshBookmarks;
-- (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes;
 - (void)processBookmarks;
 - (void)edit;
 - (void)stopEditing;
