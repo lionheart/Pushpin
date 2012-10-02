@@ -11,8 +11,11 @@
 #import "OHAttributedLabel.h"
 #import "TTTAttributedLabel.h"
 #import <CoreData/CoreData.h>
+#import "PullToRefreshView.h"
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PinboardDelegate, UISearchDisplayDelegate, UISearchBarDelegate>
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
+    PullToRefreshView *pull;
+}
 
 @property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSMutableArray *filteredBookmarks;
@@ -29,9 +32,13 @@
 @property (nonatomic) BOOL searchWasActive;
 
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
-- (id)initWithEndpoint:(NSString *)endpoint predicate:(NSPredicate *)predicate parameters:(NSDictionary *)parameters;
+- (id)initWithPredicate:(NSPredicate *)predicate;
 - (void)refreshBookmarks;
 - (Bookmark *)updateBookmark:(Bookmark *)bookmark withAttributes:(NSDictionary *)attributes;
 - (void)processBookmarks;
+- (void)edit;
+- (void)stopEditing;
+- (void)toggleEditMode;
+- (void)reloadTableData;
 
 @end

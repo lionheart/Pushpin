@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
+#import "ASManagedObject.h"
 
 @interface HomeViewController ()
 
@@ -18,7 +19,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -36,7 +37,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return @"Personal";
+            return @"Bookmarks";
             break;
         case 1:
             return @"Community";
@@ -53,28 +54,43 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
+    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+    NSError *error = nil;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
+    NSUInteger count;
+
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = @"All";
-                    cell.detailTextLabel.text = @"1209";
+                    count = [context countForFetchRequest:request error:&error];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
                     break;
                 case 1:
                     cell.textLabel.text = @"Private";
-                    cell.detailTextLabel.text = @"829";
+
+                    [request setPredicate:[NSPredicate predicateWithFormat:@"shared = NO"]];
+                    count = [context countForFetchRequest:request error:&error];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
                     break;  
                 case 2:
                     cell.textLabel.text = @"Public";
-                    cell.detailTextLabel.text = @"104";
+                    [request setPredicate:[NSPredicate predicateWithFormat:@"shared = YES"]];
+                    count = [context countForFetchRequest:request error:&error];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
                     break;
                 case 3:
                     cell.textLabel.text = @"Unread";
-                    cell.detailTextLabel.text = @"14";
+                    [request setPredicate:[NSPredicate predicateWithFormat:@"read = NO"]];
+                    count = [context countForFetchRequest:request error:&error];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
                     break;
                 case 4:
                     cell.textLabel.text = @"Untagged";
-                    cell.detailTextLabel.text = @"323";
+                    [request setPredicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"]];
+                    count = [context countForFetchRequest:request error:&error];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
                     break;
             }
             break;
@@ -108,19 +124,24 @@
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:nil];
+                    bookmarkViewController.title = @"All Bookmarks";
                     break;
                 case 1:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"shared = NO"] parameters:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"shared = NO"]];
+                    bookmarkViewController.title = @"Private";
                     break;
                 case 2:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"shared = YES"] parameters:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"shared = YES"]];
+                    bookmarkViewController.title = @"Public";
                     break;
                 case 3:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"read = NO"] parameters:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"read = NO"]];
+                    bookmarkViewController.title = @"Unread";
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"] parameters:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"]];
+                    bookmarkViewController.title = @"Untagged";
                     break;
             }
             break;

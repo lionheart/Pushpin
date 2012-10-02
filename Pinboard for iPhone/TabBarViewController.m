@@ -10,6 +10,7 @@
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"
 #import "NoteViewController.h"
+#import "TagViewController.h"
 
 @interface TabBarViewController ()
 
@@ -20,7 +21,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithEndpoint:@"posts/recent" predicate:nil parameters:nil];
+        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:nil];
         bookmarkViewController.title = @"All Bookmarks";
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -32,7 +33,7 @@
         
         postViewContainer.tabBarItem.title = @"Browse";
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
-        [postViewContainer.tabBarItem setBadgeValue:@"2"];
+        // [postViewContainer.tabBarItem setBadgeValue:@"2"];
         
         UIViewController *vc1 = [[UIViewController alloc] init];
         vc1.tabBarItem.title = @"Settings";
@@ -42,15 +43,16 @@
         vc2.tabBarItem.title = @"Add";
         vc2.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
         
-        UIViewController *vc3 = [[UIViewController alloc] init];
-        vc3.tabBarItem.title = @"Tags";
-        vc3.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
+        TagViewController *tagViewController = [[TagViewController alloc] init];
+        UINavigationController *tagViewNavigationController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
+        tagViewController.title = @"Tags";
+        tagViewController.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
         
         NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
         noteViewController.tabBarItem.title = @"Notes";
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
-        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewController, vc2, vc3, vc1, nil]];
+        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewController, vc2, tagViewNavigationController, vc1, nil]];
     }
     return self;
 }

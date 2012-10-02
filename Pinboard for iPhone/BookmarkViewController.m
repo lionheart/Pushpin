@@ -13,6 +13,7 @@
 #import "TTTAttributedLabel.h"
 #import "ASManagedObject.h"
 #import "Bookmark.h"
+#import "Tag.h"
 
 static NSString *const kFontName = @"Helvetica";
 static float kLargeFontSize = 16.0f;
@@ -38,21 +39,32 @@ static float kSmallFontSize = 13.0f;
 @synthesize searchDisplayController;
 @synthesize searchBar = _searchBar;
 
+- (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view {
+    [self performSelectorInBackground:@selector(reloadTableData) withObject:nil];
+}
+
+- (void)reloadTableData {
+    [[AppDelegate sharedDelegate] updateBookmarks];
+    [self.tableView reloadData];
+    [pull finishedLoading];
+}
+
 - (void)viewDidLoad {
-    // create a filtered list that will contain products for the search results table.
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
-	// restore search settings if they were saved in didReceiveMemoryWarning.
-    if (self.savedSearchTerm)
-	{
+    if (self.savedSearchTerm) {
         [self.searchDisplayController setActive:searchWasActive];
         [self.searchDisplayController.searchBar setText:self.savedSearchTerm];
         
         self.savedSearchTerm = nil;
     }
 
-	[self.tableView reloadData];
+	[self refreshBookmarks];
 	self.tableView.scrollEnabled = YES;
+    
+    pull = [[PullToRefreshView alloc] initWithScrollView:(UIScrollView *) self.tableView];
+    [pull setDelegate:self];
+    [self.tableView addSubview:pull];
 }
 
 - (void)viewDidUnload {
@@ -73,57 +85,6 @@ static float kSmallFontSize = 13.0f;
     bookmark.shared = [NSNumber numberWithBool:([[attributes objectForKey:@"shared"] isEqualToString:@"yes"])];
     bookmark.created_on = [self.date_formatter dateFromString:[attributes objectForKey:@"time"]];
     return bookmark;
-}
-
-- (void)pinboard:(Pinboard *)pinboard didReceiveResponse:(NSMutableArray *)response {
-    NSManagedObjectContext *context = [ASManagedObject sharedContext];
-    NSMutableArray *hashes = [NSMutableArray array];
-    
-    for (NSDictionary *element in response) {
-        [hashes addObject:[element objectForKey:@"hash"]];
-    }
-    
-    [hashes sortUsingComparator:(NSComparator)^(id obj1, id obj2) {
-        return [obj1 caseInsensitiveCompare:obj2];
-    }];
-
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
-    NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:self.predicate, [NSPredicate predicateWithFormat:@"pinboard_hash in %@", hashes], nil]];
-    [request setPredicate:compoundPredicate];
-    [request setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"pinboard_hash" ascending:YES]]];
-
-    NSError *error = nil;
-    NSArray *fetchRequestResponse = [context executeFetchRequest:request error:&error];
-
-    int i = 0;
-    int j = 0;
-    bool update_existing;
-    Bookmark *bookmark;
-    [self.bookmarks removeAllObjects];
-    while (i < [hashes count]) {
-        update_existing = false;
-        NSString *hash = [hashes objectAtIndex:i];
-        if (j < [fetchRequestResponse count]) {
-            bookmark = [fetchRequestResponse objectAtIndex:j];
-            update_existing = [bookmark.pinboard_hash isEqualToString:hash];
-        }
-        
-        if (update_existing) {
-            j++;
-        }
-        else {
-            bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
-        }
-
-        NSDictionary *attributes = [response objectAtIndex:i];
-
-        [self updateBookmark:bookmark withAttributes:attributes];
-        [self.bookmarks addObject:bookmark];
-        i++;
-    }
-
-    [context save:nil];
-    [self processBookmarks];
 }
 
 - (void)processBookmarks {
@@ -168,10 +129,9 @@ static float kSmallFontSize = 13.0f;
     [self.tableView reloadData];
 }
 
-- (id)initWithEndpoint:(NSString *)endpoint predicate:(NSPredicate *)predicate parameters:(NSDictionary *)parameters {
+- (id)initWithPredicate:(NSPredicate *)predicate {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.endpoint = endpoint;
         self.bookmarks = [NSMutableArray array];
         self.parameters = [NSMutableArray array];
         self.strings = [NSMutableArray array];
@@ -188,40 +148,41 @@ static float kSmallFontSize = 13.0f;
         self.searchDisplayController.searchResultsDelegate = self;
         self.searchDisplayController.delegate = self;
 
-        self.tableView.tableHeaderView = self.searchBar;
+        // self.tableView.tableHeaderView = self.searchBar;
 
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add"
-                                                                                  style:UIBarButtonItemStylePlain
-                                                                                 target:self
-                                                                                 action:@selector(refreshBookmarks)];
+        self.tableView.allowsMultipleSelectionDuringEditing = YES;
+        self.tableView.separatorColor = HEX(0xD1D1D1ff);
     }
     return self;
 }
 
+- (void)toggleEditMode {
+    if (self.tableView.editing) {
+        [self.tableView setEditing:NO animated:YES];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
+                                                                                  style:UIBarButtonItemStylePlain
+                                                                                 target:self
+                                                                                 action:@selector(toggleEditMode)];
+    }
+    else {
+        [self.tableView setEditing:YES animated:YES];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                                  style:UIBarButtonItemStyleDone
+                                                                                 target:self
+                                                                                 action:@selector(toggleEditMode)];
+    }
+}
+
 - (void)refreshBookmarks {
-    [[AppDelegate sharedDelegate] updateBookmarks];
-    
     NSManagedObjectContext *context = [ASManagedObject sharedContext];
     NSError *error = nil;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
-    NSMutableArray *mutableFetchResults = [[context executeFetchRequest:request error:&error] mutableCopy];
-
-    NSLog(@"%d", mutableFetchResults.count);
-    return;
-    [self.bookmarks removeAllObjects];
+    NSSortDescriptor *dateSort = [[NSSortDescriptor alloc] initWithKey:@"created_on" ascending:NO];
     [request setPredicate:self.predicate];
-    self.bookmarks = [NSMutableArray arrayWithArray:[context executeFetchRequest:request error:&error]];
-
-    if ([self.bookmarks count] == 0) {
-        Pinboard *pinboard = [Pinboard pinboardWithEndpoint:self.endpoint delegate:self];
-        [pinboard parse];
-    }
-    else {
-        [self processBookmarks];
-    }
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    [request setSortDescriptors:[NSArray arrayWithObject:dateSort]];
+    [request setFetchLimit:10];
+    self.bookmarks = [[context executeFetchRequest:request error:&error] mutableCopy];
+    [self processBookmarks];
 }
 
 #pragma mark - Web View Delegate
@@ -244,16 +205,36 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    self.webView = [[UIWebView alloc] init];
-    self.webView.delegate = self;
-    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark.url]];
-    [self.webView loadRequest:request];
-    UIViewController *viewController = [[UIViewController alloc] init];
-    viewController.title = bookmark.title;
-    viewController.view = self.webView;
-    [self.navigationController pushViewController:viewController animated:YES];
+    if (tableView.isEditing) {
+    
+    }
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        self.webView = [[UIWebView alloc] init];
+        self.webView.delegate = self;
+        Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark.url]];
+        [self.webView loadRequest:request];
+        UIViewController *viewController = [[UIViewController alloc] init];
+        viewController.title = bookmark.title;
+        viewController.view = self.webView;
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+    return action == @selector(copy:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+    if (action == @selector(copy:)) {
+        Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
+        [[UIPasteboard generalPasteboard] setString:bookmark.url];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -262,17 +243,36 @@ static float kSmallFontSize = 13.0f;
     
     if (!cell) {
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
+
     NSAttributedString *string = [self.strings objectAtIndex:indexPath.row];
+    Bookmark *bookmark = [self.bookmarks objectAtIndex:indexPath.row];
     [cell.textView setText:string];
+
+    if (bookmark.shared.boolValue == NO) {
+        cell.textView.backgroundColor = HEX(0xddddddff);
+        cell.contentView.backgroundColor = HEX(0xddddddff);
+    }
+
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     [cell layoutSubviews];
     
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+//    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     return cell;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (self.bookmarks.count == 10) {
+        NSInteger currentOffset = scrollView.contentOffset.y;
+        NSInteger maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+
+        if (maximumOffset - currentOffset <= -40) {
+//            limit += 50;
+//            [self refreshBookmarks];
+        }
+    }
 }
 
 @end

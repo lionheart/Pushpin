@@ -15,6 +15,7 @@
 #import "LoginViewController.h"
 #import "Bookmark.h"
 #import "Tag.h"
+#import "TabBarViewController.h"
 
 @implementation AppDelegate
 
@@ -26,14 +27,16 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
-    
-    [application setStatusBarStyle:UIStatusBarStyleBlackOpaque
-                          animated:NO];
 
+    if ([self token]) {
+        TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
+        [self.window setRootViewController:tabBarViewController];
+    }
+    else {
+        LoginViewController *loginViewController = [[LoginViewController alloc] init];
+        [self.window setRootViewController:loginViewController];
+    }
 
-
-    LoginViewController *loginViewController = [[LoginViewController alloc] init];
-    [self.window setRootViewController:loginViewController];
     [self.window makeKeyAndVisible];
     return YES;
 
@@ -121,8 +124,6 @@
                                    Tag *tag;
                                    NSError *error = nil;
 
-                                   [self deleteBookmarks];
-
                                    NSManagedObjectContext *context = [ASManagedObject sharedContext];
 
                                    for (id element in elements) {
@@ -142,19 +143,18 @@
                                            }
 
                                            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
-                                           [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name in %@", tagName]];
+                                           [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name == %@", tagName]];
                                            NSArray *fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&error];
 
-                                           if (!fetchRequestResponse) {
+                                           if (fetchRequestResponse.count == 0) {
                                                tag = (Tag *)[NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:context];
+                                               tag.name = tagName;
                                            }
                                            else {
                                                tag = [fetchRequestResponse objectAtIndex:0];
                                            }
                                            [tag addBookmarksObject:bookmark];
                                        }
-
-                                       NSLog(@"%@", bookmark);
                                    }
                                    [context save:&error];
                                    
