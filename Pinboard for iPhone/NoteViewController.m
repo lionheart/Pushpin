@@ -36,7 +36,6 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                self.notes = payload[@"notes"];
-                               NSLog(@"%@", self.notes);
                                [self.tableView reloadData];
                            }];
     

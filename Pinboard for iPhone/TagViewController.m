@@ -62,6 +62,7 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
+    [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
     [self.tableView reloadData];
 }
 
