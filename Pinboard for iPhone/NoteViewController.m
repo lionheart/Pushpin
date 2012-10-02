@@ -19,6 +19,7 @@
 
 @synthesize searchDisplayController;
 @synthesize notes;
+@synthesize searchBar;
 
 #pragma mark - Table view data source
 
@@ -39,8 +40,14 @@
                                [self.tableView reloadData];
                            }];
     
-    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    self.tableView.tableHeaderView = searchBar;
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.searchBar.delegate = self;
+    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+    self.searchDisplayController.searchResultsDataSource = self;
+    self.searchDisplayController.searchResultsDelegate = self;
+    self.searchDisplayController.delegate = self;
+    self.tableView.tableHeaderView = self.searchBar;
+    [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -48,7 +55,12 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.notes count];
+    if (tableView == self.tableView) {
+        return [self.notes count];
+    }
+    else {
+        return [self.filteredNotes count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -60,7 +72,12 @@
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
 
-    cell.textLabel.text = self.notes[indexPath.row][@"title"];
+    if (tableView == self.tableView) {
+        cell.textLabel.text = self.notes[indexPath.row][@"title"];
+    }
+    else {
+        cell.textLabel.text = self.filteredNotes[indexPath.row][@"title"];
+    }
     return cell;
 }
 
@@ -68,6 +85,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    self.filteredNotes = [NSMutableArray array];
+    for (NSDictionary *note in self.notes) {
+        if ([note[@"title"] rangeOfString:searchText].location != NSNotFound) {
+            [self.filteredNotes addObject:note];
+        }
+    }
+    [self.tableView reloadData];
 }
 
 @end
