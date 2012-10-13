@@ -169,7 +169,7 @@
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"ANY tags.name = %@", tag.name]];
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] init];
     bookmarkViewController.title = tag.name;
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
 }

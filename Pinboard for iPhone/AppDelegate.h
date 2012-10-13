@@ -20,5 +20,6 @@
 - (void)updateBookmarks;
 - (void)deleteBookmarks;
 - (void)updateNotes;
++ (NSString *)databasePath;
 
 @end

@@ -12,9 +12,14 @@
 #import "TTTAttributedLabel.h"
 #import <CoreData/CoreData.h>
 #import "PullToRefreshView.h"
+#import "FMDatabase.h"
+#import "AppDelegate.h"
+
+@class FMResultSet;
 
 @interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
     PullToRefreshView *pull;
+    int limit;
 }
 
 @property (nonatomic, retain) NSMutableArray *bookmarks;
@@ -25,16 +30,19 @@
 @property (nonatomic, retain) NSMutableArray *strings;
 @property (nonatomic, retain) NSMutableArray *heights;
 @property (nonatomic, retain) UIWebView *webView;
-@property (nonatomic, retain) NSPredicate *predicate;
 @property (nonatomic, retain) NSDateFormatter *date_formatter;
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 @property (nonatomic, retain) UISearchBar *searchBar;
+@property (nonatomic, retain) NSString *query;
+@property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic) BOOL searchWasActive;
 
+- (FMResultSet *)resultSetForDB:(FMDatabase *)db;
+- (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters;
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
-- (id)initWithPredicate:(NSPredicate *)predicate;
 - (void)refreshBookmarks;
 - (void)processBookmarks;
+- (void)processBookmark:(NSDictionary *)dictionary;
 - (void)edit;
 - (void)stopEditing;
 - (void)toggleEditMode;

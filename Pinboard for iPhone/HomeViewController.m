@@ -8,7 +8,6 @@
 
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
-#import "ASManagedObject.h"
 
 @interface HomeViewController ()
 
@@ -53,44 +52,48 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    
-    NSManagedObjectContext *context = [ASManagedObject sharedContext];
+
     NSError *error = nil;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
-    NSUInteger count;
+    
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    
+    FMResultSet *results;
 
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
+                    [results next];
+
                     cell.textLabel.text = @"All";
-                    count = [context countForFetchRequest:request error:&error];
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
+                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 1:
-                    cell.textLabel.text = @"Private";
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
+                    [results next];
 
-                    [request setPredicate:[NSPredicate predicateWithFormat:@"shared = NO"]];
-                    count = [context countForFetchRequest:request error:&error];
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
+                    cell.textLabel.text = @"Private";
+                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;  
                 case 2:
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(NO)]];
+                    [results next];
+
                     cell.textLabel.text = @"Public";
-                    [request setPredicate:[NSPredicate predicateWithFormat:@"shared = YES"]];
-                    count = [context countForFetchRequest:request error:&error];
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
+                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 3:
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
+                    [results next];
+
                     cell.textLabel.text = @"Unread";
-                    [request setPredicate:[NSPredicate predicateWithFormat:@"read = NO"]];
-                    count = [context countForFetchRequest:request error:&error];
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
+                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 4:
                     cell.textLabel.text = @"Untagged";
-                    [request setPredicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"]];
-                    count = [context countForFetchRequest:request error:&error];
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", count];
+                    cell.detailTextLabel.text = @"0";
                     break;
             }
             break;
@@ -119,28 +122,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BookmarkViewController *bookmarkViewController;
-
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:nil];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"All Bookmarks";
                     break;
                 case 1:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"shared = NO"]];
+                    parameters[@"private"] = @(YES);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Private";
                     break;
                 case 2:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"shared = YES"]];
+                    parameters[@"private"] = @(NO);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Public";
                     break;
                 case 3:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"read = NO"]];
+                    parameters[@"unread"] = @(YES);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Unread";
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:[NSPredicate predicateWithFormat:@"tags.@count = 0"]];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Untagged";
                     break;
             }

@@ -7,10 +7,10 @@
 //
 
 #import "TabBarViewController.h"
-#import "BookmarkViewController.h"
 #import "HomeViewController.h"
 #import "NoteViewController.h"
 #import "TagViewController.h"
+#import "BookmarkViewController.h"
 
 @interface TabBarViewController ()
 
@@ -21,7 +21,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithPredicate:nil];
+        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:nil];
         bookmarkViewController.title = @"All Bookmarks";
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];

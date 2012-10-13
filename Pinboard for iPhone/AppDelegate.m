@@ -17,6 +17,7 @@
 #import "Tag.h"
 #import "Note.h"
 #import "TabBarViewController.h"
+#import "FMDatabase.h"
 
 @implementation AppDelegate
 
@@ -24,6 +25,10 @@
 @synthesize token = _token;
 @synthesize lastUpdated = _lastUpdated;
 
++ (NSString *)databasePath {
+    //     NSString *path = [[NSBundle mainBundle] pathForResource:@"pinboard" ofType:@"sqlite"];
+    return @"/tmp/pinboard.db";
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -39,6 +44,82 @@
     }
 
     [self.window makeKeyAndVisible];
+
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
+    // http://stackoverflow.com/a/875422/39155
+    [db executeUpdate:@"PRAGMA cache_size = 100;"];
+
+    if ([s next]) {
+        int version = [s intForColumnIndex:0];
+        [db beginTransaction];
+        switch (version) {
+            case 0:
+                NSLog(@"yo!");
+                [db executeUpdate:
+                 @"CREATE TABLE bookmark("
+                    "id INTEGER PRIMARY KEY ASC,"
+                    "title VARCHAR(255),"
+                    "description TEXT,"
+                    "url TEXT UNIQUE CHECK(length(url) < 2000),"
+                    "count INTEGER,"
+                    "private BOOL,"
+                    "unread BOOL,"
+                    "hash VARCHAR(32) UNIQUE,"
+                    "meta VARCHAR(32),"
+                    "created_at DATETIME"
+                 ");" ];
+                [db executeUpdate:
+                 @"CREATE TABLE tag("
+                    "id INTEGER PRIMARY KEY ASC,"
+                    "name VARCHAR(255) UNIQUE,"
+                    "count INTEGER"
+                 ");" ];
+                [db executeUpdate:
+                 @"CREATE TABLE tagging("
+                    "tag_id INTEGER,"
+                    "bookmark_id INTEGER,"
+                    "FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,"
+                    "FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE"
+                 ");" ];
+                [db executeUpdate:
+                 @"CREATE TABLE note("
+                    "id INTEGER PRIMARY KEY ASC,"
+                    "remote_id VARCHAR(20) UNIQUE,"
+                    "hash VARCHAR(20) UNIQUE,"
+                    "title VARCHAR(255),"
+                    "text TEXT,"
+                    "length INTEGER,"
+                    "created_at DATETIME,"
+                    "updated_at DATETIME,"
+                 ");" ];
+                [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts3(id, title, description);"];
+                [db executeUpdate:@"CREATE VIRTUAL TABLE note_fts USING fts3(id, title, text);"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (id, title, description) VALUES(new.id, new.title, new.description); END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description WHERE id=new.id; END;"];
+                [db executeUpdate:@"CREATE TRIGGER note_fts_insert_trigger AFTER INSERT ON note BEGIN INSERT INTO note_fts (id, title, text) VALUES(new.id, new.title, new.text); END;"];
+                [db executeUpdate:@"CREATE TRIGGER note_fts_update_trigger AFTER UPDATE ON note BEGIN UPDATE note_fts SET title=new.title, description=new.text WHERE id=new.id; END;"];
+
+                [db executeUpdate:@"CREATE INDEX bookmark_title_idx ON bookmark (title);"];
+                [db executeUpdate:@"CREATE INDEX note_title_idx ON note (title);"];
+
+                [db executeUpdate:@"PRAGMA foreign_keys = 1;"];
+
+                // http://stackoverflow.com/a/875422/39155
+                [db executeUpdate:@"PRAGMA syncronous = 1;"];
+                [db executeUpdate:@"PRAGMA user_version = 1;"];
+            default:
+                break;
+        }
+        BOOL result = [db commit];
+        NSLog(@"%d", result);
+    }
+    
+    [db close];
+    
+    [self updateBookmarks];
+
     return YES;
 
 }
@@ -55,7 +136,6 @@
 }
 
 - (NSDate *)lastUpdated {
-    return nil;
     if (!_lastUpdated) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _lastUpdated = [defaults objectForKey:@"com.aurora.pinboard.LastUpdated"];
@@ -71,6 +151,7 @@
 }
 
 - (NSString *)token {
+    return @"dlo:ZJAYZDFKNTQ4OTQ4MZC1";
     if (!_token) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _token = [defaults objectForKey:@"com.aurora.pinboard.Token"];
@@ -96,6 +177,7 @@
 }
 
 - (void)updateNotes {
+    NSLog(@"hey!");
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -104,33 +186,29 @@
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                               NSManagedObjectContext *context = [ASManagedObject sharedContext];
-                               NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Note"];
-                               NSArray *fetchRequestResponse = nil;
-                               Note *note;
-                               
-                               for (id element in elements) {
-                                   [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"id = %@", element[@"id"]]];
-                                   fetchRequestResponse = [context executeFetchRequest:fetchRequest error:&error];
+                               dispatch_async(dispatch_get_current_queue(), ^{
+                                   NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    
-                                   if (fetchRequestResponse.count == 0) {
-                                       note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:context];
-                                       note.id = element[@"id"];
-                                   }
-                                   else {
-                                       note = fetchRequestResponse[0];
-                                   }
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   [db beginTransaction];
 
-                                   note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:context];
-                                   note.title = element[@"title"];
-                                   note.length = element[@"length"];
-                                   note.pinboard_hash = element[@"hash"];
-                                   note.text = element[@"text"];
-                                   note.created_at = [dateFormatter dateFromString:element[@"created_on"]];
-                                   note.updated_at = [dateFormatter dateFromString:element[@"updated_on"]];
-                               }
-                               [context save:&error];
+                                   for (id element in elements) {
+                                       NSDictionary *params = @{
+                                           @"remote_id": element[@"id"],
+                                           @"title": element[@"title"],
+                                           @"length": element[@"length"],
+                                           @"hash": element[@"hash"],
+                                           @"text": element[@"text"],
+                                           @"created_at": [dateFormatter dateFromString:element[@"created_on"]],
+                                           @"updated_at": [dateFormatter dateFromString:element[@"updated_on"]]
+                                       };
+                                       
+                                       [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
+                                   }
+                                   [db commit];
+                                   [db close];
+                               });
                            }];
 }
 
@@ -159,59 +237,32 @@
 
                                }
                                else {
-                                   NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   Bookmark *bookmark;
-                                   Tag *tag;
-                                   NSError *error = nil;
-                                   NSFetchRequest *tagFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
-                                   NSFetchRequest *bookmarkFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Bookmark"];
-                                   NSArray *fetchRequestResponse = nil;
+                                   dispatch_async(dispatch_get_current_queue(), ^{
+                                       NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                       [db open];
+                                       [db beginTransaction];
 
-                                   NSManagedObjectContext *context = [ASManagedObject sharedContext];
+                                       for (NSDictionary *element in elements) {
+                                           NSDictionary *params = @{
+                                               @"url": element[@"href"],
+                                               @"title": element[@"description"],
+                                               @"description": element[@"extended"],
+                                               @"meta": element[@"meta"],
+                                               @"hash": element[@"hash"],
+                                               @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                               @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                                               @"created_at": [dateFormatter dateFromString:element[@"time"]]
+                                           };
 
-                                   for (id element in elements) {
-                                       [bookmarkFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"pinboard_hash = %@", element[@"hash"]]];
-                                       fetchRequestResponse = [context executeFetchRequest:bookmarkFetchRequest error:&error];
-                                       
-                                       if (fetchRequestResponse.count == 0) {
-                                           bookmark = (Bookmark *)[NSEntityDescription insertNewObjectForEntityForName:@"Bookmark" inManagedObjectContext:context];
-                                           bookmark.pinboard_hash = element[@"hash"];
+                                           [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :meta, :created_at);" withParameterDictionary:params];
                                        }
-                                       else {
-                                           bookmark = fetchRequestResponse[0];
-                                       }
-                                       
-                                       bookmark.url = element[@"href"];
-                                       bookmark.title = element[@"description"];
-                                       bookmark.extended = element[@"extended"];
-                                       bookmark.meta = element[@"meta"];
-                                       bookmark.read = @([element[@"toread"] isEqualToString:@"no"]);
-                                       bookmark.shared = @([element[@"shared"] isEqualToString:@"yes"]);
-                                       bookmark.created_on = [dateFormatter dateFromString:element[@"time"]];
+                                       [db commit];
+                                       [db close];
 
-                                       for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                                           if ([tagName isEqualToString:@""]) {
-                                               continue;
-                                           }
-
-                                           [tagFetchRequest setPredicate:[NSPredicate predicateWithFormat:@"name == %@", tagName]];
-                                           fetchRequestResponse = [context executeFetchRequest:tagFetchRequest error:&error];
-
-                                           if (fetchRequestResponse.count == 0) {
-                                               tag = (Tag *)[NSEntityDescription insertNewObjectForEntityForName:@"Tag" inManagedObjectContext:context];
-                                               tag.name = tagName;
-                                           }
-                                           else {
-                                               tag = fetchRequestResponse[0];
-                                           }
-                                           [tag addBookmarksObject:bookmark];
-                                       }
-                                   }
-                                   [context save:&error];
-                                   
-                                   if (!error) {
                                        [self setLastUpdated:[NSDate date]];
-                                   }
+                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoaded" object:nil];
+                                   });
                                }
                            }];
 }
