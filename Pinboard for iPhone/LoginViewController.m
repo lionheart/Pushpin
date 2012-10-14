@@ -19,6 +19,7 @@
 
 @synthesize activityIndicator;
 @synthesize textView;
+@synthesize progressView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,6 +46,11 @@
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.placeholder = @"Pinboard API Token";
     [self.view addSubview:textField];
+
+    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.progressView.frame = CGRectMake(20, 410, 280, 50);
+    self.progressView.hidden = YES;
+    [self.view addSubview:self.progressView];
     
     self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 300, 300, 50)];
     self.textView.backgroundColor = [UIColor clearColor];
@@ -56,7 +62,7 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
+    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 370, activitySize.width, activitySize.height);
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
@@ -110,6 +116,18 @@
     }
 }
 
+- (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressView setProgress:updated.floatValue / total.floatValue];
+        
+        if (updated.integerValue == total.integerValue) {
+            TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
+            tabBarViewController.modalPresentationStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:tabBarViewController animated:YES completion:nil];
+        }
+    });
+}
+
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json&auth_token=%@", textField.text]]];
     [NSURLConnection sendAsynchronousRequest:request
@@ -127,12 +145,8 @@
                                    textField.textColor = [UIColor grayColor];
                                    
                                    self.textView.text = @"You have successfully authenticated. Please wait while we download your bookmarks.";
-                                   NSLog(@"%@", [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil]);
-                                   
-                                   TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
-                                   tabBarViewController.modalPresentationStyle = UIModalTransitionStyleFlipHorizontal;
-                                   [self presentViewController:tabBarViewController animated:YES completion:nil];
-                                   [[AppDelegate sharedDelegate] updateBookmarks];
+                                   self.progressView.hidden = NO;
+                                   [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
                                }
                            }];
 }

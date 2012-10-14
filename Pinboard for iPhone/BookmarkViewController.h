@@ -17,7 +17,7 @@
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate> {
     PullToRefreshView *pull;
 }
 

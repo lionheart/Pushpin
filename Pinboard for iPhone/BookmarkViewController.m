@@ -42,7 +42,7 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)reloadTableData {
-    [[AppDelegate sharedDelegate] updateBookmarks];
+    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
     [self.tableView reloadData];
     [pull finishedLoading];
 }
@@ -114,6 +114,7 @@ static float kSmallFontSize = 13.0f;
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
     NSLog(@"%@: %@", self.query, self.queryParameters);
 
+    [self.bookmarks removeAllObjects];
     [self.strings removeAllObjects];
     [self.heights removeAllObjects];
 
@@ -293,27 +294,15 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == self.limit.integerValue - 25) {
+    if (indexPath.row == self.limit.integerValue - 5) {
         self.limit = @(self.limit.integerValue + 50);
         self.queryParameters[@"limit"] = limit;
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self processBookmarks];
             });
         });
-    }
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (self.bookmarks.count == 10) {
-        NSInteger currentOffset = scrollView.contentOffset.y;
-        NSInteger maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
-
-        if (maximumOffset - currentOffset <= -40) {
-//            limit += 50;
-//            [self refreshBookmarks];
-        }
     }
 }
 

@@ -92,8 +92,11 @@
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 4:
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging)"];
+                    [results next];
+
                     cell.textLabel.text = @"Untagged";
-                    cell.detailTextLabel.text = @"0";
+                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
             }
             break;
@@ -146,7 +149,7 @@
                     bookmarkViewController.title = @"Unread";
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Untagged";
                     break;
             }

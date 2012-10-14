@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
+@interface LoginViewController : UIViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, BookmarkUpdateProgressDelegate> {
     BOOL keyboard_shown;
 }
 
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) UITextView *textView;
+@property (nonatomic, retain) UIProgressView *progressView;
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;

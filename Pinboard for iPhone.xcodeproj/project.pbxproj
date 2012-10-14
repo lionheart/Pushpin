@@ -59,7 +59,6 @@
 		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
-		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
 		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
@@ -93,7 +92,7 @@
 		37E3299F1629DF9500A6BC18 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329971629DF9500A6BC18 /* FMDatabasePool.m */; };
 		37E329A01629DF9500A6BC18 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329991629DF9500A6BC18 /* FMDatabaseQueue.m */; };
 		37E329A21629DF9500A6BC18 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E3299C1629DF9500A6BC18 /* FMResultSet.m */; };
-		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; };
+		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
@@ -262,7 +261,6 @@
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
-				3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,19 +701,19 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = SQLITE_ENABLE_FTS3;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "93EDA687-C1AE-4077-A6CE-2BDED8EE4B8E";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -727,17 +725,16 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = SQLITE_ENABLE_FTS3;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;

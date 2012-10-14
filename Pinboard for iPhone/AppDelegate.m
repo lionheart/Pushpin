@@ -26,7 +26,9 @@
 @synthesize lastUpdated = _lastUpdated;
 
 + (NSString *)databasePath {
-    //     NSString *path = [[NSBundle mainBundle] pathForResource:@"pinboard" ofType:@"sqlite"];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    return [basePath stringByAppendingPathComponent:@"/pinboard.db"];
     return @"/tmp/pinboard.db";
 }
 
@@ -47,12 +49,14 @@
 
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
     // http://stackoverflow.com/a/875422/39155
     [db executeUpdate:@"PRAGMA cache_size = 100;"];
 
+    FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
+
     if ([s next]) {
         int version = [s intForColumnIndex:0];
+        NSLog(@"%d", version);
         [db beginTransaction];
         switch (version) {
             case 0:
@@ -92,7 +96,7 @@
                     "text TEXT,"
                     "length INTEGER,"
                     "created_at DATETIME,"
-                    "updated_at DATETIME,"
+                    "updated_at DATETIME"
                  ");" ];
 
                 // Full text search
@@ -109,15 +113,21 @@
                 [db executeUpdate:@"CREATE INDEX bookmark_title_idx ON bookmark (title);"];
                 [db executeUpdate:@"CREATE INDEX note_title_idx ON note (title);"];
 
-                [db executeUpdate:@"PRAGMA foreign_keys = 1;"];
+                [db executeUpdate:@"PRAGMA foreign_keys=1;"];
 
                 // http://stackoverflow.com/a/875422/39155
-                [db executeUpdate:@"PRAGMA syncronous = 1;"];
-                [db executeUpdate:@"PRAGMA user_version = 1;"];
+                [db executeUpdate:@"PRAGMA syncronous=1;"];
+                [db executeUpdate:@"PRAGMA user_version=1;"];
             default:
                 break;
         }
-        BOOL result = [db commit];
+        BOOL success = [db commit];
+        NSLog(@"%d", success);
+    }
+    
+    s = [db executeQuery:@"SELECT name FROM sqlite_master WHERE type='table'"];
+    while ([s next]) {
+        NSLog(@"%@", [s stringForColumn:@"name"]);
     }
     
     [db close];
@@ -126,6 +136,10 @@
 
     return YES;
 
+}
+
+- (void)updateBookmarks {
+    [self updateBookmarksWithDelegate:nil];
 }
 
 + (AppDelegate *)sharedDelegate {
@@ -215,7 +229,7 @@
                            }];
 }
 
-- (void)updateBookmarks {
+- (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -240,7 +254,7 @@
 
                                }
                                else {
-                                   dispatch_async(dispatch_get_current_queue(), ^{
+                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
@@ -265,8 +279,15 @@
                                        NSNumber *tagIdNumber;
                                        int bookmark_id;
                                        int tag_id;
+                                       NSUInteger count = 0;
+                                       NSUInteger total = elements.count;
 
                                        for (NSDictionary *element in elements) {
+                                           count++;
+                                           
+                                           if (updateDelegate) {
+                                               [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
+                                           }
                                            NSDictionary *params = @{
                                                @"url": element[@"href"],
                                                @"title": element[@"description"],
@@ -287,6 +308,10 @@
                                                bookmarkIdNumber = @([results intForColumnIndex:0]);
                                                [bookmarks setObject:bookmarkIdNumber forKey:element[@"hash"]];
                                            }
+                                           
+                                           if ([element[@"tags"] length] == 0) {
+                                               continue;
+                                           }
 
                                            for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
                                                tagIdNumber = [tags objectForKey:tagName];
@@ -304,7 +329,11 @@
                                                [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, bookmark_id];
                                            }
                                        }
-                                       [db commit];
+                                       BOOL success = [db commit];
+
+                                       results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
+                                       [results next];
+                                       NSLog(@"%d", [results intForColumnIndex:0]);
                                        [db close];
 
                                        [self setLastUpdated:[NSDate date]];
