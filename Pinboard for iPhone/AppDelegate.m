@@ -98,10 +98,13 @@
                 // Full text search
                 [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts3(id, title, description);"];
                 [db executeUpdate:@"CREATE VIRTUAL TABLE note_fts USING fts3(id, title, text);"];
+                [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts3(id, name);"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (id, title, description) VALUES(new.id, new.title, new.description); END;"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description WHERE id=new.id; END;"];
                 [db executeUpdate:@"CREATE TRIGGER note_fts_insert_trigger AFTER INSERT ON note BEGIN INSERT INTO note_fts (id, title, text) VALUES(new.id, new.title, new.text); END;"];
                 [db executeUpdate:@"CREATE TRIGGER note_fts_update_trigger AFTER UPDATE ON note BEGIN UPDATE note_fts SET title=new.title, description=new.text WHERE id=new.id; END;"];
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (id, name) VALUES(new.id, new.name); END;"];
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_update_trigger AFTER UPDATE ON tag BEGIN UPDATE tag_fts SET name=new.name WHERE id=new.id; END;"];
 
                 [db executeUpdate:@"CREATE INDEX bookmark_title_idx ON bookmark (title);"];
                 [db executeUpdate:@"CREATE INDEX note_title_idx ON note (title);"];
@@ -115,7 +118,6 @@
                 break;
         }
         BOOL result = [db commit];
-        NSLog(@"%d", result);
     }
     
     [db close];
@@ -153,7 +155,6 @@
 }
 
 - (NSString *)token {
-    return @"dlo:ZJAYZDFKNTQ4OTQ4MZC1";
     if (!_token) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _token = [defaults objectForKey:@"com.aurora.pinboard.Token"];
@@ -179,7 +180,6 @@
 }
 
 - (void)updateNotes {
-    NSLog(@"hey!");
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -194,6 +194,7 @@
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
                                    [db beginTransaction];
+
 
                                    for (id element in elements) {
                                        NSDictionary *params = @{
@@ -243,7 +244,27 @@
                                        NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
+                                       
+                                       FMResultSet *results;
+                                       
+                                       results = [db executeQuery:@"SELECT * FROM tag"];
+                                       NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
+                                       while ([results next]) {
+                                           [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
+                                       }
+                                       
+                                       results = [db executeQuery:@"SELECT id, hash FROM bookmark"];
+                                       NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
+                                       while ([results next]) {
+                                           [bookmarks setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"hash"]];
+                                       }
+
                                        [db beginTransaction];
+
+                                       NSNumber *bookmarkIdNumber;
+                                       NSNumber *tagIdNumber;
+                                       int bookmark_id;
+                                       int tag_id;
 
                                        for (NSDictionary *element in elements) {
                                            NSDictionary *params = @{
@@ -256,10 +277,31 @@
                                                @"private": @([element[@"shared"] isEqualToString:@"no"]),
                                                @"created_at": [dateFormatter dateFromString:element[@"time"]]
                                            };
-
-                                           [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :meta, :created_at);" withParameterDictionary:params];
                                            
+                                           bookmarkIdNumber = [bookmarks objectForKey:element[@"hash"]];
+                                           if (!bookmarkIdNumber) {
+                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :meta, :created_at);" withParameterDictionary:params];
+                                               
+                                               results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                               [results next];
+                                               bookmarkIdNumber = @([results intForColumnIndex:0]);
+                                               [bookmarks setObject:bookmarkIdNumber forKey:element[@"hash"]];
+                                           }
+
                                            for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
+                                               tagIdNumber = [tags objectForKey:tagName];
+                                               if (!tagIdNumber) {
+                                                   [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                                   
+                                                   results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                                   [results next];
+                                                   tagIdNumber = @([results intForColumnIndex:0]);
+                                                   [tags setObject:tagIdNumber forKey:tagName];
+                                               }
+                                               
+                                               bookmark_id = [bookmarkIdNumber intValue];
+                                               tag_id = [tagIdNumber intValue];
+                                               [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, bookmark_id];
                                            }
                                        }
                                        [db commit];

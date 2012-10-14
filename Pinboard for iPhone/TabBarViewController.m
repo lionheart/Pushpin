@@ -11,6 +11,7 @@
 #import "NoteViewController.h"
 #import "TagViewController.h"
 #import "BookmarkViewController.h"
+#import "SettingsViewController.h"
 
 @interface TabBarViewController ()
 
@@ -35,9 +36,10 @@
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
         // [postViewContainer.tabBarItem setBadgeValue:@"2"];
         
-        UIViewController *vc1 = [[UIViewController alloc] init];
-        vc1.tabBarItem.title = @"Settings";
-        vc1.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
+        SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+        UINavigationController *settingsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+        settingsViewController.title = @"Settings";
+        settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
         
         UIViewController *vc2 = [[UIViewController alloc] init];
         vc2.tabBarItem.title = @"Add";
@@ -53,9 +55,24 @@
         noteViewController.title = @"Notes";
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
-        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, vc2, tagViewNavigationController, vc1, nil]];
+        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, vc2, tagViewNavigationController, settingsViewNavigationController, nil]];
+        
+        self.delegate = self;
     }
     return self;
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    NSLog(@"%@", viewController);
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=Apps"]];
+}
+
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    if (![viewController isKindOfClass:[UINavigationController class]]) {
+        
+        return true;
+    }
+    return true;
 }
 
 @end

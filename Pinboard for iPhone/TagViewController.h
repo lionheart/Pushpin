@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FMDatabase.h"
 
 @interface TagViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
 

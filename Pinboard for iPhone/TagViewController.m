@@ -19,7 +19,6 @@
 
 @synthesize titleToTags;
 @synthesize alphabet;
-@synthesize tagList;
 @synthesize sortedTitles;
 @synthesize searchDisplayController;
 @synthesize searchBar = _searchBar;
@@ -27,29 +26,29 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSManagedObjectContext *context = [ASManagedObject sharedContext];
-    NSError *error = nil;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
-    [request setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES] ]];
     
-    NSArray *results = [context executeFetchRequest:request error:&error];
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+
     self.titleToTags = [NSMutableDictionary dictionary];
-    self.tagList = [NSMutableArray array];
 
     self.titleToTags = [@{@"#": [NSMutableArray array], @"A": [NSMutableArray array], @"B": [NSMutableArray array], @"C": [NSMutableArray array], @"D": [NSMutableArray array], @"E": [NSMutableArray array], @"F": [NSMutableArray array], @"G": [NSMutableArray array], @"H": [NSMutableArray array], @"I": [NSMutableArray array], @"J": [NSMutableArray array], @"K": [NSMutableArray array], @"L": [NSMutableArray array], @"M": [NSMutableArray array], @"N": [NSMutableArray array], @"O": [NSMutableArray array], @"P": [NSMutableArray array], @"Q": [NSMutableArray array], @"R": [NSMutableArray array], @"S": [NSMutableArray array], @"T": [NSMutableArray array], @"U": [NSMutableArray array], @"V": [NSMutableArray array], @"W": [NSMutableArray array], @"X": [NSMutableArray array], @"Y": [NSMutableArray array], @"Z": [NSMutableArray array]} mutableCopy];
 
-    for (Tag *tag in results) {
-        if (!tag.name) {
+    FMResultSet *results = [db executeQuery:@"SELECT * FROM tag ORDER BY name ASC"];
+    NSString *name;
+    while ([results next]) {
+        name = [results stringForColumn:@"name"];
+        if (name.length == 0) {
             continue;
         }
-        NSString *firstLetter = [[tag.name substringToIndex:1] uppercaseString];
+
+        NSString *firstLetter = [[name substringToIndex:1] uppercaseString];
         if (![self.titleToTags objectForKey:firstLetter]) {
             firstLetter = @"#";
         }
 
         NSMutableArray *temp = [self.titleToTags objectForKey:firstLetter];
-        [temp addObject:tag];
-        [self.tagList addObject:tag];
+        [temp addObject:@{@"name": name, @"id": @([results intForColumn:@"id"])}];
         [self.titleToTags setObject:temp forKey:firstLetter];
     }
 
@@ -128,7 +127,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
     
-    Tag *tag;
+    NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         tag = self.filteredTags[indexPath.row];
     }
@@ -136,8 +135,8 @@
         tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
     }
 
-    cell.textLabel.text = tag.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", tag.bookmarks.count];
+    cell.textLabel.text = tag[@"name"];
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", tag.bookmarks.count];
     return cell;
 }
 
@@ -160,7 +159,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Tag *tag;
+    NSDictionary *tag;
     if (tableView == self.tableView) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
@@ -169,8 +168,8 @@
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] init];
-    bookmarkViewController.title = tag.name;
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag[@"id"], @"tag_id", nil]];
+    bookmarkViewController.title = tag[@"name"];
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
 }
 

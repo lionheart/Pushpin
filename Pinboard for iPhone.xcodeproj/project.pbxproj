@@ -56,6 +56,8 @@
 		3779D0B415EC0C83009E564A /* 104-index-cards@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D0B215EC0C83009E564A /* 104-index-cards@2x.png */; };
 		3779D0B715EC0DA8009E564A /* 112-group.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D0B515EC0DA8009E564A /* 112-group.png */; };
 		3779D0B815EC0DA8009E564A /* 112-group@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3779D0B615EC0DA8009E564A /* 112-group@2x.png */; };
+		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
+		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
@@ -165,6 +167,10 @@
 		3779D0B215EC0C83009E564A /* 104-index-cards@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "104-index-cards@2x.png"; sourceTree = "<group>"; };
 		3779D0B515EC0DA8009E564A /* 112-group.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "112-group.png"; sourceTree = "<group>"; };
 		3779D0B615EC0DA8009E564A /* 112-group@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "112-group@2x.png"; sourceTree = "<group>"; };
+		37800E3F162B2EDA009FCB17 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		37800E40162B2EDA009FCB17 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		37800E43162B389B009FCB17 /* AddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBookmarkViewController.h; sourceTree = "<group>"; };
+		37800E44162B389B009FCB17 /* AddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddBookmarkViewController.m; sourceTree = "<group>"; };
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
@@ -469,6 +475,8 @@
 				37FEEBD615747E85003F2B77 /* BookmarkViewController.m */,
 				3727558A161A66A2001A857B /* TagViewController.h */,
 				3727558B161A66A2001A857B /* TagViewController.m */,
+				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
+				37800E44162B389B009FCB17 /* AddBookmarkViewController.m */,
 				37A25A2015FC42B5009716BB /* NoteViewController.h */,
 				37A25A2115FC42B5009716BB /* NoteViewController.m */,
 				371BCAFD15772B4400BDA996 /* BookmarkCell.h */,
@@ -479,6 +487,8 @@
 				37919F1D16091DF5007708EF /* LoginViewController.m */,
 				37483C5516194575000EE5D1 /* TabBarViewController.h */,
 				37483C5616194575000EE5D1 /* TabBarViewController.m */,
+				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
+				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
 			path = "Pinboard for iPhone";
@@ -668,6 +678,8 @@
 				37E3299F1629DF9500A6BC18 /* FMDatabasePool.m in Sources */,
 				37E329A01629DF9500A6BC18 /* FMDatabaseQueue.m in Sources */,
 				37E329A21629DF9500A6BC18 /* FMResultSet.m in Sources */,
+				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
+				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

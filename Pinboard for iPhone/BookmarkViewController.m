@@ -112,6 +112,7 @@ static float kSmallFontSize = 13.0f;
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+    NSLog(@"%@: %@", self.query, self.queryParameters);
 
     [self.strings removeAllObjects];
     [self.heights removeAllObjects];
