@@ -19,9 +19,9 @@
 
 @interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
     PullToRefreshView *pull;
-    int limit;
 }
 
+@property (nonatomic, retain) NSNumber *limit;
 @property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSMutableArray *filteredBookmarks;
 @property (nonatomic, retain) NSString *savedSearchTerm;

@@ -56,7 +56,6 @@
         [db beginTransaction];
         switch (version) {
             case 0:
-                NSLog(@"yo!");
                 [db executeUpdate:
                  @"CREATE TABLE bookmark("
                     "id INTEGER PRIMARY KEY ASC,"
@@ -80,6 +79,7 @@
                  @"CREATE TABLE tagging("
                     "tag_id INTEGER,"
                     "bookmark_id INTEGER,"
+                    "PRIMARY KEY(tag_id, bookmark_id),"
                     "FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,"
                     "FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE"
                  ");" ];
@@ -94,6 +94,8 @@
                     "created_at DATETIME,"
                     "updated_at DATETIME,"
                  ");" ];
+
+                // Full text search
                 [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts3(id, title, description);"];
                 [db executeUpdate:@"CREATE VIRTUAL TABLE note_fts USING fts3(id, title, text);"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (id, title, description) VALUES(new.id, new.title, new.description); END;"];
@@ -256,6 +258,9 @@
                                            };
 
                                            [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :meta, :created_at);" withParameterDictionary:params];
+                                           
+                                           for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
+                                           }
                                        }
                                        [db commit];
                                        [db close];

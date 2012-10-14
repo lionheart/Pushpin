@@ -35,6 +35,7 @@ static float kSmallFontSize = 13.0f;
 @synthesize searchBar = _searchBar;
 @synthesize query = _query;
 @synthesize queryParameters;
+@synthesize limit;
 
 - (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view {
     [self performSelectorInBackground:@selector(reloadTableData) withObject:nil];
@@ -107,10 +108,6 @@ static float kSmallFontSize = 13.0f;
     [self.strings addObject:attributedString];
 }
 
-- (FMResultSet *)resultSetForDB:(FMDatabase *)db {
-    return [db executeQueryWithFormat:@"SELECT * FROM bookmark LIMIT %d OFFSET %d", 50, 0];
-}
-
 - (void)processBookmarks {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -132,14 +129,14 @@ static float kSmallFontSize = 13.0f;
     }
 
     [db close];
-    [self.tableView reloadData];
+    [self.tableView performSelectorInBackground:@selector(reloadData) withObject:nil];
 }
 
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters {
     // initWithQuery:@"SELECT * FROM bookmark WHERE name = :name LIMIT :limit OFFSET :offset" arguments:@{@"name": @"dan"}
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        limit = 10;
+        self.limit = @(50);
 
         self.bookmarks = [NSMutableArray array];
         self.parameters = [NSMutableArray array];
@@ -156,7 +153,7 @@ static float kSmallFontSize = 13.0f;
         else {
             self.queryParameters = parameters;
         }
-        self.queryParameters[@"limit"] = @(limit);
+        self.queryParameters[@"limit"] = limit;
         self.queryParameters[@"offset"] = @(0);
         
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -177,7 +174,7 @@ static float kSmallFontSize = 13.0f;
 - (id)init {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        limit = 10;
+        self.limit = @(50);
 
         self.bookmarks = [NSMutableArray array];
         self.parameters = [NSMutableArray array];
@@ -187,8 +184,8 @@ static float kSmallFontSize = 13.0f;
         [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
-        self.query = @"SELECT * FROM bookmark LIMIT :limit OFFSET :offset";
-        self.queryParameters = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@(limit), @"limit", @(0), "offset", nil];
+        self.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+        self.queryParameters = [[NSMutableDictionary alloc] initWithObjectsAndKeys:limit, @"limit", @(0), "offset", nil];
 
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         self.searchBar = searchBar;
@@ -282,8 +279,8 @@ static float kSmallFontSize = 13.0f;
 
     NSAttributedString *string = self.strings[indexPath.row];
     NSDictionary *bookmark = self.bookmarks[indexPath.row];
-    [cell.textView setText:string];
 
+    [cell.textView setText:string];
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
         cell.contentView.backgroundColor = HEX(0xddddddff);
@@ -291,17 +288,19 @@ static float kSmallFontSize = 13.0f;
 
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
-    [cell layoutSubviews];
-    
-//    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == limit - 5) {
-        limit += 10;
-        self.queryParameters[@"limit"] = @(limit);
-        [self processBookmarks];
+    if (indexPath.row == self.limit.integerValue - 25) {
+        self.limit = @(self.limit.integerValue + 50);
+        self.queryParameters[@"limit"] = limit;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self processBookmarks];
+            });
+        });
     }
 }
 

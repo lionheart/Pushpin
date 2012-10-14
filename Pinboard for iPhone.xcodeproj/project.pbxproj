@@ -91,9 +91,6 @@
 		37E3299F1629DF9500A6BC18 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329971629DF9500A6BC18 /* FMDatabasePool.m */; };
 		37E329A01629DF9500A6BC18 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329991629DF9500A6BC18 /* FMDatabaseQueue.m */; };
 		37E329A21629DF9500A6BC18 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E3299C1629DF9500A6BC18 /* FMResultSet.m */; };
-		37E329DC1629F0D100A6BC18 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		37E329E71629F0FC00A6BC18 /* shell.c in Sources */ = {isa = PBXBuildFile; fileRef = 37E329A71629EDE600A6BC18 /* shell.c */; };
-		37E329E81629F0FC00A6BC18 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 37E329A81629EDE600A6BC18 /* sqlite3.c */; };
 		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; };
 		37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
@@ -105,18 +102,6 @@
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		37E329D91629F0D000A6BC18 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/${PRODUCT_NAME}";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		37098F3A15EC81D7005D84B1 /* tags.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = tags.xml; sourceTree = "<group>"; };
@@ -241,7 +226,6 @@
 		37E329A81629EDE600A6BC18 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../Vendor/sqlite/sqlite3.c; sourceTree = "<group>"; };
 		37E329A91629EDE600A6BC18 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = ../Vendor/sqlite/sqlite3.h; sourceTree = "<group>"; };
 		37E329AA1629EDE600A6BC18 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../Vendor/sqlite/sqlite3ext.h; sourceTree = "<group>"; };
-		37E329DB1629F0D000A6BC18 /* libSQLite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSQLite.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		37E329DF1629F0D100A6BC18 /* SQLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite-Prefix.pch"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		37FEEB8E15745488003F2B77 /* Pinboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -261,14 +245,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		37E329D81629F0D000A6BC18 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37E329DC1629F0D100A6BC18 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37FEEB8B15745488003F2B77 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -455,7 +431,6 @@
 			isa = PBXGroup;
 			children = (
 				37FEEB8E15745488003F2B77 /* Pinboard.app */,
-				37E329DB1629F0D000A6BC18 /* libSQLite.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -550,23 +525,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37E329DA1629F0D000A6BC18 /* SQLite */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37E329E41629F0D100A6BC18 /* Build configuration list for PBXNativeTarget "SQLite" */;
-			buildPhases = (
-				37E329D71629F0D000A6BC18 /* Sources */,
-				37E329D81629F0D000A6BC18 /* Frameworks */,
-				37E329D91629F0D000A6BC18 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SQLite;
-			productName = SQLite;
-			productReference = 37E329DB1629F0D000A6BC18 /* libSQLite.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		37FEEB8D15745488003F2B77 /* Pinboard */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */;
@@ -605,7 +563,6 @@
 			projectRoot = "";
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pinboard */,
-				37E329DA1629F0D000A6BC18 /* SQLite */,
 			);
 		};
 /* End PBXProject section */
@@ -672,15 +629,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		37E329D71629F0D000A6BC18 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37E329E71629F0FC00A6BC18 /* shell.c in Sources */,
-				37E329E81629F0FC00A6BC18 /* sqlite3.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37FEEB8A15745488003F2B77 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -737,41 +685,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		37E329E51629F0D100A6BC18 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DSTROOT = /tmp/SQLite.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SQLite/SQLite-Prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		37E329E61629F0D100A6BC18 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DSTROOT = /tmp/SQLite.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SQLite/SQLite-Prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		37FEEBA415745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -852,15 +765,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		37E329E41629F0D100A6BC18 /* Build configuration list for PBXNativeTarget "SQLite" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				37E329E51629F0D100A6BC18 /* Debug */,
-				37E329E61629F0D100A6BC18 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pinboard for iPhone" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -127,26 +127,26 @@
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"All Bookmarks";
                     break;
                 case 1:
                     parameters[@"private"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Private";
                     break;
                 case 2:
                     parameters[@"private"] = @(NO);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Public";
                     break;
                 case 3:
                     parameters[@"unread"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Unread";
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = @"Untagged";
                     break;
             }
