@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate>
+@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate>
 
 @end

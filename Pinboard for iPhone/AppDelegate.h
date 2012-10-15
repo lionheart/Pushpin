@@ -11,9 +11,11 @@
 #import <CoreData/CoreData.h>
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
-
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
+@end
 
+@protocol ModalDelegate <NSObject>
+- (void)closeModal;
 @end
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>

@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface AddBookmarkViewController : UITableViewController
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate>
+
+@property (nonatomic, retain) id<ModalDelegate> modalDelegate;
+@property (nonatomic, retain) UITextField *urlTextField;
+@property (nonatomic, retain) UITextField *descriptionTextField;
+@property (nonatomic, retain) UITextField *titleTextField;
+@property (nonatomic, retain) UITextField *tagTextField;
+
+- (void)addBookmark;
+- (void)close;
 
 @end

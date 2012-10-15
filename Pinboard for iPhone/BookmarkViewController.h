@@ -11,14 +11,12 @@
 #import "OHAttributedLabel.h"
 #import "TTTAttributedLabel.h"
 #import <CoreData/CoreData.h>
-#import "PullToRefreshView.h"
 #import "FMDatabase.h"
 #import "AppDelegate.h"
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, PullToRefreshViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate> {
-    PullToRefreshView *pull;
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate> {
 }
 
 @property (nonatomic, retain) NSNumber *limit;

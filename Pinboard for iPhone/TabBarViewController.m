@@ -12,6 +12,7 @@
 #import "TagViewController.h"
 #import "BookmarkViewController.h"
 #import "SettingsViewController.h"
+#import "AddBookmarkViewController.h"
 
 @interface TabBarViewController ()
 
@@ -41,9 +42,10 @@
         settingsViewController.title = @"Settings";
         settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
         
-        UIViewController *vc2 = [[UIViewController alloc] init];
-        vc2.tabBarItem.title = @"Add";
-        vc2.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
+        AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+        UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+        addBookmarkViewController.title = @"Add";
+        addBookmarkViewController.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
         
         TagViewController *tagViewController = [[TagViewController alloc] init];
         UINavigationController *tagViewNavigationController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
@@ -55,22 +57,31 @@
         noteViewController.title = @"Notes";
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
-        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, vc2, tagViewNavigationController, settingsViewNavigationController, nil]];
+        [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
         
         self.delegate = self;
     }
     return self;
 }
 
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
-    NSLog(@"%@", viewController);
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=Apps"]];
+- (void)closeModal {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-    if (![viewController isKindOfClass:[UINavigationController class]]) {
-        
-        return true;
+    if ([viewController isKindOfClass:[UINavigationController class]]) {
+        id visibleViewController = [(UINavigationController *)viewController visibleViewController];
+        if ([visibleViewController isKindOfClass:[AddBookmarkViewController class]]) {
+            AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+            UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+
+            addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+            addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+            addBookmarkViewController.title = @"Add Bookmark";
+            addBookmarkViewController.modalDelegate = self;
+            [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
+            return false;
+        }
     }
     return true;
 }

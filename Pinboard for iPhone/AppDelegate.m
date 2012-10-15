@@ -26,10 +26,13 @@
 @synthesize lastUpdated = _lastUpdated;
 
 + (NSString *)databasePath {
+#ifdef TARGET_IPHONE_SIMULATOR
+    return @"/tmp/pinboard.db";
+#else
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return [basePath stringByAppendingPathComponent:@"/pinboard.db"];
-    return @"/tmp/pinboard.db";
+#endif
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

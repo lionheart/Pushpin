@@ -37,14 +37,9 @@ static float kSmallFontSize = 13.0f;
 @synthesize queryParameters;
 @synthesize limit;
 
-- (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view {
-    [self performSelectorInBackground:@selector(reloadTableData) withObject:nil];
-}
-
 - (void)reloadTableData {
     [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
     [self.tableView reloadData];
-    [pull finishedLoading];
 }
 
 - (void)viewDidLoad {
@@ -59,10 +54,6 @@ static float kSmallFontSize = 13.0f;
 
 	[self processBookmarks];
 	self.tableView.scrollEnabled = YES;
-    
-    pull = [[PullToRefreshView alloc] initWithScrollView:(UIScrollView *) self.tableView];
-    [pull setDelegate:self];
-    [self.tableView addSubview:pull];
 }
 
 - (void)viewDidUnload {
@@ -131,7 +122,12 @@ static float kSmallFontSize = 13.0f;
     }
 
     [db close];
-    [self.tableView performSelectorInBackground:@selector(reloadData) withObject:nil];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
 }
 
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters {
@@ -298,11 +294,7 @@ static float kSmallFontSize = 13.0f;
         self.limit = @(self.limit.integerValue + 50);
         self.queryParameters[@"limit"] = limit;
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self processBookmarks];
-            });
-        });
+        [self processBookmarks];
     }
 }
 

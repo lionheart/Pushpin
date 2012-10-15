@@ -7,9 +7,9 @@
 //
 
 #import "TagViewController.h"
-#import "ASManagedObject.h"
 #import "Tag.h"
 #import "BookmarkViewController.h"
+#import "FMDatabase.h"
 
 @interface TagViewController ()
 
@@ -148,13 +148,24 @@
     NSLog(@"%@", searchBar.text);
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.tableView reloadData];
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadData];
+}
+
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    NSManagedObjectContext *context = [ASManagedObject sharedContext];
-    NSError *error = nil;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Tag"];
-    [request setSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES] ]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText]];
-    self.filteredTags = [context executeFetchRequest:request error:&error];
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *result = [db executeQuery:@"SELECT * FROM tag_fts WHERE tag_fts.name MATCH ?" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+    NSMutableArray *tags = [[NSMutableArray alloc] init];
+    while ([result next]) {
+        [tags addObject:@{@"id": @([result intForColumn:@"id"]), @"name": [result stringForColumn:@"name"]}];
+    }
+    [db close];
+    self.filteredTags = tags;
     [self.tableView reloadData];
 }
 

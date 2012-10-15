@@ -14,90 +14,138 @@
 
 @implementation AddBookmarkViewController
 
+@synthesize modalDelegate;
+@synthesize urlTextField;
+@synthesize descriptionTextField;
+@synthesize titleTextField;
+@synthesize tagTextField;
+
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.urlTextField = [[UITextField alloc] init];
+        self.urlTextField.font = [UIFont systemFontOfSize:16];
+        self.urlTextField.delegate = self;
+        self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.urlTextField.placeholder = @"https://pinboard.in/";
+        self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         
+        self.descriptionTextField = [[UITextField alloc] init];
+        self.descriptionTextField.font = [UIFont systemFontOfSize:16];
+        self.descriptionTextField.delegate = self;
+        self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.descriptionTextField.placeholder = @"";
+        
+        self.titleTextField = [[UITextField alloc] init];
+        self.titleTextField.font = [UIFont systemFontOfSize:16];
+        self.titleTextField.delegate = self;
+        self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.titleTextField.placeholder = @"Bookmarking for introverts";
+        
+        self.tagTextField = [[UITextField alloc] init];
+        self.tagTextField.font = [UIFont systemFontOfSize:16];
+        self.tagTextField.delegate = self;
+        self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.tagTextField.placeholder = @"bookmarking antisocial";
+        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     }
     return self;
 }
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 4;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    switch (section) {
+        case 0:
+            return @"URL";
+            break;
+        case 1:
+            return @"Title";
+            break;
+        case 2:
+            return @"Description";
+            break;
+        case 3:
+            return @"Tags";
+            break;
+        default:
+            break;
+    }
+    return @"";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    // Configure the cell...
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+
+    for (id view in cell.contentView.subviews) {
+        [view removeFromSuperview];
+    }
     
+    if (indexPath.section < 4) {
+        CGRect frame = cell.frame;
+
+        switch (indexPath.section) {
+            case 0:
+                self.urlTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                [cell.contentView addSubview:self.urlTextField];
+                break;
+                
+            case 1:
+                self.titleTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                [cell.contentView addSubview:self.titleTextField];
+                break;
+                
+            case 2:
+                self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                [cell.contentView addSubview:self.descriptionTextField];
+                break;
+                
+            case 3:
+                self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                [cell.contentView addSubview:self.tagTextField];
+                break;
+                
+            default:
+                break;
+        }
+    }
+
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
     return YES;
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+- (void)close {
+    [self.modalDelegate closeModal];
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+- (void)addBookmark {
+    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [self.modalDelegate closeModal];
+    }];
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-#pragma mark - Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
 }
 
 @end
