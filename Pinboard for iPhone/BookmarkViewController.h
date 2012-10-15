@@ -22,6 +22,8 @@
 @property (nonatomic, retain) NSNumber *limit;
 @property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSMutableArray *filteredBookmarks;
+@property (nonatomic, retain) NSMutableArray *filteredStrings;
+@property (nonatomic, retain) NSMutableArray *filteredHeights;
 @property (nonatomic, retain) NSString *savedSearchTerm;
 @property (nonatomic, retain) NSString *endpoint;
 @property (nonatomic, retain) NSDictionary *parameters;
@@ -36,6 +38,8 @@
 @property (nonatomic) BOOL searchWasActive;
 
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
++ (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
++ (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters;
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
 - (void)refreshBookmarks;

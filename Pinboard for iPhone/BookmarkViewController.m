@@ -36,6 +36,8 @@ static float kSmallFontSize = 13.0f;
 @synthesize query = _query;
 @synthesize queryParameters;
 @synthesize limit;
+@synthesize filteredHeights;
+@synthesize filteredStrings;
 
 - (void)reloadTableData {
     [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
@@ -43,6 +45,8 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
     if (self.savedSearchTerm) {
@@ -54,9 +58,54 @@ static float kSmallFontSize = 13.0f;
 
 	[self processBookmarks];
 	self.tableView.scrollEnabled = YES;
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.searchBar.delegate = self;
+    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+    self.searchDisplayController.searchResultsDataSource = self;
+    self.searchDisplayController.searchResultsDelegate = self;
+    self.searchDisplayController.delegate = self;
+    self.tableView.tableHeaderView = self.searchBar;
+    [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT bookmark.* FROM bookmark, bookmark_fts WHERE bookmark.id=bookmark_fts.id AND bookmark_fts MATCH ?" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+
+    [self.filteredBookmarks removeAllObjects];
+    [self.filteredHeights removeAllObjects];
+    [self.filteredStrings removeAllObjects];
+
+    while ([results next]) {
+        NSDictionary *bookmark = @{
+            @"title": [results stringForColumn:@"title"],
+            @"description": [results stringForColumn:@"description"],
+            @"unread": [results objectForColumnName:@"unread"],
+            @"url": [results stringForColumn:@"url"],
+            @"private": [results stringForColumn:@"private"],
+        };
+
+        [self.filteredBookmarks addObject:bookmark];
+        [self.filteredHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+        [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+    }
+
+    [db close];
+    [self.tableView reloadData];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.tableView reloadData];
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadData];
 }
 
 - (void)viewDidUnload {
+    [super viewDidUnload];
     self.filteredBookmarks = nil;
 }
 
@@ -65,16 +114,20 @@ static float kSmallFontSize = 13.0f;
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
 }
 
-- (void)processBookmark:(NSDictionary *)bookmark {
-    [self.bookmarks addObject:bookmark];
++ (NSNumber *)heightForBookmark:(NSDictionary *)bookmark {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
 
     CGFloat height = 10.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    [self.heights addObject:@(height)];
-    
+    return @(height);
+}
+
++ (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark {
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+
     NSString *content;
     if (![bookmark[@"description"] isEqualToString:@""]) {
         content = [NSString stringWithFormat:@"%@\n%@", bookmark[@"title"], bookmark[@"description"]];
@@ -96,7 +149,7 @@ static float kSmallFontSize = 13.0f;
         [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"title"]]];
     }
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    [self.strings addObject:attributedString];
+    return attributedString;
 }
 
 - (void)processBookmarks {
@@ -118,10 +171,13 @@ static float kSmallFontSize = 13.0f;
             @"private": [results stringForColumn:@"private"],
         };
         
-        [self processBookmark:bookmark];
+        [self.bookmarks addObject:bookmark];
+        [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+        [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
     }
 
     [db close];
+
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -140,6 +196,9 @@ static float kSmallFontSize = 13.0f;
         self.parameters = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
+        self.filteredHeights = [NSMutableArray array];
+        self.filteredStrings = [NSMutableArray array];
+        self.filteredBookmarks = [NSMutableArray array];
         self.date_formatter = [[NSDateFormatter alloc] init];
         [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -224,13 +283,23 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.strings count];
+    if (tableView == self.tableView) {
+        return [self.strings count];
+    }
+    else {
+        return [self.filteredStrings count];
+    }
 }
 
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.heights[indexPath.row] floatValue];
+    if (tableView == self.tableView) {
+        return [self.heights[indexPath.row] floatValue];
+    }
+    else {
+        return [self.filteredHeights[indexPath.row] floatValue];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -274,9 +343,18 @@ static float kSmallFontSize = 13.0f;
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    
+    NSAttributedString *string;
+    NSDictionary *bookmark;
 
-    NSAttributedString *string = self.strings[indexPath.row];
-    NSDictionary *bookmark = self.bookmarks[indexPath.row];
+    if (tableView == self.tableView) {
+        string = self.strings[indexPath.row];
+        bookmark = self.bookmarks[indexPath.row];
+    }
+    else {
+        string = self.filteredStrings[indexPath.row];
+        bookmark = self.filteredHeights[indexPath.row];
+    }
 
     [cell.textView setText:string];
     if ([bookmark[@"private"] boolValue] == YES) {
@@ -290,6 +368,9 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView != self.tableView) {
+        return;
+    }
     if (indexPath.row == self.limit.integerValue - 5) {
         self.limit = @(self.limit.integerValue + 50);
         self.queryParameters[@"limit"] = limit;
