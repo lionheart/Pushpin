@@ -9,6 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate>
+@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
+    BOOL _sessionChecked;
+}
+
+@property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) NSString *bookmarkURL;
+@property (nonatomic, retain) NSString *bookmarkTitle;
+
+- (void)showAddBookmarkViewController;
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title;
+- (void)promptUserToAddBookmark;
 
 @end

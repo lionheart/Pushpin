@@ -136,9 +136,7 @@
     [db close];
     
     [self updateBookmarks];
-
     return YES;
-
 }
 
 - (void)updateBookmarks {
