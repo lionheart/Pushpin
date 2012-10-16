@@ -24,10 +24,10 @@
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
+@property (nonatomic, retain) NSNumber *connectionAvailable;
 
 + (AppDelegate *)sharedDelegate;
 - (void)updateBookmarks;
-- (void)deleteBookmarks;
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;

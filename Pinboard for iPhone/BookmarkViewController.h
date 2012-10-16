@@ -16,9 +16,11 @@
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate> {
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate> {
 }
 
+@property (nonatomic, retain) UIViewController *bookmarkDetailViewController;
+@property (nonatomic, retain) NSDictionary *bookmark;
 @property (nonatomic, retain) NSNumber *limit;
 @property (nonatomic, retain) NSMutableArray *bookmarks;
 @property (nonatomic, retain) NSMutableArray *filteredBookmarks;
@@ -37,6 +39,7 @@
 @property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic) BOOL searchWasActive;
 
+- (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
@@ -45,6 +48,7 @@
 - (void)refreshBookmarks;
 - (void)processBookmarks;
 - (void)processBookmark:(NSDictionary *)dictionary;
+- (void)markBookmarkAsRead:(NSDictionary *)bookmark;
 - (void)edit;
 - (void)stopEditing;
 - (void)toggleEditMode;

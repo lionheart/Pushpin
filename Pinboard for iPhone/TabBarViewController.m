@@ -20,14 +20,14 @@
 
 @implementation TabBarViewController
 
-@synthesize webView;
+@synthesize webView = _webView;
 @synthesize bookmarkTitle;
 @synthesize bookmarkURL;
 
 - (id)init {
     self = [super init];
     if (self) {
-        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark LIMIT :limit OFFSET :offset" parameters:nil];
+        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
         bookmarkViewController.title = @"All Bookmarks";
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -70,6 +70,14 @@
                                selector:@selector(promptUserToAddBookmark)
                                    name:UIApplicationDidBecomeActiveNotification
                                  object:nil];
+
+        [notificationCenter addObserver:bookmarkViewController
+                               selector:@selector(processBookmarks)
+                                   name:@"BookmarksLoaded"
+                                 object:nil];
+        
+        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:60 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
     }
     return self;
 }
@@ -94,7 +102,7 @@
         self.webView.frame = CGRectMake(0, 0, 1, 1);
         self.webView.hidden = YES;
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]]];
-        [self.view addSubview:webView];
+        [self.view addSubview:self.webView];
         _sessionChecked = false;
     }
 }
@@ -138,7 +146,7 @@
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
+
     addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
     addBookmarkViewController.title = @"Add Bookmark";

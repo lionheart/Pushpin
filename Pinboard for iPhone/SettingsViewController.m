@@ -19,9 +19,38 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
+                                                                                  style:UIBarButtonItemStylePlain
+                                                                                 target:self
+                                                                                 action:@selector(showAboutPage)];
     }
     return self;
+}
+
+-(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        [[UIApplication sharedApplication] openURL:[request URL]];
+        return NO;
+    }
+    return YES;
+}
+
+- (void)showAboutPage {
+    UIViewController *aboutViewController = [[UIViewController alloc] init];
+    UIWebView *webView = [[UIWebView alloc] init];
+    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"about" ofType:@"html"]];
+    [webView loadRequest:[NSURLRequest requestWithURL:url]];
+    webView.delegate = self;
+    aboutViewController.view = webView;
+    aboutViewController.title = @"About";
+    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
+    UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
+    aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [self presentViewController:aboutViewNavigationController animated:YES completion:nil];
+}
+
+- (void)closeAboutPage {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source

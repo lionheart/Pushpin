@@ -138,12 +138,20 @@
 }
 
 - (void)addBookmark {
+    if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+        // TODO
+        return;
+    }
     NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self.modalDelegate closeModal];
+                               if (!error) {
+                                   [self.modalDelegate closeModal];
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was added." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                   [alert show];
+                               }
     }];
 
 }

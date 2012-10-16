@@ -18,15 +18,17 @@
 #import "Note.h"
 #import "TabBarViewController.h"
 #import "FMDatabase.h"
+#import "Reachability.h"
 
 @implementation AppDelegate
 
 @synthesize window;
 @synthesize token = _token;
 @synthesize lastUpdated = _lastUpdated;
+@synthesize connectionAvailable;
 
 + (NSString *)databasePath {
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
     return @"/tmp/pinboard.db";
 #else
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -49,6 +51,17 @@
     }
 
     [self.window makeKeyAndVisible];
+    
+    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    reach.reachableBlock = ^(Reachability*reach) {
+        self.connectionAvailable = @(YES);
+    };
+
+    reach.unreachableBlock = ^(Reachability*reach) {
+        self.connectionAvailable = @(NO);
+    };
+
+    [reach startNotifier];
 
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -68,6 +81,7 @@
                     "id INTEGER PRIMARY KEY ASC,"
                     "title VARCHAR(255),"
                     "description TEXT,"
+                    "tags TEXT,"
                     "url TEXT UNIQUE CHECK(length(url) < 2000),"
                     "count INTEGER,"
                     "private BOOL,"
@@ -177,24 +191,11 @@
     return _token;
 }
 
-- (void)deleteBookmarks {
-    NSManagedObjectContext *context = [ASManagedObject sharedContext];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"Bookmark" inManagedObjectContext:context]];
-    [fetchRequest setIncludesPropertyValues:NO];
-    
-    NSError *error = nil;
-    NSArray *items = [context executeFetchRequest:fetchRequest error:&error];
-    
-    for (NSManagedObject *item in items) {
-        [context deleteObject:item];
-    }
-    NSError *saveError = nil;
-    [context save:&saveError];
-}
-
 - (void)updateNotes {
+    if (!self.connectionAvailable.boolValue) {
+        // TODO
+        return;
+    }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -231,6 +232,10 @@
 }
 
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
+    if (!self.connectionAvailable.boolValue) {
+        // TODO
+        return;
+    }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -256,6 +261,10 @@
                                }
                                else {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                       #warning Fix this
+                                       if (!data) {
+                                           return;
+                                       }
                                        NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
@@ -295,6 +304,7 @@
                                                @"description": element[@"extended"],
                                                @"meta": element[@"meta"],
                                                @"hash": element[@"hash"],
+                                               @"tags": element[@"tags"],
                                                @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
                                                @"private": @([element[@"shared"] isEqualToString:@"no"]),
                                                @"created_at": [dateFormatter dateFromString:element[@"time"]]
@@ -302,7 +312,7 @@
                                            
                                            bookmarkIdNumber = [bookmarks objectForKey:element[@"hash"]];
                                            if (!bookmarkIdNumber) {
-                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :meta, :created_at);" withParameterDictionary:params];
+                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                                                
                                                results = [db executeQuery:@"SELECT last_insert_rowid();"];
                                                [results next];
@@ -330,7 +340,7 @@
                                                [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, bookmark_id];
                                            }
                                        }
-                                       BOOL success = [db commit];
+                                       [db commit];
 
                                        results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
                                        [results next];

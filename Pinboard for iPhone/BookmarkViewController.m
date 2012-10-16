@@ -38,6 +38,8 @@ static float kSmallFontSize = 13.0f;
 @synthesize limit;
 @synthesize filteredHeights;
 @synthesize filteredStrings;
+@synthesize bookmark = _bookmark;
+@synthesize bookmarkDetailViewController;
 
 - (void)reloadTableData {
     [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
@@ -67,11 +69,13 @@ static float kSmallFontSize = 13.0f;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
+
     FMResultSet *results = [db executeQuery:@"SELECT bookmark.* FROM bookmark, bookmark_fts WHERE bookmark.id=bookmark_fts.id AND bookmark_fts MATCH ?" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
 
     [self.filteredBookmarks removeAllObjects];
@@ -84,16 +88,17 @@ static float kSmallFontSize = 13.0f;
             @"description": [results stringForColumn:@"description"],
             @"unread": [results objectForColumnName:@"unread"],
             @"url": [results stringForColumn:@"url"],
-            @"private": [results stringForColumn:@"private"],
+            @"private": [results objectForColumnName:@"private"],
+            @"tags": [results stringForColumn:@"tags"],
         };
 
         [self.filteredBookmarks addObject:bookmark];
         [self.filteredHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-        [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+        [self.filteredStrings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
     }
 
     [db close];
-    [self.tableView reloadData];
+    [self.searchDisplayController.searchResultsTableView reloadData];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
@@ -120,7 +125,14 @@ static float kSmallFontSize = 13.0f;
 
     CGFloat height = 10.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        height += ceilf([bookmark[@"tags"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
     return @(height);
 }
 
@@ -128,12 +140,12 @@ static float kSmallFontSize = 13.0f;
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
 
-    NSString *content;
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
     if (![bookmark[@"description"] isEqualToString:@""]) {
-        content = [NSString stringWithFormat:@"%@\n%@", bookmark[@"title"], bookmark[@"description"]];
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
     }
-    else {
-        content = [NSString stringWithFormat:@"%@", bookmark[@"title"]];
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
     }
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
@@ -141,13 +153,18 @@ static float kSmallFontSize = 13.0f;
     [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark[@"title"]]];
     [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark[@"description"]]];
     [attributedString setTextColor:HEX(0x555555ff)];
-    
+
     if (![bookmark[@"unread"] boolValue]) {
         [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark[@"title"]]];
     }
     else {
         [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"title"]]];
     }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"tags"]]];
+    }
+
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     return attributedString;
 }
@@ -168,7 +185,8 @@ static float kSmallFontSize = 13.0f;
             @"description": [results stringForColumn:@"description"],
             @"unread": [results objectForColumnName:@"unread"],
             @"url": [results stringForColumn:@"url"],
-            @"private": [results stringForColumn:@"private"],
+            @"private": [results objectForColumnName:@"private"],
+            @"tags": [results stringForColumn:@"tags"],
         };
         
         [self.bookmarks addObject:bookmark];
@@ -284,10 +302,10 @@ static float kSmallFontSize = 13.0f;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-        return [self.strings count];
+        return [self.heights count];
     }
     else {
-        return [self.filteredStrings count];
+        return [self.filteredHeights count];
     }
 }
 
@@ -310,14 +328,81 @@ static float kSmallFontSize = 13.0f;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         self.webView = [[UIWebView alloc] init];
         self.webView.delegate = self;
-        NSDictionary *bookmark = self.bookmarks[indexPath.row];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:bookmark[@"url"]]];
+
+        if (tableView == self.tableView) {
+            self.bookmark = self.bookmarks[indexPath.row];
+        }
+        else {
+            self.bookmark = self.filteredBookmarks[indexPath.row];
+        }
+
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
         [self.webView loadRequest:request];
-        UIViewController *viewController = [[UIViewController alloc] init];
-        viewController.title = bookmark[@"title"];
-        viewController.view = self.webView;
-        [self.navigationController pushViewController:viewController animated:YES];
+        self.bookmarkDetailViewController = [[UIViewController alloc] init];
+        self.bookmarkDetailViewController.title = self.bookmark[@"title"];
+        self.webView.frame = self.bookmarkDetailViewController.view.frame;
+        self.bookmarkDetailViewController.view = self.webView;
+        self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
+        self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
+        [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
     }
+}
+
+- (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Mark as read", @"Open in Safari", nil];
+    [sheet showInView:self.bookmarkDetailViewController.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [self markBookmarkAsRead:self.bookmark];
+            break;
+            
+        case 1:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)markBookmarkAsRead:(NSDictionary *)bookmark {
+    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], self.bookmark[@"url"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               NSDictionary *bookmark = payload[@"posts"][0];
+
+                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+                               NSURL *url = [NSURL URLWithString:urlString];
+                               NSLog(@"%@", urlString);
+                               NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                               [NSURLConnection sendAsynchronousRequest:request
+                                                                  queue:[NSOperationQueue mainQueue]
+                                                      completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                          if (!error) {
+                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                              [db open];
+                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                              [db close];
+                                                              
+                                                              if (success) {
+                                                                  [self processBookmarks];
+                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was updated." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                                  [alert show];
+                                                                  return;
+                                                              }
+                                                          }
+                                                          
+                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh." message:@"There was an error updating your bookmark." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                          [alert show];
+                                                      }];
+                           }];
+
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -353,10 +438,11 @@ static float kSmallFontSize = 13.0f;
     }
     else {
         string = self.filteredStrings[indexPath.row];
-        bookmark = self.filteredHeights[indexPath.row];
+        bookmark = self.filteredBookmarks[indexPath.row];
     }
 
     [cell.textView setText:string];
+
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
         cell.contentView.backgroundColor = HEX(0xddddddff);

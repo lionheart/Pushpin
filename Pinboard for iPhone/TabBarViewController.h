@@ -16,6 +16,7 @@
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSString *bookmarkURL;
 @property (nonatomic, retain) NSString *bookmarkTitle;
+@property (nonatomic, retain) NSTimer *bookmarkRefreshTimer;
 
 - (void)showAddBookmarkViewController;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title;

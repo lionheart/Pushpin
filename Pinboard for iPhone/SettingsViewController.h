@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate>
+
+- (void)showAboutPage;
+- (void)closeAboutPage;
 
 @end

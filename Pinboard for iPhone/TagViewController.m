@@ -136,7 +136,6 @@
     }
 
     cell.textLabel.text = tag[@"name"];
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", tag.bookmarks.count];
     return cell;
 }
 
