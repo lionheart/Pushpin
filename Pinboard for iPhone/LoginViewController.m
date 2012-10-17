@@ -129,6 +129,8 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+    textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json&auth_token=%@", textField.text]]];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
@@ -143,7 +145,7 @@
                                    [self.activityIndicator startAnimating];
                                    textField.enabled = NO;
                                    textField.textColor = [UIColor grayColor];
-                                   
+
                                    self.textView.text = @"You have successfully authenticated. Please wait while we download your bookmarks.";
                                    self.progressView.hidden = NO;
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];

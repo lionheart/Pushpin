@@ -309,7 +309,7 @@
                                                @"private": @([element[@"shared"] isEqualToString:@"no"]),
                                                @"created_at": [dateFormatter dateFromString:element[@"time"]]
                                            };
-                                           
+
                                            bookmarkIdNumber = [bookmarks objectForKey:element[@"hash"]];
                                            if (!bookmarkIdNumber) {
                                                [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
