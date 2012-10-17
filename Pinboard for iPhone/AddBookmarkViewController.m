@@ -23,33 +23,43 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.urlTextField = [[UITextField alloc] init];
-        self.urlTextField.font = [UIFont systemFontOfSize:16];
-        self.urlTextField.delegate = self;
-        self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.urlTextField.placeholder = @"https://pinboard.in/";
-        self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        
-        self.descriptionTextField = [[UITextField alloc] init];
-        self.descriptionTextField.font = [UIFont systemFontOfSize:16];
-        self.descriptionTextField.delegate = self;
-        self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.descriptionTextField.placeholder = @"";
-        
-        self.titleTextField = [[UITextField alloc] init];
-        self.titleTextField.font = [UIFont systemFontOfSize:16];
-        self.titleTextField.delegate = self;
-        self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.titleTextField.placeholder = @"Bookmarking for introverts";
-        
-        self.tagTextField = [[UITextField alloc] init];
-        self.tagTextField.font = [UIFont systemFontOfSize:16];
-        self.tagTextField.delegate = self;
-        self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagTextField.placeholder = @"bookmarking antisocial";
-        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.urlTextField = [[UITextField alloc] init];
+    self.urlTextField.font = [UIFont systemFontOfSize:16];
+    self.urlTextField.delegate = self;
+    self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.urlTextField.placeholder = @"https://pinboard.in/";
+    self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.urlTextField.text = @"";
+    
+    self.descriptionTextField = [[UITextField alloc] init];
+    self.descriptionTextField.font = [UIFont systemFontOfSize:16];
+    self.descriptionTextField.delegate = self;
+    self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.descriptionTextField.placeholder = @"";
+    self.descriptionTextField.text = @"";
+    
+    self.titleTextField = [[UITextField alloc] init];
+    self.titleTextField.font = [UIFont systemFontOfSize:16];
+    self.titleTextField.delegate = self;
+    self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.titleTextField.placeholder = @"Bookmarking for introverts";
+    self.titleTextField.text = @"";
+    
+    self.tagTextField = [[UITextField alloc] init];
+    self.tagTextField.font = [UIFont systemFontOfSize:16];
+    self.tagTextField.delegate = self;
+    self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.tagTextField.placeholder = @"bookmarking antisocial";
+    self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.tagTextField.text = @"";
 }
 
 #pragma mark - Table view data source
@@ -82,8 +92,7 @@
     return @"";
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -142,7 +151,16 @@
         // TODO
         return;
     }
+
+    if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh!" message:@"You can't add a bookmark without a URL or title." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alert show];
+        return;
+    }
+
+    NSLog(@"%@", self.titleTextField.text);
     NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSLog(@"%@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
