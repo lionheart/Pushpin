@@ -81,8 +81,13 @@ static float kSmallFontSize = 13.0f;
     [self.filteredBookmarks removeAllObjects];
     [self.filteredHeights removeAllObjects];
     [self.filteredStrings removeAllObjects];
+    NSInteger count = 0;
 
     while ([results next]) {
+        count++;
+        if (count > 20) {
+            break;
+        }
         NSDictionary *bookmark = @{
             @"title": [results stringForColumn:@"title"],
             @"description": [results stringForColumn:@"description"],
