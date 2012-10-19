@@ -24,6 +24,7 @@
 
 @synthesize window;
 @synthesize token = _token;
+@synthesize browser = _browser;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize connectionAvailable;
 
@@ -164,29 +165,48 @@
 - (void)setLastUpdated:(NSDate *)lastUpdated {
     _lastUpdated = lastUpdated;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:lastUpdated forKey:@"com.aurora.pinboard.LastUpdated"];
+    [defaults setObject:lastUpdated forKey:@"io.aurora.pinboard.LastUpdated"];
     [defaults synchronize];
 }
 
 - (NSDate *)lastUpdated {
     if (!_lastUpdated) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _lastUpdated = [defaults objectForKey:@"com.aurora.pinboard.LastUpdated"];
+        _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
     }
     return _lastUpdated;
+}
+
+- (void)setBrowser:(NSNumber *)browser {
+    _browser = browser;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:browser forKey:@"io.aurora.pinboard.Browser"];
+    [defaults synchronize];
+}
+
+- (NSNumber *)browser {
+    if (!_browser) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _browser = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
+        
+        if (!_browser) {
+            _browser = @(BROWSER_WEBVIEW);
+        }
+    }
+    return _browser;
 }
 
 - (void)setToken:(NSString *)token {
     _token = token;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:token forKey:@"com.aurora.pinboard.Token"];
+    [defaults setObject:token forKey:@"io.aurora.pinboard.Token"];
     [defaults synchronize];
 }
 
 - (NSString *)token {
     if (!_token) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _token = [defaults objectForKey:@"com.aurora.pinboard.Token"];
+        _token = [defaults objectForKey:@"io.aurora.pinboard.Token"];
     }
     return _token;
 }

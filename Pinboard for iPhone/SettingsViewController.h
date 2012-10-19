@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate>
+
+@property (nonatomic, retain) UIAlertView *logOutAlertView;
 
 - (void)showAboutPage;
 - (void)closeAboutPage;

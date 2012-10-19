@@ -10,6 +10,12 @@
 #import "Pinboard.h"
 #import <CoreData/CoreData.h>
 
+enum browsers {
+    BROWSER_WEBVIEW,
+    BROWSER_SAFARI,
+    BROWSER_CHROME
+};
+
 @protocol BookmarkUpdateProgressDelegate <NSObject>
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
 @end
@@ -23,6 +29,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;
+@property (nonatomic, retain) NSNumber *browser;
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 

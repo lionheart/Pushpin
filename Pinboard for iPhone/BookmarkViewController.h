@@ -16,7 +16,7 @@
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate> {
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
 }
 
 @property (nonatomic, retain) UIViewController *bookmarkDetailViewController;

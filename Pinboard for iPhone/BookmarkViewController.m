@@ -341,15 +341,45 @@ static float kSmallFontSize = 13.0f;
             self.bookmark = self.filteredBookmarks[indexPath.row];
         }
 
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-        [self.webView loadRequest:request];
-        self.bookmarkDetailViewController = [[UIViewController alloc] init];
-        self.bookmarkDetailViewController.title = self.bookmark[@"title"];
-        self.webView.frame = self.bookmarkDetailViewController.view.frame;
-        self.bookmarkDetailViewController.view = self.webView;
-        self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
-        self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
-        [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
+        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+            case BROWSER_WEBVIEW: {
+                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+                [self.webView loadRequest:request];
+                self.bookmarkDetailViewController = [[UIViewController alloc] init];
+                self.bookmarkDetailViewController.title = self.bookmark[@"title"];
+                self.webView.frame = self.bookmarkDetailViewController.view.frame;
+                self.bookmarkDetailViewController.view = self.webView;
+                self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
+                self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
+                [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
+                break;
+            }
+                
+            case BROWSER_SAFARI: {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+                break;
+            }
+                
+            case BROWSER_CHROME:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Shucks" message:@"It looks like Google Chrome is unable to open this link. Click OK to open it with Safari instead." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                    [alert show];
+                }
+                break;
+                
+            default:
+                break;
+        }
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
     }
 }
 

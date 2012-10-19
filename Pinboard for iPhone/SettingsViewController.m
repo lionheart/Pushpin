@@ -16,6 +16,8 @@
 
 @implementation SettingsViewController
 
+@synthesize logOutAlertView;
+
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
@@ -23,6 +25,8 @@
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(showAboutPage)];
+        
+        self.logOutAlertView = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"This will log you out and delete the local bookmark database from your device." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
     }
     return self;
 }
@@ -84,13 +88,20 @@
     
     switch (indexPath.section) {
         case 0: {
-            /* CGSize size = cell.frame.size;
-            UISwitch *switchView = [[UISwitch alloc] init];
-            CGSize switchSize = switchView.frame.size;
-            switchView.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-            [cell.contentView addSubview:switchView]; */
             cell.textLabel.text = @"Open links with:";
-            cell.detailTextLabel.text = @"Safari";
+            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+                case BROWSER_WEBVIEW:
+                    cell.detailTextLabel.text = @"Webview";
+                    break;
+                case BROWSER_SAFARI:
+                    cell.detailTextLabel.text = @"Safari";
+                    break;
+                case BROWSER_CHROME:
+                    cell.detailTextLabel.text = @"Chrome";
+                    break;
+                default:
+                    break;
+            }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
@@ -119,16 +130,23 @@
 #pragma mark - Table view delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [[AppDelegate sharedDelegate] setToken:nil];
-        [[AppDelegate sharedDelegate] setLastUpdated:nil];
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        [fileManager removeItemAtPath:[AppDelegate databasePath] error:nil];
-        LoginViewController *loginViewController = [[LoginViewController alloc] init];
-        loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-        [self presentViewController:loginViewController
-                           animated:YES
-                         completion:nil];
+    if (alertView == self.logOutAlertView) {
+        if (buttonIndex == 1) {
+            [[AppDelegate sharedDelegate] setToken:nil];
+            [[AppDelegate sharedDelegate] setLastUpdated:nil];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            [fileManager removeItemAtPath:[AppDelegate databasePath] error:nil];
+            LoginViewController *loginViewController = [[LoginViewController alloc] init];
+            loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:loginViewController
+                               animated:YES
+                             completion:nil];
+        }
+    }
+    else {
+        if (buttonIndex == 1) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.com/app/chrome"]];
+        }
     }
 }
 
@@ -156,25 +174,45 @@
     }
 }
 
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+            break;
+            
+        case 1:
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+            break;
+            
+        case 2: {
+            BOOL installed = [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:@"googlechrome://x1x"]];
+            if (!installed) {
+                // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Install Chrome?" message:@"In order to open links with Google Chrome, you first have to install it. Click OK to continue." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                [alert show];
+            }
+            else {
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+            }
+            break;
+        }
+            
+        default:
+            break;
+    }
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-
-            float screenWidth = [UIScreen mainScreen].bounds.size.width;
-            CGRect pickerFrame = CGRectMake(0, 0, screenWidth, 0);
-            UIPickerView *pickerView = [[UIPickerView alloc] initWithFrame:pickerFrame];
-            UIViewController *viewController = [[UIViewController alloc] init];
-            viewController.view = pickerView;
-            viewController.view.frame = pickerFrame;
-            pickerView.showsSelectionIndicator = YES;
-            pickerView.dataSource = self;
-            pickerView.delegate = self;
-            [self presentViewController:viewController animated:YES completion:nil];
+            UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Open links with:" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
+            [sheet showFromTabBar:self.tabBarController.tabBar];
             break;
         }
         case 1: {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"This will log you out and delete the local bookmark database from your device." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-            [alert show];
+            [self.logOutAlertView show];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         }
