@@ -755,6 +755,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
@@ -817,6 +818,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
@@ -832,6 +834,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
