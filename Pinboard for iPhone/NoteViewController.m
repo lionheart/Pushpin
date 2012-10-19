@@ -31,9 +31,11 @@
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?format=json&auth_token=%@", [[AppDelegate sharedDelegate] token]];
     NSLog(@"%@", endpoint);
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                self.notes = payload[@"notes"];
                                [self.tableView reloadData];

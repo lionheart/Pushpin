@@ -176,6 +176,7 @@
     NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text, self.privateSwitch.on ? @"no" : @"yes"] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSLog(@"%@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -184,6 +185,7 @@
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was added." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
                                }
+                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }];
 
 }
