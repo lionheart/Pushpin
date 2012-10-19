@@ -19,6 +19,7 @@
 @synthesize descriptionTextField;
 @synthesize titleTextField;
 @synthesize tagTextField;
+@synthesize privateSwitch;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -65,7 +66,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -86,6 +87,9 @@
         case 3:
             return @"Tags";
             break;
+        case 4:
+            return @"Private";
+            break;
         default:
             break;
     }
@@ -105,7 +109,7 @@
         [view removeFromSuperview];
     }
     
-    if (indexPath.section < 4) {
+    if (indexPath.section < 5) {
         CGRect frame = cell.frame;
 
         switch (indexPath.section) {
@@ -128,6 +132,17 @@
                 self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
                 [cell.contentView addSubview:self.tagTextField];
                 break;
+                
+            case 4: {
+                cell.textLabel.text = @"Set as private?";
+                CGSize size = cell.frame.size;
+                self.privateSwitch = [[UISwitch alloc] init];
+                CGSize switchSize = self.privateSwitch.frame.size;
+                self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                [cell.contentView addSubview:self.privateSwitch];
+
+                break;
+            }
                 
             default:
                 break;
@@ -158,8 +173,7 @@
         return;
     }
 
-    NSLog(@"%@", self.titleTextField.text);
-    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text, self.privateSwitch.on ? @"no" : @"yes"] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSLog(@"%@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request

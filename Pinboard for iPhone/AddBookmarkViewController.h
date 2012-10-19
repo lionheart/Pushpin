@@ -15,6 +15,7 @@
 @property (nonatomic, retain) UITextField *urlTextField;
 @property (nonatomic, retain) UITextField *descriptionTextField;
 @property (nonatomic, retain) UITextField *titleTextField;
+@property (nonatomic, retain) UISwitch *privateSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
 
 - (void)addBookmark;
