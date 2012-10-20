@@ -299,6 +299,53 @@ static float kSmallFontSize = 13.0f;
     }
 }
 
+- (void)markBookmarkAsRead:(NSDictionary *)bookmark {
+    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], self.bookmark[@"url"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               NSDictionary *bookmark = payload[@"posts"][0];
+                               
+                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+                               NSURL *url = [NSURL URLWithString:urlString];
+                               NSLog(@"%@", urlString);
+                               NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                               [NSURLConnection sendAsynchronousRequest:request
+                                                                  queue:[NSOperationQueue mainQueue]
+                                                      completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                                          if (!error) {
+                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                              [db open];
+                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                              [db close];
+                                                              
+                                                              if (success) {
+                                                                  [self processBookmarks];
+                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was updated." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                                  [alert show];
+                                                                  return;
+                                                              }
+                                                          }
+                                                          
+                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh." message:@"There was an error updating your bookmark." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                          [alert show];
+                                                      }];
+                           }];
+    
+}
+
+#pragma mark - Alert View Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -323,18 +370,6 @@ static float kSmallFontSize = 13.0f;
     else {
         return [self.filteredHeights[indexPath.row] floatValue];
     }
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -389,70 +424,6 @@ static float kSmallFontSize = 13.0f;
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-    }
-}
-
-- (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Mark as read", @"Open in Safari", nil];
-    [sheet showInView:self.bookmarkDetailViewController.view];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0:
-            [self markBookmarkAsRead:self.bookmark];
-            break;
-            
-        case 1:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-            break;
-            
-        default:
-            break;
-    }
-}
-
-- (void)markBookmarkAsRead:(NSDictionary *)bookmark {
-    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], self.bookmark[@"url"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                               NSDictionary *bookmark = payload[@"posts"][0];
-
-                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
-                               NSURL *url = [NSURL URLWithString:urlString];
-                               NSLog(@"%@", urlString);
-                               NSURLRequest *request = [NSURLRequest requestWithURL:url];
-                               [NSURLConnection sendAsynchronousRequest:request
-                                                                  queue:[NSOperationQueue mainQueue]
-                                                      completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                                          if (!error) {
-                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                                              [db open];
-                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                              [db close];
-                                                              
-                                                              if (success) {
-                                                                  [self processBookmarks];
-                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was updated." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                                  [alert show];
-                                                                  return;
-                                                              }
-                                                          }
-                                                          
-                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh." message:@"There was an error updating your bookmark." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                          [alert show];
-                                                      }];
-                           }];
-
-}
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
@@ -511,6 +482,42 @@ static float kSmallFontSize = 13.0f;
         self.queryParameters[@"limit"] = limit;
 
         [self processBookmarks];
+    }
+}
+
+#pragma mark - Webview Delegate
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+#pragma mark - Action Sheet Delegate
+
+- (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Mark as read", @"Open in Safari", nil];
+    [sheet showInView:self.bookmarkDetailViewController.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [self markBookmarkAsRead:self.bookmark];
+            break;
+            
+        case 1:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+            break;
+            
+        default:
+            break;
     }
 }
 

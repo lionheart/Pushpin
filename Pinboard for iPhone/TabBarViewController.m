@@ -88,11 +88,22 @@
 
 - (void)promptUserToAddBookmark {
     self.bookmarkURL = [UIPasteboard generalPasteboard].string;
-    NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
-    if (candidateURL && candidateURL.scheme && candidateURL.host) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add Bookmark?" message:@"We've detected a URL in your clipboard. Would you like to bookmark it?" delegate:self cancelButtonTitle:@"Nope" otherButtonTitles:@"Sure", nil];
-        [alert show];
+    if (!self.bookmarkURL) {
+        return;
     }
+
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmarkURL]];
+    [results next];
+    if ([results intForColumnIndex:0] == 0) {
+        NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
+        if (candidateURL && candidateURL.scheme && candidateURL.host) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add Bookmark?" message:@"We've detected a URL in your clipboard. Would you like to bookmark it?" delegate:self cancelButtonTitle:@"Nope" otherButtonTitles:@"Sure", nil];
+            [alert show];
+        }
+    }
+    [db close];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -107,18 +118,6 @@
     }
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    return YES;
-    #warning Fix this up
-    if (_sessionChecked) {
-        return YES;
-    }
-    
-    NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
-    [conn start];
-    return NO;
-}
-
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -129,18 +128,6 @@
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]];
         [self.webView loadRequest:req];
     }
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSString *url = [UIPasteboard generalPasteboard].string;
-    [[UIPasteboard generalPasteboard] setString:@""];
-    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    [webView stringByEvaluatingJavaScriptFromString:@"window.alert=null;"];
-    [self showAddBookmarkViewControllerWithURL:url andTitle:title];
-    [webView removeFromSuperview];
 }
 
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title {
@@ -158,6 +145,7 @@
 
 - (void)showAddBookmarkViewController {
     [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
+    _sessionChecked = false;
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -169,6 +157,31 @@
         }
     }
     return true;
+}
+
+#pragma mark - Webview Delegate
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    _sessionChecked = false;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    NSString *url = [UIPasteboard generalPasteboard].string;
+//    [[UIPasteboard generalPasteboard] setString:@""];
+    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    [webView stringByEvaluatingJavaScriptFromString:@"window.alert=null;"];
+    [self showAddBookmarkViewControllerWithURL:url andTitle:title];
+    [webView removeFromSuperview];
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (_sessionChecked) {
+        return YES;
+    }
+    
+    NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
+    [conn start];
+    return NO;
 }
 
 @end

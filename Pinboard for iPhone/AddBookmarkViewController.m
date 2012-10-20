@@ -7,6 +7,7 @@
 //
 
 #import "AddBookmarkViewController.h"
+#import "NSString+URLEncoding.h"
 
 @interface AddBookmarkViewController ()
 
@@ -24,43 +25,37 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-
+        self.urlTextField = [[UITextField alloc] init];
+        self.urlTextField.font = [UIFont systemFontOfSize:16];
+        self.urlTextField.delegate = self;
+        self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.urlTextField.placeholder = @"https://pinboard.in/";
+        self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.urlTextField.text = @"";
+        
+        self.descriptionTextField = [[UITextField alloc] init];
+        self.descriptionTextField.font = [UIFont systemFontOfSize:16];
+        self.descriptionTextField.delegate = self;
+        self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.descriptionTextField.placeholder = @"";
+        self.descriptionTextField.text = @"";
+        
+        self.titleTextField = [[UITextField alloc] init];
+        self.titleTextField.font = [UIFont systemFontOfSize:16];
+        self.titleTextField.delegate = self;
+        self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.titleTextField.placeholder = @"Bookmarking for introverts";
+        self.titleTextField.text = @"";
+        
+        self.tagTextField = [[UITextField alloc] init];
+        self.tagTextField.font = [UIFont systemFontOfSize:16];
+        self.tagTextField.delegate = self;
+        self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.tagTextField.placeholder = @"bookmarking antisocial";
+        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagTextField.text = @"";
     }
     return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.urlTextField = [[UITextField alloc] init];
-    self.urlTextField.font = [UIFont systemFontOfSize:16];
-    self.urlTextField.delegate = self;
-    self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.urlTextField.placeholder = @"https://pinboard.in/";
-    self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.urlTextField.text = @"";
-    
-    self.descriptionTextField = [[UITextField alloc] init];
-    self.descriptionTextField.font = [UIFont systemFontOfSize:16];
-    self.descriptionTextField.delegate = self;
-    self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.descriptionTextField.placeholder = @"";
-    self.descriptionTextField.text = @"";
-    
-    self.titleTextField = [[UITextField alloc] init];
-    self.titleTextField.font = [UIFont systemFontOfSize:16];
-    self.titleTextField.delegate = self;
-    self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.titleTextField.placeholder = @"Bookmarking for introverts";
-    self.titleTextField.text = @"";
-    
-    self.tagTextField = [[UITextField alloc] init];
-    self.tagTextField.font = [UIFont systemFontOfSize:16];
-    self.tagTextField.delegate = self;
-    self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.tagTextField.placeholder = @"bookmarking antisocial";
-    self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.tagTextField.text = @"";
 }
 
 #pragma mark - Table view data source
@@ -163,7 +158,7 @@
 
 - (void)addBookmark {
     if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-        // TODO
+        #warning Should display a message to the user
         return;
     }
 
@@ -173,8 +168,8 @@
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@", [[AppDelegate sharedDelegate] token], self.urlTextField.text, self.titleTextField.text, self.descriptionTextField.text, self.tagTextField.text, self.privateSwitch.on ? @"no" : @"yes"] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
-    NSLog(@"%@", url);
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@", [[AppDelegate sharedDelegate] token], [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.titleTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.descriptionTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.tagTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], self.privateSwitch.on ? @"no" : @"yes"]];
+
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
