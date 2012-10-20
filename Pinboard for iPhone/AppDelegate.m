@@ -68,7 +68,12 @@
     };
 
     [reach startNotifier];
+    [self migrateDatabase];
+    [self updateBookmarks];
+    return YES;
+}
 
+- (void)migrateDatabase {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     // http://stackoverflow.com/a/875422/39155
@@ -84,42 +89,42 @@
             case 0:
                 [db executeUpdate:
                  @"CREATE TABLE bookmark("
-                    "id INTEGER PRIMARY KEY ASC,"
-                    "title VARCHAR(255),"
-                    "description TEXT,"
-                    "tags TEXT,"
-                    "url TEXT UNIQUE CHECK(length(url) < 2000),"
-                    "count INTEGER,"
-                    "private BOOL,"
-                    "unread BOOL,"
-                    "hash VARCHAR(32) UNIQUE,"
-                    "meta VARCHAR(32),"
-                    "created_at DATETIME"
+                 "id INTEGER PRIMARY KEY ASC,"
+                 "title VARCHAR(255),"
+                 "description TEXT,"
+                 "tags TEXT,"
+                 "url TEXT UNIQUE CHECK(length(url) < 2000),"
+                 "count INTEGER,"
+                 "private BOOL,"
+                 "unread BOOL,"
+                 "hash VARCHAR(32) UNIQUE,"
+                 "meta VARCHAR(32),"
+                 "created_at DATETIME"
                  ");" ];
                 [db executeUpdate:
                  @"CREATE TABLE tag("
-                    "id INTEGER PRIMARY KEY ASC,"
-                    "name VARCHAR(255) UNIQUE,"
-                    "count INTEGER"
+                 "id INTEGER PRIMARY KEY ASC,"
+                 "name VARCHAR(255) UNIQUE,"
+                 "count INTEGER"
                  ");" ];
                 [db executeUpdate:
                  @"CREATE TABLE tagging("
-                    "tag_id INTEGER,"
-                    "bookmark_id INTEGER,"
-                    "PRIMARY KEY(tag_id, bookmark_id),"
-                    "FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,"
-                    "FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE"
+                 "tag_id INTEGER,"
+                 "bookmark_id INTEGER,"
+                 "PRIMARY KEY(tag_id, bookmark_id),"
+                 "FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,"
+                 "FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE"
                  ");" ];
                 [db executeUpdate:
                  @"CREATE TABLE note("
-                    "id INTEGER PRIMARY KEY ASC,"
-                    "remote_id VARCHAR(20) UNIQUE,"
-                    "hash VARCHAR(20) UNIQUE,"
-                    "title VARCHAR(255),"
-                    "text TEXT,"
-                    "length INTEGER,"
-                    "created_at DATETIME,"
-                    "updated_at DATETIME"
+                 "id INTEGER PRIMARY KEY ASC,"
+                 "remote_id VARCHAR(20) UNIQUE,"
+                 "hash VARCHAR(20) UNIQUE,"
+                 "title VARCHAR(255),"
+                 "text TEXT,"
+                 "length INTEGER,"
+                 "created_at DATETIME,"
+                 "updated_at DATETIME"
                  ");" ];
 
                 // Full text search
@@ -144,19 +149,10 @@
             default:
                 break;
         }
-        BOOL success = [db commit];
-        NSLog(@"%d", success);
-    }
-    
-    s = [db executeQuery:@"SELECT name FROM sqlite_master WHERE type='table'"];
-    while ([s next]) {
-        NSLog(@"%@", [s stringForColumn:@"name"]);
+        [db commit];
     }
     
     [db close];
-    
-    [self updateBookmarks];
-    return YES;
 }
 
 - (void)updateBookmarks {

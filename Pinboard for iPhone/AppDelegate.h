@@ -34,6 +34,7 @@ enum browsers {
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 
 + (AppDelegate *)sharedDelegate;
+- (void)migrateDatabase;
 - (void)updateBookmarks;
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;

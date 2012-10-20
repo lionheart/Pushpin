@@ -141,6 +141,8 @@
             [self presentViewController:loginViewController
                                animated:YES
                              completion:nil];
+
+            [[AppDelegate sharedDelegate] migrateDatabase];
         }
     }
     else {
