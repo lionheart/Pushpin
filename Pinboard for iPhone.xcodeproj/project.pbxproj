@@ -17,7 +17,6 @@
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		37247FF0163303CF00417E65 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 37247FEF163303CF00417E65 /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		37247FF41633406500417E65 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF31633406500417E65 /* libTestFlight.a */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		37247FFC163340EC00417E65 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF8163340EC00417E65 /* libTestFlight.a */; };
 		37247FFD163340EC00417E65 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37247FF9163340EC00417E65 /* README.md */; };
@@ -288,7 +287,6 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
-				37247FF41633406500417E65 /* libTestFlight.a in Frameworks */,
 				37247FFC163340EC00417E65 /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
