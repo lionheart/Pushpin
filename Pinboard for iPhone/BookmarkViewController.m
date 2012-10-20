@@ -410,7 +410,7 @@ static float kSmallFontSize = 13.0f;
             case BROWSER_CHROME:
                 if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
                     NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+                    [[UIApplication sharedApplication] openURL:url];
                 }
                 else {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Shucks" message:@"It looks like Google Chrome is unable to open this link. Click OK to open it with Safari instead." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
