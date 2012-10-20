@@ -107,6 +107,7 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    _sessionChecked = false;
     if (buttonIndex == 1) {
         self.webView = [[UIWebView alloc] init];
         self.webView.delegate = self;
@@ -114,7 +115,6 @@
         self.webView.hidden = YES;
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]]];
         [self.view addSubview:self.webView];
-        _sessionChecked = false;
     }
 }
 
