@@ -17,6 +17,11 @@
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		37247FF0163303CF00417E65 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 37247FEF163303CF00417E65 /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		37247FF41633406500417E65 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF31633406500417E65 /* libTestFlight.a */; };
+		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
+		37247FFC163340EC00417E65 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF8163340EC00417E65 /* libTestFlight.a */; };
+		37247FFD163340EC00417E65 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37247FF9163340EC00417E65 /* README.md */; };
+		37247FFE163340EC00417E65 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 37247FFA163340EC00417E65 /* release_notes.md */; };
 		37275585161A626B001A857B /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 37275580161A626B001A857B /* arrow.png */; };
 		37275586161A626B001A857B /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37275581161A626B001A857B /* arrow@2x.png */; };
 		37275587161A626B001A857B /* PullToRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37275583161A626B001A857B /* PullToRefreshView.m */; };
@@ -124,6 +129,12 @@
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		37247FEE163303CF00417E65 /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
 		37247FEF163303CF00417E65 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		37247FF31633406500417E65 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTestFlight.a; path = TestFlightSDK1.1/libTestFlight.a; sourceTree = "<group>"; };
+		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		37247FF8163340EC00417E65 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		37247FF9163340EC00417E65 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		37247FFA163340EC00417E65 /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
+		37247FFB163340EC00417E65 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		37275580161A626B001A857B /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		37275581161A626B001A857B /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
 		37275582161A626B001A857B /* PullToRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullToRefreshView.h; sourceTree = "<group>"; };
@@ -268,6 +279,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */,
@@ -276,6 +288,8 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
+				37247FF41633406500417E65 /* libTestFlight.a in Frameworks */,
+				37247FFC163340EC00417E65 /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +299,7 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				37247FF7163340EC00417E65 /* TestFlightSDK1.1 */,
 				37800E4D162CF1A2009FCB17 /* reachability */,
 				37E329DD1629F0D100A6BC18 /* SQLite */,
 				37E329911629DF9500A6BC18 /* fmdb */,
@@ -343,6 +358,18 @@
 				3715EEC615787CAA00FD21EE /* main.css */,
 			);
 			name = Stylesheets;
+			sourceTree = "<group>";
+		};
+		37247FF7163340EC00417E65 /* TestFlightSDK1.1 */ = {
+			isa = PBXGroup;
+			children = (
+				37247FF8163340EC00417E65 /* libTestFlight.a */,
+				37247FF9163340EC00417E65 /* README.md */,
+				37247FFA163340EC00417E65 /* release_notes.md */,
+				37247FFB163340EC00417E65 /* TestFlight.h */,
+			);
+			name = TestFlightSDK1.1;
+			path = Vendor/TestFlightSDK1.1;
 			sourceTree = "<group>";
 		};
 		3727557F161A626B001A857B /* PullToRefresh */ = {
@@ -449,6 +476,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				37247FF51633407E00417E65 /* libz.dylib */,
 				37247FEE163303CF00417E65 /* NSString+URLEncoding.h */,
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,
 				3787002C15B49B23008A477A /* Icon@2x.png */,
@@ -472,6 +500,7 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				37247FF31633406500417E65 /* libTestFlight.a */,
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */,
 				3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */,
@@ -666,6 +695,8 @@
 				37800E4B162C844A009FCB17 /* about.html in Resources */,
 				37800E89162CF1A3009FCB17 /* Reachability.podspec in Resources */,
 				37800E8A162CF1A3009FCB17 /* README.md in Resources */,
+				37247FFD163340EC00417E65 /* README.md in Resources */,
+				37247FFE163340EC00417E65 /* release_notes.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,7 +772,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "TESTING=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -765,6 +796,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
+					"\"$(SRCROOT)/TestFlightSDK1.1\"",
+					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -782,7 +815,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "TESTING=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -828,6 +861,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
+					"\"$(SRCROOT)/TestFlightSDK1.1\"",
+					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -844,6 +879,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
+					"\"$(SRCROOT)/TestFlightSDK1.1\"",
+					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

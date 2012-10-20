@@ -42,6 +42,11 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
+#ifdef TESTING
+    [TestFlight takeOff:@"f421edef88d254dd81c7e63f2c847187_MTI2MjA0MjAxMi0wOC0yOCAxOTowMDowNS4wNDE5ODY"];
+    [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
+#endif
+
     if ([self token]) {
         TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
         [self.window setRootViewController:tabBarViewController];
