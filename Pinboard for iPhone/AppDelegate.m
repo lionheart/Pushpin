@@ -367,9 +367,10 @@
                                        }
                                        [db commit];
 
+                                       /*
                                        results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
                                        [results next];
-                                       NSLog(@"%d", [results intForColumnIndex:0]);
+                                        */
                                        [db close];
 
                                        [self setLastUpdated:[NSDate date]];
