@@ -133,10 +133,14 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json&auth_token=%@", textField.text]]];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    self.textView.text = @"Checking whether your token is valid. Hold on a minute.";
+    [self.activityIndicator startAnimating];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [self.activityIndicator stopAnimating];
+
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:@"We couldn't log you in. Please make sure you've provided a valid token." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
