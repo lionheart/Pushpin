@@ -123,11 +123,11 @@
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSLog(@"%qd", [httpResponse expectedContentLength]);
         _sessionChecked = true;
-        [connection cancel];
         
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]];
         [self.webView loadRequest:req];
     }
+    [connection cancel];
 }
 
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title {
@@ -162,7 +162,6 @@
 #pragma mark - Webview Delegate
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    _sessionChecked = false;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -176,6 +175,7 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if (_sessionChecked) {
+        _sessionChecked = false;
         return YES;
     }
     
