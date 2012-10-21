@@ -115,6 +115,7 @@
         self.webView.hidden = YES;
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]]];
         [self.view addSubview:self.webView];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     }
 }
 
@@ -126,6 +127,9 @@
         
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]];
         [self.webView loadRequest:req];
+    }
+    else {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
     [connection cancel];
 }
@@ -162,6 +166,7 @@
 #pragma mark - Webview Delegate
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -171,6 +176,8 @@
     [webView stringByEvaluatingJavaScriptFromString:@"window.alert=null;"];
     [self showAddBookmarkViewControllerWithURL:url andTitle:title];
     [webView removeFromSuperview];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
