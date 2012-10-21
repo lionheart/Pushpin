@@ -234,7 +234,6 @@
                                    [db open];
                                    [db beginTransaction];
 
-
                                    for (id element in elements) {
                                        NSDictionary *params = @{
                                            @"remote_id": element[@"id"],
@@ -262,123 +261,142 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-
-    NSString *endpoint;
-    if ([self lastUpdated]) {
-        endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?fromdt=%@&format=json&auth_token=%@", [dateFormatter stringFromDate:[self lastUpdated]], [self token]];
-
-    }
-    else {
-        endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
-    }
     
-    NSLog(@"%@", endpoint);
-
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/update?auth_token=%@&format=json", [self token]]]];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                               if (error.code == NSURLErrorUserCancelledAuthentication) {
+                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               NSDate *updateTime = [dateFormatter dateFromString:payload[@"update_time"]];
+                               NSLog(@"%@", updateTime);
 
-                               }
-                               else {
-                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       #warning Fix this
-                                       if (!data) {
-                                           return;
-                                       }
-                                       NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                       [db open];
-                                       
-                                       FMResultSet *results;
-                                       
-                                       results = [db executeQuery:@"SELECT * FROM tag"];
-                                       NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
-                                       while ([results next]) {
-                                           [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
-                                       }
-                                       
-                                       results = [db executeQuery:@"SELECT id, hash FROM bookmark"];
-                                       NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
-                                       while ([results next]) {
-                                           [bookmarks setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"hash"]];
-                                       }
+                               if (!self.lastUpdated || [self.lastUpdated compare:updateTime] == NSOrderedAscending) {
+                                   NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
+                                   NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
+                                   
+                                   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                                   [NSURLConnection sendAsynchronousRequest:request
+                                                                      queue:[NSOperationQueue mainQueue]
+                                                          completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                              [self setLastUpdated:[NSDate date]];
+                                                              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                                              if (error.code == NSURLErrorUserCancelledAuthentication) {
+                                                                  
+                                                              }
+                                                              else {
+                                                                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                                      #warning Fix this
+                                                                      if (!data) {
+                                                                          return;
+                                                                      }
+                                                                      NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                                                      FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                                      [db open];
+                                                                      
+                                                                      FMResultSet *results;
+                                                                      
+                                                                      results = [db executeQuery:@"SELECT * FROM tag"];
+                                                                      NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
+                                                                      while ([results next]) {
+                                                                          [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
+                                                                      }
+                                                                      
+                                                                      results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
+                                                                      NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
+                                                                      NSMutableDictionary *bookmarkIds = [[NSMutableDictionary alloc] init];
+                                                                      while ([results next]) {
+                                                                          [bookmarks setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
+                                                                          [bookmarkIds setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"hash"]];
+                                                                      }
 
-                                       [db beginTransaction];
+                                                                      [db beginTransaction];
 
-                                       NSNumber *bookmarkIdNumber;
-                                       NSNumber *tagIdNumber;
-                                       int bookmark_id;
-                                       int tag_id;
-                                       NSUInteger count = 0;
-                                       NSUInteger total = elements.count;
+                                                                      NSString *bookmarkMeta;
+                                                                      NSNumber *tagIdNumber;
+                                                                      NSNumber *currentBookmarkId;
+                                                                      int tag_id;
+                                                                      NSUInteger count = 0;
+                                                                      NSUInteger total = elements.count;
+                                                                      
+                                                                      for (NSDictionary *element in elements) {
+                                                                          count++;
+                                                                          
+                                                                          if (updateDelegate) {
+                                                                              [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
+                                                                          }
+                                                                          NSDictionary *params;
+                                                                          
+                                                                          bookmarkMeta = [bookmarks objectForKey:element[@"hash"]];
+                                                                          if (bookmarkMeta) {
+                                                                              if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
+                                                                                  NSLog(@"updating!");
+                                                                                  params = @{
+                                                                                      @"url": element[@"href"],
+                                                                                      @"title": element[@"description"],
+                                                                                      @"description": element[@"extended"],
+                                                                                      @"meta": element[@"meta"],
+                                                                                      @"hash": element[@"hash"],
+                                                                                      @"tags": element[@"tags"],
+                                                                                      @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                                                                      @"private": @([element[@"shared"] isEqualToString:@"no"])
+                                                                                  };
+                                                                                  
+                                                                                  [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                                                                              }
+                                                                              currentBookmarkId = [bookmarkIds objectForKey:@"hash"];
+                                                                          }
+                                                                          else {
+                                                                              params = @{
+                                                                                  @"url": element[@"href"],
+                                                                                  @"title": element[@"description"],
+                                                                                  @"description": element[@"extended"],
+                                                                                  @"meta": element[@"meta"],
+                                                                                  @"hash": element[@"hash"],
+                                                                                  @"tags": element[@"tags"],
+                                                                                  @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                                                                  @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                                                                                  @"created_at": [dateFormatter dateFromString:element[@"time"]]
+                                                                              };
 
-                                       for (NSDictionary *element in elements) {
-                                           count++;
-                                           
-                                           if (updateDelegate) {
-                                               [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
-                                           }
-                                           NSDictionary *params = @{
-                                               @"url": element[@"href"],
-                                               @"title": element[@"description"],
-                                               @"description": element[@"extended"],
-                                               @"meta": element[@"meta"],
-                                               @"hash": element[@"hash"],
-                                               @"tags": element[@"tags"],
-                                               @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                               @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                                               @"created_at": [dateFormatter dateFromString:element[@"time"]]
-                                           };
+                                                                              [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                                                                              
+                                                                              results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                                                              [results next];
+                                                                              currentBookmarkId = @([results intForColumnIndex:0]);
+                                                                              [bookmarkIds setObject:currentBookmarkId forKey:element[@"hash"]];
+                                                                              bookmarkMeta = element[@"meta"];
+                                                                          }
+                                                                          [bookmarks setObject:bookmarkMeta forKey:element[@"hash"]];
+                                                                          
+                                                                          if ([element[@"tags"] length] == 0) {
+                                                                              continue;
+                                                                          }
+                                                                          
+                                                                          for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
+                                                                              tagIdNumber = [tags objectForKey:tagName];
+                                                                              if (!tagIdNumber) {
+                                                                                  [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                                                                  
+                                                                                  results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                                                                  [results next];
+                                                                                  tagIdNumber = @([results intForColumnIndex:0]);
+                                                                                  [tags setObject:tagIdNumber forKey:tagName];
+                                                                              }
 
-                                           bookmarkIdNumber = [bookmarks objectForKey:element[@"hash"]];
-                                           if (!bookmarkIdNumber) {
-                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                                               
-                                               results = [db executeQuery:@"SELECT last_insert_rowid();"];
-                                               [results next];
-                                               bookmarkIdNumber = @([results intForColumnIndex:0]);
-                                               [bookmarks setObject:bookmarkIdNumber forKey:element[@"hash"]];
-                                           }
-                                           
-                                           if ([element[@"tags"] length] == 0) {
-                                               continue;
-                                           }
+                                                                              tag_id = [tagIdNumber intValue];
+                                                                              [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
+                                                                          }
+                                                                      }
+                                                                      [db commit];
+                                                                      [db close];
 
-                                           for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                                               tagIdNumber = [tags objectForKey:tagName];
-                                               if (!tagIdNumber) {
-                                                   [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                                   
-                                                   results = [db executeQuery:@"SELECT last_insert_rowid();"];
-                                                   [results next];
-                                                   tagIdNumber = @([results intForColumnIndex:0]);
-                                                   [tags setObject:tagIdNumber forKey:tagName];
-                                               }
-                                               
-                                               bookmark_id = [bookmarkIdNumber intValue];
-                                               tag_id = [tagIdNumber intValue];
-                                               [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, bookmark_id];
-                                           }
-                                       }
-                                       [db commit];
+                                                                      [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoaded" object:nil];
+                                                                  });
+                                                              }
+                                                          }];
 
-                                       /*
-                                       results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
-                                       [results next];
-                                        */
-                                       [db close];
-
-                                       [self setLastUpdated:[NSDate date]];
-                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoaded" object:nil];
-                                   });
                                }
                            }];
 }
-
 
 @end

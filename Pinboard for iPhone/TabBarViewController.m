@@ -76,7 +76,7 @@
                                    name:@"BookmarksLoaded"
                                  object:nil];
         
-        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:60 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
+        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:10 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
     }
     return self;
