@@ -20,6 +20,8 @@
 @synthesize searchDisplayController;
 @synthesize notes;
 @synthesize searchBar;
+@synthesize noteDetailViewController;
+@synthesize webView;
 
 #pragma mark - Table view data source
 
@@ -85,6 +87,34 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *note;
+    if (tableView == self.tableView) {
+        note = self.notes[indexPath.row];
+    }
+    else {
+        note = self.filteredNotes[indexPath.row];
+    }
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSString *noteURLString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/%@?format=json&auth_token=%@", note[@"id"], [[AppDelegate sharedDelegate] token]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:noteURLString]];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               NSDictionary *noteInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+
+                               self.webView = [[UIWebView alloc] init];
+                               [self.webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='font-family:Helvetica;'><h4>%@</h4></div></body>", noteInfo[@"text"]] baseURL:nil];
+
+                               self.noteDetailViewController = [[UIViewController alloc] init];
+                               self.noteDetailViewController.title = noteInfo[@"title"];
+                               self.webView.frame = self.noteDetailViewController.view.frame;
+                               self.noteDetailViewController.view = self.webView;
+                               self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
+                               [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
+                           }];
+
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

@@ -14,5 +14,7 @@
 @property (nonatomic, retain) NSMutableArray *filteredNotes;
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 @property (nonatomic, retain) UISearchBar *searchBar;
+@property (nonatomic, retain) UIViewController *noteDetailViewController;
+@property (nonatomic, retain) UIWebView *webView;
 
 @end
