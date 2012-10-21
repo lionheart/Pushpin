@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMessageComposeViewController.h>
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
+@property (nonatomic, retain) UIActionSheet *browserActionSheet;
+@property (nonatomic, retain) UIActionSheet *supportActionSheet;
 
 - (void)showAboutPage;
 - (void)closeAboutPage;

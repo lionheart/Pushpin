@@ -77,6 +77,7 @@
 		3787FFEE15B49989008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE815B49989008A477A /* Icon@2x.png */; };
 		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
+		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1B16091D5B007708EF /* Pinboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 376A4F5F15E5796B00D8E073 /* Pinboard.m */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
 		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
@@ -205,6 +206,7 @@
 		3787FFE815B49989008A477A /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Assets/Icon@2x.png"; sourceTree = "<group>"; };
 		3787FFE915B49989008A477A /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Assets/iTunesArtwork.png; sourceTree = "<group>"; };
 		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
+		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		37919F1C16091DF5007708EF /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		37919F1D16091DF5007708EF /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -278,6 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
@@ -474,6 +477,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				378DA45E1633B4B700831134 /* MessageUI.framework */,
 				37247FF51633407E00417E65 /* libz.dylib */,
 				37247FEE163303CF00417E65 /* NSString+URLEncoding.h */,
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,

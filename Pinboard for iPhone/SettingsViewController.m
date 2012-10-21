@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 
+
 @interface SettingsViewController ()
 
 @end
@@ -17,6 +18,8 @@
 @implementation SettingsViewController
 
 @synthesize logOutAlertView;
+@synthesize browserActionSheet;
+@synthesize supportActionSheet;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -27,6 +30,8 @@
                                                                                  action:@selector(showAboutPage)];
         
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"This will log you out and delete the local bookmark database from your device." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:@"Open links with:" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
+        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:@"Contact Support" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Request a feature", @"Report a bug", @"Email us", nil];
     }
     return self;
 }
@@ -64,7 +69,18 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    switch (section) {
+        case 0:
+            return 1;
+            break;
+            
+        case 1:
+            return 2;
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -105,9 +121,20 @@
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
-        case 1:
-            cell.textLabel.text = @"Log Out";
+        case 1: {
+            switch (indexPath.row) {
+                case 0:
+                    cell.textLabel.text = @"Contact Support";
+                    break;
+                case 1:
+                    cell.textLabel.text = @"Log Out";
+                    break;
+                default:
+                    break;
+            }
+
             break;
+        }
         default:
             break;
     }
@@ -177,51 +204,103 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0:
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
-            break;
-            
-        case 1:
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
-            break;
-            
-        case 2: {
-            BOOL installed = [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:@"googlechrome://x1x"]];
-            if (!installed) {
-                // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Install Chrome?" message:@"In order to open links with Google Chrome, you first have to install it. Click OK to continue." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-                [alert show];
+    if (actionSheet == self.browserActionSheet) {
+        switch (buttonIndex) {
+            case 0:
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+                break;
+                
+            case 1:
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+                break;
+                
+            case 2: {
+                BOOL installed = [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:@"googlechrome://x1x"]];
+                if (!installed) {
+                    // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Install Chrome?" message:@"In order to open links with Google Chrome, you first have to install it. Click OK to continue." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                    [alert show];
+                }
+                else {
+                    [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+                }
+                break;
             }
-            else {
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
-            }
-            break;
+                
+            default:
+                break;
         }
-            
-        default:
-            break;
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     }
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    else {
+        if (buttonIndex == 3) {
+            return;
+        }
+        
+        if (buttonIndex == 2) {
+            MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
+            emailComposer.mailComposeDelegate = self;
+            [emailComposer setSubject:@"Help me!"];
+            [emailComposer setToRecipients:@[@"support@pinboardforiphone.com"]];
+            [self presentViewController:emailComposer animated:YES completion:nil];
+            return;
+        }
+
+        NSString *safariURL = @"https://bitbucket.org/aurorasoftware/pinboard-for-iphone/issues/new";
+        NSString *chromeURL = @"googlechromes://bitbucket.org/aurorasoftware/pinboard-for-iphone/issues/new";
+        NSURL *url;
+        
+        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+            case BROWSER_WEBVIEW:
+                url = [NSURL URLWithString:safariURL];
+                break;
+                
+            case BROWSER_SAFARI:
+                url = [NSURL URLWithString:safariURL];
+                break;
+                
+            case BROWSER_CHROME:
+                url = [NSURL URLWithString:chromeURL];
+                break;
+                
+            default:
+                break;
+        }
+        [[UIApplication sharedApplication] openURL:url];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-            UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Open links with:" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
-            [sheet showFromTabBar:self.tabBarController.tabBar];
+            [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
             break;
         }
         case 1: {
-            [self.logOutAlertView show];
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            switch (indexPath.row) {
+                case 0:
+                    [self.supportActionSheet showFromTabBar:self.tabBarController.tabBar];
+                    break;
+                    
+                case 1:
+                    [self.logOutAlertView show];
+                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
         }
             
         default:
             break;
     }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end
