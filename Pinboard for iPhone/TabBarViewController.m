@@ -109,6 +109,8 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     _sessionChecked = false;
     if (buttonIndex == 1) {
+        [self showAddBookmarkViewControllerWithURL:self.bookmarkURL andTitle:@""];
+        /*
         self.webView = [[UIWebView alloc] init];
         self.webView.delegate = self;
         self.webView.frame = CGRectMake(0, 0, 1, 1);
@@ -116,13 +118,15 @@
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]]];
         [self.view addSubview:self.webView];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+         */
     }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    NSLog(@"hey!");
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-        NSLog(@"%qd", [httpResponse expectedContentLength]);
+        NSLog(@"Content length: %qd", [httpResponse expectedContentLength]);
         _sessionChecked = true;
         
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]];
@@ -149,7 +153,6 @@
 
 - (void)showAddBookmarkViewController {
     [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
-    _sessionChecked = false;
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -170,8 +173,9 @@
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    _sessionChecked = false;
+    NSLog(@"Finished load");
     NSString *url = [UIPasteboard generalPasteboard].string;
-//    [[UIPasteboard generalPasteboard] setString:@""];
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     [webView stringByEvaluatingJavaScriptFromString:@"window.alert=null;"];
     [self showAddBookmarkViewControllerWithURL:url andTitle:title];
@@ -181,8 +185,8 @@
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    NSLog(@"checking");
     if (_sessionChecked) {
-        _sessionChecked = false;
         return YES;
     }
     
