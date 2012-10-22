@@ -87,6 +87,10 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (![[AppDelegate sharedDelegate] connectionAvailable]) {
+        return;
+    }
+
     NSDictionary *note;
     if (tableView == self.tableView) {
         note = self.notes[indexPath.row];
@@ -112,10 +116,9 @@
                                self.webView.frame = self.noteDetailViewController.view.frame;
                                self.noteDetailViewController.view = self.webView;
                                self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
+                               [tableView deselectRowAtIndexPath:indexPath animated:YES];
                                [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
                            }];
-
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
