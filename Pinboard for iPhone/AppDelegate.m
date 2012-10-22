@@ -332,6 +332,7 @@
                                                                           
                                                                           bookmarkMeta = [bookmarks objectForKey:element[@"hash"]];
                                                                           if (bookmarkMeta) {
+                                                                              currentBookmarkId = [bookmarkIds objectForKey:@"hash"];
                                                                               if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                                                                                   NSLog(@"updating!");
                                                                                   params = @{
@@ -346,8 +347,8 @@
                                                                                   };
                                                                                   
                                                                                   [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                                                                                  [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[currentBookmarkId]];
                                                                               }
-                                                                              currentBookmarkId = [bookmarkIds objectForKey:@"hash"];
                                                                           }
                                                                           else {
                                                                               params = @{
