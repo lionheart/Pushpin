@@ -37,6 +37,7 @@
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) NSString *query;
 @property (nonatomic, retain) NSMutableDictionary *queryParameters;
+@property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic) BOOL searchWasActive;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
@@ -53,5 +54,10 @@
 - (void)stopEditing;
 - (void)toggleEditMode;
 - (void)reloadTableData;
+
+- (void)editBookmark:(id)sender;
+- (void)deleteBookmark:(id)sender;
+- (void)copyURL:(id)sender;
+- (void)copyTitle:(id)sender;
 
 @end

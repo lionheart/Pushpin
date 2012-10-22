@@ -21,6 +21,7 @@ static float kSmallFontSize = 13.0f;
 
 @implementation BookmarkViewController
 
+@synthesize selectedIndexPath;
 @synthesize parameters = _parameters;
 @synthesize bookmarks;
 @synthesize strings;
@@ -46,8 +47,19 @@ static float kSmallFontSize = 13.0f;
     [self.tableView reloadData];
 }
 
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy URL" action:@selector(copyURL:)];
+    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy Title" action:@selector(copyTitle:)];
+    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:@"Edit" action:@selector(editBookmark:)];
+    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(deleteBookmark:)];
+    [[UIMenuController sharedMenuController] setMenuItems: @[copyURLMenuItem, copyTitleMenuItem]];
+    [[UIMenuController sharedMenuController] update];
 
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
@@ -429,15 +441,34 @@ static float kSmallFontSize = 13.0f;
     return YES;
 }
 
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+}
+
+- (void)editBookmark:(id)sender {
+
+}
+
+- (void)deleteBookmark:(id)sender {
+
+}
+
+- (void)copyTitle:(id)sender {
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+    [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
+}
+
+- (void)copyURL:(id)sender {
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+    [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
+}
+
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    return action == @selector(copy:);
+    self.selectedIndexPath = indexPath;
+    return NO;
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    if (action == @selector(copy:)) {
-        NSDictionary *bookmark = self.bookmarks[indexPath.row];
-        [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
-    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
