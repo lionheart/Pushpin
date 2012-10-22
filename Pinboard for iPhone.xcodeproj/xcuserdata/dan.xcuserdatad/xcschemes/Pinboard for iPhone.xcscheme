@@ -76,10 +76,10 @@
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Beta Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Beta Release"
       customArchiveName = "Pinboard"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
