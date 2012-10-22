@@ -378,6 +378,7 @@ static float kSmallFontSize = 13.0f;
     else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         self.webView = [[UIWebView alloc] init];
+        self.webView.scalesPageToFit = YES;
         self.webView.delegate = self;
 
         if (tableView == self.tableView) {
