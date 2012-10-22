@@ -266,6 +266,10 @@
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               #warning Handle this appropriately
+                               if (!data) {
+                                   return;
+                               }
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                NSDate *updateTime = [dateFormatter dateFromString:payload[@"update_time"]];
                                NSLog(@"%@", updateTime);
