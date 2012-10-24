@@ -16,6 +16,7 @@
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) UITextView *textView;
 @property (nonatomic, retain) UIProgressView *progressView;
+@property (nonatomic, retain) UITextField *textField;
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;

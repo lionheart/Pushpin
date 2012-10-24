@@ -48,8 +48,8 @@
 #endif
 
     if ([self token]) {
-        TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
-        [self.window setRootViewController:tabBarViewController];
+        self.tabBarViewController = [[TabBarViewController alloc] init];
+        [self.window setRootViewController:self.tabBarViewController];
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
@@ -258,6 +258,10 @@
         // TODO
         return;
     }
+    
+    if (![self token]) {
+        return;
+    }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -275,14 +279,19 @@
                                NSLog(@"%@", updateTime);
 
                                if (!self.lastUpdated || [self.lastUpdated compare:updateTime] == NSOrderedAscending) {
+                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoading" object:nil];
                                    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
                                    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
+                                   
+                                   NSLog(@"%@", endpoint);
                                    
                                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                                    [NSURLConnection sendAsynchronousRequest:request
                                                                       queue:[NSOperationQueue mainQueue]
                                                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                                               [self setLastUpdated:[NSDate date]];
+                                                              NSLog(@"%@", error);
+                                                              NSLog(@"%d", [data length]);
                                                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                                                               if (error.code == NSURLErrorUserCancelledAuthentication) {
                                                                   

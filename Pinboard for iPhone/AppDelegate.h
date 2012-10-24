@@ -16,6 +16,8 @@ enum browsers {
     BROWSER_CHROME
 };
 
+@class TabBarViewController;
+
 @protocol BookmarkUpdateProgressDelegate <NSObject>
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
 @end
@@ -26,6 +28,7 @@ enum browsers {
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
+@property (nonatomic, retain) TabBarViewController *tabBarViewController;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;

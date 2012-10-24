@@ -20,12 +20,15 @@
 @synthesize activityIndicator;
 @synthesize textView;
 @synthesize progressView;
+@synthesize textField = _textField;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, 320, 480);
+    
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    gradient.frame = CGRectMake(0, 0, 320, screenBounds.size.height);
     gradient.colors = [NSArray arrayWithObjects:(id)[HEX(0x06C6FFFF) CGColor], (id)[HEX(0x2E63FFFF) CGColor], nil];
     [self.view.layer addSublayer:gradient];
     
@@ -33,19 +36,19 @@
     imageView.frame = CGRectMake(60, 10, 218, 213);
     [self.view addSubview:imageView];
 
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
-    textField.font = [UIFont fontWithName:@"Helvetica" size:18];
-    textField.textAlignment = UITextAlignmentCenter;
-    textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    textField.borderStyle = UITextBorderStyleLine;
-    textField.backgroundColor = [UIColor whiteColor];
-    textField.delegate = self;
-    textField.keyboardType = UIKeyboardTypeAlphabet;
-    textField.returnKeyType = UIReturnKeyDone;
-    textField.rightViewMode = UITextFieldViewModeWhileEditing;
-    textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    textField.placeholder = @"Pinboard API Token";
-    [self.view addSubview:textField];
+    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
+    self.textField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.textField.textAlignment = UITextAlignmentCenter;
+    self.textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.textField.borderStyle = UITextBorderStyleLine;
+    self.textField.backgroundColor = [UIColor whiteColor];
+    self.textField.delegate = self;
+    self.textField.keyboardType = UIKeyboardTypeAlphabet;
+    self.textField.returnKeyType = UIReturnKeyDone;
+    self.textField.rightViewMode = UITextFieldViewModeWhileEditing;
+    self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.textField.placeholder = @"Pinboard API Token";
+    [self.view addSubview:self.textField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     self.progressView.frame = CGRectMake(20, 410, 280, 50);
@@ -129,7 +132,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    self.textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json&auth_token=%@", textField.text]]];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -146,7 +149,8 @@
                                    [alert show];
                                }
                                else {
-                                   [[AppDelegate sharedDelegate] setToken:textField.text];
+                                   NSLog(@"TOKEN: %@", self.textField.text);
+                                   [[AppDelegate sharedDelegate] setToken:self.textField.text];
 
                                    [self.activityIndicator startAnimating];
                                    textField.enabled = NO;

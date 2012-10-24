@@ -71,15 +71,30 @@
                                    name:UIApplicationDidBecomeActiveNotification
                                  object:nil];
 
-        [notificationCenter addObserver:bookmarkViewController
-                               selector:@selector(processBookmarks)
+        [notificationCenter addObserver:self
+                               selector:@selector(stopRefreshTimer)
+                                   name:@"BookmarksLoading"
+                                 object:nil];
+        
+        [notificationCenter addObserver:self
+                               selector:@selector(startRefreshTimer)
                                    name:@"BookmarksLoaded"
                                  object:nil];
         
-        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:10 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
+        if ([[AppDelegate sharedDelegate] token]) {
+            [self startRefreshTimer];
+        }
     }
     return self;
+}
+
+- (void)startRefreshTimer {
+    self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:10 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)stopRefreshTimer {
+    [self.bookmarkRefreshTimer invalidate];
 }
 
 - (void)closeModal {
