@@ -313,14 +313,18 @@
                                                                       while ([results next]) {
                                                                           [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
                                                                       }
-                                                                      
+
                                                                       results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
                                                                       NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
                                                                       NSMutableDictionary *bookmarkIds = [[NSMutableDictionary alloc] init];
+                                                                      NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
                                                                       while ([results next]) {
+                                                                          [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
                                                                           [bookmarks setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
-                                                                          [bookmarkIds setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"hash"]];
+                                                                          [bookmarkIds setObject:[results stringForColumn:@"id"] forKey:[results stringForColumn:@"hash"]];
                                                                       }
+
+                                                                      NSMutableArray *newBookmarkHashes = [[NSMutableArray alloc] init];
 
                                                                       [db beginTransaction];
 
@@ -332,6 +336,8 @@
                                                                       NSUInteger total = elements.count;
                                                                       
                                                                       for (NSDictionary *element in elements) {
+                                                                          [newBookmarkHashes addObject:element[@"hash"]];
+
                                                                           count++;
                                                                           
                                                                           if (updateDelegate) {
@@ -339,9 +345,9 @@
                                                                           }
                                                                           NSDictionary *params;
                                                                           
-                                                                          bookmarkMeta = [bookmarks objectForKey:element[@"hash"]];
+                                                                          bookmarkMeta = bookmarks[element[@"hash"]];
                                                                           if (bookmarkMeta) {
-                                                                              currentBookmarkId = [bookmarkIds objectForKey:@"hash"];
+                                                                              currentBookmarkId = bookmarkIds[element[@"hash"]];
                                                                               if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                                                                                   NSLog(@"updating!");
                                                                                   params = @{
@@ -399,6 +405,12 @@
 
                                                                               tag_id = [tagIdNumber intValue];
                                                                               [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
+                                                                          }
+                                                                      }
+
+                                                                      for (NSString *hash in oldBookmarkHashes) {
+                                                                          if (![newBookmarkHashes containsObject:hash]) {
+                                                                              [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
                                                                           }
                                                                       }
                                                                       [db commit];
