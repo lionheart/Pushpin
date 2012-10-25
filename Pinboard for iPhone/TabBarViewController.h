@@ -11,6 +11,8 @@
 
 @interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
     BOOL _sessionChecked;
+    BOOL timerPaused;
+    NSInteger secondsLeft;
 }
 
 @property (nonatomic, retain) UIWebView *webView;
@@ -21,7 +23,8 @@
 - (void)showAddBookmarkViewController;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title;
 - (void)promptUserToAddBookmark;
-- (void)stopRefreshTimer;
-- (void)startRefreshTimer;
+- (void)pauseRefreshTimer;
+- (void)resumeRefreshTimer;
+- (void)executeTimer;
 
 @end

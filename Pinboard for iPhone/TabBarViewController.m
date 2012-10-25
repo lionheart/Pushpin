@@ -27,6 +27,9 @@
 - (id)init {
     self = [super init];
     if (self) {
+        secondsLeft = 0;
+        timerPaused = NO;
+
         BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
         bookmarkViewController.title = @"All Bookmarks";
         
@@ -64,7 +67,7 @@
         [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
         
         self.delegate = self;
-        
+
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter addObserver:self
                                selector:@selector(promptUserToAddBookmark)
@@ -72,29 +75,41 @@
                                  object:nil];
 
         [notificationCenter addObserver:self
-                               selector:@selector(stopRefreshTimer)
+                               selector:@selector(pauseRefreshTimer)
                                    name:@"BookmarksLoading"
                                  object:nil];
         
         [notificationCenter addObserver:self
-                               selector:@selector(startRefreshTimer)
+                               selector:@selector(resumeRefreshTimer)
                                    name:@"BookmarksLoaded"
                                  object:nil];
         
         if ([[AppDelegate sharedDelegate] token]) {
-            [self startRefreshTimer];
+            self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
         }
     }
     return self;
 }
 
-- (void)startRefreshTimer {
-    self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:10 target:[AppDelegate sharedDelegate] selector:@selector(updateBookmarks) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
+- (void)resumeRefreshTimer {
+    timerPaused = NO;
 }
 
-- (void)stopRefreshTimer {
-    [self.bookmarkRefreshTimer invalidate];
+- (void)pauseRefreshTimer {
+    timerPaused = YES;
+}
+
+- (void)executeTimer {
+    if (!timerPaused) {
+        if (secondsLeft == 0) {
+            secondsLeft = 10;
+            [[AppDelegate sharedDelegate] updateBookmarks];
+        }
+        else {
+            secondsLeft--;
+        }
+    }
 }
 
 - (void)closeModal {
