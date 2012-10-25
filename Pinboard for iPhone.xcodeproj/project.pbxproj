@@ -605,9 +605,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37FEEB8D15745488003F2B77 /* iPinboard */ = {
+		37FEEB8D15745488003F2B77 /* Pinboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "iPinboard" */;
+			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */;
 			buildPhases = (
 				37FEEB8A15745488003F2B77 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
@@ -617,7 +617,7 @@
 			);
 			dependencies = (
 			);
-			name = iPinboard;
+			name = Pinboard;
 			productName = "Pinboard for iPhone";
 			productReference = 37FEEB8E15745488003F2B77 /* Pinboard.app */;
 			productType = "com.apple.product-type.application";
@@ -642,7 +642,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				37FEEB8D15745488003F2B77 /* iPinboard */,
+				37FEEB8D15745488003F2B77 /* Pinboard */,
 			);
 		};
 /* End PBXProject section */
@@ -914,7 +914,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "iPinboard" */ = {
+		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA715745488003F2B77 /* Debug */,

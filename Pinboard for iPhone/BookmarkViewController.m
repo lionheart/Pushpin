@@ -260,7 +260,6 @@ static float kSmallFontSize = 13.0f;
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
 
-        NSLog(@"Set up notification");
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(processBookmarks)
                                                      name:@"BookmarksLoaded"
@@ -296,6 +295,11 @@ static float kSmallFontSize = 13.0f;
 
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(processBookmarks)
+                                                     name:@"BookmarksLoaded"
+                                                   object:nil];
     }
     return self;
 }
