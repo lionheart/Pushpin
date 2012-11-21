@@ -76,7 +76,7 @@
     self.textView.textColor = [UIColor whiteColor];
     self.textView.textAlignment = UITextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
-    self.textView.text = @"Enter your Pinboard credentials above. Email support at thumbtack@aurora.io if you have any issues.";
+    self.textView.text = @"Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
     [self.view addSubview:self.textView];
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
