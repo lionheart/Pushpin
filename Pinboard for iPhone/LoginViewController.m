@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "TabBarViewController.h"
+#import "NSData+Additions.h"
 
 @interface LoginViewController ()
 
@@ -20,7 +21,8 @@
 @synthesize activityIndicator;
 @synthesize textView;
 @synthesize progressView;
-@synthesize textField = _textField;
+@synthesize usernameTextField;
+@synthesize passwordTextField;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -36,26 +38,37 @@
     imageView.frame = CGRectMake(60, 10, 218, 213);
     [self.view addSubview:imageView];
 
-    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
-    self.textField.font = [UIFont fontWithName:@"Helvetica" size:18];
-    self.textField.textAlignment = UITextAlignmentCenter;
-    self.textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.textField.borderStyle = UITextBorderStyleLine;
-    self.textField.backgroundColor = [UIColor whiteColor];
-    self.textField.delegate = self;
-    self.textField.keyboardType = UIKeyboardTypeAlphabet;
-    self.textField.returnKeyType = UIReturnKeyDone;
-    self.textField.rightViewMode = UITextFieldViewModeWhileEditing;
-    self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.textField.placeholder = @"Pinboard API Token";
-    [self.view addSubview:self.textField];
+    self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
+    self.usernameTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.usernameTextField.textAlignment = UITextAlignmentCenter;
+    self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.usernameTextField.borderStyle = UITextBorderStyleLine;
+    self.usernameTextField.backgroundColor = [UIColor whiteColor];
+    self.usernameTextField.delegate = self;
+    self.usernameTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.usernameTextField.returnKeyType = UIReturnKeyDone;
+    self.usernameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
+    self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.usernameTextField.placeholder = @"Username";
+    [self.view addSubview:self.usernameTextField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+
+    self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
+    passwordTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    passwordTextField.textAlignment = UITextAlignmentCenter;
+    passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    passwordTextField.borderStyle = UITextBorderStyleLine;
+    passwordTextField.backgroundColor = [UIColor whiteColor];
+    passwordTextField.delegate = self;
+    passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
+    passwordTextField.returnKeyType = UIReturnKeyDone;
     self.progressView.frame = CGRectMake(20, 410, 280, 50);
+    passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 300, 300, 50)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 350, 300, 50)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.textAlignment = UITextAlignmentCenter;
@@ -65,7 +78,7 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 370, activitySize.width, activitySize.height);
+    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
@@ -86,8 +99,8 @@
         CGSize keyboardSize = [notificationData CGRectValue].size;
 
         CGRect frame = self.view.frame;
-        frame.origin.y -= keyboardSize.height - 150;
-        frame.size.height += keyboardSize.height - 150;
+        frame.origin.y -= keyboardSize.height - 100;
+        frame.size.height += keyboardSize.height - 100;
 
         [UIView animateWithDuration:duration animations:^(void) {
             self.view.frame = frame;
@@ -108,8 +121,8 @@
         [infoDuration getValue:&duration];
         
         CGRect frame = self.view.frame;
-        frame.origin.y += keyboardSize.height - 150;
-        frame.size.height -= keyboardSize.height - 150;
+        frame.origin.y += keyboardSize.height - 100;
+        frame.size.height -= keyboardSize.height - 100;
 
         [UIView animateWithDuration:duration animations:^(void) {
             self.view.frame = frame;
@@ -133,17 +146,17 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     self.textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (usernameTextField.text && passwordTextField.text) {
+        // Validate these are valid credentials.
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json"]]];
+        NSString *authStr = [NSString stringWithFormat:@"%@:%@", usernameTextField.text, passwordTextField.text];
+        NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
+        [request setValue:authValue forHTTPHeaderField:@"Authorization"];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json&auth_token=%@", textField.text]]];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    self.textView.text = @"Checking whether your token is valid. Hold on a minute.";
-    [self.activityIndicator startAnimating];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                               [self.activityIndicator stopAnimating];
-
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:@"We couldn't log you in. Please make sure you've provided a valid token." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
@@ -161,6 +174,7 @@
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
                                }
                            }];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {

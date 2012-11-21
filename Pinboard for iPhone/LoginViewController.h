@@ -13,6 +13,8 @@
     BOOL keyboard_shown;
 }
 
+@property (nonatomic, retain) UITextField *usernameTextField;
+@property (nonatomic, retain) UITextField *passwordTextField;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) UITextView *textView;
 @property (nonatomic, retain) UIProgressView *progressView;

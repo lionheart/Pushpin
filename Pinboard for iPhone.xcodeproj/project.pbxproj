@@ -27,6 +27,7 @@
 		37275588161A626B001A857B /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37275584161A626B001A857B /* README */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
 		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
+		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		37483C5B16194A82000EE5D1 /* Bookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5A16194A82000EE5D1 /* Bookmark.m */; };
 		37483C5E16194A93000EE5D1 /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5D16194A93000EE5D1 /* Tag.m */; };
@@ -69,6 +70,7 @@
 		37800E8A162CF1A3009FCB17 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37800E72162CF1A2009FCB17 /* README.md */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
+		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
 		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
@@ -147,6 +149,8 @@
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
 		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
+		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
 		37483C5616194575000EE5D1 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		37483C5916194A81000EE5D1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
@@ -322,6 +326,8 @@
 				376A4F5D15E5796B00D8E073 /* BookmarkList.m */,
 				376A4F5E15E5796B00D8E073 /* Pinboard.h */,
 				376A4F5F15E5796B00D8E073 /* Pinboard.m */,
+				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
+				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -760,6 +766,7 @@
 				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
 				37800E88162CF1A3009FCB17 /* Reachability.m in Sources */,
 				37247FF0163303CF00417E65 /* NSString+URLEncoding.m in Sources */,
+				37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +837,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "TESTING=1";
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
