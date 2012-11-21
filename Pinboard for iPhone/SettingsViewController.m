@@ -246,8 +246,8 @@
             return;
         }
 
-        NSString *safariURL = @"https://bitbucket.org/aurorasoftware/pinboard-for-iphone/issues/new";
-        NSString *chromeURL = @"googlechromes://bitbucket.org/aurorasoftware/pinboard-for-iphone/issues/new";
+        NSString *safariURL = @"https://trello.com/board/thumbtack-for-pinboard/50ad16761b7a9d3904006e15";
+        NSString *chromeURL = @"googlechromes://trello.com/board/thumbtack-for-pinboard/50ad16761b7a9d3904006e15";
         NSURL *url;
         
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {

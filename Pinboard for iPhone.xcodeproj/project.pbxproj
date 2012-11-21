@@ -70,7 +70,6 @@
 		37800E8A162CF1A3009FCB17 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37800E72162CF1A2009FCB17 /* README.md */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
-		3786466115773FDE00A1D5F8 /* libGRMustache4-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */; };
 		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
 		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
@@ -269,7 +268,7 @@
 		37E329AA1629EDE600A6BC18 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../Vendor/sqlite/sqlite3ext.h; sourceTree = "<group>"; };
 		37E329DF1629F0D100A6BC18 /* SQLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite-Prefix.pch"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		37FEEB8E15745488003F2B77 /* Pinboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Thumbtack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thumbtack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -506,7 +505,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pinboard.app */,
+				37FEEB8E15745488003F2B77 /* Thumbtack.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -611,9 +610,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37FEEB8D15745488003F2B77 /* Pinboard */ = {
+		37FEEB8D15745488003F2B77 /* Pushpin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */;
+			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
 			buildPhases = (
 				37FEEB8A15745488003F2B77 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
@@ -623,9 +622,9 @@
 			);
 			dependencies = (
 			);
-			name = Pinboard;
+			name = Pushpin;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pinboard.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Thumbtack.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -648,7 +647,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				37FEEB8D15745488003F2B77 /* Pinboard */,
+				37FEEB8D15745488003F2B77 /* Pushpin */,
 			);
 		};
 /* End PBXProject section */
@@ -836,7 +835,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "TESTING=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
@@ -868,7 +867,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DD3C2986-D08A-4FD7-81C6-BA0A96C103C2";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7FB58306-A09F-4640-B7FA-B13829EDDDF5";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -924,7 +923,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pinboard" */ = {
+		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA715745488003F2B77 /* Debug */,

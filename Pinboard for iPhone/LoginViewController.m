@@ -52,33 +52,36 @@
     self.usernameTextField.placeholder = @"Username";
     [self.view addSubview:self.usernameTextField];
 
-    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-
     self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
-    passwordTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
-    passwordTextField.textAlignment = UITextAlignmentCenter;
-    passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    passwordTextField.borderStyle = UITextBorderStyleLine;
-    passwordTextField.backgroundColor = [UIColor whiteColor];
-    passwordTextField.delegate = self;
-    passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
-    passwordTextField.returnKeyType = UIReturnKeyDone;
+    self.passwordTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.passwordTextField.textAlignment = UITextAlignmentCenter;
+    self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.passwordTextField.borderStyle = UITextBorderStyleLine;
+    self.passwordTextField.backgroundColor = [UIColor whiteColor];
+    self.passwordTextField.delegate = self;
+    self.passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.passwordTextField.returnKeyType = UIReturnKeyDone;
+    self.passwordTextField.secureTextEntry = YES;
+    self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.passwordTextField.placeholder = @"Password";
+    [self.view addSubview:self.passwordTextField];
+
+    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     self.progressView.frame = CGRectMake(20, 410, 280, 50);
-    passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 350, 300, 50)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 350, 300, 60)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.textAlignment = UITextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
-    self.textView.text = @"You can find your Pinboard API Token on the Pinboard password settings page.";
+    self.textView.text = @"Enter your Pinboard credentials above. Email support at thumbtack@aurora.io if you have any issues.";
     [self.view addSubview:self.textView];
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
+    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 430, activitySize.width, activitySize.height);
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
@@ -145,9 +148,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    self.textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if (usernameTextField.text && passwordTextField.text) {
-        // Validate these are valid credentials.
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json"]]];
         NSString *authStr = [NSString stringWithFormat:@"%@:%@", usernameTextField.text, passwordTextField.text];
         NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
@@ -158,12 +159,13 @@
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:@"We couldn't log you in. Please make sure you've provided a valid token." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:@"We couldn't log you in. Please make sure you've provided valid credentials." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
                                }
                                else {
-                                   NSLog(@"TOKEN: %@", self.textField.text);
-                                   [[AppDelegate sharedDelegate] setToken:self.textField.text];
+                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+
+                                   [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
 
                                    [self.activityIndicator startAnimating];
                                    textField.enabled = NO;
