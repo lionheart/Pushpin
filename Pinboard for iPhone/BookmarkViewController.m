@@ -81,8 +81,6 @@ static float kSmallFontSize = 13.0f;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
-
-
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -508,6 +506,10 @@ static float kSmallFontSize = 13.0f;
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
         cell.contentView.backgroundColor = HEX(0xddddddff);
+    }
+    else {
+        cell.textView.backgroundColor = HEX(0xffffffff);
+        cell.contentView.backgroundColor = HEX(0xffffffff);
     }
 
     cell.textView.delegate = self;

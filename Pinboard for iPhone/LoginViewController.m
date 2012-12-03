@@ -80,7 +80,7 @@
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
     self.textView.text = @"Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
     [self.view addSubview:self.textView];
-    
+
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
     self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
