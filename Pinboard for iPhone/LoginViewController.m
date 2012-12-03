@@ -67,13 +67,15 @@
     [self.view addSubview:self.passwordTextField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.frame = CGRectMake(20, 410, 280, 50);
+    self.progressView.frame = CGRectMake(20, 400, 280, 50);
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 350, 300, 60)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 340, 300, 60)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
+    self.textView.editable = NO;
+    self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = UITextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
     self.textView.text = @"Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
@@ -81,7 +83,7 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 430, activitySize.width, activitySize.height);
+    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
@@ -154,6 +156,7 @@
         NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
         NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
         [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+        self.textView.text = @"Verifying your credentials...";
 
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
