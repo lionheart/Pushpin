@@ -49,7 +49,7 @@
     self.usernameTextField.returnKeyType = UIReturnKeyDone;
     self.usernameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
     self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.usernameTextField.placeholder = @"Username";
+    self.usernameTextField.placeholder = NSLocalizedString(@"Username", nil);
     [self.view addSubview:self.usernameTextField];
 
     self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
@@ -63,7 +63,7 @@
     self.passwordTextField.returnKeyType = UIReturnKeyDone;
     self.passwordTextField.secureTextEntry = YES;
     self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.passwordTextField.placeholder = @"Password";
+    self.passwordTextField.placeholder = NSLocalizedString(@"Password", nil);
     [self.view addSubview:self.passwordTextField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
@@ -78,7 +78,7 @@
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = UITextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
-    self.textView.text = @"Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
+    self.textView.text = NSLocalizedString(@"Login Instructions", nil);
     [self.view addSubview:self.textView];
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -156,13 +156,13 @@
         NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
         NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
         [request setValue:authValue forHTTPHeaderField:@"Authorization"];
-        self.textView.text = @"Verifying your credentials...";
+        self.textView.text = NSLocalizedString(@"Login in Progress", nil);
 
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:@"We couldn't log you in. Please make sure you've provided valid credentials." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
                                }
                                else {
@@ -174,7 +174,7 @@
                                    textField.enabled = NO;
                                    textField.textColor = [UIColor grayColor];
 
-                                   self.textView.text = @"You have successfully authenticated. Please wait while we download your bookmarks.";
+                                   self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                    self.progressView.hidden = NO;
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
                                }

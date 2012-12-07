@@ -24,14 +24,14 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"About"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About", nil)
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(showAboutPage)];
         
-        self.logOutAlertView = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"This will log you out and delete the local bookmark database from your device." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:@"Open links with:" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
-        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:@"Contact Support" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Request a feature", @"Report a bug", @"Email us", nil];
+        self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
+        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), NSLocalizedString(@"Email us", nil), nil];
     }
     return self;
 }
@@ -51,8 +51,8 @@
     [webView loadRequest:[NSURLRequest requestWithURL:url]];
     webView.delegate = self;
     aboutViewController.view = webView;
-    aboutViewController.title = @"About";
-    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
+    aboutViewController.title = NSLocalizedString(@"About Page Title", nil);
+    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About Page Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
     UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
     aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:aboutViewNavigationController animated:YES completion:nil];
@@ -104,7 +104,7 @@
     
     switch (indexPath.section) {
         case 0: {
-            cell.textLabel.text = @"Open links with:";
+            cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
             switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
                 case BROWSER_WEBVIEW:
                     cell.detailTextLabel.text = @"Webview";
@@ -124,10 +124,10 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = @"Contact Support";
+                    cell.textLabel.text = NSLocalizedString(@"Contact Support", nil);
                     break;
                 case 1:
-                    cell.textLabel.text = @"Log Out";
+                    cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
                     break;
                 default:
                     break;
@@ -145,7 +145,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     switch (section) {
         case 1:
-            return @"This will log you out of the application and will reset the application's bookmark database.";
+            return NSLocalizedString(@"Log out warning footer", nil);
             break;
             
         default:
@@ -190,7 +190,7 @@
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     switch (row) {
         case 0:
-            return @"Default";
+            return NSLocalizedString(@"Default", nil);
             break;
         case 1:
             return @"Safari";
@@ -215,10 +215,10 @@
                 break;
                 
             case 2: {
-                BOOL installed = [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:@"googlechrome://x1x"]];
+                BOOL installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://x1x"]];
                 if (!installed) {
                     // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Install Chrome?" message:@"In order to open links with Google Chrome, you first have to install it. Click OK to continue." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                     [alert show];
                 }
                 else {
@@ -240,8 +240,8 @@
         if (buttonIndex == 2) {
             MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
             emailComposer.mailComposeDelegate = self;
-            [emailComposer setSubject:@"Help me!"];
-            [emailComposer setToRecipients:@[@"support@pinboardforiphone.com"]];
+            [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
+            [emailComposer setToRecipients:@[@"support@aurora.io"]];
             [self presentViewController:emailComposer animated:YES completion:nil];
             return;
         }

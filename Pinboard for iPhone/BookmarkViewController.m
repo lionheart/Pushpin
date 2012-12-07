@@ -54,10 +54,10 @@ static float kSmallFontSize = 13.0f;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy URL" action:@selector(copyURL:)];
-    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy Title" action:@selector(copyTitle:)];
-    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:@"Edit" action:@selector(editBookmark:)];
-    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(deleteBookmark:)];
+    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
+    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
+    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
+    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
     [[UIMenuController sharedMenuController] setMenuItems: @[copyURLMenuItem, copyTitleMenuItem]];
     [[UIMenuController sharedMenuController] update];
 
@@ -305,14 +305,14 @@ static float kSmallFontSize = 13.0f;
 - (void)toggleEditMode {
     if (self.tableView.editing) {
         [self.tableView setEditing:NO animated:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(toggleEditMode)];
     }
     else {
         [self.tableView setEditing:YES animated:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
                                                                                   style:UIBarButtonItemStyleDone
                                                                                  target:self
                                                                                  action:@selector(toggleEditMode)];
@@ -345,13 +345,13 @@ static float kSmallFontSize = 13.0f;
                                                               
                                                               if (success) {
                                                                   [self processBookmarks];
-                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was updated." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                                                   [alert show];
                                                                   return;
                                                               }
                                                           }
                                                           
-                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh." message:@"There was an error updating your bookmark." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                                           [alert show];
                                                       }];
                            }];
@@ -434,7 +434,7 @@ static float kSmallFontSize = 13.0f;
                     [[UIApplication sharedApplication] openURL:url];
                 }
                 else {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Shucks" message:@"It looks like Google Chrome is unable to open this link. Click OK to open it with Safari instead." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                     [alert show];
                 }
                 break;
@@ -546,7 +546,7 @@ static float kSmallFontSize = 13.0f;
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Mark as read", @"Open in Safari", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Mark as read", nil), NSLocalizedString(@"Open in Safari", nil), nil];
     [sheet showInView:self.bookmarkDetailViewController.view];
 }
 

@@ -36,10 +36,10 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return @"Bookmarks";
+            return NSLocalizedString(@"Bookmarks", nil);
             break;
         case 1:
-            return @"Community";
+            return NSLocalizedString(@"Community", nil);
             break;
     }
     return @"";
@@ -67,35 +67,35 @@
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
                     [results next];
 
-                    cell.textLabel.text = @"All";
+                    cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 1:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
                     [results next];
 
-                    cell.textLabel.text = @"Private";
+                    cell.textLabel.text = NSLocalizedString(@"Private", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;  
                 case 2:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(NO)]];
                     [results next];
 
-                    cell.textLabel.text = @"Public";
+                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 3:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
                     [results next];
 
-                    cell.textLabel.text = @"Unread";
+                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 4:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging)"];
                     [results next];
 
-                    cell.textLabel.text = @"Untagged";
+                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
             }
@@ -104,13 +104,13 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = @"All";
+                    cell.textLabel.text = NSLocalizedString(@"All", nil);
                     break;
                 case 1:
                     cell.textLabel.text = @"Wikipedia";
                     break;
                 case 2:
-                    cell.textLabel.text = @"Fandom";
+                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
                     break;
                 case 3:
                     cell.textLabel.text = @"日本語";
@@ -131,26 +131,26 @@
             switch (indexPath.row) {
                 case 0:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = @"All Bookmarks";
+                    bookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
                     break;
                 case 1:
                     parameters[@"private"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = @"Private";
+                    bookmarkViewController.title = NSLocalizedString(@"Private", nil);
                     break;
                 case 2:
                     parameters[@"private"] = @(NO);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = @"Public";
+                    bookmarkViewController.title = NSLocalizedString(@"Public", nil);
                     break;
                 case 3:
                     parameters[@"unread"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = @"Unread";
+                    bookmarkViewController.title = NSLocalizedString(@"Unread", nil);
                     break;
                 case 4:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = @"Untagged";
+                    bookmarkViewController.title = NSLocalizedString(@"Untagged", nil);
                     break;
             }
             break;

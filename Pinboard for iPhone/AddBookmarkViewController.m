@@ -44,14 +44,14 @@
         self.titleTextField.font = [UIFont systemFontOfSize:16];
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.titleTextField.placeholder = @"Bookmarking for introverts";
+        self.titleTextField.placeholder = NSLocalizedString(@"Add bookmark title example", nil);
         self.titleTextField.text = @"";
         
         self.tagTextField = [[UITextField alloc] init];
         self.tagTextField.font = [UIFont systemFontOfSize:16];
         self.tagTextField.delegate = self;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagTextField.placeholder = @"bookmarking antisocial";
+        self.tagTextField.placeholder = NSLocalizedString(@"Add bookmark tag example", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.text = @"";
     }
@@ -71,19 +71,19 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return @"URL";
+            return NSLocalizedString(@"URL", nil);
             break;
         case 1:
-            return @"Title";
+            return NSLocalizedString(@"Title", nil);
             break;
         case 2:
-            return @"Description";
+            return NSLocalizedString(@"Description", nil);
             break;
         case 3:
-            return @"Tags";
+            return NSLocalizedString(@"Tags", nil);
             break;
         case 4:
-            return @"Private";
+            return NSLocalizedString(@"Private", nil);
             break;
         default:
             break;
@@ -129,7 +129,7 @@
                 break;
                 
             case 4: {
-                cell.textLabel.text = @"Set as private?";
+                cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
                 CGSize size = cell.frame.size;
                 self.privateSwitch = [[UISwitch alloc] init];
                 CGSize switchSize = self.privateSwitch.frame.size;
@@ -163,7 +163,7 @@
     }
 
     if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh oh!" message:@"You can't add a bookmark without a URL or title." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted error", nil) message:NSLocalizedString(@"Add bookmark missing url or title", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
         [alert show];
         return;
     }
@@ -177,7 +177,7 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
                                    [self.modalDelegate closeModal];
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your bookmark was added." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    [alert show];
                                }
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];

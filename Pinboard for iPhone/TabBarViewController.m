@@ -34,34 +34,34 @@
         bookmarkViewController.title = @"All Bookmarks";
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        homeViewController.title = @"Browse";
+        homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         
         UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
         [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, bookmarkViewController, nil]];
         [postViewContainer popToViewController:bookmarkViewController animated:NO];
         
-        postViewContainer.tabBarItem.title = @"Browse";
+        postViewContainer.tabBarItem.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
         // [postViewContainer.tabBarItem setBadgeValue:@"2"];
         
         SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
         UINavigationController *settingsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-        settingsViewController.title = @"Settings";
+        settingsViewController.title = NSLocalizedString(@"Settings Tab Bar Title", nil);
         settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
         
         AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
         UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-        addBookmarkViewController.title = @"Add";
+        addBookmarkViewController.title = NSLocalizedString(@"Add Tab Bar Title", nil);
         addBookmarkViewController.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
         
         TagViewController *tagViewController = [[TagViewController alloc] init];
         UINavigationController *tagViewNavigationController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
-        tagViewController.title = @"Tags";
+        tagViewController.title = NSLocalizedString(@"Tags Tab Bar Title", nil);
         tagViewController.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
         
         NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
         UINavigationController *noteViewNavigationController = [[UINavigationController alloc] initWithRootViewController:noteViewController];
-        noteViewController.title = @"Notes";
+        noteViewController.title = NSLocalizedString(@"Notes Tab Bar Title", nil);
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
         [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
@@ -129,7 +129,7 @@
     if ([results intForColumnIndex:0] == 0) {
         NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add Bookmark?" message:@"We've detected a URL in your clipboard. Would you like to bookmark it?" delegate:self cancelButtonTitle:@"Nope" otherButtonTitles:@"Sure", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
             [alert show];
         }
     }
@@ -153,7 +153,6 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"hey!");
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSLog(@"Content length: %qd", [httpResponse expectedContentLength]);
@@ -172,9 +171,9 @@
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = @"Add Bookmark";
+    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
     addBookmarkViewController.modalDelegate = self;
     addBookmarkViewController.titleTextField.text = title;
     addBookmarkViewController.urlTextField.text = url;
