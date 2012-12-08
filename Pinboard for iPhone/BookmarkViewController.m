@@ -153,6 +153,7 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     self.searchWasActive = [self.searchDisplayController isActive];
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
 }
@@ -479,7 +480,6 @@ static float kSmallFontSize = 13.0f;
         }
     }
     return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(share:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
-    
 }
 
 - (void)editBookmark:(id)sender {
@@ -503,13 +503,15 @@ static float kSmallFontSize = 13.0f;
 - (void)readLater:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
+    NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
+    NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSURL *url = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:@"http://"] withString:@"ihttp://"]];
-        [[UIApplication sharedApplication] openURL:url];
+        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"ihttp://"]];
+        [[UIApplication sharedApplication] openURL:newURL];
     }
     else {
-        NSURL *url = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:@"http://"] withString:@"readability://add/"]];
-        [[UIApplication sharedApplication] openURL:url];
+        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
+        [[UIApplication sharedApplication] openURL:newURL];
     }
 }
 
