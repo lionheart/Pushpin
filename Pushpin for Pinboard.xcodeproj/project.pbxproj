@@ -896,7 +896,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
+				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
