@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Pinboard for iPhone.xcodeproj">
+      location = "self:Pushpin for Pinboard.xcodeproj">
    </FileRef>
 </Workspace>

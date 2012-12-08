@@ -16,7 +16,7 @@
                BlueprintIdentifier = "37FEEB8D15745488003F2B77"
                BuildableName = "Pushpin.app"
                BlueprintName = "Pushpin"
-               ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
+               ReferencedContainer = "container:Pushpin for Pinboard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,7 +34,7 @@
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
             BuildableName = "Pushpin.app"
             BlueprintName = "Pushpin"
-            ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
+            ReferencedContainer = "container:Pushpin for Pinboard.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,7 +53,7 @@
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
             BuildableName = "Pushpin.app"
             BlueprintName = "Pushpin"
-            ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
+            ReferencedContainer = "container:Pushpin for Pinboard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
             BuildableName = "Pushpin.app"
             BlueprintName = "Pushpin"
-            ReferencedContainer = "container:Pinboard for iPhone.xcodeproj">
+            ReferencedContainer = "container:Pushpin for Pinboard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -79,8 +79,8 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
-      customArchiveName = "Pinboard"
+      buildConfiguration = "Beta Release"
+      customArchiveName = "Pushpin &#946;"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

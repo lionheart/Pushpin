@@ -255,10 +255,10 @@
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		37FEEB9A15745488003F2B77 /* Pinboard for iPhone-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pinboard for iPhone-Info.plist"; sourceTree = "<group>"; };
+		37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pushpin for Pinboard-Info.plist"; sourceTree = "<group>"; };
 		37FEEB9C15745488003F2B77 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		37FEEB9E15745488003F2B77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		37FEEBA015745488003F2B77 /* Pinboard for iPhone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pinboard for iPhone-Prefix.pch"; sourceTree = "<group>"; };
+		37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pushpin for Pinboard-Prefix.pch"; sourceTree = "<group>"; };
 		37FEEBA115745488003F2B77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		37FEEBA215745488003F2B77 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		37FEEBD515747E85003F2B77 /* BookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkViewController.h; sourceTree = "<group>"; };
@@ -473,7 +473,7 @@
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,
 				3787002C15B49B23008A477A /* Icon@2x.png */,
 				3787002A15B49B17008A477A /* Icon.png */,
-				37FEEB9815745488003F2B77 /* Pinboard for iPhone */,
+				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
@@ -506,7 +506,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		37FEEB9815745488003F2B77 /* Pinboard for iPhone */ = {
+		37FEEB9815745488003F2B77 /* Pushpin for Pinboard */ = {
 			isa = PBXGroup;
 			children = (
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
@@ -531,17 +531,18 @@
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
+			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
 			sourceTree = "<group>";
 		};
 		37FEEB9915745488003F2B77 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB9A15745488003F2B77 /* Pinboard for iPhone-Info.plist */,
+				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
 				37FEEB9B15745488003F2B77 /* InfoPlist.strings */,
 				37DA50BB16719443005668F5 /* Localizable.strings */,
 				37FEEB9E15745488003F2B77 /* main.m */,
-				37FEEBA015745488003F2B77 /* Pinboard for iPhone-Prefix.pch */,
+				37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -605,7 +606,7 @@
 			attributes = {
 				LastUpgradeCheck = 0430;
 			};
-			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pinboard for iPhone" */;
+			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin for Pinboard" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -766,6 +767,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "TESTING=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -774,10 +776,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7027AD70-FCFC-40E8-A3A0-9A82A7B9BBF9";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "87634117-E8C6-4A82-BA15-BECE6E9934EF";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
+				VERSIONING_SYSTEM = "";
 			};
 			name = "Beta Release";
 		};
@@ -785,8 +788,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
+				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -795,7 +798,7 @@
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME) β";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -808,6 +811,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -821,9 +825,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "93EDA687-C1AE-4077-A6CE-2BDED8EE4B8E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "54BD073E-E2C7-4EB3-BD7A-CE3A7C586E18";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -835,6 +840,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -847,6 +853,7 @@
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
@@ -854,8 +861,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
+				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -873,8 +880,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pinboard for iPhone-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pinboard for iPhone-Info.plist";
+				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
+				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -891,7 +898,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pinboard for iPhone" */ = {
+		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin for Pinboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA415745488003F2B77 /* Debug */,
