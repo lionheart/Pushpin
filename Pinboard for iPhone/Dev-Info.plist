@@ -7,14 +7,14 @@
 	<key>CFBundleDisplayName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
-	<string>${EXECUTABLE_NAME}</string>
+	<string>Pinboard Dev</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>Icon-beta@2x.png</string>
-		<string>Icon-settings-beta.png</string>
-		<string>Icon-settings-beta@2x.png</string>
-		<string>iTunesArtwork-beta.png</string>
-		<string>iTunesArtwork-beta@2x.png</string>
+		<string>Icon-dev@2x.png</string>
+		<string>Icon-settings-dev.png</string>
+		<string>Icon-settings-dev@2x.png</string>
+		<string>iTunesArtwork-dev.png</string>
+		<string>iTunesArtwork-dev@2x.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -22,15 +22,15 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon-beta.png</string>
-				<string>Icon-beta@2x.png</string>
+				<string>Icon-dev.png</string>
+				<string>Icon-dev@2x.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.aurora.pushpinbeta</string>
+	<string>io.aurora.pushpindev</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

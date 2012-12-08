@@ -83,6 +83,12 @@
 		37B65FE41672E0090041DA8C /* Icon-settings-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */; };
 		37B65FE51672E0090041DA8C /* Icon-settings-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */; };
 		37B65FE61672E0090041DA8C /* iTunesArtwork-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */; };
+		37C2BF011673A00A00EC66FF /* iTunesArtwork-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */; };
+		37C2BF021673A00A00EC66FF /* iTunesArtwork-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */; };
+		37C2BF031673A00A00EC66FF /* Icon-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFD1673A00A00EC66FF /* Icon-dev.png */; };
+		37C2BF041673A00A00EC66FF /* Icon-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFE1673A00A00EC66FF /* Icon-dev@2x.png */; };
+		37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFF1673A00A00EC66FF /* Icon-settings-dev.png */; };
+		37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BF001673A00A00EC66FF /* Icon-settings-dev@2x.png */; };
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default.png */; };
 		37C611EB16377D5D008DB30B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E816377D5D008DB30B /* Default@2x.png */; };
@@ -209,6 +215,12 @@
 		37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta.png"; path = "Assets/Icon-settings-beta.png"; sourceTree = "<group>"; };
 		37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta@2x.png"; path = "Assets/Icon-settings-beta@2x.png"; sourceTree = "<group>"; };
 		37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta.png"; path = "Assets/iTunesArtwork-beta.png"; sourceTree = "<group>"; };
+		37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev.png"; path = "Assets/iTunesArtwork-dev.png"; sourceTree = "<group>"; };
+		37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev@2x.png"; path = "Assets/iTunesArtwork-dev@2x.png"; sourceTree = "<group>"; };
+		37C2BEFD1673A00A00EC66FF /* Icon-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-dev.png"; path = "Assets/Icon-dev.png"; sourceTree = "<group>"; };
+		37C2BEFE1673A00A00EC66FF /* Icon-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-dev@2x.png"; path = "Assets/Icon-dev@2x.png"; sourceTree = "<group>"; };
+		37C2BEFF1673A00A00EC66FF /* Icon-settings-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-dev.png"; path = "Assets/Icon-settings-dev.png"; sourceTree = "<group>"; };
+		37C2BF001673A00A00EC66FF /* Icon-settings-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-dev@2x.png"; path = "Assets/Icon-settings-dev@2x.png"; sourceTree = "<group>"; };
 		37C611E616377D5D008DB30B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Assets/Default-568h@2x.png"; sourceTree = "<group>"; };
 		37C611E716377D5D008DB30B /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Assets/Default.png; sourceTree = "<group>"; };
 		37C611E816377D5D008DB30B /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Assets/Default@2x.png"; sourceTree = "<group>"; };
@@ -259,7 +271,7 @@
 		37E329AA1629EDE600A6BC18 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../Vendor/sqlite/sqlite3ext.h; sourceTree = "<group>"; };
 		37E329DF1629F0D100A6BC18 /* SQLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite-Prefix.pch"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pushpin Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -490,7 +502,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin.app */,
+				37FEEB8E15745488003F2B77 /* Pushpin Dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -559,6 +571,12 @@
 				370EE75715ED23F300B262E2 /* Icons */,
 				3715EEC415787CA100FD21EE /* Stylesheets */,
 				3786465C15773E4300A1D5F8 /* Templates */,
+				37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */,
+				37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */,
+				37C2BEFD1673A00A00EC66FF /* Icon-dev.png */,
+				37C2BEFE1673A00A00EC66FF /* Icon-dev@2x.png */,
+				37C2BEFF1673A00A00EC66FF /* Icon-settings-dev.png */,
+				37C2BF001673A00A00EC66FF /* Icon-settings-dev@2x.png */,
 				37FEEBD815748BA2003F2B77 /* navigationbar.png */,
 				37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */,
 				3779D08715EC0928009E564A /* icon_bookmark.png */,
@@ -608,7 +626,7 @@
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pushpin.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pushpin Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -706,6 +724,12 @@
 				37B65FE41672E0090041DA8C /* Icon-settings-beta.png in Resources */,
 				37B65FE51672E0090041DA8C /* Icon-settings-beta@2x.png in Resources */,
 				37B65FE61672E0090041DA8C /* iTunesArtwork-beta.png in Resources */,
+				37C2BF011673A00A00EC66FF /* iTunesArtwork-dev.png in Resources */,
+				37C2BF021673A00A00EC66FF /* iTunesArtwork-dev@2x.png in Resources */,
+				37C2BF031673A00A00EC66FF /* Icon-dev.png in Resources */,
+				37C2BF041673A00A00EC66FF /* Icon-dev@2x.png in Resources */,
+				37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */,
+				37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,13 +742,12 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Pinboard for iPhone/Beta-Info.plist",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\" \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/io.aurora.pushpin/io.aurora.pushpinbeta/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon.png/Icon-beta.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon@2x.png/Icon-beta@2x.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Add :CFBundleIconFiles array\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:0 string Icon-beta.png\"' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-settings-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-settings-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string iTunesArtwork-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string iTunesArtwork-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n";
+			shellScript = "cp \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\" \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/io.aurora.pushpin/io.aurora.pushpinbeta/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon.png/Icon-beta.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon@2x.png/Icon-beta@2x.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Add :CFBundleIconFiles array\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:0 string Icon-beta.png\"' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:2 string Icon-settings-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:3 string Icon-settings-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:4 string iTunesArtwork-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:5 string iTunesArtwork-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n\ncp \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\" \"Pinboard for iPhone/Dev-Info.plist\"\nsed -i '' 's/io.aurora.pushpin/io.aurora.pushpindev/g' \"Pinboard for iPhone/Dev-Info.plist\"\nsed -i '' 's/Icon.png/Icon-dev.png/g' \"Pinboard for iPhone/Dev-Info.plist\"\nsed -i '' 's/Icon@2x.png/Icon-dev@2x.png/g' \"Pinboard for iPhone/Dev-Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleExecutable 'Pinboard Dev'\" \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Add :CFBundleIconFiles array\" \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:0 string Icon-dev.png\"' \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-dev@2x.png' \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:2 string Icon-settings-dev.png' \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:3 string Icon-settings-dev@2x.png' \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:4 string iTunesArtwork-dev.png' \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:5 string iTunesArtwork-dev@2x.png' \"Pinboard for iPhone/Dev-Info.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -810,7 +833,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "28301695-6CBC-4C97-BEAA-B6D005C31EFF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A3F3D5A7-EA5E-4A08-9573-B470707455A0";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -859,7 +882,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "54BD073E-E2C7-4EB3-BD7A-CE3A7C586E18";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "99E50B86-769B-41F3-A6C8-5726CFA870A2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
@@ -896,7 +919,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
+				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -905,7 +928,7 @@
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME) Dev";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
