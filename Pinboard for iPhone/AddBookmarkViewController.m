@@ -134,8 +134,8 @@
                 self.privateSwitch = [[UISwitch alloc] init];
                 CGSize switchSize = self.privateSwitch.frame.size;
                 self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                self.privateSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
                 [cell.contentView addSubview:self.privateSwitch];
-
                 break;
             }
                 
