@@ -11,10 +11,6 @@
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
 
-static NSString *const kFontName = @"Helvetica";
-static float kLargeFontSize = 16.0f;
-static float kSmallFontSize = 13.0f;
-
 @interface BookmarkViewController ()
 
 @end
@@ -107,7 +103,7 @@ static float kSmallFontSize = 13.0f;
         UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Instapaper", nil) action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }
-    else {
+    else if (readLater.integerValue == READLATER_READABILITY) {
         UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Readability", nil) action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }

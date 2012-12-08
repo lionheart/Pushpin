@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
+#import "BookmarkFeedViewController.h"
 
 @interface HomeViewController ()
 
@@ -18,7 +19,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -27,7 +28,7 @@
             return 5;
             break;
         case 1:
-            return 4;
+            return 5;
             break;
     }
     return 0;
@@ -36,7 +37,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return NSLocalizedString(@"Bookmarks", nil);
+            return @"Personal";
             break;
         case 1:
             return NSLocalizedString(@"Community", nil);
@@ -104,18 +105,23 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = NSLocalizedString(@"All", nil);
+                    cell.textLabel.text = @"Network";
                     break;
                 case 1:
-                    cell.textLabel.text = @"Wikipedia";
+                    cell.textLabel.text = @"Popular";
                     break;
                 case 2:
-                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
+                    cell.textLabel.text = @"Wikipedia";
                     break;
                 case 3:
+                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
+                    break;
+                case 4:
                     cell.textLabel.text = @"日本語";
                     break;
             }
+            cell.detailTextLabel.text = @"";
+
             break;   
         }
     }
@@ -124,10 +130,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BookmarkViewController *bookmarkViewController;
+    
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     switch (indexPath.section) {
         case 0: {
+            BookmarkViewController *bookmarkViewController;
+
             switch (indexPath.row) {
                 case 0:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
@@ -153,25 +161,42 @@
                     bookmarkViewController.title = NSLocalizedString(@"Untagged", nil);
                     break;
             }
+
+            [self.navigationController pushViewController:bookmarkViewController animated:YES];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         }
         case 1: {
+            BookmarkFeedViewController *bookmarkViewController;
+
             switch (indexPath.row) {
                 case 0:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular"];
+                    bookmarkViewController.title = @"Network";
                     break;
                 case 1:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular"];
+                    bookmarkViewController.title = @"Popular";
                     break;
                 case 2:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/wikipedia"];
+                    bookmarkViewController.title = @"Wikipedia";
                     break;
                 case 3:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/fandom"];
+                    bookmarkViewController.title = @"Fandom";
+                    break;
+                case 4:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/japanese"];
+                    bookmarkViewController.title = @"日本語";
                     break;
             }
+            [self.navigationController pushViewController:bookmarkViewController animated:YES];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
             break;
         }
     }
-    
-    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

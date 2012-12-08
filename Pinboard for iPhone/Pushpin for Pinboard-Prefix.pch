@@ -35,3 +35,7 @@
 #define MPTrackProperties(event, ...) [[MixpanelAPI sharedAPI] track:event properties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
 #define MPTrack(event) [[MixpanelAPI sharedAPI] track:event]
 #define MPSetProperties(...) [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
+
+static NSString *const kFontName = @"Helvetica";
+static float kLargeFontSize = 16.0f;
+static float kSmallFontSize = 13.0f;
