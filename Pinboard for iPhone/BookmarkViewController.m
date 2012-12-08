@@ -54,17 +54,6 @@ static float kSmallFontSize = 13.0f;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
-    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
-    UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Read Later", nil) action:@selector(readLater:)];
-    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
-    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
-
-    [[UIMenuController sharedMenuController] setMenuItems: @[copyURLMenuItem, copyTitleMenuItem, readLaterMenuItem, shareMenuItem]];
-
-    [[UIMenuController sharedMenuController] update];
-
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
     if (self.savedSearchTerm) {
@@ -85,6 +74,35 @@ static float kSmallFontSize = 13.0f;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    NSMutableArray *items = [NSMutableArray array];
+    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
+    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
+
+    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
+    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
+    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
+
+    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
+    if (readLater.integerValue == READLATER_INSTAPAPER) {
+        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Instapaper", nil) action:@selector(readLater:)];
+        [items addObject:readLaterMenuItem];
+    }
+    else {
+        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Readability", nil) action:@selector(readLater:)];
+        [items addObject:readLaterMenuItem];
+    }
+    
+    [items addObject:copyURLMenuItem];
+    [items addObject:copyTitleMenuItem];
+    [items addObject:shareMenuItem];
+    
+    [[UIMenuController sharedMenuController] setMenuItems:items];
+    [[UIMenuController sharedMenuController] update];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -455,9 +473,10 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    if (action == @selector(readlater:) && [[AppDelegate sharedDelegate] readlater] != nil) {
-        NSLog(@"YESSS");
-        return YES;
+    if ([[AppDelegate sharedDelegate] readlater] != nil) {
+        if (action == @selector(readLater:)) {
+            return YES;
+        }
     }
     return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(share:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
     
@@ -482,7 +501,16 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (void)readLater:(id)sender {
-
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
+    if (readLater.integerValue == READLATER_INSTAPAPER) {
+        NSURL *url = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:@"http://"] withString:@"ihttp://"]];
+        [[UIApplication sharedApplication] openURL:url];
+    }
+    else {
+        NSURL *url = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:@"http://"] withString:@"readability://add/"]];
+        [[UIApplication sharedApplication] openURL:url];
+    }
 }
 
 - (void)share:(id)sender {
