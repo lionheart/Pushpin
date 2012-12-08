@@ -8,14 +8,22 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon-beta@2x.png</string>
+		<string>iTunesArtwork-beta@2x.png</string>
+		<string>iTunesArtwork-beta.png</string>
+		<string>Icon-settings-beta@2x.png</string>
+		<string>Icon-settings-beta.png</string>
+	</array>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon.png</string>
-				<string>Icon@2x.png</string>
+				<string>Icon-beta.png</string>
+				<string>Icon-beta@2x.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>
