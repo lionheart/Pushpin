@@ -10,6 +10,7 @@
 	<string>Pinboard Dev</string>
 	<key>CFBundleIconFiles</key>
 	<array>
+		<string>Icon-dev.png</string>
 		<string>Icon-dev@2x.png</string>
 		<string>Icon-settings-dev.png</string>
 		<string>Icon-settings-dev@2x.png</string>
