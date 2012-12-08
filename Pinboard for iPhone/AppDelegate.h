@@ -39,6 +39,7 @@ enum readlaterservices {
 @property (nonatomic, retain) NSNumber *browser;
 @property (nonatomic, retain) NSNumber *readlater;
 @property (nonatomic, retain) NSNumber *privateByDefault;
+@property (nonatomic, retain) NSString *feedToken;
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 

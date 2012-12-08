@@ -24,6 +24,7 @@
 @synthesize browser = _browser;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize privateByDefault = _privateByDefault;
+@synthesize feedToken = _feedToken;
 @synthesize connectionAvailable;
 
 + (NSString *)databasePath {
@@ -255,6 +256,21 @@
     return _browser;
 }
 
+- (void)setFeedToken:(NSString *)feedToken {
+    _feedToken = feedToken;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:feedToken forKey:@"io.aurora.pinboard.FeedToken"];
+    [defaults synchronize];
+}
+
+- (NSString *)feedToken {
+    if (!_feedToken) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _feedToken = [defaults objectForKey:@"io.aurora.pinboard.FeedToken"];
+    }
+    return _feedToken;
+}
+
 - (void)setReadlater:(NSNumber *)readlater {
     _readlater = readlater;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -335,6 +351,7 @@
     if (![self token]) {
         return;
     }
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];

@@ -16,6 +16,26 @@
 
 @implementation HomeViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // Grab the feed token if necessary
+    if (![[AppDelegate sharedDelegate] feedToken]) {
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/secret?auth_token=%@&format=json", [[AppDelegate sharedDelegate] token]]]];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                   if (!error) {
+                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                       [[AppDelegate sharedDelegate] setFeedToken:payload[@"result"]];
+                                       [self.tableView reloadData];
+                                   }
+                               }];
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -170,24 +190,28 @@
             BookmarkFeedViewController *bookmarkViewController;
 
             switch (indexPath.row) {
-                case 0:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular"];
+                case 0: {
+                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                    NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
                     bookmarkViewController.title = @"Network";
                     break;
+                }
                 case 1:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular"];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
                     bookmarkViewController.title = @"Popular";
                     break;
                 case 2:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/wikipedia"];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
                     bookmarkViewController.title = @"Wikipedia";
                     break;
                 case 3:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/fandom"];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
                     bookmarkViewController.title = @"Fandom";
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"http://feeds.pinboard.in/json/popular/japanese"];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
                     bookmarkViewController.title = @"日本語";
                     break;
             }
