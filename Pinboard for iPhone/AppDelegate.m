@@ -36,7 +36,32 @@
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-
+    NSLog(@"%@", url.host);
+    if ([url.host isEqualToString:@"add"]) {
+        // Parse the individual parameters
+        // parameters = @"hello=world&foo=bar";
+        NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] init];
+        NSArray *arrParameters = [url.query componentsSeparatedByString:@"&"];
+        for (int i = 0; i < [arrParameters count]; i++) {
+            NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
+            if ([arrKeyValue count] >= 2) {
+                NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
+                [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+                NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
+                [strValue setString:[[[arrKeyValue objectAtIndex:1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+                if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
+            }
+        }
+        
+        if (dictParameters[@"url"]) {
+            if (dictParameters[@"title"]) {
+                [self.tabBarViewController showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:dictParameters[@"title"]];
+            }
+            else {
+                [self.tabBarViewController showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:@""];
+            }
+        }
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
