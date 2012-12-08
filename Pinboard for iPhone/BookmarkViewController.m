@@ -53,6 +53,11 @@ static float kSmallFontSize = 13.0f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                     action:@selector(handleSwipeRight:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [self.tableView addGestureRecognizer:recognizer];
 
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
@@ -352,6 +357,8 @@ static float kSmallFontSize = 13.0f;
     }
 }
 
+
+
 - (void)markBookmarkAsRead:(NSDictionary *)bookmark {
     NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], self.bookmark[@"url"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -389,6 +396,17 @@ static float kSmallFontSize = 13.0f;
                                                       }];
                            }];
     
+}
+
+#pragma mark - Gesture Recognizers
+
+- (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer {
+    CGPoint location = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+
+    if (indexPath) {
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    }
 }
 
 #pragma mark - Alert View Delegate
@@ -486,6 +504,10 @@ static float kSmallFontSize = 13.0f;
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     if ([[AppDelegate sharedDelegate] readlater] != nil) {
         if (action == @selector(readLater:)) {
+            NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+            if ([bookmark[@"url"] rangeOfString:@"twitter.com"].location != NSNotFound || [bookmark[@"url"] rangeOfString:@"github.com"].location != NSNotFound) {
+                return NO;
+            }
             return YES;
         }
     }
