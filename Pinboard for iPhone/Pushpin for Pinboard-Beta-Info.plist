@@ -22,7 +22,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.aurora.pushpin</string>
+	<string>io.aurora.pushpinbeta</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
