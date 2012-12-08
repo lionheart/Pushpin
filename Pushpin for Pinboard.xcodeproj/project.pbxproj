@@ -61,8 +61,6 @@
 		37800E8A162CF1A3009FCB17 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37800E72162CF1A2009FCB17 /* README.md */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
-		3787002B15B49B17008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002A15B49B17008A477A /* Icon.png */; };
-		3787002D15B49B23008A477A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787002C15B49B23008A477A /* Icon@2x.png */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
 		3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE615B49989008A477A /* Icon-settings@2x.png */; };
 		3787FFED15B49989008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE715B49989008A477A /* Icon.png */; };
@@ -180,8 +178,6 @@
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
-		3787002A15B49B17008A477A /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		3787002C15B49B23008A477A /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		3787FFE515B49989008A477A /* Icon-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings.png"; path = "Assets/Icon-settings.png"; sourceTree = "<group>"; };
 		3787FFE615B49989008A477A /* Icon-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings@2x.png"; path = "Assets/Icon-settings@2x.png"; sourceTree = "<group>"; };
 		3787FFE715B49989008A477A /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Assets/Icon.png; sourceTree = "<group>"; };
@@ -251,7 +247,7 @@
 		37E329AA1629EDE600A6BC18 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../Vendor/sqlite/sqlite3ext.h; sourceTree = "<group>"; };
 		37E329DF1629F0D100A6BC18 /* SQLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite-Prefix.pch"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		37FEEB8E15745488003F2B77 /* Pushpin Development.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin Development.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pushpin Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -471,8 +467,6 @@
 				37247FF51633407E00417E65 /* libz.dylib */,
 				37247FEE163303CF00417E65 /* NSString+URLEncoding.h */,
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,
-				3787002C15B49B23008A477A /* Icon@2x.png */,
-				3787002A15B49B17008A477A /* Icon.png */,
 				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
@@ -484,7 +478,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin Development.app */,
+				37FEEB8E15745488003F2B77 /* Pushpin Dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -596,7 +590,7 @@
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pushpin Development.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pushpin Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -646,8 +640,6 @@
 				3787FFEE15B49989008A477A /* Icon@2x.png in Resources */,
 				3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */,
 				3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */,
-				3787002B15B49B17008A477A /* Icon.png in Resources */,
-				3787002D15B49B23008A477A /* Icon@2x.png in Resources */,
 				3779D08815EC0928009E564A /* icon_bookmark.png in Resources */,
 				3779D08A15EC0982009E564A /* 14-tag.png in Resources */,
 				3779D08C15EC098E009E564A /* 14-tag@2x.png in Resources */,
@@ -707,7 +699,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\" \"Pinboard for iPhone/Pushpin for Pinboard-Beta-Info.plist\"\nsed -i '' 's/io.aurora.pushpin/io.aurora.pushpinbeta/g' \"Pinboard for iPhone/Pushpin for Pinboard-Beta-Info.plist\"";
+			shellScript = "cp \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\" \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/io.aurora.pushpin/io.aurora.pushpinbeta/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon.png/Icon-beta.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\nsed -i '' 's/Icon@2x.png/Icon-beta@2x.png/g' \"Pinboard for iPhone/Beta-Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Add :CFBundleIconFiles array\" \"Pinboard for iPhone/Beta-Info.plist\"\n\nconvert \"Assets/Icon.png\" -draw \"image over 0,0 57,57 'assets/beta-overlay.png'\" \"Assets/Icon-beta.png\"\nconvert \"Assets/Icon@2x.png\" -draw \"image over 0,0 114,114 'assets/beta-overlay.png'\" \"Assets/Icon-beta@2x.png\"\nconvert \"Assets/Icon-settings.png\" -draw \"image over 0,0 29,29 'assets/beta-overlay.png'\" \"Assets/Icon-settings.png\"\nconvert \"Assets/Icon-settings@2x.png\" -draw \"image over 0,0 58,58 'assets/beta-overlay.png'\" \"Assets/Icon-settings@2x.png\"\nconvert \"Assets/iTunesArtwork.png\" -draw \"image over 0,0 512,512 'assets/beta-overlay.png'\" \"Assets/iTunesArtwork-beta.png\"\nconvert \"Assets/iTunesArtwork@2x.png\" -draw \"image over 0,0 1024,1024 'assets/beta-overlay.png'\" \"Assets/iTunesArtwork-beta@2x.png\"\n\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:0 string Icon-beta.png\"' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-settings-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string Icon-settings-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string iTunesArtwork-beta.png' \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c 'Add :CFBundleIconFiles:1 string iTunesArtwork-beta@2x.png' \"Pinboard for iPhone/Beta-Info.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -806,7 +798,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Beta-Info.plist";
+				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -879,7 +871,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
-				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
+				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -888,7 +880,7 @@
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME) Development";
+				PRODUCT_NAME = "$(TARGET_NAME) Dev";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
