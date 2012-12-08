@@ -35,6 +35,10 @@
 #endif
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
