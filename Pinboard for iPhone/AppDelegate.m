@@ -36,6 +36,18 @@
 #endif
 }
 
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle {
+    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle];
+}
+
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags {
+    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags];
+}
+
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription {
+    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription];
+}
+
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters
@@ -55,10 +67,10 @@
         
         if (dictParameters[@"url"]) {
             if (dictParameters[@"title"]) {
-                [self.tabBarViewController showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:dictParameters[@"title"]];
+                [self showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:dictParameters[@"title"]];
             }
             else {
-                [self.tabBarViewController showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:@""];
+                [self showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:@""];
             }
         }
     }

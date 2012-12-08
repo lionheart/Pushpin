@@ -26,6 +26,7 @@
 		372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887C1673EDEF0073D0B6 /* HTMLParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
+		372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
@@ -154,6 +155,8 @@
 		372F887C1673EDEF0073D0B6 /* HTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLParser.m; sourceTree = "<group>"; };
 		372F887D1673EDEF0073D0B6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		372F88831673F1D20073D0B6 /* BookmarkFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkFeedViewController.h; sourceTree = "<group>"; };
+		372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkFeedViewController.m; sourceTree = "<group>"; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
@@ -557,6 +560,8 @@
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
 				37FEEBD515747E85003F2B77 /* BookmarkViewController.h */,
 				37FEEBD615747E85003F2B77 /* BookmarkViewController.m */,
+				372F88831673F1D20073D0B6 /* BookmarkFeedViewController.h */,
+				372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */,
 				3727558A161A66A2001A857B /* TagViewController.h */,
 				3727558B161A66A2001A857B /* TagViewController.m */,
 				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
@@ -818,6 +823,7 @@
 				37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */,
 				372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */,
 				372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */,
+				372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -885,7 +891,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
 					"\"$(SRCROOT)/TestFlightSDK1.1\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME) β";
@@ -964,7 +969,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
 					"\"$(SRCROOT)/TestFlightSDK1.1\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME) Dev";
@@ -983,7 +987,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
 					"\"$(SRCROOT)/TestFlightSDK1.1\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";

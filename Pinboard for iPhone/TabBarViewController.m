@@ -194,6 +194,35 @@
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    
+    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    addBookmarkViewController.modalDelegate = self;
+    addBookmarkViewController.titleTextField.text = title;
+    addBookmarkViewController.urlTextField.text = url;
+    addBookmarkViewController.tagTextField.text = someTags;
+    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
+}
+
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags andDescription:(NSString *)aDescription {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    
+    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    addBookmarkViewController.modalDelegate = self;
+    addBookmarkViewController.titleTextField.text = title;
+    addBookmarkViewController.urlTextField.text = url;
+    addBookmarkViewController.tagTextField.text = someTags;
+    addBookmarkViewController.descriptionTextField.text = aDescription;
+    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
+}
+
 - (void)showAddBookmarkViewController {
     [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
 }

@@ -22,6 +22,8 @@
 
 - (void)showAddBookmarkViewController;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title;
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags;
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags andDescription:(NSString *)aDescription;
 - (void)promptUserToAddBookmark;
 - (void)pauseRefreshTimer;
 - (void)resumeRefreshTimer;
