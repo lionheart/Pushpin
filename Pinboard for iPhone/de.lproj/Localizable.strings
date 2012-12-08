@@ -8,101 +8,101 @@
 
 // Generic
 
-"Default" = "Default";
-"Are you sure?" = "Are you sure?";
-"Cancel" = "Cancel";
+"Default" = "Standard";
+"Are you sure?" = "Sind sie sicher?";
+"Cancel" = "Abbrechen";
 "OK" = "OK";
-"Edit" = "Edit";
-"Done" = "Done";
-"Lighthearted Disappointment" = "Shucks";
+"Edit" = "Bearbeiten";
+"Done" = "Fertig";
+"Lighthearted Disappointment" = "Ach, was soll's!";
 "Lighthearted Error" = "Uh oh.";
-"Lighthearted No" = "Nope";
-"Lighthearted Yes" = "Sure";
-"Success" = "Success";
-"Delete" = "Delete";
+"Lighthearted No" = "Nein";
+"Lighthearted Yes" = "Sicher";
+"Success" = "Erfolg";
+"Delete" = "Löschen";
 
 // Tab Bar
 
-"Browse Tab Bar Title" = "Browse";
-"Settings Tab Bar Title" = "Settings";
-"Add Tab Bar Title" = "Add";
+"Browse Tab Bar Title" = "Stöbern";
+"Settings Tab Bar Title" = "Einstellungen";
+"Add Tab Bar Title" = "Hinzufügen";
 "Tags Tab Bar Title" = "Tags";
-"Notes Tab Bar Title" = "Notes";
+"Notes Tab Bar Title" = "Notizen";
 
 // Add Bookmark
 
-"Add Bookmark Page Title" = "Add Bookmark";
-"Add Navigation Bar" = "Add";
-"Cancel Navigation Bar" = "Cancel";
-"URL in Clipboard Title" = "Add Bookmark?";
-"URL in Clipboard Message" = "We've detected a URL in your clipboard. Would you like to bookmark it?";
+"Add Bookmark Page Title" = "Lesezeichen hinzufügen";
+"Add Navigation Bar" = "Hinzufügen";
+"Cancel Navigation Bar" = "Abbrechen";
+"URL in Clipboard Title" = "Lesezeichen hinzufügen?";
+"URL in Clipboard Message" = "Wir haben eine URL in ihrer Zwischenablage gefunden. Zu ihren Lesezeichen hinzufügen?"; // I actually could add a bookmark just with a title :(
 
 // Home Page
 
-"All" = "All";
-"All Bookmarks" = "All Bookmarks";
-"Private" = "Private";
-"Public" = "Public";
-"Unread" = "Unread";
-"Untagged" = "Untagged";
-"Bookmarks" = "Bookmarks";
-"Community" = "Community";
-"Fandom" = "Fandom";
+"All" = "Alle";
+"All Bookmarks" = "Alle Lesezeichen";
+"Private" = "Privat";
+"Public" = "Öffentlich";
+"Unread" = "Ungelesen";
+"Untagged" = "Ohne Tag";
+"Bookmarks" = "Lesezeichen";
+"Community" = "Gemeinschaft";
+"Fandom" = "Fangemeinde";
 
 // Bookmark Page
 
-"Bookmark Updated Message" = "Your bookmark was updated.";
-"Bookmark Added Message" = "Your bookmark was added.";
-"Bookmark Update Error Message" = "There was an error updating your bookmark.";
-"Add bookmark title example" = "Bookmarking for introverts";
-"Add bookmark tag example" = "bookmarking antisocial";
-"Add bookmark missing url or title" = "You can't add a bookmark without a URL or title.";
+"Bookmark Updated Message" = "Ihr Lesezeichen wurde aktualisiert.";
+"Bookmark Added Message" = "Ihr Lesezeichen wurde hinzugefügt";
+"Bookmark Update Error Message" = "Es gab einen Fehler beim Aktualisieren ihres Lesezeichens.";
+"Add bookmark title example" = "Lesezeichen für Introvertierte";
+"Add bookmark tag example" = "lesezeichen sozialenetze";
+"Add bookmark missing url or title" = "Sie können kein Lesezeichen ohne URL oder Titel hinzufügen.";
 
 "URL" = "URL";
-"Title" = "Title";
-"Description" = "Description";
+"Title" = "Titel";
+"Description" = "Beschreibung";
 "Tags" = "Tags";
-"Private" = "Private";
-"Copy URL" = "Copy URL";
-"Copy Title" = "Copy Title";
-"Set as private?" = "Set as private?";
+"Private" = "Privat";
+"Copy URL" = "URL kopieren";
+"Copy Title" = "Titel kopieren";
+"Set as private?" = "Auf privat setzen?";
 
 // Login Page
 
-"Username" = "Username";
-"Password" = "Password";
+"Username" = "Benutzername";
+"Password" = "Passwort";
 
-"Login Instructions" = "Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
-"Login in Progress" = "Verifying your credentials...";
-"Login Failed" = "We couldn't log you in. Please make sure you've provided valid credentials.";
-"Login Successful" = "You have successfully authenticated. Please wait while we download your bookmarks.";
+"Login Instructions" = "Geben sie ihre Pinboard Benutzerdaten ein. Schicken sie uns eine E-Mail an pushpin@aurora.io sollten sie auf Probleme stoßen.";
+"Login in Progress" = "Überprüfe ihre Benutzerdaten...";
+"Login Failed" = "Sie konnten nicht anmeldet werden. Bitte überprüfen sie ihre Benutzerdaten.";
+"Login Successful" = "Sie haben sich erfolgreich authentifiziert. Bitte warten sie bis wir ihre Lesezeichen heruntergeladen haben.";
 
-"Google Chrome failed to open" = "It looks like Google Chrome is unable to open this link. Click OK to open it with Safari instead.";
+"Google Chrome failed to open" = "Es sieht so aus, als ob Google Chrome diesen Link nicht öffnen kann. Drücken sie OK, um ihn stattdessen mit Safari zu öffnen.";
 
-"Mark as read" = "Mark as read";
-"Open in Safari" = "Open in Safari";
+"Mark as read" = "Als gelesen markieren";
+"Open in Safari" = "Mit Safari öffnen";
 
 // Settings Page
 
-"Open links with:" = "Open links with";
+"Open links with:" = "Links öffnen mit";
 
-"Install Chrome Title" = "Install Chrome?";
-"Install Chrome Description" = "In order to open links with Google Chrome, you first have to install it. Click OK to continue.";
+"Install Chrome Title" = "Chrome installieren?";
+"Install Chrome Description" = "Wenn sie Links mit Google Chrome öffnen wollen, muss dieser zuerst installiert werden. Zum Fortfahren OK drücken";
 
-"Log out warning title" = "Are you sure?";
-"Log out warning double check" = "This will log you out and delete the local bookmark database from your device.";
-"Log out warning footer" = "This will log you out of the application and will reset the application's bookmark database.";
+"Log out warning title" = "Sind sie sicher?";
+"Log out warning double check" = "Sie werden nun abgemeldet und die lokale Lesezeichen Datenbank wird von ihrem Gerät entfernt.";
+"Log out warning footer" = "Hierdurch werden sie von der Anwendung abgemeldet und die Lesezeichen Datenbank wird entfernt.";
 
-"Log Out" = "Log Out";
-"Contact Support" = "Contact Support";
-"Request a feature" = "Request a feature";
-"Report a bug" = "Report a bug";
-"Email us" = "Email us";
-"Support Email Subject" = "Help me!";
+"Log Out" = "Abmelden";
+"Contact Support" = "Hilfe anfordern";
+"Request a feature" = "Ein Feauture vorschlagen";
+"Report a bug" = "Einen Fehler melden";
+"E-Mail us" = "Eine E-Mail schicken";
+"Support E-Mail Subject" = "Hilf mir!";
 
-"About Navigation Bar" = "About";
+"About Navigation Bar" = "Über";
 
 // About Page
 
-"About Page Title" = "About";
-"About Page Close" = "Close";
+"About Page Title" = "Über";
+"About Page Close" = "Schließen";
