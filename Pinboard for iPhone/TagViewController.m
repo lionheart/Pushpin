@@ -7,7 +7,6 @@
 //
 
 #import "TagViewController.h"
-#import "Tag.h"
 #import "BookmarkViewController.h"
 #import "FMDatabase.h"
 

@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Pinboard.h"
-#import <CoreData/CoreData.h>
 
 enum browsers {
     BROWSER_WEBVIEW,

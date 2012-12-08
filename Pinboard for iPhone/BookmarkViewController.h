@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Pinboard.h"
 #import "OHAttributedLabel.h"
 #import "TTTAttributedLabel.h"
 #import <CoreData/CoreData.h>

@@ -9,16 +9,12 @@
 #import "AppDelegate.h"
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"
-#import "Pinboard.h"
 #import "NoteViewController.h"
-#import "ASManagedObject.h"
 #import "LoginViewController.h"
-#import "Bookmark.h"
-#import "Tag.h"
-#import "Note.h"
 #import "TabBarViewController.h"
 #import "FMDatabase.h"
 #import "Reachability.h"
+#import "TestFlight.h"
 
 @implementation AppDelegate
 
@@ -42,7 +38,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [TestFlight takeOff:@"f421edef88d254dd81c7e63f2c847187_MTI2MjA0MjAxMi0wOC0yOCAxOTowMDowNS4wNDE5ODY"];
+    [TestFlight takeOff:@"a4d1862d-30d8-4984-9e33-dba8872d2538"];
 #ifdef TESTING
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 #endif

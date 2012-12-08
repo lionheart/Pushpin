@@ -7,8 +7,6 @@
 //
 
 #import "NoteViewController.h"
-#import "Note.h"
-#import "ASManagedObject.h"
 #import "AppDelegate.h"
 
 @interface NoteViewController ()
