@@ -56,9 +56,13 @@ static float kSmallFontSize = 13.0f;
 
     UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
     UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
+    UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Read Later", nil) action:@selector(readLater:)];
+    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
     UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
     UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
-    [[UIMenuController sharedMenuController] setMenuItems: @[copyURLMenuItem, copyTitleMenuItem]];
+
+    [[UIMenuController sharedMenuController] setMenuItems: @[copyURLMenuItem, copyTitleMenuItem, readLaterMenuItem, shareMenuItem]];
+
     [[UIMenuController sharedMenuController] update];
 
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
@@ -451,7 +455,12 @@ static float kSmallFontSize = 13.0f;
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+    if (action == @selector(readlater:) && [[AppDelegate sharedDelegate] readlater] != nil) {
+        NSLog(@"YESSS");
+        return YES;
+    }
+    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(share:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+    
 }
 
 - (void)editBookmark:(id)sender {
@@ -470,6 +479,16 @@ static float kSmallFontSize = 13.0f;
 - (void)copyURL:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
+}
+
+- (void)readLater:(id)sender {
+
+}
+
+- (void)share:(id)sender {
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[bookmark[@"title"], bookmark[@"url"]] applicationActivities:nil];
+    [self presentModalViewController:activityViewController animated:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {

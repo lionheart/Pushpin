@@ -19,6 +19,7 @@
 @implementation AppDelegate
 
 @synthesize window;
+@synthesize readlater = _readlater;
 @synthesize token = _token;
 @synthesize browser = _browser;
 @synthesize lastUpdated = _lastUpdated;
@@ -191,6 +192,21 @@
         }
     }
     return _browser;
+}
+
+- (void)setReadlater:(NSNumber *)readlater {
+    _readlater = readlater;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:readlater forKey:@"io.aurora.pinboard.ReadLater"];
+    [defaults synchronize];
+}
+
+- (NSNumber *)readlater {
+    if (!_readlater) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _readlater = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
+    }
+    return _readlater;
 }
 
 - (void)setToken:(NSString *)token {

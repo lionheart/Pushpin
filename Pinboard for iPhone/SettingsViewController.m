@@ -20,6 +20,8 @@
 @synthesize logOutAlertView;
 @synthesize browserActionSheet;
 @synthesize supportActionSheet;
+@synthesize readLaterServices;
+@synthesize readLaterActionSheet;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -32,6 +34,23 @@
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
         self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), NSLocalizedString(@"Email us", nil), nil];
+        self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:@"Set Read Later service to:" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        self.readLaterServices = [NSMutableArray array];
+        BOOL installed;
+        
+        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ihttps://google.com"]];
+        if (installed) {
+            [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
+            [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
+        }
+        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"readability://add/google.com/"]];
+        if (installed) {
+            [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
+            [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
+        }
+
+        readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     }
     return self;
 }
@@ -71,7 +90,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 1;
+            if (self.readLaterServices.count > 0) {
+                return 2;
+            }
+            else {
+                return 1;
+            }
+
             break;
             
         case 1:
@@ -104,21 +129,47 @@
     
     switch (indexPath.section) {
         case 0: {
-            cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
-            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                case BROWSER_WEBVIEW:
-                    cell.detailTextLabel.text = @"Webview";
+            switch (indexPath.row) {
+                case 0:
+                    cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
+                    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+                        case BROWSER_WEBVIEW:
+                            cell.detailTextLabel.text = @"Webview";
+                            break;
+                        case BROWSER_SAFARI:
+                            cell.detailTextLabel.text = @"Safari";
+                            break;
+                        case BROWSER_CHROME:
+                            cell.detailTextLabel.text = @"Chrome";
+                            break;
+                        default:
+                            break;
+                    }
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
-                case BROWSER_SAFARI:
-                    cell.detailTextLabel.text = @"Safari";
-                    break;
-                case BROWSER_CHROME:
-                    cell.detailTextLabel.text = @"Chrome";
+                    
+                case 1:
+                    cell.textLabel.text = @"Read Later";
+                    switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
+                        case READLATER_NONE:
+                            cell.detailTextLabel.text = @"None";
+                            break;
+                        case READLATER_INSTAPAPER:
+                            cell.detailTextLabel.text = @"Instapaper";
+                            break;
+                        case READLATER_READABILITY:
+                            cell.detailTextLabel.text = @"Readability";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
                     break;
                 default:
                     break;
             }
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
         case 1: {
@@ -204,6 +255,7 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    BOOL installed;
     if (actionSheet == self.browserActionSheet) {
         switch (buttonIndex) {
             case 0:
@@ -215,7 +267,7 @@
                 break;
                 
             case 2: {
-                BOOL installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://x1x"]];
+                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://x1x"]];
                 if (!installed) {
                     // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -232,7 +284,7 @@
         }
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     }
-    else {
+    else if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {
             return;
         }
@@ -268,13 +320,30 @@
         }
         [[UIApplication sharedApplication] openURL:url];
     }
+    else if (actionSheet == self.readLaterActionSheet) {
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        if ([buttonTitle isEqualToString:@"Instapaper"]) {
+            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else if ([buttonTitle isEqualToString:@"Readability"]) {
+            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        }
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-            [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
+            if (indexPath.row == 0) {
+                [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
+            }
+            else {
+                [self.readLaterActionSheet showFromTabBar:self.tabBarController.tabBar];
+            }
             break;
         }
         case 1: {

@@ -15,7 +15,7 @@
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UIActivityItemSource > {
 }
 
 @property (nonatomic, retain) UIViewController *bookmarkDetailViewController;
@@ -58,5 +58,7 @@
 - (void)deleteBookmark:(id)sender;
 - (void)copyURL:(id)sender;
 - (void)copyTitle:(id)sender;
+- (void)readLater:(id)sender;
+- (void)share:(id)sender;
 
 @end
