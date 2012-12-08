@@ -55,6 +55,8 @@
 - (void)reloadTableData;
 - (void)longPress;
 
+- (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
+
 - (void)editBookmark:(id)sender;
 - (void)deleteBookmark:(id)sender;
 - (void)copyURL:(id)sender;
