@@ -17,9 +17,10 @@
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
-
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
+@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 
+- (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
 

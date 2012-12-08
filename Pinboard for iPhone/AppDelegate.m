@@ -23,6 +23,7 @@
 @synthesize token = _token;
 @synthesize browser = _browser;
 @synthesize lastUpdated = _lastUpdated;
+@synthesize privateByDefault = _privateByDefault;
 @synthesize connectionAvailable;
 
 + (NSString *)databasePath {
@@ -36,7 +37,6 @@
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    NSLog(@"%@", url.host);
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters
         // parameters = @"hello=world&foo=bar";
@@ -62,6 +62,7 @@
             }
         }
     }
+    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -202,6 +203,25 @@
         _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
     }
     return _lastUpdated;
+}
+
+- (void)setPrivateByDefault:(NSNumber *)privateByDefault {
+    _privateByDefault = privateByDefault;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:privateByDefault forKey:@"io.aurora.pinboard.PrivateByDefault"];
+    [defaults synchronize];
+}
+
+- (NSNumber *)privateByDefault {
+    if (!_privateByDefault) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _privateByDefault = [defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"];
+        
+        if (!_privateByDefault) {
+            _privateByDefault = @(NO);
+        }
+    }
+    return _privateByDefault;
 }
 
 - (void)setBrowser:(NSNumber *)browser {

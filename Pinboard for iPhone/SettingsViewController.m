@@ -22,6 +22,7 @@
 @synthesize supportActionSheet;
 @synthesize readLaterServices;
 @synthesize readLaterActionSheet;
+@synthesize privateByDefaultSwitch;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -81,6 +82,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)privateByDefaultSwitchChangedValue:(id)sender {
+    [[AppDelegate sharedDelegate] setPrivateByDefault:@(privateByDefaultSwitch.on)];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -91,10 +96,10 @@
     switch (section) {
         case 0:
             if (self.readLaterServices.count > 0) {
-                return 2;
+                return 3;
             }
             else {
-                return 1;
+                return 2;
             }
 
             break;
@@ -131,6 +136,17 @@
         case 0: {
             switch (indexPath.row) {
                 case 0:
+                    cell.textLabel.text = @"Private by default?";
+                    CGSize size = cell.frame.size;
+                    self.privateByDefaultSwitch = [[UISwitch alloc] init];
+                    CGSize switchSize = self.privateByDefaultSwitch.frame.size;
+                    self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
+                    [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+                    [cell.contentView addSubview:self.privateByDefaultSwitch];
+                    break;
+
+                case 1:
                     cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
                     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
                         case BROWSER_WEBVIEW:
@@ -148,7 +164,7 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
-                case 1:
+                case 2:
                     cell.textLabel.text = @"Read Later";
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
                         case READLATER_NONE:
