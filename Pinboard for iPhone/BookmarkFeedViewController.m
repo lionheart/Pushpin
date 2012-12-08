@@ -276,7 +276,7 @@
             return YES;
         }
     }
-    return (action == @selector(copyToMine:) || action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(share:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+    return (action == @selector(copyToMine:) || action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
 }
 
 - (void)editBookmark:(id)sender {
