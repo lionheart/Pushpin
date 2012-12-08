@@ -259,7 +259,7 @@
 		37E329AA1629EDE600A6BC18 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../Vendor/sqlite/sqlite3ext.h; sourceTree = "<group>"; };
 		37E329DF1629F0D100A6BC18 /* SQLite-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite-Prefix.pch"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		37FEEB8E15745488003F2B77 /* Pushpin Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -490,7 +490,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin Dev.app */,
+				37FEEB8E15745488003F2B77 /* Pushpin.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -608,7 +608,7 @@
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pushpin Dev.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pushpin.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -905,7 +905,7 @@
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME) Dev";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

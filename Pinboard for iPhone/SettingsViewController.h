@@ -16,6 +16,9 @@
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;
+@property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
+
+@property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 - (void)showAboutPage;
 - (void)closeAboutPage;

@@ -14,6 +14,12 @@ enum browsers {
     BROWSER_CHROME
 };
 
+enum readlaterservices {
+    READLATER_NONE,
+    READLATER_INSTAPAPER,
+    READLATER_READABILITY
+};
+
 @class TabBarViewController;
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
@@ -31,6 +37,7 @@ enum browsers {
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;
 @property (nonatomic, retain) NSNumber *browser;
+@property (nonatomic, retain) NSNumber *readlater;
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 
