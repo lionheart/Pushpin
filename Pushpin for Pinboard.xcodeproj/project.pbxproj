@@ -22,6 +22,10 @@
 		37275588161A626B001A857B /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37275584161A626B001A857B /* README */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
 		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
+		372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887A1673EDEF0073D0B6 /* HTMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887C1673EDEF0073D0B6 /* HTMLParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
+		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
@@ -144,6 +148,12 @@
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
 		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		372F88791673EDEF0073D0B6 /* HTMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLNode.h; sourceTree = "<group>"; };
+		372F887A1673EDEF0073D0B6 /* HTMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLNode.m; sourceTree = "<group>"; };
+		372F887B1673EDEF0073D0B6 /* HTMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLParser.h; sourceTree = "<group>"; };
+		372F887C1673EDEF0073D0B6 /* HTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLParser.m; sourceTree = "<group>"; };
+		372F887D1673EDEF0073D0B6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
@@ -292,9 +302,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
+				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
+				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
@@ -326,6 +337,7 @@
 				37DCCF44158B854C00ED71B1 /* TTTAttributedLabel.m */,
 				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
 				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
+				372F88781673EDEF0073D0B6 /* HTMLParser */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -382,6 +394,19 @@
 			);
 			name = PullToRefresh;
 			path = Vendor/PullToRefresh;
+			sourceTree = "<group>";
+		};
+		372F88781673EDEF0073D0B6 /* HTMLParser */ = {
+			isa = PBXGroup;
+			children = (
+				372F88791673EDEF0073D0B6 /* HTMLNode.h */,
+				372F887A1673EDEF0073D0B6 /* HTMLNode.m */,
+				372F887B1673EDEF0073D0B6 /* HTMLParser.h */,
+				372F887C1673EDEF0073D0B6 /* HTMLParser.m */,
+				372F887D1673EDEF0073D0B6 /* README.md */,
+			);
+			name = HTMLParser;
+			path = "Vendor/HTML-Parser";
 			sourceTree = "<group>";
 		};
 		37800E4D162CF1A2009FCB17 /* reachability */ = {
@@ -487,8 +512,6 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
-				378DA45E1633B4B700831134 /* MessageUI.framework */,
-				37247FF51633407E00417E65 /* libz.dylib */,
 				37247FEE163303CF00417E65 /* NSString+URLEncoding.h */,
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,
 				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
@@ -510,6 +533,9 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				372F88811673EE280073D0B6 /* libxml2.dylib */,
+				378DA45E1633B4B700831134 /* MessageUI.framework */,
+				37247FF51633407E00417E65 /* libz.dylib */,
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */,
 				3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */,
@@ -730,6 +756,7 @@
 				37C2BF041673A00A00EC66FF /* Icon-dev@2x.png in Resources */,
 				37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */,
 				37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */,
+				372F88801673EDEF0073D0B6 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,6 +816,8 @@
 				37800E88162CF1A3009FCB17 /* Reachability.m in Sources */,
 				37247FF0163303CF00417E65 /* NSString+URLEncoding.m in Sources */,
 				37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */,
+				372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */,
+				372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -831,8 +860,12 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"-lxml2",
+				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A3F3D5A7-EA5E-4A08-9573-B470707455A0";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -881,7 +914,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-lxml2";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C0172AE-8D47-44F6-950D-C56BD328FB77";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
@@ -904,8 +939,12 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"-lxml2",
+				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3D3F2A6D-A974-4ED0-84AE-DBDD77A0D68D";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

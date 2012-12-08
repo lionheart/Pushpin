@@ -13,6 +13,7 @@
 #import "BookmarkViewController.h"
 #import "SettingsViewController.h"
 #import "AddBookmarkViewController.h"
+#import "HTMLParser.h"
 
 @interface TabBarViewController ()
 
@@ -129,8 +130,30 @@
     if ([results intForColumnIndex:0] == 0) {
         NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
-            [alert show];
+            // Grab the page title
+            NSURLRequest *request = [NSURLRequest requestWithURL:candidateURL];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
+                                       if (!error) {
+                                           HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
+
+                                           if (!error) {
+                                               HTMLNode *root = [parser head];
+                                               HTMLNode *titleTag = [root findChildTag:@"title"];
+                                               if (titleTag != nil) {
+                                                   self.bookmarkTitle = titleTag.contents;
+                                               }
+
+                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
+                                               [alert show];
+                                           }
+                                       }
+                                   }];
+            
         }
     }
     [db close];
@@ -139,16 +162,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     _sessionChecked = false;
     if (buttonIndex == 1) {
-        [self showAddBookmarkViewControllerWithURL:self.bookmarkURL andTitle:@""];
-        /*
-        self.webView = [[UIWebView alloc] init];
-        self.webView.delegate = self;
-        self.webView.frame = CGRectMake(0, 0, 1, 1);
-        self.webView.hidden = YES;
-        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]]];
-        [self.view addSubview:self.webView];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-         */
+        [self showAddBookmarkViewControllerWithURL:self.bookmarkURL andTitle:self.bookmarkTitle];
     }
 }
 
