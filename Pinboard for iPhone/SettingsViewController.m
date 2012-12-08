@@ -39,7 +39,7 @@
         self.readLaterServices = [NSMutableArray array];
         BOOL installed;
         
-        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ihttps://google.com"]];
+        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"x-callback-instapaper://x-callback-url/add?google.com"]];
         if (installed) {
             [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
             [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];

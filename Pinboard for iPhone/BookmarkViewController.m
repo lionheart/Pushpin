@@ -76,6 +76,16 @@ static float kSmallFontSize = 13.0f;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    if(![self becomeFirstResponder])
+    {
+        NSLog(@"Couldn't become first responder ");
+        return;
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -506,7 +516,7 @@ static float kSmallFontSize = 13.0f;
     NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
     NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"ihttp://"]];
+        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
         [[UIApplication sharedApplication] openURL:newURL];
     }
     else {
