@@ -53,6 +53,7 @@
 - (void)stopEditing;
 - (void)toggleEditMode;
 - (void)reloadTableData;
+- (void)longPress;
 
 - (void)editBookmark:(id)sender;
 - (void)deleteBookmark:(id)sender;
