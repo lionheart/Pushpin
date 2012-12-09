@@ -524,7 +524,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
-    
+
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {

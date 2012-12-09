@@ -29,12 +29,6 @@
     return self;
 }
 
-+ (CGFloat)heightForCellWithText:(NSString *)text {
-    CGFloat height = 10.0f;
-    height += ceilf([text sizeWithFont:[UIFont systemFontOfSize:17] constrainedToSize:CGSizeMake(270.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    return height;
-}
-
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 5.0f), 0.0f, 0.0f);
