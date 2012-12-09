@@ -8,21 +8,21 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleURLIconFile</key>
-      <string>Icon</string>
-      <key>CFBundleURLName</key>
-      <string>io.aurora.pushpin</string>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>pushpin</string>
-      </array>
-    </dict>
-  </array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string>Icon</string>
+			<key>CFBundleURLName</key>
+			<string>io.aurora.pushpin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pushpin</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -49,7 +49,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>16</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIPrerenderedIcon</key>

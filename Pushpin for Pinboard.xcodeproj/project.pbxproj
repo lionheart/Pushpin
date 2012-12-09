@@ -27,6 +27,8 @@
 		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */; };
+		372F8888167429DA0073D0B6 /* Beta-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8886167429DA0073D0B6 /* Beta-Info.plist */; };
+		372F8889167429DA0073D0B6 /* Dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8887167429DA0073D0B6 /* Dev-Info.plist */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
@@ -157,6 +159,8 @@
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		372F88831673F1D20073D0B6 /* BookmarkFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkFeedViewController.h; sourceTree = "<group>"; };
 		372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkFeedViewController.m; sourceTree = "<group>"; };
+		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
+		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
@@ -587,6 +591,8 @@
 		37FEEB9915745488003F2B77 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				372F8886167429DA0073D0B6 /* Beta-Info.plist */,
+				372F8887167429DA0073D0B6 /* Dev-Info.plist */,
 				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
 				37FEEB9B15745488003F2B77 /* InfoPlist.strings */,
 				37DA50BB16719443005668F5 /* Localizable.strings */,
@@ -762,6 +768,8 @@
 				37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */,
 				37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */,
 				372F88801673EDEF0073D0B6 /* README.md in Resources */,
+				372F8888167429DA0073D0B6 /* Beta-Info.plist in Resources */,
+				372F8889167429DA0073D0B6 /* Dev-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
