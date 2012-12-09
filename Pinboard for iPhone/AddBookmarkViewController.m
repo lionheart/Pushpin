@@ -22,7 +22,6 @@
 @synthesize tagTextField;
 @synthesize privateSwitch;
 @synthesize readSwitch;
-@synthesize replace;
 @synthesize markAsRead;
 @synthesize setAsPrivate;
 
@@ -61,8 +60,6 @@
         
         self.markAsRead = @(NO);
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-        
-        self.replace = @(YES);
     }
     return self;
 }

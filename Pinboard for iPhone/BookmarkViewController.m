@@ -629,8 +629,11 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
-        case 1:
+        case 1: {
+            NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
+            [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
             break;
+        }
 
         case 2:
             [self markBookmarkAsRead:self.bookmark];
