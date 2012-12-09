@@ -229,7 +229,7 @@
 
     addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
     addBookmarkViewController.modalDelegate = self;
     addBookmarkViewController.titleTextField.text = aTitle;
     addBookmarkViewController.urlTextField.text = aURL;
@@ -237,6 +237,7 @@
     addBookmarkViewController.descriptionTextField.text = aDescription;
     addBookmarkViewController.setAsPrivate = isPrivate;
     addBookmarkViewController.markAsRead = isRead;
+
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
