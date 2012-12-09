@@ -298,7 +298,7 @@
             default:
                 break;
         }
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {
@@ -314,8 +314,8 @@
             return;
         }
 
-        NSString *safariURL = @"https://trello.com/board/50ad16761b7a9d3904006e15";
-        NSString *chromeURL = @"googlechromes://trello.com/board/50ad16761b7a9d3904006e15";
+        NSString *safariURL = @"http://aurora.io/support/pushpin";
+        NSString *chromeURL = @"googlechrome://aurora.io/support/pushpin";
         NSURL *url;
         
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -341,11 +341,11 @@
         
         if ([buttonTitle isEqualToString:@"Instapaper"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
     }
 }
@@ -354,10 +354,10 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-            if (indexPath.row == 0) {
+            if (indexPath.row == 1) {
                 [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
             }
-            else {
+            else if (indexPath.row == 2) {
                 [self.readLaterActionSheet showFromTabBar:self.tabBarController.tabBar];
             }
             break;
