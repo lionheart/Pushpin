@@ -9,7 +9,7 @@
 // Generic
 
 "Default" = "Standard";
-"Are you sure?" = "Sind sie sicher?";
+"Are you sure?" = "Bist du sicher?";
 "Cancel" = "Abbrechen";
 "OK" = "OK";
 "Edit" = "Bearbeiten";
@@ -20,12 +20,10 @@
 "Lighthearted Yes" = "Sicher";
 "Success" = "Erfolg";
 "Delete" = "Löschen";
-"Share" = "Share";
-"Read Later" = "Read Later";
 
 // Tab Bar
 
-"Browse Tab Bar Title" = "Stöbern";
+"Browse Tab Bar Title" = "Durchstöbern";
 "Settings Tab Bar Title" = "Einstellungen";
 "Add Tab Bar Title" = "Hinzufügen";
 "Tags Tab Bar Title" = "Tags";
@@ -37,7 +35,7 @@
 "Add Navigation Bar" = "Hinzufügen";
 "Cancel Navigation Bar" = "Abbrechen";
 "URL in Clipboard Title" = "Lesezeichen hinzufügen?";
-"URL in Clipboard Message" = "Wir haben eine URL in ihrer Zwischenablage gefunden. Zu ihren Lesezeichen hinzufügen?"; // I actually could add a bookmark just with a title :(
+"URL in Clipboard Message" = "Wir haben eine URL in deiner Zwischenablage gefunden. Zu deinen Lesezeichen hinzufügen?";
 
 // Home Page
 
@@ -53,12 +51,12 @@
 
 // Bookmark Page
 
-"Bookmark Updated Message" = "Ihr Lesezeichen wurde aktualisiert.";
-"Bookmark Added Message" = "Ihr Lesezeichen wurde hinzugefügt";
-"Bookmark Update Error Message" = "Es gab einen Fehler beim Aktualisieren ihres Lesezeichens.";
+"Bookmark Updated Message" = "Deine Lesezeichen wurden aktualisiert.";
+"Bookmark Added Message" = "Dein Lesezeichen wurde hinzugefügt";
+"Bookmark Update Error Message" = "Es gab einen Fehler beim Aktualisieren deines Lesezeichens.";
 "Add bookmark title example" = "Lesezeichen für Introvertierte";
-"Add bookmark tag example" = "lesezeichen sozialenetze";
-"Add bookmark missing url or title" = "Sie können kein Lesezeichen ohne URL oder Titel hinzufügen.";
+"Add bookmark tag example" = "lesezeichen antisozial";
+"Add bookmark missing url or title" = "Du kannst kein Lesezeichen ohne URL oder Titel hinzufügen.";
 
 "URL" = "URL";
 "Title" = "Titel";
@@ -74,12 +72,12 @@
 "Username" = "Benutzername";
 "Password" = "Passwort";
 
-"Login Instructions" = "Geben sie ihre Pinboard Benutzerdaten ein. Schicken sie uns eine E-Mail an pushpin@aurora.io sollten sie auf Probleme stoßen.";
-"Login in Progress" = "Überprüfe ihre Benutzerdaten...";
-"Login Failed" = "Sie konnten nicht anmeldet werden. Bitte überprüfen sie ihre Benutzerdaten.";
-"Login Successful" = "Sie haben sich erfolgreich authentifiziert. Bitte warten sie bis wir ihre Lesezeichen heruntergeladen haben.";
+"Login Instructions" = "Gib deine Pinboard Benutzerdaten ein. Schick uns eine E-Mail an pushpin@aurora.io solltest du auf Probleme stoßen.";
+"Login in Progress" = "Überprüfe deine Benutzerdaten...";
+"Login Failed" = "Du konntest nicht anmeldet werden. Bitte überprüfe deine Benutzerdaten.";
+"Login Successful" = "Du hast dich erfolgreich authentifiziert. Bitte warte bis wir deine Lesezeichen heruntergeladen haben.";
 
-"Google Chrome failed to open" = "Es sieht so aus, als ob Google Chrome diesen Link nicht öffnen kann. Drücken sie OK, um ihn stattdessen mit Safari zu öffnen.";
+"Google Chrome failed to open" = "Es sieht so aus, als ob Google Chrome diesen Link nicht öffnen kann. Drücke OK, um ihn stattdessen mit Safari zu öffnen.";
 
 "Mark as read" = "Als gelesen markieren";
 "Open in Safari" = "Mit Safari öffnen";
@@ -89,11 +87,11 @@
 "Open links with:" = "Links öffnen mit";
 
 "Install Chrome Title" = "Chrome installieren?";
-"Install Chrome Description" = "Wenn sie Links mit Google Chrome öffnen wollen, muss dieser zuerst installiert werden. Zum Fortfahren OK drücken";
+"Install Chrome Description" = "Wenn du Links mit Google Chrome öffnen willst, muss dieser zuerst installiert werden. Zum Fortfahren OK drücken";
 
-"Log out warning title" = "Sind sie sicher?";
-"Log out warning double check" = "Sie werden nun abgemeldet und die lokale Lesezeichen Datenbank wird von ihrem Gerät entfernt.";
-"Log out warning footer" = "Hierdurch werden sie von der Anwendung abgemeldet und die Lesezeichen Datenbank wird entfernt.";
+"Log out warning title" = "Bist du sicher?";
+"Log out warning double check" = "Du wirst nun abgemeldet und die lokale Lesezeichen Datenbank wird von deinem Gerät entfernt.";
+"Log out warning footer" = "Hierdurch wirst du von der Anwendung abgemeldet und die Lesezeichen Datenbank wird entfernt.";
 
 "Log Out" = "Abmelden";
 "Contact Support" = "Hilfe anfordern";
