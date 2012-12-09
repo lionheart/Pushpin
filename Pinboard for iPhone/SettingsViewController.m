@@ -132,6 +132,8 @@
         }
     }
     
+    cell.accessoryView = nil;
+
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
@@ -143,7 +145,7 @@
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
                     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
-                    [cell.contentView addSubview:self.privateByDefaultSwitch];
+                    cell.accessoryView = self.privateByDefaultSwitch;
                     break;
 
                 case 1:

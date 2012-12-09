@@ -117,6 +117,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
+    cell.accessoryView = nil;
+
     for (id view in cell.contentView.subviews) {
         [view removeFromSuperview];
     }
@@ -160,7 +162,6 @@
                     self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.privateSwitch.on = self.setAsPrivate.boolValue;
                     [self.privateSwitch addTarget:self action:@selector(privateSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-                    [self.privateSwitch removeFromSuperview];
                     cell.accessoryView = self.privateSwitch;
                     break;
                 }
@@ -178,7 +179,6 @@
                     self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.readSwitch.on = self.markAsRead.boolValue;
                     [self.readSwitch addTarget:self action:@selector(readSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-                    [self.readSwitch removeFromSuperview];
                     cell.accessoryView = self.readSwitch;
                     break;
                 }
