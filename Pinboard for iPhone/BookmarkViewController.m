@@ -623,17 +623,20 @@
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Mark as read", nil), NSLocalizedString(@"Open in Safari", nil), nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:@"Delete Bookmark" otherButtonTitles:@"Edit Bookmark", NSLocalizedString(@"Mark as read", nil), NSLocalizedString(@"Open in Safari", nil), nil];
     [sheet showInView:self.bookmarkDetailViewController.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
-        case 0:
+        case 1:
+            break;
+
+        case 2:
             [self markBookmarkAsRead:self.bookmark];
             break;
             
-        case 1:
+        case 3:
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
             break;
             
