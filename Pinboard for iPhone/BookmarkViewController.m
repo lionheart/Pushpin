@@ -70,6 +70,8 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
     
     // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
@@ -277,15 +279,6 @@
         self.queryParameters[@"limit"] = limit;
         self.queryParameters[@"offset"] = @(0);
         
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        self.searchBar = searchBar;
-        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-        self.searchDisplayController.searchResultsDataSource = self;
-        self.searchDisplayController.searchResultsDelegate = self;
-        self.searchDisplayController.delegate = self;
-        
-        // self.tableView.tableHeaderView = self.searchBar;
-        
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
 
@@ -312,15 +305,6 @@
 
         self.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
         self.queryParameters = [[NSMutableDictionary alloc] initWithObjectsAndKeys:limit, @"limit", @(0), "offset", nil];
-
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        self.searchBar = searchBar;
-        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-        self.searchDisplayController.searchResultsDataSource = self;
-        self.searchDisplayController.searchResultsDelegate = self;
-        self.searchDisplayController.delegate = self;
-
-        // self.tableView.tableHeaderView = self.searchBar;
 
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
@@ -424,55 +408,50 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView.isEditing) {
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.webView = [[UIWebView alloc] init];
+    self.webView.scalesPageToFit = YES;
+    self.webView.delegate = self;
+
+    if (tableView == self.tableView) {
+        self.bookmark = self.bookmarks[indexPath.row];
     }
     else {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        self.webView = [[UIWebView alloc] init];
-        self.webView.scalesPageToFit = YES;
-        self.webView.delegate = self;
+        self.bookmark = self.filteredBookmarks[indexPath.row];
+    }
 
-        if (tableView == self.tableView) {
-            self.bookmark = self.bookmarks[indexPath.row];
+    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+        case BROWSER_WEBVIEW: {
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+            [self.webView loadRequest:request];
+            self.bookmarkDetailViewController = [[UIViewController alloc] init];
+            self.bookmarkDetailViewController.title = self.bookmark[@"title"];
+            self.webView.frame = self.bookmarkDetailViewController.view.frame;
+            self.bookmarkDetailViewController.view = self.webView;
+            self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
+            self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
+            [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
+            break;
         }
-        else {
-            self.bookmark = self.filteredBookmarks[indexPath.row];
+            
+        case BROWSER_SAFARI: {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+            break;
         }
-
-        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-            case BROWSER_WEBVIEW: {
-                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-                [self.webView loadRequest:request];
-                self.bookmarkDetailViewController = [[UIViewController alloc] init];
-                self.bookmarkDetailViewController.title = self.bookmark[@"title"];
-                self.webView.frame = self.bookmarkDetailViewController.view.frame;
-                self.bookmarkDetailViewController.view = self.webView;
-                self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
-                self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
-                [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
-                break;
+            
+        case BROWSER_CHROME:
+            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                [[UIApplication sharedApplication] openURL:url];
             }
-                
-            case BROWSER_SAFARI: {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-                break;
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                [alert show];
             }
-                
-            case BROWSER_CHROME:
-                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
-                    [[UIApplication sharedApplication] openURL:url];
-                }
-                else {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                    [alert show];
-                }
-                break;
-                
-            default:
-                break;
-        }
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -539,6 +518,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
+    
+    /*
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    cell.textLabel.text = @"hey!";
+    return cell;
+     */
+    
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
@@ -570,8 +559,7 @@
     }
 
     cell.textView.delegate = self;
-    cell.editing = YES;
-    // cell.textView.userInteractionEnabled = YES;
+    cell.textView.userInteractionEnabled = YES;
     return cell;
 }
 
@@ -665,12 +653,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"hey!!!");
     return YES;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"Delete";
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
