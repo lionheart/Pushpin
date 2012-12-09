@@ -191,28 +191,34 @@
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
 
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
+    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
+    NSRange descriptionRange = {};
+    NSRange tagRange = {};
+    int newLineCount = 1;
     if (![bookmark[@"description"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
+        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
+        newLineCount++;
     }
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
+        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
     }
-    
+
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    
-    [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark[@"title"]]];
-    [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark[@"description"]]];
+    [attributedString setFont:largeHelvetica range:titleRange];
+    [attributedString setFont:smallHelvetica range:descriptionRange];
     [attributedString setTextColor:HEX(0x555555ff)];
 
     if (![bookmark[@"unread"] boolValue]) {
-        [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark[@"title"]]];
+        [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
     }
     else {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"title"]]];
+        [attributedString setTextColor:HEX(0xcc2222ff) range:titleRange];
     }
-    
+
     if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"tags"]]];
+        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
     }
 
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
