@@ -49,9 +49,12 @@
 "Bookmarks" = "Lesezeichen";
 "Community" = "Gemeinschaft";
 "Fandom" = "Fangemeinde";
+"Popular" = "Popular";
+"Network" = "Network";
 
 // Bookmark Page
 
+"Bookmark Deleted Message" = "Your bookmark was deleted.";
 "Bookmark Updated Message" = "Deine Lesezeichen wurden aktualisiert.";
 "Bookmark Added Message" = "Dein Lesezeichen wurde hinzugefügt";
 "Bookmark Update Error Message" = "Es gab einen Fehler beim Aktualisieren deines Lesezeichens.";
@@ -67,6 +70,7 @@
 "Copy URL" = "URL kopieren";
 "Copy Title" = "Titel kopieren";
 "Set as private?" = "Auf privat setzen?";
+"Copy to mine" = "Copy to mine"
 
 // Login Page
 
@@ -84,6 +88,8 @@
 "Open in Safari" = "Mit Safari öffnen";
 
 // Settings Page
+
+"Private by default?" = "Private by default?"
 
 "Open links with:" = "Links öffnen mit";
 
