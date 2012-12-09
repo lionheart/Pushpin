@@ -50,13 +50,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    /*
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                     action:@selector(handleSwipeRight:)];
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
-    [self.tableView addGestureRecognizer:recognizer];
-     */
 
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
@@ -78,6 +71,8 @@
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+    
+    // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -248,7 +243,6 @@
 
     [db close];
 
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -395,17 +389,6 @@
     
 }
 
-#pragma mark - Gesture Recognizers
-
-- (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer {
-    CGPoint location = [gestureRecognizer locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-
-    if (indexPath) {
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-    }
-}
-
 #pragma mark - Alert View Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -508,14 +491,10 @@
             return YES;
         }
     }
-    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+    return (action == @selector(copyTitle:) || action == @selector(copyURL:));
 }
 
 - (void)editBookmark:(id)sender {
-
-}
-
-- (void)deleteBookmark:(id)sender {
 
 }
 
@@ -591,7 +570,8 @@
     }
 
     cell.textView.delegate = self;
-    cell.textView.userInteractionEnabled = YES;
+    cell.editing = YES;
+    // cell.textView.userInteractionEnabled = YES;
     return cell;
 }
 
@@ -631,34 +611,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0: {
-            // Delete
-            NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       if (!error) {                                           
-                                           FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                           [db open];
-
-                                           FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                           [results next];
-                                           NSNumber *bookmarkId = @([results intForColumnIndex:0]);
-
-                                           [db beginTransaction];
-                                           [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                           [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
-                                           [db commit];
-                                           
-                                           [self processBookmarks];
-
-                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:@"Your bookmark was deleted." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                           [alert show];
-
-                                           [self.navigationController popViewControllerAnimated:YES];
-                                       }
-                                   }];
+            [self deleteBookmark:self.bookmark atIndexPath:nil];
             break;
         }
         case 1: {
@@ -669,6 +622,61 @@
             
         default:
             break;
+    }
+}
+
+- (void)deleteBookmark:(NSDictionary *)bookmark atIndexPath:(NSIndexPath *)indexPath {
+    NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (!error) {
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   
+                                   FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                   [results next];
+                                   NSNumber *bookmarkId = @([results intForColumnIndex:0]);
+                                   
+                                   [db beginTransaction];
+                                   [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                   [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                                   [db commit];
+
+                                   if (indexPath != nil) {
+                                       [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                                   }
+                                   [self processBookmarks];
+                                   
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:@"Your bookmark was deleted." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                   [alert show];
+                                   
+                                   [self.navigationController popViewControllerAnimated:YES];
+                               }
+                           }];
+}
+
+#pragma mark - Swipe to delete
+
+- (UITableViewCellEditingStyle)tableView:(UITableView*)tableView editingStyleForRowAtIndexPath:(NSIndexPath*)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"hey!!!");
+    return YES;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Delete";
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSDictionary *bookmark = self.bookmarks[indexPath.row];
+        [self deleteBookmark:bookmark atIndexPath:indexPath];
     }
 }
 
