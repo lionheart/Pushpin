@@ -136,7 +136,7 @@
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = @"Private by default?";
+                    cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
                     CGSize size = cell.frame.size;
                     self.privateByDefaultSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.privateByDefaultSwitch.frame.size;

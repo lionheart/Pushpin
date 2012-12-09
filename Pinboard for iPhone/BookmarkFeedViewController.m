@@ -60,7 +60,7 @@
     UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
     UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
     UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    UIMenuItem *copyToMineMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy to mine" action:@selector(copyToMine:)];
+    UIMenuItem *copyToMineMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to mine", nil) action:@selector(copyToMine:)];
     
     [items addObject:copyToMineMenuItem];
 

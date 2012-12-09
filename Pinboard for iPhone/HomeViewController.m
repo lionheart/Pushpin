@@ -125,10 +125,10 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = @"Network";
+                    cell.textLabel.text = NSLocalizedString(@"Network", nil);
                     break;
                 case 1:
-                    cell.textLabel.text = @"Popular";
+                    cell.textLabel.text = NSLocalizedString(@"Popular", nil);
                     break;
                 case 2:
                     cell.textLabel.text = @"Wikipedia";
@@ -195,12 +195,12 @@
                     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                     NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                    bookmarkViewController.title = @"Network";
+                    bookmarkViewController.title = NSLocalizedString(@"Network", nil);
                     break;
                 }
                 case 1:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
-                    bookmarkViewController.title = @"Popular";
+                    bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
                     break;
                 case 2:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
@@ -208,7 +208,7 @@
                     break;
                 case 3:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
-                    bookmarkViewController.title = @"Fandom";
+                    bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
                     break;
                 case 4:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];

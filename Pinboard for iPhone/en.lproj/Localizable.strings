@@ -49,9 +49,12 @@
 "Bookmarks" = "Bookmarks";
 "Community" = "Community";
 "Fandom" = "Fandom";
+"Popular" = "Popular";
+"Network" = "Network";
 
 // Bookmark Page
 
+"Bookmark Deleted Message" = "Your bookmark was deleted.";
 "Bookmark Updated Message" = "Your bookmark was updated.";
 "Bookmark Added Message" = "Your bookmark was added.";
 "Bookmark Update Error Message" = "There was an error updating your bookmark.";
@@ -68,6 +71,7 @@
 "Copy Title" = "Copy Title";
 "Set as private?" = "Set as private?";
 "Mark as read?" = "Mark as read?";
+"Copy to mine" = "Copy to mine"
 
 // Login Page
 
@@ -85,6 +89,8 @@
 "Open in Safari" = "Open in Safari";
 
 // Settings Page
+
+"Private by default?" = "Private by default?"
 
 "Open links with:" = "Open links with";
 
