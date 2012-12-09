@@ -21,6 +21,10 @@
 @synthesize titleTextField;
 @synthesize tagTextField;
 @synthesize privateSwitch;
+@synthesize readSwitch;
+@synthesize replace;
+@synthesize markAsRead;
+@synthesize setAsPrivate;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -54,6 +58,11 @@
         self.tagTextField.placeholder = NSLocalizedString(@"Add bookmark tag example", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.text = @"";
+        
+        self.markAsRead = @(NO);
+        self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        
+        self.replace = @(YES);
     }
     return self;
 }
@@ -65,25 +74,35 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 4) {
+        return 2;
+    }
     return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 3) {
+        return @"Separate tags with spaces";
+    }
+    return @"";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return NSLocalizedString(@"URL", nil);
+            return [NSString stringWithFormat:@"🌐 %@", NSLocalizedString(@"URL", nil)];
             break;
         case 1:
-            return NSLocalizedString(@"Title", nil);
+            return [NSString stringWithFormat:@"📝 %@", NSLocalizedString(@"Title", nil)];
             break;
         case 2:
-            return NSLocalizedString(@"Description", nil);
+            return [NSString stringWithFormat:@"📰 %@", NSLocalizedString(@"Description", nil)];
             break;
         case 3:
-            return NSLocalizedString(@"Tags", nil);
+            return [NSString stringWithFormat:@"🔖 %@", NSLocalizedString(@"Tags", nil)];
             break;
         case 4:
-            return NSLocalizedString(@"Private", nil);
+            return NSLocalizedString(@"Other", nil);
             break;
         default:
             break;
@@ -129,22 +148,60 @@
                 break;
                 
             case 4: {
-                cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
-                CGSize size = cell.frame.size;
-                self.privateSwitch = [[UISwitch alloc] init];
-                CGSize switchSize = self.privateSwitch.frame.size;
-                self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                self.privateSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
-                [cell.contentView addSubview:self.privateSwitch];
-                break;
+                if (indexPath.row == 0) {
+                    if (self.setAsPrivate.boolValue) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"🔒 %@", NSLocalizedString(@"Set as private?", nil)];
+                    }
+                    else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"🔓 %@", NSLocalizedString(@"Set as private?", nil)];
+                    }
+
+                    self.privateSwitch = [[UISwitch alloc] init];
+                    CGSize size = cell.frame.size;
+                    CGSize switchSize = self.privateSwitch.frame.size;
+                    self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.privateSwitch.on = self.setAsPrivate.boolValue;
+                    [self.privateSwitch addTarget:self action:@selector(privateSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+                    [self.privateSwitch removeFromSuperview];
+                    cell.accessoryView = self.privateSwitch;
+                    break;
+                }
+                else if (indexPath.row == 1) {
+                    if (self.markAsRead.boolValue) {
+                        cell.textLabel.text = [NSString stringWithFormat:@"👏 %@", NSLocalizedString(@"Mark as read?", nil)];
+                    }
+                    else {
+                        cell.textLabel.text = [NSString stringWithFormat:@"📦 %@", NSLocalizedString(@"Mark as read?", nil)];
+                    }
+
+                    self.readSwitch = [[UISwitch alloc] init];
+                    CGSize size = cell.frame.size;
+                    CGSize switchSize = self.readSwitch.frame.size;
+                    self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.readSwitch.on = self.markAsRead.boolValue;
+                    [self.readSwitch addTarget:self action:@selector(readSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+                    [self.readSwitch removeFromSuperview];
+                    cell.accessoryView = self.readSwitch;
+                    break;
+                }
             }
-                
+
             default:
                 break;
         }
     }
 
     return cell;
+}
+
+- (void)privateSwitchChanged:(id)sender {
+    self.setAsPrivate = @(self.privateSwitch.on);
+    [self.tableView reloadData];
+}
+
+- (void)readSwitchChanged:(id)sender {
+    self.markAsRead = @(self.readSwitch.on);
+    [self.tableView reloadData];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -168,7 +225,7 @@
         return;
     }
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@", [[AppDelegate sharedDelegate] token], [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.titleTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.descriptionTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.tagTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], self.privateSwitch.on ? @"no" : @"yes"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@&toread=%@", [[AppDelegate sharedDelegate] token], [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.titleTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.descriptionTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.tagTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], self.privateSwitch.on ? @"no" : @"yes", self.readSwitch.on ? @"no" : @"yes"]];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
