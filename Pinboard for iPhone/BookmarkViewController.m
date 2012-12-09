@@ -50,10 +50,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    /*
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                      action:@selector(handleSwipeRight:)];
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [self.tableView addGestureRecognizer:recognizer];
+     */
 
 	self.filteredBookmarks = [NSMutableArray arrayWithCapacity:[self.bookmarks count]];
 	
