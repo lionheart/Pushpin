@@ -42,10 +42,12 @@ enum readlaterservices {
 @property (nonatomic, retain) NSString *feedToken;
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
+@property (nonatomic, retain) NSDateFormatter *dateFormatter;
 
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
 - (void)updateBookmarks;
+- (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;

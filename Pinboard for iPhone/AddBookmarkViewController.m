@@ -8,6 +8,7 @@
 
 #import "AddBookmarkViewController.h"
 #import "NSString+URLEncoding.h"
+#import "FMDatabase.h"
 
 @interface AddBookmarkViewController ()
 
@@ -231,8 +232,24 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
                                    [self.modalDelegate closeModal];
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                   
+                                   UIAlertView *alert;
+                                   
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
+                                   [results next];
+                                   
+                                   // Bookmark already exists
+                                   if ([results intForColumnIndex:0] > 0) {
+                                       alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                   }
+                                   else {
+                                       alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                   }
                                    [alert show];
+
+                                   [[AppDelegate sharedDelegate] forceUpdateBookmarks:nil];
                                }
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }];
