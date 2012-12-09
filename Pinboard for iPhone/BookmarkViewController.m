@@ -10,6 +10,7 @@
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
+#import "NSString+URLEncoding.h"
 
 @interface BookmarkViewController ()
 
@@ -623,25 +624,48 @@
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:@"Delete Bookmark" otherButtonTitles:@"Edit Bookmark", NSLocalizedString(@"Mark as read", nil), NSLocalizedString(@"Open in Safari", nil), nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:@"Delete Bookmark" otherButtonTitles:@"Edit Bookmark", nil];
     [sheet showInView:self.bookmarkDetailViewController.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
+        case 0: {
+            // Delete
+            NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                       if (!error) {                                           
+                                           FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                           [db open];
+
+                                           FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                           [results next];
+                                           NSNumber *bookmarkId = @([results intForColumnIndex:0]);
+
+                                           [db beginTransaction];
+                                           [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                           [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                                           [db commit];
+                                           
+                                           [self processBookmarks];
+
+                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:@"Your bookmark was deleted." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                           [alert show];
+
+                                           [self.navigationController popViewControllerAnimated:YES];
+                                       }
+                                   }];
+            break;
+        }
         case 1: {
             NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
             [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
             break;
         }
-
-        case 2:
-            [self markBookmarkAsRead:self.bookmark];
-            break;
-            
-        case 3:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-            break;
             
         default:
             break;
