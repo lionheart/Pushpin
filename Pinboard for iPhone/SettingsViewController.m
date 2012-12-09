@@ -27,7 +27,7 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About", nil)
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About Navigation Bar", nil)
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(showAboutPage)];
@@ -35,7 +35,7 @@
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
         self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), NSLocalizedString(@"Email us", nil), nil];
-        self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:@"Set Read Later service to:" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         self.readLaterServices = [NSMutableArray array];
         BOOL installed;
@@ -165,7 +165,7 @@
                     break;
                     
                 case 2:
-                    cell.textLabel.text = @"Read Later";
+                    cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
                         case READLATER_NONE:
                             cell.detailTextLabel.text = @"None";

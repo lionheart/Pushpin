@@ -71,7 +71,7 @@
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 340, 300, 60)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 340, 300, 80)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.editable = NO;

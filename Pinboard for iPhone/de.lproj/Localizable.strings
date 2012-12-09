@@ -97,10 +97,12 @@
 "Contact Support" = "Hilfe anfordern";
 "Request a feature" = "Ein Feauture vorschlagen";
 "Report a bug" = "Einen Fehler melden";
-"E-Mail us" = "Eine E-Mail schicken";
+"Email us" = "Eine E-Mail schicken";
 "Support E-Mail Subject" = "Hilf mir!";
 
 "About Navigation Bar" = "Über";
+"Read Later" = "Später Lesen";
+"Set Read Later service to:" = "Wähle einen Später-Lesen-Service";
 
 // About Page
 
