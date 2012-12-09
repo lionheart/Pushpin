@@ -13,7 +13,4 @@
 
 @property (nonatomic, retain) TTTAttributedLabel *textView;
 
-- (void)resizeTextView;
-+ (CGFloat)heightForCellWithText:(NSString *)text;
-
 @end
