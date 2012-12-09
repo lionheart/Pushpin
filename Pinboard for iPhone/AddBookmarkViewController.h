@@ -18,7 +18,6 @@
 @property (nonatomic, retain) UISwitch *privateSwitch;
 @property (nonatomic, retain) UISwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
-@property (nonatomic, retain) NSNumber *replace;
 
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;

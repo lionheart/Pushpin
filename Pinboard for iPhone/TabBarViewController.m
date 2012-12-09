@@ -223,6 +223,23 @@
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+
+    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    addBookmarkViewController.modalDelegate = self;
+    addBookmarkViewController.titleTextField.text = aTitle;
+    addBookmarkViewController.urlTextField.text = aURL;
+    addBookmarkViewController.tagTextField.text = someTags;
+    addBookmarkViewController.descriptionTextField.text = aDescription;
+    addBookmarkViewController.setAsPrivate = isPrivate;
+    addBookmarkViewController.markAsRead = isRead;
+    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
+}
+
 - (void)showAddBookmarkViewController {
     [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
 }

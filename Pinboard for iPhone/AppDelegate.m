@@ -49,6 +49,10 @@
     [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription];
 }
 
+- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead {
+    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription andPrivate:isPrivate andRead:isRead];
+}
+
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters
@@ -372,8 +376,6 @@
                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoading" object:nil];
                                    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
                                    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-                                   
-                                   NSLog(@"%@", endpoint);
                                    
                                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                                    [NSURLConnection sendAsynchronousRequest:request
