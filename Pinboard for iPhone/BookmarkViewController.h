@@ -39,6 +39,7 @@
 @property (nonatomic, retain) NSString *query;
 @property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
+@property (nonatomic, retain) UIAlertView *confirmDeleteAlertView;
 @property (nonatomic) BOOL searchWasActive;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
@@ -51,15 +52,19 @@
 - (void)refreshBookmarks;
 - (void)processBookmarks;
 - (void)processBookmark:(NSDictionary *)dictionary;
-- (void)markBookmarkAsRead:(NSDictionary *)bookmark;
+- (void)markBookmarkAsRead:(id)sender;
 - (void)edit;
 - (void)stopEditing;
 - (void)toggleEditMode;
 - (void)reloadTableData;
-- (void)longPress;
+- (void)longPress:(UIGestureRecognizer *)recognizer;
+- (void)updateSearchResults;
+- (void)updateData;
+- (void)bookmarkUpdated:(NSNotification *)notification;
 
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 
+- (void)confirmDeletion:(id)sender;
 - (void)deleteBookmark:(id)sender;
 - (void)editBookmark:(id)sender;
 - (void)copyURL:(id)sender;

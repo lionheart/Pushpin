@@ -21,6 +21,8 @@
 "Success" = "Success";
 "Delete" = "Delete";
 "Share" = "Share";
+"No" = "No";
+"Yes" = "Yes";
 
 // Tab Bar
 
@@ -73,6 +75,9 @@
 "Set as private?" = "Set as private?";
 "Mark as read?" = "Mark as read?";
 "Copy to mine" = "Copy to mine";
+
+"Edit Bookmark" = "Edit Bookmark";
+"Delete Bookmark" = "Delete Bookmark";
 
 // Login Page
 
