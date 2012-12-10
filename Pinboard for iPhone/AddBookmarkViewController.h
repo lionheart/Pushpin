@@ -10,7 +10,9 @@
 #import "AppDelegate.h"
 
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate>
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate> {
+    UIEdgeInsets _oldContentInset;
+}
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 @property (nonatomic, retain) id<BookmarkUpdatedDelegate> bookmarkUpdateDelegate;
@@ -20,10 +22,14 @@
 @property (nonatomic, retain) UISwitch *privateSwitch;
 @property (nonatomic, retain) UISwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
-
+@property (nonatomic, retain) NSMutableArray *tagCompletions;
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
 
+- (void)keyboardWillShow:(NSNotification *)sender;
+- (void)keyboardDidHide:(NSNotification *)sender;
+
+- (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)privateSwitchChanged:(id)sender;
 - (void)readSwitchChanged:(id)sender;
 - (void)addBookmark;

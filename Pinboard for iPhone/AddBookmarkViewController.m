@@ -26,6 +26,7 @@
 @synthesize markAsRead;
 @synthesize setAsPrivate;
 @synthesize bookmarkUpdateDelegate;
+@synthesize tagCompletions;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -36,6 +37,8 @@
         self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.urlTextField.placeholder = @"https://pinboard.in/";
         self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.urlTextField.text = @"";
         
         self.descriptionTextField = [[UITextField alloc] init];
@@ -43,6 +46,7 @@
         self.descriptionTextField.delegate = self;
         self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.descriptionTextField.placeholder = @"";
+        self.descriptionTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.descriptionTextField.text = @"";
         
         self.titleTextField = [[UITextField alloc] init];
@@ -50,6 +54,7 @@
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.titleTextField.placeholder = NSLocalizedString(@"Add bookmark title example", nil);
+        self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.titleTextField.text = @"";
         
         self.tagTextField = [[UITextField alloc] init];
@@ -58,12 +63,22 @@
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.tagTextField.placeholder = NSLocalizedString(@"Add bookmark tag example", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagTextField.text = @"";
         
         self.markAsRead = @(NO);
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+
     }
     return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.tagCompletions = [NSMutableArray array];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 }
 
 #pragma mark - Table view data source
@@ -76,7 +91,21 @@
     if (section == 4) {
         return 2;
     }
+    else if (section == 3) {
+        return 1 + self.tagCompletions.count;
+    }
     return 1;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 3 && indexPath.row > 0) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+        NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
+        NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
+        self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", self.tagCompletions[indexPath.row - 1]]];
+        [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
@@ -109,6 +138,67 @@
     return @"";
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if (textField == self.tagTextField) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+}
+
+- (void)keyboardWillShow:(NSNotification *)sender {
+    CGSize kbSize = [[[sender userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kbSize.height - 135., 0);
+}
+
+- (void)keyboardDidHide:(NSNotification *)sender {
+    self.tableView.contentInset = UIEdgeInsetsZero;
+}
+
+- (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
+    NSInteger index = 1;
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    
+    while (index <= self.tagCompletions.count) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+        index++;
+    }
+    
+    [self.tagCompletions removeAllObjects];
+    
+    [self.tableView beginUpdates];
+    if ([indexPaths count] > 0) {
+        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [indexPaths removeAllObjects];
+    }
+
+    if (![string isEqualToString:@" "] && (range.length - string.length == 1 || string.length - range.length == 1)) {
+        NSString *searchString = [[[self.tagTextField.text componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE tag_fts.name MATCH ? ORDER BY name DESC LIMIT 4" withArgumentsInArray:@[searchString]];
+        
+        index = 1;
+        while ([result next]) {
+            [self.tagCompletions addObject:[result stringForColumn:@"name"]];
+            [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            index++;
+        }
+        
+        [db close];
+        
+        if ([indexPaths count] > 0) {
+            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }
+    [self.tableView endUpdates];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == self.tagTextField) {
+        [self searchUpdatedWithRange:range andString:string];
+    }
+    return YES;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -119,11 +209,8 @@
     }
     
     cell.accessoryView = nil;
+    cell.textLabel.text = @"";
 
-    for (id view in cell.contentView.subviews) {
-        [view removeFromSuperview];
-    }
-    
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
 
@@ -144,8 +231,14 @@
                 break;
                 
             case 3:
-                self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
-                [cell.contentView addSubview:self.tagTextField];
+                if (indexPath.row == 0) {
+                    self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                    [cell.contentView addSubview:self.tagTextField];
+                }
+                else {
+                    cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                }
                 break;
                 
             case 4: {
@@ -164,7 +257,6 @@
                     self.privateSwitch.on = self.setAsPrivate.boolValue;
                     [self.privateSwitch addTarget:self action:@selector(privateSwitchChanged:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.privateSwitch;
-                    break;
                 }
                 else if (indexPath.row == 1) {
                     if (self.markAsRead.boolValue) {
@@ -181,8 +273,8 @@
                     self.readSwitch.on = self.markAsRead.boolValue;
                     [self.readSwitch addTarget:self action:@selector(readSwitchChanged:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.readSwitch;
-                    break;
                 }
+                break;
             }
 
             default:
