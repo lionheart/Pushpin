@@ -34,7 +34,7 @@
         
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
-        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), NSLocalizedString(@"Email us", nil), nil];
+        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
         self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         self.readLaterServices = [NSMutableArray array];
@@ -319,10 +319,6 @@
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (actionSheet == self.supportActionSheet) {
-        if (buttonIndex == 3) {
-            return;
-        }
-        
         if (buttonIndex == 2) {
             MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
             emailComposer.mailComposeDelegate = self;
@@ -331,9 +327,18 @@
             [self presentViewController:emailComposer animated:YES completion:nil];
             return;
         }
+        
+        NSString *safariURL;
+        NSString *chromeURL;
+        if (buttonIndex == 3) {
+            safariURL = @"https://twitter.com/pushpin_app";
+            chromeURL = @"googlechromes://twitter.com/pushpin_app";
+        }
+        else {
+            safariURL = @"http://aurora.io/support/pushpin";
+            chromeURL = @"googlechrome://aurora.io/support/pushpin";
+        }
 
-        NSString *safariURL = @"http://aurora.io/support/pushpin";
-        NSString *chromeURL = @"googlechrome://aurora.io/support/pushpin";
         NSURL *url;
         
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
