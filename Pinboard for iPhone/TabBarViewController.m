@@ -123,6 +123,8 @@
         return;
     }
 
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmarkURL]];
@@ -150,6 +152,7 @@
 
                                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
                                                [alert show];
+                                               [mixpanel track:@"Prompted to add bookmark from clipboard"];
                                            }
                                        }
                                    }];
@@ -163,6 +166,7 @@
     _sessionChecked = false;
     if (buttonIndex == 1) {
         [self showAddBookmarkViewControllerWithURL:self.bookmarkURL andTitle:self.bookmarkTitle];
+        [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
     }
 }
 

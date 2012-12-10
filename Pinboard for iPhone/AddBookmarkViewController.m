@@ -116,7 +116,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-
+    
     cell.accessoryView = nil;
 
     for (id view in cell.contentView.subviews) {
@@ -212,6 +212,8 @@
 }
 
 - (void)addBookmark {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
     if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
         #warning Should display a message to the user
         return;
@@ -220,6 +222,7 @@
     if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted error", nil) message:NSLocalizedString(@"Add bookmark missing url or title", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
         [alert show];
+        [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
         return;
     }
 
@@ -242,9 +245,11 @@
                                    
                                    // Bookmark already exists
                                    if ([results intForColumnIndex:0] > 0) {
+                                       [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    }
                                    else {
+                                       [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    }
                                    [alert show];

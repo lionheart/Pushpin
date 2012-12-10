@@ -10,7 +10,6 @@
 		37098F3B15EC81D7005D84B1 /* tags.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37098F3A15EC81D7005D84B1 /* tags.xml */; };
 		370ACB5B15F01863001A0058 /* 71-compass.png in Resources */ = {isa = PBXBuildFile; fileRef = 370ACB5915F01863001A0058 /* 71-compass.png */; };
 		370ACB5C15F01863001A0058 /* 71-compass@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 370ACB5A15F01863001A0058 /* 71-compass@2x.png */; };
-		370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370EE75115ED108300B262E2 /* CoreData.framework */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -29,6 +28,12 @@
 		372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */; };
 		372F8888167429DA0073D0B6 /* Beta-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8886167429DA0073D0B6 /* Beta-Info.plist */; };
 		372F8889167429DA0073D0B6 /* Dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8887167429DA0073D0B6 /* Dev-Info.plist */; };
+		372F890816755A2E0073D0B6 /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88FE16755A2E0073D0B6 /* MPCJSONDataSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F890916755A2E0073D0B6 /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890016755A2E0073D0B6 /* MPCJSONSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F890A16755A2E0073D0B6 /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890216755A2E0073D0B6 /* MPCSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F890B16755A2E0073D0B6 /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890516755A2E0073D0B6 /* NSData+MPBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F890C16755A2E0073D0B6 /* Mixpanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890716755A2E0073D0B6 /* Mixpanel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		374D3D5315AB60AE003E1592 /* cog-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D4F15AB60AE003E1592 /* cog-white.png */; };
@@ -161,6 +166,17 @@
 		372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkFeedViewController.m; sourceTree = "<group>"; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
+		372F88FD16755A2E0073D0B6 /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
+		372F88FE16755A2E0073D0B6 /* MPCJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONDataSerializer.m; sourceTree = "<group>"; };
+		372F88FF16755A2E0073D0B6 /* MPCJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONSerializer.h; sourceTree = "<group>"; };
+		372F890016755A2E0073D0B6 /* MPCJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONSerializer.m; sourceTree = "<group>"; };
+		372F890116755A2E0073D0B6 /* MPCSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCSerializedJSONData.h; sourceTree = "<group>"; };
+		372F890216755A2E0073D0B6 /* MPCSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCSerializedJSONData.m; sourceTree = "<group>"; };
+		372F890416755A2E0073D0B6 /* NSData+MPBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MPBase64.h"; sourceTree = "<group>"; };
+		372F890516755A2E0073D0B6 /* NSData+MPBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MPBase64.m"; sourceTree = "<group>"; };
+		372F890616755A2E0073D0B6 /* Mixpanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mixpanel.h; sourceTree = "<group>"; };
+		372F890716755A2E0073D0B6 /* Mixpanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mixpanel.m; sourceTree = "<group>"; };
+		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
@@ -312,9 +328,9 @@
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
+				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
-				370EE75215ED108300B262E2 /* CoreData.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
@@ -344,6 +360,7 @@
 				37DCCF44158B854C00ED71B1 /* TTTAttributedLabel.m */,
 				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
 				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
+				372F88FA16755A2E0073D0B6 /* Mixpanel */,
 				372F88781673EDEF0073D0B6 /* HTMLParser */,
 			);
 			name = Vendor;
@@ -414,6 +431,48 @@
 			);
 			name = HTMLParser;
 			path = "Vendor/HTML-Parser";
+			sourceTree = "<group>";
+		};
+		372F88FA16755A2E0073D0B6 /* Mixpanel */ = {
+			isa = PBXGroup;
+			children = (
+				372F88FB16755A2E0073D0B6 /* Library */,
+				372F890616755A2E0073D0B6 /* Mixpanel.h */,
+				372F890716755A2E0073D0B6 /* Mixpanel.m */,
+			);
+			name = Mixpanel;
+			path = Vendor/Mixpanel/Mixpanel;
+			sourceTree = "<group>";
+		};
+		372F88FB16755A2E0073D0B6 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				372F88FC16755A2E0073D0B6 /* JSON */,
+				372F890316755A2E0073D0B6 /* NSData_Base64 */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		372F88FC16755A2E0073D0B6 /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				372F88FD16755A2E0073D0B6 /* MPCJSONDataSerializer.h */,
+				372F88FE16755A2E0073D0B6 /* MPCJSONDataSerializer.m */,
+				372F88FF16755A2E0073D0B6 /* MPCJSONSerializer.h */,
+				372F890016755A2E0073D0B6 /* MPCJSONSerializer.m */,
+				372F890116755A2E0073D0B6 /* MPCSerializedJSONData.h */,
+				372F890216755A2E0073D0B6 /* MPCSerializedJSONData.m */,
+			);
+			path = JSON;
+			sourceTree = "<group>";
+		};
+		372F890316755A2E0073D0B6 /* NSData_Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				372F890416755A2E0073D0B6 /* NSData+MPBase64.h */,
+				372F890516755A2E0073D0B6 /* NSData+MPBase64.m */,
+			);
+			path = NSData_Base64;
 			sourceTree = "<group>";
 		};
 		37800E4D162CF1A2009FCB17 /* reachability */ = {
@@ -547,6 +606,7 @@
 				37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */,
 				3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */,
 				3786466215773FF500A1D5F8 /* GRMustache.h */,
+				372F891216755B950073D0B6 /* CoreTelephony.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
 				370EE75115ED108300B262E2 /* CoreData.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
@@ -832,6 +892,11 @@
 				372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */,
 				372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */,
 				372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */,
+				372F890816755A2E0073D0B6 /* MPCJSONDataSerializer.m in Sources */,
+				372F890916755A2E0073D0B6 /* MPCJSONSerializer.m in Sources */,
+				372F890A16755A2E0073D0B6 /* MPCSerializedJSONData.m in Sources */,
+				372F890B16755A2E0073D0B6 /* NSData+MPBase64.m in Sources */,
+				372F890C16755A2E0073D0B6 /* Mixpanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -898,7 +963,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME) β";
@@ -976,7 +1040,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME) Dev";
@@ -994,7 +1057,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/TestFlightSDK1.1\"",
 					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";

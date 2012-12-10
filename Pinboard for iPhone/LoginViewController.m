@@ -150,6 +150,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     if (usernameTextField.text && passwordTextField.text) {
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json"]]];
         NSString *authStr = [NSString stringWithFormat:@"%@:%@", usernameTextField.text, passwordTextField.text];
@@ -164,6 +165,7 @@
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                    [alert show];
+                                   [mixpanel track:@"Failed to log in"];
                                }
                                else {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
@@ -177,6 +179,11 @@
                                    self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                    self.progressView.hidden = NO;
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
+                                   
+                                   [mixpanel identify:[[AppDelegate sharedDelegate] username]];
+                                   [mixpanel.people identify:[[AppDelegate sharedDelegate] username]];
+                                   [mixpanel.people set:@"$created" to:[NSDate date]];
+                                   [mixpanel.people set:@"Browser" to:@"Webview"];
                                }
                            }];
     }

@@ -44,6 +44,7 @@
         if (installed) {
             [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
             [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
+
         }
         installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"readability://add/google.com/"]];
         if (installed) {
@@ -56,6 +57,11 @@
     return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[Mixpanel sharedInstance] track:@"Opened settings"];
+}
+
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         [[UIApplication sharedApplication] openURL:[request URL]];
@@ -65,6 +71,7 @@
 }
 
 - (void)showAboutPage {
+    [[Mixpanel sharedInstance] track:@"Opened about page"];
     UIViewController *aboutViewController = [[UIViewController alloc] init];
     UIWebView *webView = [[UIWebView alloc] init];
     NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"about" ofType:@"html"]];
@@ -133,7 +140,7 @@
     }
     
     cell.accessoryView = nil;
-
+    
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
@@ -278,10 +285,12 @@
         switch (buttonIndex) {
             case 0:
                 [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
                 break;
                 
             case 1:
                 [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
                 break;
                 
             case 2: {
@@ -293,6 +302,7 @@
                 }
                 else {
                     [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+                    [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
                 }
                 break;
             }
@@ -343,10 +353,12 @@
         
         if ([buttonTitle isEqualToString:@"Instapaper"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
+            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
+            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
     }

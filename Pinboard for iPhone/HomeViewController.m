@@ -150,6 +150,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     switch (indexPath.section) {
@@ -160,25 +161,30 @@
                 case 0:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                    [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 case 1:
                     parameters[@"private"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"Private", nil);
+                    [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 case 2:
                     parameters[@"private"] = @(NO);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"Public", nil);
+                    [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 case 3:
                     parameters[@"unread"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"Unread", nil);
+                    [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 case 4:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"Untagged", nil);
+                    [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
             }
 
@@ -196,23 +202,28 @@
                     NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
                     bookmarkViewController.title = NSLocalizedString(@"Network", nil);
+                    [mixpanel track:@"Browsed network bookmarks"];
                     break;
                 }
                 case 1:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
                     bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
+                    [mixpanel track:@"Browsed popular bookmarks"];
                     break;
                 case 2:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
                     bookmarkViewController.title = @"Wikipedia";
+                    [mixpanel track:@"Browsed wikipedia bookmarks"];
                     break;
                 case 3:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
                     bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
+                    [mixpanel track:@"Browsed fandom bookmarks"];
                     break;
                 case 4:
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
                     bookmarkViewController.title = @"日本語";
+                    [mixpanel track:@"Browsed 日本語 bookmarks"];
                     break;
             }
             [self.navigationController pushViewController:bookmarkViewController animated:YES];
