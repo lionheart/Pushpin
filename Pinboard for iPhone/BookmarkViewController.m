@@ -236,8 +236,12 @@
     [self.heights removeAllObjects];
 
     while ([results next]) {
+        NSString *title = [results stringForColumn:@"title"];
+        if ([title isEqualToString:@""]) {
+            title = @"untitled";
+        }
         NSDictionary *bookmark = @{
-            @"title": [results stringForColumn:@"title"],
+            @"title": title,
             @"description": [results stringForColumn:@"description"],
             @"unread": [results objectForColumnName:@"unread"],
             @"url": [results stringForColumn:@"url"],
@@ -779,7 +783,7 @@
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-    
+
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
     NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
     NSRange descriptionRange = {};
