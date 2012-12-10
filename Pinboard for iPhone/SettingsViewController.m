@@ -319,7 +319,7 @@
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (actionSheet == self.supportActionSheet) {
-        if (buttonIndex == 2) {
+        if (buttonIndex == 3) {
             MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
             emailComposer.mailComposeDelegate = self;
             [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
@@ -327,37 +327,38 @@
             [self presentViewController:emailComposer animated:YES completion:nil];
             return;
         }
-        
-        NSString *safariURL;
-        NSString *chromeURL;
-        if (buttonIndex == 3) {
-            safariURL = @"https://twitter.com/pushpin_app";
-            chromeURL = @"googlechromes://twitter.com/pushpin_app";
-        }
-        else {
-            safariURL = @"http://aurora.io/support/pushpin";
-            chromeURL = @"googlechrome://aurora.io/support/pushpin";
-        }
+        else if (buttonIndex < 3) {
+            NSString *safariURL;
+            NSString *chromeURL;
+            if (buttonIndex == 2) {
+                safariURL = @"https://twitter.com/pushpin_app";
+                chromeURL = @"googlechromes://twitter.com/pushpin_app";
+            }
+            else {
+                safariURL = @"http://aurora.io/support/pushpin";
+                chromeURL = @"googlechrome://aurora.io/support/pushpin";
+            }
 
-        NSURL *url;
-        
-        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-            case BROWSER_WEBVIEW:
-                url = [NSURL URLWithString:safariURL];
-                break;
-                
-            case BROWSER_SAFARI:
-                url = [NSURL URLWithString:safariURL];
-                break;
-                
-            case BROWSER_CHROME:
-                url = [NSURL URLWithString:chromeURL];
-                break;
-                
-            default:
-                break;
+            NSURL *url;
+            
+            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+                case BROWSER_WEBVIEW:
+                    url = [NSURL URLWithString:safariURL];
+                    break;
+                    
+                case BROWSER_SAFARI:
+                    url = [NSURL URLWithString:safariURL];
+                    break;
+                    
+                case BROWSER_CHROME:
+                    url = [NSURL URLWithString:chromeURL];
+                    break;
+                    
+                default:
+                    break;
+            }
+            [[UIApplication sharedApplication] openURL:url];
         }
-        [[UIApplication sharedApplication] openURL:url];
     }
     else if (actionSheet == self.readLaterActionSheet) {
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
