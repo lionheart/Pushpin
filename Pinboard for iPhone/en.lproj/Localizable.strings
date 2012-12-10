@@ -75,6 +75,8 @@
 "Set as private?" = "Set as private?";
 "Mark as read?" = "Mark as read?";
 "Copy to mine" = "Copy to mine";
+"Send to Instapaper" = "Send to Instapaper";
+"Send to Readability" = "Send to Readability";
 
 "Edit Bookmark" = "Edit Bookmark";
 "Delete Bookmark" = "Delete Bookmark";
@@ -117,8 +119,14 @@
 "About Navigation Bar" = "About";
 "Read Later" = "Read Later";
 "Set Read Later service to:" = "Set Read Later service to:";
+"None" = "None";
 
 // About Page
 
 "About Page Title" = "About";
 "About Page Close" = "Close";
+
+// Notices
+
+"URL copied to clipboard." = "URL copied to clipboard";
+"Title copied to clipboard." = "Title copied to clipboard."

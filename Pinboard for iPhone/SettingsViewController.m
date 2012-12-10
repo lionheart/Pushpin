@@ -181,7 +181,7 @@
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
                         case READLATER_NONE:
-                            cell.detailTextLabel.text = @"None";
+                            cell.detailTextLabel.text = NSLocalizedString(@"None", nil);
                             break;
                         case READLATER_INSTAPAPER:
                             cell.detailTextLabel.text = @"Instapaper";
