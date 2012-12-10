@@ -46,8 +46,8 @@
     [self.tableView reloadData];
 }
 
-- (void)bookmarkUpdated:(NSNotification *)notification {
-    [self.tableView reloadData];
+- (void)bookmarkUpdateEvent {
+    [self processBookmarks];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -242,7 +242,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            [self.searchDisplayController.searchResultsTableView reloadData];
         });
     });
 }
@@ -487,8 +486,7 @@
 }
 
 - (void)editBookmark:(id)sender {
-    NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self];
 }
 
 - (void)copyTitle:(id)sender {
@@ -651,8 +649,7 @@
         [self confirmDeletion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
-        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
+        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self];
     }
     else if ([title isEqualToString:@"Send to Instapaper"]) {
         [self readLater:nil];
@@ -704,7 +701,7 @@
                                    [alert show];
                                    
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-                                   
+
                                    if (self.navigationController.visibleViewController != self) {
                                        [self.navigationController popViewControllerAnimated:YES];
                                    }

@@ -247,6 +247,26 @@
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+
+    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+    addBookmarkViewController.modalDelegate = self;
+    addBookmarkViewController.titleTextField.text = bookmark[@"title"];
+    addBookmarkViewController.urlTextField.text = bookmark[@"url"];
+    addBookmarkViewController.urlTextField.enabled = NO;
+    addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
+    addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
+    addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+    addBookmarkViewController.setAsPrivate = bookmark[@"private"];
+    addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
+    addBookmarkViewController.bookmarkUpdateDelegate = delegate;
+    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
+}
+
 - (void)showAddBookmarkViewController {
     [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
 }

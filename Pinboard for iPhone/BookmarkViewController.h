@@ -12,10 +12,11 @@
 #import <CoreData/CoreData.h>
 #import "FMDatabase.h"
 #import "AppDelegate.h"
+#import "AddBookmarkViewController.h"
 
 @class FMResultSet;
 
-@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
+@interface BookmarkViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UISearchDisplayDelegate, UISearchBarDelegate, BookmarkUpdateProgressDelegate, BookmarkUpdatedDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
 }
 
 @property (nonatomic, retain) UIViewController *bookmarkDetailViewController;
@@ -60,7 +61,6 @@
 - (void)longPress:(UIGestureRecognizer *)recognizer;
 - (void)updateSearchResults;
 - (void)updateData;
-- (void)bookmarkUpdated:(NSNotification *)notification;
 
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 

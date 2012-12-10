@@ -25,6 +25,7 @@
 @synthesize readSwitch;
 @synthesize markAsRead;
 @synthesize setAsPrivate;
+@synthesize bookmarkUpdateDelegate;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -243,28 +244,33 @@
                                    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
                                    [results next];
                                    
+                                   NSDictionary *params = @{
+                                       @"url": self.urlTextField.text,
+                                       @"title": self.titleTextField.text,
+                                       @"description": self.descriptionTextField.text,
+                                       @"tags": self.tagTextField.text,
+                                       @"unread": @(!self.readSwitch.on),
+                                       @"private": @(self.privateSwitch.on),
+                                   };
+
                                    // Bookmark already exists
                                    if ([results intForColumnIndex:0] > 0) {
                                        [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                        
-                                       NSDictionary *params = @{
-                                           @"url": self.urlTextField.text,
-                                           @"title": self.titleTextField.text,
-                                           @"description": self.descriptionTextField.text,
-                                           @"tags": self.tagTextField.text,
-                                           @"unread": @(!self.readSwitch.on),
-                                           @"private": @(self.privateSwitch.on),
-                                       };
-                                       
-                                       [db executeUpdate:@"UPDATE bookmark SET title=:title description=:description tags=:tags unread=:unread private=:private WHERE url=:url" withParameterDictionary:params];
+                                       [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
                                    }
                                    else {
                                        [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+
+                                       [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags) VALUES (:title, :description, :url, :private, :unread, :tags);" withParameterDictionary:params];
                                    }
                                    [alert show];
-                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarkUpdated" object:nil];
+
+                                   if (self.bookmarkUpdateDelegate) {
+                                       [self.bookmarkUpdateDelegate bookmarkUpdateEvent];
+                                   }
                                    [db close];
                                }
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
