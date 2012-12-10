@@ -142,9 +142,10 @@
         [self.progressView setProgress:updated.floatValue / total.floatValue];
         
         if (updated.integerValue == total.integerValue) {
-            TabBarViewController *tabBarViewController = [[TabBarViewController alloc] init];
-            tabBarViewController.modalPresentationStyle = UIModalTransitionStyleFlipHorizontal;
-            [self presentViewController:tabBarViewController animated:YES completion:nil];
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            delegate.tabBarViewController = [[TabBarViewController alloc] init];
+            delegate.tabBarViewController.modalPresentationStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:delegate.tabBarViewController animated:YES completion:nil];
         }
     });
 }

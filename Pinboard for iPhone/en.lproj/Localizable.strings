@@ -91,7 +91,7 @@
 "Username" = "Username";
 "Password" = "Password";
 
-"Login Instructions" = "Enter your Pinboard credentials above. Email support pushpin@aurora.io if you have any issues.";
+"Login Instructions" = "Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.";
 "Login in Progress" = "Verifying your credentials...";
 "Login Failed" = "We couldn't log you in. Please make sure you've provided valid credentials.";
 "Login Successful" = "You have successfully authenticated. Please wait while we download your bookmarks.";
@@ -133,5 +133,5 @@
 
 // Notices
 
-"URL copied to clipboard." = "URL copied to clipboard";
+"URL copied to clipboard." = "URL copied to clipboard.";
 "Title copied to clipboard." = "Title copied to clipboard.";
