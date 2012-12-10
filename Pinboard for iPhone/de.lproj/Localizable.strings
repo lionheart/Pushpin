@@ -91,7 +91,7 @@
 "Username" = "Benutzername";
 "Password" = "Passwort";
 
-"Login Instructions" = "Gib deine Pinboard Benutzerdaten ein. Schick uns eine E-Mail an pushpin@aurora.io solltest du auf Probleme stoßen.";
+"Login Instructions" = "Gib deine Pinboard Benutzerdaten ein. Schick uns eine E-Mail an support@aurora.io solltest du auf Probleme stoßen.";
 "Login in Progress" = "Überprüfe deine Benutzerdaten...";
 "Login Failed" = "Du konntest nicht anmeldet werden. Bitte überprüfe deine Benutzerdaten.";
 "Login Successful" = "Du hast dich erfolgreich authentifiziert. Bitte warte bis wir deine Lesezeichen heruntergeladen haben.";
@@ -133,5 +133,5 @@
 
 // Notices
 
-"URL copied to clipboard." = "URL in die Zwischenablage kopiert";
+"URL copied to clipboard." = "URL in die Zwischenablage kopiert.";
 "Title copied to clipboard." = "Titel in die Zwischenablage kopiert.";
