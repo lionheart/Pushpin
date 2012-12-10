@@ -38,7 +38,6 @@
         self.urlTextField.placeholder = @"https://pinboard.in/";
         self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-        self.urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.urlTextField.text = @"";
         
         self.descriptionTextField = [[UITextField alloc] init];
@@ -46,7 +45,6 @@
         self.descriptionTextField.delegate = self;
         self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.descriptionTextField.placeholder = @"";
-        self.descriptionTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.descriptionTextField.text = @"";
         
         self.titleTextField = [[UITextField alloc] init];
@@ -54,7 +52,6 @@
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.titleTextField.placeholder = NSLocalizedString(@"Add bookmark title example", nil);
-        self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.titleTextField.text = @"";
         
         self.tagTextField = [[UITextField alloc] init];
