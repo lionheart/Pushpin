@@ -24,6 +24,11 @@
         self.textView.lineBreakMode = kCTLineBreakByWordWrapping;
         self.textView.textAlignment = UITextAlignmentLeft;
         self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+        
+        NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
+        [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
+        self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
+        self.textView.linkAttributes = mutableActiveLinkAttributes;
         [self.contentView addSubview:self.textView];
     }
     return self;

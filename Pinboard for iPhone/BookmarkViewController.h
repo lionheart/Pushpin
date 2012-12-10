@@ -25,6 +25,8 @@
 @property (nonatomic, retain) NSMutableArray *filteredBookmarks;
 @property (nonatomic, retain) NSMutableArray *filteredStrings;
 @property (nonatomic, retain) NSMutableArray *filteredHeights;
+@property (nonatomic, retain) NSMutableArray *filteredLinks;
+@property (nonatomic, retain) NSMutableArray *links;
 @property (nonatomic, retain) NSString *savedSearchTerm;
 @property (nonatomic, retain) NSString *endpoint;
 @property (nonatomic, retain) NSDictionary *parameters;
@@ -41,6 +43,7 @@
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
++ (NSArray *)linksForBookmark:(NSDictionary *)bookmark;
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters;
@@ -57,7 +60,7 @@
 
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 
-- (void)deleteBookmark:(NSDictionary *)bookmark atIndexPath:(NSIndexPath *)indexPath;
+- (void)deleteBookmark:(id)sender;
 - (void)editBookmark:(id)sender;
 - (void)copyURL:(id)sender;
 - (void)copyTitle:(id)sender;
