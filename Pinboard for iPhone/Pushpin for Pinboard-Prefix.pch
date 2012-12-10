@@ -16,6 +16,7 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import "TestFlight.h"
+    #import "Mixpanel.h"
 #endif
 
 #define API_ENDPOINT @"https://api.pinboard.in/"

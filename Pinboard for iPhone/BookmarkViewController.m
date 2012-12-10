@@ -72,7 +72,7 @@
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+    [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
     
     // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
 }
@@ -95,8 +95,8 @@
     UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
 
     UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
-    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
+    // UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
+    // UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
 
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
@@ -414,10 +414,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    self.webView = [[UIWebView alloc] init];
-    self.webView.scalesPageToFit = YES;
-    self.webView.delegate = self;
 
     if (tableView == self.tableView) {
         self.bookmark = self.bookmarks[indexPath.row];
@@ -429,6 +428,9 @@
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_WEBVIEW: {
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+            self.webView = [[UIWebView alloc] init];
+            self.webView.scalesPageToFit = YES;
+            self.webView.delegate = self;
             [self.webView loadRequest:request];
             self.bookmarkDetailViewController = [[UIViewController alloc] init];
             self.bookmarkDetailViewController.title = self.bookmark[@"title"];
@@ -436,24 +438,29 @@
             self.bookmarkDetailViewController.view = self.webView;
             self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
             self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
+            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
             [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
             break;
         }
             
         case BROWSER_SAFARI: {
+            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
             break;
         }
             
         case BROWSER_CHROME:
+            // XXX
             if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
                 NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
                 [[UIApplication sharedApplication] openURL:url];
             }
             else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                 [alert show];
             }
+
             break;
             
         default:
@@ -486,24 +493,29 @@
 - (void)copyTitle:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
+    [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)readLater:(id)sender {
+
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
     NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
         NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
     else {
         NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
 }
@@ -638,6 +650,8 @@
 
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your bookmark was deleted.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    [alert show];
+                                   
+                                   [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                                    
                                    [self.navigationController popViewControllerAnimated:YES];
                                }

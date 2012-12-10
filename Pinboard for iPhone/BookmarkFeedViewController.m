@@ -222,6 +222,8 @@
     self.webView.delegate = self;
     self.bookmark = self.bookmarks[indexPath.row];
     
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_WEBVIEW: {
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
@@ -232,10 +234,12 @@
             self.bookmarkDetailViewController.view = self.webView;
             self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
+            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
             break;
         }
             
         case BROWSER_SAFARI: {
+            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
             break;
         }
@@ -243,6 +247,7 @@
         case BROWSER_CHROME:
             if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
                 NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
                 [[UIApplication sharedApplication] openURL:url];
             }
             else {
@@ -290,16 +295,19 @@
 - (void)copyToMine:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:bookmark[@"url"] andTitle:bookmark[@"title"] andTags:bookmark[@"tags"] andDescription:bookmark[@"description"]];
+    [[Mixpanel sharedInstance] track:@"Clicked copy to mine"];
 }
 
 - (void)copyTitle:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
+    [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)readLater:(id)sender {
@@ -309,10 +317,12 @@
     NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
         NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
     else {
         NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
 }

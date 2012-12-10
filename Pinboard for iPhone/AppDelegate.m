@@ -91,8 +91,12 @@
 #ifdef TESTING
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 #endif
+    
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
 
     if ([self token]) {
+        [mixpanel identify:self.username];
+        [mixpanel.people identify:self.username];
         self.tabBarViewController = [[TabBarViewController alloc] init];
         [self.window setRootViewController:self.tabBarViewController];
     }
@@ -306,6 +310,10 @@
     return _token;
 }
 
+- (NSString *)username {
+    return [[[self token] componentsSeparatedByString:@":"] objectAtIndex:0];
+}
+
 - (void)updateNotes {
     if (!self.connectionAvailable.boolValue) {
         // TODO
@@ -349,6 +357,8 @@
 }
 
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoading" object:nil];
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
@@ -400,6 +410,8 @@
                                        int tag_id;
                                        NSUInteger count = 0;
                                        NSUInteger total = elements.count;
+
+                                       [mixpanel.people set:@"Bookmarks" to:@(total)];
                                        
                                        for (NSDictionary *element in elements) {
                                            [newBookmarkHashes addObject:element[@"hash"]];

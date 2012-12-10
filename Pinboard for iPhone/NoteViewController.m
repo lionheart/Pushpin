@@ -25,6 +25,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -38,6 +41,7 @@
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                self.notes = payload[@"notes"];
+                               [mixpanel.people set:@"Notes" to:@(self.notes.count)];
                                [self.tableView reloadData];
                            }];
     
@@ -49,6 +53,12 @@
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    [mixpanel track:@"Opened notes"];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -85,6 +95,8 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
     if (![[AppDelegate sharedDelegate] connectionAvailable]) {
         return;
     }
@@ -104,18 +116,21 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                               NSDictionary *noteInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               if (!error) {
+                                   NSDictionary *noteInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
-                               self.webView = [[UIWebView alloc] init];
-                               [self.webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='font-family:Helvetica;'><h4>%@</h4></div></body>", noteInfo[@"text"]] baseURL:nil];
+                                   self.webView = [[UIWebView alloc] init];
+                                   [self.webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='font-family:Helvetica;'><h4>%@</h4></div></body>", noteInfo[@"text"]] baseURL:nil];
 
-                               self.noteDetailViewController = [[UIViewController alloc] init];
-                               self.noteDetailViewController.title = noteInfo[@"title"];
-                               self.webView.frame = self.noteDetailViewController.view.frame;
-                               self.noteDetailViewController.view = self.webView;
-                               self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
-                               [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                               [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
+                                   self.noteDetailViewController = [[UIViewController alloc] init];
+                                   self.noteDetailViewController.title = noteInfo[@"title"];
+                                   self.webView.frame = self.noteDetailViewController.view.frame;
+                                   self.noteDetailViewController.view = self.webView;
+                                   self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
+                                   [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                   [mixpanel track:@"Viewed note details"];
+                                   [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
+                               }
                            }];
 }
 

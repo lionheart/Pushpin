@@ -44,6 +44,7 @@ enum readlaterservices {
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 
+- (NSString *)username;
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
 - (void)updateBookmarks;
