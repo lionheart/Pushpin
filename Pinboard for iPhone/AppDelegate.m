@@ -58,6 +58,10 @@
     [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate];
 }
 
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate {
+    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate update:isUpdate];
+}
+
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters

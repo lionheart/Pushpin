@@ -67,5 +67,6 @@ enum bookmarkupdateevents {
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
 
 @end

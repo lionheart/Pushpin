@@ -248,12 +248,23 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
+    [self showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate update:@(NO)];
+}
+
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+
+    if (isUpdate.boolValue) {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+    }
+    else {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    }
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+
     addBookmarkViewController.modalDelegate = self;
     addBookmarkViewController.titleTextField.text = bookmark[@"title"];
     addBookmarkViewController.urlTextField.text = bookmark[@"url"];

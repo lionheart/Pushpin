@@ -535,7 +535,7 @@
 }
 
 - (void)editBookmark:(id)sender {
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self];
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self update:@(YES)];
 }
 
 - (void)copyTitle:(id)sender {
