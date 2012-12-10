@@ -20,9 +20,9 @@
 "Lighthearted Yes" = "Sicher";
 "Success" = "Erfolg";
 "Delete" = "Löschen";
-"Share" = "Share";
-"No" = "No";
-"Yes" = "Yes";
+"Share" = "Teilen";
+"No" = "Nein";
+"Yes" = "Ja";
 
 // Tab Bar
 
@@ -34,7 +34,7 @@
 
 // Add Bookmark
 
-"Update Bookmark Page Title" = "Update Bookmark";
+"Update Bookmark Page Title" = "Lesezeichen bearbeiten";
 "Add Bookmark Page Title" = "Lesezeichen hinzufügen";
 "Add Navigation Bar" = "Hinzufügen";
 "Cancel Navigation Bar" = "Abbrechen";
@@ -50,14 +50,14 @@
 "Unread" = "Ungelesen";
 "Untagged" = "Ohne Tag";
 "Bookmarks" = "Lesezeichen";
-"Community" = "Gemeinschaft";
+"Community" = "Gemeinsame";
 "Fandom" = "Fangemeinde";
-"Popular" = "Popular";
-"Network" = "Network";
+"Popular" = "Populär";
+"Network" = "Netzwerk";
 
 // Bookmark Page
 
-"Bookmark Deleted Message" = "Your bookmark was deleted.";
+"Bookmark Deleted Message" = "Dein Lesezeichen wurde gelöscht.";
 "Bookmark Updated Message" = "Deine Lesezeichen wurden aktualisiert.";
 "Bookmark Added Message" = "Dein Lesezeichen wurde hinzugefügt";
 "Bookmark Update Error Message" = "Es gab einen Fehler beim Aktualisieren deines Lesezeichens.";
@@ -74,12 +74,12 @@
 "Copy Title" = "Titel kopieren";
 "Set as private?" = "Auf privat setzen?";
 "Mark as read?" = "Mark as read?";
-"Copy to mine" = "Copy to mine";
-"Send to Instapaper" = "Send to Instapaper";
-"Send to Readability" = "Send to Readability";
+"Copy to mine" = "Zu eigenen Lesezeichen hinzufügen";
+"Send to Instapaper" = "An Instapaper senden";
+"Send to Readability" = "An Readability senden";
 
-"Edit Bookmark" = "Lesezeichen löschen";
-"Delete Bookmark" = "Lesezeichen bearbeiten";
+"Edit Bookmark" = "Lesezeichen bearbeiten";
+"Delete Bookmark" = "Lesezeichen löschen";
 
 // Login Page
 
@@ -98,7 +98,7 @@
 
 // Settings Page
 
-"Private by default?" = "Private by default?";
+"Private by default?" = "Privat als Standard?";
 
 "Open links with:" = "Links öffnen mit";
 
@@ -119,7 +119,7 @@
 "About Navigation Bar" = "Über";
 "Read Later" = "Später Lesen";
 "Set Read Later service to:" = "Wähle einen Später-Lesen-Service";
-"None" = "None";
+"None" = "Keinen";
 
 // About Page
 
@@ -128,5 +128,5 @@
 
 // Notices
 
-"URL copied to clipboard." = "URL copied to clipboard";
-"Title copied to clipboard." = "Title copied to clipboard.";
+"URL copied to clipboard." = "URL in die Zwischenablage kopiert";
+"Title copied to clipboard." = "Titel in die Zwischenablage kopiert."
