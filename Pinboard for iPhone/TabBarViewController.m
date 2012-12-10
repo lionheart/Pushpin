@@ -66,7 +66,7 @@
         noteViewController.tabBarItem.image = [UIImage imageNamed:@"104-index-cards"];
 
         [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
-        
+
         self.delegate = self;
 
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];

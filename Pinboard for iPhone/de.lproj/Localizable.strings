@@ -74,6 +74,7 @@
 "Private" = "Privat";
 "Copy URL" = "URL kopieren";
 "Copy Title" = "Titel kopieren";
+"Other" = "Sonstige";
 "Set as private?" = "Auf privat setzen?";
 "Mark as read?" = "Als gelesen markieren?";
 "Copy to mine" = "Zu eigenen Lesezeichen hinzufügen";
@@ -82,6 +83,7 @@
 
 "Edit Bookmark" = "Lesezeichen bearbeiten";
 "Delete Bookmark" = "Lesezeichen löschen";
+"Delete Bookmark Warning" = "Bist du sicher, dass du dieses Lesezeichen löschen möchtest?";
 
 // Login Page
 
