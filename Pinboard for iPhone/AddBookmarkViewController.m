@@ -237,8 +237,6 @@
                                if (!error) {
                                    [self.modalDelegate closeModal];
                                    
-                                   UIAlertView *alert;
-                                   
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
                                    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
@@ -256,21 +254,21 @@
                                    // Bookmark already exists
                                    if ([results intForColumnIndex:0] > 0) {
                                        [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                       alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                       
                                        [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
+                                       
+                                       if (self.bookmarkUpdateDelegate) {
+                                           [self.bookmarkUpdateDelegate bookmarkUpdateEvent:BOOKMARK_EVENT_UPDATE];
+                                       }
                                    }
                                    else {
                                        [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                       alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-
                                        [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags) VALUES (:title, :description, :url, :private, :unread, :tags);" withParameterDictionary:params];
-                                   }
-                                   [alert show];
 
-                                   if (self.bookmarkUpdateDelegate) {
-                                       [self.bookmarkUpdateDelegate bookmarkUpdateEvent];
+                                       if (self.bookmarkUpdateDelegate) {
+                                           [self.bookmarkUpdateDelegate bookmarkUpdateEvent:BOOKMARK_EVENT_ADD];
+                                       }
                                    }
+
                                    [db close];
                                }
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];

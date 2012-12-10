@@ -20,6 +20,12 @@ enum readlaterservices {
     READLATER_READABILITY
 };
 
+enum bookmarkupdateevents {
+    BOOKMARK_EVENT_ADD,
+    BOOKMARK_EVENT_UPDATE,
+    BOOKMARK_EVENT_DELETE
+};
+
 @class TabBarViewController;
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
@@ -31,7 +37,7 @@ enum readlaterservices {
 @end
 
 @protocol BookmarkUpdatedDelegate <NSObject>
-- (void)bookmarkUpdateEvent;
+- (void)bookmarkUpdateEvent:(int)type;
 @end
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
