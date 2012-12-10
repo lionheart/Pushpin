@@ -50,6 +50,7 @@
 "Unread" = "Ungelesen";
 "Untagged" = "Ohne Tag";
 "Bookmarks" = "Lesezeichen";
+"Personal" = "Eigene";
 "Community" = "Gemeinsame";
 "Fandom" = "Fangemeinde";
 "Popular" = "Populär";
@@ -69,11 +70,12 @@
 "Title" = "Titel";
 "Description" = "Beschreibung";
 "Tags" = "Tags";
+"Separate tags with spaces" = "Tags durch Leerzeichen trennen";
 "Private" = "Privat";
 "Copy URL" = "URL kopieren";
 "Copy Title" = "Titel kopieren";
 "Set as private?" = "Auf privat setzen?";
-"Mark as read?" = "Mark as read?";
+"Mark as read?" = "Als gelesen markieren?";
 "Copy to mine" = "Zu eigenen Lesezeichen hinzufügen";
 "Send to Instapaper" = "An Instapaper senden";
 "Send to Readability" = "An Readability senden";
