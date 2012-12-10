@@ -54,6 +54,10 @@
     [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription andPrivate:isPrivate andRead:isRead];
 }
 
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
+    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate];
+}
+
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters
@@ -382,6 +386,8 @@
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
                                        
+                                       [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
+
                                        FMResultSet *results;
                                        
                                        results = [db executeQuery:@"SELECT * FROM tag"];

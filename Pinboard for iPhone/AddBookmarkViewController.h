@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
+
 @interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate>
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
+@property (nonatomic, retain) id<BookmarkUpdatedDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
 @property (nonatomic, retain) UITextField *descriptionTextField;
 @property (nonatomic, retain) UITextField *titleTextField;

@@ -30,6 +30,10 @@ enum readlaterservices {
 - (void)closeModal;
 @end
 
+@protocol BookmarkUpdatedDelegate <NSObject>
+- (void)bookmarkUpdateEvent;
+@end
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, retain) TabBarViewController *tabBarViewController;
@@ -56,5 +60,6 @@ enum readlaterservices {
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription;
 - (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
 
 @end
