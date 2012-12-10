@@ -308,7 +308,7 @@
 }
 
 - (void)copyTitle:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Title copied to clipboard."];
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Title copied to clipboard.", nil)];
     [notice show];
 
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
@@ -317,7 +317,7 @@
 }
 
 - (void)copyURL:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"URL copied to clipboard."];
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"URL copied to clipboard.", nil)];
     [notice show];
 
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];

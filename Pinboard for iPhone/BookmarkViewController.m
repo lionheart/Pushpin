@@ -60,7 +60,7 @@
             break;
         }
         case BOOKMARK_EVENT_DELETE: {
-            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Your bookmark was deleted."];
+            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Deleted Message", nil)];
             [notice show];
             break;
         }
@@ -125,11 +125,11 @@
 
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Instapaper", nil) action:@selector(readLater:)];
+        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Instapaper" action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Readability", nil) action:@selector(readLater:)];
+        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Readability" action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }
 
@@ -517,14 +517,14 @@
 }
 
 - (void)copyTitle:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Title copied to clipboard."];
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Title copied to clipboard.", nil)];
     [notice show];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"URL copied to clipboard."];
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"URL copied to clipboard.", nil)];
     [notice show];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
@@ -660,10 +660,10 @@
     NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
     sheet.cancelButtonIndex = 6;
     if (readlater.integerValue == READLATER_INSTAPAPER) {
-        [sheet addButtonWithTitle:@"Send to Instapaper"];
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
     }
     else if (readlater.integerValue == READLATER_READABILITY) {
-        [sheet addButtonWithTitle:@"Send to Readability"];
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
     }
     else {
         sheet.cancelButtonIndex = 5;
@@ -682,10 +682,10 @@
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
         [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self];
     }
-    else if ([title isEqualToString:@"Send to Instapaper"]) {
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
         [self readLater:nil];
     }
-    else if ([title isEqualToString:@"Send to Readability"]) {
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
         [self readLater:nil];        
     }
     else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {

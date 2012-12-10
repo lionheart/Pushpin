@@ -21,6 +21,8 @@
 "Success" = "Erfolg";
 "Delete" = "Löschen";
 "Share" = "Share";
+"No" = "No";
+"Yes" = "Yes";
 
 // Tab Bar
 
@@ -71,7 +73,13 @@
 "Copy URL" = "URL kopieren";
 "Copy Title" = "Titel kopieren";
 "Set as private?" = "Auf privat setzen?";
+"Mark as read?" = "Mark as read?";
 "Copy to mine" = "Copy to mine";
+"Send to Instapaper" = "Send to Instapaper";
+"Send to Readability" = "Send to Readability";
+
+"Edit Bookmark" = "Edit Bookmark";
+"Delete Bookmark" = "Delete Bookmark";
 
 // Login Page
 
@@ -111,8 +119,14 @@
 "About Navigation Bar" = "Über";
 "Read Later" = "Später Lesen";
 "Set Read Later service to:" = "Wähle einen Später-Lesen-Service";
+"None" = "None";
 
 // About Page
 
 "About Page Title" = "Über";
 "About Page Close" = "Schließen";
+
+// Notices
+
+"URL copied to clipboard." = "URL copied to clipboard";
+"Title copied to clipboard." = "Title copied to clipboard."
