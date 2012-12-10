@@ -128,6 +128,7 @@
         switch (indexPath.section) {
             case 0:
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
+
                 break;
                 
             case 1:
@@ -146,6 +147,7 @@
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     CGSize size = cell.frame.size;
                     self.privateByDefaultSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.privateByDefaultSwitch.frame.size;
@@ -157,6 +159,7 @@
 
                 case 1:
                     cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
                         case BROWSER_WEBVIEW:
                             cell.detailTextLabel.text = @"Webview";
@@ -175,6 +178,7 @@
                     
                 case 2:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
                         case READLATER_NONE:
                             cell.detailTextLabel.text = @"None";
@@ -201,9 +205,11 @@
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Contact Support", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 case 1:
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 default:
                     break;
@@ -310,7 +316,7 @@
             default:
                 break;
         }
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {
@@ -350,17 +356,16 @@
     }
     else if (actionSheet == self.readLaterActionSheet) {
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-        
+
         if ([buttonTitle isEqualToString:@"Instapaper"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 

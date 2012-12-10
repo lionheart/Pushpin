@@ -247,14 +247,25 @@
                                    if ([results intForColumnIndex:0] > 0) {
                                        [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                       
+                                       NSDictionary *params = @{
+                                           @"url": self.urlTextField.text,
+                                           @"title": self.titleTextField.text,
+                                           @"description": self.descriptionTextField.text,
+                                           @"tags": self.tagTextField.text,
+                                           @"unread": @(!self.readSwitch.on),
+                                           @"private": @(self.privateSwitch.on),
+                                       };
+                                       
+                                       [db executeUpdate:@"UPDATE bookmark SET title=:title description=:description tags=:tags unread=:unread private=:private WHERE url=:url" withParameterDictionary:params];
                                    }
                                    else {
                                        [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Added Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    }
                                    [alert show];
-
-                                   [[AppDelegate sharedDelegate] forceUpdateBookmarks:nil];
+                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarkUpdated" object:nil];
+                                   [db close];
                                }
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }];

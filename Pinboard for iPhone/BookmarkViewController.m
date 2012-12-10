@@ -46,6 +46,10 @@
     [self.tableView reloadData];
 }
 
+- (void)bookmarkUpdated:(NSNotification *)notification {
+    [self.tableView reloadData];
+}
+
 - (BOOL)canBecomeFirstResponder {
     return YES;
 }
@@ -82,23 +86,25 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    if(![self becomeFirstResponder])
-    {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(bookmarkUpdated:)
+                                                 name:@"BookmarkUpdated"
+                                               object:nil];
+
+    // menu
+    if (![self becomeFirstResponder]) {
         NSLog(@"Couldn't become first responder ");
         return;
     }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
 
     NSMutableArray *items = [NSMutableArray array];
     UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
     UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
-
+    
     UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
+    UIMenuItem *markReadMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Mark as read", nil) action:@selector(markBookmarkAsRead:)];
     UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
-    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
+    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(confirmDeletion:)];
 
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
@@ -109,28 +115,53 @@
         UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Readability", nil) action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }
-    
-    [items addObject:copyURLMenuItem];
-    [items addObject:copyTitleMenuItem];
+
+    [items addObject:markReadMenuItem];
     [items addObject:shareMenuItem];
     [items addObject:editBookmarkMenuItem];
     [items addObject:deleteBookmarkMenuItem];
     
+//    [items addObject:copyURLMenuItem];
+//    [items addObject:copyTitleMenuItem];
+    
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
+
+    // long press
+    // UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    // [self.view addGestureRecognizer:longPress];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+- (void)longPress:(UIGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        CGPoint pressPoint;
+
+        if (self.searchDisplayController.active) {
+            pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
+            self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
+            self.bookmark = self.filteredBookmarks[self.selectedIndexPath.row];
+        }
+        else {
+            pressPoint = [recognizer locationInView:self.tableView];
+            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+            self.bookmark = self.bookmarks[self.selectedIndexPath.row];
+        }
+
+        [self openActionSheetForBookmark:self.bookmark];
+    }
+}
+
+- (void)updateSearchResults {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-
-    FMResultSet *results = [db executeQuery:@"SELECT bookmark.* FROM bookmark, bookmark_fts WHERE bookmark.id=bookmark_fts.id AND bookmark_fts MATCH ?" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
-
+    
+    FMResultSet *results = [db executeQuery:@"SELECT bookmark.* FROM bookmark, bookmark_fts WHERE bookmark.id=bookmark_fts.id AND bookmark_fts MATCH ?" withArgumentsInArray:@[[self.savedSearchTerm stringByAppendingString:@"*"]]];
+    
     [self.filteredBookmarks removeAllObjects];
     [self.filteredHeights removeAllObjects];
     [self.filteredStrings removeAllObjects];
     NSInteger count = 0;
-
+    
     while ([results next]) {
         count++;
         if (count > 20) {
@@ -144,14 +175,19 @@
             @"private": [results objectForColumnName:@"private"],
             @"tags": [results stringForColumn:@"tags"],
         };
-
+        
         [self.filteredBookmarks addObject:bookmark];
         [self.filteredHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
         [self.filteredStrings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
     }
-
+    
     [db close];
     [self.searchDisplayController.searchResultsTableView reloadData];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    self.savedSearchTerm = searchText;
+    [self updateSearchResults];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
@@ -171,9 +207,11 @@
     [super viewDidDisappear:animated];
     self.searchWasActive = [self.searchDisplayController isActive];
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"BookmarkUpdated"
+                                                  object:nil];
 }
-
-
 
 - (void)processBookmarks {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -204,6 +242,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            [self.searchDisplayController.searchResultsTableView reloadData];
         });
     });
 }
@@ -246,6 +285,7 @@
                                                  selector:@selector(processBookmarks)
                                                      name:@"BookmarksLoaded"
                                                    object:nil];
+
     }
     return self;
 }
@@ -294,17 +334,18 @@
     }
 }
 
-- (void)markBookmarkAsRead:(NSDictionary *)bookmark {
-    NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], self.bookmark[@"url"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+- (void)markBookmarkAsRead:(id)sender {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                               NSLog(@"%@", payload);
                                NSDictionary *bookmark = payload[@"posts"][0];
                                
-                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                                NSURL *url = [NSURL URLWithString:urlString];
                                NSLog(@"%@", urlString);
                                NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -320,14 +361,19 @@
                                                               
                                                               if (success) {
                                                                   [self processBookmarks];
+                                                                  
+                                                                  if (self.savedSearchTerm) {
+                                                                      [self updateSearchResults];
+                                                                  }
                                                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                                                   [alert show];
                                                                   return;
                                                               }
                                                           }
-                                                          
-                                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                                          [alert show];
+                                                          else {
+                                                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                                              [alert show];
+                                                          }
                                                       }];
                            }];
     
@@ -336,8 +382,11 @@
 #pragma mark - Alert View Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+    if (alertView == self.confirmDeleteAlertView) {
+        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:@"Yes"]) {
+            [self deleteBookmark:nil];
+        }
     }
 }
 
@@ -391,7 +440,7 @@
             self.webView.frame = self.bookmarkDetailViewController.view.frame;
             self.bookmarkDetailViewController.view = self.webView;
             self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
-            self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
+//            self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
             [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
             break;
@@ -422,6 +471,7 @@
     }
 }
 
+#pragma mark - Menu
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
@@ -430,59 +480,56 @@
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     if ([[AppDelegate sharedDelegate] readlater] != nil) {
         if (action == @selector(readLater:)) {
-            NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-            if ([bookmark[@"url"] rangeOfString:@"twitter.com"].location != NSNotFound || [bookmark[@"url"] rangeOfString:@"github.com"].location != NSNotFound) {
-                return NO;
-            }
             return YES;
         }
     }
-    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
+    return (action == @selector(copyTitle:) || action == @selector(markBookmarkAsRead:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(confirmDeletion:));
 }
 
 - (void)editBookmark:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    NSNumber *read = @(!([bookmark[@"unread"] boolValue]));
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:bookmark[@"tags"] andDescription:bookmark[@"description"] andPrivate:bookmark[@"private"] andRead:read];
+    NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
 }
 
 - (void)copyTitle:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
+    [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
+    [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)readLater:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
+    NSURL *url = [NSURL URLWithString:self.bookmark[@"url"]];
     NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
+        NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
     else {
-        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
+        NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
 }
 
 - (void)share:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[bookmark[@"title"], bookmark[@"url"]] applicationActivities:nil];
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.bookmark[@"title"], self.bookmark[@"url"]] applicationActivities:nil];
     [self presentModalViewController:activityViewController animated:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     self.selectedIndexPath = indexPath;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        self.bookmark = self.filteredBookmarks[self.selectedIndexPath.row];
+    }
+    else {
+        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
+    }
     return NO;
 }
 
@@ -574,30 +621,60 @@
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:@"Delete Bookmark" otherButtonTitles:@"Edit Bookmark", nil];
-    [sheet showInView:self.bookmarkDetailViewController.view];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
+    
+    NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
+    sheet.cancelButtonIndex = 6;
+    if (readlater.integerValue == READLATER_INSTAPAPER) {
+        [sheet addButtonWithTitle:@"Send to Instapaper"];
+    }
+    else if (readlater.integerValue == READLATER_READABILITY) {
+        [sheet addButtonWithTitle:@"Send to Readability"];
+    }
+    else {
+        sheet.cancelButtonIndex = 5;
+    }
+
+    [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    sheet.destructiveButtonIndex = 0;
+    [sheet showFromTabBar:self.tabBarController.tabBar];
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0: {
-            [self deleteBookmark:nil];
-            break;
-        }
-        case 1: {
-            NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
-            [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
-            break;
-        }
-            
-        default:
-            break;
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+    if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
+        [self confirmDeletion:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
+        NSNumber *read = @(!([self.bookmark[@"unread"] boolValue]));
+        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:self.bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:self.bookmark[@"tags"] andDescription:self.bookmark[@"description"] andPrivate:self.bookmark[@"private"] andRead:read];
+    }
+    else if ([title isEqualToString:@"Send to Instapaper"]) {
+        [self readLater:nil];
+    }
+    else if ([title isEqualToString:@"Send to Readability"]) {
+        [self readLater:nil];        
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+        [self copyURL:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy Title", nil)]) {
+        [self copyTitle:nil];
     }
 }
 
+- (void)confirmDeletion:(id)sender {
+    self.confirmDeleteAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:@"Are you sure you want to delete this bookmark?" delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    [self.confirmDeleteAlertView show];
+}
+
 - (void)deleteBookmark:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+    NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
@@ -607,16 +684,21 @@
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
                                    
-                                   FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
+                                   FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
                                    [results next];
                                    NSNumber *bookmarkId = @([results intForColumnIndex:0]);
                                    
                                    [db beginTransaction];
-                                   [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
+                                   [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
                                    [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
                                    [db commit];
+                                   [db close];
 
                                    [self processBookmarks];
+                                   
+                                   if (self.savedSearchTerm) {
+                                       [self updateSearchResults];
+                                   }
 
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your bookmark was deleted.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    [alert show];
