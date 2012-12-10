@@ -387,7 +387,7 @@
                                        [db open];
                                        
                                        [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
-
+                                       
                                        FMResultSet *results;
                                        
                                        results = [db executeQuery:@"SELECT * FROM tag"];

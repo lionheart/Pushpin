@@ -11,6 +11,7 @@
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
 #import "NSString+URLEncoding.h"
+#import "WBSuccessNoticeView.h"
 
 @interface BookmarkViewController ()
 
@@ -46,7 +47,31 @@
     [self.tableView reloadData];
 }
 
-- (void)bookmarkUpdateEvent {
+- (void)bookmarkUpdateEvent:(int)type {
+    switch (type) {
+        case BOOKMARK_EVENT_ADD: {
+            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Added Message", nil)];
+            notice.delay = 2;
+            [notice show];
+            break;
+        }
+        case BOOKMARK_EVENT_UPDATE: {
+            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Updated Message", nil)];
+            notice.delay = 2;
+            [notice show];
+            break;
+        }
+        case BOOKMARK_EVENT_DELETE: {
+            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Your bookmark was deleted."];
+            notice.delay = 2;
+            [notice show];
+            break;
+        }
+            
+        default:
+            break;
+    }
+
     [self processBookmarks];
 }
 
@@ -85,11 +110,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(bookmarkUpdated:)
-                                                 name:@"BookmarkUpdated"
-                                               object:nil];
 
     // menu
     if (![self becomeFirstResponder]) {
@@ -207,10 +227,6 @@
     [super viewDidDisappear:animated];
     self.searchWasActive = [self.searchDisplayController isActive];
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"BookmarkUpdated"
-                                                  object:nil];
 }
 
 - (void)processBookmarks {
@@ -364,8 +380,7 @@
                                                                   if (self.savedSearchTerm) {
                                                                       [self updateSearchResults];
                                                                   }
-                                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Bookmark Updated Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                                                  [alert show];
+
                                                                   return;
                                                               }
                                                           }
@@ -697,9 +712,7 @@
                                        [self updateSearchResults];
                                    }
 
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your bookmark was deleted.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                   [alert show];
-                                   
+                                   [self bookmarkUpdateEvent:BOOKMARK_EVENT_DELETE];
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
 
                                    if (self.navigationController.visibleViewController != self) {
