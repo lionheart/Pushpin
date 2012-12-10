@@ -10,6 +10,7 @@
 #import "NSAttributedString+Attributes.h"
 #import "AppDelegate.h"
 #import "BookmarkCell.h"
+#import "WBSuccessNoticeView.h"
 
 @interface BookmarkFeedViewController ()
 
@@ -51,9 +52,17 @@
     [self.tableView addGestureRecognizer:recognizer];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    if (![self becomeFirstResponder]) {
+        NSLog(@"Couldn't become first responder ");
+        return;
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self becomeFirstResponder];
     [self processBookmarks];
     
     NSMutableArray *items = [NSMutableArray array];
@@ -299,12 +308,18 @@
 }
 
 - (void)copyTitle:(id)sender {
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Title copied to clipboard."];
+    [notice show];
+
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"URL copied to clipboard."];
+    [notice show];
+
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
