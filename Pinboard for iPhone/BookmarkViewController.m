@@ -51,19 +51,16 @@
     switch (type) {
         case BOOKMARK_EVENT_ADD: {
             WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Added Message", nil)];
-            notice.delay = 2;
             [notice show];
             break;
         }
         case BOOKMARK_EVENT_UPDATE: {
             WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Updated Message", nil)];
-            notice.delay = 2;
             [notice show];
             break;
         }
         case BOOKMARK_EVENT_DELETE: {
             WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Your bookmark was deleted."];
-            notice.delay = 2;
             [notice show];
             break;
         }
@@ -141,8 +138,8 @@
     [items addObject:editBookmarkMenuItem];
     [items addObject:deleteBookmarkMenuItem];
     
-//    [items addObject:copyURLMenuItem];
-//    [items addObject:copyTitleMenuItem];
+    [items addObject:copyURLMenuItem];
+    [items addObject:copyTitleMenuItem];
     
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
@@ -357,12 +354,15 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                               NSLog(@"%@", payload);
                                NSDictionary *bookmark = payload[@"posts"][0];
                                
-                               NSString *urlString = [[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], bookmark[@"href"], bookmark[@"description"], bookmark[@"extended"], bookmark[@"tags"], bookmark[@"shared"]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                               if ([bookmark[@"toread"] isEqualToString:@"no"]) {
+                                   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                   return;
+                               }
+                               
+                               NSString *urlString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], [bookmark[@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"extended"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"tags"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], bookmark[@"shared"]];
                                NSURL *url = [NSURL URLWithString:urlString];
-                               NSLog(@"%@", urlString);
                                NSURLRequest *request = [NSURLRequest requestWithURL:url];
                                [NSURLConnection sendAsynchronousRequest:request
                                                                   queue:[NSOperationQueue mainQueue]
@@ -380,9 +380,9 @@
                                                                   if (self.savedSearchTerm) {
                                                                       [self updateSearchResults];
                                                                   }
-
-                                                                  return;
                                                               }
+
+                                                              [self bookmarkUpdateEvent:BOOKMARK_EVENT_UPDATE];
                                                           }
                                                           else {
                                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -488,6 +488,13 @@
 #pragma mark - Menu
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.selectedIndexPath = indexPath;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        self.bookmark = self.filteredBookmarks[self.selectedIndexPath.row];
+    }
+    else {
+        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
+    }
     return YES;
 }
 
@@ -497,7 +504,12 @@
             return YES;
         }
     }
-    return (action == @selector(copyTitle:) || action == @selector(markBookmarkAsRead:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(confirmDeletion:));
+
+    if (action == @selector(markBookmarkAsRead:)) {
+        return [self.bookmark[@"unread"] boolValue];
+    }
+
+    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(confirmDeletion:));
 }
 
 - (void)editBookmark:(id)sender {
@@ -505,11 +517,15 @@
 }
 
 - (void)copyTitle:(id)sender {
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"Title copied to clipboard."];
+    [notice show];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:@"URL copied to clipboard."];
+    [notice show];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
