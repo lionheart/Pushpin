@@ -62,7 +62,7 @@
     if ([url.host isEqualToString:@"add"]) {
         // Parse the individual parameters
         // parameters = @"hello=world&foo=bar";
-        NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(YES) }];
         NSArray *arrParameters = [url.query componentsSeparatedByString:@"&"];
         for (int i = 0; i < [arrParameters count]; i++) {
             NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
@@ -74,15 +74,8 @@
                 if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
             }
         }
-        
-        if (dictParameters[@"url"]) {
-            if (dictParameters[@"title"]) {
-                [self showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:dictParameters[@"title"]];
-            }
-            else {
-                [self showAddBookmarkViewControllerWithURL:dictParameters[@"url"] andTitle:@""];
-            }
-        }
+
+        [self showAddBookmarkViewControllerWithBookmark:dictParameters andDelegate:nil];
     }
     return YES;
 }

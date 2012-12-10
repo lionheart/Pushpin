@@ -41,6 +41,7 @@
 @synthesize bookmarkDetailViewController;
 @synthesize links;
 @synthesize filteredLinks;
+@synthesize isSearchTable;
 
 - (void)reloadTableData {
     [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
@@ -48,20 +49,27 @@
 }
 
 - (void)bookmarkUpdateEvent:(int)type {
+    UIView *view;
+    NSString *message;
+
+    if (self.isSearchTable.boolValue) {
+        view = self.searchDisplayController.searchContentsController.view;
+    }
+    else {
+        view = self.navigationController.navigationBar;
+    }
+
     switch (type) {
         case BOOKMARK_EVENT_ADD: {
-            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Added Message", nil)];
-            [notice show];
+            message = NSLocalizedString(@"Bookmark Added Message", nil);
             break;
         }
         case BOOKMARK_EVENT_UPDATE: {
-            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Updated Message", nil)];
-            [notice show];
+            message = NSLocalizedString(@"Bookmark Updated Message", nil);
             break;
         }
         case BOOKMARK_EVENT_DELETE: {
-            WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Bookmark Deleted Message", nil)];
-            [notice show];
+            message = NSLocalizedString(@"Bookmark Deleted Message", nil);
             break;
         }
             
@@ -69,6 +77,8 @@
             break;
     }
 
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:message];
+    [notice show];
     [self processBookmarks];
 }
 
@@ -97,6 +107,7 @@
     self.searchDisplayController.searchResultsDataSource = self;
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
+    self.isSearchTable = @(NO);
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -208,10 +219,6 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self.tableView reloadData];
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
     [self.tableView reloadData];
 }
 
@@ -397,6 +404,17 @@
     
 }
 
+#pragma mark - Search Results Delegate
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willShowSearchResultsTableView:(UITableView *)tableView {
+    self.isSearchTable = @(YES);
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadData];
+    self.isSearchTable = @(NO);
+}
+
 #pragma mark - Alert View Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -493,11 +511,11 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedIndexPath = indexPath;
+    
+    // XXX - are there other tableviews?
+    self.bookmark = self.bookmarks[self.selectedIndexPath.row];
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         self.bookmark = self.filteredBookmarks[self.selectedIndexPath.row];
-    }
-    else {
-        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
     }
     return YES;
 }
@@ -521,14 +539,31 @@
 }
 
 - (void)copyTitle:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Title copied to clipboard.", nil)];
+    UIView *view;
+    if (self.isSearchTable.boolValue) {
+        view = self.searchDisplayController.searchContentsController.view;
+    }
+    else {
+        view = self.navigationController.navigationBar;
+    }
+
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:NSLocalizedString(@"Title copied to clipboard.", nil)];
     [notice show];
+
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
 }
 
 - (void)copyURL:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"URL copied to clipboard.", nil)];
+    UIView *view;
+    if (self.isSearchTable.boolValue) {
+        view = self.searchDisplayController.searchContentsController.view;
+    }
+    else {
+        view = self.navigationController.navigationBar;
+    }
+
+    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:NSLocalizedString(@"URL copied to clipboard.", nil)];
     [notice show];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
@@ -701,7 +736,7 @@
 }
 
 - (void)confirmDeletion:(id)sender {
-    self.confirmDeleteAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:@"Are you sure you want to delete this bookmark?" delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    self.confirmDeleteAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Delete Bookmark Warning", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
     [self.confirmDeleteAlertView show];
 }
 

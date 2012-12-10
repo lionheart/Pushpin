@@ -74,6 +74,7 @@
 "Private" = "Private";
 "Copy URL" = "Copy URL";
 "Copy Title" = "Copy Title";
+"Other" = "Other";
 "Set as private?" = "Set as private?";
 "Mark as read?" = "Mark as read?";
 "Copy to mine" = "Copy to mine";
@@ -82,6 +83,7 @@
 
 "Edit Bookmark" = "Edit Bookmark";
 "Delete Bookmark" = "Delete Bookmark";
+"Delete Bookmark Warning" = "Are you sure you want to delete this bookmark?";
 
 // Login Page
 

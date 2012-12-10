@@ -42,6 +42,7 @@
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) UIAlertView *confirmDeleteAlertView;
 @property (nonatomic) BOOL searchWasActive;
+@property (nonatomic, retain) NSNumber *isSearchTable;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
