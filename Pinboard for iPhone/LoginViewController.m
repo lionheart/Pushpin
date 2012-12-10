@@ -180,9 +180,11 @@
                                    self.progressView.hidden = NO;
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
                                    
-                                   [mixpanel identify:[[AppDelegate sharedDelegate] username]];
-                                   [mixpanel.people identify:[[AppDelegate sharedDelegate] username]];
+                                   NSString *username = [[AppDelegate sharedDelegate] username];
+                                   [mixpanel identify:username];
+                                   [mixpanel.people identify:username];
                                    [mixpanel.people set:@"$created" to:[NSDate date]];
+                                   [mixpanel.people set:@"$username" to:username];
                                    [mixpanel.people set:@"Browser" to:@"Webview"];
                                }
                            }];

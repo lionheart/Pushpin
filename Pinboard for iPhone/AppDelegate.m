@@ -101,6 +101,7 @@
     if ([self token]) {
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
+        [mixpanel.people set:@"$username" to:self.username];
         self.tabBarViewController = [[TabBarViewController alloc] init];
         [self.window setRootViewController:self.tabBarViewController];
     }
