@@ -38,6 +38,8 @@
 @synthesize filteredStrings;
 @synthesize bookmark = _bookmark;
 @synthesize bookmarkDetailViewController;
+@synthesize links;
+@synthesize filteredLinks;
 
 - (void)reloadTableData {
     [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
@@ -95,8 +97,8 @@
     UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
 
     UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    // UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
-    // UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
+    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
+    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(deleteBookmark:)];
 
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
@@ -111,6 +113,8 @@
     [items addObject:copyURLMenuItem];
     [items addObject:copyTitleMenuItem];
     [items addObject:shareMenuItem];
+    [items addObject:editBookmarkMenuItem];
+    [items addObject:deleteBookmarkMenuItem];
     
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
@@ -169,61 +173,7 @@
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
 }
 
-+ (NSNumber *)heightForBookmark:(NSDictionary *)bookmark {
-    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
-    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
 
-    CGFloat height = 10.0f;
-    height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    
-    if (![bookmark[@"description"] isEqualToString:@""]) {
-        height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    }
-    
-    if (![bookmark[@"tags"] isEqualToString:@""]) {
-        height += ceilf([bookmark[@"tags"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    }
-    return @(height);
-}
-
-+ (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark {
-    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
-    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
-    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
-    NSRange descriptionRange = {};
-    NSRange tagRange = {};
-    int newLineCount = 1;
-    if (![bookmark[@"description"] isEqualToString:@""]) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
-        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
-        newLineCount++;
-    }
-    if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
-        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
-    }
-
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:largeHelvetica range:titleRange];
-    [attributedString setFont:smallHelvetica range:descriptionRange];
-    [attributedString setTextColor:HEX(0x555555ff)];
-
-    if (![bookmark[@"unread"] boolValue]) {
-        [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
-    }
-    else {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:titleRange];
-    }
-
-    if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
-    }
-
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    return attributedString;
-}
 
 - (void)processBookmarks {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -268,9 +218,13 @@
         self.parameters = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
+        self.links = [NSMutableArray array];
+
         self.filteredHeights = [NSMutableArray array];
         self.filteredStrings = [NSMutableArray array];
         self.filteredBookmarks = [NSMutableArray array];
+        self.filteredLinks = [NSMutableArray array];
+
         self.date_formatter = [[NSDateFormatter alloc] init];
         [self.date_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         [self.date_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -483,11 +437,13 @@
             return YES;
         }
     }
-    return (action == @selector(copyTitle:) || action == @selector(copyURL:));
+    return (action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
 }
 
 - (void)editBookmark:(id)sender {
-
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
+    NSNumber *read = @(!([bookmark[@"unread"] boolValue]));
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:bookmark[@"url"] andTitle:self.bookmark[@"title"] andTags:bookmark[@"tags"] andDescription:bookmark[@"description"] andPrivate:bookmark[@"private"] andRead:read];
 }
 
 - (void)copyTitle:(id)sender {
@@ -503,7 +459,6 @@
 }
 
 - (void)readLater:(id)sender {
-
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
@@ -557,6 +512,10 @@
     }
 
     [cell.textView setText:string];
+    
+    for (NSDictionary *link in [BookmarkViewController linksForBookmark:bookmark]) {
+        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
+    }
 
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
@@ -570,6 +529,20 @@
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    NSNumber *tag_id;
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[url.absoluteString]];
+    [results next];
+    tag_id = [results objectForColumnIndex:0];
+    [db close];
+
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
+    bookmarkViewController.title = url.absoluteString;
+    [self.navigationController pushViewController:bookmarkViewController animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -608,7 +581,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0: {
-            [self deleteBookmark:self.bookmark atIndexPath:nil];
+            [self deleteBookmark:nil];
             break;
         }
         case 1: {
@@ -622,7 +595,8 @@
     }
 }
 
-- (void)deleteBookmark:(NSDictionary *)bookmark atIndexPath:(NSIndexPath *)indexPath {
+- (void)deleteBookmark:(id)sender {
+    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -644,20 +618,19 @@
 
                                    [self processBookmarks];
 
-                                   if (indexPath != nil) {
-                                       [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                                   }
-
                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your bookmark was deleted.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                                    [alert show];
                                    
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                                    
-                                   [self.navigationController popViewControllerAnimated:YES];
+                                   if (self.navigationController.visibleViewController != self) {
+                                       [self.navigationController popViewControllerAnimated:YES];
+                                   }
                                }
                            }];
 }
 
+/* XXX
 #pragma mark - Swipe to delete
 
 - (UITableViewCellEditingStyle)tableView:(UITableView*)tableView editingStyleForRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -665,7 +638,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -673,6 +646,81 @@
         NSDictionary *bookmark = self.bookmarks[indexPath.row];
         [self deleteBookmark:bookmark atIndexPath:indexPath];
     }
+}
+ */
+
+#pragma mark - Bookmark Helpers
+
++ (NSNumber *)heightForBookmark:(NSDictionary *)bookmark {
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+    
+    CGFloat height = 10.0f;
+    height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        height += ceilf([bookmark[@"tags"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
+    return @(height);
+}
+
++ (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark {
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
+    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
+    NSRange descriptionRange = {};
+    NSRange tagRange = {};
+    int newLineCount = 1;
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
+        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
+        newLineCount++;
+    }
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
+        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
+    }
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:largeHelvetica range:titleRange];
+    [attributedString setFont:smallHelvetica range:descriptionRange];
+    [attributedString setTextColor:HEX(0x555555ff)];
+    
+    if (![bookmark[@"unread"] boolValue]) {
+        [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0xcc2222ff) range:titleRange];
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
+    }
+    
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    return attributedString;
+}
+
++ (NSArray *)linksForBookmark:(NSDictionary *)bookmark {
+    NSMutableArray *links = [NSMutableArray array];
+    int location = [bookmark[@"title"] length] + 1;
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        location += [bookmark[@"description"] length] + 1;
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
+            NSRange range = [bookmark[@"tags"] rangeOfString:tag];
+            [links addObject:@{@"url": [NSURL URLWithString:tag], @"location": @(location+range.location), @"length": @(range.length)}];
+        }
+    }
+    return links;
 }
 
 @end
