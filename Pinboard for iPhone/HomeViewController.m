@@ -57,7 +57,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return @"Personal";
+            return NSLocalizedString(@"Personal", nil);
             break;
         case 1:
             return NSLocalizedString(@"Community", nil);

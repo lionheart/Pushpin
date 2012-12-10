@@ -50,6 +50,7 @@
 "Unread" = "Unread";
 "Untagged" = "Untagged";
 "Bookmarks" = "Bookmarks";
+"Personal" = "Personal";
 "Community" = "Community";
 "Fandom" = "Fandom";
 "Popular" = "Popular";
@@ -69,6 +70,7 @@
 "Title" = "Title";
 "Description" = "Description";
 "Tags" = "Tags";
+"Separate tags with spaces" = "Separate tags with spaces";
 "Private" = "Private";
 "Copy URL" = "Copy URL";
 "Copy Title" = "Copy Title";

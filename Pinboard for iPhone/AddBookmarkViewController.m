@@ -81,7 +81,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 3) {
-        return @"Separate tags with spaces";
+        return NSLocalizedString(@"Separate tags with spaces", nil);
     }
     return @"";
 }
