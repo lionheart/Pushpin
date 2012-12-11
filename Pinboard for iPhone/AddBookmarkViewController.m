@@ -143,7 +143,10 @@
 
 - (void)keyboardWillShow:(NSNotification *)sender {
     CGSize kbSize = [[[sender userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kbSize.height - 135., 0);
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+
+    CGFloat offset = screenBounds.size.height - 480.;
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kbSize.height - 140. + offset, 0);
 }
 
 - (void)keyboardDidHide:(NSNotification *)sender {
@@ -207,6 +210,10 @@
     
     cell.accessoryView = nil;
     cell.textLabel.text = @"";
+    
+    for (UIView *view in [cell.contentView subviews]) {
+        [view removeFromSuperview];
+    }
 
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
@@ -235,6 +242,7 @@
                 else {
                     cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.editing = NO;
                 }
                 break;
                 
