@@ -170,8 +170,18 @@
         [indexPaths removeAllObjects];
     }
 
-    if (![string isEqualToString:@" "] && (range.length - string.length == 1 || string.length - range.length == 1)) {
-        NSString *searchString = [[[self.tagTextField.text componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
+    if (string != nil && ![string isEqualToString:@" "] && (range.length - string.length <= 1 || string.length - range.length <= 1)) {
+       
+        NSString *newTextFieldContents;
+        if (range.length > string.length) {
+            newTextFieldContents = [self.tagTextField.text substringToIndex:self.tagTextField.text.length - range.length];
+        }
+        else {
+            newTextFieldContents = [NSString stringWithFormat:@"%@", self.tagTextField.text];
+        }
+
+        NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
+
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE tag_fts.name MATCH ? ORDER BY name DESC LIMIT 4" withArgumentsInArray:@[searchString]];
