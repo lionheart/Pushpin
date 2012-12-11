@@ -113,7 +113,8 @@
     }
 }
 
-- (void)closeModal {
+- (void)closeModal:(UIViewController *)sender {
+    sender = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -286,7 +287,7 @@
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         id visibleViewController = [(UINavigationController *)viewController visibleViewController];
         if ([visibleViewController isKindOfClass:[AddBookmarkViewController class]]) {
-            [self showAddBookmarkViewController];
+            [self showAddBookmarkViewControllerWithBookmark:@{} andDelegate:nil];
             return false;
         }
     }

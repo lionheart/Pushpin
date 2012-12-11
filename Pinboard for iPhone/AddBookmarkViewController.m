@@ -27,6 +27,7 @@
 @synthesize setAsPrivate;
 @synthesize bookmarkUpdateDelegate;
 @synthesize tagCompletions;
+@synthesize currentTextField;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -74,7 +75,7 @@
     [super viewDidAppear:animated];
     self.tagCompletions = [NSMutableArray array];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 }
 
@@ -135,22 +136,28 @@
     return @"";
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    if (textField == self.tagTextField) {
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    self.currentTextField = textField;
+    return YES;
+}
+
+- (void)keyboardDidShow:(NSNotification *)sender {
+    if (self.currentTextField == self.tagTextField) {
+        CGSize kbSize = [[[sender userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+        UIEdgeInsets insets = self.tableView.contentInset;
+        insets.bottom = kbSize.height;
+        self.tableView.contentInset = insets;
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
 }
 
-- (void)keyboardWillShow:(NSNotification *)sender {
-    CGSize kbSize = [[[sender userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-
-    CGFloat offset = screenBounds.size.height - 480.;
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kbSize.height - 140. + offset, 0);
-}
-
 - (void)keyboardDidHide:(NSNotification *)sender {
     self.tableView.contentInset = UIEdgeInsetsZero;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
@@ -184,7 +191,7 @@
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE tag_fts.name MATCH ? ORDER BY name DESC LIMIT 4" withArgumentsInArray:@[searchString]];
+        FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE tag_fts.name MATCH '?' ORDER BY name DESC LIMIT 4" withArgumentsInArray:@[searchString]];
         
         index = 1;
         while ([result next]) {
@@ -316,7 +323,7 @@
 }
 
 - (void)close {
-    [self.modalDelegate closeModal];
+    [self.modalDelegate closeModal:self];
 }
 
 - (void)addBookmark {
@@ -342,7 +349,7 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
-                                   [self.modalDelegate closeModal];
+                                   [self.modalDelegate closeModal:self];
                                    
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
