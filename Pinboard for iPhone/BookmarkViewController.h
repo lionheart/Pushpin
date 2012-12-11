@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "OHAttributedLabel.h"
 #import "TTTAttributedLabel.h"
 #import <CoreData/CoreData.h>
 #import "FMDatabase.h"
