@@ -25,8 +25,9 @@
 @property (nonatomic, retain) NSMutableArray *tagCompletions;
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
+@property (nonatomic, retain) UITextField *currentTextField;
 
-- (void)keyboardWillShow:(NSNotification *)sender;
+- (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
