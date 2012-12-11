@@ -328,6 +328,8 @@
 
 - (void)addBookmark {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 
     if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
         #warning Should display a message to the user
@@ -385,6 +387,8 @@
 
                                    [db close];
                                }
+                               self.navigationItem.leftBarButtonItem.enabled = YES;
+                               self.navigationItem.rightBarButtonItem.enabled = YES;
                                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }];
 
