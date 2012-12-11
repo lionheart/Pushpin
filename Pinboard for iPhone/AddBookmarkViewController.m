@@ -222,10 +222,10 @@
     
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     cell.accessoryView = nil;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
     
     for (UIView *view in [cell.contentView subviews]) {

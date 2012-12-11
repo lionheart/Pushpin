@@ -268,8 +268,11 @@
 
     addBookmarkViewController.modalDelegate = self;
     addBookmarkViewController.titleTextField.text = bookmark[@"title"];
-    addBookmarkViewController.urlTextField.text = bookmark[@"url"];
-    addBookmarkViewController.urlTextField.enabled = NO;
+    
+    if (bookmark[@"url"]) {
+        addBookmarkViewController.urlTextField.text = bookmark[@"url"];
+        addBookmarkViewController.urlTextField.enabled = NO;
+    }
     addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
     addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
