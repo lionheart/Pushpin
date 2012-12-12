@@ -164,12 +164,21 @@
                                    [self.heights removeAllObjects];
                                    
                                    for (NSDictionary *element in payload) {
-                                       NSDictionary *bookmark = @{
+                                       NSMutableDictionary *bookmark = [NSMutableDictionary dictionaryWithDictionary:@{
                                             @"title": element[@"d"],
                                             @"description": element[@"n"],
                                             @"url": element[@"u"],
                                             @"tags": [element[@"t"] componentsJoinedByString:@" "]
-                                       };
+                                       }];
+                                       
+                                       if (bookmark[@"title"] == [NSNull null]) {
+                                           bookmark[@"title"] = @"";
+                                       }
+                                       
+                                       if (bookmark[@"description"] == [NSNull null]) {
+                                           bookmark[@"description"] = @"";
+                                       }
+
                                        [self.bookmarks addObject:bookmark];
                                        [self.heights addObject:[BookmarkFeedViewController heightForBookmark:bookmark]];
                                        [self.strings addObject:[BookmarkFeedViewController attributedStringForBookmark:bookmark]];
