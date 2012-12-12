@@ -214,7 +214,7 @@
         addBookmarkViewController.urlTextField.enabled = NO;
     }
 
-    if (isUpdate) {
+    if (isUpdate != nil && isUpdate) {
         addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     }
     
