@@ -213,7 +213,10 @@
         addBookmarkViewController.urlTextField.text = bookmark[@"url"];
         addBookmarkViewController.urlTextField.enabled = NO;
     }
-    addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
+
+    if (isUpdate) {
+        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
+    }
     
     if (bookmark[@"tags"]) {
         addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
