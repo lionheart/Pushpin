@@ -54,6 +54,9 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 
+@property (nonatomic, retain) NSNumber *bookmarksUpdated;
+@property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
+
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
@@ -62,10 +65,6 @@ enum bookmarkupdateevents {
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
 

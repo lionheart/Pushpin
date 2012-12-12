@@ -42,6 +42,9 @@
 @property (nonatomic, retain) UIAlertView *confirmDeleteAlertView;
 @property (nonatomic) BOOL searchWasActive;
 @property (nonatomic, retain) NSNumber *isSearchTable;
+@property (nonatomic, retain) NSTimer *bookmarkUpdateTimer;
+@property (nonatomic) BOOL timerPaused;
+@property (nonatomic) int secondsLeft;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
@@ -57,10 +60,10 @@
 - (void)edit;
 - (void)stopEditing;
 - (void)toggleEditMode;
-- (void)reloadTableData;
 - (void)longPress:(UIGestureRecognizer *)recognizer;
 - (void)updateSearchResults;
 - (void)updateData;
+- (void)checkForBookmarkUpdates;
 
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 
