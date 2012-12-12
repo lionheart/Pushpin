@@ -24,6 +24,7 @@
 @synthesize webView = _webView;
 @synthesize bookmarkTitle;
 @synthesize bookmarkURL;
+@synthesize allBookmarkViewController;
 
 - (id)init {
     self = [super init];
@@ -31,15 +32,15 @@
         secondsLeft = 0;
         timerPaused = NO;
 
-        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
-        bookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+        self.allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
+        self.allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
         homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         
         UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-        [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, bookmarkViewController, nil]];
-        [postViewContainer popToViewController:bookmarkViewController animated:NO];
+        [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, self.allBookmarkViewController, nil]];
+        [postViewContainer popToViewController:self.allBookmarkViewController animated:NO];
         
         postViewContainer.tabBarItem.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
@@ -59,7 +60,7 @@
         UINavigationController *tagViewNavigationController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
         tagViewController.title = NSLocalizedString(@"Tags Tab Bar Title", nil);
         tagViewController.tabBarItem.image = [UIImage imageNamed:@"15-tags"];
-        
+
         NoteViewController *noteViewController = [[NoteViewController alloc] initWithStyle:UITableViewStylePlain];
         UINavigationController *noteViewNavigationController = [[UINavigationController alloc] initWithRootViewController:noteViewController];
         noteViewController.title = NSLocalizedString(@"Notes Tab Bar Title", nil);
@@ -84,11 +85,9 @@
                                selector:@selector(resumeRefreshTimer)
                                    name:@"BookmarksLoaded"
                                  object:nil];
-        
-        if ([[AppDelegate sharedDelegate] token]) {
-            self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
-            [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
-        }
+
+        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
     }
     return self;
 }
@@ -166,7 +165,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     _sessionChecked = false;
     if (buttonIndex == 1) {
-        [self showAddBookmarkViewControllerWithURL:self.bookmarkURL andTitle:self.bookmarkTitle];
+        [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} andDelegate:self.allBookmarkViewController];
         [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
     }
 }
@@ -184,68 +183,6 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
     [connection cancel];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
-    addBookmarkViewController.modalDelegate = self;
-    addBookmarkViewController.titleTextField.text = title;
-    addBookmarkViewController.urlTextField.text = url;
-    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
-    addBookmarkViewController.modalDelegate = self;
-    addBookmarkViewController.titleTextField.text = title;
-    addBookmarkViewController.urlTextField.text = url;
-    addBookmarkViewController.tagTextField.text = someTags;
-    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags andDescription:(NSString *)aDescription {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
-    addBookmarkViewController.modalDelegate = self;
-    addBookmarkViewController.titleTextField.text = title;
-    addBookmarkViewController.urlTextField.text = url;
-    addBookmarkViewController.tagTextField.text = someTags;
-    addBookmarkViewController.descriptionTextField.text = aDescription;
-    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
-
-    addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
-    addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
-    addBookmarkViewController.modalDelegate = self;
-    addBookmarkViewController.titleTextField.text = aTitle;
-    addBookmarkViewController.urlTextField.text = aURL;
-    addBookmarkViewController.urlTextField.enabled = NO;
-    addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
-    addBookmarkViewController.tagTextField.text = someTags;
-    addBookmarkViewController.descriptionTextField.text = aDescription;
-    addBookmarkViewController.setAsPrivate = isPrivate;
-    addBookmarkViewController.markAsRead = isRead;
-
-    [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
@@ -267,23 +204,40 @@
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
 
     addBookmarkViewController.modalDelegate = self;
-    addBookmarkViewController.titleTextField.text = bookmark[@"title"];
+    
+    if (bookmark[@"title"]) {
+        addBookmarkViewController.titleTextField.text = bookmark[@"title"];
+    }
     
     if (bookmark[@"url"]) {
         addBookmarkViewController.urlTextField.text = bookmark[@"url"];
         addBookmarkViewController.urlTextField.enabled = NO;
     }
     addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
-    addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
-    addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+    
+    if (bookmark[@"tags"]) {
+        addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
+    }
+    
+    if (bookmark[@"description"]) {
+        addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+    }
+
     addBookmarkViewController.setAsPrivate = bookmark[@"private"];
     addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
-    addBookmarkViewController.bookmarkUpdateDelegate = delegate;
+    
+    if (delegate != nil) {
+        addBookmarkViewController.bookmarkUpdateDelegate = delegate;
+    }
+    else {
+        addBookmarkViewController.bookmarkUpdateDelegate = self.allBookmarkViewController;
+    }
+
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
 - (void)showAddBookmarkViewController {
-    [self showAddBookmarkViewControllerWithURL:nil andTitle:nil];
+    [self showAddBookmarkViewControllerWithBookmark:@{} andDelegate:nil];
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -295,35 +249,6 @@
         }
     }
     return true;
-}
-
-#pragma mark - Webview Delegate
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    _sessionChecked = false;
-    NSLog(@"Finished load");
-    NSString *url = [UIPasteboard generalPasteboard].string;
-    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    [webView stringByEvaluatingJavaScriptFromString:@"window.alert=null;"];
-    [self showAddBookmarkViewControllerWithURL:url andTitle:title];
-    [webView removeFromSuperview];
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    NSLog(@"checking");
-    if (_sessionChecked) {
-        return YES;
-    }
-    
-    NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
-    [conn start];
-    return NO;
 }
 
 @end

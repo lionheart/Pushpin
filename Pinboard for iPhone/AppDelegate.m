@@ -27,6 +27,8 @@
 @synthesize feedToken = _feedToken;
 @synthesize connectionAvailable;
 @synthesize dateFormatter;
+@synthesize bookmarksUpdated;
+@synthesize bookmarksUpdatedMessage;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -36,22 +38,6 @@
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return [basePath stringByAppendingPathComponent:@"/pinboard.db"];
 #endif
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle {
-    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags {
-    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription {
-    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription];
-}
-
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead {
-    [self.tabBarViewController showAddBookmarkViewControllerWithURL:aURL andTitle:aTitle andTags:someTags andDescription:aDescription andPrivate:isPrivate andRead:isRead];
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
@@ -121,6 +107,9 @@
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    
+    self.bookmarksUpdated = @(NO);
+    self.bookmarksUpdatedMessage = nil;
 
     [reach startNotifier];
     [self migrateDatabase];
@@ -354,10 +343,6 @@
                            }];
 }
 
-- (void)updateBookmarks {
-    [self updateBookmarksWithDelegate:nil];
-}
-
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
@@ -498,10 +483,15 @@
                                        [db commit];
                                        [db close];
                                        
-                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoaded" object:nil];
+                                       self.bookmarksUpdated = @(YES);
                                    });
                                }
                            }];
+}
+
+#warning Deprecated
+- (void)updateBookmarks {
+    [self updateBookmarksWithDelegate:nil];
 }
 
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate {

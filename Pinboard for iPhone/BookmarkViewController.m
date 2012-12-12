@@ -42,44 +42,40 @@
 @synthesize links;
 @synthesize filteredLinks;
 @synthesize isSearchTable;
+@synthesize bookmarkUpdateTimer;
+@synthesize secondsLeft;
+@synthesize timerPaused;
 
-- (void)reloadTableData {
-    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
-    [self.tableView reloadData];
-}
+- (void)checkForBookmarkUpdates {
+    if (!timerPaused) {
+        if (secondsLeft == 0) {
+            secondsLeft = 1;
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            if (delegate.bookmarksUpdated.boolValue) {
+                UIView *view;
+                
+                if (self.isSearchTable.boolValue) {
+                    view = self.searchDisplayController.searchContentsController.view;
+                }
+                else {
+                    view = self.navigationController.navigationBar;
+                }
 
-- (void)bookmarkUpdateEvent:(int)type {
-    UIView *view;
-    NSString *message;
-
-    if (self.isSearchTable.boolValue) {
-        view = self.searchDisplayController.searchContentsController.view;
-    }
-    else {
-        view = self.navigationController.navigationBar;
-    }
-
-    switch (type) {
-        case BOOKMARK_EVENT_ADD: {
-            message = NSLocalizedString(@"Bookmark Added Message", nil);
-            break;
+                NSString *message = delegate.bookmarksUpdatedMessage;
+                if (message != nil) {
+                    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:message];
+                    [notice show];
+                }
+                
+                [self processBookmarks];
+                delegate.bookmarksUpdated = @(NO);
+                delegate.bookmarksUpdatedMessage = nil;
+            }
         }
-        case BOOKMARK_EVENT_UPDATE: {
-            message = NSLocalizedString(@"Bookmark Updated Message", nil);
-            break;
+        else {
+            secondsLeft--;
         }
-        case BOOKMARK_EVENT_DELETE: {
-            message = NSLocalizedString(@"Bookmark Deleted Message", nil);
-            break;
-        }
-            
-        default:
-            break;
     }
-
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:message];
-    [notice show];
-    [self processBookmarks];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -94,11 +90,9 @@
     if (self.savedSearchTerm) {
         [self.searchDisplayController setActive:searchWasActive];
         [self.searchDisplayController.searchBar setText:self.savedSearchTerm];
-        
         self.savedSearchTerm = nil;
     }
 
-	[self processBookmarks];
 	self.tableView.scrollEnabled = YES;
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -114,6 +108,11 @@
     [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
     
     // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self processBookmarks];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -155,9 +154,14 @@
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
 
-    // long press
-    // UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-    // [self.view addGestureRecognizer:longPress];
+    self.timerPaused = false;
+    self.secondsLeft = 1;
+    self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.bookmarkUpdateTimer invalidate];
 }
 
 - (void)longPress:(UIGestureRecognizer *)recognizer {
@@ -234,6 +238,8 @@
 }
 
 - (void)processBookmarks {
+    self.timerPaused = true;
+
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
@@ -266,6 +272,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            self.timerPaused = false;
         });
     });
 }
@@ -304,11 +311,6 @@
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
 
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(processBookmarks)
-                                                     name:@"BookmarksLoaded"
-                                                   object:nil];
-
     }
     return self;
 }
@@ -331,11 +333,6 @@
 
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(processBookmarks)
-                                                     name:@"BookmarksLoaded"
-                                                   object:nil];
     }
     return self;
 }
@@ -386,14 +383,14 @@
                                                               [db close];
                                                               
                                                               if (success) {
-                                                                  [self processBookmarks];
-                                                                  
                                                                   if (self.savedSearchTerm) {
                                                                       [self updateSearchResults];
                                                                   }
                                                               }
 
-                                                              [self bookmarkUpdateEvent:BOOKMARK_EVENT_UPDATE];
+                                                              AppDelegate *delegate = [AppDelegate sharedDelegate];
+                                                              delegate.bookmarksUpdated = @(YES);
+                                                              delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
                                                           }
                                                           else {
                                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -760,19 +757,15 @@
                                    [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
                                    [db commit];
                                    [db close];
-
-                                   [self processBookmarks];
                                    
                                    if (self.savedSearchTerm) {
                                        [self updateSearchResults];
                                    }
 
-                                   [self bookmarkUpdateEvent:BOOKMARK_EVENT_DELETE];
+                                   AppDelegate *delegate = [AppDelegate sharedDelegate];
+                                   delegate.bookmarksUpdated = @(YES);
+                                   delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Deleted Message", nil);
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-
-                                   if (self.navigationController.visibleViewController != self) {
-                                       [self.navigationController popViewControllerAnimated:YES];
-                                   }
                                }
                            }];
 }

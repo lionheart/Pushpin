@@ -293,17 +293,9 @@
     return (action == @selector(copyToMine:) || action == @selector(copyTitle:) || action == @selector(copyURL:) || action == @selector(editBookmark:) || action == @selector(deleteBookmark:));
 }
 
-- (void)editBookmark:(id)sender {
-    
-}
-
-- (void)deleteBookmark:(id)sender {
-    
-}
-
 - (void)copyToMine:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithURL:bookmark[@"url"] andTitle:bookmark[@"title"] andTags:bookmark[@"tags"] andDescription:bookmark[@"description"]];
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:nil];
     [[Mixpanel sharedInstance] track:@"Clicked copy to mine"];
 }
 

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
+@class BookmarkViewController;
+
 @interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
     BOOL _sessionChecked;
     BOOL timerPaused;
@@ -19,12 +21,9 @@
 @property (nonatomic, retain) NSString *bookmarkURL;
 @property (nonatomic, retain) NSString *bookmarkTitle;
 @property (nonatomic, retain) NSTimer *bookmarkRefreshTimer;
+@property (nonatomic, retain) NSTimer *reloadDataTimer;
+@property (nonatomic, retain) BookmarkViewController *allBookmarkViewController;
 
-- (void)showAddBookmarkViewController;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)url andTitle:(NSString *)title andTags:(NSString *)someTags andDescription:(NSString *)aDescription;
-- (void)showAddBookmarkViewControllerWithURL:(NSString *)aURL andTitle:(NSString *)aTitle andTags:(NSString *)someTags andDescription:(NSString *)aDescription andPrivate:(NSNumber *)isPrivate andRead:(NSNumber *)isRead;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
 - (void)promptUserToAddBookmark;
