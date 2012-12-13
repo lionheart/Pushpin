@@ -9,7 +9,7 @@
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
-
+#import "UserVoice.h"
 
 @interface SettingsViewController ()
 
@@ -261,30 +261,6 @@
     }
 }
 
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return 3;
-}
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return 1;
-}
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    switch (row) {
-        case 0:
-            return NSLocalizedString(@"Default", nil);
-            break;
-        case 1:
-            return @"Safari";
-            break;
-        case 2:
-            return @"Chrome";
-            break;
-        default:
-            break;
-    }
-}
-
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     BOOL installed;
     if (actionSheet == self.browserActionSheet) {
@@ -327,37 +303,13 @@
             [self presentViewController:emailComposer animated:YES completion:nil];
             return;
         }
-        else if (buttonIndex < 3) {
-            NSString *safariURL;
-            NSString *chromeURL;
-            if (buttonIndex == 2) {
-                safariURL = @"https://twitter.com/pushpin_app";
-                chromeURL = @"googlechromes://twitter.com/pushpin_app";
-            }
-            else {
-                safariURL = @"http://aurora.io/support/pushpin";
-                chromeURL = @"googlechrome://aurora.io/support/pushpin";
-            }
-
-            NSURL *url;
+        else if (buttonIndex == 0) {
+            UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
+                                                 andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                              andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
             
-            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                case BROWSER_WEBVIEW:
-                    url = [NSURL URLWithString:safariURL];
-                    break;
-                    
-                case BROWSER_SAFARI:
-                    url = [NSURL URLWithString:safariURL];
-                    break;
-                    
-                case BROWSER_CHROME:
-                    url = [NSURL URLWithString:chromeURL];
-                    break;
-                    
-                default:
-                    break;
-            }
-            [[UIApplication sharedApplication] openURL:url];
+            [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
+            return;
         }
     }
     else if (actionSheet == self.readLaterActionSheet) {
@@ -389,9 +341,14 @@
         }
         case 1: {
             switch (indexPath.row) {
-                case 0:
-                    [self.supportActionSheet showFromTabBar:self.tabBarController.tabBar];
+                case 0: {
+                    UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
+                                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+
+                    [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
                     break;
+                }
                     
                 case 1:
                     [self.logOutAlertView show];
