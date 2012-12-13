@@ -12,6 +12,7 @@
 #import "TTTAttributedLabel.h"
 #import "NSString+URLEncoding.h"
 #import "WBSuccessNoticeView.h"
+#import "TSMiniWebBrowser.h"
 
 @interface BookmarkViewController ()
 
@@ -463,19 +464,10 @@
 
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_WEBVIEW: {
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-            self.webView = [[UIWebView alloc] init];
-            self.webView.scalesPageToFit = YES;
-            self.webView.delegate = self;
-            [self.webView loadRequest:request];
-            self.bookmarkDetailViewController = [[UIViewController alloc] init];
-            self.bookmarkDetailViewController.title = self.bookmark[@"title"];
-            self.webView.frame = self.bookmarkDetailViewController.view.frame;
-            self.bookmarkDetailViewController.view = self.webView;
-            self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
-//            self.bookmarkDetailViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openActionSheetForBookmark:)];
             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-            [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
+            TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:self.bookmark[@"url"]]];
+            webBrowser.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:webBrowser animated:YES];
             break;
         }
             
