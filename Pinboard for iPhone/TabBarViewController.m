@@ -134,11 +134,11 @@
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
             // Grab the page title
             NSURLRequest *request = [NSURLRequest requestWithURL:candidateURL];
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 
                                        if (!error) {
                                            HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
@@ -180,7 +180,7 @@
         [self.webView loadRequest:req];
     }
     else {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     }
     [connection cancel];
 }

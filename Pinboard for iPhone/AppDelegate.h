@@ -68,4 +68,6 @@ enum bookmarkupdateevents {
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
 
+- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
+
 @end

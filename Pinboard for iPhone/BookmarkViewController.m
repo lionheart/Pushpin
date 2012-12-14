@@ -358,7 +358,7 @@
 - (void)markBookmarkAsRead:(id)sender {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -366,7 +366,7 @@
                                NSDictionary *bookmark = payload[@"posts"][0];
                                
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
-                                   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    return;
                                }
                                
@@ -376,7 +376,7 @@
                                [NSURLConnection sendAsynchronousRequest:request
                                                                   queue:[NSOperationQueue mainQueue]
                                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                                          [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                                           if (!error) {
                                                               FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                                               [db open];
@@ -664,15 +664,15 @@
 #pragma mark - Webview Delegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
 #pragma mark - Action Sheet Delegate
@@ -732,10 +732,13 @@
 - (void)deleteBookmark:(id)sender {
     NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               AppDelegate *delegate = [AppDelegate sharedDelegate];
+                               [delegate setNetworkActivityIndicatorVisible:NO];
+
                                if (!error) {
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
@@ -753,8 +756,6 @@
                                    if (self.savedSearchTerm) {
                                        [self updateSearchResults];
                                    }
-
-                                   AppDelegate *delegate = [AppDelegate sharedDelegate];
                                    delegate.bookmarksUpdated = @(YES);
                                    delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Deleted Message", nil);
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
