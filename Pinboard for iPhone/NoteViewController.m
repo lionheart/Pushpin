@@ -34,11 +34,11 @@
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?format=json&auth_token=%@", [[AppDelegate sharedDelegate] token]];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                self.notes = payload[@"notes"];
                                [mixpanel.people set:@"Notes" to:@(self.notes.count)];
@@ -109,13 +109,14 @@
         note = self.filteredNotes[indexPath.row];
     }
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     NSString *noteURLString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/%@?format=json&auth_token=%@", note[@"id"], [[AppDelegate sharedDelegate] token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:noteURLString]];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+
                                if (!error) {
                                    NSDictionary *noteInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 

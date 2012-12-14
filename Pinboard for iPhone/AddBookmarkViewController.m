@@ -378,7 +378,7 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
 
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -418,7 +418,7 @@
                                }
                                self.navigationItem.leftBarButtonItem.enabled = YES;
                                self.navigationItem.rightBarButtonItem.enabled = YES;
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                
     }];
 

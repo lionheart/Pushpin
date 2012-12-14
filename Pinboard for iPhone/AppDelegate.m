@@ -312,11 +312,11 @@
     }
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?auth_token=%@", [self token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [self setNetworkActivityIndicatorVisible:NO];
                                dispatch_async(dispatch_get_current_queue(), ^{
                                    NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    
@@ -350,12 +350,12 @@
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [self setLastUpdated:[NSDate date]];
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [self setNetworkActivityIndicatorVisible:NO];
                                if (error.code == NSURLErrorUserCancelledAuthentication) {
                                    
                                }
@@ -521,6 +521,28 @@
                                    }
                                }
                            ];
+}
+
+#pragma mark - Helpers
+
+- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {
+    static NSInteger NumberOfCallsToSetVisible = 0;
+    if (setVisible) {
+        NumberOfCallsToSetVisible++;
+    }
+    else {
+        NumberOfCallsToSetVisible--;
+    }
+    
+    // The assertion helps to find programmer errors in activity indicator management.
+    // Since a negative NumberOfCallsToSetVisible is not a fatal error,
+    // it should probably be removed from production code.
+#ifdef TESTING
+    NSAssert(NumberOfCallsToSetVisible >= 0, @"Network Activity Indicator was asked to hide more often than shown");
+#endif
+    
+    // Display the indicator as long as our static counter is > 0.
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
 }
 
 @end

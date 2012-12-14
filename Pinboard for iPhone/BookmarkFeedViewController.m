@@ -150,11 +150,11 @@
 
 - (void)processBookmarks {
     NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 
                                if (!error) {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
