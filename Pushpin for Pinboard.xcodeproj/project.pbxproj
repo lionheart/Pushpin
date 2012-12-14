@@ -1153,7 +1153,7 @@
 					"-lxml2",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A3F3D5A7-EA5E-4A08-9573-B470707455A0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E3F30FE2-F3C5-4195-9315-5EA1956D4040";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
