@@ -40,34 +40,43 @@
 #endif
 }
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
-    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate];
-}
-
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate {
-    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate update:isUpdate];
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
+    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     if ([url.host isEqualToString:@"add"]) {
-        // Parse the individual parameters
-        // parameters = @"hello=world&foo=bar";
-        NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(YES) }];
-        NSArray *arrParameters = [url.query componentsSeparatedByString:@"&"];
-        for (int i = 0; i < [arrParameters count]; i++) {
-            NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
-            if ([arrKeyValue count] >= 2) {
-                NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
-                [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-                NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
-                [strValue setString:[[[arrKeyValue objectAtIndex:1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-                if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
-            }
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
+    }
+    else if ([url.host isEqualToString:@"x-callback-url"]) {
+        if ([url.path isEqualToString:@"/add"]) {
+            NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
+                if (queryParameters[@"url"]) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:queryParameters[@"url"]]];
+                }
+            }];
         }
-
-        [self showAddBookmarkViewControllerWithBookmark:dictParameters andDelegate:nil];
     }
     return YES;
+}
+
+- (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
+    // Parse the individual parameters
+    // parameters = @"hello=world&foo=bar";
+    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(YES) }];
+    NSArray *arrParameters = [query componentsSeparatedByString:@"&"];
+    for (int i = 0; i < [arrParameters count]; i++) {
+        NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
+        if ([arrKeyValue count] >= 2) {
+            NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
+            [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
+            [strValue setString:[[[arrKeyValue objectAtIndex:1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
+        }
+    }
+    return dictParameters;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

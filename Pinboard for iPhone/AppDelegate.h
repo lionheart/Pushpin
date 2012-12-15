@@ -57,6 +57,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
 
+- (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
@@ -65,8 +66,7 @@ enum bookmarkupdateevents {
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 

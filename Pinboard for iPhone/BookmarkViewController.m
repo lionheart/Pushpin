@@ -524,7 +524,7 @@
 }
 
 - (void)editBookmark:(id)sender {
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self update:@(YES)];
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark update:@(YES) callback:nil];
 }
 
 - (void)copyTitle:(id)sender {
@@ -708,7 +708,7 @@
         [self confirmDeletion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark andDelegate:self];
+        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark update:@(YES) callback:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
         [self readLater:nil];

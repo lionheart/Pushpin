@@ -304,7 +304,7 @@
 
 - (void)copyToMine:(id)sender {
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
-    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:nil];
+    [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:bookmark update:@(NO) callback:nil];
     [[Mixpanel sharedInstance] track:@"Clicked copy to mine"];
 }
 
