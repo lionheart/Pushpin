@@ -71,10 +71,6 @@
         self.delegate = self;
 
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter addObserver:self
-                               selector:@selector(promptUserToAddBookmark)
-                                   name:UIApplicationDidBecomeActiveNotification
-                                 object:nil];
 
         [notificationCenter addObserver:self
                                selector:@selector(pauseRefreshTimer)

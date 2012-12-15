@@ -40,7 +40,9 @@ enum bookmarkupdateevents {
 - (void)bookmarkUpdateEvent:(int)type;
 @end
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate> {
+    BOOL didLaunchWithURL;
+}
 
 @property (nonatomic, retain) TabBarViewController *tabBarViewController;
 @property (strong, nonatomic) UIWindow *window;

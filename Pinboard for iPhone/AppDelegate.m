@@ -44,21 +44,41 @@
     [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([url.host isEqualToString:@"add"]) {
+        didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
+        didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
             [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
                 if (queryParameters[@"url"]) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:queryParameters[@"url"]]];
+                    NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
+
+                    if ([sourceApplication isEqualToString:@"com.google.chrome.ios"]) {
+                        if ([url.scheme isEqualToString:@"http"]) {
+                            url = [NSURL URLWithString:[queryParameters[@"url"] stringByReplacingCharactersInRange:[queryParameters[@"url"] rangeOfString:url.scheme] withString:@"googlechrome"]];
+                        }
+                        else if ([url.scheme isEqualToString:@"https"]) {
+                            url = [NSURL URLWithString:[queryParameters[@"url"] stringByReplacingCharactersInRange:[queryParameters[@"url"] rangeOfString:url.scheme] withString:@"googlechromes"]];
+                        }
+                    }
+
+                    [[UIApplication sharedApplication] openURL:url];
                 }
             }];
         }
     }
     return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    if (!didLaunchWithURL) {
+        [self.tabBarViewController promptUserToAddBookmark];
+        didLaunchWithURL = NO;
+    }
 }
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
@@ -123,6 +143,8 @@
     [reach startNotifier];
     [self migrateDatabase];
     [self updateBookmarks];
+    
+    didLaunchWithURL = NO;
     return YES;
 }
 
