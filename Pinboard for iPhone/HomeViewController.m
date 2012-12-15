@@ -182,7 +182,7 @@
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE tags = '' ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
                     bookmarkViewController.title = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
