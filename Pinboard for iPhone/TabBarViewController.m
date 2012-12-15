@@ -165,7 +165,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     _sessionChecked = false;
     if (buttonIndex == 1) {
-        [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} andDelegate:self.allBookmarkViewController];
+        [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} update:@(NO) callback:nil];
         [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
     }
 }
@@ -185,11 +185,7 @@
     [connection cancel];
 }
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate {
-    [self showAddBookmarkViewControllerWithBookmark:bookmark andDelegate:delegate update:@(NO)];
-}
-
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate {
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
@@ -225,29 +221,26 @@
     if (bookmark[@"description"]) {
         addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
     }
+    
+    if (callback) {
+        addBookmarkViewController.callback = callback;
+    }
 
     addBookmarkViewController.setAsPrivate = bookmark[@"private"];
     addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
-    
-    if (delegate != nil) {
-        addBookmarkViewController.bookmarkUpdateDelegate = delegate;
-    }
-    else {
-        addBookmarkViewController.bookmarkUpdateDelegate = self.allBookmarkViewController;
-    }
 
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
 - (void)showAddBookmarkViewController {
-    [self showAddBookmarkViewControllerWithBookmark:@{} andDelegate:nil];
+    [self showAddBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^{}];
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         id visibleViewController = [(UINavigationController *)viewController visibleViewController];
         if ([visibleViewController isKindOfClass:[AddBookmarkViewController class]]) {
-            [self showAddBookmarkViewControllerWithBookmark:@{} andDelegate:nil];
+            [self showAddBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:nil];
             return false;
         }
     }

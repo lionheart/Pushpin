@@ -25,9 +25,9 @@
 @synthesize readSwitch;
 @synthesize markAsRead;
 @synthesize setAsPrivate;
-@synthesize bookmarkUpdateDelegate;
 @synthesize tagCompletions;
 @synthesize currentTextField;
+@synthesize callback;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -66,7 +66,8 @@
         
         self.markAsRead = @(NO);
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-
+        
+        self.callback = ^(void) {};
     }
     return self;
 }
@@ -182,6 +183,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

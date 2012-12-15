@@ -24,8 +24,7 @@
 @property (nonatomic, retain) NSTimer *reloadDataTimer;
 @property (nonatomic, retain) BookmarkViewController *allBookmarkViewController;
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate;
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark andDelegate:(id<BookmarkUpdatedDelegate>)delegate update:(NSNumber *)isUpdate;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)promptUserToAddBookmark;
 - (void)pauseRefreshTimer;
 - (void)resumeRefreshTimer;

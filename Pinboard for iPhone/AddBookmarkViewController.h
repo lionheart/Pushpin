@@ -15,7 +15,6 @@
 }
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
-@property (nonatomic, retain) id<BookmarkUpdatedDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
 @property (nonatomic, retain) UITextField *descriptionTextField;
 @property (nonatomic, retain) UITextField *titleTextField;
@@ -26,6 +25,7 @@
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
 @property (nonatomic, retain) UITextField *currentTextField;
+@property (nonatomic, copy) void (^callback)();
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
