@@ -218,7 +218,7 @@
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE name MATCH ? ORDER BY name DESC LIMIT 4" withArgumentsInArray:@[searchString]];
+        FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 4" withArgumentsInArray:@[searchString]];
         
         index = 1;
         while ([result next]) {

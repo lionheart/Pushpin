@@ -158,7 +158,6 @@
 
     if ([s next]) {
         int version = [s intForColumnIndex:0];
-        NSLog(@"%d", version);
         [db beginTransaction];
         switch (version) {
             case 0:
@@ -221,6 +220,11 @@
                 // http://stackoverflow.com/a/875422/39155
                 [db executeUpdate:@"PRAGMA syncronous=1;"];
                 [db executeUpdate:@"PRAGMA user_version=1;"];
+
+            case 1:
+                [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
+                [db executeUpdate:@"PRAGMA user_version=2;"];
+
             default:
                 break;
         }
@@ -505,6 +509,8 @@
                                                [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
                                            }
                                        }
+                                       
+                                       [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
                                        
                                        for (NSString *hash in oldBookmarkHashes) {
                                            if (![newBookmarkHashes containsObject:hash]) {
