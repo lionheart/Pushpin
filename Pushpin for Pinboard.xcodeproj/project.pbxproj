@@ -98,6 +98,7 @@
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
 		378A24F0167D041E00FB07EF /* EGOCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24EE167D041E00FB07EF /* EGOCache.m */; };
 		378A24F1167D041E00FB07EF /* README.mdown in Resources */ = {isa = PBXBuildFile; fileRef = 378A24EF167D041E00FB07EF /* README.mdown */; };
+		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
 		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
@@ -295,6 +296,8 @@
 		378A24ED167D041E00FB07EF /* EGOCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGOCache.h; sourceTree = "<group>"; };
 		378A24EE167D041E00FB07EF /* EGOCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGOCache.m; sourceTree = "<group>"; };
 		378A24EF167D041E00FB07EF /* README.mdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.mdown; sourceTree = "<group>"; };
+		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
+		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		37919F1C16091DF5007708EF /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		37919F1D16091DF5007708EF /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
@@ -795,6 +798,8 @@
 		37FEEB9815745488003F2B77 /* Pushpin for Pinboard */ = {
 			isa = PBXGroup;
 			children = (
+				378A24F3167D28AA00FB07EF /* ASStyleSheet.h */,
+				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
 				37FEEBD515747E85003F2B77 /* BookmarkViewController.h */,
@@ -1111,6 +1116,7 @@
 				372F89691675B8900073D0B6 /* WBSuccessNoticeView.m in Sources */,
 				3777C98816798DC50046D4EB /* TSMiniWebBrowser.m in Sources */,
 				378A24F0167D041E00FB07EF /* EGOCache.m in Sources */,
+				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
