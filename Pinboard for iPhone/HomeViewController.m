@@ -113,7 +113,7 @@
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 4:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE bookmark.id NOT IN (SELECT bookmark_id FROM tagging)"];
+                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags = ''"];
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
