@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 #import "UserVoice.h"
+#import "UVStyleSheet.h"
+#import "ASStyleSheet.h"
 
 @interface SettingsViewController ()
 
@@ -349,7 +351,7 @@
                     UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-
+                    [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
                     [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
                     break;
                 }
@@ -358,7 +360,7 @@
                     UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                    
+                    [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
                     [UserVoice presentUserVoiceForumForParentViewController:self andConfig:config];
                     break;
                 }
