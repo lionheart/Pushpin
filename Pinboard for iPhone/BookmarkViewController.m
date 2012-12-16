@@ -583,6 +583,7 @@
             if (!error) {
                 AppDelegate *delegate = [AppDelegate sharedDelegate];
                 delegate.bookmarksUpdated = @(YES);
+                #warning localize
                 delegate.bookmarksUpdatedMessage = @"Bookmark sent to Pocket.";
             }
         }];
