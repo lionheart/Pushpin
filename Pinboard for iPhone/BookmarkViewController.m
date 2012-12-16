@@ -14,6 +14,7 @@
 #import "WBSuccessNoticeView.h"
 #import "TSMiniWebBrowser.h"
 #import "PocketAPI.h"
+#import "FMDatabaseQueue.h"
 
 @interface BookmarkViewController ()
 
@@ -363,7 +364,8 @@
 - (void)markBookmarkAsRead:(id)sender {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -381,22 +383,23 @@
                                [NSURLConnection sendAsynchronousRequest:request
                                                                   queue:[NSOperationQueue mainQueue]
                                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                          [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                                          [delegate setNetworkActivityIndicatorVisible:NO];
                                                           if (!error) {
-                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                                              [db open];
-                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                              [db close];
-                                                              
-                                                              if (success) {
-                                                                  if (self.savedSearchTerm) {
-                                                                      [self updateSearchResults];
-                                                                  }
-                                                              }
-
-                                                              AppDelegate *delegate = [AppDelegate sharedDelegate];
-                                                              delegate.bookmarksUpdated = @(YES);
-                                                              delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                              dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                                  [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                                                      BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                                      
+                                                                      if (success) {
+                                                                          if (self.savedSearchTerm) {
+                                                                              [self updateSearchResults];
+                                                                          }
+                                                                      }
+                                                                      
+                                                                      AppDelegate *delegate = [AppDelegate sharedDelegate];
+                                                                      delegate.bookmarksUpdated = @(YES);
+                                                                      delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                                  }];
+                                                              });
                                                           }
                                                           else {
                                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];

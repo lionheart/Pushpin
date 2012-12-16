@@ -28,6 +28,7 @@ enum bookmarkupdateevents {
 };
 
 @class TabBarViewController;
+@class FMDatabaseQueue;
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
@@ -59,6 +60,7 @@ enum bookmarkupdateevents {
 
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
+@property (nonatomic, retain) FMDatabaseQueue *dbQueue;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
