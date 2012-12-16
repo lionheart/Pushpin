@@ -374,6 +374,11 @@
                                
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   [delegate.dbQueue inDatabase:^(FMDatabase *db) {
+                                       [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                       delegate.bookmarksUpdated = @(YES);
+                                       delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                   }];
                                    return;
                                }
                                
@@ -385,21 +390,18 @@
                                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                                           [delegate setNetworkActivityIndicatorVisible:NO];
                                                           if (!error) {
-                                                              dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                  [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                                                                      BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                                      
-                                                                      if (success) {
-                                                                          if (self.savedSearchTerm) {
-                                                                              [self updateSearchResults];
-                                                                          }
+                                                              [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                                                  BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+
+                                                                  if (success) {
+                                                                      if (self.savedSearchTerm) {
+                                                                          [self updateSearchResults];
                                                                       }
-                                                                      
-                                                                      AppDelegate *delegate = [AppDelegate sharedDelegate];
-                                                                      delegate.bookmarksUpdated = @(YES);
-                                                                      delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                                                  }];
-                                                              });
+                                                                  }
+
+                                                                  delegate.bookmarksUpdated = @(YES);
+                                                                  delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                              }];
                                                           }
                                                           else {
                                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
