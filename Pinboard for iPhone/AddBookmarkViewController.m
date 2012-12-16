@@ -9,6 +9,7 @@
 #import "AddBookmarkViewController.h"
 #import "NSString+URLEncoding.h"
 #import "FMDatabase.h"
+#import "FMDatabaseQueue.h"
 
 @interface AddBookmarkViewController ()
 
@@ -188,24 +189,12 @@
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
-    NSInteger index = 1;
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    
-    while (index <= self.tagCompletions.count) {
-        [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-        index++;
-    }
-    
-    [self.tagCompletions removeAllObjects];
-    
-    [self.tableView beginUpdates];
-    if ([indexPaths count] > 0) {
-        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-        [indexPaths removeAllObjects];
-    }
+    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+    NSMutableArray *newTagCompletions = [NSMutableArray array];
+    NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
 
     if (string != nil && ![string isEqualToString:@" "] && (range.length - string.length <= 1 || string.length - range.length <= 1)) {
-       
         NSString *newTextFieldContents;
         if (range.length > string.length) {
             newTextFieldContents = [self.tagTextField.text substringToIndex:self.tagTextField.text.length - range.length];
@@ -216,24 +205,57 @@
 
         NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
 
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
-        
-        index = 1;
-        while ([result next]) {
-            [self.tagCompletions addObject:[result stringForColumn:@"name"]];
-            [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
+
+                NSInteger index = 1;
+                while ([result next]) {
+                    [newTagCompletions addObject:[result stringForColumn:@"name"]];
+                    if (![oldTagCompletions containsObject:[result stringForColumn:@"name"]]) {
+                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                        [self.tagCompletions addObject:[result stringForColumn:@"name"]];
+                    }
+                    index++;
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
+                    
+                    for (int i=0; i<oldTagCompletions.count; i++) {
+                        if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
+                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
+                        }
+                    }
+                    
+                    self.tagCompletions = newTagCompletions;
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
+                    
+                    [self.tableView endUpdates];
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                });
+            }];
+        });
+    }
+    else {
+        NSInteger index = 1;
+        while (index <= self.tagCompletions.count) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
             index++;
         }
-        
-        [db close];
-        
-        if ([indexPaths count] > 0) {
-            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [self.tagCompletions removeAllObjects];
+
+        [self.tableView beginUpdates];
+
+        if ([indexPathsToRemove count] > 0) {
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
         }
+
+        [self.tableView endUpdates];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-    [self.tableView endUpdates];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -389,34 +411,35 @@
                                if (!error) {
                                    [self.modalDelegate closeModal:self];
                                    
-                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                   [db open];
-                                   FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
-                                   [results next];
-
-                                   NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                       @"url": self.urlTextField.text,
-                                       @"title": self.titleTextField.text,
-                                       @"description": self.descriptionTextField.text,
-                                       @"tags": self.tagTextField.text,
-                                       @"unread": @(!self.readSwitch.on),
-                                       @"private": @(self.privateSwitch.on)
-                                   }];
-
-                                   if ([results intForColumnIndex:0] > 0) {
-                                       [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                       [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                       delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                   }
-                                   else {
-                                       params[@"created_at"] = [NSDate date];
-                                       [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                       [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                       delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Added Message", nil);
-                                   }
-
-                                   [db close];
-                                   delegate.bookmarksUpdated = @(YES);
+                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                       [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                           FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
+                                           [results next];
+                                           
+                                           NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                          @"url": self.urlTextField.text,
+                                                                          @"title": self.titleTextField.text,
+                                                                          @"description": self.descriptionTextField.text,
+                                                                          @"tags": self.tagTextField.text,
+                                                                          @"unread": @(!self.readSwitch.on),
+                                                                          @"private": @(self.privateSwitch.on)
+                                                                          }];
+                                           
+                                           if ([results intForColumnIndex:0] > 0) {
+                                               [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                               [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
+                                               delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                           }
+                                           else {
+                                               params[@"created_at"] = [NSDate date];
+                                               [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
+                                               delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Added Message", nil);
+                                           }
+                                           
+                                           delegate.bookmarksUpdated = @(YES);
+                                       }];
+                                   });
                                }
                                self.navigationItem.leftBarButtonItem.enabled = YES;
                                self.navigationItem.rightBarButtonItem.enabled = YES;
