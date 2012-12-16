@@ -12,6 +12,7 @@
 #import "UserVoice.h"
 #import "UVStyleSheet.h"
 #import "ASStyleSheet.h"
+#import "PocketAPI.h"
 
 @interface SettingsViewController ()
 
@@ -52,6 +53,11 @@
         if (installed) {
             [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
             [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
+        }
+
+        if ([PocketAPI hasPocketAppInstalled]) {
+            [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
+            [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
         }
 
         readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
@@ -191,6 +197,9 @@
                         case READLATER_READABILITY:
                             cell.detailTextLabel.text = @"Readability";
                             break;
+                        case READLATER_POCKET:
+                            cell.detailTextLabel.text = @"Pocket";
+                            break;
                         default:
                             break;
                     }
@@ -328,6 +337,10 @@
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+        }
+        else if ([buttonTitle isEqualToString:@"Pocket"]) {
+            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
+            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
         }
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }

@@ -15,6 +15,7 @@
 #import "FMDatabase.h"
 #import "Reachability.h"
 #import "TestFlight.h"
+#import "PocketAPI.h"
 
 @implementation AppDelegate
 
@@ -45,7 +46,10 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    if ([url.host isEqualToString:@"add"]) {
+    if ([[PocketAPI sharedAPI] handleOpenURL:url]) {
+        return YES;
+    }
+    else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
     }
@@ -109,6 +113,7 @@
 #endif
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
+    [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
 
     if ([self token]) {
         [mixpanel identify:self.username];
