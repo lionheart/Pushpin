@@ -49,6 +49,11 @@
 		374D3D5415AB60AE003E1592 /* cog-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5015AB60AE003E1592 /* cog-white@2x.png */; };
 		374D3D5515AB60AE003E1592 /* cog.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5115AB60AE003E1592 /* cog.png */; };
 		374D3D5615AB60AE003E1592 /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D3D5215AB60AE003E1592 /* cog@2x.png */; };
+		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFD167D47FD00320495 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1002167D47FD00320495 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -240,6 +245,17 @@
 		374D3D5015AB60AE003E1592 /* cog-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog-white@2x.png"; sourceTree = "<group>"; };
 		374D3D5115AB60AE003E1592 /* cog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cog.png; sourceTree = "<group>"; };
 		374D3D5215AB60AE003E1592 /* cog@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cog@2x.png"; sourceTree = "<group>"; };
+		375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
+		375A0FFA167D47FD00320495 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
+		375A0FFB167D47FD00320495 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
+		375A0FFC167D47FD00320495 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPILogin.h; sourceTree = "<group>"; };
+		375A0FFD167D47FD00320495 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPILogin.m; sourceTree = "<group>"; };
+		375A0FFE167D47FD00320495 /* PocketAPIOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPIOperation.h; sourceTree = "<group>"; };
+		375A0FFF167D47FD00320495 /* PocketAPIOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPIOperation.m; sourceTree = "<group>"; };
+		375A1000167D47FD00320495 /* PocketAPITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPITypes.h; sourceTree = "<group>"; };
+		375A1001167D47FD00320495 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		375A1002167D47FD00320495 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
+		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -413,6 +429,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				375A1009167D4B3100320495 /* Security.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
@@ -435,6 +452,7 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				375A0FF8167D47FD00320495 /* Pocket SDK */,
 				378A24EC167D041E00FB07EF /* EGOCache */,
 				37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */,
 				37800E4D162CF1A2009FCB17 /* reachability */,
@@ -589,6 +607,24 @@
 			);
 			name = WBNoticeView;
 			path = Vendor/WBNoticeView;
+			sourceTree = "<group>";
+		};
+		375A0FF8167D47FD00320495 /* Pocket SDK */ = {
+			isa = PBXGroup;
+			children = (
+				375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */,
+				375A0FFA167D47FD00320495 /* PocketAPI.h */,
+				375A0FFB167D47FD00320495 /* PocketAPI.m */,
+				375A0FFC167D47FD00320495 /* PocketAPILogin.h */,
+				375A0FFD167D47FD00320495 /* PocketAPILogin.m */,
+				375A0FFE167D47FD00320495 /* PocketAPIOperation.h */,
+				375A0FFF167D47FD00320495 /* PocketAPIOperation.m */,
+				375A1000167D47FD00320495 /* PocketAPITypes.h */,
+				375A1001167D47FD00320495 /* SFHFKeychainUtils.h */,
+				375A1002167D47FD00320495 /* SFHFKeychainUtils.m */,
+			);
+			name = "Pocket SDK";
+			path = "Vendor/Pocket SDK";
 			sourceTree = "<group>";
 		};
 		3777C97716798DC50046D4EB /* TSMiniWebBrowser */ = {
@@ -756,6 +792,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				375A1008167D4B3100320495 /* Security.framework */,
 				37247FEE163303CF00417E65 /* NSString+URLEncoding.h */,
 				37247FEF163303CF00417E65 /* NSString+URLEncoding.m */,
 				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
@@ -1117,6 +1154,10 @@
 				3777C98816798DC50046D4EB /* TSMiniWebBrowser.m in Sources */,
 				378A24F0167D041E00FB07EF /* EGOCache.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
+				375A1003167D47FD00320495 /* PocketAPI.m in Sources */,
+				375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */,
+				375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */,
+				375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

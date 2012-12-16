@@ -13,6 +13,7 @@
 #import "NSString+URLEncoding.h"
 #import "WBSuccessNoticeView.h"
 #import "TSMiniWebBrowser.h"
+#import "PocketAPI.h"
 
 @interface BookmarkViewController ()
 
@@ -141,6 +142,10 @@
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
         UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Readability" action:@selector(readLater:)];
+        [items addObject:readLaterMenuItem];
+    }
+    else if (readLater.integerValue == READLATER_POCKET) {
+        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Pocket" action:@selector(readLater:)];
         [items addObject:readLaterMenuItem];
     }
 
@@ -567,10 +572,20 @@
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
         [[UIApplication sharedApplication] openURL:newURL];
     }
-    else {
+    else if (readLater.integerValue == READLATER_READABILITY) {
         NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
         [[UIApplication sharedApplication] openURL:newURL];
+    }
+    else {
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+        [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:self.bookmark[@"url"]] withTitle:self.bookmark[@"title"] handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+            if (!error) {
+                AppDelegate *delegate = [AppDelegate sharedDelegate];
+                delegate.bookmarksUpdated = @(YES);
+                delegate.bookmarksUpdatedMessage = @"Bookmark sent to Pocket.";
+            }
+        }];
     }
 }
 

@@ -17,7 +17,8 @@ enum browsers {
 enum readlaterservices {
     READLATER_NONE,
     READLATER_INSTAPAPER,
-    READLATER_READABILITY
+    READLATER_READABILITY,
+    READLATER_POCKET
 };
 
 enum bookmarkupdateevents {
