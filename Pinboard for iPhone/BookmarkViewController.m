@@ -546,8 +546,7 @@
         view = self.navigationController.navigationBar;
     }
 
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:NSLocalizedString(@"Title copied to clipboard.", nil)];
-    [notice show];
+    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"URL copied to clipboard.", nil)];
 
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
@@ -562,8 +561,7 @@
         view = self.navigationController.navigationBar;
     }
 
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:NSLocalizedString(@"URL copied to clipboard.", nil)];
-    [notice show];
+    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"URL copied to clipboard.", nil)];
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }

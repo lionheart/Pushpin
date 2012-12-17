@@ -18,6 +18,7 @@
 #import "TestFlight.h"
 #import "PocketAPI.h"
 #import "ZAActivityBar.h"
+#import "HTMLParser.h"
 
 @implementation AppDelegate
 
@@ -454,14 +455,14 @@
                                                    if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                                                        NSLog(@"updating!");
                                                        params = @{
-                                                       @"url": element[@"href"],
-                                                       @"title": element[@"description"],
-                                                       @"description": element[@"extended"],
-                                                       @"meta": element[@"meta"],
-                                                       @"hash": element[@"hash"],
-                                                       @"tags": element[@"tags"],
-                                                       @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                                       @"private": @([element[@"shared"] isEqualToString:@"no"])
+                                                           @"url": element[@"href"],
+                                                           @"title": element[@"description"],
+                                                           @"description": element[@"extended"],
+                                                           @"meta": element[@"meta"],
+                                                           @"hash": element[@"hash"],
+                                                           @"tags": element[@"tags"],
+                                                           @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                                           @"private": @([element[@"shared"] isEqualToString:@"no"])
                                                        };
                                                        
                                                        [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
@@ -470,15 +471,15 @@
                                                }
                                                else {
                                                    params = @{
-                                                   @"url": element[@"href"],
-                                                   @"title": element[@"description"],
-                                                   @"description": element[@"extended"],
-                                                   @"meta": element[@"meta"],
-                                                   @"hash": element[@"hash"],
-                                                   @"tags": element[@"tags"],
-                                                   @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                                   @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                                                   @"created_at": [self.dateFormatter dateFromString:element[@"time"]]
+                                                       @"url": element[@"href"],
+                                                       @"title": element[@"description"],
+                                                       @"description": element[@"extended"],
+                                                       @"meta": element[@"meta"],
+                                                       @"hash": element[@"hash"],
+                                                       @"tags": element[@"tags"],
+                                                       @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                                       @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                                                       @"created_at": [self.dateFormatter dateFromString:element[@"time"]]
                                                    };
                                                    
                                                    [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
@@ -499,7 +500,7 @@
                                                    tagIdNumber = [tags objectForKey:tagName];
                                                    if (!tagIdNumber) {
                                                        [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                                       
+
                                                        results = [db executeQuery:@"SELECT last_insert_rowid();"];
                                                        [results next];
                                                        tagIdNumber = @([results intForColumnIndex:0]);
@@ -592,6 +593,39 @@
     
     // Display the indicator as long as our static counter is > 0.
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
+}
+
+- (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self setNetworkActivityIndicatorVisible:YES];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [self setNetworkActivityIndicatorVisible:NO];
+                               
+                               if (!error) {
+                                   HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
+                                   NSString *description = @"";
+
+                                   if (!error) {
+                                       HTMLNode *root = [parser head];
+                                       HTMLNode *titleTag = [root findChildTag:@"title"];
+                                       NSArray *metaTags = [root findChildTags:@"meta"];
+                                       for (HTMLNode *tag in metaTags) {
+                                           if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
+                                               description = [tag getAttributeNamed:@"content"];
+                                           }
+                                       }
+                                       
+                                       if (titleTag != nil) {
+                                           callback(titleTag.contents, description);
+                                       }
+                                       else {
+                                           callback(@"", description);
+                                       }
+                                   }
+                               }
+                           }];
 }
 
 #pragma mark - Timer

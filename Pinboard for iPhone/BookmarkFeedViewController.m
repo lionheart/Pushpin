@@ -10,7 +10,9 @@
 #import "NSAttributedString+Attributes.h"
 #import "AppDelegate.h"
 #import "BookmarkCell.h"
+#import "TSMiniWebBrowser.h"
 #import "WBSuccessNoticeView.h"
+#import "ZAActivityBar.h"
 
 @interface BookmarkFeedViewController ()
 
@@ -241,18 +243,12 @@
     self.bookmark = self.bookmarks[indexPath.row];
     
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_WEBVIEW: {
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-            [self.webView loadRequest:request];
-            self.bookmarkDetailViewController = [[UIViewController alloc] init];
-            self.bookmarkDetailViewController.title = self.bookmark[@"title"];
-            self.webView.frame = self.bookmarkDetailViewController.view.frame;
-            self.bookmarkDetailViewController.view = self.webView;
-            self.bookmarkDetailViewController.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:self.bookmarkDetailViewController animated:YES];
             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+            TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:self.bookmark[@"url"]]];
+            webBrowser.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:webBrowser animated:YES];
             break;
         }
             
@@ -309,8 +305,7 @@
 }
 
 - (void)copyTitle:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"Title copied to clipboard.", nil)];
-    [notice show];
+    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"Title copied to clipboard.", nil)];
 
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"title"]];
@@ -318,8 +313,7 @@
 }
 
 - (void)copyURL:(id)sender {
-    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:self.navigationController.navigationBar title:NSLocalizedString(@"URL copied to clipboard.", nil)];
-    [notice show];
+    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"URL copied to clipboard.", nil)];
 
     NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     [[UIPasteboard generalPasteboard] setString:bookmark[@"url"]];
