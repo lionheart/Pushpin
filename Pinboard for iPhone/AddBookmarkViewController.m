@@ -29,6 +29,7 @@
 @synthesize tagCompletions;
 @synthesize currentTextField;
 @synthesize callback;
+@synthesize loadingTitle;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -66,6 +67,7 @@
         self.tagTextField.text = @"";
         
         self.markAsRead = @(NO);
+        self.loadingTitle = NO;
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
         
         self.callback = ^(void) {};
@@ -79,6 +81,8 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
 }
 
 #pragma mark - Table view data source
@@ -140,7 +144,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     self.currentTextField = textField;
-    
+
     if (self.currentTextField == self.tagTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
@@ -222,7 +226,7 @@
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
                     
                     for (int i=0; i<oldTagCompletions.count; i++) {
                         if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
@@ -231,7 +235,7 @@
                     }
                     
                     self.tagCompletions = newTagCompletions;
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
                     
                     [self.tableView endUpdates];
                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -281,6 +285,7 @@
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
+    cell.textLabel.enabled = YES;
     
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
@@ -291,23 +296,41 @@
 
         switch (indexPath.section) {
             case 0:
-                self.urlTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                self.urlTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
                 [cell.contentView addSubview:self.urlTextField];
                 break;
                 
             case 1:
-                self.titleTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
-                [cell.contentView addSubview:self.titleTextField];
+                if (self.loadingTitle) {
+                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    [activity startAnimating];
+                    cell.accessoryView = activity;
+                    cell.textLabel.text = @"Loading";
+                    cell.textLabel.enabled = NO;
+                }
+                else {
+                    self.titleTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                    [cell.contentView addSubview:self.titleTextField];
+                }
                 break;
                 
             case 2:
-                self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
-                [cell.contentView addSubview:self.descriptionTextField];
+                if (self.loadingTitle) {
+                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    [activity startAnimating];
+                    cell.accessoryView = activity;
+                    cell.textLabel.text = @"Loading";
+                    cell.textLabel.enabled = NO;
+                }
+                else {
+                    self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                    [cell.contentView addSubview:self.descriptionTextField];
+                }
                 break;
                 
             case 3:
                 if (indexPath.row == 0) {
-                    self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 300, 31);
+                    self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
                     [cell.contentView addSubview:self.tagTextField];
                 }
                 else {
@@ -371,8 +394,33 @@
     [self.tableView reloadData];
 }
 
+- (void)prefillTitle {
+    NSURL *url = [NSURL URLWithString:self.urlTextField.text];
+    if (!self.loadingTitle
+        && (self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
+        && [[UIApplication sharedApplication] canOpenURL:url]
+        && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
+        [self.urlTextField resignFirstResponder];
+        self.loadingTitle = YES;
+        
+        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:0 inSection:2]];
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+        [[AppDelegate sharedDelegate] retrievePageTitle:url
+                                               callback:^(NSString *title, NSString *description) {
+                                                   self.titleTextField.text = title;
+                                                   self.descriptionTextField.text = description;
+                                               
+                                                   self.loadingTitle = NO;
+                                                   [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                                               }];
+    }
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    if (textField == self.urlTextField) {
+        [self prefillTitle];
+    }
     return YES;
 }
 

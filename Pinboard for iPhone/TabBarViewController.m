@@ -93,30 +93,14 @@
     if ([results intForColumnIndex:0] == 0) {
         NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
-            // Grab the page title
-            NSURLRequest *request = [NSURLRequest requestWithURL:candidateURL];
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+            [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
+                                                   callback:^(NSString *title, NSString *description) {
+                                                       self.bookmarkTitle = title;
 
-                                       if (!error) {
-                                           HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
-
-                                           if (!error) {
-                                               HTMLNode *root = [parser head];
-                                               HTMLNode *titleTag = [root findChildTag:@"title"];
-                                               if (titleTag != nil) {
-                                                   self.bookmarkTitle = titleTag.contents;
-                                               }
-
-                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
-                                               [alert show];
-                                               [mixpanel track:@"Prompted to add bookmark from clipboard"];
-                                           }
-                                       }
-                                   }];
+                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
+                                                       [alert show];
+                                                       [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                                   }];
             
         }
     }
@@ -153,6 +137,7 @@
     if (isUpdate.boolValue) {
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
         addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     }
     else {
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
@@ -171,10 +156,6 @@
         addBookmarkViewController.urlTextField.enabled = NO;
     }
 
-    if (isUpdate != nil && isUpdate) {
-        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
-    }
-    
     if (bookmark[@"tags"]) {
         addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
     }

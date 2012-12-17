@@ -25,11 +25,13 @@
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
 @property (nonatomic, retain) UITextField *currentTextField;
+@property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)();
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
 
+- (void)prefillTitle;
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)privateSwitchChanged:(id)sender;
 - (void)readSwitchChanged:(id)sender;
