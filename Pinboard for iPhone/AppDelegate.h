@@ -44,6 +44,8 @@ enum bookmarkupdateevents {
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate> {
     BOOL didLaunchWithURL;
+    BOOL timerPaused;
+    NSInteger secondsLeft;
 }
 
 @property (nonatomic, retain) TabBarViewController *tabBarViewController;
@@ -61,6 +63,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, retain) FMDatabaseQueue *dbQueue;
+@property (nonatomic, retain) NSTimer *refreshTimer;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
@@ -72,6 +75,10 @@ enum bookmarkupdateevents {
 - (void)updateNotes;
 + (NSString *)databasePath;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
+
+- (void)pauseRefreshTimer;
+- (void)resumeRefreshTimer;
+- (void)executeTimer;
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 
