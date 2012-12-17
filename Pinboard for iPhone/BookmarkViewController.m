@@ -857,6 +857,7 @@
         newLineCount++;
     }
     if (![bookmark[@"tags"] isEqualToString:@""]) {
+        #warning XXX Bug being thrown here
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
         tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
     }
