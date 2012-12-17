@@ -69,43 +69,8 @@
         [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
 
         self.delegate = self;
-
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-        [notificationCenter addObserver:self
-                               selector:@selector(pauseRefreshTimer)
-                                   name:@"BookmarksLoading"
-                                 object:nil];
-        
-        [notificationCenter addObserver:self
-                               selector:@selector(resumeRefreshTimer)
-                                   name:@"BookmarksLoaded"
-                                 object:nil];
-
-        self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
     }
     return self;
-}
-
-- (void)resumeRefreshTimer {
-    timerPaused = NO;
-}
-
-- (void)pauseRefreshTimer {
-    timerPaused = YES;
-}
-
-- (void)executeTimer {
-    if (!timerPaused) {
-        if (secondsLeft == 0) {
-            secondsLeft = 10;
-            [[AppDelegate sharedDelegate] updateBookmarks];
-        }
-        else {
-            secondsLeft--;
-        }
-    }
 }
 
 - (void)closeModal:(UIViewController *)sender {

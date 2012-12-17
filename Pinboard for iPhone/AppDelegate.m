@@ -148,9 +148,13 @@
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
 
+    secondsLeft = 0;
+    timerPaused = NO;
+    self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
+
     [reach startNotifier];
     [self migrateDatabase];
-    [self updateBookmarks];
     
     didLaunchWithURL = NO;
     return YES;
@@ -525,7 +529,7 @@
 
 - (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
     if (!self.connectionAvailable.boolValue) {
-        // TODO
+        #warning FIX
         return;
     }
 
@@ -533,20 +537,26 @@
         return;
     }
     
+    [self pauseRefreshTimer];
+
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/update?auth_token=%@&format=json", [self token]]]];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    #warning Handle this appropriately
                                    if (!data) {
+                                       [self resumeRefreshTimer];
                                        return;
                                    }
                                
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    NSDate *updateTime = [self.dateFormatter dateFromString:payload[@"update_time"]];
-                                   
-                                   if (!self.lastUpdated || [self.lastUpdated compare:updateTime] == NSOrderedAscending) {
+
+                                   if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 60*5) {
                                        [self forceUpdateBookmarks:updateDelegate];
+                                   }
+                                   else {
+                                       [self resumeRefreshTimer];
                                    }
                                }
                            ];
@@ -572,6 +582,31 @@
     
     // Display the indicator as long as our static counter is > 0.
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
+}
+
+#pragma mark - Timer
+
+
+
+- (void)resumeRefreshTimer {
+    timerPaused = NO;
+}
+
+- (void)pauseRefreshTimer {
+    timerPaused = YES;
+}
+
+- (void)executeTimer {
+    if (!timerPaused) {
+        if (secondsLeft == 0) {
+            secondsLeft = 10;
+            NSLog(@"yo!");
+            [self updateBookmarks];
+        }
+        else {
+            secondsLeft--;
+        }
+    }
 }
 
 @end
