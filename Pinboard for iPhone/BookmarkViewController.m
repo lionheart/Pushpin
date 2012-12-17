@@ -364,14 +364,27 @@
 - (void)markBookmarkAsRead:(id)sender {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+
+                               if ([payload[@"posts"] count] == 0) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                    #warning Translate
+                                   [ZAActivityBar showErrorWithStatus:@"Error marking as read."];
+                                   /*
+                                   [delegate.dbQueue inDatabase:^(FMDatabase *db) {
+                                       [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                   }];
+                                    */
+                                   return;
+                               }
+
                                NSDictionary *bookmark = payload[@"posts"][0];
-                               
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    [delegate.dbQueue inDatabase:^(FMDatabase *db) {

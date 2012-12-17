@@ -83,6 +83,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
+    
+    [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:YES];
 }
 
 #pragma mark - Table view data source
@@ -190,6 +192,7 @@
     [super viewDidDisappear:animated];
     self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:NO];
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {

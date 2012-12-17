@@ -34,6 +34,7 @@
 @synthesize bookmarksUpdated;
 @synthesize bookmarksUpdatedMessage;
 @synthesize dbQueue;
+@synthesize addBookmarkViewControllerActive;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -149,6 +150,7 @@
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
+    self.addBookmarkViewControllerActive = NO;
 
     secondsLeft = 0;
     timerPaused = NO;
@@ -441,6 +443,7 @@
                                            [mixpanel.people set:@"Bookmarks" to:@(total)];
                                            for (NSDictionary *element in elements) {
                                                [newBookmarkHashes addObject:element[@"hash"]];
+                                               [oldBookmarkHashes removeObject:element[@"hash"]];
                                                
                                                count++;
                                                
@@ -513,7 +516,10 @@
                                            }
                                            
                                            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-                                           [db executeUpdate:@"DELETE FROM bookmark WHERE hash in (?)" withArgumentsInArray:@[[oldBookmarkHashes componentsJoinedByString:@", "]]];
+                                           
+                                           for (NSString *bookmarkHash in oldBookmarkHashes) {
+                                               [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
+                                           }
                                            
                                            self.bookmarksUpdated = @(YES);
                                            [self resumeRefreshTimer];
