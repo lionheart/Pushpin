@@ -15,6 +15,7 @@
 #import "TSMiniWebBrowser.h"
 #import "PocketAPI.h"
 #import "FMDatabaseQueue.h"
+#import "ZAActivityBar.h"
 
 @interface BookmarkViewController ()
 
@@ -66,8 +67,7 @@
 
                 NSString *message = delegate.bookmarksUpdatedMessage;
                 if (message != nil) {
-                    WBSuccessNoticeView *notice = [WBSuccessNoticeView successNoticeInView:view title:message];
-                    [notice show];
+                    [ZAActivityBar showSuccessWithStatus:message];
                 }
                 
                 [self processBookmarks];

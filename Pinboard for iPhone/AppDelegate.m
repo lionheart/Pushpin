@@ -17,6 +17,7 @@
 #import "Reachability.h"
 #import "TestFlight.h"
 #import "PocketAPI.h"
+#import "ZAActivityBar.h"
 
 @implementation AppDelegate
 
@@ -393,6 +394,10 @@
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+    });
+
     [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
@@ -412,7 +417,7 @@
                                            while ([results next]) {
                                                [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
                                            }
-                                           
+
                                            results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
                                            NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
                                            NSMutableDictionary *bookmarkIds = [[NSMutableDictionary alloc] init];
@@ -433,7 +438,6 @@
                                            NSUInteger total = elements.count;
                                            
                                            [mixpanel.people set:@"Bookmarks" to:@(total)];
-                                           
                                            for (NSDictionary *element in elements) {
                                                [newBookmarkHashes addObject:element[@"hash"]];
                                                
@@ -516,7 +520,18 @@
                                            }
                                            
                                            self.bookmarksUpdated = @(YES);
+                                           [self resumeRefreshTimer];
+
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               [ZAActivityBar dismiss];
+                                           });
                                        }];
+                                   });
+                               }
+                               else {
+                                   [self resumeRefreshTimer];
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       [ZAActivityBar dismiss];
                                    });
                                }
                            }];

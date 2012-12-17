@@ -54,6 +54,7 @@
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1002167D47FD00320495 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
+		375A1015167E967D00320495 /* ZAActivityBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1014167E967D00320495 /* ZAActivityBar.m */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -256,6 +257,8 @@
 		375A1001167D47FD00320495 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		375A1002167D47FD00320495 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		375A1013167E967D00320495 /* ZAActivityBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZAActivityBar.h; sourceTree = "<group>"; };
+		375A1014167E967D00320495 /* ZAActivityBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZAActivityBar.m; sourceTree = "<group>"; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -452,6 +455,7 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				375A1012167E967D00320495 /* ZAActivityBar */,
 				375A0FF8167D47FD00320495 /* Pocket SDK */,
 				378A24EC167D041E00FB07EF /* EGOCache */,
 				37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */,
@@ -625,6 +629,16 @@
 			);
 			name = "Pocket SDK";
 			path = "Vendor/Pocket SDK";
+			sourceTree = "<group>";
+		};
+		375A1012167E967D00320495 /* ZAActivityBar */ = {
+			isa = PBXGroup;
+			children = (
+				375A1013167E967D00320495 /* ZAActivityBar.h */,
+				375A1014167E967D00320495 /* ZAActivityBar.m */,
+			);
+			name = ZAActivityBar;
+			path = Vendor/ZAActivityBar;
 			sourceTree = "<group>";
 		};
 		3777C97716798DC50046D4EB /* TSMiniWebBrowser */ = {
@@ -1158,6 +1172,7 @@
 				375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */,
 				375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */,
 				375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */,
+				375A1015167E967D00320495 /* ZAActivityBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
