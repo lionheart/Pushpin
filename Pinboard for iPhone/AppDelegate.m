@@ -512,12 +512,7 @@
                                            }
                                            
                                            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-                                           
-                                           for (NSString *hash in oldBookmarkHashes) {
-                                               if (![newBookmarkHashes containsObject:hash]) {
-                                                   [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
-                                               }
-                                           }
+                                           [db executeUpdate:@"DELETE FROM bookmark WHERE hash in (?)" withArgumentsInArray:@[[oldBookmarkHashes componentsJoinedByString:@", "]]];
                                            
                                            self.bookmarksUpdated = @(YES);
                                            [self resumeRefreshTimer];
@@ -567,7 +562,7 @@
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    NSDate *updateTime = [self.dateFormatter dateFromString:payload[@"update_time"]];
 
-                                   if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 60*5) {
+                                   if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 300) {
                                        [self forceUpdateBookmarks:updateDelegate];
                                    }
                                    else {
@@ -601,8 +596,6 @@
 
 #pragma mark - Timer
 
-
-
 - (void)resumeRefreshTimer {
     timerPaused = NO;
 }
@@ -615,7 +608,6 @@
     if (!timerPaused) {
         if (secondsLeft == 0) {
             secondsLeft = 10;
-            NSLog(@"yo!");
             [self updateBookmarks];
         }
         else {
