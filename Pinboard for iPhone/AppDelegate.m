@@ -442,7 +442,6 @@
                                            
                                            [mixpanel.people set:@"Bookmarks" to:@(total)];
                                            for (NSDictionary *element in elements) {
-                                               NSLog(@"%@", element);
                                                [newBookmarkHashes addObject:element[@"hash"]];
                                                [oldBookmarkHashes removeObject:element[@"hash"]];
                                                

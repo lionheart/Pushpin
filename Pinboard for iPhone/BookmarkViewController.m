@@ -245,42 +245,52 @@
 }
 
 - (void)processBookmarks {
-    self.timerPaused = true;
-    
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate.dbQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.timerPaused = true;
         
-        [self.bookmarks removeAllObjects];
-        [self.strings removeAllObjects];
-        [self.heights removeAllObjects];
-        
-        while ([results next]) {
-            NSString *title = [results stringForColumn:@"title"];
-            if ([title isEqualToString:@""]) {
-                title = @"untitled";
-            }
-            NSDictionary *bookmark = @{
-                @"title": title,
-                @"description": [results stringForColumn:@"description"],
-                @"unread": [results objectForColumnName:@"unread"],
-                @"url": [results stringForColumn:@"url"],
-                @"private": [results objectForColumnName:@"private"],
-                @"tags": [results stringForColumn:@"tags"],
-            };
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
             
-            [self.bookmarks addObject:bookmark];
-            [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-            [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
-        }
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-                self.timerPaused = false;
+            [self.tableView beginUpdates];
+            NSInteger start = [self.bookmarks count] - 1;
+            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+            NSInteger index = 0;
+
+            while ([results next]) {
+                if (index > start) {
+                    NSString *title = [results stringForColumn:@"title"];
+                    
+                    if ([title isEqualToString:@""]) {
+                        title = @"untitled";
+                    }
+                    NSDictionary *bookmark = @{
+                        @"title": title,
+                        @"description": [results stringForColumn:@"description"],
+                        @"unread": [results objectForColumnName:@"unread"],
+                        @"url": [results stringForColumn:@"url"],
+                        @"private": [results objectForColumnName:@"private"],
+                        @"tags": [results stringForColumn:@"tags"],
+                    };
+                    
+                    [self.bookmarks addObject:bookmark];
+                    [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+                    [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+                index++;
+            }
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [self.tableView endUpdates];
+                    self.timerPaused = false;
+                });
             });
-        });
-    }];
+        }];
+    });
 }
 
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters {
@@ -633,7 +643,7 @@
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
+
     NSAttributedString *string;
     NSDictionary *bookmark;
 
@@ -684,7 +694,7 @@
     if (tableView != self.tableView) {
         return;
     }
-    if (indexPath.row == self.limit.integerValue - 5) {
+    if (indexPath.row == self.limit.integerValue - 25) {
         self.limit = @(self.limit.integerValue + 50);
         self.queryParameters[@"limit"] = limit;
 
