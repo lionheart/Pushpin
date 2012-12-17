@@ -55,6 +55,7 @@
 		375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1002167D47FD00320495 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
 		375A1015167E967D00320495 /* ZAActivityBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1014167E967D00320495 /* ZAActivityBar.m */; };
+		375A1019167EB89E00320495 /* ZAActivityBar.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 375A1018167EB89E00320495 /* ZAActivityBar.bundle */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -260,6 +261,7 @@
 		375A1013167E967D00320495 /* ZAActivityBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZAActivityBar.h; sourceTree = "<group>"; };
 		375A1014167E967D00320495 /* ZAActivityBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZAActivityBar.m; sourceTree = "<group>"; };
 		375A1017167EA2FD00320495 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		375A1018167EB89E00320495 /* ZAActivityBar.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZAActivityBar.bundle; sourceTree = "<group>"; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -635,6 +637,7 @@
 		375A1012167E967D00320495 /* ZAActivityBar */ = {
 			isa = PBXGroup;
 			children = (
+				375A1018167EB89E00320495 /* ZAActivityBar.bundle */,
 				375A1013167E967D00320495 /* ZAActivityBar.h */,
 				375A1014167E967D00320495 /* ZAActivityBar.m */,
 			);
@@ -1092,6 +1095,7 @@
 				37F5CA4F1679915700327AAC /* uv_x.png in Resources */,
 				37F5CA501679915700327AAC /* uv_x@2x.png in Resources */,
 				378A24F1167D041E00FB07EF /* README.mdown in Resources */,
+				375A1019167EB89E00320495 /* ZAActivityBar.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

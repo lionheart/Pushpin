@@ -64,6 +64,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, retain) FMDatabaseQueue *dbQueue;
 @property (nonatomic, retain) NSTimer *refreshTimer;
+@property (nonatomic) BOOL *addBookmarkViewControllerActive;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
