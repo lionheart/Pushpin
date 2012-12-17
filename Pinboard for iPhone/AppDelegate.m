@@ -119,18 +119,23 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
-
+    
+    secondsLeft = 10;
     if ([self token]) {
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
         self.tabBarViewController = [[TabBarViewController alloc] init];
         [self.window setRootViewController:self.tabBarViewController];
+        [self pauseRefreshTimer];
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
         [self.window setRootViewController:loginViewController];
+        [self resumeRefreshTimer];
     }
+    self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
 
     [self.window makeKeyAndVisible];
     
@@ -151,11 +156,6 @@
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
     self.addBookmarkViewControllerActive = NO;
-
-    secondsLeft = 0;
-    timerPaused = NO;
-    self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
 
     [reach startNotifier];
     [self migrateDatabase];
@@ -393,19 +393,19 @@
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"BookmarksLoading" object:nil];
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
-    });
+    if (self.lastUpdated != nil) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+        });
+    }
 
     [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self setLastUpdated:[NSDate date]];
                                [self setNetworkActivityIndicatorVisible:NO];
                                if (error.code != NSURLErrorUserCancelledAuthentication && data != nil) {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -442,6 +442,7 @@
                                            
                                            [mixpanel.people set:@"Bookmarks" to:@(total)];
                                            for (NSDictionary *element in elements) {
+                                               NSLog(@"%@", element);
                                                [newBookmarkHashes addObject:element[@"hash"]];
                                                [oldBookmarkHashes removeObject:element[@"hash"]];
                                                
@@ -520,10 +521,10 @@
                                            for (NSString *bookmarkHash in oldBookmarkHashes) {
                                                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
                                            }
-                                           
+
                                            self.bookmarksUpdated = @(YES);
                                            [self resumeRefreshTimer];
-
+                                           [self setLastUpdated:[NSDate date]];
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                [ZAActivityBar dismiss];
                                            });
