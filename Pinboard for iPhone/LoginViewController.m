@@ -48,6 +48,7 @@
     self.usernameTextField.keyboardType = UIKeyboardTypeAlphabet;
     self.usernameTextField.returnKeyType = UIReturnKeyDone;
     self.usernameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
+    self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.usernameTextField.placeholder = NSLocalizedString(@"Username", nil);
     [self.view addSubview:self.usernameTextField];
@@ -180,6 +181,7 @@
                                    self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                    self.progressView.hidden = NO;
                                    [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
+                                   [[AppDelegate sharedDelegate] resumeRefreshTimer];
                                    
                                    NSString *username = [[AppDelegate sharedDelegate] username];
                                    [mixpanel identify:username];

@@ -69,7 +69,7 @@
                 if (message != nil) {
                     [ZAActivityBar showSuccessWithStatus:message];
                 }
-                
+
                 [self processBookmarks];
                 delegate.bookmarksUpdated = @(NO);
                 delegate.bookmarksUpdatedMessage = nil;
@@ -161,7 +161,7 @@
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
 
-    self.timerPaused = false;
+    self.timerPaused = NO;
     self.secondsLeft = 1;
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
@@ -246,42 +246,41 @@
 
 - (void)processBookmarks {
     self.timerPaused = true;
-
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-
-    [self.bookmarks removeAllObjects];
-    [self.strings removeAllObjects];
-    [self.heights removeAllObjects];
-
-    while ([results next]) {
-        NSString *title = [results stringForColumn:@"title"];
-        if ([title isEqualToString:@""]) {
-            title = @"untitled";
-        }
-        NSDictionary *bookmark = @{
-            @"title": title,
-            @"description": [results stringForColumn:@"description"],
-            @"unread": [results objectForColumnName:@"unread"],
-            @"url": [results stringForColumn:@"url"],
-            @"private": [results objectForColumnName:@"private"],
-            @"tags": [results stringForColumn:@"tags"],
-        };
+    
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate.dbQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
         
-        [self.bookmarks addObject:bookmark];
-        [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-        [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
-    }
-
-    [db close];
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-            self.timerPaused = false;
+        [self.bookmarks removeAllObjects];
+        [self.strings removeAllObjects];
+        [self.heights removeAllObjects];
+        
+        while ([results next]) {
+            NSString *title = [results stringForColumn:@"title"];
+            if ([title isEqualToString:@""]) {
+                title = @"untitled";
+            }
+            NSDictionary *bookmark = @{
+                @"title": title,
+                @"description": [results stringForColumn:@"description"],
+                @"unread": [results objectForColumnName:@"unread"],
+                @"url": [results stringForColumn:@"url"],
+                @"private": [results objectForColumnName:@"private"],
+                @"tags": [results stringForColumn:@"tags"],
+            };
+            
+            [self.bookmarks addObject:bookmark];
+            [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+            [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+        }
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+                self.timerPaused = false;
+            });
         });
-    });
+    }];
 }
 
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters {
