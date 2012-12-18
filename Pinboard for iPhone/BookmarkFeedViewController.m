@@ -56,6 +56,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    failureCount = 0;
 
     if (![self becomeFirstResponder]) {
         NSLog(@"Couldn't become first responder ");
@@ -151,6 +153,11 @@
 }
 
 - (void)processBookmarks {
+    if (failureCount > 5) {
+        #warning TODO
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+
     NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL];
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
@@ -158,7 +165,16 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 
-                               if (!error) {
+                               if ([(NSHTTPURLResponse *)response statusCode] == 403 && [self.sourceURL.absoluteString hasSuffix:@"network/"]) {
+                                   [[AppDelegate sharedDelegate] updateFeedToken:^{
+                                       NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                                       NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                                       self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];
+                                       failureCount++;
+                                       [self processBookmarks];
+                                   }];
+                               }
+                               else if (!error) {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
                                    [self.bookmarks removeAllObjects];

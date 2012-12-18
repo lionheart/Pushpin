@@ -247,38 +247,45 @@
 - (void)processBookmarks {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.timerPaused = true;
-        
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-        
-        [self.tableView beginUpdates];
-        NSInteger start = [self.bookmarks count] - 1;
+
+        NSMutableArray *newBookmarks = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newStrings = [NSMutableArray array];
+
+        NSMutableArray *oldBookmarks = [self.bookmarks copy];
+
         NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         NSInteger index = 0;
 
         while ([results next]) {
-            if (index > start) {
-                NSString *title = [results stringForColumn:@"title"];
-                
-                if ([title isEqualToString:@""]) {
-                    title = @"untitled";
-                }
-                NSDictionary *bookmark = @{
-                    @"title": title,
-                    @"description": [results stringForColumn:@"description"],
-                    @"unread": [results objectForColumnName:@"unread"],
-                    @"url": [results stringForColumn:@"url"],
-                    @"private": [results objectForColumnName:@"private"],
-                    @"tags": [results stringForColumn:@"tags"],
-                };
+            NSString *title = [results stringForColumn:@"title"];
+            
+            if ([title isEqualToString:@""]) {
+                title = @"untitled";
+            }
+            NSDictionary *bookmark = @{
+                @"title": title,
+                @"description": [results stringForColumn:@"description"],
+                @"unread": [results objectForColumnName:@"unread"],
+                @"url": [results stringForColumn:@"url"],
+                @"private": [results objectForColumnName:@"private"],
+                @"tags": [results stringForColumn:@"tags"],
+            };
+            
+            [newBookmarks addObject:bookmark];
+            [newHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+            [newStrings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+
+            if (![oldBookmarks containsObject:bookmark]) {
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 
                 [self.bookmarks addObject:bookmark];
                 [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
                 [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
-
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             index++;
         }
@@ -286,9 +293,27 @@
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView endUpdates];
-                self.timerPaused = false;
+                if (oldBookmarks.count == 0) {
+                    [self.tableView reloadData];
+                }
+                else {
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
+                    
+                    for (int i=0; i<oldBookmarks.count; i++) {
+                        if (![newBookmarks containsObject:oldBookmarks[i]]) {
+                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.bookmarks indexOfObject:oldBookmarks[i]] inSection:0]];
+                        }
+                    }
+
+                    self.bookmarks = newBookmarks;
+                    self.heights = newHeights;
+                    self.strings = newStrings;
+
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
+                    [self.tableView endUpdates];
+                    self.timerPaused = false;
+                }
             });
         });
     });
@@ -796,7 +821,7 @@
                                    
                                    [db beginTransaction];
                                    [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                   [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                                   [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
                                    [db commit];
                                    [db close];
                                    

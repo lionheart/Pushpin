@@ -30,6 +30,7 @@
 @synthesize currentTextField;
 @synthesize callback;
 @synthesize loadingTitle;
+@synthesize previousURLContents;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -42,6 +43,7 @@
         self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.urlTextField.text = @"";
+        self.previousURLContents = @"";
         
         self.descriptionTextField = [[UITextField alloc] init];
         self.descriptionTextField.font = [UIFont systemFontOfSize:16];
@@ -82,7 +84,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     
     [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:YES];
 }
@@ -169,7 +171,7 @@
         insets.bottom = kbSize.height;
         self.tableView.contentInset = insets;
     }
-    
+
     if (self.currentTextField == self.tagTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
@@ -397,22 +399,24 @@
     [self.tableView reloadData];
 }
 
-- (void)prefillTitle {
+- (void)prefillTitle:(NSNotification *)notification {
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
+    BOOL passesLengthTest = notification == nil || self.urlTextField.text.length - self.previousURLContents.length >= 2;
+    self.previousURLContents = self.urlTextField.text;
     if (!self.loadingTitle
-        && (self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
-        && [[UIApplication sharedApplication] canOpenURL:url]
-        && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
+            && (self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
+            && passesLengthTest
+            && [[UIApplication sharedApplication] canOpenURL:url]
+            && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
-        
+
         NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:0 inSection:2]];
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
         [[AppDelegate sharedDelegate] retrievePageTitle:url
                                                callback:^(NSString *title, NSString *description) {
                                                    self.titleTextField.text = title;
                                                    self.descriptionTextField.text = description;
-                                               
                                                    self.loadingTitle = NO;
                                                    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
                                                }];
@@ -422,7 +426,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     if (textField == self.urlTextField) {
-        [self prefillTitle];
+        [self prefillTitle:nil];
     }
     return YES;
 }

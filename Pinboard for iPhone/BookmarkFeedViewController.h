@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 
-@interface BookmarkFeedViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate>
+@interface BookmarkFeedViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate> {
+    NSInteger failureCount;
+}
 
 @property (nonatomic, retain) UIViewController *bookmarkDetailViewController;
 @property (nonatomic, retain) NSDictionary *bookmark;
