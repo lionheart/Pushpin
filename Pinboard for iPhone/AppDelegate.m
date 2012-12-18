@@ -127,12 +127,12 @@
         [mixpanel.people set:@"$username" to:self.username];
         self.tabBarViewController = [[TabBarViewController alloc] init];
         [self.window setRootViewController:self.tabBarViewController];
-        [self pauseRefreshTimer];
+        [self resumeRefreshTimer];
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
         [self.window setRootViewController:loginViewController];
-        [self resumeRefreshTimer];
+        [self pauseRefreshTimer];
     }
     self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
@@ -478,7 +478,7 @@
                                                    };
                                                    
                                                    [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                                                   [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[currentBookmarkId]];
+                                                   [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[currentBookmarkId]];
                                                }
                                            }
                                            else {
@@ -640,6 +640,21 @@
                                            callback(@"", description);
                                        }
                                    }
+                               }
+                           }];
+}
+
+- (void)updateFeedToken:(void (^)())callback {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/secret?auth_token=%@&format=json", [[AppDelegate sharedDelegate] token]]]];
+    [self setNetworkActivityIndicatorVisible:YES];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [self setNetworkActivityIndicatorVisible:NO];
+                               if (!error) {
+                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   [self setFeedToken:payload[@"result"]];
+                                   callback();
                                }
                            }];
 }

@@ -77,6 +77,7 @@ enum bookmarkupdateevents {
 + (NSString *)databasePath;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
+- (void)updateFeedToken:(void (^)())callback;
 
 - (void)pauseRefreshTimer;
 - (void)resumeRefreshTimer;

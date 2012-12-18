@@ -18,21 +18,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Grab the feed token if necessary
+
     if (![[AppDelegate sharedDelegate] feedToken]) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/secret?auth_token=%@&format=json", [[AppDelegate sharedDelegate] token]]]];
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                   if (!error) {
-                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       [[AppDelegate sharedDelegate] setFeedToken:payload[@"result"]];
-                                       [self.tableView reloadData];
-                                   }
-                               }];
+        [[AppDelegate sharedDelegate] updateFeedToken:^{
+            [self.tableView reloadData];
+        }];
     }
 }
 
