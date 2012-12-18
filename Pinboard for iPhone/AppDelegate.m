@@ -598,7 +598,6 @@
     else {
         NumberOfCallsToSetVisible--;
     }
-    NSLog(@"calls: %d", NumberOfCallsToSetVisible);
     
     // The assertion helps to find programmer errors in activity indicator management.
     // Since a negative NumberOfCallsToSetVisible is not a fatal error,
