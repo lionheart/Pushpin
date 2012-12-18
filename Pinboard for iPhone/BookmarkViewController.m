@@ -857,7 +857,6 @@
         newLineCount++;
     }
     if (![bookmark[@"tags"] isEqualToString:@""]) {
-        #warning XXX Bug being thrown here
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
         tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
     }
@@ -892,6 +891,7 @@
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
             NSRange range = [bookmark[@"tags"] rangeOfString:tag];
+            #warning BUG!
             [links addObject:@{@"url": [NSURL URLWithString:tag], @"location": @(location+range.location), @"length": @(range.length)}];
         }
     }
