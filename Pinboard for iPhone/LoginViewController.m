@@ -173,7 +173,7 @@
                                        self.textView.text = NSLocalizedString(@"Login Instructions", nil);
                                    }
                                    else {
-                                       #warning Bug being thrown here
+                                       #warning Crash happens here!!!
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
                                        [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
