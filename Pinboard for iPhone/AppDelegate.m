@@ -369,23 +369,28 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [self setNetworkActivityIndicatorVisible:NO];
                                dispatch_async(dispatch_get_current_queue(), ^{
-                                   [self.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                                       NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   [db beginTransaction];
 
-                                       for (id element in elements) {
-                                           NSDictionary *params = @{
-                                               @"remote_id": element[@"id"],
-                                               @"title": element[@"title"],
-                                               @"length": element[@"length"],
-                                               @"hash": element[@"hash"],
-                                               @"text": element[@"text"],
-                                               @"created_at": [self.dateFormatter dateFromString:element[@"created_on"]],
-                                               @"updated_at": [self.dateFormatter dateFromString:element[@"updated_on"]]
-                                           };
-                                           
-                                           [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
-                                       }
-                                   }];
+                                   NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+
+                                   for (id element in elements) {
+                                       NSDictionary *params = @{
+                                           @"remote_id": element[@"id"],
+                                           @"title": element[@"title"],
+                                           @"length": element[@"length"],
+                                           @"hash": element[@"hash"],
+                                           @"text": element[@"text"],
+                                           @"created_at": [self.dateFormatter dateFromString:element[@"created_on"]],
+                                           @"updated_at": [self.dateFormatter dateFromString:element[@"updated_on"]]
+                                       };
+                                       
+                                       [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
+                                   }
+                                   
+                                   [db commit];
+                                   [db close];
                                });
                            }];
 }
@@ -409,70 +414,58 @@
                                [self setNetworkActivityIndicatorVisible:NO];
                                if (error.code != NSURLErrorUserCancelledAuthentication && data != nil) {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       [self.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                                           [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
+                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                       [db open];
+                                       [db beginTransaction];
 
-                                           NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                           FMResultSet *results;
+                                       db.logsErrors = YES;
+                                       [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
+
+                                       NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                       FMResultSet *results;
+                                       
+                                       results = [db executeQuery:@"SELECT * FROM tag"];
+                                       NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
+                                       while ([results next]) {
+                                           [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
+                                       }
+
+                                       results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
+                                       NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
+                                       NSMutableDictionary *bookmarkIds = [[NSMutableDictionary alloc] init];
+                                       NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
+                                       while ([results next]) {
+                                           [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
+                                           [bookmarks setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
+                                           [bookmarkIds setObject:[results stringForColumn:@"id"] forKey:[results stringForColumn:@"hash"]];
+                                       }
+                                       
+                                       NSMutableArray *newBookmarkHashes = [[NSMutableArray alloc] init];
+
+                                       NSString *bookmarkMeta;
+                                       NSNumber *tagIdNumber;
+                                       NSNumber *currentBookmarkId;
+                                       int tag_id;
+                                       NSUInteger count = 0;
+                                       NSUInteger total = elements.count;
+                                       
+                                       [mixpanel.people set:@"Bookmarks" to:@(total)];
+                                       for (NSDictionary *element in elements) {
+                                           [newBookmarkHashes addObject:element[@"hash"]];
+                                           [oldBookmarkHashes removeObject:element[@"hash"]];
                                            
-                                           results = [db executeQuery:@"SELECT * FROM tag"];
-                                           NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
-                                           while ([results next]) {
-                                               [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
+                                           count++;
+                                           
+                                           if (updateDelegate) {
+                                               [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
                                            }
-
-                                           results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
-                                           NSMutableDictionary *bookmarks = [[NSMutableDictionary alloc] init];
-                                           NSMutableDictionary *bookmarkIds = [[NSMutableDictionary alloc] init];
-                                           NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
-                                           while ([results next]) {
-                                               [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
-                                               [bookmarks setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
-                                               [bookmarkIds setObject:[results stringForColumn:@"id"] forKey:[results stringForColumn:@"hash"]];
-                                           }
+                                           NSDictionary *params;
                                            
-                                           NSMutableArray *newBookmarkHashes = [[NSMutableArray alloc] init];
-
-                                           NSString *bookmarkMeta;
-                                           NSNumber *tagIdNumber;
-                                           NSNumber *currentBookmarkId;
-                                           int tag_id;
-                                           NSUInteger count = 0;
-                                           NSUInteger total = elements.count;
-                                           
-                                           [mixpanel.people set:@"Bookmarks" to:@(total)];
-                                           for (NSDictionary *element in elements) {
-                                               [newBookmarkHashes addObject:element[@"hash"]];
-                                               [oldBookmarkHashes removeObject:element[@"hash"]];
-                                               
-                                               count++;
-                                               
-                                               if (updateDelegate) {
-                                                   [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
-                                               }
-                                               NSDictionary *params;
-                                               
-                                               bookmarkMeta = bookmarks[element[@"hash"]];
-                                               if (bookmarkMeta) {
-                                                   currentBookmarkId = bookmarkIds[element[@"hash"]];
-                                                   if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
-                                                       NSLog(@"updating!");
-                                                       params = @{
-                                                           @"url": element[@"href"],
-                                                           @"title": element[@"description"],
-                                                           @"description": element[@"extended"],
-                                                           @"meta": element[@"meta"],
-                                                           @"hash": element[@"hash"],
-                                                           @"tags": element[@"tags"],
-                                                           @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                                           @"private": @([element[@"shared"] isEqualToString:@"no"])
-                                                       };
-                                                       
-                                                       [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                                                       [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[currentBookmarkId]];
-                                                   }
-                                               }
-                                               else {
+                                           bookmarkMeta = bookmarks[element[@"hash"]];
+                                           if (bookmarkMeta) {
+                                               currentBookmarkId = bookmarkIds[element[@"hash"]];
+                                               if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
+                                                   NSLog(@"updating!");
                                                    params = @{
                                                        @"url": element[@"href"],
                                                        @"title": element[@"description"],
@@ -481,53 +474,70 @@
                                                        @"hash": element[@"hash"],
                                                        @"tags": element[@"tags"],
                                                        @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                                       @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                                                       @"created_at": [self.dateFormatter dateFromString:element[@"time"]]
+                                                       @"private": @([element[@"shared"] isEqualToString:@"no"])
                                                    };
                                                    
-                                                   [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                                                   
+                                                   [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                                                   [db executeUpdate:@"DELETE FROM taggings WHERE bookmark_id=?" withArgumentsInArray:@[currentBookmarkId]];
+                                               }
+                                           }
+                                           else {
+                                               params = @{
+                                                   @"url": element[@"href"],
+                                                   @"title": element[@"description"],
+                                                   @"description": element[@"extended"],
+                                                   @"meta": element[@"meta"],
+                                                   @"hash": element[@"hash"],
+                                                   @"tags": element[@"tags"],
+                                                   @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                                                   @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                                                   @"created_at": [self.dateFormatter dateFromString:element[@"time"]]
+                                               };
+                                               
+                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                                               
+                                               results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                               [results next];
+                                               currentBookmarkId = @([results intForColumnIndex:0]);
+                                               [bookmarkIds setObject:currentBookmarkId forKey:element[@"hash"]];
+                                               bookmarkMeta = element[@"meta"];
+                                           }
+                                           [bookmarks setObject:bookmarkMeta forKey:element[@"hash"]];
+                                           
+                                           if ([element[@"tags"] length] == 0) {
+                                               continue;
+                                           }
+                                           
+                                           for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
+                                               tagIdNumber = [tags objectForKey:tagName];
+                                               if (!tagIdNumber) {
+                                                   [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+
                                                    results = [db executeQuery:@"SELECT last_insert_rowid();"];
                                                    [results next];
-                                                   currentBookmarkId = @([results intForColumnIndex:0]);
-                                                   [bookmarkIds setObject:currentBookmarkId forKey:element[@"hash"]];
-                                                   bookmarkMeta = element[@"meta"];
-                                               }
-                                               [bookmarks setObject:bookmarkMeta forKey:element[@"hash"]];
-                                               
-                                               if ([element[@"tags"] length] == 0) {
-                                                   continue;
+                                                   tagIdNumber = @([results intForColumnIndex:0]);
+                                                   [tags setObject:tagIdNumber forKey:tagName];
                                                }
                                                
-                                               for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                                                   tagIdNumber = [tags objectForKey:tagName];
-                                                   if (!tagIdNumber) {
-                                                       [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-
-                                                       results = [db executeQuery:@"SELECT last_insert_rowid();"];
-                                                       [results next];
-                                                       tagIdNumber = @([results intForColumnIndex:0]);
-                                                       [tags setObject:tagIdNumber forKey:tagName];
-                                                   }
-                                                   
-                                                   tag_id = [tagIdNumber intValue];
-                                                   [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
-                                               }
+                                               tag_id = [tagIdNumber intValue];
+                                               [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
                                            }
-                                           
-                                           [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-                                           
-                                           for (NSString *bookmarkHash in oldBookmarkHashes) {
-                                               [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
-                                           }
+                                       }
+                                       
+                                       [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
+                                       
+                                       for (NSString *bookmarkHash in oldBookmarkHashes) {
+                                           [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
+                                       }
 
-                                           self.bookmarksUpdated = @(YES);
-                                           [self resumeRefreshTimer];
-                                           [self setLastUpdated:[NSDate date]];
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               [ZAActivityBar dismiss];
-                                           });
-                                       }];
+                                       [db commit];
+
+                                       self.bookmarksUpdated = @(YES);
+                                       [self resumeRefreshTimer];
+                                       [self setLastUpdated:[NSDate date]];
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           [ZAActivityBar dismiss];
+                                       });
                                    });
                                }
                                else {

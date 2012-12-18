@@ -249,47 +249,48 @@
         self.timerPaused = true;
         
         AppDelegate *delegate = [AppDelegate sharedDelegate];
-        [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-            FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-            
-            [self.tableView beginUpdates];
-            NSInteger start = [self.bookmarks count] - 1;
-            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-            NSInteger index = 0;
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+        
+        [self.tableView beginUpdates];
+        NSInteger start = [self.bookmarks count] - 1;
+        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        NSInteger index = 0;
 
-            while ([results next]) {
-                if (index > start) {
-                    NSString *title = [results stringForColumn:@"title"];
-                    
-                    if ([title isEqualToString:@""]) {
-                        title = @"untitled";
-                    }
-                    NSDictionary *bookmark = @{
-                        @"title": title,
-                        @"description": [results stringForColumn:@"description"],
-                        @"unread": [results objectForColumnName:@"unread"],
-                        @"url": [results stringForColumn:@"url"],
-                        @"private": [results objectForColumnName:@"private"],
-                        @"tags": [results stringForColumn:@"tags"],
-                    };
-                    
-                    [self.bookmarks addObject:bookmark];
-                    [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-                    [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
-
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+        while ([results next]) {
+            if (index > start) {
+                NSString *title = [results stringForColumn:@"title"];
+                
+                if ([title isEqualToString:@""]) {
+                    title = @"untitled";
                 }
-                index++;
-            }
+                NSDictionary *bookmark = @{
+                    @"title": title,
+                    @"description": [results stringForColumn:@"description"],
+                    @"unread": [results objectForColumnName:@"unread"],
+                    @"url": [results stringForColumn:@"url"],
+                    @"private": [results objectForColumnName:@"private"],
+                    @"tags": [results stringForColumn:@"tags"],
+                };
+                
+                [self.bookmarks addObject:bookmark];
+                [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
+                [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
 
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [self.tableView endUpdates];
-                    self.timerPaused = false;
-                });
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            }
+            index++;
+        }
+        [db close];
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView endUpdates];
+                self.timerPaused = false;
             });
-        }];
+        });
     });
 }
 
@@ -396,11 +397,13 @@
                                NSDictionary *bookmark = payload[@"posts"][0];
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                   [delegate.dbQueue inDatabase:^(FMDatabase *db) {
-                                       [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                       delegate.bookmarksUpdated = @(YES);
-                                       delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                   }];
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                   [db close];
+
+                                   delegate.bookmarksUpdated = @(YES);
+                                   delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
                                    return;
                                }
                                
@@ -412,18 +415,19 @@
                                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                                           [delegate setNetworkActivityIndicatorVisible:NO];
                                                           if (!error) {
-                                                              [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                                                                  BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                              [db open];
+                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                              [db close];
 
-                                                                  if (success) {
-                                                                      if (self.savedSearchTerm) {
-                                                                          [self updateSearchResults];
-                                                                      }
+                                                              if (success) {
+                                                                  if (self.savedSearchTerm) {
+                                                                      [self updateSearchResults];
                                                                   }
+                                                              }
 
-                                                                  delegate.bookmarksUpdated = @(YES);
-                                                                  delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                                              }];
+                                                              delegate.bookmarksUpdated = @(YES);
+                                                              delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
                                                           }
                                                           else {
                                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -680,13 +684,15 @@
     NSNumber *tag_id;
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[url.absoluteString]];
+    NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+    FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
     [results next];
     tag_id = [results objectForColumnIndex:0];
     [db close];
 
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
-    bookmarkViewController.title = url.absoluteString;
+    bookmarkViewController.title = tag;
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
 }
 
@@ -892,7 +898,7 @@
         for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
             NSRange range = [bookmark[@"tags"] rangeOfString:tag];
             #warning BUG!
-            [links addObject:@{@"url": [NSURL URLWithString:tag], @"location": @(location+range.location), @"length": @(range.length)}];
+            [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
         }
     }
     return links;
