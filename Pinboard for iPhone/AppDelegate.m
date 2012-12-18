@@ -465,7 +465,6 @@
                                            if (bookmarkMeta) {
                                                currentBookmarkId = bookmarkIds[element[@"hash"]];
                                                if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
-                                                   NSLog(@"updating!");
                                                    params = @{
                                                        @"url": element[@"href"],
                                                        @"title": element[@"description"],
