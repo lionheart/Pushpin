@@ -30,6 +30,8 @@
 #import "Mixpanel.h"
 #import "NSData+MPBase64.h"
 
+#import "AppDelegate.h"
+
 #define VERSION @"1.0.3"
 
 #ifndef IFT_ETHER
@@ -641,7 +643,7 @@ static Mixpanel *sharedInstance = nil;
 {
     @synchronized(self) {
         BOOL visible = self.showNetworkActivityIndicator && (self.eventsConnection || self.peopleConnection);
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:visible];
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:visible];
     }
 }
 

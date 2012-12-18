@@ -74,6 +74,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL showActionButton;
 @property (nonatomic, assign) UIBarStyle barStyle;
 @property (nonatomic, strong) NSString *modalDismissButtonTitle;
+@property (nonatomic) NSInteger numLoads;
 
 // Public Methods
 - (id)initWithUrl:(NSURL*)url;
