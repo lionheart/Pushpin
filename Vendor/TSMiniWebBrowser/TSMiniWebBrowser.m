@@ -25,6 +25,7 @@
 //
 
 #import "TSMiniWebBrowser.h"
+#import "AppDelegate.h"
 
 @implementation TSMiniWebBrowser
 
@@ -36,6 +37,7 @@
 @synthesize showActionButton;
 @synthesize barStyle;
 @synthesize modalDismissButtonTitle;
+@synthesize numLoads;
 
 #define kToolBarHeight  44
 #define kTabBarHeight   49
@@ -64,20 +66,22 @@ enum actionSheetButtonIndex {
 -(void)showActivityIndicators {
     [activityIndicator setHidden:NO];
     [activityIndicator startAnimating];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    self.numLoads++;
 }
 
 -(void)hideActivityIndicators {
     [activityIndicator setHidden:YES];
     [activityIndicator stopAnimating];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    self.numLoads--;
 }
 
 -(void) dismissController {
     if ( webView.loading ) {
         [webView stopLoading];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     
     // Notify the delegate
     if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(tsMiniWebBrowserDidDismiss)]) {
@@ -236,7 +240,7 @@ enum actionSheetButtonIndex {
     
     // Init tool bar
     [self initToolBar];
-    
+
     // Init web view
     [self initWebView];
     
@@ -260,6 +264,22 @@ enum actionSheetButtonIndex {
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.numLoads = 0;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+
+    if (webView.loading) {
+        [webView stopLoading];
+    }
+    
+    while (self.numLoads > 0) {
+        [self hideActivityIndicators];
+    }
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -443,7 +463,6 @@ enum actionSheetButtonIndex {
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     [self toggleBackForwardButtons];
-    
     [self showActivityIndicators];
 }
 
@@ -453,9 +472,8 @@ enum actionSheetButtonIndex {
         NSString *pageTitle = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         [self setTitleBarText:pageTitle];
     }
-    
+
     [self hideActivityIndicators];
-    
     [self toggleBackForwardButtons];
 }
 

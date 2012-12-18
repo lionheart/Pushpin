@@ -161,35 +161,38 @@
         [request setValue:authValue forHTTPHeaderField:@"Authorization"];
         self.textView.text = NSLocalizedString(@"Login in Progress", nil);
 
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               if (error.code == NSURLErrorUserCancelledAuthentication) {
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                   [alert show];
-                                   [mixpanel track:@"Failed to log in"];
-                               }
-                               else {
-                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   if (error.code == NSURLErrorUserCancelledAuthentication) {
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                       [alert show];
+                                       [mixpanel track:@"Failed to log in"];
+                                       self.textView.text = NSLocalizedString(@"Login Instructions", nil);
+                                   }
+                                   else {
+                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
-                                   [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
+                                       [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
 
-                                   [self.activityIndicator startAnimating];
-                                   textField.enabled = NO;
-                                   textField.textColor = [UIColor grayColor];
+                                       [self.activityIndicator startAnimating];
+                                       textField.enabled = NO;
+                                       textField.textColor = [UIColor grayColor];
 
-                                   self.textView.text = NSLocalizedString(@"Login Successful", nil);
-                                   self.progressView.hidden = NO;
-                                   [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
-                                   [[AppDelegate sharedDelegate] resumeRefreshTimer];
-                                   
-                                   NSString *username = [[AppDelegate sharedDelegate] username];
-                                   [mixpanel identify:username];
-                                   [mixpanel.people identify:username];
-                                   [mixpanel.people set:@"$created" to:[NSDate date]];
-                                   [mixpanel.people set:@"$username" to:username];
-                                   [mixpanel.people set:@"Browser" to:@"Webview"];
-                               }
+                                       self.textView.text = NSLocalizedString(@"Login Successful", nil);
+                                       self.progressView.hidden = NO;
+                                       [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
+                                       [[AppDelegate sharedDelegate] resumeRefreshTimer];
+                                       
+                                       NSString *username = [[AppDelegate sharedDelegate] username];
+                                       [mixpanel identify:username];
+                                       [mixpanel.people identify:username];
+                                       [mixpanel.people set:@"$created" to:[NSDate date]];
+                                       [mixpanel.people set:@"$username" to:username];
+                                       [mixpanel.people set:@"Browser" to:@"Webview"];
+                                   }
                            }];
     }
 }
