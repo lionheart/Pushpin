@@ -213,37 +213,37 @@
         NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
-            [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
 
-                NSInteger index = 1;
-                while ([result next]) {
-                    [newTagCompletions addObject:[result stringForColumn:@"name"]];
-                    if (![oldTagCompletions containsObject:[result stringForColumn:@"name"]]) {
-                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-                        [self.tagCompletions addObject:[result stringForColumn:@"name"]];
+            NSInteger index = 1;
+            while ([result next]) {
+                [newTagCompletions addObject:[result stringForColumn:@"name"]];
+                if (![oldTagCompletions containsObject:[result stringForColumn:@"name"]]) {
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                    [self.tagCompletions addObject:[result stringForColumn:@"name"]];
+                }
+                index++;
+            }
+            [db close];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                
+                for (int i=0; i<oldTagCompletions.count; i++) {
+                    if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
                     }
-                    index++;
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                    
-                    for (int i=0; i<oldTagCompletions.count; i++) {
-                        if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
-                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
-                        }
-                    }
-                    
-                    self.tagCompletions = newTagCompletions;
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                    
-                    [self.tableView endUpdates];
-                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-                });
-            }];
+                self.tagCompletions = newTagCompletions;
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                
+                [self.tableView endUpdates];
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            });
         });
     }
     else {
@@ -463,33 +463,37 @@
                                    [self.modalDelegate closeModal:self];
                                    
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       [delegate.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                                           FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
-                                           [results next];
-                                           
-                                           NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                          @"url": self.urlTextField.text,
-                                                                          @"title": self.titleTextField.text,
-                                                                          @"description": self.descriptionTextField.text,
-                                                                          @"tags": self.tagTextField.text,
-                                                                          @"unread": @(!self.readSwitch.on),
-                                                                          @"private": @(self.privateSwitch.on)
-                                                                          }];
-                                           
-                                           if ([results intForColumnIndex:0] > 0) {
-                                               [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                               [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                               delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                           }
-                                           else {
-                                               params[@"created_at"] = [NSDate date];
-                                               [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                               [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                               delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Added Message", nil);
-                                           }
-                                           
-                                           delegate.bookmarksUpdated = @(YES);
-                                       }];
+                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                       [db open];
+                                       [db beginTransaction];
+
+                                       FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
+                                       [results next];
+                                       
+                                       NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                      @"url": self.urlTextField.text,
+                                                                      @"title": self.titleTextField.text,
+                                                                      @"description": self.descriptionTextField.text,
+                                                                      @"tags": self.tagTextField.text,
+                                                                      @"unread": @(!self.readSwitch.on),
+                                                                      @"private": @(self.privateSwitch.on)
+                                                                      }];
+                                       
+                                       if ([results intForColumnIndex:0] > 0) {
+                                           [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                           [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
+                                           delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                       }
+                                       else {
+                                           params[@"created_at"] = [NSDate date];
+                                           [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                           [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
+                                           delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Added Message", nil);
+                                       }
+                                       
+                                       delegate.bookmarksUpdated = @(YES);
+                                       [db commit];
+                                       [db close];
                                    });
                                }
                                self.navigationItem.leftBarButtonItem.enabled = YES;
