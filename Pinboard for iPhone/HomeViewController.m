@@ -18,12 +18,17 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[AppDelegate sharedDelegate] pauseRefreshTimer];
 
     if (![[AppDelegate sharedDelegate] feedToken]) {
         [[AppDelegate sharedDelegate] updateFeedToken:^{
             [self.tableView reloadData];
         }];
     }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [[AppDelegate sharedDelegate] resumeRefreshTimer];
 }
 
 #pragma mark - Table view data source
