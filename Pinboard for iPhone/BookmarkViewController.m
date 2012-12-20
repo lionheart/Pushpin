@@ -323,7 +323,7 @@
     // initWithQuery:@"SELECT * FROM bookmark WHERE name = :name LIMIT :limit OFFSET :offset" arguments:@{@"name": @"dan"}
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.limit = @(50);
+        self.limit = @(100);
 
         self.bookmarks = [NSMutableArray array];
         self.parameters = [NSMutableArray array];
@@ -360,7 +360,7 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.limit = @(50);
+        self.limit = @(100);
 
         self.bookmarks = [NSMutableArray array];
         self.parameters = [NSMutableArray array];
@@ -725,8 +725,8 @@
     if (tableView != self.tableView) {
         return;
     }
-    if (indexPath.row == self.limit.integerValue - 25) {
-        self.limit = @(self.limit.integerValue + 50);
+    if (indexPath.row == self.limit.integerValue - 50) {
+        self.limit = @(self.limit.integerValue + 200);
         self.queryParameters[@"limit"] = limit;
 
         [self processBookmarks];
