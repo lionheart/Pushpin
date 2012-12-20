@@ -77,6 +77,11 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[AppDelegate sharedDelegate] pauseRefreshTimer];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.tagCompletions = [NSMutableArray array];
@@ -195,6 +200,7 @@
     self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:NO];
+    [[AppDelegate sharedDelegate] resumeRefreshTimer];
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
