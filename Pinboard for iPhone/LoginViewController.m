@@ -173,7 +173,6 @@
                                        self.textView.text = NSLocalizedString(@"Login Instructions", nil);
                                    }
                                    else {
-                                       #warning Crash happens here!!!
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
                                        [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
@@ -185,7 +184,6 @@
                                        self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                        self.progressView.hidden = NO;
                                        [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
-                                       [[AppDelegate sharedDelegate] resumeRefreshTimer];
                                        
                                        NSString *username = [[AppDelegate sharedDelegate] username];
                                        [mixpanel identify:username];
