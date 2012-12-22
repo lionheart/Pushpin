@@ -1,0 +1,138 @@
+/*
+ Localizable.strings
+ Pinboard for iPhone
+ 
+ Created by Dan Loewenherz on 12/6/12.
+ 
+ */
+
+// Generic
+
+"Default" = "Défaut";
+"Are you sure?" = "Êtes-vous sûr ?";
+"Cancel" = "Annuler";
+"OK" = "OK";
+"Edit" = "Éditer";
+"Done" = "Fait";
+"Lighthearted Disappointment" = "Pfff";
+"Lighthearted Error" = "Hum hum...";
+"Lighthearted No" = "Pas vraiment, non!";
+"Lighthearted Yes" = "D’accord!";
+"Success" = "Ca marche";
+"Delete" = "Effacer";
+"Share" = "Partager";
+"No" = "Non";
+"Yes" = "Oui";
+
+// Tab Bar
+
+"Browse Tab Bar Title" = "Parcourir";
+"Settings Tab Bar Title" = "Paramètres";
+"Add Tab Bar Title" = "Ajouter";
+"Tags Tab Bar Title" = "Étiquettes";
+"Notes Tab Bar Title" = "Notes";
+
+// Add Bookmark
+
+"Update Bookmark Page Title" = "Mettre à jour le signet";
+"Update Navigation Bar" = "Fait";
+"Add Bookmark Page Title" = "Ajouter un signet";
+"Add Navigation Bar" = "Ajouter";
+"Cancel Navigation Bar" = "Annuler";
+"URL in Clipboard Title" = "Ajouter un signet ?";
+"URL in Clipboard Message" = "Nous avons détecté un lien dans votre presse-papier. Voudriez-vous l’ajouter ?";
+
+// Home Page
+
+"All" = "Tout";
+"All Bookmarks" = "Tous les signets";
+"Private" = "Privé";
+"Public" = "Public";
+"Unread" = "Non lu";
+"Untagged" = "Non étiqueté";
+"Bookmarks" = "Signets";
+"Personal" = "Personnel";
+"Community" = "Communité";
+"Fandom" = "Fans";
+"Popular" = "Populaire";
+"Network" = "Réseau";
+
+// Bookmark Page
+
+"Bookmark Deleted Message" = "Votre signet a été supprimé.";
+"Bookmark Updated Message" = "Votre signet a été mis à jour.";
+"Bookmark Added Message" = "Votre signet a été ajouté.";
+"Bookmark Update Error Message" = "Erreur rencontrée durant la mise à jour de votre signet.";
+"Add bookmark title example" = "Le bookmarking pour les introvertis";
+"Add bookmark tag example" = "bookmarking antisocial";
+"Add bookmark missing url or title" = "Vous ne pouvez pas ajouter un signet dépourvu de lien ou de titre.";
+
+"URL" = "Lien";
+"Title" = "Titre";
+"Description" = "Description";
+"Tags" = "Étiquettes";
+"Separate tags with spaces" = "Séparez les étiquettes avec des espaces";
+"Private" = "Privé";
+"Copy URL" = "Copier le lien";
+"Copy Title" = "Copier le titre";
+"Other" = "Autre";
+"Set as private?" = "Mettre en privé ?";
+"Mark as read?" = "Marqué comme lu ?";
+"Copy to mine" = "Copier vers mon compte";
+"Send to Instapaper" = "Envoyer vers Instapaper";
+"Send to Readability" = "Envoyer vers Readability";
+
+"Edit Bookmark" = "Éditer un signet";
+"Delete Bookmark" = "Effacer un signet";
+"Delete Bookmark Warning" = "Êtes-vous sûr de vouloir effacer ce signet ?";
+
+// Login Page
+
+"Username" = "Nom d’utilisateur";
+"Password" = "Mot de passe";
+
+"Login Instructions" = "Entrez vos identifiants Pinboard ci-dessus. Envoyez un email à support@aurora.io si vous rencontrez le moindre problème.";
+"Login in Progress" = "Informations en cours de vérification...";
+"Login Failed" = "Nous n’avons pas pu vous identifier. Assurez-vous que vos informations sont valides.";
+"Login Successful" = "Votre authentification s’est déroulée avec succès. Merci de patienter pendant le téléchargement de vos signets.";
+
+"Google Chrome failed to open" = "On dirait que Google Chrome ne peut pas ouvrir ce lien. Cliquez sur OK pour l’ouvrir avec Safari.";
+
+"Mark as read" = "Marquer comme lu";
+"Open in Safari" = "Ouvrir dans Safari";
+
+// Settings Page
+
+"Private by default?" = "Privé par défaut ?";
+
+"Open links with:" = "Ouvrir les liens avec";
+
+"Install Chrome Title" = "Installez Chrome ?";
+"Install Chrome Description" = "Pour ouvrir des liens dans Google Chrome, vous devez d’abord l’installer. Cliquez sur OK pour continuer.";
+
+"Log out warning title" = "Êtes-vous sûr ?";
+"Log out warning double check" = "Ceci vous déconnectera et effacera les signets enregistrés sur votre appareil.";
+"Log out warning footer" = "Ceci vous déconnectera de l’application et remettra à zéro la base de données de l’application.";
+
+"Log Out" = "Déconnexion";
+"Contact Support" = "Contacter le support technique";
+"Request a feature" = "Demander une fonctionnalité";
+"Report a bug" = "Signaler un problème technique";
+"Email us" = "Envoyer nous un email";
+"Support Email Subject" = "Aidez-moi!";
+"Give Feedback" = "Feedback";
+
+"About Navigation Bar" = "À propos";
+"Read Later" = "Lecture différée";
+"Set Read Later service to:" = "Pour la lecture différée, choisir :";
+"None" = "Rien";
+
+// About Page
+
+"About Page Title" = "À propos";
+"About Page Close" = "Fermer";
+
+// Notices
+
+"URL copied to clipboard." = "Lien copié dans le presse-papier.";
+"Title copied to clipboard." = "Titre copié dans le presse-papier.";
