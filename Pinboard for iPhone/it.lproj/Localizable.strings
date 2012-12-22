@@ -1,0 +1,138 @@
+/*
+ Localizable.strings
+ Pinboard for iPhone
+ 
+ Created by Dan Loewenherz on 12/6/12.
+ 
+ */
+
+// Generic
+
+"Default" = "Default";
+"Are you sure?" = "Sei sicuro?";
+"Cancel" = "Annulla";
+"OK" = "OK";
+"Edit" = "Modifica";
+"Done" = "Fine";
+"Lighthearted Disappointment" = "Accidenti";
+"Lighthearted Error" = "Occhio!";
+"Lighthearted No" = "No";
+"Lighthearted Yes" = "Sì";
+"Success" = "Completato";
+"Delete" = "Elimina";
+"Share" = "Condividi";
+"No" = "No";
+"Yes" = "Sì";
+
+// Tab Bar
+
+"Browse Tab Bar Title" = "Sfoglia";
+"Settings Tab Bar Title" = "Impostazioni";
+"Add Tab Bar Title" = "Aggiungi";
+"Tags Tab Bar Title" = "Tag";
+"Notes Tab Bar Title" = "Note";
+
+// Add Bookmark
+
+"Update Bookmark Page Title" = "Aggiorna preferito";
+"Update Navigation Bar" = "Fine";
+"Add Bookmark Page Title" = "Nuovo preferito";
+"Add Navigation Bar" = "Aggiungi";
+"Cancel Navigation Bar" = "Annulla";
+"URL in Clipboard Title" = "Aggiungere ai preferiti?";
+"URL in Clipboard Message" = "È stato rilevato un URL negli appunti. Vuoi aggiungerlo ai preferiti?";
+
+// Home Page
+
+"All" = "Tutti";
+"All Bookmarks" = "Tutti i preferiti";
+"Private" = "Privati";
+"Public" = "Pubblici";
+"Unread" = "Non letti";
+"Untagged" = "Non etichettati";
+"Bookmarks" = "Preferiti";
+"Personal" = "Personali";
+"Community" = "Comunità";
+"Fandom" = "Fandom";
+"Popular" = "I più diffusi";
+"Network" = "Network";
+
+// Bookmark Page
+
+"Bookmark Deleted Message" = "Il preferito è stato eliminato.";
+"Bookmark Updated Message" = "Il preferito è stato aggiornato.";
+"Bookmark Added Message" = "Il preferito è stato aggiunto.";
+"Bookmark Update Error Message" = "Errore nell'aggiornamento del preferito.";
+"Add bookmark title example" = "Preferiti per introversi";
+"Add bookmark tag example" = "preferito asociale";
+"Add bookmark missing url or title" = "Non è possibile aggiungere un preferito senza un URL o un titolo.";
+
+"URL" = "URL";
+"Title" = "Titolo";
+"Description" = "Descrizione";
+"Tags" = "Tag";
+"Separate tags with spaces" = "Inserire tag separati da spazi";
+"Private" = "Privato";
+"Copy URL" = "Copia URL";
+"Copy Title" = "Copia Titolo";
+"Other" = "Altro";
+"Set as private?" = "Privato?";
+"Mark as read?" = "Già letto?";
+"Copy to mine" = "Importa";
+"Send to Instapaper" = "Invia a Instapaper";
+"Send to Readability" = "Invia a Readability";
+
+"Edit Bookmark" = "Modifica preferito";
+"Delete Bookmark" = "Elimina preferito";
+"Delete Bookmark Warning" = "Sei sicuro di voler eliminare questo preferito?";
+
+// Login Page
+
+"Username" = "Nome utente";
+"Password" = "Password";
+
+"Login Instructions" = "Inserisci le informazioni di login del tuo account Pinboard. In caso di problemi, invia un'email a support@aurora.io";
+"Login in Progress" = "Verifica informazioni di login...";
+"Login Failed" = "Non è stato possibile effettuare il login. Controlla di aver inserito nome utente e password corretti.";
+"Login Successful" = "Login effettuato. Attendi lo scaricamento di tutti i tuoi preferiti.";
+
+"Google Chrome failed to open" = "Sembra che Google Chrome non sia in grado di aprire il link. Tocca OK per aprirlo con Safari.";
+
+"Mark as read" = "Contrassegna come letto";
+"Open in Safari" = "Apri in Safari";
+
+// Settings Page
+
+"Private by default?" = "Privati per default?";
+
+"Open links with:" = "Apri link con";
+
+"Install Chrome Title" = "Installare Chrome?";
+"Install Chrome Description" = "Per poter aprire i link con Google Chrome, devi prima installarlo. Tocca OK per continuare.";
+
+"Log out warning title" = "Sei sicuro?";
+"Log out warning double check" = "Verrà effettuato il logout ed eliminato il database locale dei preferiti dal dispositivo.";
+"Log out warning footer" = "Verrà effettuato il logout dall'applicazione e resettato il database dei preferiti.";
+
+"Log Out" = "Logout";
+"Contact Support" = "Contatta l'assistenza";
+"Request a feature" = "Richiedi una funzione";
+"Report a bug" = "Segnala un bug";
+"Email us" = "Contattaci";
+"Support Email Subject" = "Help me!";
+"Give Feedback" = "Feedback";
+
+"About Navigation Bar" = "Info";
+"Read Later" = "Read Later";
+"Set Read Later service to:" = "Imposta il servizio Read Later su:";
+"None" = "Nessuno";
+
+// About Page
+
+"About Page Title" = "Info";
+"About Page Close" = "Chiudi";
+
+// Notices
+
+"URL copied to clipboard." = "URL copiato negli appunti.";
+"Title copied to clipboard." = "Titolo copiato negli appunti.";
