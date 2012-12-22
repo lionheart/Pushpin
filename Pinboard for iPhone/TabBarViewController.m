@@ -14,6 +14,7 @@
 #import "SettingsViewController.h"
 #import "AddBookmarkViewController.h"
 #import "HTMLParser.h"
+#import "ZAActivityBar.h"
 
 @interface TabBarViewController ()
 
@@ -74,7 +75,9 @@
 }
 
 - (void)closeModal:(UIViewController *)sender {
-    sender = nil;
+    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
+        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -143,7 +146,7 @@
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
     }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(close)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeModal:)];
 
     addBookmarkViewController.modalDelegate = self;
     
@@ -171,6 +174,10 @@
     addBookmarkViewController.setAsPrivate = bookmark[@"private"];
     addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
 
+    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
+        [ZAActivityBar dismiss];
+    }
+
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
 
@@ -183,10 +190,10 @@
         id visibleViewController = [(UINavigationController *)viewController visibleViewController];
         if ([visibleViewController isKindOfClass:[AddBookmarkViewController class]]) {
             [self showAddBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:nil];
-            return false;
+            return NO;
         }
     }
-    return true;
+    return YES;
 }
 
 @end
