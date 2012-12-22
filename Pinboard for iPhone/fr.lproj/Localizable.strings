@@ -23,6 +23,7 @@
 "Share" = "Partager";
 "No" = "Non";
 "Yes" = "Oui";
+"Updating bookmarks" = "Updating bookmarks";
 
 // Tab Bar
 
@@ -46,7 +47,7 @@
 
 "All" = "Tout";
 "All Bookmarks" = "Tous les signets";
-"Private" = "Privé";
+"Private Bookmarks" = "Privé";
 "Public" = "Public";
 "Unread" = "Non lu";
 "Untagged" = "Non étiqueté";
