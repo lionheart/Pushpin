@@ -481,14 +481,14 @@
                                        [results next];
                                        
                                        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                      @"url": self.urlTextField.text,
-                                                                      @"title": self.titleTextField.text,
-                                                                      @"description": self.descriptionTextField.text,
-                                                                      @"tags": self.tagTextField.text,
-                                                                      @"unread": @(!self.readSwitch.on),
-                                                                      @"private": @(self.privateSwitch.on)
+                                                                          @"url": self.urlTextField.text,
+                                                                          @"title": self.titleTextField.text,
+                                                                          @"description": self.descriptionTextField.text,
+                                                                          @"tags": self.tagTextField.text,
+                                                                          @"unread": @(!self.readSwitch.on),
+                                                                          @"private": @(self.privateSwitch.on)
                                                                       }];
-                                       
+
                                        if ([results intForColumnIndex:0] > 0) {
                                            [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];

@@ -305,10 +305,13 @@
                             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.bookmarks indexOfObject:oldBookmarks[i]] inSection:0]];
                         }
                     }
-
+                    NSLog(@"OLD %d", oldBookmarks.count);
+                    NSLog(@"ADD %d", indexPathsToAdd.count);
                     self.bookmarks = newBookmarks;
                     self.heights = newHeights;
                     self.strings = newStrings;
+                    NSLog(@"REMOVE %d", indexPathsToRemove.count);
+                    NSLog(@"NEW %d", self.strings.count);
 
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
                     [self.tableView endUpdates];

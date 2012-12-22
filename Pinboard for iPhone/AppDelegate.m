@@ -35,6 +35,7 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize dbQueue;
 @synthesize addBookmarkViewControllerActive;
+@synthesize bookmarksLoading;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -398,14 +399,15 @@
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-    
     if (self.lastUpdated != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+            self.bookmarksLoading = YES;
         });
     }
+
+    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
 
     [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
@@ -535,6 +537,7 @@
                                        [self resumeRefreshTimer];
                                        [self setLastUpdated:[NSDate date]];
                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                           self.bookmarksLoading = NO;
                                            [ZAActivityBar dismiss];
                                        });
                                    });
@@ -542,6 +545,7 @@
                                else {
                                    [self resumeRefreshTimer];
                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                       self.bookmarksLoading = NO;
                                        [ZAActivityBar dismiss];
                                    });
                                }
@@ -569,12 +573,7 @@
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   #warning Handle this appropriately
-                                   if (!data) {
-                                       [self resumeRefreshTimer];
-                                       return;
-                                   }
-                               
+                               if (data) {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    NSDate *updateTime = [self.dateFormatter dateFromString:payload[@"update_time"]];
 
@@ -585,7 +584,10 @@
                                        [self resumeRefreshTimer];
                                    }
                                }
-                           ];
+                               else {
+                                   [self resumeRefreshTimer];
+                               }
+                           }];
 }
 
 #pragma mark - Helpers
@@ -629,6 +631,7 @@
                                        for (HTMLNode *tag in metaTags) {
                                            if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
                                                description = [tag getAttributeNamed:@"content"];
+                                               break;
                                            }
                                        }
                                        
