@@ -401,7 +401,7 @@
 
     if (self.lastUpdated != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+            [ZAActivityBar showWithStatus:NSLocalizedString(@"Updating bookmarks", nil)];
             self.bookmarksLoading = YES;
         });
     }

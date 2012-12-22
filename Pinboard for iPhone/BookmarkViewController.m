@@ -482,7 +482,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView == self.confirmDeleteAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:@"Yes"]) {
+        if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
             [self deleteBookmark:nil];
         }
     }

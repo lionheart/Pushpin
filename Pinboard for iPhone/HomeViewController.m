@@ -90,7 +90,7 @@
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
                     [results next];
 
-                    cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;  
                 case 2:
@@ -161,7 +161,7 @@
                 case 1:
                     parameters[@"private"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"Private", nil);
+                    bookmarkViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 case 2:

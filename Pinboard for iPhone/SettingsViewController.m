@@ -229,7 +229,7 @@
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 case 1:
-                    cell.textLabel.text = @"Give Feedback";
+                    cell.textLabel.text = NSLocalizedString(@"Give Feedback", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 case 2:
