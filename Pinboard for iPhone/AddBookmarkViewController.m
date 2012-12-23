@@ -454,11 +454,12 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
 
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               AppDelegate *delegate = [AppDelegate sharedDelegate];
+                               [delegate setNetworkActivityIndicatorVisible:NO];
 
                                if (!error) {
                                    [self.modalDelegate closeModal:self];
@@ -499,7 +500,7 @@
                                }
                                self.navigationItem.leftBarButtonItem.enabled = YES;
                                self.navigationItem.rightBarButtonItem.enabled = YES;
-                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                               
                                
     }];
 
