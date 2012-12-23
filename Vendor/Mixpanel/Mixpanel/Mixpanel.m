@@ -382,7 +382,7 @@ static Mixpanel *sharedInstance = nil;
         self.apiToken = apiToken;
         self.flushInterval = flushInterval;
         self.flushOnBackground = YES;
-        self.showNetworkActivityIndicator = YES;
+        self.showNetworkActivityIndicator = NO;
         self.serverURL = @"https://api.mixpanel.com";
         
         self.distinctId = [self defaultDistinctId];
@@ -643,7 +643,8 @@ static Mixpanel *sharedInstance = nil;
 {
     @synchronized(self) {
         BOOL visible = self.showNetworkActivityIndicator && (self.eventsConnection || self.peopleConnection);
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:visible];
+#warning XXX
+        // [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:visible];
     }
 }
 

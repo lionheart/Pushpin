@@ -331,10 +331,10 @@
                         }
                     }
 
-                     NSLog(@"OLD %d", oldBookmarks.count);
+                    NSLog(@"OLD %d", oldBookmarks.count);
                     NSLog(@"ADD %d", indexPathsToAdd.count);
                     NSLog(@"UPDATE %d", indexPathsToUpdate.count);
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationNone];
 
                     self.bookmarks = newBookmarks;
                     self.heights = newHeights;
