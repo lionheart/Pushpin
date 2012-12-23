@@ -165,10 +165,21 @@
     self.secondsLeft = 1;
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
+    
+    
+    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
+        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
     [self.bookmarkUpdateTimer invalidate];
+
+    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
+        [ZAActivityBar dismiss];
+    }
 }
 
 - (void)longPress:(UIGestureRecognizer *)recognizer {
@@ -250,6 +261,12 @@
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+        
+        NSMutableArray *oldURLs = [NSMutableArray array];
+        NSMutableArray *newURLs = [NSMutableArray array];
+        for (NSDictionary *bookmark in self.bookmarks) {
+            [oldURLs addObject:bookmark[@"url"]];
+        }
 
         NSMutableArray *newBookmarks = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
@@ -259,6 +276,7 @@
 
         NSMutableArray *indexPathsToAdd = [NSMutableArray array];
         NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        NSMutableArray *indexPathsToUpdate = [NSMutableArray array];
         NSInteger index = 0;
 
         while ([results next]) {
@@ -279,9 +297,16 @@
             [newBookmarks addObject:bookmark];
             [newHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
             [newStrings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+            [newURLs addObject:bookmark[@"url"]];
 
             if (![oldBookmarks containsObject:bookmark]) {
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                // Check if the bookmark is being updated (as opposed to entirely new)
+                if ([oldURLs containsObject:bookmark[@"url"]]) {
+                    [indexPathsToUpdate addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+                else {
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
                 
                 [self.bookmarks addObject:bookmark];
                 [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
@@ -300,16 +325,21 @@
                     [self.tableView beginUpdates];
                     [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
                     
-                    for (int i=0; i<oldBookmarks.count; i++) {
-                        if (![newBookmarks containsObject:oldBookmarks[i]]) {
+                    for (int i=0; i<oldURLs.count; i++) {
+                        if (![newURLs containsObject:oldURLs[i]]) {
                             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.bookmarks indexOfObject:oldBookmarks[i]] inSection:0]];
                         }
                     }
-                    NSLog(@"OLD %d", oldBookmarks.count);
+
+                     NSLog(@"OLD %d", oldBookmarks.count);
                     NSLog(@"ADD %d", indexPathsToAdd.count);
+                    NSLog(@"UPDATE %d", indexPathsToUpdate.count);
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationFade];
+
                     self.bookmarks = newBookmarks;
                     self.heights = newHeights;
                     self.strings = newStrings;
+
                     NSLog(@"REMOVE %d", indexPathsToRemove.count);
                     NSLog(@"NEW %d", self.strings.count);
 
@@ -408,10 +438,10 @@
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [delegate setNetworkActivityIndicatorVisible:NO];
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
                                if ([payload[@"posts"] count] == 0) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                     #warning Translate
                                    [ZAActivityBar showErrorWithStatus:@"Error marking as read."];
                                    /*
@@ -424,7 +454,6 @@
 
                                NSDictionary *bookmark = payload[@"posts"][0];
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
                                    [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
@@ -435,6 +464,7 @@
                                    return;
                                }
                                
+                               [delegate setNetworkActivityIndicatorVisible:YES];
                                NSString *urlString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], [bookmark[@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"extended"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"tags"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], bookmark[@"shared"]];
                                NSURL *url = [NSURL URLWithString:urlString];
                                NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -736,20 +766,6 @@
     }
 }
 
-#pragma mark - Webview Delegate
-
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-}
-
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
@@ -807,11 +823,11 @@
 - (void)deleteBookmark:(id)sender {
     NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               AppDelegate *delegate = [AppDelegate sharedDelegate];
                                [delegate setNetworkActivityIndicatorVisible:NO];
 
                                if (!error) {

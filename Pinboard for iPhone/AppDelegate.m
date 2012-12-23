@@ -34,7 +34,6 @@
 @synthesize bookmarksUpdated;
 @synthesize bookmarksUpdatedMessage;
 @synthesize dbQueue;
-@synthesize addBookmarkViewControllerActive;
 @synthesize bookmarksLoading;
 
 + (NSString *)databasePath {
@@ -156,7 +155,6 @@
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
-    self.addBookmarkViewControllerActive = NO;
 
     [reach startNotifier];
     [self migrateDatabase];
@@ -414,6 +412,7 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [self setNetworkActivityIndicatorVisible:NO];
+
                                if (error.code != NSURLErrorUserCancelledAuthentication && data != nil) {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -604,9 +603,10 @@
     // The assertion helps to find programmer errors in activity indicator management.
     // Since a negative NumberOfCallsToSetVisible is not a fatal error,
     // it should probably be removed from production code.
-#ifdef TESTING
+#ifdef DEBUG
     NSAssert(NumberOfCallsToSetVisible >= 0, @"Network Activity Indicator was asked to hide more often than shown");
 #endif
+    NSLog(@"%d", NumberOfCallsToSetVisible);
     
     // Display the indicator as long as our static counter is > 0.
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
