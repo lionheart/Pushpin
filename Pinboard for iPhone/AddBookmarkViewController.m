@@ -77,11 +77,6 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [[AppDelegate sharedDelegate] pauseRefreshTimer];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.tagCompletions = [NSMutableArray array];
@@ -90,8 +85,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
-    
-    [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:YES];
 }
 
 #pragma mark - Table view data source
@@ -199,8 +192,6 @@
     [super viewDidDisappear:animated];
     self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[AppDelegate sharedDelegate] setAddBookmarkViewControllerActive:NO];
-    [[AppDelegate sharedDelegate] resumeRefreshTimer];
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {

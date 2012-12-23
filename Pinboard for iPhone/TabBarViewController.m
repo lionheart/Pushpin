@@ -14,7 +14,6 @@
 #import "SettingsViewController.h"
 #import "AddBookmarkViewController.h"
 #import "HTMLParser.h"
-#import "ZAActivityBar.h"
 
 @interface TabBarViewController ()
 
@@ -75,9 +74,6 @@
 }
 
 - (void)closeModal:(UIViewController *)sender {
-    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
-        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
-    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -171,11 +167,15 @@
         addBookmarkViewController.callback = callback;
     }
 
-    addBookmarkViewController.setAsPrivate = bookmark[@"private"];
-    addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
+    if (bookmark[@"private"]) {
+        addBookmarkViewController.setAsPrivate = bookmark[@"private"];
+    }
+    else {
+        addBookmarkViewController.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+    }
 
-    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
-        [ZAActivityBar dismiss];
+    if (bookmark[@"unread"]) {
+        addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
     }
 
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
