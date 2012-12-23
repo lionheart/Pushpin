@@ -123,7 +123,7 @@
 
     // menu
     if (![self becomeFirstResponder]) {
-        NSLog(@"Couldn't become first responder ");
+        DLog(@"Couldn't become first responder ");
         return;
     }
 
@@ -331,17 +331,17 @@
                         }
                     }
 
-                    NSLog(@"OLD %d", oldBookmarks.count);
-                    NSLog(@"ADD %d", indexPathsToAdd.count);
-                    NSLog(@"UPDATE %d", indexPathsToUpdate.count);
+                    DLog(@"OLD %d", oldBookmarks.count);
+                    DLog(@"ADD %d", indexPathsToAdd.count);
+                    DLog(@"UPDATE %d", indexPathsToUpdate.count);
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationNone];
 
                     self.bookmarks = newBookmarks;
                     self.heights = newHeights;
                     self.strings = newStrings;
 
-                    NSLog(@"REMOVE %d", indexPathsToRemove.count);
-                    NSLog(@"NEW %d", self.strings.count);
+                    DLog(@"REMOVE %d", indexPathsToRemove.count);
+                    DLog(@"NEW %d", self.strings.count);
 
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
                     [self.tableView endUpdates];
