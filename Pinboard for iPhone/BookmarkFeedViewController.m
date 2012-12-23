@@ -60,7 +60,7 @@
     failureCount = 0;
 
     if (![self becomeFirstResponder]) {
-        NSLog(@"Couldn't become first responder ");
+        DLog(@"Couldn't become first responder ");
         return;
     }
 }
