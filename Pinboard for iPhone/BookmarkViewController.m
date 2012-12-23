@@ -161,12 +161,12 @@
     [[UIMenuController sharedMenuController] setMenuItems:items];
     [[UIMenuController sharedMenuController] update];
 
+    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
     self.timerPaused = NO;
     self.secondsLeft = 1;
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
-    
-    
+
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
         [ZAActivityBar showWithStatus:@"Updating bookmarks"];
     }
@@ -174,9 +174,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
     [self.bookmarkUpdateTimer invalidate];
-
+    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:NO];
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
         [ZAActivityBar dismiss];
     }

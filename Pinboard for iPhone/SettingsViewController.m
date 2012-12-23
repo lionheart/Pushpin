@@ -67,7 +67,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[AppDelegate sharedDelegate] pauseRefreshTimer];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -77,7 +76,6 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[AppDelegate sharedDelegate] resumeRefreshTimer];
 }
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {

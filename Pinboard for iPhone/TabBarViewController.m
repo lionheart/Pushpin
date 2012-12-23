@@ -29,9 +29,6 @@
 - (id)init {
     self = [super init];
     if (self) {
-        secondsLeft = 0;
-        timerPaused = NO;
-
         self.allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
         self.allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
@@ -107,24 +104,10 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    _sessionChecked = false;
     if (buttonIndex == 1) {
         [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} update:@(NO) callback:nil];
         [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
     }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-        _sessionChecked = true;
-        
-        NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:self.bookmarkURL]];
-        [self.webView loadRequest:req];
-    }
-    else {
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    }
-    [connection cancel];
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
@@ -150,7 +133,10 @@
     
     if (bookmark[@"url"]) {
         addBookmarkViewController.urlTextField.text = bookmark[@"url"];
-        addBookmarkViewController.urlTextField.enabled = NO;
+        
+        if (isUpdate.boolValue) {
+            addBookmarkViewController.urlTextField.enabled = NO;
+        }
     }
 
     if (bookmark[@"tags"]) {

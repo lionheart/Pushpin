@@ -11,11 +11,7 @@
 
 @class BookmarkViewController;
 
-@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
-    BOOL _sessionChecked;
-    BOOL timerPaused;
-    NSInteger secondsLeft;
-}
+@interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSString *bookmarkURL;
@@ -27,8 +23,5 @@
 - (void)closeModal:(UIViewController *)sender;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)promptUserToAddBookmark;
-- (void)pauseRefreshTimer;
-- (void)resumeRefreshTimer;
-- (void)executeTimer;
 
 @end

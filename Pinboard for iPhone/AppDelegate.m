@@ -35,6 +35,7 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize dbQueue;
 @synthesize bookmarksLoading;
+@synthesize bookmarkViewControllerActive;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -155,6 +156,7 @@
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
+    self.bookmarkViewControllerActive = YES;
 
     [reach startNotifier];
     [self migrateDatabase];
@@ -398,10 +400,13 @@
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
     if (self.lastUpdated != nil) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [ZAActivityBar showWithStatus:NSLocalizedString(@"Updating bookmarks", nil)];
-            self.bookmarksLoading = YES;
-        });
+        self.bookmarksLoading = YES;
+
+        if (self.bookmarkViewControllerActive) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ZAActivityBar showWithStatus:NSLocalizedString(@"Updating bookmarks", nil)];
+            });
+        }
     }
 
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
