@@ -429,6 +429,11 @@
 }
 
 - (void)markBookmarkAsRead:(id)sender {
+    if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+        [ZAActivityBar showErrorWithStatus:@"Connection unavailable."];
+        return;
+    }
+
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 

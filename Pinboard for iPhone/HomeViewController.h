@@ -11,4 +11,8 @@
 
 @interface HomeViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic) BOOL connectionAvailable;
+
+- (void)connectionStatusDidChange:(NSNotification *)notification;
+
 @end

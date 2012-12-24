@@ -173,8 +173,20 @@
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         id visibleViewController = [(UINavigationController *)viewController visibleViewController];
         if ([visibleViewController isKindOfClass:[AddBookmarkViewController class]]) {
-            [self showAddBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:nil];
+            if ([[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+                [self showAddBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:nil];
+            }
+            else {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:@"You can't add bookmarks unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+            }
+
             return NO;
+        }
+        else if ([visibleViewController isKindOfClass:[NoteViewController class]]) {
+            if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:@"You can't read notes unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                return NO;
+            }
         }
     }
     return YES;

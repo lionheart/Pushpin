@@ -16,8 +16,20 @@
 
 @implementation HomeViewController
 
+@synthesize connectionAvailable;
+
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:style];
+    if (self) {
+        self.connectionAvailable = NO;
+    }
+    return self;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
     if (![[AppDelegate sharedDelegate] feedToken]) {
         [[AppDelegate sharedDelegate] updateFeedToken:^{
@@ -26,10 +38,28 @@
     }
 }
 
+- (void)connectionStatusDidChange:(NSNotification *)notification {
+    BOOL oldConnectionAvailable = self.connectionAvailable;
+    self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
+    if (oldConnectionAvailable != self.connectionAvailable) {
+        [self.tableView beginUpdates];
+        if (self.connectionAvailable) {
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else {
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        [self.tableView endUpdates];
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if (self.connectionAvailable) {
+        return 2;
+    }
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -184,42 +214,46 @@
         }
         case 1: {
             BookmarkFeedViewController *bookmarkViewController;
-
-            switch (indexPath.row) {
-                case 0: {
-                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                    NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                    bookmarkViewController.title = NSLocalizedString(@"Network", nil);
-                    [mixpanel track:@"Browsed network bookmarks"];
-                    break;
-                }
-                case 1:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
-                    bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
-                    [mixpanel track:@"Browsed popular bookmarks"];
-                    break;
-                case 2:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
-                    bookmarkViewController.title = @"Wikipedia";
-                    [mixpanel track:@"Browsed wikipedia bookmarks"];
-                    break;
-                case 3:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
-                    bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
-                    [mixpanel track:@"Browsed fandom bookmarks"];
-                    break;
-                case 4:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
-                    bookmarkViewController.title = @"日本語";
-                    [mixpanel track:@"Browsed 日本語 bookmarks"];
-                    break;
-            }
-            [self.navigationController pushViewController:bookmarkViewController animated:YES];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-            break;
+            if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+            }
+            else {
+                switch (indexPath.row) {
+                    case 0: {
+                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                        NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                        NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
+                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
+                        bookmarkViewController.title = NSLocalizedString(@"Network", nil);
+                        [mixpanel track:@"Browsed network bookmarks"];
+                        break;
+                    }
+                    case 1:
+                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
+                        bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
+                        [mixpanel track:@"Browsed popular bookmarks"];
+                        break;
+                    case 2:
+                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
+                        bookmarkViewController.title = @"Wikipedia";
+                        [mixpanel track:@"Browsed wikipedia bookmarks"];
+                        break;
+                    case 3:
+                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
+                        bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
+                        [mixpanel track:@"Browsed fandom bookmarks"];
+                        break;
+                    case 4:
+                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
+                        bookmarkViewController.title = @"日本語";
+                        [mixpanel track:@"Browsed 日本語 bookmarks"];
+                        break;
+                }
+                [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                break;
+            }
         }
     }
 }
