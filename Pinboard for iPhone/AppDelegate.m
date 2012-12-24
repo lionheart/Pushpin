@@ -426,7 +426,7 @@
                                        [db open];
                                        [db beginTransaction];
 
-                                       db.logsErrors = YES;
+                                       db.logsErrors = NO;
                                        [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
 
                                        NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
