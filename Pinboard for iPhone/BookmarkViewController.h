@@ -45,6 +45,7 @@
 @property (nonatomic, retain) NSTimer *bookmarkUpdateTimer;
 @property (nonatomic) BOOL timerPaused;
 @property (nonatomic) int secondsLeft;
+@property (nonatomic) BOOL shouldShowContextMenu;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
