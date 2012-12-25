@@ -1,17 +1,17 @@
 // TTTAttributedLabel.h
 //
 // Copyright (c) 2011 Mattt Thompson (http://mattt.me)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,6 +36,26 @@ typedef enum {
  Determines whether the text to which this attribute applies has a strikeout drawn through itself.
  */
 extern NSString * const kTTTStrikeOutAttributeName;
+
+/**
+ The background fill color. Value must be a `CGColorRef`. Default value is `nil` (no fill).
+ */
+extern NSString * const kTTTBackgroundFillColorAttributeName;
+
+/**
+ The background stroke color. Value must be a `CGColorRef`. Default value is `nil` (no stroke).
+ */
+extern NSString * const kTTTBackgroundStrokeColorAttributeName;
+
+/**
+ The background stroke line width. Value must be an `NSNumber`. Default value is `1.0f`.
+ */
+extern NSString * const kTTTBackgroundLineWidthAttributeName;
+
+/**
+ The background corner radius. Value must be an `NSNumber`. Default value is `5.0f`.
+ */
+extern NSString * const kTTTBackgroundCornerRadiusAttributeName;
 
 @protocol TTTAttributedLabelDelegate;
 
@@ -105,7 +125,7 @@ extern NSString * const kTTTStrikeOutAttributeName;
 ///---------------------------------------
 
 /**
- The shadow blur radius for the label. A value of 0 indicates no blur, while larger values produce correspondingly larger blurring. This value must not be negative. The default value is 0. 
+ The shadow blur radius for the label. A value of 0 indicates no blur, while larger values produce correspondingly larger blurring. This value must not be negative. The default value is 0.
  */
 @property (nonatomic, assign) CGFloat shadowRadius;
 
@@ -114,12 +134,12 @@ extern NSString * const kTTTStrikeOutAttributeName;
 ///--------------------------------------------
 
 /**
- The distance, in points, from the leading margin of a frame to the beginning of the paragraph's first line. This value is always nonnegative, and is 0.0 by default. 
+ The distance, in points, from the leading margin of a frame to the beginning of the paragraph's first line. This value is always nonnegative, and is 0.0 by default.
  */
 @property (nonatomic, assign) CGFloat firstLineIndent;
 
 /**
- The space in points added between lines within the paragraph. This value is always nonnegative and is 0.0 by default. 
+ The space in points added between lines within the paragraph. This value is always nonnegative and is 0.0 by default.
  */
 @property (nonatomic, assign) CGFloat leading;
 
@@ -131,7 +151,7 @@ extern NSString * const kTTTStrikeOutAttributeName;
 /**
  The distance, in points, from the margin to the text container. This value is `UIEdgeInsetsZero` by default.
  
- @discussion The `UIEdgeInset` members correspond to paragraph style properties rather than a particular geometry, and can change depending on the writing direction. 
+ @discussion The `UIEdgeInset` members correspond to paragraph style properties rather than a particular geometry, and can change depending on the writing direction.
  
  ## `UIEdgeInset` Member Correspondence With `CTParagraphStyleSpecifier` Values:
  
@@ -156,7 +176,7 @@ extern NSString * const kTTTStrikeOutAttributeName;
  Sets the text displayed by the label.
  
  @param text An `NSString` or `NSAttributedString` object to be displayed by the label. If the specified text is an `NSString`, the label will display the text like a `UILabel`, inheriting the text styles of the label. If the specified text is an `NSAttributedString`, the label text styles will be overridden by the styles specified in the attributed string.
-  
+ 
  @discussion This method overrides `UILabel -setText:` to accept both `NSString` and `NSAttributedString` objects. This string is `nil` by default.
  */
 - (void)setText:(id)text;
@@ -178,7 +198,7 @@ extern NSString * const kTTTStrikeOutAttributeName;
 /**
  A copy of the label's current attributedText. This returns `nil` if an attributed string has never been set on the label.
  */
-@property (readonly, nonatomic, copy) NSAttributedString *attributedText;
+@property (readwrite, nonatomic, copy) NSAttributedString *attributedText;
 
 ///-------------------
 /// @name Adding Links
@@ -213,7 +233,7 @@ extern NSString * const kTTTStrikeOutAttributeName;
  @param addressComponents A dictionary of address components for the address to be linked to
  @param range The range in the label text of the link. The range must not exceed the bounds of the receiver.
  
- @discussion The address component dictionary keys are described in `NSTextCheckingResult`'s "Keys for Address Components." 
+ @discussion The address component dictionary keys are described in `NSTextCheckingResult`'s "Keys for Address Components."
  */
 - (void)addLinkToAddress:(NSDictionary *)addressComponents withRange:(NSRange)range;
 
