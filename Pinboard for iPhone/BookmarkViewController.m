@@ -49,6 +49,7 @@
 @synthesize bookmarkUpdateTimer;
 @synthesize secondsLeft;
 @synthesize timerPaused;
+@synthesize shouldShowContextMenu;
 
 - (void)checkForBookmarkUpdates {
     if (!timerPaused) {
@@ -97,6 +98,7 @@
     }
 
 	self.tableView.scrollEnabled = YES;
+    self.shouldShowContextMenu = YES;
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
@@ -597,6 +599,10 @@
 #pragma mark - Menu
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (!self.shouldShowContextMenu) {
+        return NO;
+    }
+    
     self.selectedIndexPath = indexPath;
     
     // XXX - are there other tableviews?
@@ -746,7 +752,16 @@
     return cell;
 }
 
+- (void)attributedLabel:(TTTAttributedLabel *)label didStartTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
+    self.shouldShowContextMenu = NO;
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didCancelTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
+    self.shouldShowContextMenu = YES;
+}
+
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    self.shouldShowContextMenu = YES;
     NSNumber *tag_id;
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -889,7 +904,8 @@
     
     CGFloat height = 10.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    
+
+
     if (![bookmark[@"description"] isEqualToString:@""]) {
         height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     }
@@ -897,6 +913,7 @@
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         height += ceilf([bookmark[@"tags"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     }
+
     return @(height);
 }
 
@@ -914,6 +931,7 @@
         descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
         newLineCount++;
     }
+
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
         tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
