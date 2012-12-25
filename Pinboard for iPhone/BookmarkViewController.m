@@ -50,6 +50,7 @@
 @synthesize secondsLeft;
 @synthesize timerPaused;
 @synthesize shouldShowContextMenu;
+@synthesize processingBookmarks;
 
 - (void)checkForBookmarkUpdates {
     if (!timerPaused) {
@@ -99,6 +100,7 @@
 
 	self.tableView.scrollEnabled = YES;
     self.shouldShowContextMenu = YES;
+    self.processingBookmarks = NO;
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
@@ -257,6 +259,7 @@
 }
 
 - (void)processBookmarks {
+    self.processingBookmarks = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.timerPaused = true;
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -348,6 +351,7 @@
                     [self.tableView endUpdates];
                     self.timerPaused = false;
                 }
+                self.processingBookmarks = NO;
             });
         });
     });
@@ -644,7 +648,7 @@
         view = self.navigationController.navigationBar;
     }
 
-    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"URL copied to clipboard.", nil)];
+    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"Title copied to clipboard.", nil)];
 
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
@@ -781,10 +785,9 @@
     if (tableView != self.tableView) {
         return;
     }
-    if (indexPath.row == self.limit.integerValue - 50) {
-        self.limit = @(self.limit.integerValue + 200);
+    if (indexPath.row >= self.limit.integerValue / 2 && !self.processingBookmarks) {
+        self.limit = @(self.limit.integerValue * 2);
         self.queryParameters[@"limit"] = limit;
-
         [self processBookmarks];
     }
 }
@@ -904,7 +907,6 @@
     
     CGFloat height = 10.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-
 
     if (![bookmark[@"description"] isEqualToString:@""]) {
         height += ceilf([bookmark[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
