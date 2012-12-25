@@ -9,6 +9,7 @@
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
 #import "BookmarkFeedViewController.h"
+#import "AppDelegate.h"
 
 @interface HomeViewController ()
 
@@ -21,7 +22,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        self.connectionAvailable = NO;
+        self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
     }
     return self;
 }
@@ -217,7 +218,7 @@
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
             if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
             }
             else {
                 switch (indexPath.row) {

@@ -608,12 +608,16 @@
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+        return (action == @selector(copyTitle:) || action == @selector(copyURL:));
+    }
+    
     if ([[AppDelegate sharedDelegate] readlater] != nil) {
         if (action == @selector(readLater:)) {
             return YES;
         }
     }
-
+    
     if (action == @selector(markBookmarkAsRead:)) {
         return [self.bookmark[@"unread"] boolValue];
     }
