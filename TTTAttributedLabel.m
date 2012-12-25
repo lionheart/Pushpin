@@ -883,6 +883,16 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
     
     if (self.activeLink) {
         [self setLinkActive:YES withTextCheckingResult:self.activeLink];
+        
+        if (!self.delegate) {
+            return;
+        }
+        
+        NSTextCheckingResult *result = self.activeLink;
+        if ([self.delegate respondsToSelector:@selector(attributedLabel:didStartTouchWithTextCheckingResult:)]) {
+            [self.delegate attributedLabel:self didStartTouchWithTextCheckingResult:result];
+            return;
+        }
     } else {
         [super touchesBegan:touches withEvent:event];
     }
@@ -955,6 +965,16 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.activeLink) {
         [self setLinkActive:NO withTextCheckingResult:self.activeLink];
+        
+        if (!self.delegate) {
+            return;
+        }
+        
+        NSTextCheckingResult *result = self.activeLink;
+        if ([self.delegate respondsToSelector:@selector(attributedLabel:didCancelTouchWithTextCheckingResult:)]) {
+            [self.delegate attributedLabel:self didCancelTouchWithTextCheckingResult:result];
+            return;
+        }
     } else {
         [super touchesCancelled:touches withEvent:event];
     }
