@@ -46,6 +46,7 @@
 @property (nonatomic) BOOL timerPaused;
 @property (nonatomic) int secondsLeft;
 @property (nonatomic) BOOL shouldShowContextMenu;
+@property (nonatomic) BOOL processingBookmarks;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
