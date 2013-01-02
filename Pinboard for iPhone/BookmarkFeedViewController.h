@@ -22,6 +22,7 @@
 @property (nonatomic, retain) NSURL *sourceURL;
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
+@property (nonatomic) BOOL shouldShowContextMenu;
 
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
