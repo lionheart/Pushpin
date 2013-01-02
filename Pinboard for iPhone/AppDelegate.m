@@ -120,8 +120,20 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
+
+    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    self.connectionAvailable = @([reach isReachable]);
+    reach.reachableBlock = ^(Reachability*reach) {
+        self.connectionAvailable = @(YES);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
+    };
+
+    reach.unreachableBlock = ^(Reachability*reach) {
+        self.connectionAvailable = @(NO);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
+    };
+    [reach startNotifier];
     
-    secondsLeft = 10;
     if ([self token]) {
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
@@ -135,21 +147,11 @@
         [self.window setRootViewController:loginViewController];
         [self pauseRefreshTimer];
     }
+    secondsLeft = 10;
     self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
-
-    [self.window makeKeyAndVisible];
     
-    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
-    reach.reachableBlock = ^(Reachability*reach) {
-        self.connectionAvailable = @(YES);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
-    };
-
-    reach.unreachableBlock = ^(Reachability*reach) {
-        self.connectionAvailable = @(NO);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
-    };
+    [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
@@ -160,7 +162,6 @@
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
     self.bookmarkViewControllerActive = YES;
 
-    [reach startNotifier];
     [self migrateDatabase];
     
     didLaunchWithURL = NO;

@@ -13,6 +13,8 @@
 #import "TSMiniWebBrowser.h"
 #import "WBSuccessNoticeView.h"
 #import "ZAActivityBar.h"
+#import "FMDatabase.h"
+#import "BookmarkViewController.h"
 
 @interface BookmarkFeedViewController ()
 
@@ -29,6 +31,7 @@
 @synthesize bookmark = _bookmark;
 @synthesize bookmarkDetailViewController;
 @synthesize selectedIndexPath;
+@synthesize shouldShowContextMenu;
 
 - (id)initWithURL:(NSString *)aURL {
     self = [super initWithStyle:UITableViewStylePlain];
@@ -48,6 +51,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.shouldShowContextMenu = YES;
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                      action:@selector(handleSwipeRight:)];
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
@@ -125,27 +129,50 @@
     return @(height);
 }
 
++ (NSArray *)linksForBookmark:(NSDictionary *)bookmark {
+    NSMutableArray *links = [NSMutableArray array];
+    int location = [bookmark[@"title"] length] + 1;
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        location += [bookmark[@"description"] length] + 1;
+    }
+
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
+            NSRange range = [bookmark[@"tags"] rangeOfString:tag];
+            [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
+        }
+    }
+    return links;
+}
+
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
+    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
+    NSRange descriptionRange = {};
+    NSRange tagRange = {};
+    int newLineCount = 1;
     if (![bookmark[@"description"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
+        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
+        newLineCount++;
     }
+
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
+        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
     }
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    
-    [attributedString setFont:largeHelvetica range:[content rangeOfString:bookmark[@"title"]]];
-    [attributedString setFont:smallHelvetica range:[content rangeOfString:bookmark[@"description"]]];
+    [attributedString setFont:largeHelvetica range:titleRange];
+    [attributedString setFont:smallHelvetica range:descriptionRange];
     [attributedString setTextColor:HEX(0x555555ff)];
-    [attributedString setTextColor:HEX(0x2255aaff) range:[content rangeOfString:bookmark[@"title"]]];
+    [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
     
     if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:[content rangeOfString:bookmark[@"tags"]]];
+        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
@@ -236,6 +263,10 @@
     bookmark = self.bookmarks[indexPath.row];
 
     [cell.textView setText:string];
+
+    for (NSDictionary *link in [BookmarkFeedViewController linksForBookmark:bookmark]) {
+        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
+    }
     
     cell.textView.backgroundColor = HEX(0xffffffff);
     cell.contentView.backgroundColor = HEX(0xffffffff);
@@ -298,6 +329,10 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (!self.shouldShowContextMenu) {
+        return NO;
+    }
+
     return YES;
 }
 
@@ -365,6 +400,35 @@
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+}
+
+#pragma mark - Attributed String Delegate
+
+
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didStartTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
+    self.shouldShowContextMenu = NO;
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didCancelTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
+    self.shouldShowContextMenu = YES;
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    self.shouldShowContextMenu = YES;
+    NSNumber *tag_id;
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+    FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
+    [results next];
+    tag_id = [results objectForColumnIndex:0];
+    [db close];
+
+    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
+    bookmarkViewController.title = tag;
+    [self.navigationController pushViewController:bookmarkViewController animated:YES];
 }
 
 @end

@@ -53,6 +53,10 @@
 + (NSArray *)linksForBookmark:(NSDictionary *)bookmark;
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
+
+// {'unread': @(YES), 'private': @(NO)} => WHERE unread=true AND private=false
+- (id)initWithFilters:(NSArray *)filters parameters:(NSMutableDictionary *)parameters;
+
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters;
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
 - (void)refreshBookmarks;

@@ -66,7 +66,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 5;
+            return 6;
             break;
         case 1:
             return 5;
@@ -94,8 +94,6 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-
-    NSError *error = nil;
     
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -140,6 +138,10 @@
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
+                case 5:
+                    cell.textLabel.text = NSLocalizedString(@"Starred", nil);
+                    cell.detailTextLabel.text = @"";
+                    break;
             }
             break;
         }
@@ -176,36 +178,42 @@
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     switch (indexPath.section) {
         case 0: {
-            BookmarkViewController *bookmarkViewController;
+            id bookmarkViewController;
 
             switch (indexPath.row) {
                 case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[] parameters:parameters];
+                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"All Bookmarks", nil)];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 case 1:
                     parameters[@"private"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
+                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Private Bookmarks", nil)];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 case 2:
                     parameters[@"private"] = @(NO);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE private = :private ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"Public", nil);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
+                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Public", nil)];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 case 3:
                     parameters[@"unread"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE unread = :unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"Unread", nil);
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"unread"] parameters:parameters];
+                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Unread", nil)];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 case 4:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark WHERE tags = '' ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:parameters];
-                    bookmarkViewController.title = NSLocalizedString(@"Untagged", nil);
+                    parameters[@"tags"] = @"";
+                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"tags"] parameters:parameters];
+                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Untagged", nil)];
                     [mixpanel track:@"Browsed untagged bookmarks"];
+                    break;
+                case 5:
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
+                    [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
+                    [mixpanel track:@"Browsed starred bookmarks"];
                     break;
             }
 

@@ -357,6 +357,24 @@
     });
 }
 
+- (id)initWithFilters:(NSArray *)filters parameters:(NSMutableDictionary *)parameters {
+    NSString *queryFormat = @"SELECT * FROM bookmark%@%@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+    NSMutableArray *whereComponents = [NSMutableArray array];
+    for (id filter in filters) {
+        [whereComponents addObject:[NSString stringWithFormat:@"%@ = :%@", filter, filter]];
+    }
+
+    NSString *query;
+    if (whereComponents.count > 0) {
+        query = [NSString stringWithFormat:queryFormat, @" WHERE ", [whereComponents componentsJoinedByString:@" and "]];
+    }
+    else {
+        query = [NSString stringWithFormat:queryFormat, @"", @""];
+    }
+
+    return [self initWithQuery:query parameters:parameters];
+}
+
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters {
     // initWithQuery:@"SELECT * FROM bookmark WHERE name = :name LIMIT :limit OFFSET :offset" arguments:@{@"name": @"dan"}
     self = [super initWithStyle:UITableViewStylePlain];
@@ -969,7 +987,6 @@
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
             NSRange range = [bookmark[@"tags"] rangeOfString:tag];
-            #warning BUG!
             [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
         }
     }
