@@ -135,7 +135,7 @@
     if (![bookmark[@"description"] isEqualToString:@""]) {
         location += [bookmark[@"description"] length] + 1;
     }
-
+    
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         for (NSString *tag in [bookmark[@"tags"] componentsSeparatedByString:@" "]) {
             NSRange range = [bookmark[@"tags"] rangeOfString:tag];
@@ -159,7 +159,7 @@
         descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
         newLineCount++;
     }
-
+    
     if (![bookmark[@"tags"] isEqualToString:@""]) {
         [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
         tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
@@ -420,12 +420,12 @@
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
+    
     FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
     [results next];
     tag_id = [results objectForColumnIndex:0];
     [db close];
-
+    
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
     bookmarkViewController.title = tag;
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
