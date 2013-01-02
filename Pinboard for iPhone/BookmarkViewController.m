@@ -363,7 +363,7 @@
     for (id filter in filters) {
         [whereComponents addObject:[NSString stringWithFormat:@"%@ = :%@", filter, filter]];
     }
-
+    
     NSString *query;
     if (whereComponents.count > 0) {
         query = [NSString stringWithFormat:queryFormat, @" WHERE ", [whereComponents componentsJoinedByString:@" and "]];
