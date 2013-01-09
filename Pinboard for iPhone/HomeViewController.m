@@ -45,9 +45,11 @@
     if (oldConnectionAvailable != self.connectionAvailable) {
         [self.tableView beginUpdates];
         if (self.connectionAvailable) {
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         else {
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         [self.tableView endUpdates];
@@ -66,7 +68,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 6;
+            if (self.connectionAvailable) {
+                return 6;
+            }
+            else {
+                return 5;
+            }
             break;
         case 1:
             return 5;
@@ -211,6 +218,8 @@
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 case 5: {
+                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                     NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username];
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
                     [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
