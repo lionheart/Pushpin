@@ -210,11 +210,13 @@
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Untagged", nil)];
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
-                case 5:
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
+                case 5: {
+                    NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username];
+                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
                     [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
+                }
             }
 
             [self.navigationController pushViewController:bookmarkViewController animated:YES];
