@@ -206,7 +206,7 @@
     if ([textField.text isEqualToString:@""]) {
         return NO;
     }
-
+    
     [textField setUserInteractionEnabled:YES];
 
     if (textField == usernameTextField) {
@@ -215,7 +215,7 @@
     else {
         [textField resignFirstResponder];
     }
-
+    
     [self login];
     return YES;
 }
