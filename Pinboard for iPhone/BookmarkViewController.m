@@ -327,7 +327,7 @@
                 }
                 else {
                     [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                     
                     for (int i=0; i<oldURLs.count; i++) {
                         if (![newURLs containsObject:oldURLs[i]]) {
@@ -338,7 +338,7 @@
                     DLog(@"OLD %d", oldBookmarks.count);
                     DLog(@"ADD %d", indexPathsToAdd.count);
                     DLog(@"UPDATE %d", indexPathsToUpdate.count);
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToUpdate withRowAnimation:UITableViewRowAnimationFade];
 
                     self.bookmarks = newBookmarks;
                     self.heights = newHeights;
