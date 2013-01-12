@@ -85,7 +85,7 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    if (!didLaunchWithURL) {
+    if (!didLaunchWithURL && self.token != nil) {
         [self.tabBarViewController promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
@@ -405,7 +405,7 @@
     if (self.lastUpdated != nil) {
         self.bookmarksLoading = YES;
 
-        if (self.bookmarkViewControllerActive) {
+        if (updateDelegate == nil && self.bookmarkViewControllerActive) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [ZAActivityBar showWithStatus:NSLocalizedString(@"Updating bookmarks", nil)];
             });
