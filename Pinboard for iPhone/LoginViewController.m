@@ -46,7 +46,7 @@
     self.usernameTextField.backgroundColor = [UIColor whiteColor];
     self.usernameTextField.delegate = self;
     self.usernameTextField.keyboardType = UIKeyboardTypeAlphabet;
-    self.usernameTextField.returnKeyType = UIReturnKeyDone;
+    self.usernameTextField.returnKeyType = UIReturnKeyNext;
     self.usernameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
     self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -61,7 +61,7 @@
     self.passwordTextField.backgroundColor = [UIColor whiteColor];
     self.passwordTextField.delegate = self;
     self.passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
-    self.passwordTextField.returnKeyType = UIReturnKeyDone;
+    self.passwordTextField.returnKeyType = UIReturnKeyGo;
     self.passwordTextField.secureTextEntry = YES;
     self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordTextField.placeholder = NSLocalizedString(@"Password", nil);
@@ -145,15 +145,15 @@
         if (updated.integerValue == total.integerValue) {
             AppDelegate *delegate = [AppDelegate sharedDelegate];
             delegate.tabBarViewController = [[TabBarViewController alloc] init];
-            delegate.tabBarViewController.modalPresentationStyle = UIModalTransitionStyleFlipHorizontal;
+            delegate.tabBarViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
             [self presentViewController:delegate.tabBarViewController animated:YES completion:nil];
         }
     });
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (void)login {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    if (usernameTextField.text && passwordTextField.text) {
+    if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json"]]];
         NSString *authStr = [NSString stringWithFormat:@"%@:%@", usernameTextField.text, passwordTextField.text];
         NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
@@ -178,8 +178,10 @@
                                        [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
 
                                        [self.activityIndicator startAnimating];
-                                       textField.enabled = NO;
-                                       textField.textColor = [UIColor grayColor];
+                                       self.usernameTextField.enabled = NO;
+                                       self.usernameTextField.textColor = [UIColor grayColor];
+                                       self.passwordTextField.enabled = NO;
+                                       self.passwordTextField.textColor = [UIColor grayColor];
 
                                        self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                        self.progressView.hidden = NO;
@@ -204,8 +206,17 @@
     if ([textField.text isEqualToString:@""]) {
         return NO;
     }
+
     [textField setUserInteractionEnabled:YES];
-    [textField resignFirstResponder];
+
+    if (textField == usernameTextField) {
+        [passwordTextField becomeFirstResponder];
+    }
+    else {
+        [textField resignFirstResponder];
+    }
+
+    [self login];
     return YES;
 }
 
