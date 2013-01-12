@@ -455,11 +455,13 @@
                                        NSNumber *tagIdNumber;
                                        NSNumber *currentBookmarkId;
                                        int tag_id;
+                                       BOOL updated_or_created = NO;
                                        NSUInteger count = 0;
                                        NSUInteger total = elements.count;
                                        
                                        [mixpanel.people set:@"Bookmarks" to:@(total)];
                                        for (NSDictionary *element in elements) {
+                                           updated_or_created = NO;
                                            [newBookmarkHashes addObject:element[@"hash"]];
                                            [oldBookmarkHashes removeObject:element[@"hash"]];
                                            
@@ -474,6 +476,7 @@
                                            if (bookmarkMeta) {
                                                currentBookmarkId = bookmarkIds[element[@"hash"]];
                                                if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
+                                                   updated_or_created = YES;
                                                    params = @{
                                                        @"url": element[@"href"],
                                                        @"title": element[@"description"],
@@ -490,6 +493,7 @@
                                                }
                                            }
                                            else {
+                                               updated_or_created = YES;
                                                params = @{
                                                    @"url": element[@"href"],
                                                    @"title": element[@"description"],
@@ -516,19 +520,21 @@
                                                continue;
                                            }
                                            
-                                           for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                                               tagIdNumber = [tags objectForKey:tagName];
-                                               if (!tagIdNumber) {
-                                                   [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                           if (updated_or_created) {
+                                               for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
+                                                   tagIdNumber = [tags objectForKey:tagName];
+                                                   if (!tagIdNumber) {
+                                                       [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
 
-                                                   results = [db executeQuery:@"SELECT last_insert_rowid();"];
-                                                   [results next];
-                                                   tagIdNumber = @([results intForColumnIndex:0]);
-                                                   [tags setObject:tagIdNumber forKey:tagName];
+                                                       results = [db executeQuery:@"SELECT last_insert_rowid();"];
+                                                       [results next];
+                                                       tagIdNumber = @([results intForColumnIndex:0]);
+                                                       [tags setObject:tagIdNumber forKey:tagName];
+                                                   }
+
+                                                   tag_id = [tagIdNumber intValue];
+                                                   [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
                                                }
-                                               
-                                               tag_id = [tagIdNumber intValue];
-                                               [db executeUpdateWithFormat:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) VALUES (%d, %d)", tag_id, currentBookmarkId.integerValue];
                                            }
                                        }
                                        
