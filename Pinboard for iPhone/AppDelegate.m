@@ -69,10 +69,10 @@
 
                     if ([sourceApplication isEqualToString:@"com.google.chrome.ios"]) {
                         if ([url.scheme isEqualToString:@"http"]) {
-                            url = [NSURL URLWithString:[queryParameters[@"url"] stringByReplacingCharactersInRange:[queryParameters[@"url"] rangeOfString:url.scheme] withString:@"googlechrome"]];
+                            url = [NSURL URLWithString:@"googlechrome://"];
                         }
                         else if ([url.scheme isEqualToString:@"https"]) {
-                            url = [NSURL URLWithString:[queryParameters[@"url"] stringByReplacingCharactersInRange:[queryParameters[@"url"] rangeOfString:url.scheme] withString:@"googlechromes"]];
+                            url = [NSURL URLWithString:@"googlechromes://"];
                         }
                     }
 
