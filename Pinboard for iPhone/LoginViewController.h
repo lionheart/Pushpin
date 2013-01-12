@@ -22,5 +22,6 @@
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;
+- (void)login;
 
 @end
