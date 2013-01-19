@@ -47,6 +47,7 @@
 @property (nonatomic) int secondsLeft;
 @property (nonatomic) BOOL shouldShowContextMenu;
 @property (nonatomic) BOOL processingBookmarks;
+@property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;

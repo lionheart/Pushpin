@@ -51,6 +51,7 @@
 @synthesize timerPaused;
 @synthesize shouldShowContextMenu;
 @synthesize processingBookmarks;
+@synthesize longPressGestureRecognizer;
 
 - (void)checkForBookmarkUpdates {
     if (!timerPaused) {
@@ -113,6 +114,9 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
     // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
 }
@@ -621,6 +625,7 @@
 #pragma mark - Menu
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
     if (!self.shouldShowContextMenu) {
         return NO;
     }
@@ -814,14 +819,22 @@
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    NSInteger cancelButtonIndex = 6;
     [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
     [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
-    [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+    
+    if ([bookmark[@"unread"] boolValue]) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+    }
+    else {
+        cancelButtonIndex--;
+    }
+
     [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
     [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
     
     NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
-    sheet.cancelButtonIndex = 6;
+
     if (readlater.integerValue == READLATER_INSTAPAPER) {
         [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
     }
@@ -829,8 +842,10 @@
         [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
     }
     else {
-        sheet.cancelButtonIndex = 5;
+        cancelButtonIndex--;
     }
+
+    sheet.cancelButtonIndex = cancelButtonIndex;
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     sheet.destructiveButtonIndex = 0;
@@ -844,6 +859,9 @@
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
         [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark update:@(YES) callback:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
+        [self markBookmarkAsRead:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
         [self readLater:nil];
