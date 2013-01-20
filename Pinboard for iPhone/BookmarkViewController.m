@@ -125,50 +125,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self processBookmarks];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    // menu
-    if (![self becomeFirstResponder]) {
-        DLog(@"Couldn't become first responder ");
-        return;
-    }
-
-    NSMutableArray *items = [NSMutableArray array];
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
-    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
-    
-    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    UIMenuItem *markReadMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Mark as read", nil) action:@selector(markBookmarkAsRead:)];
-    UIMenuItem *editBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) action:@selector(editBookmark:)];
-    UIMenuItem *deleteBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action:@selector(confirmDeletion:)];
-
-    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    if (readLater.integerValue == READLATER_INSTAPAPER) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Instapaper" action:@selector(readLater:)];
-        [items addObject:readLaterMenuItem];
-    }
-    else if (readLater.integerValue == READLATER_READABILITY) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Readability" action:@selector(readLater:)];
-        [items addObject:readLaterMenuItem];
-    }
-    else if (readLater.integerValue == READLATER_POCKET) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:@"Pocket" action:@selector(readLater:)];
-        [items addObject:readLaterMenuItem];
-    }
-
-    [items addObject:markReadMenuItem];
-    [items addObject:shareMenuItem];
-    [items addObject:editBookmarkMenuItem];
-    [items addObject:deleteBookmarkMenuItem];
-    
-    [items addObject:copyURLMenuItem];
-    [items addObject:copyTitleMenuItem];
-    
-    [[UIMenuController sharedMenuController] setMenuItems:items];
-    [[UIMenuController sharedMenuController] update];
 
     [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
     self.timerPaused = NO;
