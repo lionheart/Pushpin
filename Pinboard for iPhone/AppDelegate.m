@@ -424,12 +424,6 @@
 
     if (self.lastUpdated != nil) {
         self.bookmarksLoading = YES;
-
-        if (updateDelegate == nil && self.bookmarkViewControllerActive) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [ZAActivityBar showWithStatus:NSLocalizedString(@"Updating bookmarks", nil)];
-            });
-        }
     }
 
     NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/all?format=json&auth_token=%@", [self token]];
@@ -467,13 +461,12 @@
                                            [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
                                            [metas setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
                                        }
-                                       
-                                       NSMutableArray *newBookmarkHashes = [[NSMutableArray alloc] init];
 
                                        NSString *bookmarkMeta;
                                        NSNumber *tagIdNumber;
                                        BOOL updated_or_created = NO;
                                        NSUInteger count = 0;
+                                       NSUInteger newBookmarkCount = 0;
                                        NSUInteger total = elements.count;
                                        NSDictionary *params;
                                        
@@ -481,7 +474,7 @@
 
                                        for (NSDictionary *element in elements) {
                                            updated_or_created = NO;
-                                           [newBookmarkHashes addObject:element[@"hash"]];
+
                                            [oldBookmarkHashes removeObject:element[@"hash"]];
                                            
                                            count++;
@@ -510,6 +503,7 @@
                                                }
                                            }
                                            else {
+                                               newBookmarkCount++;
                                                updated_or_created = YES;
                                                params = @{
                                                    @"url": element[@"href"],
@@ -555,20 +549,18 @@
                                        [db commit];
 
                                        self.bookmarksUpdated = @(YES);
+                                       if (newBookmarkCount > 0) {
+                                           self.bookmarksUpdatedMessage = [NSString stringWithFormat:@"%d bookmark%@ added.", newBookmarkCount, newBookmarkCount != 1 ? @"s were" : @" was"];
+                                       }
+
                                        [self resumeRefreshTimer];
                                        [self setLastUpdated:[NSDate date]];
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           self.bookmarksLoading = NO;
-                                           [ZAActivityBar dismiss];
-                                       });
+                                       self.bookmarksLoading = NO;
                                    });
                                }
                                else {
                                    [self resumeRefreshTimer];
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       self.bookmarksLoading = NO;
-                                       [ZAActivityBar dismiss];
-                                   });
+                                   self.bookmarksLoading = NO;
                                }
                            }];
 }

@@ -53,34 +53,36 @@
 @synthesize shouldShowContextMenu;
 @synthesize processingBookmarks;
 @synthesize longPressGestureRecognizer;
+@synthesize activityIndicator;
 
 - (void)checkForBookmarkUpdates {
+    if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
+        [self.activityIndicator startAnimating];
+    }
+    else {
+        [self.activityIndicator stopAnimating];
+    }
+
     if (!timerPaused) {
-        if (secondsLeft == 0) {
-            secondsLeft = 1;
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
-            if (delegate.bookmarksUpdated.boolValue) {
-                UIView *view;
-                
-                if (self.isSearchTable.boolValue) {
-                    view = self.searchDisplayController.searchContentsController.view;
-                }
-                else {
-                    view = self.navigationController.navigationBar;
-                }
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        if (delegate.bookmarksUpdated.boolValue) {
+            UIView *view;
 
-                NSString *message = delegate.bookmarksUpdatedMessage;
-                if (message != nil) {
-                    [ZAActivityBar showSuccessWithStatus:message];
-                }
-
-                [self processBookmarks];
-                delegate.bookmarksUpdated = @(NO);
-                delegate.bookmarksUpdatedMessage = nil;
+            if (self.isSearchTable.boolValue) {
+                view = self.searchDisplayController.searchContentsController.view;
             }
-        }
-        else {
-            secondsLeft--;
+            else {
+                view = self.navigationController.navigationBar;
+            }
+
+            NSString *message = delegate.bookmarksUpdatedMessage;
+            if (message != nil) {
+                [ZAActivityBar showSuccessWithStatus:message];
+            }
+
+            [self processBookmarks];
+            delegate.bookmarksUpdated = @(NO);
+            delegate.bookmarksUpdatedMessage = nil;
         }
     }
 }
@@ -100,6 +102,10 @@
         self.savedSearchTerm = nil;
     }
 
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.activityIndicator.frame = CGRectMake(10, 0, 40, 20);
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
+
 	self.tableView.scrollEnabled = YES;
     self.shouldShowContextMenu = YES;
     self.processingBookmarks = NO;
@@ -118,31 +124,40 @@
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-    
+
     // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    self.timerPaused = NO;
+    self.secondsLeft = 1;
+    self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
+
+    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self processBookmarks];
 
-    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
-    self.timerPaused = NO;
-    self.secondsLeft = 1;
-    self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
-
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
-        [ZAActivityBar showWithStatus:@"Updating bookmarks"];
+        [self.activityIndicator startAnimating];
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    self.timerPaused = YES;
     [self.bookmarkUpdateTimer invalidate];
     [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:NO];
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
-        [ZAActivityBar dismiss];
+        [self.activityIndicator stopAnimating];
     }
 }
 
@@ -213,16 +228,10 @@
     self.filteredBookmarks = nil;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    self.searchWasActive = [self.searchDisplayController isActive];
-    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
-}
-
 - (void)processBookmarks {
     self.processingBookmarks = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.timerPaused = true;
+        self.timerPaused = YES;
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
@@ -310,7 +319,7 @@
 
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
                     [self.tableView endUpdates];
-                    self.timerPaused = false;
+                    self.timerPaused = NO;
                 }
                 self.processingBookmarks = NO;
             });
@@ -877,6 +886,7 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
+    self.timerPaused = YES;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -903,6 +913,8 @@
                                    delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Deleted Message", nil);
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                                }
+
+                               self.timerPaused = NO;
                            }];
 }
 
