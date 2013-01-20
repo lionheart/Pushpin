@@ -229,7 +229,7 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 
                 for (int i=0; i<oldTagCompletions.count; i++) {
                     if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
@@ -238,7 +238,7 @@
                 }
                 
                 self.tagCompletions = newTagCompletions;
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 
                 [self.tableView endUpdates];
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
