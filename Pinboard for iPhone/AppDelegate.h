@@ -11,7 +11,8 @@
 enum browsers {
     BROWSER_WEBVIEW,
     BROWSER_SAFARI,
-    BROWSER_CHROME
+    BROWSER_CHROME,
+    BROWSER_ICAB_MOBILE
 };
 
 enum readlaterservices {
