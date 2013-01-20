@@ -24,8 +24,10 @@
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
+- (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
 

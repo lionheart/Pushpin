@@ -161,6 +161,9 @@
     if (bookmark[@"unread"]) {
         addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
     }
+    else {
+        addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
+    }
 
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];
 }
