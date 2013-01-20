@@ -34,25 +34,25 @@
         
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
         homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
-        
+
         UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
         [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, self.allBookmarkViewController, nil]];
         [postViewContainer popToViewController:self.allBookmarkViewController animated:NO];
-        
+
         postViewContainer.tabBarItem.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
         // [postViewContainer.tabBarItem setBadgeValue:@"2"];
-        
+
         SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
         UINavigationController *settingsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
         settingsViewController.title = NSLocalizedString(@"Settings Tab Bar Title", nil);
         settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
-        
+
         AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
         UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
         addBookmarkViewController.title = NSLocalizedString(@"Add Tab Bar Title", nil);
         addBookmarkViewController.tabBarItem.image = [UIImage imageNamed:@"10-medical"];
-        
+
         TagViewController *tagViewController = [[TagViewController alloc] init];
         UINavigationController *tagViewNavigationController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
         tagViewController.title = NSLocalizedString(@"Tags Tab Bar Title", nil);

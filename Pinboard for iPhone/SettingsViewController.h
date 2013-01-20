@@ -11,8 +11,9 @@
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate>
 
+@property (nonatomic, retain) UIAlertView *instapaperAlertView;
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;

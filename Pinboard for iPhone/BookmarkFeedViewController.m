@@ -15,6 +15,9 @@
 #import "ZAActivityBar.h"
 #import "FMDatabase.h"
 #import "BookmarkViewController.h"
+#import "PocketAPI.h"
+#import "Lockbox.h"
+#import "NSString+URLEncoding.h"
 
 @interface BookmarkFeedViewController ()
 
@@ -384,19 +387,43 @@
 }
 
 - (void)readLater:(id)sender {
-    NSDictionary *bookmark = self.bookmarks[self.selectedIndexPath.row];
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
+    NSURL *url = [NSURL URLWithString:self.bookmark[@"url"]];
     NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"x-callback-instapaper://x-callback-url/add?x-source=Pushpin&x-success=pushpin://&url="]];
-        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
-        [[UIApplication sharedApplication] openURL:newURL];
+        NSString *urlToAdd = [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
+        NSString *username = [[Lockbox stringForKey:@"InstapaperUsername"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
+        NSString *password = [[Lockbox stringForKey:@"InstapaperPassword"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/add?url=%@&username=%@&password=%@&selection=Sent%%20from%%20Pushpin", urlToAdd, username, password]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   NSLog(@"%d %@", httpResponse.statusCode, error);
+                                   if (httpResponse.statusCode == 201) {
+                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Instapaper."];
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                   }
+                                   else {
+                                       [ZAActivityBar showErrorWithStatus:@"Error sending to Instapaper."];
+                                   }
+                               }];
     }
-    else {
-        NSURL *newURL = [NSURL URLWithString:[bookmark[@"url"] stringByReplacingCharactersInRange:[bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
+    else if (readLater.integerValue == READLATER_READABILITY) {
+        NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
         [[UIApplication sharedApplication] openURL:newURL];
+    }
+    else if (readLater.integerValue == READLATER_POCKET) {
+        [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:self.bookmark[@"url"]]
+                             withTitle:self.bookmark[@"title"]
+                               handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+                                   if (!error) {
+                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Pocket."];
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                   }
+                               }];
     }
 }
 
@@ -447,8 +474,8 @@
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    NSInteger cancelButtonIndex = 4;
-
+    NSInteger cancelButtonIndex = 3;
+    
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
@@ -460,9 +487,6 @@
         cancelButtonIndex--;
     }
     [db close];
-
-    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-    [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
 
     NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
 
@@ -478,6 +502,9 @@
     else {
         cancelButtonIndex--;
     }
+    
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+    // [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     sheet.cancelButtonIndex = cancelButtonIndex;
