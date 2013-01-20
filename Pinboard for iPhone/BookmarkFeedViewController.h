@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 
-@interface BookmarkFeedViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate> {
+@interface BookmarkFeedViewController : UITableViewController <UIWebViewDelegate, TTTAttributedLabelDelegate, UIActionSheetDelegate> {
     NSInteger failureCount;
 }
 
@@ -23,6 +23,7 @@
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic) BOOL shouldShowContextMenu;
+@property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark;
 + (NSMutableAttributedString *)attributedStringForBookmark:(NSDictionary *)bookmark;
@@ -35,5 +36,6 @@
 - (void)share:(id)sender;
 - (void)copyToMine:(id)sender;
 - (void)handleSwipeRight:(UIGestureRecognizer *)gestureRecognizer;
+- (void)longPress:(UIGestureRecognizer *)recognizer;
 
 @end
