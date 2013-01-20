@@ -36,6 +36,7 @@
 @synthesize dbQueue;
 @synthesize bookmarksLoading;
 @synthesize bookmarkViewControllerActive;
+@synthesize readByDefault = _readByDefault;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -290,6 +291,25 @@
         }
     }
     return _privateByDefault;
+}
+
+- (void)setReadByDefault:(NSNumber *)readByDefault {
+    _readByDefault = readByDefault;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:readByDefault forKey:@"io.aurora.pinboard.ReadByDefault"];
+    [defaults synchronize];
+}
+
+- (NSNumber *)readByDefault {
+    if (!_readByDefault) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _readByDefault = [defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"];
+
+        if (!_readByDefault) {
+            _readByDefault = @(NO);
+        }
+    }
+    return _readByDefault;
 }
 
 - (void)setBrowser:(NSNumber *)browser {

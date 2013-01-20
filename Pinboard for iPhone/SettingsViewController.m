@@ -64,9 +64,9 @@
         [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
         [self.readLaterActionSheet addButtonWithTitle:@"None"];
 
-        readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        self.readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
-        self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+        self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
         self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
         [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
         [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
@@ -135,7 +135,11 @@
 }
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setPrivateByDefault:@(privateByDefaultSwitch.on)];
+    [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
+}
+
+- (void)readByDefaultSwitchChangedValue:(id)sender {
+    [[AppDelegate sharedDelegate] setReadByDefault:@(self.readByDefaultSwitch.on)];
 }
 
 #pragma mark - Table view data source
@@ -148,10 +152,10 @@
     switch (section) {
         case 0:
             if (self.readLaterServices.count > 0) {
-                return 3;
+                return 4;
             }
             else {
-                return 2;
+                return 3;
             }
 
             break;
@@ -187,15 +191,18 @@
     
     cell.accessoryView = nil;
     
+    CGSize size;
+    CGSize switchSize;
+
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    CGSize size = cell.frame.size;
+                    size = cell.frame.size;
                     self.privateByDefaultSwitch = [[UISwitch alloc] init];
-                    CGSize switchSize = self.privateByDefaultSwitch.frame.size;
+                    switchSize = self.privateByDefaultSwitch.frame.size;
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
                     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -203,6 +210,18 @@
                     break;
 
                 case 1:
+                    cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    self.readByDefaultSwitch = [[UISwitch alloc] init];
+                    switchSize = self.readByDefaultSwitch.frame.size;
+                    self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.readByDefaultSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
+                    [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+                    cell.accessoryView = self.readByDefaultSwitch;
+                    break;
+
+                case 2:
                     cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -221,7 +240,7 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
-                case 2:
+                case 3:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
@@ -307,20 +326,32 @@
         }
     }
     else if (alertView == self.instapaperAlertView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.instapaperVerificationAlertView show];
+
+            if (self.instapaperVerificationAlertView != nil) {
+                self.loadingIndicator.center = CGPointMake(self.instapaperVerificationAlertView.bounds.size.width/2, self.instapaperVerificationAlertView.bounds.size.height-45);
+                [self.loadingIndicator startAnimating];
+                [self.instapaperVerificationAlertView addSubview:self.loadingIndicator];
+            }
+        });
+
         NSString *username = [[alertView textFieldAtIndex:0] text];
         NSString *password = [[alertView textFieldAtIndex:1] text];
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/authenticate?username=%@&password=%@", [username urlEncodeUsingEncoding:NSUTF8StringEncoding], [password urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 200) {
                                        [Lockbox setString:username forKey:@"InstapaperUsername"];
                                        [Lockbox setString:password forKey:@"InstapaperPassword"];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                    }
                                    else {
                                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
@@ -415,14 +446,14 @@
                 if (!error && API.loggedIn) {
                     [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
                     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
-                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
                 }
             }];
         }
         else {
             [[AppDelegate sharedDelegate] setReadlater:nil];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
 
     }
@@ -432,10 +463,10 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-            if (indexPath.row == 1) {
+            if (indexPath.row == 2) {
                 [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
             }
-            else if (indexPath.row == 2) {
+            else if (indexPath.row == 3) {
                 [self.readLaterActionSheet showFromTabBar:self.tabBarController.tabBar];
             }
             break;
