@@ -124,16 +124,16 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [NSString stringWithFormat:@"🌐 %@", NSLocalizedString(@"URL", nil)];
+            return NSLocalizedString(@"URL", nil);
             break;
         case 1:
-            return [NSString stringWithFormat:@"📝 %@", NSLocalizedString(@"Title", nil)];
+            return NSLocalizedString(@"Title", nil);
             break;
         case 2:
-            return [NSString stringWithFormat:@"📰 %@", NSLocalizedString(@"Description", nil)];
+            return NSLocalizedString(@"Description", nil);
             break;
         case 3:
-            return [NSString stringWithFormat:@"🔖 %@", NSLocalizedString(@"Tags", nil)];
+            return NSLocalizedString(@"Tags", nil);
             break;
         case 4:
             return NSLocalizedString(@"Other", nil);
