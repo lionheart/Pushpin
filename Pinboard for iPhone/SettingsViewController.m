@@ -13,6 +13,8 @@
 #import "UVStyleSheet.h"
 #import "ASStyleSheet.h"
 #import "PocketAPI.h"
+#import "NSString+URLEncoding.h"
+#import "Lockbox.h"
 
 @interface SettingsViewController ()
 
@@ -26,6 +28,7 @@
 @synthesize readLaterServices;
 @synthesize readLaterActionSheet;
 @synthesize privateByDefaultSwitch;
+@synthesize instapaperAlertView;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -43,26 +46,38 @@
         self.readLaterServices = [NSMutableArray array];
         BOOL installed;
         
-        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"x-callback-instapaper://x-callback-url/add?google.com"]];
-        if (installed) {
-            [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
-            [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
+        [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
+        [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
 
-        }
         installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"readability://add/google.com/"]];
         if (installed) {
             [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
             [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
         }
 
-        if ([PocketAPI hasPocketAppInstalled]) {
-            [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
-            [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
-        }
+        [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
+        [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
+        [self.readLaterActionSheet addButtonWithTitle:@"None"];
 
         readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+
+        self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+        self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+        [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
+        [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
+        [[self.instapaperAlertView textFieldAtIndex:0] setPlaceholder:@"Email Address"];
+        [[self.instapaperAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
+        [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
+        [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
     }
     return self;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField == [self.instapaperAlertView textFieldAtIndex:1]) {
+        [self.instapaperAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+    return YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -261,7 +276,7 @@
 
 #pragma mark - Table view delegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
             [[AppDelegate sharedDelegate] setToken:nil];
@@ -276,6 +291,31 @@
 
             [[AppDelegate sharedDelegate] migrateDatabase];
         }
+    }
+    else if (alertView == self.instapaperAlertView) {
+        NSString *username = [[alertView textFieldAtIndex:0] text];
+        NSString *password = [[alertView textFieldAtIndex:1] text];
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/authenticate?username=%@&password=%@", [username urlEncodeUsingEncoding:NSUTF8StringEncoding], [password urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   if (httpResponse.statusCode == 200) {
+                                       [Lockbox setString:username forKey:@"InstapaperUsername"];
+                                       [Lockbox setString:password forKey:@"InstapaperPassword"];
+                                       [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
+                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                   }
+                                   else {
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                                                  message:@"We couldn't log you into Instapaper with those credentials."
+                                                                 delegate:nil
+                                                        cancelButtonTitle:nil
+                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
+                                   }
+                               }];
     }
     else {
         if (buttonIndex == 1) {
@@ -339,18 +379,27 @@
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
         if ([buttonTitle isEqualToString:@"Instapaper"]) {
-            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
-            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
+            [self.instapaperAlertView show];
         }
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
         }
         else if ([buttonTitle isEqualToString:@"Pocket"]) {
-            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
-            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
+            [[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *API, NSError *error) {
+                if (!error && API.loggedIn) {
+                    [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
+                    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                }
+            }];
         }
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        else {
+            [[AppDelegate sharedDelegate] setReadlater:nil];
+            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+
     }
 }
 
