@@ -462,7 +462,7 @@
                 }
             }];
         }
-        else {
+        else if ([buttonTitle isEqualToString:@"None"]) {
             [[AppDelegate sharedDelegate] setReadlater:nil];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
