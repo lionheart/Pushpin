@@ -67,7 +67,7 @@
         AppDelegate *delegate = [AppDelegate sharedDelegate];
         if (delegate.bookmarksUpdated.boolValue) {
             UIView *view;
-
+            
             if (self.isSearchTable.boolValue) {
                 view = self.searchDisplayController.searchContentsController.view;
             }
@@ -101,7 +101,7 @@
         [self.searchDisplayController.searchBar setText:self.savedSearchTerm];
         self.savedSearchTerm = nil;
     }
-
+    
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     self.activityIndicator.frame = CGRectMake(10, 0, 40, 20);
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
@@ -135,7 +135,7 @@
     self.secondsLeft = 1;
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
-
+    
     [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
 
 }
@@ -143,7 +143,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self processBookmarks];
-
+    
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
         [self.activityIndicator startAnimating];
     }
@@ -913,7 +913,7 @@
                                    delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Deleted Message", nil);
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                                }
-
+                               
                                self.timerPaused = NO;
                            }];
 }
