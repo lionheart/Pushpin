@@ -29,6 +29,11 @@
 @synthesize readLaterActionSheet;
 @synthesize privateByDefaultSwitch;
 @synthesize instapaperAlertView;
+@synthesize installChromeAlertView;
+@synthesize installiCabMobileAlertView;
+@synthesize instapaperVerificationAlertView;
+@synthesize loadingIndicator;
+@synthesize readByDefaultSwitch;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -39,7 +44,7 @@
                                                                                  action:@selector(showAboutPage)];
         
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", nil];
+        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", @"iCab Mobile", nil];
         self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
         self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
@@ -69,6 +74,15 @@
         [[self.instapaperAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
         [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
         [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
+
+        self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+        self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it. Click OK to continue.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+        self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
+                                                                          message:@"Logging into Instapaper"
+                                                                         delegate:nil
+                                                                cancelButtonTitle:nil
+                                                                otherButtonTitles:nil];
+        self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     }
     return self;
 }
@@ -317,10 +331,11 @@
                                    }
                                }];
     }
-    else {
-        if (buttonIndex == 1) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.com/app/chrome"]];
-        }
+    else if (alertView == self.installChromeAlertView && buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.com/app/chrome"]];
+    }
+    else if (alertView == self.installiCabMobileAlertView && buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
     }
 }
 
@@ -339,11 +354,9 @@
                 break;
                 
             case 2: {
-                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://x1x"]];
+                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://google.com/"]];
                 if (!installed) {
-                    // Prompt user to install Chrome. If they say yes, set the browser and redirect them.
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                    [alert show];
+                    [self.installChromeAlertView show];
                 }
                 else {
                     [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
@@ -352,10 +365,22 @@
                 break;
             }
                 
+            case 3: {
+                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://google.com/"]];
+                if (!installed) {
+                    [self.installiCabMobileAlertView show];
+                }
+                else {
+                    [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
+                    [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
+                }
+                break;
+            }
+
             default:
                 break;
         }
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {

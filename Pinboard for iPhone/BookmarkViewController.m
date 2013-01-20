@@ -618,6 +618,19 @@
 
             break;
             
+        case BROWSER_ICAB_MOBILE:
+            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"icabmobile"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
+                [[UIApplication sharedApplication] openURL:url];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                [alert show];
+            }
+
+            break;
+
         default:
             break;
     }
