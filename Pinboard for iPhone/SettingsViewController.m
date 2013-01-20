@@ -352,6 +352,18 @@
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                       message:@"You've successfully logged in."
+                                                                                      delegate:nil
+                                                                             cancelButtonTitle:nil
+                                                                             otherButtonTitles:nil];
+                                       [alert show];
+                                       int64_t delayInSeconds = 2.0;
+                                       dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                       dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                           [alert dismissWithClickedButtonIndex:0 animated:YES];
+                                       });
                                    }
                                    else {
                                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
