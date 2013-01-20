@@ -32,6 +32,7 @@
 @synthesize bookmarkDetailViewController;
 @synthesize selectedIndexPath;
 @synthesize shouldShowContextMenu;
+@synthesize longPressGestureRecognizer;
 
 - (id)initWithURL:(NSString *)aURL {
     self = [super initWithStyle:UITableViewStylePlain];
@@ -52,10 +53,8 @@
     [super viewDidLoad];
 
     self.shouldShowContextMenu = YES;
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                     action:@selector(handleSwipeRight:)];
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
-    [self.tableView addGestureRecognizer:recognizer];
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -66,6 +65,17 @@
     if (![self becomeFirstResponder]) {
         DLog(@"Couldn't become first responder ");
         return;
+    }
+}
+
+
+- (void)longPress:(UIGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan && self.shouldShowContextMenu) {
+        CGPoint pressPoint;
+        pressPoint = [recognizer locationInView:self.tableView];
+        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
+        [self openActionSheetForBookmark:self.bookmark];
     }
 }
 
@@ -168,6 +178,7 @@
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:largeHelvetica range:titleRange];
     [attributedString setFont:smallHelvetica range:descriptionRange];
+    [attributedString setFont:smallHelvetica range:tagRange];
     [attributedString setTextColor:HEX(0x555555ff)];
     [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
     
@@ -325,10 +336,11 @@
 #pragma mark - Menu Items
 
 - (BOOL)canBecomeFirstResponder {
-    return YES;
+    return NO;
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
     if (!self.shouldShowContextMenu) {
         return NO;
     }
@@ -429,6 +441,69 @@
     BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
     bookmarkViewController.title = tag;
     [self.navigationController pushViewController:bookmarkViewController animated:YES];
+}
+
+#pragma mark - Action Sheet Delegate
+
+- (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    NSInteger cancelButtonIndex = 4;
+
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
+    [results next];
+    if ([results intForColumnIndex:0] == 0) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+    }
+    else {
+        cancelButtonIndex--;
+    }
+    [db close];
+
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
+
+    NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
+
+    if (readlater.integerValue == READLATER_INSTAPAPER) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+    }
+    else if (readlater.integerValue == READLATER_READABILITY) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+    }
+    else if (readlater.integerValue == READLATER_POCKET) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+    }
+    else {
+        cancelButtonIndex--;
+    }
+
+    [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    sheet.cancelButtonIndex = cancelButtonIndex;
+    [sheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+    if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+        [self readLater:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+        [self readLater:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+        [self readLater:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+        [self copyURL:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy Title", nil)]) {
+        [self copyTitle:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
+        [self copyToMine:nil];
+    }
 }
 
 @end

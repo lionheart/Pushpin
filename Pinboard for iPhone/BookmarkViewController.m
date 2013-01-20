@@ -841,6 +841,9 @@
     else if (readlater.integerValue == READLATER_READABILITY) {
         [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
     }
+    else if (readlater.integerValue == READLATER_POCKET) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+    }
     else {
         cancelButtonIndex--;
     }
