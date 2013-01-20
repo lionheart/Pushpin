@@ -85,31 +85,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self processBookmarks];
-    
-    NSMutableArray *items = [NSMutableArray array];
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
-    UIMenuItem *copyTitleMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Title", nil) action:@selector(copyTitle:)];
-    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Share", nil) action:@selector(share:)];
-    UIMenuItem *copyToMineMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to mine", nil) action:@selector(copyToMine:)];
-    
-    [items addObject:copyToMineMenuItem];
-
-    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    if (readLater.integerValue == READLATER_INSTAPAPER) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Instapaper", nil) action:@selector(readLater:)];
-        [items addObject:readLaterMenuItem];
-    }
-    else if (readLater.integerValue == READLATER_READABILITY) {
-        UIMenuItem *readLaterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Readability", nil) action:@selector(readLater:)];
-        [items addObject:readLaterMenuItem];
-    }
-    
-    [items addObject:copyURLMenuItem];
-    [items addObject:copyTitleMenuItem];
-    [items addObject:shareMenuItem];
-    
-    [[UIMenuController sharedMenuController] setMenuItems:items];
-    [[UIMenuController sharedMenuController] update];
 }
 
 #pragma mark - Gesture Recognizers
