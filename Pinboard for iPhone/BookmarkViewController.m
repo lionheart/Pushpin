@@ -190,7 +190,7 @@
 }
 
 - (void)longPress:(UIGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
+    if (recognizer.state == UIGestureRecognizerStateBegan && self.shouldShowContextMenu) {
         CGPoint pressPoint;
 
         if (self.searchDisplayController.active) {
@@ -213,7 +213,7 @@
     [db open];
     
     FMResultSet *results = [db executeQuery:@"SELECT bookmark.* FROM bookmark, bookmark_fts WHERE bookmark.id=bookmark_fts.id AND bookmark_fts MATCH ?" withArgumentsInArray:@[[self.savedSearchTerm stringByAppendingString:@"*"]]];
-    
+
     [self.filteredBookmarks removeAllObjects];
     [self.filteredHeights removeAllObjects];
     [self.filteredStrings removeAllObjects];
@@ -941,7 +941,7 @@
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
     
-    CGFloat height = 10.0f;
+    CGFloat height = 12.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
 
     if (![bookmark[@"description"] isEqualToString:@""]) {
@@ -978,6 +978,7 @@
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:largeHelvetica range:titleRange];
     [attributedString setFont:smallHelvetica range:descriptionRange];
+    [attributedString setFont:smallHelvetica range:tagRange];
     [attributedString setTextColor:HEX(0x555555ff)];
     
     if (![bookmark[@"unread"] boolValue]) {

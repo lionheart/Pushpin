@@ -115,8 +115,8 @@
 + (NSNumber *)heightForBookmark:(NSDictionary *)bookmark {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-    
-    CGFloat height = 10.0f;
+
+    CGFloat height = 12.0f;
     height += ceilf([bookmark[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     
     if (![bookmark[@"description"] isEqualToString:@""]) {

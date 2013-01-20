@@ -18,14 +18,14 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-        self.textView.font = [UIFont systemFontOfSize:17];
+        self.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
         self.textView.numberOfLines = 0;
         self.textView.textColor = [UIColor darkGrayColor];
         self.textView.lineBreakMode = kCTLineBreakByWordWrapping;
         self.textView.textAlignment = UITextAlignmentLeft;
         self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
         self.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-        
+
         NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
         [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
         [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
@@ -38,7 +38,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 5.0f), 0.0f, 0.0f);
+    self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 6.0f), 0.0f, 0.0f);
 }
 
 @end
