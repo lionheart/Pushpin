@@ -375,10 +375,10 @@
                                }];
     }
     else if (alertView == self.installChromeAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.com/app/chrome"]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
     }
     else if (alertView == self.installiCabMobileAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
     }
 }
 
