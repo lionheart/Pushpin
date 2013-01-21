@@ -72,7 +72,7 @@ static NSString *_bundleId = nil;
     
     NSMutableDictionary *dict = [self _service];
     [dict setObject: hierKey forKey: (ID) kSecAttrService];
-    [dict setObject: accessibility forKey: (ID) kSecAttrAccessible];
+    [dict setObject: (__bridge id)(accessibility) forKey: (ID) kSecAttrAccessible];
     [dict setObject: [obj dataUsingEncoding:NSUTF8StringEncoding] forKey: (ID) kSecValueData];
     
 #if __has_feature(objc_arc)

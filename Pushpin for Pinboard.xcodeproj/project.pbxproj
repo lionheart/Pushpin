@@ -135,7 +135,7 @@
 		37919F2C16092492007708EF /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2A16092492007708EF /* pin@2x.png */; };
 		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
 		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
-		37B21D2316ABA4F000281613 /* Lockbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B21D2216ABA4F000281613 /* Lockbox.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		37B21D2316ABA4F000281613 /* Lockbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B21D2216ABA4F000281613 /* Lockbox.m */; };
 		37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B65FCD1672C6690041DA8C /* libTestFlight.a */; };
 		37B65FD21672C6690041DA8C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCE1672C6690041DA8C /* README.md */; };
 		37B65FD31672C6690041DA8C /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCF1672C6690041DA8C /* release_notes.md */; };
