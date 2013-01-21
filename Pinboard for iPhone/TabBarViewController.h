@@ -13,6 +13,7 @@
 
 @interface TabBarViewController : UITabBarController <UITabBarControllerDelegate, ModalDelegate, UIAlertViewDelegate, UIWebViewDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
+@property (nonatomic, retain) UIAlertView *addBookmarkFromClipboardAlertView;
 @property (nonatomic, retain) UIWebView *webView;
 @property (nonatomic, retain) NSString *bookmarkURL;
 @property (nonatomic, retain) NSString *bookmarkTitle;
