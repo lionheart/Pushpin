@@ -66,6 +66,8 @@
         [self setViewControllers:[NSArray arrayWithObjects:postViewContainer, noteViewNavigationController, addBookmarkViewNavigationController, tagViewNavigationController, settingsViewNavigationController, nil]];
 
         self.delegate = self;
+
+        self.addBookmarkFromClipboardAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
     }
     return self;
 }
@@ -86,15 +88,17 @@
     [db open];
     FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmarkURL]];
     [results next];
-    if ([results intForColumnIndex:0] == 0) {
+    BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] == 0;
+    results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.bookmarkURL]];
+    [results next];
+    BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
+    if (alreadyExistsInBookmarks && !alreadyRejected) {
         NSURL *candidateURL = [NSURL URLWithString:self.bookmarkURL];
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
             [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
                                                    callback:^(NSString *title, NSString *description) {
                                                        self.bookmarkTitle = title;
-
-                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
-                                                       [alert show];
+                                                       [self.addBookmarkFromClipboardAlertView show];
                                                        [mixpanel track:@"Prompted to add bookmark from clipboard"];
                                                    }];
             
@@ -103,10 +107,18 @@
     [db close];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} update:@(NO) callback:nil];
-        [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView == self.addBookmarkFromClipboardAlertView) {
+        if (buttonIndex == 1) {
+            [self showAddBookmarkViewControllerWithBookmark:@{@"url": self.bookmarkURL, @"title": self.bookmarkTitle} update:@(NO) callback:nil];
+            [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
+        }
+        else {
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.bookmarkURL]];
+            [db close];
+        }
     }
 }
 
