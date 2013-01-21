@@ -186,6 +186,9 @@
                                        self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                        self.progressView.hidden = NO;
                                        [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
+                                       [[AppDelegate sharedDelegate] updateFeedToken:^{
+
+                                       }];
                                        
                                        NSString *username = [[AppDelegate sharedDelegate] username];
                                        [mixpanel identify:username];
