@@ -16,8 +16,8 @@
 #import "PocketAPI.h"
 #import "FMDatabaseQueue.h"
 #import "ZAActivityBar.h"
-#import "Lockbox.h"
 #import "OAuthConsumer.h"
+#import "KeychainItemWrapper.h"
 
 @interface BookmarkViewController ()
 
@@ -674,8 +674,10 @@
 - (void)readLater:(id)sender {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSString *resourceKey = [Lockbox stringForKey:@"InstapaperKey"];
-        NSString *resourceSecret = [Lockbox stringForKey:@"InstapaperSecret"];
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+        DLog(@"%@ %@", resourceKey, resourceSecret);
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
         OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
         OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
@@ -687,9 +689,11 @@
         [request setParameters:parameters];
         [request prepare];
 
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    DLog(@"%d", httpResponse.statusCode);
                                    if (httpResponse.statusCode == 200) {
@@ -701,12 +705,17 @@
                                    }
                                    else {
                                        [ZAActivityBar showErrorWithStatus:@"Error sending to Instapaper."];
+
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
                                    }
                                }];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
-        NSString *resourceKey = [Lockbox stringForKey:@"ReadabilityKey"];
-        NSString *resourceSecret = [Lockbox stringForKey:@"ReadabilitySecret"];
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
         OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
         OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
@@ -715,9 +724,11 @@
         [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.bookmark[@"url"]]]];
         [request prepare];
 
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    if (httpResponse.statusCode == 202) {
                                        [ZAActivityBar showSuccessWithStatus:@"Sent to Readability."];
@@ -728,6 +739,10 @@
                                    }
                                    else {
                                        [ZAActivityBar showErrorWithStatus:@"Error sending to Readability."];
+
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
                                    }
                                }];
     }
