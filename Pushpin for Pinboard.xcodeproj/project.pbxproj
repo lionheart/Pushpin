@@ -71,6 +71,7 @@
 		37561D8316ADC86100D69CDE /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D6D16ADC86100D69CDE /* OAToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D8416ADC86100D69CDE /* OATokenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D6F16ADC86100D69CDE /* OATokenManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D8516ADC86100D69CDE /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37561D7116ADC86100D69CDE /* README */; };
+		37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37561D8816ADFEC400D69CDE /* Pushpin.entitlements */; };
 		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFD167D47FD00320495 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -315,6 +316,7 @@
 		37561D6F16ADC86100D69CDE /* OATokenManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OATokenManager.m; sourceTree = "<group>"; };
 		37561D7016ADC86100D69CDE /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer.h; sourceTree = "<group>"; };
 		37561D7116ADC86100D69CDE /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Pushpin.entitlements; path = ../Pushpin.entitlements; sourceTree = "<group>"; };
 		375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		375A0FFA167D47FD00320495 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
 		375A0FFB167D47FD00320495 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
@@ -1037,6 +1039,7 @@
 		37FEEB9915745488003F2B77 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				37561D8816ADFEC400D69CDE /* Pushpin.entitlements */,
 				372F8886167429DA0073D0B6 /* Beta-Info.plist */,
 				372F8887167429DA0073D0B6 /* Dev-Info.plist */,
 				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
@@ -1248,6 +1251,7 @@
 				3740A24116863CF000F95D82 /* Localizable.strings in Resources */,
 				37561D8216ADC86100D69CDE /* OATestServer.rb in Resources */,
 				37561D8516ADC86100D69CDE /* README in Resources */,
+				37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1424,6 +1428,7 @@
 		37800E9C162D576E009FCB17 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
@@ -1504,6 +1509,7 @@
 		37FEEBA715745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
@@ -1522,6 +1528,7 @@
 		37FEEBA815745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
