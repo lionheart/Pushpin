@@ -72,6 +72,7 @@
 		37561D8416ADC86100D69CDE /* OATokenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D6F16ADC86100D69CDE /* OATokenManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D8516ADC86100D69CDE /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37561D7116ADC86100D69CDE /* README */; };
 		37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37561D8816ADFEC400D69CDE /* Pushpin.entitlements */; };
+		37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */; };
 		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFD167D47FD00320495 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -136,7 +137,6 @@
 		37919F2C16092492007708EF /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2A16092492007708EF /* pin@2x.png */; };
 		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
 		37AFB01115AB7CCA00900254 /* recent.xml in Resources */ = {isa = PBXBuildFile; fileRef = 37AFB01015AB7CCA00900254 /* recent.xml */; };
-		37B21D2316ABA4F000281613 /* Lockbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B21D2216ABA4F000281613 /* Lockbox.m */; };
 		37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B65FCD1672C6690041DA8C /* libTestFlight.a */; };
 		37B65FD21672C6690041DA8C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCE1672C6690041DA8C /* README.md */; };
 		37B65FD31672C6690041DA8C /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCF1672C6690041DA8C /* release_notes.md */; };
@@ -317,6 +317,8 @@
 		37561D7016ADC86100D69CDE /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer.h; sourceTree = "<group>"; };
 		37561D7116ADC86100D69CDE /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Pushpin.entitlements; path = ../Pushpin.entitlements; sourceTree = "<group>"; };
+		37561D8F16AE05B900D69CDE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		375A0FFA167D47FD00320495 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
 		375A0FFB167D47FD00320495 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
@@ -398,8 +400,6 @@
 		37A25A2015FC42B5009716BB /* NoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteViewController.h; sourceTree = "<group>"; };
 		37A25A2115FC42B5009716BB /* NoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteViewController.m; sourceTree = "<group>"; };
 		37AFB01015AB7CCA00900254 /* recent.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = recent.xml; sourceTree = "<group>"; };
-		37B21D2116ABA4F000281613 /* Lockbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lockbox.h; sourceTree = "<group>"; };
-		37B21D2216ABA4F000281613 /* Lockbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lockbox.m; sourceTree = "<group>"; };
 		37B65FCD1672C6690041DA8C /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		37B65FCE1672C6690041DA8C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		37B65FCF1672C6690041DA8C /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
@@ -525,8 +525,8 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
-				37B21D2016ABA4F000281613 /* Lockbox */,
 				375A1012167E967D00320495 /* ZAActivityBar */,
 				375A0FF8167D47FD00320495 /* Pocket SDK */,
 				378A24EC167D041E00FB07EF /* EGOCache */,
@@ -758,6 +758,16 @@
 			path = Crypto;
 			sourceTree = "<group>";
 		};
+		37561D8E16AE05B900D69CDE /* KeychainItemWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				37561D8F16AE05B900D69CDE /* KeychainItemWrapper.h */,
+				37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */,
+			);
+			name = KeychainItemWrapper;
+			path = Vendor/KeychainItemWrapper;
+			sourceTree = "<group>";
+		};
 		375A0FF8167D47FD00320495 /* Pocket SDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -841,16 +851,6 @@
 			);
 			name = EGOCache;
 			path = Vendor/EGOCache;
-			sourceTree = "<group>";
-		};
-		37B21D2016ABA4F000281613 /* Lockbox */ = {
-			isa = PBXGroup;
-			children = (
-				37B21D2116ABA4F000281613 /* Lockbox.h */,
-				37B21D2216ABA4F000281613 /* Lockbox.m */,
-			);
-			name = Lockbox;
-			path = Vendor/Lockbox;
 			sourceTree = "<group>";
 		};
 		37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */ = {
@@ -1334,7 +1334,6 @@
 				375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */,
 				375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */,
 				375A1015167E967D00320495 /* ZAActivityBar.m in Sources */,
-				37B21D2316ABA4F000281613 /* Lockbox.m in Sources */,
 				37561D7216ADC86100D69CDE /* NSMutableURLRequest+Parameters.m in Sources */,
 				37561D7316ADC86100D69CDE /* NSString+URLEncoding.m in Sources */,
 				37561D7416ADC86100D69CDE /* NSURL+Base.m in Sources */,
@@ -1353,6 +1352,7 @@
 				37561D8116ADC86100D69CDE /* OAServiceTicket.m in Sources */,
 				37561D8316ADC86100D69CDE /* OAToken.m in Sources */,
 				37561D8416ADC86100D69CDE /* OATokenManager.m in Sources */,
+				37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

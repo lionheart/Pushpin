@@ -14,7 +14,7 @@
 #import "ASStyleSheet.h"
 #import "PocketAPI.h"
 #import "NSString+URLEncoding.h"
-#import "Lockbox.h"
+#import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
 
 @interface SettingsViewController ()
@@ -363,9 +363,11 @@
              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    DLog(@"%d", httpResponse.statusCode);
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
@@ -378,8 +380,9 @@
                                    }
                                    else {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
-                                       [Lockbox setString:token.key forKey:@"InstapaperKey"];
-                                       [Lockbox setString:token.secret forKey:@"InstapaperSecret"];
+                                       KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+                                       [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
+                                       [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
@@ -421,16 +424,19 @@
             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    DLog(@"%d", httpResponse.statusCode);
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
-                                       [Lockbox setString:token.key forKey:@"ReadabilityKey"];
-                                       [Lockbox setString:token.secret forKey:@"ReadabilitySecret"];
+                                       KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
+                                       [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
+                                       [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];

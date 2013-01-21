@@ -16,8 +16,9 @@
 #import "FMDatabase.h"
 #import "BookmarkViewController.h"
 #import "PocketAPI.h"
-#import "Lockbox.h"
 #import "NSString+URLEncoding.h"
+#import "OAuthConsumer.h"
+#import "KeychainItemWrapper.h"
 
 @interface BookmarkFeedViewController ()
 
@@ -363,32 +364,78 @@
 
 - (void)readLater:(id)sender {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    NSURL *url = [NSURL URLWithString:self.bookmark[@"url"]];
-    NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSString *urlToAdd = [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSString *username = [[Lockbox stringForKey:@"InstapaperUsername"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSString *password = [[Lockbox stringForKey:@"InstapaperPassword"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/add?url=%@&username=%@&password=%@&selection=Sent%%20from%%20Pushpin", urlToAdd, username, password]];
-        NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+        DLog(@"%@ %@", resourceKey, resourceSecret);
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.bookmark[@"url"]]];
+        [parameters addObject:[OARequestParameter requestParameter:@"description" value:@"Sent from Pushpin"]];
+        [request setParameters:parameters];
+        [request prepare];
+
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d %@", httpResponse.statusCode, error);
-                                   if (httpResponse.statusCode == 201) {
+                                   DLog(@"%d", httpResponse.statusCode);
+                                   if (httpResponse.statusCode == 200) {
                                        [ZAActivityBar showSuccessWithStatus:@"Sent to Instapaper."];
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                    }
+                                   else if (httpResponse.statusCode == 1221) {
+                                       [ZAActivityBar showErrorWithStatus:@"Publisher opted out of Instapaper compatibility."];
+                                   }
                                    else {
                                        [ZAActivityBar showErrorWithStatus:@"Error sending to Instapaper."];
+
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
                                    }
                                }];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
-        NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
-        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
-        [[UIApplication sharedApplication] openURL:newURL];
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.bookmark[@"url"]]]];
+        [request prepare];
+
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   if (httpResponse.statusCode == 202) {
+                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Readability."];
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                   }
+                                   else if (httpResponse.statusCode == 409) {
+                                       [ZAActivityBar showErrorWithStatus:@"Link already sent to Readability."];
+                                   }
+                                   else {
+                                       [ZAActivityBar showErrorWithStatus:@"Error sending to Readability."];
+
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
+                                   }
+                               }];
     }
     else if (readLater.integerValue == READLATER_POCKET) {
         [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:self.bookmark[@"url"]]
@@ -463,6 +510,10 @@
     }
     [db close];
 
+
+    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+    // [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
+
     NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
 
     if (readlater.integerValue == READLATER_INSTAPAPER) {
@@ -477,9 +528,6 @@
     else {
         cancelButtonIndex--;
     }
-    
-    [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-    // [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     sheet.cancelButtonIndex = cancelButtonIndex;
