@@ -15,6 +15,7 @@
 #import "PocketAPI.h"
 #import "NSString+URLEncoding.h"
 #import "Lockbox.h"
+#import "OAuthConsumer.h"
 
 @interface SettingsViewController ()
 
@@ -34,6 +35,8 @@
 @synthesize instapaperVerificationAlertView;
 @synthesize loadingIndicator;
 @synthesize readByDefaultSwitch;
+@synthesize readabilityAlertView;
+@synthesize readabilityVerificationAlertView;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -49,24 +52,18 @@
         self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         self.readLaterServices = [NSMutableArray array];
-        BOOL installed;
         
         [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
-
-        installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"readability://add/google.com/"]];
-        if (installed) {
-            [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
-            [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
-        }
-
+        [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
+        [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
         [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
         [self.readLaterActionSheet addButtonWithTitle:@"None"];
 
         self.readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
-        self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Submit", nil];
+        self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Log In", nil];
         self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
         [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
         [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
@@ -75,13 +72,27 @@
         [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
         [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
 
+        self.readabilityAlertView = [[UIAlertView alloc] initWithTitle:@"Readability Login" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Log In", nil];
+        self.readabilityAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+        [[self.readabilityAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
+        [[self.readabilityAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
+        [[self.readabilityAlertView textFieldAtIndex:0] setPlaceholder:@"Email Address"];
+        [[self.readabilityAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
+        [[self.readabilityAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
+        [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
+
         self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
-        self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it. Click OK to continue.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+        self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
         self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
                                                                           message:@"Logging into Instapaper"
                                                                          delegate:nil
                                                                 cancelButtonTitle:nil
                                                                 otherButtonTitles:nil];
+        self.readabilityVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
+                                                                           message:@"Logging into Readability"
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:nil
+                                                                 otherButtonTitles:nil];
         self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     }
     return self;
@@ -359,7 +370,7 @@
                                                                              cancelButtonTitle:nil
                                                                              otherButtonTitles:nil];
                                        [alert show];
-                                       int64_t delayInSeconds = 2.0;
+                                       int64_t delayInSeconds = 1.5;
                                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                            [alert dismissWithClickedButtonIndex:0 animated:YES];
@@ -373,6 +384,68 @@
                                                          otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
                                    }
                                }];
+    }
+    else if (alertView == self.readabilityAlertView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.readabilityVerificationAlertView show];
+
+            if (self.readabilityVerificationAlertView != nil) {
+                self.loadingIndicator.center = CGPointMake(self.readabilityVerificationAlertView.bounds.size.width/2, self.readabilityVerificationAlertView.bounds.size.height-45);
+                [self.loadingIndicator startAnimating];
+                [self.readabilityVerificationAlertView addSubview:self.loadingIndicator];
+            }
+        });
+
+        NSString *username = [[alertView textFieldAtIndex:0] text];
+        NSString *password = [[alertView textFieldAtIndex:1] text];
+        NSURL *endpoint = [NSURL URLWithString:@"https://www.readability.com/api/rest/v1/oauth/access_token/"];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        [request setParameters:@[
+            [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
+            [OARequestParameter requestParameter:@"x_auth_username" value:username],
+            [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
+        [request prepare];
+
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                   if (!error) {
+                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
+                                       [Lockbox setString:token.key forKey:@"ReadabilityResourceKey"];
+                                       [Lockbox setString:token.secret forKey:@"ReadabilityResourceSecret"];
+                                       [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
+                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                       message:@"You've successfully logged in."
+                                                                                      delegate:nil
+                                                                             cancelButtonTitle:nil
+                                                                             otherButtonTitles:nil];
+                                       [alert show];
+                                       int64_t delayInSeconds = 1.5;
+                                       dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                       dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                           [alert dismissWithClickedButtonIndex:0 animated:YES];
+                                       });
+                                   }
+                                   else {
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                                                   message:@"We couldn't log you into Readability with those credentials."
+                                                                  delegate:nil
+                                                         cancelButtonTitle:nil
+                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
+                                   }
+                               }];
+
+        /*
+        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
+        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+         */
     }
     else if (alertView == self.installChromeAlertView && buttonIndex == 1) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
@@ -450,9 +523,7 @@
             [self.instapaperAlertView show];
         }
         else if ([buttonTitle isEqualToString:@"Readability"]) {
-            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
-            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [self.readabilityAlertView show];
         }
         else if ([buttonTitle isEqualToString:@"Pocket"]) {
             [[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *API, NSError *error) {
