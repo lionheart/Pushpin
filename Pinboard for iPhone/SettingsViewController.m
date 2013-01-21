@@ -452,6 +452,7 @@
         else if ([buttonTitle isEqualToString:@"Readability"]) {
             [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
         else if ([buttonTitle isEqualToString:@"Pocket"]) {
             [[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *API, NSError *error) {
