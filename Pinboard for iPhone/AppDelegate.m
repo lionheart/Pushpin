@@ -95,7 +95,7 @@
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
     // Parse the individual parameters
     // parameters = @"hello=world&foo=bar";
-    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(YES) }];
+    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(![[self readByDefault] boolValue]) }];
     NSArray *arrParameters = [query componentsSeparatedByString:@"&"];
     for (int i = 0; i < [arrParameters count]; i++) {
         NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
