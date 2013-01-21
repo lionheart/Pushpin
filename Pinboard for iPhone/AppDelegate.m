@@ -453,7 +453,7 @@
                                        while ([results next]) {
                                            [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
                                        }
-                                       results = [db executeQuery:@"SELECT id, hash, meta FROM bookmark"];
+                                       results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
 
                                        NSMutableDictionary *metas = [[NSMutableDictionary alloc] init];
                                        NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
@@ -461,11 +461,13 @@
                                            [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
                                            [metas setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
                                        }
+                                       NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
 
                                        NSString *bookmarkMeta;
                                        NSNumber *tagIdNumber;
                                        BOOL updated_or_created = NO;
                                        NSUInteger count = 0;
+                                       NSUInteger skipCount = 0;
                                        NSUInteger newBookmarkCount = 0;
                                        NSUInteger total = elements.count;
                                        NSDictionary *params;
@@ -474,9 +476,6 @@
 
                                        for (NSDictionary *element in elements) {
                                            updated_or_created = NO;
-
-                                           [oldBookmarkHashes removeObject:element[@"hash"]];
-                                           
                                            count++;
 
                                            if (updateDelegate) {
@@ -485,6 +484,13 @@
 
                                            bookmarkMeta = metas[element[@"hash"]];
                                            if (bookmarkMeta) {
+                                               while (![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
+                                                   [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
+                                                   DLog(@"%d %@", skipCount, oldBookmarkHashes[skipCount]);
+                                                   skipCount++;
+                                               }
+                                               skipCount++;
+
                                                if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                                                    updated_or_created = YES;
                                                    params = @{
@@ -542,7 +548,7 @@
                                        }
                                        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
                                        
-                                       for (NSString *bookmarkHash in oldBookmarkHashes) {
+                                       for (NSString *bookmarkHash in bookmarksToDelete) {
                                            [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
                                        }
 
