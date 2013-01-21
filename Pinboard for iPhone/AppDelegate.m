@@ -246,6 +246,13 @@
                 [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
                 [db executeUpdate:@"PRAGMA user_version=2;"];
 
+            case 2:
+                [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
+                [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
+                [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
+                [db executeUpdate:@"PRAGMA user_version=3;"];
+
             default:
                 break;
         }
