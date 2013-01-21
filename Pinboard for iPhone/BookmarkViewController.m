@@ -684,7 +684,7 @@
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   NSLog(@"%d %@", httpResponse.statusCode, error);
+                                   DLog(@"%d %@", httpResponse.statusCode, error);
                                    if (httpResponse.statusCode == 201) {
                                        [ZAActivityBar showSuccessWithStatus:@"Sent to Instapaper."];
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
