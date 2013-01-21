@@ -493,7 +493,6 @@
                                            if (bookmarkMeta) {
                                                while (![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
                                                    [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
-                                                   DLog(@"%d %@", skipCount, oldBookmarkHashes[skipCount]);
                                                    skipCount++;
                                                }
                                                skipCount++;

@@ -102,6 +102,9 @@
     if (textField == [self.instapaperAlertView textFieldAtIndex:1]) {
         [self.instapaperAlertView dismissWithClickedButtonIndex:0 animated:YES];
     }
+    else if (textField == [self.readabilityAlertView textFieldAtIndex:1]) {
+        [self.readabilityAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    }
     return YES;
 }
 
@@ -349,17 +352,34 @@
 
         NSString *username = [[alertView textFieldAtIndex:0] text];
         NSString *password = [[alertView textFieldAtIndex:1] text];
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/authenticate?username=%@&password=%@", [username urlEncodeUsingEncoding:NSUTF8StringEncoding], [password urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/oauth/access_token"]];
+
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        [request setParameters:@[
+             [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
+             [OARequestParameter requestParameter:@"x_auth_username" value:username],
+             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
+        [request prepare];
 
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   DLog(@"%d", httpResponse.statusCode);
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                   if (httpResponse.statusCode == 200) {
-                                       [Lockbox setString:username forKey:@"InstapaperUsername"];
-                                       [Lockbox setString:password forKey:@"InstapaperPassword"];
+                                   if (httpResponse.statusCode == 400 || error != nil) {
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                                                   message:@"We couldn't log you into Instapaper with those credentials."
+                                                                  delegate:nil
+                                                         cancelButtonTitle:nil
+                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
+                                   }
+                                   else {
+                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
+                                       [Lockbox setString:token.key forKey:@"InstapaperKey"];
+                                       [Lockbox setString:token.secret forKey:@"InstapaperSecret"];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
@@ -375,13 +395,6 @@
                                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                            [alert dismissWithClickedButtonIndex:0 animated:YES];
                                        });
-                                   }
-                                   else {
-                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
-                                                                  message:@"We couldn't log you into Instapaper with those credentials."
-                                                                 delegate:nil
-                                                        cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
                                    }
                                }];
     }
@@ -411,11 +424,13 @@
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   DLog(@"%d", httpResponse.statusCode);
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
-                                       [Lockbox setString:token.key forKey:@"ReadabilityResourceKey"];
-                                       [Lockbox setString:token.secret forKey:@"ReadabilityResourceSecret"];
+                                       [Lockbox setString:token.key forKey:@"ReadabilityKey"];
+                                       [Lockbox setString:token.secret forKey:@"ReadabilitySecret"];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
@@ -440,12 +455,6 @@
                                                          otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
                                    }
                                }];
-
-        /*
-        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
-        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-         */
     }
     else if (alertView == self.installChromeAlertView && buttonIndex == 1) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];

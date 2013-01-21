@@ -673,21 +673,31 @@
 
 - (void)readLater:(id)sender {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    NSURL *url = [NSURL URLWithString:self.bookmark[@"url"]];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
-        NSString *urlToAdd = [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSString *username = [[Lockbox stringForKey:@"InstapaperUsername"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSString *password = [[Lockbox stringForKey:@"InstapaperPassword"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/add?url=%@&username=%@&password=%@&selection=Sent%%20from%%20Pushpin", urlToAdd, username, password]];
-        NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+        NSString *resourceKey = [Lockbox stringForKey:@"InstapaperKey"];
+        NSString *resourceSecret = [Lockbox stringForKey:@"InstapaperSecret"];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.bookmark[@"url"]]];
+        [parameters addObject:[OARequestParameter requestParameter:@"description" value:@"Sent from Pushpin"]];
+        [request setParameters:parameters];
+        [request prepare];
+
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d %@", httpResponse.statusCode, error);
-                                   if (httpResponse.statusCode == 201) {
+                                   DLog(@"%d", httpResponse.statusCode);
+                                   if (httpResponse.statusCode == 200) {
                                        [ZAActivityBar showSuccessWithStatus:@"Sent to Instapaper."];
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                   }
+                                   else if (httpResponse.statusCode == 1221) {
+                                       [ZAActivityBar showErrorWithStatus:@"Publisher opted out of Instapaper compatibility."];
                                    }
                                    else {
                                        [ZAActivityBar showErrorWithStatus:@"Error sending to Instapaper."];
@@ -695,9 +705,8 @@
                                }];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
-        NSString *resourceKey = [Lockbox stringForKey:@"ReadabilityResourceKey"];
-        NSString *resourceSecret = [Lockbox stringForKey:@"ReadabilityResourceSecret"];
-        DLog(@"%@ %@", resourceKey, resourceSecret);
+        NSString *resourceKey = [Lockbox stringForKey:@"ReadabilityKey"];
+        NSString *resourceSecret = [Lockbox stringForKey:@"ReadabilitySecret"];
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
         OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
         OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
@@ -710,7 +719,6 @@
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d %@", httpResponse.statusCode, error);
                                    if (httpResponse.statusCode == 202) {
                                        [ZAActivityBar showSuccessWithStatus:@"Sent to Readability."];
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];

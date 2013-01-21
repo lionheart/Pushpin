@@ -42,5 +42,8 @@
 #define kReadabilityKey @"dlo"
 #define kReadabilitySecret @"gdsCsynHrG6LNAQuRUsvtNHGWqLSMcUr"
 
+#define kInstapaperKey @"9ljBz2ifxks9cBLK64T49TUeEckQRkWQmgSC2Pa5PYTeCah227"
+#define kInstapaperSecret @"Azj6HrRswIpZvpU9Lhyl70j02UHVSOj3j1434CrJRuBGVa5uxA"
+
 static float kLargeFontSize = 16.0f;
 static float kSmallFontSize = 13.0f;
