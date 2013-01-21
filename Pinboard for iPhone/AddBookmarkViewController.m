@@ -236,9 +236,15 @@
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
                     }
                 }
+
+                DLog(@"OLD %d", oldTagCompletions.count);
+                DLog(@"ADD %d", indexPathsToAdd.count);
                 
                 self.tagCompletions = newTagCompletions;
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+
+                DLog(@"REMOVE %d", indexPathsToRemove.count);
+                DLog(@"NEW %d", newTagCompletions.count);
                 
                 [self.tableView endUpdates];
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
