@@ -555,6 +555,14 @@
 
                                        [self resumeRefreshTimer];
                                        [self setLastUpdated:[NSDate date]];
+
+                                       if (self.bookmarksUpdatedMessage != nil) {
+                                           UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                           notification.alertBody = self.bookmarksUpdatedMessage;
+                                           notification.alertAction = @"Open Pushpin";
+                                           notification.fireDate = [NSDate date];
+                                           [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                       }
                                        self.bookmarksLoading = NO;
                                    });
                                }
