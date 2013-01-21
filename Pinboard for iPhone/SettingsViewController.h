@@ -16,8 +16,10 @@
 @property (nonatomic, retain) UIAlertView *installChromeAlertView;
 @property (nonatomic, retain) UIAlertView *installiCabMobileAlertView;
 @property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
+@property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;
 @property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
 @property (nonatomic, retain) UIAlertView *instapaperAlertView;
+@property (nonatomic, retain) UIAlertView *readabilityAlertView;
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;

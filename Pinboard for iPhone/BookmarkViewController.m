@@ -17,6 +17,7 @@
 #import "FMDatabaseQueue.h"
 #import "ZAActivityBar.h"
 #import "Lockbox.h"
+#import "OAuthConsumer.h"
 
 @interface BookmarkViewController ()
 
@@ -673,7 +674,6 @@
 - (void)readLater:(id)sender {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     NSURL *url = [NSURL URLWithString:self.bookmark[@"url"]];
-    NSString *scheme = [NSString stringWithFormat:@"%@://", url.scheme];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
         NSString *urlToAdd = [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
         NSString *username = [[Lockbox stringForKey:@"InstapaperUsername"] urlEncodeUsingEncoding:NSUTF8StringEncoding];
@@ -695,9 +695,33 @@
                                }];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
-        NSURL *newURL = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:scheme] withString:@"readability://add/"]];
-        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
-        [[UIApplication sharedApplication] openURL:newURL];
+        NSString *resourceKey = [Lockbox stringForKey:@"ReadabilityResourceKey"];
+        NSString *resourceSecret = [Lockbox stringForKey:@"ReadabilityResourceSecret"];
+        DLog(@"%@ %@", resourceKey, resourceSecret);
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.bookmark[@"url"]]]];
+        [request prepare];
+
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   DLog(@"%d %@", httpResponse.statusCode, error);
+                                   if (httpResponse.statusCode == 202) {
+                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Readability."];
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                   }
+                                   else if (httpResponse.statusCode == 409) {
+                                       [ZAActivityBar showErrorWithStatus:@"Link already sent to Readability."];
+                                   }
+                                   else {
+                                       [ZAActivityBar showErrorWithStatus:@"Error sending to Readability."];
+                                   }
+                               }];
     }
     else if (readLater.integerValue == READLATER_POCKET) {
         [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:self.bookmark[@"url"]]
