@@ -238,20 +238,25 @@
         }
 
         NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
+        NSArray *existingTags = [self.tagTextField.text componentsSeparatedByString:@" "];
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
             FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
 
+            NSString *currentTag;
             NSInteger index = 1;
             while ([result next]) {
-                [newTagCompletions addObject:[result stringForColumn:@"name"]];
-                if (![oldTagCompletions containsObject:[result stringForColumn:@"name"]]) {
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-                    [self.tagCompletions addObject:[result stringForColumn:@"name"]];
+                currentTag = [result stringForColumn:@"name"];
+                if (![existingTags containsObject:currentTag]) {
+                    [newTagCompletions addObject:currentTag];
+                    if (![oldTagCompletions containsObject:currentTag]) {
+                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                        [self.tagCompletions addObject:currentTag];
+                    }
+                    index++;
                 }
-                index++;
             }
             [db close];
             
