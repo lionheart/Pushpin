@@ -35,6 +35,9 @@
 @synthesize descriptionGestureRecognizer;
 @synthesize tagGestureRecognizer;
 @synthesize loadingTags;
+@synthesize popularTagSuggestions;
+@synthesize leftSwipeTagGestureRecognizer;
+@synthesize suggestedTagsVisible;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -75,7 +78,9 @@
         self.markAsRead = @(NO);
         self.loadingTitle = NO;
         self.loadingTags = NO;
+        self.suggestedTagsVisible = NO;
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        self.popularTagSuggestions = [[NSMutableArray alloc] init];
 
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -89,6 +94,10 @@
         self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
+        
+        self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
     }
     return self;
 }
@@ -102,6 +111,15 @@
     }
     else if (gestureRecognizer == self.descriptionGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
+    }
+    else if (gestureRecognizer == self.leftSwipeTagGestureRecognizer) {
+        if (self.popularTagSuggestions.count > 0) {
+            [self.popularTagSuggestions removeAllObjects];
+            self.suggestedTagsVisible = NO;
+            [self.tableView beginUpdates];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
     }
 }
 
@@ -126,7 +144,12 @@
         return 2;
     }
     else if (section == 3) {
-        return 1 + self.tagCompletions.count;
+        if (self.tagCompletions.count > 0) {
+            return 1 + self.tagCompletions.count;
+        }
+        else if (self.popularTagSuggestions.count > 0) {
+            return 1 + self.popularTagSuggestions.count;
+        }
     }
     return 1;
 }
@@ -134,11 +157,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 3 && indexPath.row > 0) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+        
         NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
         NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
-        self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", self.tagCompletions[indexPath.row - 1]]];
-        [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+        NSString *completion;
+
+        if (self.tagCompletions.count > 0) {
+            completion = self.tagCompletions[indexPath.row - 1];
+            [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+        }
+        else if (self.popularTagSuggestions.count > 0) {
+            completion = self.popularTagSuggestions[indexPath.row - 1];
+            [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
+        self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
     }
 }
 
@@ -223,8 +258,8 @@
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
-    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+    NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
+    NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
     NSMutableArray *newTagCompletions = [NSMutableArray array];
     NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
 
@@ -260,6 +295,15 @@
             }
             [db close];
             
+            if (self.suggestedTagsVisible) {
+                index = 1;
+                while (index <= self.popularTagSuggestions.count) {
+                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                    index++;
+                }
+                self.suggestedTagsVisible = NO;
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
@@ -292,10 +336,23 @@
         }
         [self.tagCompletions removeAllObjects];
 
+        if (!self.suggestedTagsVisible) {
+            index = 1;
+            while (index <= self.popularTagSuggestions.count) {
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                index++;
+            }
+            self.suggestedTagsVisible = YES;
+        }
+
         [self.tableView beginUpdates];
 
         if ([indexPathsToRemove count] > 0) {
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+        if ([indexPathsToAdd count] > 0) {
+            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
         }
 
         [self.tableView endUpdates];
@@ -384,7 +441,12 @@
                     }
                 }
                 else {
-                    cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
+                    if (self.tagCompletions.count > 0) {
+                        cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
+                    }
+                    else {
+                        cell.textLabel.text = self.popularTagSuggestions[indexPath.row - 1];
+                    }
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.editing = NO;
                 }
@@ -456,25 +518,38 @@
     NSString *tagText = self.tagTextField.text;
     self.loadingTags = YES;
     NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:3]];
-    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
 
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               self.loadingTags = NO;
+                               
+                               [self.tableView beginUpdates];
+                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationNone];
+                               [self.tableView endUpdates];
+
                                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                if (!error) {
+                                   [popularTagSuggestions removeAllObjects];
                                    NSArray *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                    NSArray *popularTags = payload[0][@"popular"];
-                                   NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:[tagText componentsSeparatedByString:@" "]];
+                                   NSArray *recommendedTags = payload[1][@"recommended"];
+                                   NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+                                   self.popularTagSuggestions = [[NSMutableArray alloc] init];
                                    for (id tag in popularTags) {
-                                       [tags addObject:tag];
+                                       if (![existingTags containsObject:tag]) {
+                                           [self.popularTagSuggestions addObject:tag];
+                                       }
                                    }
-                                   [tags filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
-                                   self.tagTextField.text = [[[NSSet setWithArray:tags] allObjects] componentsJoinedByString:@" "];
+                                   for (id tag in recommendedTags) {
+                                       if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
+                                           [self.popularTagSuggestions addObject:tag];
+                                       }
+                                   }
+                                   [self.popularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
                                }
-                               self.loadingTags = NO;
-                               NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:3]];
-                               [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                               [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
                            }];
 }
 
