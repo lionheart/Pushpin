@@ -644,7 +644,7 @@
 }
 
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
     [self setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
@@ -673,6 +673,9 @@
                                            callback(@"", description);
                                        }
                                    }
+                               }
+                               else {
+                                   callback(@"", @"");
                                }
                            }];
 }

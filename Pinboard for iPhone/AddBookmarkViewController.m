@@ -31,6 +31,10 @@
 @synthesize callback;
 @synthesize loadingTitle;
 @synthesize previousURLContents;
+@synthesize titleGestureRecognizer;
+@synthesize descriptionGestureRecognizer;
+@synthesize tagGestureRecognizer;
+@synthesize loadingTags;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -70,11 +74,35 @@
         
         self.markAsRead = @(NO);
         self.loadingTitle = NO;
+        self.loadingTags = NO;
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-        
+
         self.callback = ^(void) {};
+        self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
+
+        self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.descriptionTextField addGestureRecognizer:self.descriptionGestureRecognizer];
+
+        self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
     }
     return self;
+}
+
+- (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.tagGestureRecognizer) {
+        [self prefillPopularTags];
+    }
+    else if (gestureRecognizer == self.titleGestureRecognizer) {
+        [self prefillTitleAndForceUpdate:YES];
+    }
+    else if (gestureRecognizer == self.descriptionGestureRecognizer) {
+        [self prefillTitleAndForceUpdate:YES];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -84,7 +112,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefillTitle:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
 }
 
 #pragma mark - Table view data source
@@ -338,8 +366,17 @@
                 
             case 3:
                 if (indexPath.row == 0) {
-                    self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
-                    [cell.contentView addSubview:self.tagTextField];
+                    if (self.loadingTags) {
+                        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                        [activity startAnimating];
+                        cell.accessoryView = activity;
+                        cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
+                        cell.textLabel.enabled = NO;
+                    }
+                    else {
+                        self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                        [cell.contentView addSubview:self.tagTextField];
+                    }
                 }
                 else {
                     cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
@@ -402,15 +439,49 @@
     [self.tableView reloadData];
 }
 
-- (void)prefillTitle:(NSNotification *)notification {
+- (void)urlTextFieldDidChange:(NSNotification *)notification {
+    if ([UIPasteboard generalPasteboard].string == self.urlTextField.text) {
+        [self prefillTitleAndForceUpdate:NO];
+    }
+}
+
+- (void)prefillPopularTags {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/suggest?url=%@&auth_token=%@&format=json", [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [[AppDelegate sharedDelegate] token]]]];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    NSString *tagText = self.tagTextField.text;
+    self.loadingTags = YES;
+    NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:3]];
+    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                               if (!error) {
+                                   NSArray *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   NSArray *popularTags = payload[0][@"popular"];
+                                   NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:[tagText componentsSeparatedByString:@" "]];
+                                   for (id tag in popularTags) {
+                                       [tags addObject:tag];
+                                   }
+                                   [tags filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
+                                   self.tagTextField.text = [[[NSSet setWithArray:tags] allObjects] componentsJoinedByString:@" "];
+                               }
+                               self.loadingTags = NO;
+                               NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:3]];
+                               [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                           }];
+}
+
+- (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate {
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
-    BOOL passesLengthTest = notification == nil || self.urlTextField.text.length - self.previousURLContents.length >= 2;
     self.previousURLContents = self.urlTextField.text;
-    if (!self.loadingTitle
-            && (self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
-            && passesLengthTest
-            && [[UIApplication sharedApplication] canOpenURL:url]
-            && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
+
+    BOOL shouldPrefillTitle = !self.loadingTitle
+        && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
+        && [[UIApplication sharedApplication] canOpenURL:url]
+        && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
+    if (shouldPrefillTitle) {
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
 
@@ -429,7 +500,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     if (textField == self.urlTextField) {
-        [self prefillTitle:nil];
+        [self prefillTitleAndForceUpdate:NO];
     }
     return YES;
 }
