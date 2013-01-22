@@ -157,7 +157,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 3 && indexPath.row > 0) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
+
+        unichar space = ' ';
+        if ([self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
+            self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
+        }
         NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
         NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
         NSString *completion;
@@ -336,7 +340,7 @@
         }
         [self.tagCompletions removeAllObjects];
 
-        if (!self.suggestedTagsVisible) {
+        if (!self.suggestedTagsVisible && self.popularTagSuggestions.count > 0) {
             index = 1;
             while (index <= self.popularTagSuggestions.count) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
@@ -354,6 +358,8 @@
         if ([indexPathsToAdd count] > 0) {
             [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
         }
+        DLog(@"ADD %d", indexPathsToAdd.count);
+        DLog(@"REMOVE %d", indexPathsToRemove.count);
 
         [self.tableView endUpdates];
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -549,7 +555,13 @@
                                    }
                                    [self.popularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
                                }
-                               [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+                               
+                               DLog(@"%@", self.popularTagSuggestions);
+
+                               if ([self.popularTagSuggestions count] > 0) {
+                                   self.suggestedTagsVisible = NO;
+                                   [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+                               }
                            }];
 }
 
