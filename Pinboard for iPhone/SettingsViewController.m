@@ -16,6 +16,7 @@
 #import "NSString+URLEncoding.h"
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
+#import "BookmarkletInstallationViewController.h"
 
 @interface SettingsViewController ()
 
@@ -166,10 +167,10 @@
     switch (section) {
         case 0:
             if (self.readLaterServices.count > 0) {
-                return 4;
+                return 5;
             }
             else {
-                return 3;
+                return 4;
             }
 
             break;
@@ -277,6 +278,12 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     break;
+                case 4:
+                    cell.textLabel.text = NSLocalizedString(@"Browser integration", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    break;
+
                 default:
                     break;
             }
@@ -567,6 +574,9 @@
             }
             else if (indexPath.row == 3) {
                 [self.readLaterActionSheet showFromTabBar:self.tabBarController.tabBar];
+            }
+            else if (indexPath.row == 4) {
+                [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
             }
             break;
         }
