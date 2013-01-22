@@ -495,7 +495,7 @@
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:bookmark[@"url"] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     NSInteger cancelButtonIndex = 3;
     
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];

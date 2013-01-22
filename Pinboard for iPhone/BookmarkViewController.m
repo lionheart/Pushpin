@@ -858,7 +858,7 @@
 #pragma mark - Action Sheet Delegate
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:self.bookmark[@"url"] delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     NSInteger cancelButtonIndex = 5;
     [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
     [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
