@@ -26,17 +26,25 @@
 @property (nonatomic, retain) NSNumber *markAsRead;
 @property (nonatomic, retain) UITextField *currentTextField;
 @property (nonatomic) BOOL loadingTitle;
+@property (nonatomic) BOOL loadingTags;
 @property (nonatomic, retain) NSString *previousURLContents;
 @property (nonatomic, copy) void (^callback)();
+
+@property (nonatomic, retain) UISwipeGestureRecognizer *titleGestureRecognizer;
+@property (nonatomic, retain) UISwipeGestureRecognizer *descriptionGestureRecognizer;
+@property (nonatomic, retain) UISwipeGestureRecognizer *tagGestureRecognizer;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
 
-- (void)prefillTitle:(NSNotification *)notification;
+- (void)urlTextFieldDidChange:(NSNotification *)notification;
+- (void)prefillPopularTags;
+- (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)privateSwitchChanged:(id)sender;
 - (void)readSwitchChanged:(id)sender;
 - (void)addBookmark;
 - (void)close;
+- (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer;
 
 @end
