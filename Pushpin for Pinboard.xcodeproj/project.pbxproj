@@ -74,7 +74,6 @@
 		37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37561D8816ADFEC400D69CDE /* Pushpin.entitlements */; };
 		37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
-		37561D9916AE3D2200D69CDE /* libCrittercism_v3_4_9.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37561D9816AE3D2200D69CDE /* libCrittercism_v3_4_9.a */; };
 		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFD167D47FD00320495 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -323,9 +322,6 @@
 		37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
 		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; };
-		37561D9616AE3D2200D69CDE /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
-		37561D9716AE3D2200D69CDE /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
-		37561D9816AE3D2200D69CDE /* libCrittercism_v3_4_9.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCrittercism_v3_4_9.a; sourceTree = "<group>"; };
 		375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		375A0FFA167D47FD00320495 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
 		375A0FFB167D47FD00320495 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
@@ -523,7 +519,6 @@
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */,
 				37F5CA401679915700327AAC /* libUserVoice.a in Frameworks */,
-				37561D9916AE3D2200D69CDE /* libCrittercism_v3_4_9.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,7 +528,6 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				37561D9516AE3D2200D69CDE /* CrittercismSDK */,
 				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
 				375A1012167E967D00320495 /* ZAActivityBar */,
@@ -775,17 +769,6 @@
 			);
 			name = KeychainItemWrapper;
 			path = Vendor/KeychainItemWrapper;
-			sourceTree = "<group>";
-		};
-		37561D9516AE3D2200D69CDE /* CrittercismSDK */ = {
-			isa = PBXGroup;
-			children = (
-				37561D9616AE3D2200D69CDE /* Crittercism.h */,
-				37561D9716AE3D2200D69CDE /* CrittercismDelegate.h */,
-				37561D9816AE3D2200D69CDE /* libCrittercism_v3_4_9.a */,
-			);
-			name = CrittercismSDK;
-			path = Vendor/CrittercismSDK;
 			sourceTree = "<group>";
 		};
 		375A0FF8167D47FD00320495 /* Pocket SDK */ = {

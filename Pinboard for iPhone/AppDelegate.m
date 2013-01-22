@@ -19,7 +19,6 @@
 #import "PocketAPI.h"
 #import "ZAActivityBar.h"
 #import "HTMLParser.h"
-#import "Crittercism.h"
 
 @implementation AppDelegate
 
@@ -119,7 +118,6 @@
 #ifdef TESTING
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 #endif
-    [Crittercism enableWithAppID:@"50f8db724f633a1f4a000003"];
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
