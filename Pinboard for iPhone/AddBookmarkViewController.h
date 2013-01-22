@@ -22,17 +22,20 @@
 @property (nonatomic, retain) UISwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
 @property (nonatomic, retain) NSMutableArray *tagCompletions;
+@property (nonatomic, retain) NSMutableArray *popularTagSuggestions;
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
 @property (nonatomic, retain) UITextField *currentTextField;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic) BOOL loadingTags;
+@property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic, retain) NSString *previousURLContents;
 @property (nonatomic, copy) void (^callback)();
 
 @property (nonatomic, retain) UISwipeGestureRecognizer *titleGestureRecognizer;
 @property (nonatomic, retain) UISwipeGestureRecognizer *descriptionGestureRecognizer;
 @property (nonatomic, retain) UISwipeGestureRecognizer *tagGestureRecognizer;
+@property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
