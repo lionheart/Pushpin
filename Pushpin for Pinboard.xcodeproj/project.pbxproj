@@ -73,6 +73,7 @@
 		37561D8516ADC86100D69CDE /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37561D7116ADC86100D69CDE /* README */; };
 		37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37561D8816ADFEC400D69CDE /* Pushpin.entitlements */; };
 		37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */; };
+		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFD167D47FD00320495 /* PocketAPILogin.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -319,6 +320,8 @@
 		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Pushpin.entitlements; path = ../Pushpin.entitlements; sourceTree = "<group>"; };
 		37561D8F16AE05B900D69CDE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
+		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; };
 		375A0FF9167D47FD00320495 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		375A0FFA167D47FD00320495 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
 		375A0FFB167D47FD00320495 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
@@ -1028,6 +1031,8 @@
 				37919F1D16091DF5007708EF /* LoginViewController.m */,
 				37483C5516194575000EE5D1 /* TabBarViewController.h */,
 				37483C5616194575000EE5D1 /* TabBarViewController.m */,
+				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
+				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
@@ -1353,6 +1358,7 @@
 				37561D8316ADC86100D69CDE /* OAToken.m in Sources */,
 				37561D8416ADC86100D69CDE /* OATokenManager.m in Sources */,
 				37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */,
+				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
