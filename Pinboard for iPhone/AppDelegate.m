@@ -249,6 +249,7 @@
                 [db executeUpdate:@"PRAGMA user_version=2;"];
 
             case 2:
+                [self setReadlater:@(READLATER_NONE)];
                 [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
                 [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
                 [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
