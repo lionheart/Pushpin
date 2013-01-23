@@ -561,6 +561,7 @@
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification {
     if ([UIPasteboard generalPasteboard].string == self.urlTextField.text) {
+        self.suggestedTagsPayload = nil;
         [self prefillTitleAndForceUpdate:NO];
     }
 }
@@ -626,7 +627,12 @@
 }
 
 - (void)prefillPopularTags {
-    if (self.suggestedTagsPayload == nil) {
+    NSURL *url = [NSURL URLWithString:self.urlTextField.text];
+    BOOL shouldPrefillTags = !self.loadingTags
+        && self.suggestedTagsPayload == nil
+        && [[UIApplication sharedApplication] canOpenURL:url]
+        && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
+    if (shouldPrefillTags) {
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/suggest?url=%@&auth_token=%@&format=json", [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [[AppDelegate sharedDelegate] token]]]];
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
