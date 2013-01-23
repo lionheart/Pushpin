@@ -288,7 +288,6 @@
     NSMutableArray *newTagCompletions = [NSMutableArray array];
     NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
 
-    DLog(@"STRING %@", string);
     NSString *newString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
     if (string != nil && newString.length > 0 && [newString characterAtIndex:newString.length-1] != ' ') {
         NSString *newTextFieldContents;
@@ -553,54 +552,58 @@
 }
 
 - (void)handleTagSuggestions {
-    self.loadingTags = NO;
-    NSString *tagText = self.tagTextField.text;
-    NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
-    NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
-    NSMutableArray *newPopularTagSuggestions = [[NSMutableArray alloc] init];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    
-    NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count : self.tagCompletions.count;
-    NSInteger index = 1;
-    while (index <= previousRowCount) {
-        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-        index++;
-    }
-    
-    NSArray *popularTags = self.suggestedTagsPayload[0][@"popular"];
-    NSArray *recommendedTags = self.suggestedTagsPayload[1][@"recommended"];
-    NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
-
-    for (id tag in popularTags) {
-        if (![existingTags containsObject:tag]) {
-            [newPopularTagSuggestions addObject:tag];
-        }
-    }
-    for (id tag in recommendedTags) {
-        if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
-            [newPopularTagSuggestions addObject:tag];
-        }
-    }
-    [newPopularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
-
-    index = 1;
-    while (index <= newPopularTagSuggestions.count) {
-        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-        index++;
-    }
-    DLog(@"%d", self.popularTagSuggestions.count);
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+    if (self.tagTextField.text.length == 0 || [self.tagTextField.text characterAtIndex:self.tagTextField.text.length-1] == ' ') {
+        self.loadingTags = NO;
+        NSString *tagText = self.tagTextField.text;
+        NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
+        NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
+        NSMutableArray *newPopularTagSuggestions = [[NSMutableArray alloc] init];
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
         
-        self.popularTagSuggestions = newPopularTagSuggestions;
-        self.suggestedTagsVisible = YES;
+        NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count : self.tagCompletions.count;
+        NSInteger index = 1;
+        while (index <= previousRowCount) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            index++;
+        }
         
-        [self.tableView endUpdates];
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    });
+        NSArray *popularTags = self.suggestedTagsPayload[0][@"popular"];
+        NSArray *recommendedTags = self.suggestedTagsPayload[1][@"recommended"];
+        NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+
+        for (id tag in popularTags) {
+            if (![existingTags containsObject:tag]) {
+                [newPopularTagSuggestions addObject:tag];
+            }
+        }
+        for (id tag in recommendedTags) {
+            if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
+                [newPopularTagSuggestions addObject:tag];
+            }
+        }
+        [newPopularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
+
+        index = 1;
+        while (index <= newPopularTagSuggestions.count) {
+            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            index++;
+        }
+        DLog(@"%d", self.popularTagSuggestions.count);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+            
+            self.popularTagSuggestions = newPopularTagSuggestions;
+            self.suggestedTagsVisible = YES;
+            
+            [self.tableView endUpdates];
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            
+            [self.tagTextField becomeFirstResponder];
+        });
+    }
 }
 
 - (void)prefillPopularTags {
