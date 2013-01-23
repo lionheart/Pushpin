@@ -38,6 +38,8 @@
 @synthesize popularTagSuggestions;
 @synthesize leftSwipeTagGestureRecognizer;
 @synthesize suggestedTagsVisible;
+@synthesize previousTagSuggestions;
+@synthesize suggestedTagsPayload;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -81,6 +83,8 @@
         self.suggestedTagsVisible = NO;
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
         self.popularTagSuggestions = [[NSMutableArray alloc] init];
+        self.previousTagSuggestions = [[NSMutableArray alloc] init];
+        self.suggestedTagsPayload = nil;
 
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -114,11 +118,24 @@
     }
     else if (gestureRecognizer == self.leftSwipeTagGestureRecognizer) {
         if (self.popularTagSuggestions.count > 0) {
-            [self.popularTagSuggestions removeAllObjects];
-            self.suggestedTagsVisible = NO;
-            [self.tableView beginUpdates];
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
+            if (self.suggestedTagsVisible) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
+                    NSInteger index = 1;
+                    while (index <= self.popularTagSuggestions.count) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                        index++;
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                        [self.popularTagSuggestions removeAllObjects];
+                        self.suggestedTagsVisible = NO;
+                        [self.tableView endUpdates];
+                    });
+                });
+            }
         }
     }
 }
@@ -144,11 +161,11 @@
         return 2;
     }
     else if (section == 3) {
-        if (self.tagCompletions.count > 0) {
-            return 1 + self.tagCompletions.count;
-        }
-        else if (self.popularTagSuggestions.count > 0) {
+        if (self.suggestedTagsVisible) {
             return 1 + self.popularTagSuggestions.count;
+        }
+        else {
+            return 1 + self.tagCompletions.count;
         }
     }
     return 1;
@@ -159,7 +176,7 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
         unichar space = ' ';
-        if ([self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
+        if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
             self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
         }
         NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
@@ -168,10 +185,14 @@
 
         if (self.tagCompletions.count > 0) {
             completion = self.tagCompletions[indexPath.row - 1];
-            [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
+            [self.tagCompletions removeObjectAtIndex:indexPath.row - 1];
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
         }
         else if (self.popularTagSuggestions.count > 0) {
             completion = self.popularTagSuggestions[indexPath.row - 1];
+            self.previousTagSuggestions = [[NSMutableArray alloc] initWithArray:self.popularTagSuggestions];
             [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
@@ -267,7 +288,9 @@
     NSMutableArray *newTagCompletions = [NSMutableArray array];
     NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
 
-    if (string != nil && ![string isEqualToString:@" "] && (range.length - string.length <= 1 || string.length - range.length <= 1)) {
+    DLog(@"STRING %@", string);
+    NSString *newString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
+    if (string != nil && newString.length > 0 && [newString characterAtIndex:newString.length-1] != ' ') {
         NSString *newTextFieldContents;
         if (range.length > string.length) {
             newTextFieldContents = [self.tagTextField.text substringToIndex:self.tagTextField.text.length - range.length];
@@ -327,42 +350,51 @@
                 DLog(@"REMOVE %d", indexPathsToRemove.count);
                 DLog(@"NEW %d", newTagCompletions.count);
                 
+                DLog(@"%@", newTagCompletions);
+                
                 [self.tableView endUpdates];
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
             });
         });
     }
-    else {
-        NSInteger index = 1;
-        while (index <= self.tagCompletions.count) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
-            index++;
-        }
-        [self.tagCompletions removeAllObjects];
+    else if (!self.suggestedTagsVisible) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSInteger index = 1;
 
-        if (!self.suggestedTagsVisible && self.popularTagSuggestions.count > 0) {
+            while (index <= self.tagCompletions.count) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                index++;
+            }
+            
             index = 1;
             while (index <= self.popularTagSuggestions.count) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
                 index++;
             }
-            self.suggestedTagsVisible = YES;
-        }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                
+                if ([indexPathsToRemove count] > 0) {
+                    DLog(@"LL REMOVE %d", indexPathsToRemove.count);
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                }
+                
+                if ([indexPathsToAdd count] > 0) {
+                    DLog(@"LL ADD %d", indexPathsToAdd.count);
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                }
+                
+                DLog(@"%@", self.popularTagSuggestions);
+                
+                self.suggestedTagsVisible = YES;
+                [self.tagCompletions removeAllObjects];
+                
+                [self.tableView endUpdates];
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            });
 
-        [self.tableView beginUpdates];
-
-        if ([indexPathsToRemove count] > 0) {
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        if ([indexPathsToAdd count] > 0) {
-            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-        }
-        DLog(@"ADD %d", indexPathsToAdd.count);
-        DLog(@"REMOVE %d", indexPathsToRemove.count);
-
-        [self.tableView endUpdates];
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        });
     }
 }
 
@@ -428,6 +460,7 @@
                 }
                 else {
                     self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                    cell.accessoryView = nil;
                     [cell.contentView addSubview:self.descriptionTextField];
                 }
                 break;
@@ -443,6 +476,7 @@
                     }
                     else {
                         self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                        cell.accessoryView = nil;
                         [cell.contentView addSubview:self.tagTextField];
                     }
                 }
@@ -518,51 +552,96 @@
     }
 }
 
-- (void)prefillPopularTags {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/suggest?url=%@&auth_token=%@&format=json", [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [[AppDelegate sharedDelegate] token]]]];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+- (void)handleTagSuggestions {
+    self.loadingTags = NO;
     NSString *tagText = self.tagTextField.text;
-    self.loadingTags = YES;
-    NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:3]];
-    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+    NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
+    NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
+    NSMutableArray *newPopularTagSuggestions = [[NSMutableArray alloc] init];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    
+    NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count : self.tagCompletions.count;
+    NSInteger index = 1;
+    while (index <= previousRowCount) {
+        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+        index++;
+    }
+    
+    NSArray *popularTags = self.suggestedTagsPayload[0][@"popular"];
+    NSArray *recommendedTags = self.suggestedTagsPayload[1][@"recommended"];
+    NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
 
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               self.loadingTags = NO;
-                               
-                               [self.tableView beginUpdates];
-                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationNone];
-                               [self.tableView endUpdates];
+    for (id tag in popularTags) {
+        if (![existingTags containsObject:tag]) {
+            [newPopularTagSuggestions addObject:tag];
+        }
+    }
+    for (id tag in recommendedTags) {
+        if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
+            [newPopularTagSuggestions addObject:tag];
+        }
+    }
+    [newPopularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
 
-                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                               if (!error) {
-                                   [popularTagSuggestions removeAllObjects];
-                                   NSArray *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   NSArray *popularTags = payload[0][@"popular"];
-                                   NSArray *recommendedTags = payload[1][@"recommended"];
-                                   NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
-                                   self.popularTagSuggestions = [[NSMutableArray alloc] init];
-                                   for (id tag in popularTags) {
-                                       if (![existingTags containsObject:tag]) {
-                                           [self.popularTagSuggestions addObject:tag];
+    index = 1;
+    while (index <= newPopularTagSuggestions.count) {
+        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+        index++;
+    }
+    DLog(@"%d", self.popularTagSuggestions.count);
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+        
+        self.popularTagSuggestions = newPopularTagSuggestions;
+        self.suggestedTagsVisible = YES;
+        
+        [self.tableView endUpdates];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    });
+}
+
+- (void)prefillPopularTags {
+    if (self.suggestedTagsPayload == nil) {
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/suggest?url=%@&auth_token=%@&format=json", [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [[AppDelegate sharedDelegate] token]]]];
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                self.loadingTags = YES;
+                [self.tableView endUpdates];
+            });
+        });
+
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                                       if (!error) {
+                                           self.suggestedTagsPayload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                           [self handleTagSuggestions];
                                        }
-                                   }
-                                   for (id tag in recommendedTags) {
-                                       if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
-                                           [self.popularTagSuggestions addObject:tag];
-                                       }
-                                   }
-                                   [self.popularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
-                               }
-                               
-                               DLog(@"%@", self.popularTagSuggestions);
 
-                               if ([self.popularTagSuggestions count] > 0) {
-                                   self.suggestedTagsVisible = NO;
-                                   [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:nil];
-                               }
-                           }];
+                                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               [self.tableView beginUpdates];
+                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                                               self.loadingTags = NO;
+                                               [self.tableView endUpdates];
+                                           });
+                                       });
+                                   });
+                               }];
+    }
+    else {
+        [self handleTagSuggestions];
+    }
 }
 
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate {

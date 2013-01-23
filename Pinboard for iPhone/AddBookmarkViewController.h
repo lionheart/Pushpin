@@ -23,6 +23,7 @@
 @property (nonatomic, retain) UITextField *tagTextField;
 @property (nonatomic, retain) NSMutableArray *tagCompletions;
 @property (nonatomic, retain) NSMutableArray *popularTagSuggestions;
+@property (nonatomic, retain) NSMutableArray *previousTagSuggestions;
 @property (nonatomic, retain) NSNumber *setAsPrivate;
 @property (nonatomic, retain) NSNumber *markAsRead;
 @property (nonatomic, retain) UITextField *currentTextField;
@@ -31,6 +32,7 @@
 @property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic, retain) NSString *previousURLContents;
 @property (nonatomic, copy) void (^callback)();
+@property (nonatomic, retain) NSArray *suggestedTagsPayload;
 
 @property (nonatomic, retain) UISwipeGestureRecognizer *titleGestureRecognizer;
 @property (nonatomic, retain) UISwipeGestureRecognizer *descriptionGestureRecognizer;
@@ -42,6 +44,7 @@
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification;
 - (void)prefillPopularTags;
+- (void)handleTagSuggestions;
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)privateSwitchChanged:(id)sender;
