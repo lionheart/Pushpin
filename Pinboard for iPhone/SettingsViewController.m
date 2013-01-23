@@ -160,7 +160,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -176,6 +176,10 @@
             break;
             
         case 1:
+            return 1;
+            break;
+            
+        case 2:
             return 3;
             break;
             
@@ -198,10 +202,13 @@
         switch (indexPath.section) {
             case 0:
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
-
                 break;
                 
             case 1:
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                break;
+                
+            case 2:
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 break;
                 
@@ -296,6 +303,11 @@
             break;
         }
         case 1: {
+            cell.textLabel.text = NSLocalizedString(@"Rate us in the App Store", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            break;
+        }
+        case 2: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Contact Support", nil);
@@ -324,7 +336,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     switch (section) {
-        case 1:
+        case 2:
             return NSLocalizedString(@"Log out warning footer", nil);
             break;
             
@@ -586,7 +598,12 @@
             }
             break;
         }
-        case 1: {
+
+        case 1:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard-best/id548052590"]];
+            break;
+
+        case 2: {
             switch (indexPath.row) {
                 case 0: {
                     UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
