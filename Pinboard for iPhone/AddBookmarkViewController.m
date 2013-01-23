@@ -622,11 +622,6 @@
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
-                                       if (!error) {
-                                           self.suggestedTagsPayload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                           [self handleTagSuggestions];
-                                       }
 
                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                            dispatch_async(dispatch_get_main_queue(), ^{
@@ -634,6 +629,13 @@
                                                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
                                                self.loadingTags = NO;
                                                [self.tableView endUpdates];
+                                               
+                                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                   if (!error) {
+                                                       self.suggestedTagsPayload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                                       [self handleTagSuggestions];
+                                                   }
+                                               });
                                            });
                                        });
                                    });
