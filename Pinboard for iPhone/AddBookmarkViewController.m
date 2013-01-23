@@ -176,13 +176,21 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
                 
                 NSString *completion;
                 
                 if (self.tagCompletions.count > 0) {
                     completion = self.tagCompletions[indexPath.row - 1];
-                    [self.tagCompletions removeObjectAtIndex:indexPath.row - 1];
+                    
+                    NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+                    NSInteger index = 1;
+                    while (index <= self.tagCompletions.count) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                        index++;
+                    }
+
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tagCompletions removeAllObjects];
                 }
                 else if (self.popularTagSuggestions.count > 0) {
                     completion = self.popularTagSuggestions[indexPath.row - 1];
@@ -192,6 +200,8 @@
                     if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
                         self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
                     }
+                    
+                    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
                 }
                 NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
                 NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
@@ -556,8 +566,7 @@
 }
 
 - (void)handleTagSuggestions {
-    if (self.tagTextField.text.length == 0 || [self.tagTextField.text characterAtIndex:self.tagTextField.text.length-1] == ' ') {
-        self.loadingTags = NO;
+    if (self.tagCompletions.count == 0) {
         NSString *tagText = self.tagTextField.text;
         NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
         NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
@@ -574,7 +583,7 @@
         NSArray *popularTags = self.suggestedTagsPayload[0][@"popular"];
         NSArray *recommendedTags = self.suggestedTagsPayload[1][@"recommended"];
         NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
-
+        
         for (id tag in popularTags) {
             if (![existingTags containsObject:tag]) {
                 [newPopularTagSuggestions addObject:tag];
@@ -586,14 +595,20 @@
             }
         }
         [newPopularTagSuggestions filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
-
+        
+        if (newPopularTagSuggestions.count > 0) {
+            if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length-1] != ' ') {
+                self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
+            }
+        }
+        
         index = 1;
         while (index <= newPopularTagSuggestions.count) {
             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
             index++;
         }
         DLog(@"%d", self.popularTagSuggestions.count);
-
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
