@@ -173,30 +173,34 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 3 && indexPath.row > 0) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        NSString *completion;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                
+                NSString *completion;
+                
+                if (self.tagCompletions.count > 0) {
+                    completion = self.tagCompletions[indexPath.row - 1];
+                    [self.tagCompletions removeObjectAtIndex:indexPath.row - 1];
+                }
+                else if (self.popularTagSuggestions.count > 0) {
+                    completion = self.popularTagSuggestions[indexPath.row - 1];
+                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
+                    
+                    unichar space = ' ';
+                    if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
+                        self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
+                    }
+                }
+                NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
+                NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-        if (self.tagCompletions.count > 0) {
-            completion = self.tagCompletions[indexPath.row - 1];
-            [self.tagCompletions removeObjectAtIndex:indexPath.row - 1];
-        }
-        else if (self.popularTagSuggestions.count > 0) {
-            completion = self.popularTagSuggestions[indexPath.row - 1];
-            self.previousTagSuggestions = [[NSMutableArray alloc] initWithArray:self.popularTagSuggestions];
-            
-            unichar space = ' ';
-            if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
-                self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
-            }
-        }
-        NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
-        NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
-        
-        [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
-        self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
+                [self.tableView endUpdates];
+                self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
+            });
+        });
     }
 }
 
@@ -325,22 +329,24 @@
                     [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
                     index++;
                 }
-                self.suggestedTagsVisible = NO;
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 
+            }
+            else {
                 for (int i=0; i<oldTagCompletions.count; i++) {
                     if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
                     }
                 }
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
 
                 DLog(@"OLD %d", oldTagCompletions.count);
                 DLog(@"ADD %d", indexPathsToAdd.count);
-                
+
+                self.suggestedTagsVisible = NO;
                 self.tagCompletions = newTagCompletions;
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
 
@@ -348,7 +354,7 @@
                 DLog(@"NEW %d", newTagCompletions.count);
                 
                 DLog(@"%@", newTagCompletions);
-                
+
                 [self.tableView endUpdates];
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
             });
