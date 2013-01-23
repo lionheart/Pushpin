@@ -174,30 +174,28 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 3 && indexPath.row > 0) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-        unichar space = ' ';
-        if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
-            self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
-        }
-        NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
-        NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
         NSString *completion;
 
         if (self.tagCompletions.count > 0) {
             completion = self.tagCompletions[indexPath.row - 1];
             [self.tagCompletions removeObjectAtIndex:indexPath.row - 1];
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
         }
         else if (self.popularTagSuggestions.count > 0) {
             completion = self.popularTagSuggestions[indexPath.row - 1];
             self.previousTagSuggestions = [[NSMutableArray alloc] initWithArray:self.popularTagSuggestions];
-            [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
+            
+            unichar space = ' ';
+            if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
+                self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
+            }
         }
+        NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
+        NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
+        
+        [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
         self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
     }
 }
