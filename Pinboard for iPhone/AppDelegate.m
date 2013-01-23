@@ -492,13 +492,11 @@
 
                                            bookmarkMeta = metas[element[@"hash"]];
                                            if (bookmarkMeta) {
-                                               if (skipCount < oldBookmarkHashes.count) {
-                                                   while (![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
-                                                       [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
-                                                       skipCount++;
-                                                   }
+                                               while (skipCount < oldBookmarkHashes.count && ![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
+                                                   [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
                                                    skipCount++;
                                                }
+                                               skipCount++;
 
                                                if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                                                    updated_or_created = YES;
