@@ -572,10 +572,18 @@
             
         case BROWSER_CHROME:
             // XXX
+            
             if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                [[UIApplication sharedApplication] openURL:url];
+                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+                else {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
             }
             else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -583,7 +591,7 @@
             }
 
             break;
-            
+
         case BROWSER_ICAB_MOBILE:
             if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
                 NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"icabmobile"]];
