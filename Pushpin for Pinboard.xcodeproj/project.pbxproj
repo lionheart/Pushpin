@@ -1124,7 +1124,7 @@
 		37FEEB8515745488003F2B77 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin for Pinboard" */;
 			compatibilityVersion = "Xcode 3.2";
