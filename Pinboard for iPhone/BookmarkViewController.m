@@ -55,6 +55,7 @@
 @synthesize processingBookmarks;
 @synthesize longPressGestureRecognizer;
 @synthesize activityIndicator;
+@synthesize leftSwipeGestureRecognizer;
 
 - (void)checkForBookmarkUpdates {
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
@@ -119,14 +120,20 @@
     self.searchDisplayController.delegate = self;
     self.isSearchTable = @(NO);
     self.tableView.tableHeaderView = self.searchBar;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
     [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
+    
+    /*
+    self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
+    [self.leftSwipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.tableView addGestureRecognizer:self.leftSwipeGestureRecognizer];
+     */
+}
 
-    // self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(toggleEditMode)];
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Delete";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -136,9 +143,8 @@
     self.secondsLeft = 1;
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
-    
-    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
 
+    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -376,8 +382,7 @@
         }
         self.queryParameters[@"limit"] = limit;
         self.queryParameters[@"offset"] = @(0);
-        
-        self.tableView.allowsMultipleSelectionDuringEditing = YES;
+
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
 
     }
@@ -400,27 +405,9 @@
         self.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
         self.queryParameters = [[NSMutableDictionary alloc] initWithObjectsAndKeys:limit, @"limit", @(0), "offset", nil];
 
-        self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.tableView.separatorColor = HEX(0xD1D1D1ff);
     }
     return self;
-}
-
-- (void)toggleEditMode {
-    if (self.tableView.editing) {
-        [self.tableView setEditing:NO animated:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
-                                                                                  style:UIBarButtonItemStylePlain
-                                                                                 target:self
-                                                                                 action:@selector(toggleEditMode)];
-    }
-    else {
-        [self.tableView setEditing:YES animated:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
-                                                                                  style:UIBarButtonItemStyleDone
-                                                                                 target:self
-                                                                                 action:@selector(toggleEditMode)];
-    }
 }
 
 - (void)markBookmarkAsRead:(id)sender {
@@ -571,8 +558,6 @@
         }
             
         case BROWSER_CHROME:
-            // XXX
-            
             if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
                 if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
                     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
@@ -788,6 +773,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
 
+    /*
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    cell.textLabel.text = @"yo yo";
+     */
+
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
@@ -825,6 +819,15 @@
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
+}
+
+- (void)handleLeftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.leftSwipeGestureRecognizer) {
+        CGPoint pressPoint;
+        pressPoint = [gestureRecognizer locationInView:self.tableView];
+        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
+    }
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didStartTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
@@ -874,8 +877,7 @@
         urlString = self.bookmark[@"url"];
     }
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    NSInteger cancelButtonIndex = 5;
-    [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+    NSInteger cancelButtonIndex = 4;
     [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
     
     if ([bookmark[@"unread"] boolValue]) {
@@ -906,7 +908,6 @@
     sheet.cancelButtonIndex = cancelButtonIndex;
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-    sheet.destructiveButtonIndex = 0;
     [sheet showFromTabBar:self.tabBarController.tabBar];
 }
 
@@ -980,24 +981,25 @@
                            }];
 }
 
-/* XXX
 #pragma mark - Swipe to delete
 
-- (UITableViewCellEditingStyle)tableView:(UITableView*)tableView editingStyleForRowAtIndexPath:(NSIndexPath*)indexPath {
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewCellEditingStyleDelete;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
+    return self.tableView == tableView;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSDictionary *bookmark = self.bookmarks[indexPath.row];
-        [self deleteBookmark:bookmark atIndexPath:indexPath];
+    if (self.tableView == tableView) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            self.bookmark = self.bookmarks[indexPath.row];
+            [self deleteBookmark:nil];
+        }
     }
 }
- */
 
 #pragma mark - Bookmark Helpers
 
