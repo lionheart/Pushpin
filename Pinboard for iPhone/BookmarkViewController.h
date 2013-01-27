@@ -48,7 +48,6 @@
 @property (nonatomic) BOOL shouldShowContextMenu;
 @property (nonatomic) BOOL processingBookmarks;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
-@property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeGestureRecognizer;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
@@ -71,7 +70,6 @@
 - (void)updateData;
 - (void)checkForBookmarkUpdates;
 
-- (void)handleLeftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 
 - (void)confirmDeletion:(id)sender;
