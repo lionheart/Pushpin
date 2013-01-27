@@ -790,15 +790,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
 
-    /*
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    cell.textLabel.text = @"yo yo";
-     */
-
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
@@ -823,15 +814,22 @@
     for (NSDictionary *link in [BookmarkViewController linksForBookmark:bookmark]) {
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, [self.heights[indexPath.row] floatValue])];
 
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
         cell.contentView.backgroundColor = HEX(0xddddddff);
+        label.backgroundColor = HEX(0xddddddff);
     }
     else {
         cell.textView.backgroundColor = HEX(0xffffffff);
         cell.contentView.backgroundColor = HEX(0xffffffff);
+        label.backgroundColor = HEX(0xffffffff);
     }
+    
+    [cell.contentView addSubview:label];
+    [cell.contentView sendSubviewToBack:label];
 
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
@@ -885,7 +883,8 @@
         urlString = self.bookmark[@"url"];
     }
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    NSInteger cancelButtonIndex = 4;
+    NSInteger cancelButtonIndex = 5;
+    [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
     [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
     
     if ([bookmark[@"unread"] boolValue]) {
@@ -895,6 +894,7 @@
         cancelButtonIndex--;
     }
 
+    sheet.destructiveButtonIndex = 0;
     [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
     // [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
 
