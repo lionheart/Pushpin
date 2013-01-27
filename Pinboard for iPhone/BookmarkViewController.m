@@ -55,7 +55,6 @@
 @synthesize processingBookmarks;
 @synthesize longPressGestureRecognizer;
 @synthesize activityIndicator;
-@synthesize leftSwipeGestureRecognizer;
 
 - (void)checkForBookmarkUpdates {
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
@@ -118,12 +117,6 @@
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-    
-    /*
-    self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe:)];
-    [self.leftSwipeGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.tableView addGestureRecognizer:self.leftSwipeGestureRecognizer];
-     */
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -843,15 +836,6 @@
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
-}
-
-- (void)handleLeftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer {
-    if (gestureRecognizer == self.leftSwipeGestureRecognizer) {
-        CGPoint pressPoint;
-        pressPoint = [gestureRecognizer locationInView:self.tableView];
-        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
-        self.bookmark = self.bookmarks[self.selectedIndexPath.row];
-    }
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didStartTouchWithTextCheckingResult:(NSTextCheckingResult *)result {
