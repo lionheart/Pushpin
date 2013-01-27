@@ -750,6 +750,10 @@
                                        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
                                        [results next];
                                        
+                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                       notification.alertAction = @"Open Pushpin";
+                                       notification.userInfo = @{@"success": @YES, @"updated": @YES};
+
                                        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                           @"url": self.urlTextField.text,
                                                                           @"title": self.titleTextField.text,
@@ -762,16 +766,16 @@
                                        if ([results intForColumnIndex:0] > 0) {
                                            [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                           delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                           notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
                                        }
                                        else {
                                            params[@"created_at"] = [NSDate date];
                                            [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                            [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                           delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Added Message", nil);
+                                           notification.alertBody = NSLocalizedString(@"Bookmark Added Message", nil);
                                        }
-                                       
-                                       delegate.bookmarksUpdated = @(YES);
+                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
                                        [db commit];
                                        [db close];
                                    });
