@@ -77,14 +77,8 @@
                 view = self.navigationController.navigationBar;
             }
 
-            NSString *message = delegate.bookmarksUpdatedMessage;
-            if (message != nil) {
-                [ZAActivityBar showSuccessWithStatus:message];
-            }
-
             [self processBookmarks];
-            delegate.bookmarksUpdated = @(NO);
-            delegate.bookmarksUpdatedMessage = nil;
+            delegate.bookmarksUpdated = @NO;
         }
     }
 }
@@ -412,7 +406,10 @@
 
 - (void)markBookmarkAsRead:(id)sender {
     if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-        [ZAActivityBar showErrorWithStatus:@"Connection unavailable."];
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertBody = @"Connection unavailable.";
+        notification.userInfo = @{@"success": @NO, @"updated": @YES};
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         return;
     }
 
@@ -428,25 +425,26 @@
                                NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
                                if ([payload[@"posts"] count] == 0) {
-                                    #warning Translate
-                                   [ZAActivityBar showErrorWithStatus:@"Error marking as read."];
-                                   /*
-                                   [delegate.dbQueue inDatabase:^(FMDatabase *db) {
-                                       [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                   }];
-                                    */
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertBody = @"Error marking as read.";
+                                   notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                    return;
                                }
 
                                NSDictionary *bookmark = payload[@"posts"][0];
                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
+                                   // Bookmark has already been marked as read on server.
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
                                    [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
                                    [db close];
 
-                                   delegate.bookmarksUpdated = @(YES);
-                                   delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                   notification.alertAction = @"Open Pushpin";
+                                   notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                    return;
                                }
                                
@@ -458,6 +456,8 @@
                                                                   queue:[NSOperationQueue mainQueue]
                                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                                           [delegate setNetworkActivityIndicatorVisible:NO];
+                                                          UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                                          notification.alertAction = @"Open Pushpin";
                                                           if (!error) {
                                                               FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                                               [db open];
@@ -470,13 +470,14 @@
                                                                   }
                                                               }
 
-                                                              delegate.bookmarksUpdated = @(YES);
-                                                              delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                              notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                              notification.userInfo = @{@"success": @YES, @"updated": @YES};
                                                           }
                                                           else {
-                                                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Bookmark Update Error Message", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                                              [alert show];
+                                                              notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
+                                                              notification.userInfo = @{@"success": @NO, @"updated": @NO};
                                                           }
+                                                          [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                                       }];
                            }];
     
@@ -644,7 +645,10 @@
         view = self.navigationController.navigationBar;
     }
 
-    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"Title copied to clipboard.", nil)];
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = NSLocalizedString(@"Title copied to clipboard.", nil);
+    notification.userInfo = @{@"success": @YES, @"updated": @NO};
+    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
 
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"title"]];
     [[Mixpanel sharedInstance] track:@"Copied title"];
@@ -659,7 +663,11 @@
         view = self.navigationController.navigationBar;
     }
 
-    [ZAActivityBar showSuccessWithStatus:NSLocalizedString(@"URL copied to clipboard.", nil)];
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
+    notification.userInfo = @{@"success": @YES, @"updated": @NO};
+    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
     [[UIPasteboard generalPasteboard] setString:self.bookmark[@"url"]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
@@ -670,7 +678,6 @@
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-        DLog(@"%@ %@", resourceKey, resourceSecret);
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
         OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
         OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
@@ -688,21 +695,27 @@
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d", httpResponse.statusCode);
+
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertAction = @"Open Pushpin";
                                    if (httpResponse.statusCode == 200) {
-                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Instapaper."];
+                                       notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                    }
                                    else if (httpResponse.statusCode == 1221) {
-                                       [ZAActivityBar showErrorWithStatus:@"Publisher opted out of Instapaper compatibility."];
+                                       notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
                                    }
                                    else {
-                                       [ZAActivityBar showErrorWithStatus:@"Error sending to Instapaper."];
+                                       notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
 
                                        if (httpResponse.statusCode == 403) {
                                            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
                                        }
                                    }
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
     else if (readLater.integerValue == READLATER_READABILITY) {
@@ -722,21 +735,28 @@
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertAction = @"Open Pushpin";
+
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    if (httpResponse.statusCode == 202) {
-                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Readability."];
+                                       notification.alertBody = @"Sent to Readability.";
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                    }
                                    else if (httpResponse.statusCode == 409) {
-                                       [ZAActivityBar showErrorWithStatus:@"Link already sent to Readability."];
+                                       notification.alertBody = @"Link already sent to Readability.";
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
                                    }
                                    else {
-                                       [ZAActivityBar showErrorWithStatus:@"Error sending to Readability."];
+                                       notification.alertBody = @"Error sending to Readability.";
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
 
                                        if (httpResponse.statusCode == 403) {
                                            [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
                                        }
                                    }
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
     else if (readLater.integerValue == READLATER_POCKET) {
@@ -744,10 +764,14 @@
                              withTitle:self.bookmark[@"title"]
                                handler:^(PocketAPI *api, NSURL *url, NSError *error) {
                                    if (!error) {
-                                       [ZAActivityBar showSuccessWithStatus:@"Sent to Pocket."];
+                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                       notification.alertBody = @"Sent to Pocket.";
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                    }
-        }];
+                               }];
     }
 }
 
@@ -955,6 +979,10 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
 
+                               UILocalNotification *notification = [[UILocalNotification alloc] init];
+                               notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
+                               notification.alertAction = @"Open Pushpin";
+
                                if (!error) {
                                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                    [db open];
@@ -968,15 +996,15 @@
                                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
                                    [db commit];
                                    [db close];
-                                   
-                                   if (self.savedSearchTerm) {
-                                       [self updateSearchResults];
-                                   }
-                                   delegate.bookmarksUpdated = @(YES);
-                                   delegate.bookmarksUpdatedMessage = NSLocalizedString(@"Bookmark Deleted Message", nil);
+
+                                   notification.userInfo = @{@"success": @YES, @"updated": @YES};
                                    [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                                }
-                               
+                               else {
+                                   notification.userInfo = @{@"success": @NO, @"updated": @YES};
+                               }
+                               [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
                                self.timerPaused = NO;
                            }];
 }

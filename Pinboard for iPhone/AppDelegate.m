@@ -48,6 +48,18 @@
 #endif
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    if (application.applicationState == UIApplicationStateActive && !self.bookmarksUpdated.boolValue) {
+        self.bookmarksUpdated = notification.userInfo[@"updated"];
+        if (notification.userInfo[@"success"] == @YES) {
+            [ZAActivityBar showSuccessWithStatus:notification.alertBody];
+        }
+        else {
+            [ZAActivityBar showErrorWithStatus:notification.alertBody];
+        }
+    }
+}
+
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
     [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 }
@@ -561,19 +573,14 @@
 
                                        [db commit];
 
-                                       self.bookmarksUpdated = @(YES);
-                                       if (newBookmarkCount > 0) {
-                                           self.bookmarksUpdatedMessage = [NSString stringWithFormat:@"%d bookmark%@ added.", newBookmarkCount, newBookmarkCount != 1 ? @"s were" : @" was"];
-                                       }
-
                                        [self resumeRefreshTimer];
                                        [self setLastUpdated:[NSDate date]];
 
-                                       if (self.bookmarksUpdatedMessage != nil) {
+                                       if (newBookmarkCount > 0) {
                                            UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                           notification.alertBody = self.bookmarksUpdatedMessage;
+                                           notification.alertBody = [NSString stringWithFormat:@"%d bookmark%@ added.", newBookmarkCount, newBookmarkCount != 1 ? @"s were" : @" was"];
                                            notification.alertAction = @"Open Pushpin";
-                                           notification.fireDate = [NSDate date];
+                                           notification.userInfo = @{@"success": @YES, @"updated": @YES};
                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                        }
                                        self.bookmarksLoading = NO;
