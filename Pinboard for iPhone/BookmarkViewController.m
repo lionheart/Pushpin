@@ -815,16 +815,20 @@
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
     
+    for (id subview in [cell.contentView subviews]) {
+        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
+            [subview removeFromSuperview];
+        }
+    }
+    
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, [self.heights[indexPath.row] floatValue])];
 
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
-        cell.contentView.backgroundColor = HEX(0xddddddff);
         label.backgroundColor = HEX(0xddddddff);
     }
     else {
         cell.textView.backgroundColor = HEX(0xffffffff);
-        cell.contentView.backgroundColor = HEX(0xffffffff);
         label.backgroundColor = HEX(0xffffffff);
     }
     
