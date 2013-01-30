@@ -23,6 +23,11 @@
 @synthesize progressView;
 @synthesize usernameTextField;
 @synthesize passwordTextField;
+@synthesize loginConnection;
+@synthesize loginRequestInProgress;
+@synthesize loginTimer;
+@synthesize activityIndicatorFrameBottom;
+@synthesize activityIndicatorFrameTop;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -84,10 +89,16 @@
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicator.frame = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameTop = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameBottom = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
+    self.activityIndicator.frame = self.activityIndicatorFrameTop;
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
+    
+    self.loginConnection = nil;
+    self.loginRequestInProgress = NO;
+    self.loginTimer = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasHidden:) name:UIKeyboardWillHideNotification object:nil];
@@ -151,6 +162,36 @@
     });
 }
 
+- (void)cancelLogin {
+    if (self.loginRequestInProgress) {
+        [self.loginConnection cancel];
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alert show];
+        [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+        [self resetLoginScreen];
+    }
+}
+
+- (void)loginFailed {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+    [alert show];
+    [[Mixpanel sharedInstance] track:@"Failed to log in"];
+
+    [self resetLoginScreen];
+}
+
+- (void)resetLoginScreen {
+    [self.activityIndicator stopAnimating];
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    self.loginRequestInProgress = NO;
+    self.textView.text = NSLocalizedString(@"Login Instructions", nil);
+    self.usernameTextField.enabled = YES;
+    self.usernameTextField.textColor = [UIColor blackColor];
+    self.passwordTextField.enabled = YES;
+    self.passwordTextField.textColor = [UIColor blackColor];
+}
+
 - (void)login {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
@@ -160,49 +201,53 @@
         NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
         [request setValue:authValue forHTTPHeaderField:@"Authorization"];
         self.textView.text = NSLocalizedString(@"Login in Progress", nil);
+        self.loginRequestInProgress = YES;
+        self.loginTimer = [NSTimer timerWithTimeInterval:20.0 target:self selector:@selector(cancelLogin) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.loginTimer forMode:NSRunLoopCommonModes];
 
         [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                   if (error.code == NSURLErrorUserCancelledAuthentication) {
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                       [alert show];
-                                       [mixpanel track:@"Failed to log in"];
-                                       self.textView.text = NSLocalizedString(@"Login Instructions", nil);
-                                   }
-                                   else {
-                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
-                                       [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
+        self.activityIndicator.frame = self.activityIndicatorFrameTop;
+        [self.activityIndicator startAnimating];
+        self.usernameTextField.enabled = NO;
+        self.usernameTextField.textColor = [UIColor grayColor];
+        self.passwordTextField.enabled = NO;
+        self.passwordTextField.textColor = [UIColor grayColor];
 
-                                       [self.activityIndicator startAnimating];
-                                       self.usernameTextField.enabled = NO;
-                                       self.usernameTextField.textColor = [UIColor grayColor];
-                                       self.passwordTextField.enabled = NO;
-                                       self.passwordTextField.textColor = [UIColor grayColor];
-
-                                       self.textView.text = NSLocalizedString(@"Login Successful", nil);
-                                       self.progressView.hidden = NO;
-                                       [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
-                                       [[AppDelegate sharedDelegate] updateFeedToken:^{
-
-                                       }];
-                                       
-                                       NSString *username = [[AppDelegate sharedDelegate] username];
-                                       [mixpanel identify:username];
-                                       [mixpanel.people identify:username];
-                                       [mixpanel.people set:@"$created" to:[NSDate date]];
-                                       [mixpanel.people set:@"$username" to:username];
-                                       [mixpanel.people set:@"Browser" to:@"Webview"];
-                                   }
-                           }];
+        self.loginConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+        // [self.loginConnection start];
     }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    NSLog(@"%@", data);
+    self.activityIndicator.frame = self.activityIndicatorFrameBottom;
+
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    self.loginRequestInProgress = NO;
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+    if (payload == nil) {
+        [self loginFailed];
+    }
+    else {
+        [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
+
+        self.textView.text = NSLocalizedString(@"Login Successful", nil);
+        self.progressView.hidden = NO;
+        [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
+        [[AppDelegate sharedDelegate] updateFeedToken:^{}];
+        
+        NSString *username = [[AppDelegate sharedDelegate] username];
+        [mixpanel identify:username];
+        [mixpanel.people identify:username];
+        [mixpanel.people set:@"$created" to:[NSDate date]];
+        [mixpanel.people set:@"$username" to:username];
+        [mixpanel.people set:@"Browser" to:@"Webview"];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [self loginFailed];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
