@@ -11,12 +11,8 @@
 @implementation NSString (URLEncoding)
 
 -(NSString *)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
-    #warning Potential memory leak
-	return (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                               (CFStringRef)self,
-                                                               NULL,
-                                                               (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
-                                                               CFStringConvertNSStringEncodingToEncoding(encoding));
+	NSString *s = (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self, NULL, (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ", CFStringConvertNSStringEncodingToEncoding(encoding));
+    return [s autorelease];
 }
 
 @end
