@@ -215,7 +215,7 @@
         self.passwordTextField.textColor = [UIColor grayColor];
 
         self.loginConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-        // [self.loginConnection start];
+        [self.loginConnection start];
     }
 }
 
