@@ -6,7 +6,7 @@
 //
 //
 
-#import "NSString+URLEncoding.h"
+#import "NSString+URLEncoding2.h"
 
 @implementation NSString (URLEncoding)
 

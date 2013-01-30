@@ -7,9 +7,9 @@
 //
 
 #import "AddBookmarkViewController.h"
-#import "NSString+URLEncoding.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "NSString+URLEncoding2.h"
 
 @interface AddBookmarkViewController ()
 
