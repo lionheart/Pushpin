@@ -10,7 +10,6 @@
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
-#import "NSString+URLEncoding.h"
 #import "WBSuccessNoticeView.h"
 #import "TSMiniWebBrowser.h"
 #import "PocketAPI.h"
@@ -18,6 +17,7 @@
 #import "ZAActivityBar.h"
 #import "OAuthConsumer.h"
 #import "KeychainItemWrapper.h"
+#import "NSString+URLEncoding2.h"
 
 @interface BookmarkViewController ()
 
