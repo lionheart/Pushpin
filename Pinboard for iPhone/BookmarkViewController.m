@@ -1013,6 +1013,7 @@
         if (editingStyle == UITableViewCellEditingStyleDelete) {
             self.bookmark = self.bookmarks[indexPath.row];
             [self deleteBookmark:nil];
+            [[Mixpanel sharedInstance] track:@"Swiped to delete"];
         }
     }
 }
