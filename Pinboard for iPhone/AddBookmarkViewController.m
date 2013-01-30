@@ -65,7 +65,7 @@
         self.titleTextField.font = [UIFont systemFontOfSize:16];
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.titleTextField.placeholder = NSLocalizedString(@"Add bookmark title example", nil);
+        self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
         self.titleTextField.text = @"";
         
         self.tagTextField = [[UITextField alloc] init];
@@ -215,6 +215,9 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 1) {
+        
+    }
     if (section == 3) {
         return NSLocalizedString(@"Separate tags with spaces", nil);
     }
