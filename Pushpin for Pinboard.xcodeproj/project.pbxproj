@@ -507,7 +507,7 @@
 		37F5CA3C1679915700327AAC /* uv_x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uv_x.png; sourceTree = "<group>"; };
 		37F5CA3D1679915700327AAC /* uv_x@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uv_x@2x.png"; sourceTree = "<group>"; };
 		37F5CA3E1679915700327AAC /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/UserVoice.strings"; sourceTree = "<group>"; };
-		37FEEB8E15745488003F2B77 /* Pushpin Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1012,7 +1012,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin Dev.app */,
+				37FEEB8E15745488003F2B77 /* Pushpin.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1147,7 +1147,7 @@
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pushpin Dev.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pushpin.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1465,7 +1465,7 @@
 		37800E9B162D576E009FCB17 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
@@ -1480,6 +1480,7 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = (
@@ -1492,6 +1493,7 @@
 				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "74576068-4E76-473E-AD50-025E3DBEFFA3";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
@@ -1513,7 +1515,7 @@
 					"\"$(SRCROOT)/Vendor/UserVoice\"",
 					"\"$(SRCROOT)/Vendor/CrittercismSDK\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME) β";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -1521,7 +1523,7 @@
 		37FEEBA415745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Daniel Loewenherz (Y659LH6YL9)";
@@ -1542,6 +1544,7 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-lxml2";
@@ -1551,6 +1554,8 @@
 				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C0172AE-8D47-44F6-950D-C56BD328FB77";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\"";
+				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
 			};
@@ -1559,7 +1564,7 @@
 		37FEEBA515745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aurora Software LLC";
@@ -1574,6 +1579,7 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = (
@@ -1586,6 +1592,7 @@
 				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3D3F2A6D-A974-4ED0-84AE-DBDD77A0D68D";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\"";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
@@ -1607,7 +1614,7 @@
 					"\"$(SRCROOT)/Vendor/UserVoice\"",
 					"\"$(SRCROOT)/Vendor/CrittercismSDK\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME) Dev";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
