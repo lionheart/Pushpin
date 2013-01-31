@@ -1491,7 +1491,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "74576068-4E76-473E-AD50-025E3DBEFFA3";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B440A539-D627-42A5-92D1-AB1E5CB748D1";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
