@@ -103,6 +103,7 @@
 		37919F2B16092492007708EF /* pin.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2916092492007708EF /* pin.png */; };
 		37919F2C16092492007708EF /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37919F2A16092492007708EF /* pin@2x.png */; };
 		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
+		37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B65FCD1672C6690041DA8C /* libTestFlight.a */; };
 		37B65FD21672C6690041DA8C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCE1672C6690041DA8C /* README.md */; };
 		37B65FD31672C6690041DA8C /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FCF1672C6690041DA8C /* release_notes.md */; };
@@ -199,6 +200,30 @@
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		37A7D60A16BA2FD100B39DD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 379B7D6D16B8E4BC0071BD95;
+			remoteInfo = ASPinboard;
+		};
+		37A7D60C16BA2FD100B39DD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 379B7D9F16B8E8990071BD95;
+			remoteInfo = ASPinboardTest;
+		};
+		37A7D60E16BA2FFC00B39DD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 379B7D6C16B8E4BC0071BD95;
+			remoteInfo = ASPinboard;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -365,6 +390,7 @@
 		37919F2A16092492007708EF /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pin@2x.png"; path = "Assets/pin@2x.png"; sourceTree = "<group>"; };
 		37A25A2015FC42B5009716BB /* NoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteViewController.h; sourceTree = "<group>"; };
 		37A25A2115FC42B5009716BB /* NoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteViewController.m; sourceTree = "<group>"; };
+		37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASPinboard.xcodeproj; path = Vendor/ASPinboard/ASPinboard.xcodeproj; sourceTree = "<group>"; };
 		37B65FCD1672C6690041DA8C /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		37B65FCE1672C6690041DA8C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		37B65FCF1672C6690041DA8C /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
@@ -501,6 +527,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */,
 				375A1009167D4B3100320495 /* Security.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
@@ -854,6 +881,15 @@
 			path = Vendor/EGOCache;
 			sourceTree = "<group>";
 		};
+		37A7D60616BA2FD000B39DD8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */,
+				37A7D60D16BA2FD100B39DD8 /* ASPinboardTest.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -963,6 +999,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
@@ -1106,6 +1143,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				37A7D60F16BA2FFC00B39DD8 /* PBXTargetDependency */,
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
@@ -1136,12 +1174,35 @@
 			mainGroup = 37FEEB8315745488003F2B77;
 			productRefGroup = 37FEEB8F15745488003F2B77 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 37A7D60616BA2FD000B39DD8 /* Products */;
+					ProjectRef = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pushpin */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libASPinboard.a;
+			remoteRef = 37A7D60A16BA2FD100B39DD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		37A7D60D16BA2FD100B39DD8 /* ASPinboardTest.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ASPinboardTest.octest;
+			remoteRef = 37A7D60C16BA2FD100B39DD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		37FEEB8C15745488003F2B77 /* Resources */ = {
@@ -1356,6 +1417,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		37A7D60F16BA2FFC00B39DD8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ASPinboard;
+			targetProxy = 37A7D60E16BA2FFC00B39DD8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		3740A23716863CF000F95D82 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -1408,13 +1477,19 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"${SDKROOT}/usr/include/libxml2",
+					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
 					"-lxml2",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "74576068-4E76-473E-AD50-025E3DBEFFA3";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1464,10 +1539,16 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"${SDKROOT}/usr/include/libxml2",
+					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-lxml2";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C0172AE-8D47-44F6-950D-C56BD328FB77";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
@@ -1490,13 +1571,19 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"${SDKROOT}/usr/include/libxml2",
+					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
 					"-lxml2",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3D3F2A6D-A974-4ED0-84AE-DBDD77A0D68D";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
