@@ -832,8 +832,10 @@
         label.backgroundColor = HEX(0xffffffff);
     }
     
-    [cell.contentView addSubview:label];
-    [cell.contentView sendSubviewToBack:label];
+    if (tableView == self.tableView) {
+        [cell.contentView addSubview:label];
+        [cell.contentView sendSubviewToBack:label];
+    }
 
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
