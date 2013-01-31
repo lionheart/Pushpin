@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "AppDelegate.h"
 #import "BookmarkViewController.h"
 #import "HomeViewController.h"

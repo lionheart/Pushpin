@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "TabBarViewController.h"
 #import "NSData+Additions.h"
+#import <ASPinboard/ASPinboard.h>
 
 @interface LoginViewController ()
 
@@ -23,9 +24,6 @@
 @synthesize progressView;
 @synthesize usernameTextField;
 @synthesize passwordTextField;
-@synthesize loginConnection;
-@synthesize loginRequestInProgress;
-@synthesize loginTimer;
 @synthesize activityIndicatorFrameBottom;
 @synthesize activityIndicatorFrameTop;
 
@@ -95,9 +93,6 @@
     [self.view addSubview:self.activityIndicator];
 
     keyboard_shown = false;
-    
-    self.loginConnection = nil;
-    self.loginRequestInProgress = NO;
     self.loginTimer = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
@@ -162,29 +157,8 @@
     });
 }
 
-- (void)cancelLogin {
-    if (self.loginRequestInProgress) {
-        [self.loginConnection cancel];
-
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-        [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-        [self resetLoginScreen];
-    }
-}
-
-- (void)loginFailed {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-    [alert show];
-    [[Mixpanel sharedInstance] track:@"Failed to log in"];
-
-    [self resetLoginScreen];
-}
-
 - (void)resetLoginScreen {
     [self.activityIndicator stopAnimating];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    self.loginRequestInProgress = NO;
     self.textView.text = NSLocalizedString(@"Login Instructions", nil);
     self.usernameTextField.enabled = YES;
     self.usernameTextField.textColor = [UIColor blackColor];
@@ -193,61 +167,54 @@
 }
 
 - (void)login {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/api_token?format=json"]]];
-        NSString *authStr = [NSString stringWithFormat:@"%@:%@", usernameTextField.text, passwordTextField.text];
-        NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
-        NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
-        [request setValue:authValue forHTTPHeaderField:@"Authorization"];
-        self.textView.text = NSLocalizedString(@"Login in Progress", nil);
-        self.loginRequestInProgress = YES;
-        self.loginTimer = [NSTimer timerWithTimeInterval:20.0 target:self selector:@selector(cancelLogin) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.loginTimer forMode:NSRunLoopCommonModes];
-
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        [delegate setNetworkActivityIndicatorVisible:YES];
         self.activityIndicator.frame = self.activityIndicatorFrameTop;
         [self.activityIndicator startAnimating];
         self.usernameTextField.enabled = NO;
         self.usernameTextField.textColor = [UIColor grayColor];
         self.passwordTextField.enabled = NO;
         self.passwordTextField.textColor = [UIColor grayColor];
-
-        self.loginConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-        [self.loginConnection start];
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    self.activityIndicator.frame = self.activityIndicatorFrameBottom;
-
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    self.loginRequestInProgress = NO;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-    if (payload == nil) {
-        [self loginFailed];
-    }
-    else {
-        [[AppDelegate sharedDelegate] setToken:[NSString stringWithFormat:@"%@:%@", usernameTextField.text, payload[@"result"]]];
-
-        self.textView.text = NSLocalizedString(@"Login Successful", nil);
-        self.progressView.hidden = NO;
-        [[AppDelegate sharedDelegate] updateBookmarksWithDelegate:self];
-        [[AppDelegate sharedDelegate] updateFeedToken:^{}];
+        self.textView.text = NSLocalizedString(@"Login in Progress", nil);
         
-        NSString *username = [[AppDelegate sharedDelegate] username];
-        [mixpanel identify:username];
-        [mixpanel.people identify:username];
-        [mixpanel.people set:@"$created" to:[NSDate date]];
-        [mixpanel.people set:@"$username" to:username];
-        [mixpanel.people set:@"Browser" to:@"Webview"];
-    }
-}
+        ASPinboard *pinboard = [ASPinboard sharedPinboard];
+        [pinboard authenticateWithUsername:usernameTextField.text
+                                  password:passwordTextField.text
+                           successCallback:^(NSString *token) {
+                               [delegate setNetworkActivityIndicatorVisible:NO];
+                               [delegate setToken:token];
+                               self.activityIndicator.frame = self.activityIndicatorFrameBottom;
+                               
+                               self.textView.text = NSLocalizedString(@"Login Successful", nil);
+                               self.progressView.hidden = NO;
+                               [delegate updateBookmarksWithDelegate:self];
+                               [delegate updateFeedToken:^{}];
+                               
+                               Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                               [mixpanel identify:[delegate username]];
+                               [mixpanel.people identify:[delegate username]];
+                               [mixpanel.people set:@"$created" to:[NSDate date]];
+                               [mixpanel.people set:@"$username" to:[delegate username]];
+                               [mixpanel.people set:@"Browser" to:@"Webview"];
+                           }
+                           failureCallback:^{
+                               [delegate setNetworkActivityIndicatorVisible:NO];
+                               
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                               [alert show];
+                               [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                               [self resetLoginScreen];
+                           }
+                           timeoutCallback:^{
+                               [delegate setNetworkActivityIndicatorVisible:NO];
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [self loginFailed];
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                               [alert show];
+                               [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                               [self resetLoginScreen];
+                           }];
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
