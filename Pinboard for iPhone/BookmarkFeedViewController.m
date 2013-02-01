@@ -186,7 +186,7 @@
 
                                if ([(NSHTTPURLResponse *)response statusCode] == 403 && [self.sourceURL.absoluteString hasSuffix:@"network/"]) {
                                    ASPinboard *pinboard = [ASPinboard sharedPinboard];
-                                   [pinboard retrieveRSSKey:^(NSString *feedToken) {
+                                   [pinboard rssKey:^(NSString *feedToken) {
                                        [delegate setToken:feedToken];
                                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                                        self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];

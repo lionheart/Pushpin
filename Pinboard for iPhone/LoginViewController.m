@@ -192,7 +192,7 @@
                                [delegate updateBookmarksWithDelegate:self];
 
                                [delegate setNetworkActivityIndicatorVisible:YES];
-                               [pinboard retrieveRSSKey:^(NSString *feedToken) {
+                               [pinboard rssKey:^(NSString *feedToken) {
                                    [delegate setToken:feedToken];
                                }];
                                
