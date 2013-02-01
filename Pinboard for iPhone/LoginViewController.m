@@ -183,13 +183,22 @@
                                   password:passwordTextField.text
                            successCallback:^(NSString *token) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
+                               [pinboard setToken:token];
                                [delegate setToken:token];
                                self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                
                                self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                self.progressView.hidden = NO;
                                [delegate updateBookmarksWithDelegate:self];
-                               [delegate updateFeedToken:^{}];
+
+                               [delegate setNetworkActivityIndicatorVisible:YES];
+                               [pinboard retrieveRSSKey:^(NSString *feedToken) {
+                                                    [delegate setNetworkActivityIndicatorVisible:NO];
+                                                    [delegate setToken:feedToken];
+                                                }
+                                                failure:^{
+                                                    [delegate setNetworkActivityIndicatorVisible:NO];
+                                                }];
                                
                                Mixpanel *mixpanel = [Mixpanel sharedInstance];
                                [mixpanel identify:[delegate username]];
