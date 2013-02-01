@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "BookmarkViewController.h"
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
@@ -958,45 +959,38 @@
     [self.confirmDeleteAlertView show];
 }
 
-- (void)deleteBookmark:(id)sender {
-    NSString *url = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/delete?format=json&auth_token=%@&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
+- (void)deleteBookmark:(id)sender {    
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
+    notification.alertAction = @"Open Pushpin";
+
     self.timerPaused = YES;
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-
-                               UILocalNotification *notification = [[UILocalNotification alloc] init];
-                               notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
-                               notification.alertAction = @"Open Pushpin";
-
-                               if (!error) {
-                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                   [db open];
-                                   
-                                   FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                   [results next];
-                                   NSNumber *bookmarkId = @([results intForColumnIndex:0]);
-                                   
-                                   [db beginTransaction];
-                                   [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                   [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
-                                   [db commit];
-                                   [db close];
-
-                                   notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                                   [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-                               }
-                               else {
-                                   notification.userInfo = @{@"success": @NO, @"updated": @YES};
-                               }
-                               [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-
-                               self.timerPaused = NO;
-                           }];
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard deleteBookmarkWithURL:self.bookmark[@"url"]
+                            success:^{
+                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                [db open];
+                                
+                                FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                [results next];
+                                NSNumber *bookmarkId = @([results intForColumnIndex:0]);
+                                
+                                [db beginTransaction];
+                                [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
+                                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                                [db commit];
+                                [db close];
+                                
+                                notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+                                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                self.timerPaused = NO;
+                            }
+                            failure:^{
+                                notification.userInfo = @{@"success": @NO, @"updated": @YES};
+                                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                self.timerPaused = NO;
+                            }];
 }
 
 #pragma mark - Swipe to delete
