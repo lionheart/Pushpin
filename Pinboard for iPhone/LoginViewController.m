@@ -182,16 +182,13 @@
         [pinboard authenticateWithUsername:usernameTextField.text
                                   password:passwordTextField.text
                            successCallback:^(NSString *token) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               [pinboard setToken:token];
-                               [delegate setToken:token];
                                self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                
                                self.textView.text = NSLocalizedString(@"Login Successful", nil);
                                self.progressView.hidden = NO;
-                               [delegate updateBookmarksWithDelegate:self];
 
-                               [delegate setNetworkActivityIndicatorVisible:YES];
+                               [delegate setToken:token];
+                               [delegate updateBookmarksWithDelegate:self];
                                [pinboard rssKey:^(NSString *feedToken) {
                                    [delegate setToken:feedToken];
                                }];
@@ -204,16 +201,12 @@
                                [mixpanel.people set:@"Browser" to:@"Webview"];
                            }
                            failureCallback:^{
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               
                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                [alert show];
                                [[Mixpanel sharedInstance] track:@"Failed to log in"];
                                [self resetLoginScreen];
                            }
                            timeoutCallback:^{
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-
                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                [alert show];
                                [[Mixpanel sharedInstance] track:@"Cancelled log in"];
