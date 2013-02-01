@@ -37,13 +37,9 @@
     if (![delegate feedToken]) {
         [delegate setNetworkActivityIndicatorVisible:YES];
         [[ASPinboard sharedPinboard] retrieveRSSKey:^(NSString *feedToken) {
-                                                [delegate setNetworkActivityIndicatorVisible:NO];
-                                                [delegate setToken:feedToken];
-                                                [self.tableView reloadData];
-                                            }
-                                            failure:^{
-                                                [delegate setNetworkActivityIndicatorVisible:NO];
-                                            }];
+            [delegate setToken:feedToken];
+            [self.tableView reloadData];
+        }];
     }
 }
 

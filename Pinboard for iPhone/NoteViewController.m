@@ -6,6 +6,7 @@
 //
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "NoteViewController.h"
 #import "AppDelegate.h"
 
@@ -16,7 +17,7 @@
 @implementation NoteViewController
 
 @synthesize searchDisplayController;
-@synthesize notes;
+@synthesize notes = _notes;
 @synthesize searchBar;
 @synthesize noteDetailViewController;
 @synthesize webView;
@@ -28,22 +29,11 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?format=json&auth_token=%@", [[AppDelegate sharedDelegate] token]];
-
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                               self.notes = payload[@"notes"];
-                               [mixpanel.people set:@"Notes" to:@(self.notes.count)];
-                               [self.tableView reloadData];
-                           }];
+    [[ASPinboard sharedPinboard] notes:^(NSArray *notes) {
+        self.notes = notes;
+        [mixpanel.people set:@"Notes" to:@(self.notes.count)];
+        [self.tableView reloadData];
+    }];
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
@@ -109,30 +99,21 @@
         note = self.filteredNotes[indexPath.row];
     }
     
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-    NSString *noteURLString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/%@?format=json&auth_token=%@", note[@"id"], [[AppDelegate sharedDelegate] token]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:noteURLString]];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-
-                               if (!error) {
-                                   NSDictionary *noteInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
-                                   self.webView = [[UIWebView alloc] init];
-                                   [self.webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='font-family:Helvetica;'><h4>%@</h4></div></body>", noteInfo[@"text"]] baseURL:nil];
-
-                                   self.noteDetailViewController = [[UIViewController alloc] init];
-                                   self.noteDetailViewController.title = noteInfo[@"title"];
-                                   self.webView.frame = self.noteDetailViewController.view.frame;
-                                   self.noteDetailViewController.view = self.webView;
-                                   self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
-                                   [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                   [mixpanel track:@"Viewed note details"];
-                                   [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
-                               }
-                           }];
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard noteWithId:note[@"id"]
+                 success:^(NSString *title, NSString *text) {
+                     self.webView = [[UIWebView alloc] init];
+                     [self.webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='font-family:Helvetica;'><h4>%@</h4></div></body>", text] baseURL:nil];
+                    
+                     self.noteDetailViewController = [[UIViewController alloc] init];
+                     self.noteDetailViewController.title = title;
+                     self.webView.frame = self.noteDetailViewController.view.frame;
+                     self.noteDetailViewController.view = self.webView;
+                     self.noteDetailViewController.hidesBottomBarWhenPushed = YES;
+                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                     [mixpanel track:@"Viewed note details"];
+                     [self.navigationController pushViewController:self.noteDetailViewController animated:YES];
+                 }];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {

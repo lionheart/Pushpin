@@ -193,12 +193,8 @@
 
                                [delegate setNetworkActivityIndicatorVisible:YES];
                                [pinboard retrieveRSSKey:^(NSString *feedToken) {
-                                                    [delegate setNetworkActivityIndicatorVisible:NO];
-                                                    [delegate setToken:feedToken];
-                                                }
-                                                failure:^{
-                                                    [delegate setNetworkActivityIndicatorVisible:NO];
-                                                }];
+                                   [delegate setToken:feedToken];
+                               }];
                                
                                Mixpanel *mixpanel = [Mixpanel sharedInstance];
                                [mixpanel identify:[delegate username]];

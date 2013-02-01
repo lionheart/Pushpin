@@ -187,16 +187,12 @@
                                if ([(NSHTTPURLResponse *)response statusCode] == 403 && [self.sourceURL.absoluteString hasSuffix:@"network/"]) {
                                    ASPinboard *pinboard = [ASPinboard sharedPinboard];
                                    [pinboard retrieveRSSKey:^(NSString *feedToken) {
-                                                        [delegate setNetworkActivityIndicatorVisible:NO];
-                                                        [delegate setToken:feedToken];
-                                                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                                                        self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];
-                                                        failureCount++;
-                                                        [self processBookmarks];
-                                                    }
-                                                    failure:^{
-                                                        [delegate setNetworkActivityIndicatorVisible:NO];
-                                                    }];
+                                       [delegate setToken:feedToken];
+                                       NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                                       self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];
+                                       failureCount++;
+                                       [self processBookmarks];
+                                   }];
                                }
                                else if (!error) {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
