@@ -527,7 +527,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */,
 				375A1009167D4B3100320495 /* Security.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
@@ -542,6 +541,7 @@
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */,
 				37F5CA401679915700327AAC /* libUserVoice.a in Frameworks */,
+				37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1554,7 +1554,7 @@
 				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C0172AE-8D47-44F6-950D-C56BD328FB77";
 				SDKROOT = iphoneos;
-				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
@@ -1592,7 +1592,7 @@
 				);
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3D3F2A6D-A974-4ED0-84AE-DBDD77A0D68D";
 				SDKROOT = iphoneos;
-				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "";
