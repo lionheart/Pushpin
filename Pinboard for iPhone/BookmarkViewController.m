@@ -399,82 +399,71 @@
 }
 
 - (void)markBookmarkAsRead:(id)sender {
-    if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    if (![[delegate connectionAvailable] boolValue]) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = @"Connection unavailable.";
         notification.userInfo = @{@"success": @NO, @"updated": @YES};
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         return;
     }
-
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/get?auth_token=%@&format=json&url=%@", [[AppDelegate sharedDelegate] token], [self.bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
-                               if ([payload[@"posts"] count] == 0) {
-                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                   notification.alertBody = @"Error marking as read.";
-                                   notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   return;
-                               }
-
-                               NSDictionary *bookmark = payload[@"posts"][0];
-                               if ([bookmark[@"toread"] isEqualToString:@"no"]) {
-                                   // Bookmark has already been marked as read on server.
-                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                   [db open];
-                                   [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                   [db close];
-
-                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                   notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                   notification.alertAction = @"Open Pushpin";
-                                   notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   return;
-                               }
-                               
-                               [delegate setNetworkActivityIndicatorVisible:YES];
-                               NSString *urlString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], [bookmark[@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"extended"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"tags"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], bookmark[@"shared"]];
-                               NSURL *url = [NSURL URLWithString:urlString];
-                               NSURLRequest *request = [NSURLRequest requestWithURL:url];
-                               [NSURLConnection sendAsynchronousRequest:request
-                                                                  queue:[NSOperationQueue mainQueue]
-                                                      completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                          [delegate setNetworkActivityIndicatorVisible:NO];
-                                                          UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                                          notification.alertAction = @"Open Pushpin";
-                                                          if (!error) {
-                                                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                                              [db open];
-                                                              BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                              [db close];
-
-                                                              if (success) {
-                                                                  if (self.savedSearchTerm) {
-                                                                      [self updateSearchResults];
-                                                                  }
-                                                              }
-
-                                                              notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                                              notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                                                          }
-                                                          else {
-                                                              notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
-                                                              notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                                                          }
-                                                          [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                                      }];
-                           }];
     
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard bookmarkWithURL:self.bookmark[@"url"]
+                      success:^(NSDictionary *bookmark) {
+                          if ([bookmark[@"toread"] isEqualToString:@"no"]) {
+                              // Bookmark has already been marked as read on server.
+                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                              [db open];
+                              [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                              [db close];
+                              
+                              UILocalNotification *notification = [[UILocalNotification alloc] init];
+                              notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                              notification.alertAction = @"Open Pushpin";
+                              notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                              [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                              return;
+                          }
+                          
+                          [delegate setNetworkActivityIndicatorVisible:YES];
+                          NSString *urlString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], [bookmark[@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"extended"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"tags"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], bookmark[@"shared"]];
+                          NSURL *url = [NSURL URLWithString:urlString];
+                          NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                          [NSURLConnection sendAsynchronousRequest:request
+                                                             queue:[NSOperationQueue mainQueue]
+                                                 completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                     [delegate setNetworkActivityIndicatorVisible:NO];
+                                                     UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                                     notification.alertAction = @"Open Pushpin";
+                                                     if (!error) {
+                                                         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                         [db open];
+                                                         BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                         [db close];
+                                                         
+                                                         if (success) {
+                                                             if (self.savedSearchTerm) {
+                                                                 [self updateSearchResults];
+                                                             }
+                                                         }
+                                                         
+                                                         notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                                         notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                                                     }
+                                                     else {
+                                                         notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
+                                                         notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                                     }
+                                                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                                 }];
+                      }
+                      failure:^{
+                          UILocalNotification *notification = [[UILocalNotification alloc] init];
+                          notification.alertBody = @"Error marking as read.";
+                          notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                          [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                      }];    
 }
 
 #pragma mark - Search Results Delegate
