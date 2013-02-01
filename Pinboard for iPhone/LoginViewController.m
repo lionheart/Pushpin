@@ -215,6 +215,7 @@
                                        [alert show];
                                        [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                                        [self resetLoginScreen];
+                                       break;
                                    }
 
                                    default:
