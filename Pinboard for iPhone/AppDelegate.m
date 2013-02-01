@@ -153,6 +153,8 @@
     [pinboard setRequestCompletedCallback:^{
         [self setNetworkActivityIndicatorVisible:NO];
     }];
+    
+    DLog(@"%@", NSMachErrorDomain);
 
     if ([self token]) {
         [pinboard setToken:[self token]];
