@@ -150,8 +150,12 @@
     };
     [reach startNotifier];
     
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard setRequestCompletedCallback:^{
+        [self setNetworkActivityIndicatorVisible:NO];
+    }];
+
     if ([self token]) {
-        ASPinboard *pinboard = [ASPinboard sharedPinboard];
         [pinboard setToken:[self token]];
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
