@@ -190,7 +190,7 @@
                                [delegate setToken:token];
                                [delegate updateBookmarksWithDelegate:self];
                                [pinboard rssKey:^(NSString *feedToken) {
-                                   [delegate setToken:feedToken];
+                                   [delegate setFeedToken:feedToken];
                                }];
                                
                                Mixpanel *mixpanel = [Mixpanel sharedInstance];
@@ -200,17 +200,26 @@
                                [mixpanel.people set:@"$username" to:[delegate username]];
                                [mixpanel.people set:@"Browser" to:@"Webview"];
                            }
-                           failureCallback:^{
-                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                               [alert show];
-                               [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                               [self resetLoginScreen];
-                           }
-                           timeoutCallback:^{
-                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                               [alert show];
-                               [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                               [self resetLoginScreen];
+                           failureCallback:^(NSError *error) {
+                               switch (error.code) {
+                                   case PinboardErrorInvalidCredentials: {
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                       [alert show];
+                                       [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                                       [self resetLoginScreen];
+                                       break;
+                                   }
+                                       
+                                   case PinboardErrorTimeout: {
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                       [alert show];
+                                       [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                                       [self resetLoginScreen];
+                                   }
+
+                                   default:
+                                       break;
+                               }
                            }];
     }
 }

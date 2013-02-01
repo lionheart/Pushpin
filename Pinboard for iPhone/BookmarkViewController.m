@@ -458,12 +458,14 @@
                                                      [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                                  }];
                       }
-                      failure:^{
-                          UILocalNotification *notification = [[UILocalNotification alloc] init];
-                          notification.alertBody = @"Error marking as read.";
-                          notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                          [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                      }];    
+                      failure:^(NSError *error) {
+                          if (error.code == PinboardErrorBookmarkNotFound) {
+                              UILocalNotification *notification = [[UILocalNotification alloc] init];
+                              notification.alertBody = @"Error marking as read.";
+                              notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                              [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                          }
+                      }];
 }
 
 #pragma mark - Search Results Delegate
@@ -975,7 +977,7 @@
                                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                 self.timerPaused = NO;
                             }
-                            failure:^{
+                            failure:^(NSError *error) {
                                 notification.userInfo = @{@"success": @NO, @"updated": @YES};
                                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                 self.timerPaused = NO;
