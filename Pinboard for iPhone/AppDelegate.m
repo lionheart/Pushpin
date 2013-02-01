@@ -128,6 +128,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
+
     [TestFlight takeOff:@"a4d1862d-30d8-4984-9e33-dba8872d2538"];
 #ifdef TESTING
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
@@ -150,6 +151,8 @@
     [reach startNotifier];
     
     if ([self token]) {
+        ASPinboard *pinboard = [ASPinboard sharedPinboard];
+        [pinboard setToken:[self token]];
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
@@ -686,21 +689,6 @@
                                }
                                else {
                                    callback(@"", @"");
-                               }
-                           }];
-}
-
-- (void)updateFeedToken:(void (^)())callback {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/user/secret?auth_token=%@&format=json", [[AppDelegate sharedDelegate] token]]]];
-    [self setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self setNetworkActivityIndicatorVisible:NO];
-                               if (!error) {
-                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   [self setFeedToken:payload[@"result"]];
-                                   callback();
                                }
                            }];
 }

@@ -6,6 +6,7 @@
 //
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "BookmarkFeedViewController.h"
 #import "NSAttributedString+Attributes.h"
 #import "AppDelegate.h"
@@ -176,20 +177,26 @@
     }
 
     NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL];
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                               [delegate setNetworkActivityIndicatorVisible:NO];
 
                                if ([(NSHTTPURLResponse *)response statusCode] == 403 && [self.sourceURL.absoluteString hasSuffix:@"network/"]) {
-                                   [[AppDelegate sharedDelegate] updateFeedToken:^{
-                                       NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                                       NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                                       self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];
-                                       failureCount++;
-                                       [self processBookmarks];
-                                   }];
+                                   ASPinboard *pinboard = [ASPinboard sharedPinboard];
+                                   [pinboard retrieveRSSKey:^(NSString *feedToken) {
+                                                        [delegate setNetworkActivityIndicatorVisible:NO];
+                                                        [delegate setToken:feedToken];
+                                                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                                                        self.sourceURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username]];
+                                                        failureCount++;
+                                                        [self processBookmarks];
+                                                    }
+                                                    failure:^{
+                                                        [delegate setNetworkActivityIndicatorVisible:NO];
+                                                    }];
                                }
                                else if (!error) {
                                    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];

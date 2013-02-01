@@ -6,6 +6,7 @@
 //
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
@@ -351,6 +352,7 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
+            [[ASPinboard sharedPinboard] resetAuthentication];
             [[AppDelegate sharedDelegate] setToken:nil];
             [[AppDelegate sharedDelegate] setLastUpdated:nil];
             NSFileManager *fileManager = [NSFileManager defaultManager];

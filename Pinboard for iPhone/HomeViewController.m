@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <ASPinboard/ASPinboard.h>
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
 #import "BookmarkFeedViewController.h"
@@ -32,10 +33,17 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
-    if (![[AppDelegate sharedDelegate] feedToken]) {
-        [[AppDelegate sharedDelegate] updateFeedToken:^{
-            [self.tableView reloadData];
-        }];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    if (![delegate feedToken]) {
+        [delegate setNetworkActivityIndicatorVisible:YES];
+        [[ASPinboard sharedPinboard] retrieveRSSKey:^(NSString *feedToken) {
+                                                [delegate setNetworkActivityIndicatorVisible:NO];
+                                                [delegate setToken:feedToken];
+                                                [self.tableView reloadData];
+                                            }
+                                            failure:^{
+                                                [delegate setNetworkActivityIndicatorVisible:NO];
+                                            }];
     }
 }
 
