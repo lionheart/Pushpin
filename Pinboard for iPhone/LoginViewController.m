@@ -189,7 +189,7 @@
 
                                [delegate setToken:token];
                                [delegate updateBookmarksWithDelegate:self];
-                               [pinboard rssKey:^(NSString *feedToken) {
+                               [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                    [delegate setFeedToken:feedToken];
                                }];
                                

@@ -10,6 +10,7 @@
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
+#import <ASPinboard/ASPinboard.h>
 
 @interface AddBookmarkViewController ()
 
@@ -40,6 +41,9 @@
 @synthesize suggestedTagsVisible;
 @synthesize previousTagSuggestions;
 @synthesize suggestedTagsPayload;
+@synthesize autocompleteInProgress;
+@synthesize popularTags;
+@synthesize recommendedTags;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -81,10 +85,13 @@
         self.loadingTitle = NO;
         self.loadingTags = NO;
         self.suggestedTagsVisible = NO;
+        self.autocompleteInProgress = NO;
         self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
         self.popularTagSuggestions = [[NSMutableArray alloc] init];
         self.previousTagSuggestions = [[NSMutableArray alloc] init];
         self.suggestedTagsPayload = nil;
+        self.popularTags = @[];
+        self.recommendedTags = @[];
 
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -298,29 +305,30 @@
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
-    NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
-    NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
-    NSMutableArray *newTagCompletions = [NSMutableArray array];
-    NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
+    if (!self.autocompleteInProgress) {
+        self.autocompleteInProgress = YES;
+        NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
+        NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
+        NSMutableArray *newTagCompletions = [NSMutableArray array];
+        NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
 
-    NSString *newString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
-    if (string != nil && newString.length > 0 && [newString characterAtIndex:newString.length-1] != ' ') {
-        NSString *newTextFieldContents;
-        if (range.length > string.length) {
-            newTextFieldContents = [self.tagTextField.text substringToIndex:self.tagTextField.text.length - range.length];
-        }
-        else {
-            newTextFieldContents = [NSString stringWithFormat:@"%@", self.tagTextField.text];
-        }
+        NSString *newString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
+        if (string != nil && newString.length > 0 && [newString characterAtIndex:newString.length-1] != ' ') {
+            NSString *newTextFieldContents;
+            if (range.length > string.length) {
+                newTextFieldContents = [self.tagTextField.text substringToIndex:self.tagTextField.text.length - range.length];
+            }
+            else {
+                newTextFieldContents = [NSString stringWithFormat:@"%@", self.tagTextField.text];
+            }
 
-        NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
-        NSArray *existingTags = [self.tagTextField.text componentsSeparatedByString:@" "];
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
+            NSArray *existingTags = [self.tagTextField.text componentsSeparatedByString:@" "];
+            
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
             FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
-
+            
             NSString *currentTag;
             NSInteger index = 1;
             while ([result next]) {
@@ -335,6 +343,8 @@
                 }
             }
             [db close];
+            
+            DLog(@"%@ %@", newString, newTagCompletions);
             
             if (self.suggestedTagsVisible) {
                 index = 1;
@@ -351,32 +361,33 @@
                     }
                 }
             }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
 
-                DLog(@"OLD %d", oldTagCompletions.count);
-                DLog(@"ADD %d", indexPathsToAdd.count);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
 
-                self.suggestedTagsVisible = NO;
-                self.tagCompletions = newTagCompletions;
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    DLog(@"OLD %d", oldTagCompletions.count);
+                    DLog(@"ADD %d", indexPathsToAdd.count);
 
-                DLog(@"REMOVE %d", indexPathsToRemove.count);
-                DLog(@"NEW %d", newTagCompletions.count);
-                
-                DLog(@"%@", newTagCompletions);
+                    self.suggestedTagsVisible = NO;
+                    self.tagCompletions = newTagCompletions;
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
 
-                [self.tableView endUpdates];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    DLog(@"REMOVE %d", indexPathsToRemove.count);
+                    DLog(@"NEW %d", newTagCompletions.count);
+                    
+                    DLog(@"%@ %@", newString, newTagCompletions);
+
+                    [self.tableView endUpdates];
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    self.autocompleteInProgress = NO;
+                });
             });
-        });
-    }
-    else if (!self.suggestedTagsVisible) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        }
+        else if (!self.suggestedTagsVisible) {
             NSInteger index = 1;
-
+            
             while (index <= self.tagCompletions.count) {
                 [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
                 index++;
@@ -387,36 +398,43 @@
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
                 index++;
             }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                
-                if ([indexPathsToRemove count] > 0) {
-                    DLog(@"LL REMOVE %d", indexPathsToRemove.count);
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                }
-                
-                if ([indexPathsToAdd count] > 0) {
-                    DLog(@"LL ADD %d", indexPathsToAdd.count);
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                }
-                
-                DLog(@"%@", self.popularTagSuggestions);
-                
-                self.suggestedTagsVisible = YES;
-                [self.tagCompletions removeAllObjects];
-                
-                [self.tableView endUpdates];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-            });
 
-        });
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    
+                    if ([indexPathsToRemove count] > 0) {
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    }
+                    
+                    if ([indexPathsToAdd count] > 0) {
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                    }
+                    
+                    self.suggestedTagsVisible = YES;
+                    [self.tagCompletions removeAllObjects];
+                    
+                    [self.tableView endUpdates];
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    self.autocompleteInProgress = NO;
+                });
+
+            });
+        }
+        else {
+            self.autocompleteInProgress = NO;
+        }
     }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.tagTextField) {
-        [self searchUpdatedWithRange:range andString:string];
+        if (textField.text.length > 0 && [textField.text characterAtIndex:textField.text.length-1] == ' ' && [string isEqualToString:@" "]) {
+            return NO;
+        }
+        else {
+            [self searchUpdatedWithRange:range andString:string];
+        }
     }
     else if (textField == self.urlTextField) {
         if ([string isEqualToString:@" "]) {
@@ -583,18 +601,16 @@
             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
             index++;
         }
-        
-        NSArray *popularTags = self.suggestedTagsPayload[0][@"popular"];
-        NSArray *recommendedTags = self.suggestedTagsPayload[1][@"recommended"];
+    
         NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
         
-        for (id tag in popularTags) {
+        for (id tag in self.popularTags) {
             if (![existingTags containsObject:tag]) {
                 [newPopularTagSuggestions addObject:tag];
             }
         }
-        for (id tag in recommendedTags) {
-            if (![existingTags containsObject:tag] && ![popularTags containsObject:tag]) {
+        for (id tag in self.recommendedTags) {
+            if (![existingTags containsObject:tag] && ![self.popularTags containsObject:tag]) {
                 [newPopularTagSuggestions addObject:tag];
             }
         }
@@ -636,8 +652,6 @@
         && [[UIApplication sharedApplication] canOpenURL:url]
         && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
     if (shouldPrefillTags) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/suggest?url=%@&auth_token=%@&format=json", [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [[AppDelegate sharedDelegate] token]]]];
-
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
@@ -647,27 +661,19 @@
             });
         });
 
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+        ASPinboard *pinboard = [ASPinboard sharedPinboard];
+        [pinboard tagSuggestionsForURL:self.urlTextField.text
+                               success:^(NSArray *popular, NSArray *recommended) {
+                                   self.popularTags = popular;
+                                   self.recommendedTags = recommended;
+                                   [self handleTagSuggestions];
 
-                                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               [self.tableView beginUpdates];
-                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
-                                               self.loadingTags = NO;
-                                               [self.tableView endUpdates];
-                                               
-                                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                   if (!error) {
-                                                       self.suggestedTagsPayload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                                       [self handleTagSuggestions];
-                                                   }
-                                               });
-                                           });
+                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           [self.tableView beginUpdates];
+                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                                           self.loadingTags = NO;
+                                           [self.tableView endUpdates];
                                        });
                                    });
                                }];
@@ -731,64 +737,57 @@
     self.navigationItem.leftBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&tags=%@&shared=%@&toread=%@", [[AppDelegate sharedDelegate] token], [self.urlTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.titleTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.descriptionTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], [self.tagTextField.text urlEncodeUsingEncoding:NSUTF8StringEncoding], self.privateSwitch.on ? @"no" : @"yes", self.readSwitch.on ? @"no" : @"yes"]];
-
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
-
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-
-                               if (!error) {
-                                   [self.modalDelegate closeModal:self];
-                                   
-                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                       [db open];
-                                       [db beginTransaction];
-
-                                       FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
-                                       [results next];
-                                       
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
-                                       notification.userInfo = @{@"success": @YES, @"updated": @YES};
-
-                                       NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                          @"url": self.urlTextField.text,
-                                                                          @"title": self.titleTextField.text,
-                                                                          @"description": self.descriptionTextField.text,
-                                                                          @"tags": self.tagTextField.text,
-                                                                          @"unread": @(!self.readSwitch.on),
-                                                                          @"private": @(self.privateSwitch.on)
-                                                                      }];
-
-                                       if ([results intForColumnIndex:0] > 0) {
-                                           [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                           [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                           notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                       }
-                                       else {
-                                           params[@"created_at"] = [NSDate date];
-                                           [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                           [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                           notification.alertBody = NSLocalizedString(@"Bookmark Added Message", nil);
-                                       }
-                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-
-                                       [db commit];
-                                       [db close];
-                                   });
-                               }
-                               self.navigationItem.leftBarButtonItem.enabled = YES;
-                               self.navigationItem.rightBarButtonItem.enabled = YES;
-                               
-                               
-    }];
-
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard addBookmarkWithURL:self.urlTextField.text
+                           title:self.titleTextField.text
+                     description:self.descriptionTextField.text
+                            tags:self.tagTextField.text
+                          shared:!self.privateSwitch.on
+                          unread:!self.readSwitch.on
+                         success:^{
+                             [self.modalDelegate closeModal:self];
+                             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                             [db open];
+                             [db beginTransaction];
+                             
+                             FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
+                             [results next];
+                             
+                             UILocalNotification *notification = [[UILocalNotification alloc] init];
+                             notification.alertAction = @"Open Pushpin";
+                             notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                             
+                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                            @"url": self.urlTextField.text,
+                                                            @"title": self.titleTextField.text,
+                                                            @"description": self.descriptionTextField.text,
+                                                            @"tags": self.tagTextField.text,
+                                                            @"unread": @(!self.readSwitch.on),
+                                                            @"private": @(self.privateSwitch.on)
+                                                            }];
+                             
+                             if ([results intForColumnIndex:0] > 0) {
+                                 [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
+                                 notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                             }
+                             else {
+                                 params[@"created_at"] = [NSDate date];
+                                 [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                 [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
+                                 notification.alertBody = NSLocalizedString(@"Bookmark Added Message", nil);
+                             }
+                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                             
+                             [db commit];
+                             [db close];
+                             self.navigationItem.leftBarButtonItem.enabled = YES;
+                             self.navigationItem.rightBarButtonItem.enabled = YES;
+                         }
+                         failure:^(NSError *error) {
+                             self.navigationItem.leftBarButtonItem.enabled = YES;
+                             self.navigationItem.rightBarButtonItem.enabled = YES;
+                         }];
 }
 
 @end

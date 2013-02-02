@@ -153,6 +153,9 @@
     [pinboard setRequestCompletedCallback:^{
         [self setNetworkActivityIndicatorVisible:NO];
     }];
+    [pinboard setRequestStartedCallback:^{
+        [self setNetworkActivityIndicatorVisible:YES];
+    }];
 
     if ([self token]) {
         [pinboard setToken:[self token]];
@@ -413,38 +416,33 @@
         // TODO
         return;
     }
-    NSString *endpoint = [NSString stringWithFormat:@"https://api.pinboard.in/v1/notes/list?auth_token=%@", [self token]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:endpoint]];
-    [self setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self setNetworkActivityIndicatorVisible:NO];
-                               dispatch_async(dispatch_get_current_queue(), ^{
-                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                   [db open];
-                                   [db beginTransaction];
-
-                                   NSArray *elements = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
-                                   for (id element in elements) {
-                                       NSDictionary *params = @{
-                                           @"remote_id": element[@"id"],
-                                           @"title": element[@"title"],
-                                           @"length": element[@"length"],
-                                           @"hash": element[@"hash"],
-                                           @"text": element[@"text"],
-                                           @"created_at": [self.dateFormatter dateFromString:element[@"created_on"]],
-                                           @"updated_at": [self.dateFormatter dateFromString:element[@"updated_on"]]
-                                       };
-                                       
-                                       [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
-                                   }
-                                   
-                                   [db commit];
-                                   [db close];
-                               });
-                           }];
+    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    [pinboard notesWithSuccess:^(NSArray *notes) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_current_queue(), ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+                [db beginTransaction];
+                
+                for (id note in notes) {
+                    NSDictionary *params = @{
+                                             @"remote_id": note[@"id"],
+                                             @"title": note[@"title"],
+                                             @"length": note[@"length"],
+                                             @"hash": note[@"hash"],
+                                             @"text": note[@"text"],
+                                             @"created_at": [self.dateFormatter dateFromString:note[@"created_on"]],
+                                             @"updated_at": [self.dateFormatter dateFromString:note[@"updated_on"]]
+                                             };
+                    
+                    [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
+                }
+                
+                [db commit];
+                [db close];
+            });
+        });
+    }];
 }
 
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {

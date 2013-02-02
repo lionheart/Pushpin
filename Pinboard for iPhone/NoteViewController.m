@@ -29,7 +29,7 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    [[ASPinboard sharedPinboard] notes:^(NSArray *notes) {
+    [[ASPinboard sharedPinboard] notesWithSuccess:^(NSArray *notes) {
         self.notes = notes;
         [mixpanel.people set:@"Notes" to:@(self.notes.count)];
         [self.tableView reloadData];
