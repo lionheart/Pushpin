@@ -425,38 +425,37 @@
                               [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                               return;
                           }
-                          
-                          [delegate setNetworkActivityIndicatorVisible:YES];
-                          NSString *urlString = [NSString stringWithFormat:@"https://api.pinboard.in/v1/posts/add?auth_token=%@&format=json&url=%@&description=%@&extended=%@&replace=yes&tags=%@&shared=%@toread=no", [[AppDelegate sharedDelegate] token], [bookmark[@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"description"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"extended"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [bookmark[@"tags"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], bookmark[@"shared"]];
-                          NSURL *url = [NSURL URLWithString:urlString];
-                          NSURLRequest *request = [NSURLRequest requestWithURL:url];
-                          [NSURLConnection sendAsynchronousRequest:request
-                                                             queue:[NSOperationQueue mainQueue]
-                                                 completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                     [delegate setNetworkActivityIndicatorVisible:NO];
-                                                     UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                                     notification.alertAction = @"Open Pushpin";
-                                                     if (!error) {
-                                                         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                                         [db open];
-                                                         BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                         [db close];
-                                                         
-                                                         if (success) {
-                                                             if (self.savedSearchTerm) {
-                                                                 [self updateSearchResults];
-                                                             }
-                                                         }
-                                                         
-                                                         notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
-                                                         notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                                                     }
-                                                     else {
-                                                         notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
-                                                         notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                                                     }
-                                                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                                 }];
+
+                          NSMutableDictionary *newBookmark = [NSMutableDictionary dictionaryWithDictionary:bookmark];
+                          newBookmark[@"toread"] = @"no";
+                          newBookmark[@"url"] = newBookmark[@"href"];
+                          [newBookmark removeObjectsForKeys:@[@"href", @"hash", @"meta", @"time"]];
+                          [pinboard addBookmark:newBookmark
+                                        success:^{
+                                            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                            [db open];
+                                            BOOL success = [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                            [db close];
+                                            
+                                            if (success) {
+                                                if (self.savedSearchTerm) {
+                                                    [self updateSearchResults];
+                                                }
+                                            }
+                                            
+                                            UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                            notification.alertAction = @"Open Pushpin";
+                                            notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                            notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                        }
+                                        failure:^(NSError *error) {
+                                            UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                            notification.alertAction = @"Open Pushpin";
+                                            notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
+                                            notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                        }];
                       }
                       failure:^(NSError *error) {
                           if (error.code == PinboardErrorBookmarkNotFound) {
