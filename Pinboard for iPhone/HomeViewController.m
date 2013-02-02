@@ -36,8 +36,8 @@
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (![delegate feedToken]) {
         [delegate setNetworkActivityIndicatorVisible:YES];
-        [[ASPinboard sharedPinboard] rssKey:^(NSString *feedToken) {
-            [delegate setToken:feedToken];
+        [[ASPinboard sharedPinboard] rssKeyWithSuccess:^(NSString *feedToken) {
+            [delegate setFeedToken:feedToken];
             [self.tableView reloadData];
         }];
     }

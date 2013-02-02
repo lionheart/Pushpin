@@ -21,6 +21,8 @@
 @property (nonatomic, retain) UISwitch *privateSwitch;
 @property (nonatomic, retain) UISwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
+@property (nonatomic, retain) NSArray *popularTags;
+@property (nonatomic, retain) NSArray *recommendedTags;
 @property (nonatomic, retain) NSMutableArray *tagCompletions;
 @property (nonatomic, retain) NSMutableArray *popularTagSuggestions;
 @property (nonatomic, retain) NSMutableArray *previousTagSuggestions;
@@ -29,6 +31,7 @@
 @property (nonatomic, retain) UITextField *currentTextField;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic) BOOL loadingTags;
+@property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic, retain) NSString *previousURLContents;
 @property (nonatomic, copy) void (^callback)();
