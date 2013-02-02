@@ -19,8 +19,6 @@
     #import "Mixpanel.h"
 #endif
 
-#define API_ENDPOINT @"https://api.pinboard.in/"
-
 #define __FILENAME__ (strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1
 
 #ifdef DEBUG

@@ -418,7 +418,6 @@
                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
                 });
-
             });
         }
         else {
@@ -629,18 +628,20 @@
         }
         DLog(@"%d", self.popularTagSuggestions.count);
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-            
-            self.popularTagSuggestions = newPopularTagSuggestions;
-            self.suggestedTagsVisible = YES;
-            
-            [self.tableView endUpdates];
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-            
-            [self.tagTextField becomeFirstResponder];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                
+                self.popularTagSuggestions = newPopularTagSuggestions;
+                self.suggestedTagsVisible = YES;
+                
+                [self.tableView endUpdates];
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                
+                [self.tagTextField becomeFirstResponder];
+            });
         });
     }
 }
