@@ -408,7 +408,7 @@
         return;
     }
     
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard bookmarkWithURL:self.bookmark[@"url"]
                       success:^(NSDictionary *bookmark) {
                           if ([bookmark[@"toread"] isEqualToString:@"no"]) {
@@ -955,7 +955,7 @@
     notification.alertAction = @"Open Pushpin";
 
     self.timerPaused = YES;
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard deleteBookmarkWithURL:self.bookmark[@"url"]
                             success:^{
                                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];

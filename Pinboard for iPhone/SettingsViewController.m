@@ -352,7 +352,7 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
-            [[ASPinboard sharedPinboard] resetAuthentication];
+            [[ASPinboard sharedInstance] resetAuthentication];
             [[AppDelegate sharedDelegate] setToken:nil];
             [[AppDelegate sharedDelegate] setLastUpdated:nil];
             NSFileManager *fileManager = [NSFileManager defaultManager];

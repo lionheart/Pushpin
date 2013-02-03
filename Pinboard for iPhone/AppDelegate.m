@@ -149,7 +149,7 @@
     };
     [reach startNotifier];
     
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
         [self setNetworkActivityIndicatorVisible:NO];
     }];
@@ -171,6 +171,7 @@
         [self.window setRootViewController:loginViewController];
         [self pauseRefreshTimer];
     }
+
     secondsLeft = 10;
     self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
@@ -416,7 +417,7 @@
         // TODO
         return;
     }
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard notesWithSuccess:^(NSArray *notes) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_current_queue(), ^{
@@ -452,7 +453,7 @@
         self.bookmarksLoading = YES;
     }
     
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard bookmarksWithSuccess:^(NSArray *elements) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -603,7 +604,7 @@
     }
     
     [self pauseRefreshTimer];
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard lastUpdateWithSuccess:^(NSDate *updateTime) {
                                 if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 300) {
                                     [self forceUpdateBookmarks:updateDelegate];

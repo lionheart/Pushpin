@@ -29,7 +29,7 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    [[ASPinboard sharedPinboard] notesWithSuccess:^(NSArray *notes) {
+    [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
         self.notes = notes;
         [mixpanel.people set:@"Notes" to:@(self.notes.count)];
         [self.tableView reloadData];
@@ -99,7 +99,7 @@
         note = self.filteredNotes[indexPath.row];
     }
     
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard noteWithId:note[@"id"]
                  success:^(NSString *title, NSString *text) {
                      self.webView = [[UIWebView alloc] init];
