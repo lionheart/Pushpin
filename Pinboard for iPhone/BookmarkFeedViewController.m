@@ -185,7 +185,7 @@
                                [delegate setNetworkActivityIndicatorVisible:NO];
 
                                if ([(NSHTTPURLResponse *)response statusCode] == 403 && [self.sourceURL.absoluteString hasSuffix:@"network/"]) {
-                                   ASPinboard *pinboard = [ASPinboard sharedPinboard];
+                                   ASPinboard *pinboard = [ASPinboard sharedInstance];
                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                        [delegate setToken:feedToken];
                                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];

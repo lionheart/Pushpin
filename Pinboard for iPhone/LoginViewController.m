@@ -169,7 +169,7 @@
 - (void)login {
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
         AppDelegate *delegate = [AppDelegate sharedDelegate];
-        [delegate setNetworkActivityIndicatorVisible:YES];
+
         self.activityIndicator.frame = self.activityIndicatorFrameTop;
         [self.activityIndicator startAnimating];
         self.usernameTextField.enabled = NO;
@@ -178,50 +178,50 @@
         self.passwordTextField.textColor = [UIColor grayColor];
         self.textView.text = NSLocalizedString(@"Login in Progress", nil);
         
-        ASPinboard *pinboard = [ASPinboard sharedPinboard];
+        ASPinboard *pinboard = [ASPinboard sharedInstance];
         [pinboard authenticateWithUsername:usernameTextField.text
                                   password:passwordTextField.text
-                           successCallback:^(NSString *token) {
-                               self.activityIndicator.frame = self.activityIndicatorFrameBottom;
-                               
-                               self.textView.text = NSLocalizedString(@"Login Successful", nil);
-                               self.progressView.hidden = NO;
-
-                               [delegate setToken:token];
-                               [delegate updateBookmarksWithDelegate:self];
-                               [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                   [delegate setFeedToken:feedToken];
-                               }];
-                               
-                               Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                               [mixpanel identify:[delegate username]];
-                               [mixpanel.people identify:[delegate username]];
-                               [mixpanel.people set:@"$created" to:[NSDate date]];
-                               [mixpanel.people set:@"$username" to:[delegate username]];
-                               [mixpanel.people set:@"Browser" to:@"Webview"];
-                           }
-                           failureCallback:^(NSError *error) {
-                               switch (error.code) {
-                                   case PinboardErrorInvalidCredentials: {
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                       [alert show];
-                                       [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                                       [self resetLoginScreen];
-                                       break;
-                                   }
+                                   success:^(NSString *token) {
+                                       self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                        
-                                   case PinboardErrorTimeout: {
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                       [alert show];
-                                       [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                                       [self resetLoginScreen];
-                                       break;
-                                   }
+                                       self.textView.text = NSLocalizedString(@"Login Successful", nil);
+                                       self.progressView.hidden = NO;
 
-                                   default:
-                                       break;
-                               }
-                           }];
+                                       [delegate setToken:token];
+                                       [delegate updateBookmarksWithDelegate:self];
+                                       [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                                           [delegate setFeedToken:feedToken];
+                                       }];
+                                       
+                                       Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                       [mixpanel identify:[delegate username]];
+                                       [mixpanel.people identify:[delegate username]];
+                                       [mixpanel.people set:@"$created" to:[NSDate date]];
+                                       [mixpanel.people set:@"$username" to:[delegate username]];
+                                       [mixpanel.people set:@"Browser" to:@"Webview"];
+                                   }
+                                   failure:^(NSError *error) {
+                                       switch (error.code) {
+                                           case PinboardErrorInvalidCredentials: {
+                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                               [alert show];
+                                               [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                                               [self resetLoginScreen];
+                                               break;
+                                           }
+                                               
+                                           case PinboardErrorTimeout: {
+                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                               [alert show];
+                                               [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                                               [self resetLoginScreen];
+                                               break;
+                                           }
+
+                                           default:
+                                               break;
+                                       }
+                                   }];
     }
 }
 

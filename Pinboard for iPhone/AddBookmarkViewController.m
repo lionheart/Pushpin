@@ -662,7 +662,7 @@
             });
         });
 
-        ASPinboard *pinboard = [ASPinboard sharedPinboard];
+        ASPinboard *pinboard = [ASPinboard sharedInstance];
         [pinboard tagSuggestionsForURL:self.urlTextField.text
                                success:^(NSArray *popular, NSArray *recommended) {
                                    self.popularTags = popular;
@@ -738,7 +738,7 @@
     self.navigationItem.leftBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    ASPinboard *pinboard = [ASPinboard sharedPinboard];
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard addBookmarkWithURL:self.urlTextField.text
                            title:self.titleTextField.text
                      description:self.descriptionTextField.text
