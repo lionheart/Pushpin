@@ -453,8 +453,7 @@
         self.bookmarksLoading = YES;
     }
     
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard bookmarksWithSuccess:^(NSArray *elements) {
+    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         [db beginTransaction];
@@ -581,11 +580,16 @@
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         }
         self.bookmarksLoading = NO;
-    }
-    failure:^(NSError *error) {
-       [self resumeRefreshTimer];
-       self.bookmarksLoading = NO;
-    }];
+    };
+
+    void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
+        [self resumeRefreshTimer];
+        self.bookmarksLoading = NO;
+    };
+
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+    [pinboard bookmarksWithSuccess:BookmarksSuccessBlock
+                           failure:BookmarksFailureBlock];
 }
 
 #warning Deprecated
