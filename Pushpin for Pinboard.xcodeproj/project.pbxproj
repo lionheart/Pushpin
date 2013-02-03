@@ -209,13 +209,6 @@
 			remoteGlobalIDString = 379B7D6D16B8E4BC0071BD95;
 			remoteInfo = ASPinboard;
 		};
-		37A7D60C16BA2FD100B39DD8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 379B7D9F16B8E8990071BD95;
-			remoteInfo = ASPinboardTest;
-		};
 		37A7D60E16BA2FFC00B39DD8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */;
@@ -885,7 +878,6 @@
 			isa = PBXGroup;
 			children = (
 				37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */,
-				37A7D60D16BA2FD100B39DD8 /* ASPinboardTest.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1195,13 +1187,6 @@
 			remoteRef = 37A7D60A16BA2FD100B39DD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		37A7D60D16BA2FD100B39DD8 /* ASPinboardTest.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ASPinboardTest.octest;
-			remoteRef = 37A7D60C16BA2FD100B39DD8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1495,7 +1480,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B440A539-D627-42A5-92D1-AB1E5CB748D1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "164AA68B-80BD-4008-BD9D-1420DE6F8F32";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
