@@ -17,7 +17,7 @@
 #define BORDER_WIDTH 1.0f
 #define HEIGHT 40.0f
 #define XPADDING 10.0f
-#define YPADDING 60.0f
+#define YPADDING 10.0f
 #define ANIMATION_DURATION 0.3f
 #define SPINNER_SIZE 24.0f
 #define ICON_OFFSET (HEIGHT - SPINNER_SIZE) / 2.0f

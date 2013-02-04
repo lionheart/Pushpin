@@ -12,7 +12,7 @@
 #import "HomeViewController.h"
 #import "NoteViewController.h"
 #import "LoginViewController.h"
-#import "TabBarViewController.h"
+#import "PrimaryNavigationViewController.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "Reachability.h"
@@ -20,6 +20,7 @@
 #import "PocketAPI.h"
 #import "ZAActivityBar.h"
 #import "HTMLParser.h"
+#import "SettingsViewController.h"
 
 @implementation AppDelegate
 
@@ -36,8 +37,8 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize dbQueue;
 @synthesize bookmarksLoading;
-@synthesize bookmarkViewControllerActive;
 @synthesize readByDefault = _readByDefault;
+@synthesize navigationViewController;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -71,7 +72,7 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
-    [self.tabBarViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+    [self.navigationViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
@@ -109,7 +110,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     if (!didLaunchWithURL && self.token != nil) {
-        [self.tabBarViewController promptUserToAddBookmark];
+        [self.navigationViewController promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
 }
@@ -130,6 +131,10 @@
         }
     }
     return dictParameters;
+}
+
+- (void)openSettings {
+    [self.navigationViewController pushViewController:[[SettingsViewController alloc] init] animated:YES];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -170,8 +175,19 @@
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
-        self.tabBarViewController = [[TabBarViewController alloc] init];
-        [self.window setRootViewController:self.tabBarViewController];
+
+        BookmarkViewController *allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
+        allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+
+        HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
+        homeViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"cog-white"] style:UIBarButtonItemStylePlain target:self action:@selector(openSettings)];
+
+        self.navigationViewController = [[PrimaryNavigationViewController alloc] initWithRootViewController:homeViewController];
+
+        [self.navigationViewController setViewControllers:@[homeViewController, allBookmarkViewController]];
+        [self.navigationViewController popToViewController:allBookmarkViewController animated:NO];
+        [self.window setRootViewController:self.navigationViewController];
         [self resumeRefreshTimer];
     }
     else {
@@ -193,7 +209,6 @@
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
     self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
-    self.bookmarkViewControllerActive = YES;
 
     [self migrateDatabase];
     
@@ -629,18 +644,21 @@
     }
     
     [self pauseRefreshTimer];
+    void (^SuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
+        if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 300) {
+            [self forceUpdateBookmarks:updateDelegate];
+        }
+        else {
+            [self resumeRefreshTimer];
+        }
+    };
+
+    void (^FailureBlock)(NSError *) = ^(NSError *error) {
+        [self resumeRefreshTimer];
+    };
+
     ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard lastUpdateWithSuccess:^(NSDate *updateTime) {
-                                if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 300) {
-                                    [self forceUpdateBookmarks:updateDelegate];
-                                }
-                                else {
-                                    [self resumeRefreshTimer];
-                                }
-                            }
-                            failure:^(NSError *error) {
-                                [self resumeRefreshTimer];
-                            }];
+    [pinboard lastUpdateWithSuccess:SuccessBlock failure:FailureBlock];
 }
 
 #pragma mark - Helpers

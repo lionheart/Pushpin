@@ -626,10 +626,10 @@
     switch (indexPath.section) {
         case 0: {
             if (indexPath.row == 2) {
-                [self.browserActionSheet showFromTabBar:self.tabBarController.tabBar];
+                [self.browserActionSheet showInView:self.view];
             }
             else if (indexPath.row == 3) {
-                [self.readLaterActionSheet showFromTabBar:self.tabBarController.tabBar];
+                [self.readLaterActionSheet showInView:self.view];
             }
             else if (indexPath.row == 4) {
                 [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];

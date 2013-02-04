@@ -35,18 +35,20 @@
         HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
         homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
 
+
+        SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+        UINavigationController *settingsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+        settingsViewController.title = NSLocalizedString(@"Accounts", nil);
+        settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
+
         UINavigationController *postViewContainer = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-        [postViewContainer setViewControllers:[NSArray arrayWithObjects:homeViewController, self.allBookmarkViewController, nil]];
-        [postViewContainer popToViewController:self.allBookmarkViewController animated:NO];
 
         postViewContainer.tabBarItem.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
         postViewContainer.tabBarItem.image = [UIImage imageNamed:@"71-compass"];
         // [postViewContainer.tabBarItem setBadgeValue:@"2"];
 
-        SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
-        UINavigationController *settingsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-        settingsViewController.title = NSLocalizedString(@"Settings Tab Bar Title", nil);
-        settingsViewController.tabBarItem.image = [UIImage imageNamed:@"106-sliders"];
+        [postViewContainer setViewControllers:@[settingsViewController, homeViewController, self.allBookmarkViewController]];
+        [postViewContainer popToViewController:self.allBookmarkViewController animated:NO];
 
         AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
         UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];

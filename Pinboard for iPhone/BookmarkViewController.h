@@ -49,6 +49,9 @@
 @property (nonatomic) BOOL processingBookmarks;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) UIBarButtonItem *editButton;
+@property (nonatomic, retain) UIToolbar *toolbar;
+@property (nonatomic, retain) UIBarButtonItem *multipleDeleteButton;
 
 - (void)openActionSheetForBookmark:(NSDictionary *)bookmark;
 - (FMResultSet *)resultSetForDB:(FMDatabase *)db;
@@ -73,11 +76,13 @@
 - (void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer;
 
 - (void)confirmDeletion:(id)sender;
-- (void)deleteBookmark:(id)sender;
+- (void)deleteBookmarks:(NSArray *)bookmarks;
 - (void)editBookmark:(id)sender;
 - (void)copyURL:(id)sender;
 - (void)copyTitle:(id)sender;
 - (void)readLater:(id)sender;
 - (void)share:(id)sender;
+- (void)toggleEditingMode:(id)sender;
+- (void)toggleMultipleDeletion:(id)sender;
 
 @end

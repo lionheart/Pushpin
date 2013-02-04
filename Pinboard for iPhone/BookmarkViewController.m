@@ -27,7 +27,7 @@
 
 @synthesize selectedIndexPath;
 @synthesize parameters = _parameters;
-@synthesize bookmarks;
+@synthesize bookmarks = _bookmarks;
 @synthesize strings;
 @synthesize heights;
 @synthesize webView;
@@ -55,6 +55,9 @@
 @synthesize processingBookmarks;
 @synthesize longPressGestureRecognizer;
 @synthesize activityIndicator;
+@synthesize editButton;
+@synthesize toolbar;
+@synthesize multipleDeleteButton;
 
 - (void)checkForBookmarkUpdates {
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
@@ -117,10 +120,16 @@
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-}
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return @"Delete";
+    CGRect bounds = [[UIScreen mainScreen] bounds];
+    CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+    self.toolbar = [[UIToolbar alloc] initWithFrame:frame];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.multipleDeleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete (0)" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMultipleDeletion:)];
+    self.multipleDeleteButton.enabled = NO;
+    [self.multipleDeleteButton setTintColor:[UIColor redColor]];
+    [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -131,12 +140,19 @@
     self.bookmarkUpdateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
 
-    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:YES];
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+
+    [self.toolbar removeFromSuperview];
+    [self.navigationController.view addSubview:self.toolbar];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self processBookmarks];
+    self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
+    self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Done"]];
+    self.navigationItem.rightBarButtonItem = self.editButton;
     
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
         [self.activityIndicator startAnimating];
@@ -147,12 +163,13 @@
     [super viewWillDisappear:animated];
     self.timerPaused = YES;
     [self.bookmarkUpdateTimer invalidate];
-    [[AppDelegate sharedDelegate] setBookmarkViewControllerActive:NO];
     self.searchWasActive = [self.searchDisplayController isActive];
     self.savedSearchTerm = [self.searchDisplayController.searchBar text];
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
         [self.activityIndicator stopAnimating];
     }
+
+    [self.toolbar removeFromSuperview];
 }
 
 - (void)longPress:(UIGestureRecognizer *)recognizer {
@@ -483,7 +500,7 @@
     if (alertView == self.confirmDeleteAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
-            [self deleteBookmark:nil];
+            [self deleteBookmarks:@[self.bookmark]];
         }
     }
 }
@@ -514,107 +531,164 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.isEditing) {
+        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+        if (selectedRowCount > 0) {
+            self.multipleDeleteButton.enabled = YES;
+            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+        }
+        else {
+            self.multipleDeleteButton.enabled = NO;
+            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
+        }
+    }
+}
+
+- (void)toggleMultipleDeletion:(id)sender {
+    NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    NSMutableArray *bookmarks = [NSMutableArray arrayWithCapacity:[selectedIndexPaths count]];
+    for (NSIndexPath *indexPath in selectedIndexPaths) {
+        [bookmarks addObject:self.bookmarks[indexPath.row]];
+    }
+
+    dispatch_group_async(group, queue, ^{
+        [self deleteBookmarks:bookmarks];
+    });
+
+    dispatch_group_notify(group, queue, ^{
+        dispatch_async(queue, ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [selectedIndexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    [self.tableView deselectRowAtIndexPath:obj animated:YES];
+                }];
+                [self.tableView setEditing:NO animated:YES];
+                [self.navigationItem setHidesBackButton:NO animated:YES];
+                [self.editButton setStyle:UIBarButtonItemStylePlain];
+                [self.editButton setTitle:@"Edit"];
+
+                [UIView animateWithDuration:0.25 animations:^{
+                    CGRect bounds = [[UIScreen mainScreen] bounds];
+                    CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+                    self.toolbar.frame = frame;
+                }];
+            });
+        });
+    });
+
+    dispatch_release(group);
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-    if (tableView == self.tableView) {
-        self.bookmark = self.bookmarks[indexPath.row];
+    if (tableView.isEditing) {
+        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+        self.multipleDeleteButton.enabled = YES;
+        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
     }
     else {
-        self.bookmark = self.filteredBookmarks[indexPath.row];
-    }
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-        case BROWSER_WEBVIEW: {
-            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-            TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:self.bookmark[@"url"]]];
-            webBrowser.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:webBrowser animated:YES];
-            break;
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+        if (tableView == self.tableView) {
+            self.bookmark = self.bookmarks[indexPath.row];
         }
-            
-        case BROWSER_SAFARI: {
-            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
-            break;
+        else {
+            self.bookmark = self.filteredBookmarks[indexPath.row];
         }
-            
-        case BROWSER_CHROME:
-            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+
+        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+            case BROWSER_WEBVIEW: {
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:self.bookmark[@"url"]]];
+                webBrowser.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:webBrowser animated:YES];
+                break;
+            }
+
+            case BROWSER_SAFARI: {
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.bookmark[@"url"]]];
+                break;
+            }
+
+            case BROWSER_CHROME:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [self.bookmark[@"url"] urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
+                    else {
+                        NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+
+                break;
+
+            case BROWSER_ICAB_MOBILE:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"icabmobile"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
                     [[UIApplication sharedApplication] openURL:url];
                 }
                 else {
-                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"googlechrome"]];
-                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+
+            break;
+            
+            case BROWSER_OPERA:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"ohttp"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
                     [[UIApplication sharedApplication] openURL:url];
                 }
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_DOLPHIN:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"dolphin"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_CYBERSPACE:
+                if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                    NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"cyber"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
 
-            break;
-
-        case BROWSER_ICAB_MOBILE:
-            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"icabmobile"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-
-            break;
-            
-        case BROWSER_OPERA:
-            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"ohttp"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_DOLPHIN:
-            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"dolphin"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_CYBERSPACE:
-            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
-                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"cyber"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-
-        default:
-            break;
+            default:
+                break;
+        }
     }
 }
 
@@ -813,9 +887,6 @@
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
 
@@ -823,7 +894,7 @@
     
     if (!cell) {
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
 
     NSAttributedString *string;
@@ -850,7 +921,7 @@
         }
     }
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, [self.heights[indexPath.row] floatValue])];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(-40, 0, 360, [self.heights[indexPath.row] floatValue])];
 
     if ([bookmark[@"private"] boolValue] == YES) {
         cell.textView.backgroundColor = HEX(0xddddddff);
@@ -868,6 +939,7 @@
 
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
+
     return cell;
 }
 
@@ -951,7 +1023,7 @@
     sheet.cancelButtonIndex = cancelButtonIndex;
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+    [sheet showInView:self.tableView];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -987,42 +1059,76 @@
     [self.confirmDeleteAlertView show];
 }
 
-- (void)deleteBookmark:(id)sender {    
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
-    notification.alertAction = @"Open Pushpin";
-
+- (void)deleteBookmarks:(NSArray *)bookmarks {
     self.timerPaused = YES;
+    void (^SuccessBlock)();
+    void (^ErrorBlock)(NSError *);
+
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
     ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard deleteBookmarkWithURL:self.bookmark[@"url"]
-                            success:^{
-                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                [db open];
-                                
-                                FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                [results next];
-                                NSNumber *bookmarkId = @([results intForColumnIndex:0]);
-                                
-                                [db beginTransaction];
-                                [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[self.bookmark[@"url"]]];
-                                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
-                                [db commit];
-                                [db close];
-                                
-                                notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-                                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                self.timerPaused = NO;
-                            }
-                            failure:^(NSError *error) {
-                                notification.userInfo = @{@"success": @NO, @"updated": @YES};
-                                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                self.timerPaused = NO;
-                            }];
+    for (NSDictionary *bookmark in bookmarks) {
+        SuccessBlock = ^{
+            dispatch_group_async(group, queue, ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+
+                FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
+                [results next];
+                NSNumber *bookmarkId = @([results intForColumnIndex:0]);
+
+                [db beginTransaction];
+                [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
+                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                [db commit];
+                [db close];
+
+                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+                self.timerPaused = NO;
+
+                NSUInteger index = [self.bookmarks indexOfObject:bookmark];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [self.bookmarks removeObjectAtIndex:index];
+                [self.heights removeObjectAtIndex:index];
+                [self.strings removeObjectAtIndex:index];
+
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
+                    });
+                });
+            });
+        };
+
+        ErrorBlock = ^(NSError *error) {
+        };
+
+        [pinboard deleteBookmarkWithURL:bookmark[@"url"] success:SuccessBlock failure:ErrorBlock];
+    }
+
+    dispatch_group_notify(group, queue, ^{
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertAction = @"Open Pushpin";
+        notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        if ([bookmarks count] == 1) {
+            notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
+        }
+        else {
+            notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", [bookmarks count]];
+        }
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        self.timerPaused = NO;
+    });
 }
 
 #pragma mark - Swipe to delete
 
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewCellEditingStyleDelete;
@@ -1035,10 +1141,46 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.tableView == tableView) {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
-            self.bookmark = self.bookmarks[indexPath.row];
-            [self deleteBookmark:nil];
+            NSDictionary *bookmark = self.bookmarks[indexPath.row];
+            [self deleteBookmarks:@[bookmark]];
             [[Mixpanel sharedInstance] track:@"Swiped to delete"];
         }
+        else if (editingStyle == UITableViewCellEditingStyleNone) {
+
+        }
+    }
+}
+
+- (void)toggleEditingMode:(id)sender {
+    if (self.tableView.editing) {
+        NSArray *selectedIndexPaths = [self.tableView.indexPathsForSelectedRows copy];
+        for (NSIndexPath *indexPath in selectedIndexPaths) {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+
+        [self.tableView setEditing:NO animated:YES];
+        [self.navigationItem setHidesBackButton:NO animated:YES];
+        [self.editButton setStyle:UIBarButtonItemStylePlain];
+        [self.editButton setTitle:@"Edit"];
+        [UIView animateWithDuration:0.25 animations:^{
+            CGRect bounds = [[UIScreen mainScreen] bounds];
+            CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+            self.toolbar.frame = frame;
+        }];
+    }
+    else {
+        [self.tableView setEditing:YES animated:YES];
+        [self.navigationItem setHidesBackButton:YES animated:YES];
+        [self.editButton setStyle:UIBarButtonItemStyleDone];
+        [self.editButton setTitle:@"Done"];
+        [self.multipleDeleteButton setTitle:@"Delete (0)"];
+        self.multipleDeleteButton.enabled = NO;
+
+        [UIView animateWithDuration:0.25 animations:^{
+            CGRect bounds = [[UIScreen mainScreen] bounds];
+            CGRect frame = CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44);
+            self.toolbar.frame = frame;
+        }];
     }
 }
 

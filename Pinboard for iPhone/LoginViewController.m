@@ -9,9 +9,9 @@
 #import "LoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
-#import "TabBarViewController.h"
 #import "NSData+Additions.h"
 #import <ASPinboard/ASPinboard.h>
+#import "PrimaryNavigationViewController.h"
 
 @interface LoginViewController ()
 
@@ -151,9 +151,9 @@
             
             if (updated.integerValue == total.integerValue) {
                 AppDelegate *delegate = [AppDelegate sharedDelegate];
-                delegate.tabBarViewController = [[TabBarViewController alloc] init];
-                delegate.tabBarViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                [self presentViewController:delegate.tabBarViewController animated:YES completion:nil];
+                delegate.navigationViewController = [[PrimaryNavigationViewController alloc] init];
+                delegate.navigationViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                [self presentViewController:delegate.navigationViewController animated:YES completion:nil];
             }
         });
     });

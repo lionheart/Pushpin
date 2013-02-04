@@ -557,7 +557,7 @@
 
     [sheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     sheet.cancelButtonIndex = cancelButtonIndex;
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+    [sheet showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {

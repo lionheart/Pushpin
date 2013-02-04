@@ -31,7 +31,7 @@ enum bookmarkupdateevents {
     BOOKMARK_EVENT_DELETE
 };
 
-@class TabBarViewController;
+@class PrimaryNavigationViewController;
 @class FMDatabaseQueue;
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
@@ -52,7 +52,7 @@ enum bookmarkupdateevents {
     NSInteger secondsLeft;
 }
 
-@property (nonatomic, retain) TabBarViewController *tabBarViewController;
+@property (nonatomic, retain) PrimaryNavigationViewController *navigationViewController;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;
@@ -70,7 +70,6 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) FMDatabaseQueue *dbQueue;
 @property (nonatomic, retain) NSTimer *refreshTimer;
 @property (nonatomic) BOOL bookmarksLoading;
-@property (nonatomic) BOOL bookmarkViewControllerActive;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
@@ -87,6 +86,7 @@ enum bookmarkupdateevents {
 - (void)pauseRefreshTimer;
 - (void)resumeRefreshTimer;
 - (void)executeTimer;
+- (void)openSettings;
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 
