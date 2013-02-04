@@ -60,6 +60,7 @@
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
 		375A1015167E967D00320495 /* ZAActivityBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1014167E967D00320495 /* ZAActivityBar.m */; };
 		375A1019167EB89E00320495 /* ZAActivityBar.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 375A1018167EB89E00320495 /* ZAActivityBar.bundle */; };
+		3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -307,6 +308,8 @@
 		375A1013167E967D00320495 /* ZAActivityBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZAActivityBar.h; sourceTree = "<group>"; };
 		375A1014167E967D00320495 /* ZAActivityBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZAActivityBar.m; sourceTree = "<group>"; };
 		375A1018167EB89E00320495 /* ZAActivityBar.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZAActivityBar.bundle; sourceTree = "<group>"; };
+		3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrimaryNavigationViewController.h; sourceTree = "<group>"; };
+		3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrimaryNavigationViewController.m; sourceTree = "<group>"; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -971,6 +974,8 @@
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
+				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
+				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -1296,6 +1301,7 @@
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				37D2351B16B8DDC0007541DC /* TTTAttributedLabel.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
+				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

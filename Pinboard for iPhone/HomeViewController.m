@@ -10,6 +10,8 @@
 #import "HomeViewController.h"
 #import "BookmarkViewController.h"
 #import "BookmarkFeedViewController.h"
+#import "TagViewController.h"
+#import "NoteViewController.h"
 #import "AppDelegate.h"
 
 @interface HomeViewController ()
@@ -73,10 +75,10 @@
     switch (section) {
         case 0:
             if (self.connectionAvailable) {
-                return 6;
+                return 8;
             }
             else {
-                return 5;
+                return 6;
             }
             break;
         case 1:
@@ -150,6 +152,14 @@
                     cell.detailTextLabel.text = [results stringForColumnIndex:0];
                     break;
                 case 5:
+                    cell.textLabel.text = NSLocalizedString(@"Tags", nil);
+                    cell.detailTextLabel.text = @"";
+                    break;
+                case 6:
+                    cell.textLabel.text = NSLocalizedString(@"Notes", nil);
+                    cell.detailTextLabel.text = @"";
+                    break;
+                case 7:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.detailTextLabel.text = @"";
                     break;
@@ -195,44 +205,59 @@
                 case 0:
                     bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[] parameters:parameters];
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"All Bookmarks", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 case 1:
                     parameters[@"private"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Private Bookmarks", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 case 2:
                     parameters[@"private"] = @(NO);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Public", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 case 3:
                     parameters[@"unread"] = @(YES);
                     bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"unread"] parameters:parameters];
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Unread", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 case 4:
                     parameters[@"tags"] = @"";
                     bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"tags"] parameters:parameters];
                     [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Untagged", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 case 5: {
+                    TagViewController *tagViewController = [[TagViewController alloc] init];
+                    [self.navigationController pushViewController:tagViewController animated:YES];
+                    break;
+                }
+                case 6: {
+                    NoteViewController *noteViewController = [[NoteViewController alloc] init];
+                    [self.navigationController pushViewController:noteViewController animated:YES];
+                    break;
+                }
+                case 7: {
                     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                     NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username];
                     bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
                     [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
+                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
             }
 
-            [self.navigationController pushViewController:bookmarkViewController animated:YES];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         }
