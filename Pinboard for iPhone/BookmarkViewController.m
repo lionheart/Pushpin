@@ -126,8 +126,9 @@
     self.toolbar = [[UIToolbar alloc] initWithFrame:frame];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.multipleDeleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete (0)" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMultipleDeletion:)];
+    self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
     self.multipleDeleteButton.enabled = NO;
-    [self.multipleDeleteButton setTintColor:[UIColor redColor]];
+    [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 
 }
@@ -141,7 +142,7 @@
     [[NSRunLoop currentRunLoop] addTimer:self.bookmarkUpdateTimer forMode:NSDefaultRunLoopMode];
 
     self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
 
     [self.toolbar removeFromSuperview];
     [self.navigationController.view addSubview:self.toolbar];
@@ -151,7 +152,7 @@
     [super viewWillAppear:animated];
     [self processBookmarks];
     self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
-    self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Done"]];
+    self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
     self.navigationItem.rightBarButtonItem = self.editButton;
     
     if ([[AppDelegate sharedDelegate] bookmarksLoading]) {
@@ -952,20 +953,22 @@
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
-    self.shouldShowContextMenu = YES;
-    NSNumber *tag_id;
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    if (!self.tableView.isEditing) {
+        self.shouldShowContextMenu = YES;
+        NSNumber *tag_id;
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
-    FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
-    [results next];
-    tag_id = [results objectForColumnIndex:0];
-    [db close];
+        FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
+        [results next];
+        tag_id = [results objectForColumnIndex:0];
+        [db close];
 
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id=:tag_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
-    bookmarkViewController.title = tag;
-    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+        BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id=:tag_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag_id, @"tag_id", nil]];
+        bookmarkViewController.title = tag;
+        [self.navigationController pushViewController:bookmarkViewController animated:YES];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1158,6 +1161,7 @@
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
 
+        self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
         [self.navigationItem setHidesBackButton:NO animated:YES];
         [self.editButton setStyle:UIBarButtonItemStylePlain];
@@ -1169,10 +1173,11 @@
         }];
     }
     else {
+        self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
         [self.navigationItem setHidesBackButton:YES animated:YES];
         [self.editButton setStyle:UIBarButtonItemStyleDone];
-        [self.editButton setTitle:@"Done"];
+        [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
         self.multipleDeleteButton.enabled = NO;
 
