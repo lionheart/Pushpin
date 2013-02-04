@@ -134,7 +134,9 @@
 }
 
 - (void)openSettings {
-    [self.navigationViewController pushViewController:[[SettingsViewController alloc] init] animated:YES];
+    SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+    settingsViewController.title = NSLocalizedString(@"Settings", nil);
+    [self.navigationViewController pushViewController:settingsViewController animated:YES];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
