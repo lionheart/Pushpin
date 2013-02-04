@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import <ASPinboard/ASPinboard.h>
 #import "BookmarkViewController.h"
 #import "BookmarkCell.h"
@@ -895,11 +896,17 @@
     
     if (!cell) {
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
 
     NSAttributedString *string;
     NSDictionary *bookmark;
+
+    if (tableView.isEditing) {
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+    }
+    else {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
 
     if (tableView == self.tableView) {
         string = self.strings[indexPath.row];
@@ -1148,9 +1155,6 @@
             [self deleteBookmarks:@[bookmark]];
             [[Mixpanel sharedInstance] track:@"Swiped to delete"];
         }
-        else if (editingStyle == UITableViewCellEditingStyleNone) {
-
-        }
     }
 }
 
@@ -1162,10 +1166,19 @@
         }
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
-        [self.tableView setEditing:NO animated:YES];
         [self.navigationItem setHidesBackButton:NO animated:YES];
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:@"Edit"];
+
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
+        [self.tableView setEditing:NO animated:YES];
+        [CATransaction commit];
+
         [UIView animateWithDuration:0.25 animations:^{
             CGRect bounds = [[UIScreen mainScreen] bounds];
             CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
@@ -1174,12 +1187,20 @@
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
-        [self.tableView setEditing:YES animated:YES];
         [self.navigationItem setHidesBackButton:YES animated:YES];
         [self.editButton setStyle:UIBarButtonItemStyleDone];
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
         self.multipleDeleteButton.enabled = NO;
+
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
+        [self.tableView setEditing:YES animated:YES];
+        [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
             CGRect bounds = [[UIScreen mainScreen] bounds];
