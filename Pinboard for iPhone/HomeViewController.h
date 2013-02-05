@@ -7,12 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FMDatabase.h"
 
-@interface HomeViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource>
+@class FeedListViewController;
+@class NoteViewController;
+@class TagViewController;
 
-@property (nonatomic) BOOL connectionAvailable;
+@interface HomeViewController : UIViewController <UIScrollViewDelegate>
 
-- (void)connectionStatusDidChange:(NSNotification *)notification;
+@property (nonatomic, retain) UIScrollView *scrollView;
+@property (nonatomic, retain) FeedListViewController *feedListViewController;
+@property (nonatomic, retain) NoteViewController *noteViewController;
+@property (nonatomic, retain) TagViewController *tagViewController;
+@property (nonatomic, retain) UITableViewController *activeViewController;
+@property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeGestureRecognizer;
+
+- (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
 
 @end

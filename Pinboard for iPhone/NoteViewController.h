@@ -16,5 +16,6 @@
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UIViewController *noteDetailViewController;
 @property (nonatomic, retain) UIWebView *webView;
+@property (nonatomic, retain) UINavigationController *navigationController;
 
 @end
