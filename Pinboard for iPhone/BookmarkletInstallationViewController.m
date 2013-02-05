@@ -17,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Browser Integration";
+    self.title = NSLocalizedString(@"Browser Integration", nil);
 }
 
 #pragma mark - Table view data source
@@ -52,14 +52,14 @@
     }
 
     if (indexPath.section == 0) {
-        cell.textLabel.text = @"Copy bookmarklet to clipboard";
+        cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }
     else {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"How to install on Safari";
+            cell.textLabel.text = NSLocalizedString(@"How to install on Safari", nil);
         }
         else {
-            cell.textLabel.text = @"How to install on Chrome for iOS";
+            cell.textLabel.text = NSLocalizedString(@"How to install on Chrome for iOS", nil);
         }
     }
 
