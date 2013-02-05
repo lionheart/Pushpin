@@ -61,7 +61,7 @@
         [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
         [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
-        [self.readLaterActionSheet addButtonWithTitle:@"None"];
+        [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"None", nil)];
 
         self.readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
