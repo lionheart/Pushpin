@@ -22,6 +22,7 @@
 @synthesize searchDisplayController;
 @synthesize searchBar = _searchBar;
 @synthesize filteredTags;
+@synthesize navigationController;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

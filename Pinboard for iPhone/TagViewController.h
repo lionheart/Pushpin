@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSMutableArray *tagList;
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 @property (nonatomic, retain) UISearchBar *searchBar;
+@property (nonatomic, retain) UINavigationController *navigationController;
 
 @end

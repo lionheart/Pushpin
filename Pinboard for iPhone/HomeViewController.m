@@ -6,13 +6,10 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <ASPinboard/ASPinboard.h>
 #import "HomeViewController.h"
-#import "BookmarkViewController.h"
-#import "BookmarkFeedViewController.h"
-#import "TagViewController.h"
+#import "FeedListViewController.h"
 #import "NoteViewController.h"
-#import "AppDelegate.h"
+#import "TagViewController.h"
 
 @interface HomeViewController ()
 
@@ -20,290 +17,58 @@
 
 @implementation HomeViewController
 
-@synthesize connectionAvailable;
+@synthesize feedListViewController;
+@synthesize leftSwipeGestureRecognizer;
+@synthesize noteViewController;
+@synthesize activeViewController;
+@synthesize scrollView;
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
-    if (self) {
-        self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
-    }
-    return self;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
-
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    if (![delegate feedToken]) {
-        [delegate setNetworkActivityIndicatorVisible:YES];
-        [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
-            [delegate setFeedToken:feedToken];
-            [self.tableView reloadData];
-        }];
-    }
-}
-
-- (void)connectionStatusDidChange:(NSNotification *)notification {
-    BOOL oldConnectionAvailable = self.connectionAvailable;
-    self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
-    if (oldConnectionAvailable != self.connectionAvailable) {
-        [self.tableView beginUpdates];
-        if (self.connectionAvailable) {
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        else {
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        [self.tableView endUpdates];
-    }
-}
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.connectionAvailable) {
-        return 2;
-    }
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            if (self.connectionAvailable) {
-                return 8;
-            }
-            else {
-                return 6;
-            }
-            break;
-        case 1:
-            return 5;
-            break;
-    }
-    return 0;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return NSLocalizedString(@"Personal", nil);
-            break;
-        case 1:
-            return NSLocalizedString(@"Community", nil);
-            break;
-    }
-    return @"";
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    CGFloat height = [[UIScreen mainScreen] bounds].size.height;
+    self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.pagingEnabled = YES;
+    self.scrollView.canCancelContentTouches = NO;
+    self.scrollView.delaysContentTouches = NO;
+    self.scrollView.delegate = self;
     
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
+    self.feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    self.feedListViewController.tableView.frame = CGRectMake(0, 0, 320, height);
+    self.feedListViewController.navigationController = self.navigationController;
     
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
+    self.noteViewController = [[NoteViewController alloc] init];
+    self.noteViewController.view.frame = CGRectMake(640, 0, 320, height);
+    self.noteViewController.navigationController = self.navigationController;
+
+    self.tagViewController = [[TagViewController alloc] initWithStyle:UITableViewStylePlain];
+    self.tagViewController.view.frame = CGRectMake(320, 0, 320, height);
+    self.tagViewController.navigationController = self.navigationController;
     
-    FMResultSet *results;
-
-    switch (indexPath.section) {
-        case 0: {
-            switch (indexPath.row) {
-                case 0:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
-                    [results next];
-
-                    cell.textLabel.text = NSLocalizedString(@"All", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
-                    break;
-                case 1:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
-                    [results next];
-
-                    cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
-                    break;  
-                case 2:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(NO)]];
-                    [results next];
-
-                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
-                    break;
-                case 3:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
-                    [results next];
-
-                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
-                    break;
-                case 4:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags = ''"];
-                    [results next];
-
-                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
-                    break;
-                case 5:
-                    cell.textLabel.text = NSLocalizedString(@"Tags", nil);
-                    cell.detailTextLabel.text = @"";
-                    break;
-                case 6:
-                    cell.textLabel.text = NSLocalizedString(@"Notes", nil);
-                    cell.detailTextLabel.text = @"";
-                    break;
-                case 7:
-                    cell.textLabel.text = NSLocalizedString(@"Starred", nil);
-                    cell.detailTextLabel.text = @"";
-                    break;
-            }
-            break;
-        }
-        case 1: {
-            switch (indexPath.row) {
-                case 0:
-                    cell.textLabel.text = NSLocalizedString(@"Network", nil);
-                    break;
-                case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Popular", nil);
-                    break;
-                case 2:
-                    cell.textLabel.text = @"Wikipedia";
-                    break;
-                case 3:
-                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
-                    break;
-                case 4:
-                    cell.textLabel.text = @"日本語";
-                    break;
-            }
-            cell.detailTextLabel.text = @"";
-
-            break;   
-        }
-    }
+    self.scrollView.contentSize = CGSizeMake(320*3, self.feedListViewController.tableView.contentSize.height);
+    self.scrollView.frame = CGRectMake(0, 0, 320, height);
     
-    return cell;
+    UIPageControl *pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, 320, 0)];
+    pageControl.numberOfPages = 3;
+    pageControl.currentPage = 1;
+    pageControl.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    [self.view addSubview:pageControl];
+    [self.scrollView addSubview:self.feedListViewController.tableView];
+    [self.scrollView addSubview:self.tagViewController.view];
+    [self.scrollView addSubview:self.noteViewController.view];
+
+    [self.view addSubview:self.scrollView];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    switch (indexPath.section) {
-        case 0: {
-            id bookmarkViewController;
-
-            switch (indexPath.row) {
-                case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"All Bookmarks", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed all bookmarks"];
-                    break;
-                case 1:
-                    parameters[@"private"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Private Bookmarks", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed private bookmarks"];
-                    break;
-                case 2:
-                    parameters[@"private"] = @(NO);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Public", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed public bookmarks"];
-                    break;
-                case 3:
-                    parameters[@"unread"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"unread"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Unread", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed unread bookmarks"];
-                    break;
-                case 4:
-                    parameters[@"tags"] = @"";
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"tags"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Untagged", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed untagged bookmarks"];
-                    break;
-                case 5: {
-                    TagViewController *tagViewController = [[TagViewController alloc] init];
-                    [self.navigationController pushViewController:tagViewController animated:YES];
-                    break;
-                }
-                case 6: {
-                    NoteViewController *noteViewController = [[NoteViewController alloc] init];
-                    [self.navigationController pushViewController:noteViewController animated:YES];
-                    break;
-                }
-                case 7: {
-                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                    NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username];
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                    [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                    [mixpanel track:@"Browsed starred bookmarks"];
-                    break;
-                }
-            }
-
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            break;
-        }
-        case 1: {
-            BookmarkFeedViewController *bookmarkViewController;
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-            if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-            }
-            else {
-                switch (indexPath.row) {
-                    case 0: {
-                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                        NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                        NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                        bookmarkViewController.title = NSLocalizedString(@"Network", nil);
-                        [mixpanel track:@"Browsed network bookmarks"];
-                        break;
-                    }
-                    case 1:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
-                        bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
-                        [mixpanel track:@"Browsed popular bookmarks"];
-                        break;
-                    case 2:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
-                        bookmarkViewController.title = @"Wikipedia";
-                        [mixpanel track:@"Browsed wikipedia bookmarks"];
-                        break;
-                    case 3:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
-                        bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
-                        [mixpanel track:@"Browsed fandom bookmarks"];
-                        break;
-                    case 4:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
-                        bookmarkViewController.title = @"日本語";
-                        [mixpanel track:@"Browsed 日本語 bookmarks"];
-                        break;
-                }
-                [self.navigationController pushViewController:bookmarkViewController animated:YES];
-                break;
-            }
-        }
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSUInteger pageNum = floor(((self.scrollView.contentOffset.x - 160) / 320) + 1);
+    if (pageNum == 0) {
+        self.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
+    }
+    else if (pageNum == 1) {
+        self.title = @"Tags";
+    }
+    else {
+        self.title = @"Notes";
     }
 }
 

@@ -21,6 +21,7 @@
 @synthesize searchBar;
 @synthesize noteDetailViewController;
 @synthesize webView;
+@synthesize navigationController;
 
 #pragma mark - Table view data source
 

@@ -32,7 +32,7 @@
         self.allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
         self.allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
-        HomeViewController *homeViewController = [[HomeViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        HomeViewController *homeViewController = [[HomeViewController alloc] init];
         homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
 
 
