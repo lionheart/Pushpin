@@ -197,6 +197,14 @@
 
     [self migrateDatabase];
     
+    // Update iCloud so that the user gets credited for future updates.
+    NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
+    NSString *key = [NSString stringWithFormat:@"%@.DownloadedBeforeIAP", [[NSBundle mainBundle] bundleIdentifier]];
+    if (store) {
+        [store setBool:YES forKey:key];
+        [store synchronize];
+    }
+    
     didLaunchWithURL = NO;
     return YES;
 }
