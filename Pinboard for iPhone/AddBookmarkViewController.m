@@ -53,6 +53,7 @@
         self.urlTextField.delegate = self;
         self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.urlTextField.placeholder = @"https://pinboard.in/";
+        self.urlTextField.keyboardType = UIKeyboardTypeURL;
         self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.urlTextField.text = @"";
