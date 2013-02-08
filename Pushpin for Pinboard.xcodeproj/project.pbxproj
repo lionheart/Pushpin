@@ -167,6 +167,8 @@
 		37DCCF37158AF3FC00ED71B1 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF2C158AF3FC00ED71B1 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF38158AF3FC00ED71B1 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF2E158AF3FC00ED71B1 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF3D158AF40900ED71B1 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF3A158AF40900ED71B1 /* NSAttributedString+Attributes.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		37DF2CC016C4B7EA00CFCA81 /* Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */; };
+		37DF2CC216C4B80600CFCA81 /* Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37DF2CC116C4B80600CFCA81 /* Dev.entitlements */; };
 		37E3299D1629DF9500A6BC18 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329931629DF9500A6BC18 /* FMDatabase.m */; };
 		37E3299E1629DF9500A6BC18 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329951629DF9500A6BC18 /* FMDatabaseAdditions.m */; };
 		37E3299F1629DF9500A6BC18 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329971629DF9500A6BC18 /* FMDatabasePool.m */; };
@@ -462,6 +464,8 @@
 		37DCCF2E158AF3FC00ED71B1 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		37DCCF39158AF40900ED71B1 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+Attributes.h"; path = "Vendor/NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
 		37DCCF3A158AF40900ED71B1 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+Attributes.m"; path = "Vendor/NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
+		37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Beta.entitlements; sourceTree = "<group>"; };
+		37DF2CC116C4B80600CFCA81 /* Dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dev.entitlements; sourceTree = "<group>"; };
 		37E329921629DF9500A6BC18 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
 		37E329931629DF9500A6BC18 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
 		37E329941629DF9500A6BC18 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
@@ -1070,6 +1074,8 @@
 			isa = PBXGroup;
 			children = (
 				37561D8816ADFEC400D69CDE /* Pushpin.entitlements */,
+				37DF2CC116C4B80600CFCA81 /* Dev.entitlements */,
+				37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */,
 				372F8886167429DA0073D0B6 /* Beta-Info.plist */,
 				372F8887167429DA0073D0B6 /* Dev-Info.plist */,
 				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
@@ -1295,6 +1301,8 @@
 				37D0D0BD16B8E0C10062C27E /* 58-bookmark@2x.png in Resources */,
 				37D0D0BE16B8E0C10062C27E /* 106-sliders.png in Resources */,
 				37D0D0BF16B8E0C10062C27E /* 106-sliders@2x.png in Resources */,
+				37DF2CC016C4B7EA00CFCA81 /* Beta.entitlements in Resources */,
+				37DF2CC216C4B80600CFCA81 /* Dev.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1492,7 +1500,7 @@
 		37800E9C162D576E009FCB17 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Beta.entitlements";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
@@ -1599,7 +1607,7 @@
 		37FEEBA715745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Dev.entitlements";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
