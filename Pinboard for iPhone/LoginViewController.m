@@ -145,15 +145,17 @@
 }
 
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.progressView setProgress:updated.floatValue / total.floatValue];
-        
-        if (updated.integerValue == total.integerValue) {
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
-            delegate.tabBarViewController = [[TabBarViewController alloc] init];
-            delegate.tabBarViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-            [self presentViewController:delegate.tabBarViewController animated:YES completion:nil];
-        }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.progressView setProgress:updated.floatValue / total.floatValue];
+            
+            if (updated.integerValue == total.integerValue) {
+                AppDelegate *delegate = [AppDelegate sharedDelegate];
+                delegate.tabBarViewController = [[TabBarViewController alloc] init];
+                delegate.tabBarViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                [self presentViewController:delegate.tabBarViewController animated:YES completion:nil];
+            }
+        });
     });
 }
 
