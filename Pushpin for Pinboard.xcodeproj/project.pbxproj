@@ -1488,7 +1488,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "164AA68B-80BD-4008-BD9D-1420DE6F8F32";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A611F94E-C6CD-443F-B85A-EA8815F71B7B";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
@@ -1595,7 +1595,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3D3F2A6D-A974-4ED0-84AE-DBDD77A0D68D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "911118F9-7295-4044-B579-82619C0EE650";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
