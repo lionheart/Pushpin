@@ -350,7 +350,7 @@ enum actionSheetButtonIndex {
     actionSheet.title = urlString;
     actionSheet.delegate = self;
     
-    if ([[AppDelegate sharedDelegate] browser] == @(BROWSER_CHROME)) {
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"chrome://"]]) {
         [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
     }
     else {
