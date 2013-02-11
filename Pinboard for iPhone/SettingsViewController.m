@@ -49,7 +49,40 @@
                                                                                  action:@selector(showAboutPage)];
         
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@"Webview", @"Safari", @"Chrome", @"iCab Mobile", nil];
+        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        NSUInteger cancelButtonIndex = 2;
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Webview", nil)];
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
+
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
+            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
+            cancelButtonIndex++;
+        }
+
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
+            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
+            cancelButtonIndex++;
+        }
+        
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
+            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
+            cancelButtonIndex++;
+        }
+        
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
+            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
+            cancelButtonIndex++;
+        }
+        
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
+            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
+            cancelButtonIndex++;
+        }
+
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        self.browserActionSheet.cancelButtonIndex = cancelButtonIndex;
+
         self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
         self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
@@ -96,6 +129,7 @@
                                                                  cancelButtonTitle:nil
                                                                  otherButtonTitles:nil];
         self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.availableBrowsers = [NSMutableArray array];
     }
     return self;
 }
@@ -263,6 +297,18 @@
                         case BROWSER_CHROME:
                             cell.detailTextLabel.text = @"Chrome";
                             break;
+                        case BROWSER_ICAB_MOBILE:
+                            cell.detailTextLabel.text = @"iCab Mobile";
+                            break;
+                        case BROWSER_DOLPHIN:
+                            cell.detailTextLabel.text = @"Dolphin";
+                            break;
+                        case BROWSER_CYBERSPACE:
+                            cell.detailTextLabel.text = @"Cyberspace";
+                            break;
+                        case BROWSER_OPERA:
+                            cell.detailTextLabel.text = @"Opera";
+                            break;
                         default:
                             break;
                     }
@@ -396,7 +442,6 @@
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d", httpResponse.statusCode);
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
                                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
@@ -498,47 +543,38 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    BOOL installed;
     if (actionSheet == self.browserActionSheet) {
-        switch (buttonIndex) {
-            case 0:
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-                break;
-                
-            case 1:
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-                break;
-                
-            case 2: {
-                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://google.com/"]];
-                if (!installed) {
-                    [self.installChromeAlertView show];
-                }
-                else {
-                    [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
-                    [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-                }
-                break;
-            }
-                
-            case 3: {
-                installed = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://google.com/"]];
-                if (!installed) {
-                    [self.installiCabMobileAlertView show];
-                }
-                else {
-                    [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
-                    [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-                }
-                break;
-            }
-
-            default:
-                break;
+        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:@"Webview"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
         }
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        else if ([title isEqualToString:@"Safari"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+        }
+        else if ([title isEqualToString:@"Chrome"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+        }
+        else if ([title isEqualToString:@"iCab Mobile"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
+        }
+        else if ([title isEqualToString:@"Dolphin"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_DOLPHIN)];
+        }
+        else if ([title isEqualToString:@"Cyberspace"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CYBERSPACE)];
+        }
+        else if ([title isEqualToString:@"Opera"]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
+            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_OPERA)];
+        }
+
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     else if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {
@@ -572,14 +608,14 @@
                 if (!error && API.loggedIn) {
                     [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
                     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
-                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                 }
             }];
         }
         else if ([buttonTitle isEqualToString:@"None"]) {
             [[AppDelegate sharedDelegate] setReadlater:nil];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
 
     }

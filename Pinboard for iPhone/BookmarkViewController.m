@@ -574,6 +574,45 @@
             }
 
             break;
+            
+        case BROWSER_OPERA:
+            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"ohttp"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
+                [[UIApplication sharedApplication] openURL:url];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                [alert show];
+            }
+            
+            break;
+            
+        case BROWSER_DOLPHIN:
+            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"dolphin"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                [[UIApplication sharedApplication] openURL:url];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                [alert show];
+            }
+            
+            break;
+            
+        case BROWSER_CYBERSPACE:
+            if ([self.bookmark[@"url"] hasPrefix:@"http"]) {
+                NSURL *url = [NSURL URLWithString:[self.bookmark[@"url"] stringByReplacingCharactersInRange:[self.bookmark[@"url"] rangeOfString:@"http"] withString:@"cyber"]];
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                [[UIApplication sharedApplication] openURL:url];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                [alert show];
+            }
+            
+            break;
 
         default:
             break;

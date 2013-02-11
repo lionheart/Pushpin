@@ -590,7 +590,12 @@
 
         if (newBookmarkCount > 0) {
             UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = [NSString stringWithFormat:@"%d bookmark%@ added.", newBookmarkCount, newBookmarkCount != 1 ? @"s were" : @" was"];
+            if (newBookmarkCount == 1) {
+                notification.alertBody = [NSString stringWithFormat:NSLocalizedString(@"1 bookmark was added.", nil)];
+            }
+            else {
+                notification.alertBody = [NSString stringWithFormat:NSLocalizedString(@"%d bookmarks were added.", nil), newBookmarkCount];
+            }
             notification.alertAction = @"Open Pushpin";
             notification.userInfo = @{@"success": @YES, @"updated": @YES};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];

@@ -42,11 +42,6 @@
 #define kToolBarHeight  44
 #define kTabBarHeight   49
 
-enum actionSheetButtonIndex {
-	kSafariButtonIndex,
-	kChromeButtonIndex,
-};
-
 #pragma mark - Private Methods
 
 -(void)setTitleBarText:(NSString*)pageTitle {
@@ -350,12 +345,23 @@ enum actionSheetButtonIndex {
     actionSheet.title = urlString;
     actionSheet.delegate = self;
     
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"chrome://"]]) {
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
         [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
     }
-    else {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
     }
+
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
+    }
+
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
     
     actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 	actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
@@ -363,7 +369,6 @@ enum actionSheetButtonIndex {
     if (mode == TSMiniWebBrowserModeTabBar) {
         [actionSheet showFromTabBar:self.tabBarController.tabBar];
     }
-    //else if (mode == TSMiniWebBrowserModeNavigation && [self.navigationController respondsToSelector:@selector(tabBarController)]) {
     else if (mode == TSMiniWebBrowserModeNavigation && self.navigationController.tabBarController != nil) {
         [actionSheet showFromTabBar:self.navigationController.tabBarController.tabBar];
     }
@@ -377,36 +382,30 @@ enum actionSheetButtonIndex {
     if (buttonIndex == [actionSheet cancelButtonIndex]) return;
     
     NSURL *theURL = [webView.request URL];
+    NSURL *url;
     if (theURL == nil || [theURL isEqual:[NSURL URLWithString:@""]]) {
         theURL = urlToLoad;
     }
+    NSString *urlString = [theURL absoluteString];
     
-    if (buttonIndex == kSafariButtonIndex) {
+    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+    if ([title isEqualToString:NSLocalizedString(@"Open in Safari", nil)]) {
         [[UIApplication sharedApplication] openURL:theURL];
     }
-    else if (buttonIndex == kChromeButtonIndex) {
-        NSString *scheme = theURL.scheme;
-        
-        // Replace the URL Scheme with the Chrome equivalent.
-        NSString *chromeScheme = nil;
-        if ([scheme isEqualToString:@"http"]) {
-            chromeScheme = @"googlechrome";
-        } else if ([scheme isEqualToString:@"https"]) {
-            chromeScheme = @"googlechromes";
-        }
-        
-        // Proceed only if a valid Google Chrome URI Scheme is available.
-        if (chromeScheme) {
-            NSString *absoluteString = [theURL absoluteString];
-            NSRange rangeForScheme = [absoluteString rangeOfString:@":"];
-            NSString *urlNoScheme = [absoluteString substringFromIndex:rangeForScheme.location];
-            NSString *chromeURLString = [chromeScheme stringByAppendingString:urlNoScheme];
-            NSURL *chromeURL = [NSURL URLWithString:chromeURLString];
-            
-            // Open the URL with Chrome.
-            [[UIApplication sharedApplication] openURL:chromeURL];
-        }
+    else if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
+        url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:[urlString rangeOfString:@"http"] withString:@"googlechrome"]];
     }
+    else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
+        url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:[urlString rangeOfString:@"http"] withString:@"ohttp"]];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
+        url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:[urlString rangeOfString:theURL.scheme] withString:@"dolphin"]];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
+        url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:[urlString rangeOfString:@"http"] withString:@"cyber"]];
+    }
+
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 #pragma mark - Actions
