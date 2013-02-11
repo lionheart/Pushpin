@@ -27,6 +27,7 @@
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
+@property (nonatomic, retain) NSMutableArray *availableBrowsers;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
