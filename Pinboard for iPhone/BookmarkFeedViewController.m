@@ -12,7 +12,6 @@
 #import "AppDelegate.h"
 #import "BookmarkCell.h"
 #import "TSMiniWebBrowser.h"
-#import "WBSuccessNoticeView.h"
 #import "ZAActivityBar.h"
 #import "FMDatabase.h"
 #import "BookmarkViewController.h"

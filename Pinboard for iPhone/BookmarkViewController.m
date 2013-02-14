@@ -11,7 +11,6 @@
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "TTTAttributedLabel.h"
-#import "WBSuccessNoticeView.h"
 #import "TSMiniWebBrowser.h"
 #import "PocketAPI.h"
 #import "FMDatabaseQueue.h"
