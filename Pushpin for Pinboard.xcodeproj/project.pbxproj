@@ -26,6 +26,8 @@
 		372F890B16755A2E0073D0B6 /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890516755A2E0073D0B6 /* NSData+MPBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890C16755A2E0073D0B6 /* Mixpanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890716755A2E0073D0B6 /* Mixpanel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
+		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
+		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -239,6 +241,10 @@
 		372F890616755A2E0073D0B6 /* Mixpanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mixpanel.h; sourceTree = "<group>"; };
 		372F890716755A2E0073D0B6 /* Mixpanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mixpanel.m; sourceTree = "<group>"; };
 		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		3733251D16E155A2002E2AB0 /* GenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPostViewController.h; sourceTree = "<group>"; };
+		3733251E16E155A2002E2AB0 /* GenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericPostViewController.m; sourceTree = "<group>"; };
+		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
+		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardDataSource.m; sourceTree = "<group>"; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -978,6 +984,10 @@
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				375A638816C0CB0800665CA1 /* FeedListViewController.h */,
 				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
+				3733251D16E155A2002E2AB0 /* GenericPostViewController.h */,
+				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
+				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
+				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
 				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
@@ -1308,6 +1318,8 @@
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
+				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
+				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
