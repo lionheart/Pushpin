@@ -7,6 +7,7 @@
 //
 
 #import "GenericPostViewController.h"
+#import "BookmarkCell.h"
 
 @interface GenericPostViewController ()
 
@@ -14,54 +15,94 @@
 
 @implementation GenericPostViewController
 
-@synthesize delegate;
+@synthesize postDataSource;
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)update {
+    [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView endUpdates];
+            });
+        });
+    }];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [self.postDataSource numberOfPosts];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self.postDataSource heightForPostAtIndex:indexPath.row];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *identifier = @"BookmarkCell";
     
-    // Configure the cell...
+    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    if (!cell) {
+        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    
+    NSAttributedString *string;
+    NSDictionary *post;
+    
+    if (tableView.isEditing) {
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+    }
+    else {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    
+    if (tableView == self.tableView) {
+        string = [self.postDataSource stringForPostAtIndex:indexPath.row];
+        post = [self.postDataSource postAtIndex:indexPath.row];
+    }
+    else {
+        string = self.filteredStrings[indexPath.row];
+        post = self.filteredBookmarks[indexPath.row];
+    }
+    
+    [cell.textView setText:string];
+    
+    for (NSDictionary *link in [self.postDataSource linksForPost:post]) {
+        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
+    }
+    
+    for (id subview in [cell.contentView subviews]) {
+        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
+            [subview removeFromSuperview];
+        }
+    }
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(-40, 0, 360, [self.postDataSource heightForPostAtIndex:indexPath.row])];
+    
+    if ([post[@"private"] boolValue] == YES) {
+        cell.textView.backgroundColor = HEX(0xddddddff);
+        label.backgroundColor = HEX(0xddddddff);
+    }
+    else {
+        cell.textView.backgroundColor = HEX(0xffffffff);
+        label.backgroundColor = HEX(0xffffffff);
+    }
+    
+    if (tableView == self.tableView) {
+        [cell.contentView addSubview:label];
+        [cell.contentView sendSubviewToBack:label];
+    }
+    
+    cell.textView.delegate = self;
+    cell.textView.userInteractionEnabled = YES;
     
     return cell;
 }

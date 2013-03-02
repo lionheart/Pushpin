@@ -14,12 +14,16 @@
 
 @synthesize query = _query;
 @synthesize queryParameters = _queryParameters;
-@synthesize posts;
+@synthesize posts = _posts;
+@synthesize heights = _heights;
+@synthesize strings = _strings;
+@synthesize urls;
+@synthesize maxResults;
 
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead isUntagged:(BOOL)isUntagged hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
     NSMutableArray *queryComponents = [NSMutableArray array];
-    
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
+    self.maxResults = limit;
     
     if (&isPrivate != nil) {
         [queryComponents addObject:@"private = :private"];
@@ -52,10 +56,35 @@
     }
 }
 
-- (NSArray *)posts {
+- (NSInteger)numberOfPosts {
+    return [self.posts count];
+}
+
+- (void)updatePosts:(void (^)(NSArray *, NSArray *, NSArray *))callback {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+    
+    NSMutableArray *posts = [NSMutableArray array];
+    NSMutableArray *heights = [NSMutableArray array];
+    NSMutableArray *strings = [NSMutableArray array];
+
+    NSMutableArray *newPosts = [NSMutableArray array];
+    NSMutableArray *newHeights = [NSMutableArray array];
+    NSMutableArray *newStrings = [NSMutableArray array];
+    NSMutableArray *newURLs = [NSMutableArray array];
+
+    NSMutableArray *oldPosts = [self.posts copy];
+    NSMutableArray *oldURLs = [NSMutableArray array];
+    for (NSDictionary *post in self.posts) {
+        [oldURLs addObject:post[@"url"]];
+    }
+
+    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+    NSInteger index = 0;
+
     while ([results next]) {
         NSString *title = [results stringForColumn:@"title"];
         
@@ -70,28 +99,42 @@
             @"private": [results objectForColumnName:@"private"],
             @"tags": [results stringForColumn:@"tags"],
         };
-        
-        [self.posts addObject:post];
-        [newHeights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-        [newStrings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
-        [newURLs addObject:bookmark[@"url"]];
-        
-        if (![oldBookmarks containsObject:bookmark]) {
+
+        [newPosts addObject:post];
+        [newHeights addObject:@([PinboardDataSource heightForPost:post])];
+        [newStrings addObject:[PinboardDataSource attributedStringForPost:post]];
+        [newURLs addObject:post[@"url"]];
+
+        if (![oldPosts containsObject:post]) {
             // Check if the bookmark is being updated (as opposed to entirely new)
-            if ([oldURLs containsObject:bookmark[@"url"]]) {
-                [indexPathsToUpdate addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            if ([oldURLs containsObject:post[@"url"]]) {
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             else {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             
-            [self.bookmarks addObject:bookmark];
-            [self.heights addObject:[BookmarkViewController heightForBookmark:bookmark]];
-            [self.strings addObject:[BookmarkViewController attributedStringForBookmark:bookmark]];
+            [posts addObject:post];
+            [heights addObject:@([PinboardDataSource heightForPost:post])];
+            [strings addObject:[PinboardDataSource attributedStringForPost:post]];
         }
         index++;
     }
     [db close];
+    
+    for (int i=0; i<oldURLs.count; i++) {
+        if (![newURLs containsObject:oldURLs[i]]) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
+        }
+    }
+    
+    self.posts = newPosts;
+    self.heights = newHeights;
+    self.strings = newStrings;
+
+    if (callback != nil) {
+        callback(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+    }
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
