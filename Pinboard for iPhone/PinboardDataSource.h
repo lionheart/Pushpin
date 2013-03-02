@@ -19,7 +19,8 @@
 @property (nonatomic, retain) NSDictionary *queryParameters;
 @property (nonatomic) NSInteger maxResults;
 
-- (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead isUntagged:(BOOL)isUntagged hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
+- (void)filterWithParameters:(NSDictionary *)parameters;
+- (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;

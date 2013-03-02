@@ -22,6 +22,7 @@
 @interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate>
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
+@property (nonatomic) BOOL processingPosts;
 
 - (void)update;
 

@@ -20,7 +20,16 @@
 @synthesize urls;
 @synthesize maxResults;
 
-- (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead isUntagged:(BOOL)isUntagged hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
+- (void)filterWithParameters:(NSDictionary *)parameters {
+    [self filterByPrivate:parameters[@"private"]
+                   isRead:parameters[@"read"]
+                  hasTags:parameters[@"tagged"]
+                     tags:parameters[@"tags"]
+                   offset:parameters[@"offset"]
+                    limit:parameters[@"limit"]];
+}
+
+- (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
     NSMutableArray *queryComponents = [NSMutableArray array];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
     self.maxResults = limit;
