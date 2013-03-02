@@ -103,7 +103,6 @@
     
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
-    
     return cell;
 }
 
