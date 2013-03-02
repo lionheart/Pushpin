@@ -138,13 +138,32 @@
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
+    return [self.heights[index] floatValue];
+}
+
++ (NSArray *)linksForPost:(NSDictionary *)post {
+    NSMutableArray *links = [NSMutableArray array];
+    int location = [post[@"title"] length] + 1;
+    if (![post[@"description"] isEqualToString:@""]) {
+        location += [post[@"description"] length] + 1;
+    }
+    
+    if (![post[@"tags"] isEqualToString:@""]) {
+        for (NSString *tag in [post[@"tags"] componentsSeparatedByString:@" "]) {
+            NSRange range = [post[@"tags"] rangeOfString:tag];
+            [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
+        }
+    }
+    return links;
+}
+
++ (CGFloat)heightForPost:(NSDictionary *)post {
     UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
     UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-    NSDictionary *post = self.posts[index];
-
+    
     CGFloat height = 12.0f;
     height += ceilf([post[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-
+    
     if (![post[@"description"] isEqualToString:@""]) {
         height += ceilf([post[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     }
@@ -156,16 +175,45 @@
     return height;
 }
 
-+ (NSArray *)linksForPost:(NSDictionary *)post {
-    
-}
-
-+ (CGFloat)heightForPost:(NSDictionary *)post {
-    
-}
-
 + (NSMutableAttributedString *)attributedStringForPost:(NSDictionary *)post {
+    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
+    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
     
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
+    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
+    NSRange descriptionRange = {};
+    NSRange tagRange = {};
+    int newLineCount = 1;
+    if (![bookmark[@"description"] isEqualToString:@""]) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
+        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
+        newLineCount++;
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
+        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
+    }
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:largeHelvetica range:titleRange];
+    [attributedString setFont:smallHelvetica range:descriptionRange];
+    [attributedString setFont:smallHelvetica range:tagRange];
+    [attributedString setTextColor:HEX(0x555555ff)];
+    
+    if (![bookmark[@"unread"] boolValue]) {
+        [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0xcc2222ff) range:titleRange];
+    }
+    
+    if (![bookmark[@"tags"] isEqualToString:@""]) {
+        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
+    }
+    
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    return attributedString;
 }
 
 @end

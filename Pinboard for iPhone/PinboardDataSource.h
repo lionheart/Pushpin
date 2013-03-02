@@ -21,4 +21,8 @@
 
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead isUntagged:(BOOL)isUntagged hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 
++ (NSArray *)linksForPost:(NSDictionary *)post;
++ (CGFloat)heightForPost:(NSDictionary *)post;
++ (NSMutableAttributedString *)attributedStringForPost:(NSDictionary *)post;
+
 @end
