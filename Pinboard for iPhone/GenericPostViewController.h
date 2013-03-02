@@ -17,10 +17,6 @@
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 - (NSAttributedString *)stringForPostAtIndex:(NSInteger)index;
 
-+ (NSArray *)linksForPost:(NSDictionary *)post;
-+ (CGFloat)heightForPost:(NSDictionary *)post;
-+ (NSMutableAttributedString *)attributedStringForPost:(NSDictionary *)post;
-
 @end
 
 @interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate>
