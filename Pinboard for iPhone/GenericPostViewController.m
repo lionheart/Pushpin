@@ -16,9 +16,16 @@
 @implementation GenericPostViewController
 
 @synthesize postDataSource;
+@synthesize processingPosts;
+
+- (void)viewDidLoad {
+    self.processingPosts = NO;
+}
 
 - (void)update {
+    self.processingPosts = YES;
     [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        self.processingPosts = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
@@ -107,6 +114,17 @@
 }
 
 #pragma mark - Table view delegate
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView != self.tableView) {
+        return;
+    }
+    if (indexPath.row >= self.limit.integerValue / 2 && !self.processingBookmarks) {
+        self.limit = @(self.limit.integerValue * 2);
+        self.queryParameters[@"limit"] = limit;
+        [self processBookmarks];
+    }
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
