@@ -64,7 +64,6 @@
 
 - (id)initWithQuery:(NSString *)query parameters:(NSMutableDictionary *)parameters;
 - (id)initWithStyle:(UITableViewStyle)style url:(NSString *)url parameters:(NSDictionary *)parameters;
-- (void)refreshBookmarks;
 - (void)processBookmarks;
 - (void)processBookmark:(NSDictionary *)dictionary;
 - (void)markBookmarkAsRead:(id)sender;
