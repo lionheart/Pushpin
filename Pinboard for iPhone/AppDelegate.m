@@ -21,6 +21,8 @@
 #import "ZAActivityBar.h"
 #import "HTMLParser.h"
 #import "SettingsViewController.h"
+#import "GenericPostViewController.h"
+#import "PinboardDataSource.h"
 
 @implementation AppDelegate
 
@@ -178,6 +180,17 @@
         [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
 
+        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+        pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
+
+        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        pinboardViewController.postDataSource = pinboardDataSource;
+
+        [self.window setRootViewController:pinboardViewController];
+        
+        /*
+
         BookmarkViewController *allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
         allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
 
@@ -191,6 +204,7 @@
         [self.navigationViewController popToViewController:allBookmarkViewController animated:NO];
         [self.window setRootViewController:self.navigationViewController];
         [self resumeRefreshTimer];
+         */
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];

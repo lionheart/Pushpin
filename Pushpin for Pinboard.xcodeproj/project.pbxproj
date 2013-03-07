@@ -78,6 +78,10 @@
 		37800E89162CF1A3009FCB17 /* Reachability.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 37800E71162CF1A2009FCB17 /* Reachability.podspec */; };
 		37800E8A162CF1A3009FCB17 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37800E72162CF1A2009FCB17 /* README.md */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
+		3780BB4C16E925A2006F5435 /* top-right-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4A16E925A2006F5435 /* top-right-lock.png */; };
+		3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */; };
+		3780BB5016E9267F006F5435 /* top-left-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4E16E9267F006F5435 /* top-left-star.png */; };
+		3780BB5116E9267F006F5435 /* top-left-star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4F16E9267F006F5435 /* top-left-star@2x.png */; };
 		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
 		3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE615B49989008A477A /* Icon-settings@2x.png */; };
@@ -337,6 +341,10 @@
 		37800E71162CF1A2009FCB17 /* Reachability.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Reachability.podspec; sourceTree = "<group>"; };
 		37800E72162CF1A2009FCB17 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		3780BB4A16E925A2006F5435 /* top-right-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-right-lock.png"; path = "Assets/top-right-lock.png"; sourceTree = "<group>"; };
+		3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-right-lock@2x.png"; path = "Assets/top-right-lock@2x.png"; sourceTree = "<group>"; };
+		3780BB4E16E9267F006F5435 /* top-left-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star.png"; path = "Assets/top-left-star.png"; sourceTree = "<group>"; };
+		3780BB4F16E9267F006F5435 /* top-left-star@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star@2x.png"; path = "Assets/top-left-star@2x.png"; sourceTree = "<group>"; };
 		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
@@ -1019,6 +1027,8 @@
 				3786465C15773E4300A1D5F8 /* Templates */,
 				37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */,
 				37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */,
+				3780BB4E16E9267F006F5435 /* top-left-star.png */,
+				3780BB4F16E9267F006F5435 /* top-left-star@2x.png */,
 				37C2BEFD1673A00A00EC66FF /* Icon-dev.png */,
 				37C2BEFE1673A00A00EC66FF /* Icon-dev@2x.png */,
 				37C2BEFF1673A00A00EC66FF /* Icon-settings-dev.png */,
@@ -1028,6 +1038,8 @@
 				37D2351716B8DBE0007541DC /* icon_bookmark.png */,
 				37D2350F16B8DBD4007541DC /* cog-white.png */,
 				37D2351016B8DBD4007541DC /* cog-white@2x.png */,
+				3780BB4A16E925A2006F5435 /* top-right-lock.png */,
+				3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */,
 				37D2351116B8DBD4007541DC /* cog.png */,
 				37D2351216B8DBD4007541DC /* cog@2x.png */,
 				3787FFE515B49989008A477A /* Icon-settings.png */,
@@ -1224,6 +1236,10 @@
 				37D0D0BF16B8E0C10062C27E /* 106-sliders@2x.png in Resources */,
 				37DF2CC016C4B7EA00CFCA81 /* Beta.entitlements in Resources */,
 				37DF2CC216C4B80600CFCA81 /* Dev.entitlements in Resources */,
+				3780BB4C16E925A2006F5435 /* top-right-lock.png in Resources */,
+				3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */,
+				3780BB5016E9267F006F5435 /* top-left-star.png in Resources */,
+				3780BB5116E9267F006F5435 /* top-left-star@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

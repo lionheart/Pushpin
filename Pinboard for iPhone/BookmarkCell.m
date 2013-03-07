@@ -31,6 +31,7 @@
         [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
         [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
         self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
+        self.textView.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.textView];
     }
     return self;
@@ -38,7 +39,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 6.0f), 0.0f, 0.0f);
+    self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 10.0f), 0.0f, 0.0f);
 }
 
 @end
