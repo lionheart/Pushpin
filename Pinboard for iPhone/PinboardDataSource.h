@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSArray *strings;
 @property (nonatomic, retain) NSArray *urls;
 @property (nonatomic, retain) NSString *query;
-@property (nonatomic, retain) NSDictionary *queryParameters;
+@property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic) NSInteger maxResults;
 
 - (void)filterWithParameters:(NSDictionary *)parameters;
@@ -24,6 +24,5 @@
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;
-+ (NSMutableAttributedString *)attributedStringForPost:(NSDictionary *)post;
 
 @end

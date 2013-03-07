@@ -8,6 +8,8 @@
 
 #import "GenericPostViewController.h"
 #import "BookmarkCell.h"
+#import "NSAttributedString+Attributes.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface GenericPostViewController ()
 
@@ -22,12 +24,16 @@
     self.processingPosts = NO;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [self update];
+}
+
 - (void)update {
     self.processingPosts = YES;
     [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-        self.processingPosts = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.processingPosts = NO;
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -40,6 +46,16 @@
 
 #pragma mark - Table view data source
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (!self.processingPosts) {
+        [self.postDataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
+            if (needsUpdate) {
+                [self update];
+            }
+        }];
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -49,7 +65,30 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.postDataSource heightForPostAtIndex:indexPath.row];
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12.f];
+    
+    CGFloat height = 20.0f;
+    NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
+    NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
+    NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
+    
+    if (indexPath.row == 3) {
+        DLog(@"1 %f", height);
+    }
+
+    height += ceilf([title sizeWithFont:titleFont constrainedToSize:CGSizeMake(320.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    
+    if (![description isEqualToString:@""]) {
+        height += ceilf([description sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(320.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
+    
+    if (![tags isEqualToString:@""]) {
+        height += ceilf([tags sizeWithFont:tagsFont constrainedToSize:CGSizeMake(320.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    }
+
+    return height;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -59,55 +98,55 @@
     
     if (!cell) {
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell.contentView.backgroundColor = [UIColor clearColor];
     }
-    
+
     NSAttributedString *string;
-    NSDictionary *post;
-    
+
     if (tableView.isEditing) {
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
     else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
-    if (tableView == self.tableView) {
-        string = [self.postDataSource stringForPostAtIndex:indexPath.row];
-        post = [self.postDataSource postAtIndex:indexPath.row];
-    }
-    else {
-        string = self.filteredStrings[indexPath.row];
-        post = self.filteredBookmarks[indexPath.row];
-    }
-    
+
+    string = [self attributedStringForPostAtIndexPath:indexPath];
+
     [cell.textView setText:string];
-    
-    for (NSDictionary *link in [self.postDataSource linksForPost:post]) {
-        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
-    }
     
     for (id subview in [cell.contentView subviews]) {
         if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
             [subview removeFromSuperview];
         }
     }
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(-40, 0, 360, [self.postDataSource heightForPostAtIndex:indexPath.row])];
-    
-    if ([post[@"private"] boolValue] == YES) {
-        cell.textView.backgroundColor = HEX(0xddddddff);
-        label.backgroundColor = HEX(0xddddddff);
-    }
-    else {
-        cell.textView.backgroundColor = HEX(0xffffffff);
-        label.backgroundColor = HEX(0xffffffff);
+
+    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
+    for (CALayer *layer in sublayers) {
+        if ([layer.name isEqualToString:@"Gradient"]) {
+            [layer removeFromSuperlayer];
+        }
     }
     
-    if (tableView == self.tableView) {
-        [cell.contentView addSubview:label];
-        [cell.contentView sendSubviewToBack:label];
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = CGRectMake(0, 0, 320.f, [self.tableView.delegate tableView:self.tableView heightForRowAtIndexPath:indexPath]);
+    gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
+    gradient.name = @"Gradient";
+    [cell.contentView.layer insertSublayer:gradient atIndex:0];
+    
+    BOOL isPrivate = [self.postDataSource isPostAtIndexPrivate:indexPath.row];
+    if (isPrivate) {
+        UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
+        lockImageView.frame = CGRectMake(302.f, 0, 18.f, 19.f);
+        [cell.contentView addSubview:lockImageView];
     }
     
+    BOOL isStarred = YES;
+    if (isStarred) {
+        UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
+        starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
+        [cell.contentView addSubview:starImageView];
+    }
+
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
@@ -115,26 +154,51 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView != self.tableView) {
-        return;
-    }
-    if (indexPath.row >= self.limit.integerValue / 2 && !self.processingBookmarks) {
-        self.limit = @(self.limit.integerValue * 2);
-        self.queryParameters[@"limit"] = limit;
-        [self processBookmarks];
-    }
-}
+- (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath {
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12.f];
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
+    NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
+    NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
+    BOOL isRead = [self.postDataSource isPostAtIndexRead:indexPath.row];
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+    NSRange titleRange = [self.postDataSource rangeForTitleForPostAtIndex:indexPath.row];
+
+    NSRange descriptionRange = [self.postDataSource rangeForDescriptionForPostAtIndex:indexPath.row];
+    if (descriptionRange.location != NSNotFound) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
+    }
+    
+    NSRange tagRange = [self.postDataSource rangeForTagsForPostAtIndex:indexPath.row];
+    BOOL hasTags = tagRange.location != NSNotFound;
+    if (hasTags) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", tags]];
+    }
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:titleFont range:titleRange];
+    [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setTextColor:HEX(0x33353Bff)];
+    
+    if (isRead) {
+        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+    }
+
+    if (hasTags) {
+        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
+        [attributedString setFont:tagsFont range:tagRange];
+    }
+    
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    return attributedString;
 }
 
 @end

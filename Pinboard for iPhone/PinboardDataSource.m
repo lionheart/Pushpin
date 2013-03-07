@@ -9,6 +9,7 @@
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
 #import "AppDelegate.h"
+#import "NSAttributedString+Attributes.h"
 
 @implementation PinboardDataSource
 
@@ -21,12 +22,14 @@
 @synthesize maxResults;
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
-    [self filterByPrivate:parameters[@"private"]
-                   isRead:parameters[@"read"]
-                  hasTags:parameters[@"tagged"]
-                     tags:parameters[@"tags"]
-                   offset:parameters[@"offset"]
-                    limit:parameters[@"limit"]];
+    BOOL isPrivate = [parameters[@"private"] boolValue];
+    BOOL isRead = [parameters[@"read"] boolValue];
+    BOOL hasTags = [parameters[@"tagged"] boolValue];
+    NSArray *tags = parameters[@"tags"];
+    NSInteger offset = [parameters[@"offset"] integerValue];
+    NSInteger limit = [parameters[@"limit"] integerValue];
+
+    [self filterByPrivate:isPrivate isRead:isRead hasTags:hasTags tags:tags offset:offset limit:limit];
 }
 
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
@@ -58,11 +61,21 @@
 
     if ([queryComponents count] > 0) {
         NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
-        self.query = [NSString stringWithFormat:@"SELECT * FROM bookmarks WHERE %@ ORDER BY created_at LIMIT :limit OFFSET :offset", whereComponent];
+        self.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at LIMIT :limit OFFSET :offset", whereComponent];
     }
     else {
-        self.query = @"SELECT * FROM bookmarks ORDER BY created_at LIMIT :limit OFFSET :offset";
+        self.query = @"SELECT * FROM bookmark ORDER BY created_at LIMIT :limit OFFSET :offset";
     }
+}
+
+- (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback {
+    NSInteger limit = [self.queryParameters[@"limit"] integerValue];
+
+    BOOL needsUpdate = indexPath.row >= limit / 2;
+    if (needsUpdate) {
+        self.queryParameters[@"limit"] = @(limit * 2);
+    }
+    callback(needsUpdate);
 }
 
 - (NSInteger)numberOfPosts {
@@ -75,12 +88,8 @@
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
     
     NSMutableArray *posts = [NSMutableArray array];
-    NSMutableArray *heights = [NSMutableArray array];
-    NSMutableArray *strings = [NSMutableArray array];
 
     NSMutableArray *newPosts = [NSMutableArray array];
-    NSMutableArray *newHeights = [NSMutableArray array];
-    NSMutableArray *newStrings = [NSMutableArray array];
     NSMutableArray *newURLs = [NSMutableArray array];
 
     NSMutableArray *oldPosts = [self.posts copy];
@@ -110,8 +119,6 @@
         };
 
         [newPosts addObject:post];
-        [newHeights addObject:@([PinboardDataSource heightForPost:post])];
-        [newStrings addObject:[PinboardDataSource attributedStringForPost:post]];
         [newURLs addObject:post[@"url"]];
 
         if (![oldPosts containsObject:post]) {
@@ -124,8 +131,6 @@
             }
             
             [posts addObject:post];
-            [heights addObject:@([PinboardDataSource heightForPost:post])];
-            [strings addObject:[PinboardDataSource attributedStringForPost:post]];
         }
         index++;
     }
@@ -136,18 +141,71 @@
             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
         }
     }
-    
+
     self.posts = newPosts;
-    self.heights = newHeights;
-    self.strings = newStrings;
 
     if (callback != nil) {
         callback(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
     }
 }
 
-- (CGFloat)heightForPostAtIndex:(NSInteger)index {
-    return [self.heights[index] floatValue];
+- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
+    return NSMakeRange(0, [[self titleForPostAtIndex:index] length]);
+}
+
+- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
+    NSString *description = [self descriptionForPostAtIndex:index];
+    if ([description isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
+    }
+}
+
+- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
+    NSString *tags = [self tagsForPostAtIndex:index];
+    if ([tags isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
+        NSInteger offset = 1;
+        if (descriptionRange.location != NSNotFound) {
+            offset++;
+        }
+        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
+    }
+}
+
+- (NSString *)titleForPostAtIndex:(NSInteger)index {
+    return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+}
+
+- (NSString *)descriptionForPostAtIndex:(NSInteger)index {
+    return [self.posts[index][@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+}
+
+- (NSString *)tagsForPostAtIndex:(NSInteger)index {
+    return [self.posts[index][@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
+}
+
+- (NSInteger)sourceForPostAtIndex:(NSInteger)index {
+    return [self.posts[index][@"source"] integerValue];
+}
+
+- (BOOL)isPostAtIndexStarred:(NSInteger)index {
+    return [self.posts[index][@"starred"] boolValue];
+}
+
+- (BOOL)isPostAtIndexRead:(NSInteger)index {
+    return ![self.posts[index][@"unread"] boolValue];
+}
+
+- (BOOL)isPostAtIndexPrivate:(NSInteger)index {
+    return [self.posts[index][@"private"] boolValue];
 }
 
 + (NSArray *)linksForPost:(NSDictionary *)post {
@@ -164,65 +222,6 @@
         }
     }
     return links;
-}
-
-+ (CGFloat)heightForPost:(NSDictionary *)post {
-    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
-    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-    
-    CGFloat height = 12.0f;
-    height += ceilf([post[@"title"] sizeWithFont:largeHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    
-    if (![post[@"description"] isEqualToString:@""]) {
-        height += ceilf([post[@"description"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    }
-    
-    if (![post[@"tags"] isEqualToString:@""]) {
-        height += ceilf([post[@"tags"] sizeWithFont:smallHelvetica constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    }
-    
-    return height;
-}
-
-+ (NSMutableAttributedString *)attributedStringForPost:(NSDictionary *)post {
-    UIFont *largeHelvetica = [UIFont fontWithName:kFontName size:kLargeFontSize];
-    UIFont *smallHelvetica = [UIFont fontWithName:kFontName size:kSmallFontSize];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", bookmark[@"title"]];
-    NSRange titleRange = NSMakeRange(0, [bookmark[@"title"] length]);
-    NSRange descriptionRange = {};
-    NSRange tagRange = {};
-    int newLineCount = 1;
-    if (![bookmark[@"description"] isEqualToString:@""]) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"description"]]];
-        descriptionRange = NSMakeRange(titleRange.length + newLineCount, [bookmark[@"description"] length]);
-        newLineCount++;
-    }
-    
-    if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", bookmark[@"tags"]]];
-        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + newLineCount, [bookmark[@"tags"] length]);
-    }
-    
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:largeHelvetica range:titleRange];
-    [attributedString setFont:smallHelvetica range:descriptionRange];
-    [attributedString setFont:smallHelvetica range:tagRange];
-    [attributedString setTextColor:HEX(0x555555ff)];
-    
-    if (![bookmark[@"unread"] boolValue]) {
-        [attributedString setTextColor:HEX(0x2255aaff) range:titleRange];
-    }
-    else {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:titleRange];
-    }
-    
-    if (![bookmark[@"tags"] isEqualToString:@""]) {
-        [attributedString setTextColor:HEX(0xcc2222ff) range:tagRange];
-    }
-    
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    return attributedString;
 }
 
 @end
