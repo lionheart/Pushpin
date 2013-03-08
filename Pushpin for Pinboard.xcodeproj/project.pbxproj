@@ -29,6 +29,25 @@
 		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
 		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		3738A57516EA669500316ED8 /* SheetButtonGeneric.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57316EA669500316ED8 /* SheetButtonGeneric.png */; };
+		3738A57616EA669500316ED8 /* SheetButtonGeneric@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57416EA669500316ED8 /* SheetButtonGeneric@2x.png */; };
+		3738A57916EA66DC00316ED8 /* SheetButtonGenericTouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57716EA66DC00316ED8 /* SheetButtonGenericTouch.png */; };
+		3738A57A16EA66DC00316ED8 /* SheetButtonGenericTouch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57816EA66DC00316ED8 /* SheetButtonGenericTouch@2x.png */; };
+		3738A57F16EA671800316ED8 /* SheetButtonDestroy.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57B16EA671800316ED8 /* SheetButtonDestroy.png */; };
+		3738A58016EA671800316ED8 /* SheetButtonPrimary.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57C16EA671800316ED8 /* SheetButtonPrimary.png */; };
+		3738A58116EA671800316ED8 /* SheetButtonDestroy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57D16EA671800316ED8 /* SheetButtonDestroy@2x.png */; };
+		3738A58216EA671800316ED8 /* SheetButtonPrimary@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A57E16EA671800316ED8 /* SheetButtonPrimary@2x.png */; };
+		3738A58516EA673F00316ED8 /* SheetButtonDismiss.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58316EA673F00316ED8 /* SheetButtonDismiss.png */; };
+		3738A58616EA673F00316ED8 /* SheetButtonDismiss@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58416EA673F00316ED8 /* SheetButtonDismiss@2x.png */; };
+		3738A58916EA675E00316ED8 /* SheetButtonDismissTouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58716EA675E00316ED8 /* SheetButtonDismissTouch.png */; };
+		3738A58A16EA675E00316ED8 /* SheetButtonDismissTouch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58816EA675E00316ED8 /* SheetButtonDismissTouch@2x.png */; };
+		3738A58D16EA677100316ED8 /* SheetButtonPrimaryTouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58B16EA677100316ED8 /* SheetButtonPrimaryTouch.png */; };
+		3738A58E16EA677100316ED8 /* SheetButtonPrimaryTouch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58C16EA677100316ED8 /* SheetButtonPrimaryTouch@2x.png */; };
+		3738A59116EA679800316ED8 /* SheetButtonDestroyTouch.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A58F16EA679800316ED8 /* SheetButtonDestroyTouch.png */; };
+		3738A59216EA679800316ED8 /* SheetButtonDestroyTouch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59016EA679800316ED8 /* SheetButtonDestroyTouch@2x.png */; };
+		3738A59516EA683200316ED8 /* SheetBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59316EA683200316ED8 /* SheetBackground.png */; };
+		3738A59616EA683200316ED8 /* SheetBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59416EA683200316ED8 /* SheetBackground@2x.png */; };
+		3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3738A59816EA685600316ED8 /* RDActionSheet.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
@@ -251,6 +270,26 @@
 		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardDataSource.m; sourceTree = "<group>"; };
 		3737070F165CA4E0001BEDD8 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "Vendor/NSData+Additions.h"; sourceTree = "<group>"; };
 		37370710165CA4E0001BEDD8 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "Vendor/NSData+Additions.m"; sourceTree = "<group>"; };
+		3738A57316EA669500316ED8 /* SheetButtonGeneric.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonGeneric.png; path = Assets/SheetButtonGeneric.png; sourceTree = "<group>"; };
+		3738A57416EA669500316ED8 /* SheetButtonGeneric@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonGeneric@2x.png"; path = "Assets/SheetButtonGeneric@2x.png"; sourceTree = "<group>"; };
+		3738A57716EA66DC00316ED8 /* SheetButtonGenericTouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonGenericTouch.png; path = Assets/SheetButtonGenericTouch.png; sourceTree = "<group>"; };
+		3738A57816EA66DC00316ED8 /* SheetButtonGenericTouch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonGenericTouch@2x.png"; path = "Assets/SheetButtonGenericTouch@2x.png"; sourceTree = "<group>"; };
+		3738A57B16EA671800316ED8 /* SheetButtonDestroy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonDestroy.png; path = Assets/SheetButtonDestroy.png; sourceTree = "<group>"; };
+		3738A57C16EA671800316ED8 /* SheetButtonPrimary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonPrimary.png; path = Assets/SheetButtonPrimary.png; sourceTree = "<group>"; };
+		3738A57D16EA671800316ED8 /* SheetButtonDestroy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonDestroy@2x.png"; path = "Assets/SheetButtonDestroy@2x.png"; sourceTree = "<group>"; };
+		3738A57E16EA671800316ED8 /* SheetButtonPrimary@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonPrimary@2x.png"; path = "Assets/SheetButtonPrimary@2x.png"; sourceTree = "<group>"; };
+		3738A58316EA673F00316ED8 /* SheetButtonDismiss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonDismiss.png; path = Assets/SheetButtonDismiss.png; sourceTree = "<group>"; };
+		3738A58416EA673F00316ED8 /* SheetButtonDismiss@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonDismiss@2x.png"; path = "Assets/SheetButtonDismiss@2x.png"; sourceTree = "<group>"; };
+		3738A58716EA675E00316ED8 /* SheetButtonDismissTouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonDismissTouch.png; path = Assets/SheetButtonDismissTouch.png; sourceTree = "<group>"; };
+		3738A58816EA675E00316ED8 /* SheetButtonDismissTouch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonDismissTouch@2x.png"; path = "Assets/SheetButtonDismissTouch@2x.png"; sourceTree = "<group>"; };
+		3738A58B16EA677100316ED8 /* SheetButtonPrimaryTouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonPrimaryTouch.png; path = Assets/SheetButtonPrimaryTouch.png; sourceTree = "<group>"; };
+		3738A58C16EA677100316ED8 /* SheetButtonPrimaryTouch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonPrimaryTouch@2x.png"; path = "Assets/SheetButtonPrimaryTouch@2x.png"; sourceTree = "<group>"; };
+		3738A58F16EA679800316ED8 /* SheetButtonDestroyTouch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetButtonDestroyTouch.png; path = Assets/SheetButtonDestroyTouch.png; sourceTree = "<group>"; };
+		3738A59016EA679800316ED8 /* SheetButtonDestroyTouch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonDestroyTouch@2x.png"; path = "Assets/SheetButtonDestroyTouch@2x.png"; sourceTree = "<group>"; };
+		3738A59316EA683200316ED8 /* SheetBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetBackground.png; path = Assets/SheetBackground.png; sourceTree = "<group>"; };
+		3738A59416EA683200316ED8 /* SheetBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetBackground@2x.png"; path = "Assets/SheetBackground@2x.png"; sourceTree = "<group>"; };
+		3738A59716EA685600316ED8 /* RDActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDActionSheet.h; path = Vendor/RDActionSheet/RDActionSheet.h; sourceTree = "<group>"; };
+		3738A59816EA685600316ED8 /* RDActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDActionSheet.m; path = Vendor/RDActionSheet/RDActionSheet.m; sourceTree = "<group>"; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3740A23A16863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23B16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -527,6 +566,7 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
 				375A1012167E967D00320495 /* ZAActivityBar */,
@@ -645,6 +685,15 @@
 				372F890516755A2E0073D0B6 /* NSData+MPBase64.m */,
 			);
 			path = NSData_Base64;
+			sourceTree = "<group>";
+		};
+		3738A57216EA65AC00316ED8 /* RDActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				3738A59716EA685600316ED8 /* RDActionSheet.h */,
+				3738A59816EA685600316ED8 /* RDActionSheet.m */,
+			);
+			name = RDActionSheet;
 			sourceTree = "<group>";
 		};
 		3740A23616863CF000F95D82 /* Localizations */ = {
@@ -1027,6 +1076,24 @@
 				3786465C15773E4300A1D5F8 /* Templates */,
 				37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */,
 				37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */,
+				3738A59316EA683200316ED8 /* SheetBackground.png */,
+				3738A59416EA683200316ED8 /* SheetBackground@2x.png */,
+				3738A57316EA669500316ED8 /* SheetButtonGeneric.png */,
+				3738A57416EA669500316ED8 /* SheetButtonGeneric@2x.png */,
+				3738A57716EA66DC00316ED8 /* SheetButtonGenericTouch.png */,
+				3738A57816EA66DC00316ED8 /* SheetButtonGenericTouch@2x.png */,
+				3738A57B16EA671800316ED8 /* SheetButtonDestroy.png */,
+				3738A57D16EA671800316ED8 /* SheetButtonDestroy@2x.png */,
+				3738A57C16EA671800316ED8 /* SheetButtonPrimary.png */,
+				3738A57E16EA671800316ED8 /* SheetButtonPrimary@2x.png */,
+				3738A58316EA673F00316ED8 /* SheetButtonDismiss.png */,
+				3738A58416EA673F00316ED8 /* SheetButtonDismiss@2x.png */,
+				3738A58716EA675E00316ED8 /* SheetButtonDismissTouch.png */,
+				3738A58816EA675E00316ED8 /* SheetButtonDismissTouch@2x.png */,
+				3738A58B16EA677100316ED8 /* SheetButtonPrimaryTouch.png */,
+				3738A58C16EA677100316ED8 /* SheetButtonPrimaryTouch@2x.png */,
+				3738A58F16EA679800316ED8 /* SheetButtonDestroyTouch.png */,
+				3738A59016EA679800316ED8 /* SheetButtonDestroyTouch@2x.png */,
 				3780BB4E16E9267F006F5435 /* top-left-star.png */,
 				3780BB4F16E9267F006F5435 /* top-left-star@2x.png */,
 				37C2BEFD1673A00A00EC66FF /* Icon-dev.png */,
@@ -1240,6 +1307,24 @@
 				3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */,
 				3780BB5016E9267F006F5435 /* top-left-star.png in Resources */,
 				3780BB5116E9267F006F5435 /* top-left-star@2x.png in Resources */,
+				3738A57516EA669500316ED8 /* SheetButtonGeneric.png in Resources */,
+				3738A57616EA669500316ED8 /* SheetButtonGeneric@2x.png in Resources */,
+				3738A57916EA66DC00316ED8 /* SheetButtonGenericTouch.png in Resources */,
+				3738A57A16EA66DC00316ED8 /* SheetButtonGenericTouch@2x.png in Resources */,
+				3738A57F16EA671800316ED8 /* SheetButtonDestroy.png in Resources */,
+				3738A58016EA671800316ED8 /* SheetButtonPrimary.png in Resources */,
+				3738A58116EA671800316ED8 /* SheetButtonDestroy@2x.png in Resources */,
+				3738A58216EA671800316ED8 /* SheetButtonPrimary@2x.png in Resources */,
+				3738A58516EA673F00316ED8 /* SheetButtonDismiss.png in Resources */,
+				3738A58616EA673F00316ED8 /* SheetButtonDismiss@2x.png in Resources */,
+				3738A58916EA675E00316ED8 /* SheetButtonDismissTouch.png in Resources */,
+				3738A58A16EA675E00316ED8 /* SheetButtonDismissTouch@2x.png in Resources */,
+				3738A58D16EA677100316ED8 /* SheetButtonPrimaryTouch.png in Resources */,
+				3738A58E16EA677100316ED8 /* SheetButtonPrimaryTouch@2x.png in Resources */,
+				3738A59116EA679800316ED8 /* SheetButtonDestroyTouch.png in Resources */,
+				3738A59216EA679800316ED8 /* SheetButtonDestroyTouch@2x.png in Resources */,
+				3738A59516EA683200316ED8 /* SheetBackground.png in Resources */,
+				3738A59616EA683200316ED8 /* SheetBackground@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1336,6 +1421,7 @@
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
+				3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
