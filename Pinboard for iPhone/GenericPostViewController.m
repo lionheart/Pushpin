@@ -73,10 +73,6 @@
     NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
     NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
     NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
-    
-    if (indexPath.row == 3) {
-        DLog(@"1 %f", height);
-    }
 
     height += ceilf([title sizeWithFont:titleFont constrainedToSize:CGSizeMake(320.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     
@@ -103,15 +99,10 @@
 
     NSAttributedString *string;
 
-    if (tableView.isEditing) {
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-    }
-    else {
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-
     string = [self attributedStringForPostAtIndexPath:indexPath];
 
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
     for (id subview in [cell.contentView subviews]) {
@@ -127,12 +118,21 @@
         }
     }
     
+    CGFloat height = [self.tableView.delegate tableView:self.tableView heightForRowAtIndexPath:indexPath];
+
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, 320.f, [self.tableView.delegate tableView:self.tableView heightForRowAtIndexPath:indexPath]);
+    gradient.frame = CGRectMake(0, 0, 320.f, height);
     gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
     gradient.name = @"Gradient";
-    [cell.contentView.layer insertSublayer:gradient atIndex:0];
-    
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
+    cell.backgroundView = backgroundView;
+    [cell.backgroundView.layer addSublayer:gradient];
+
+    CAGradientLayer *selectedGradient = [CAGradientLayer layer];
+    selectedGradient.frame = CGRectMake(0, 0, 320.f, height);
+    selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
+    [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
+
     BOOL isPrivate = [self.postDataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
@@ -150,6 +150,10 @@
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 #pragma mark - Table view delegate
