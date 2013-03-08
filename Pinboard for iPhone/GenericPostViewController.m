@@ -157,8 +157,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Yo" cancelButtonTitle:@"Yo" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Yo" cancelButtonTitle:@"Yo" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Instapaper", nil];
     [actionSheet showFrom:self.view];
+    self.tableView.scrollEnabled = NO;
 }
 
 #pragma mark - Table view delegate
