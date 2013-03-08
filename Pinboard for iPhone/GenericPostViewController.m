@@ -158,6 +158,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Yo" cancelButtonTitle:@"Yo" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Instapaper", nil];
+    actionSheet.delegate = self;
     [actionSheet showFrom:self.view];
     self.tableView.scrollEnabled = NO;
 }
@@ -209,6 +210,12 @@
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     return attributedString;
+}
+
+#pragma mark - RDActionSheet
+
+- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.tableView.scrollEnabled = YES;
 }
 
 @end

@@ -295,13 +295,13 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     [button.titleLabel setFont:[UIFont fontWithName:@"Avenir-Bold" size:16]];
     [button setTitleColor:HEX(0xffffffff) forState:UIControlStateNormal];
     
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
     
-    button.titleLabel.layer.shadowColor = [UIColor whiteColor].CGColor;
+    button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     button.titleLabel.layer.shadowRadius = 0.0;
     button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);
     button.titleLabel.layer.shadowOpacity = 0.5;
@@ -310,13 +310,12 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 - (UIButton *)buildCancelButtonWithTitle:(NSString *)title {
-    
     UIButton *button = [self buildButtonWithTitle:title];
     
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonDismiss.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonDismissTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
     
     button.titleLabel.layer.shadowOpacity = 0.3;
@@ -329,10 +328,10 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     UIButton *button = [self buildButtonWithTitle:title];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonPrimary.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonPrimaryTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
+    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
     
     button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
