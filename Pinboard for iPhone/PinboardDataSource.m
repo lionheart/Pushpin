@@ -73,7 +73,7 @@
 
     BOOL needsUpdate = indexPath.row >= limit / 2;
     if (needsUpdate) {
-        self.queryParameters[@"limit"] = @(limit * 2);
+        self.queryParameters[@"limit"] = @(limit + 50);
     }
     callback(needsUpdate);
 }
