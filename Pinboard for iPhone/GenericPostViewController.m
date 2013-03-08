@@ -9,6 +9,7 @@
 #import "GenericPostViewController.h"
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
+#import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface GenericPostViewController ()
@@ -131,6 +132,8 @@
     CAGradientLayer *selectedGradient = [CAGradientLayer layer];
     selectedGradient.frame = CGRectMake(0, 0, 320.f, height);
     selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
+    cell.selectedBackgroundView = selectedBackgroundView;
     [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
 
     BOOL isPrivate = [self.postDataSource isPostAtIndexPrivate:indexPath.row];
@@ -154,6 +157,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Yo" cancelButtonTitle:@"Yo" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    [actionSheet showFrom:self.view];
 }
 
 #pragma mark - Table view delegate
