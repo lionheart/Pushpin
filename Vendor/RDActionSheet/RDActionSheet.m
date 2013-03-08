@@ -143,37 +143,61 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 - (void)setupBackground {
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetBackground.png"] stretchableImageWithLeftCapWidth:0.5 topCapHeight:0];
-    
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.frame.size.width, self.frame.size.height), YES, 0);
     CGContextRef con = UIGraphicsGetCurrentContext();
     
-    // Fill the context
-    UIColor *fillColor = [UIColor colorWithRed:18/255.0 green:18/255.0 blue:18/255.0 alpha:1];
-    CGContextSetFillColorWithColor(con, fillColor.CGColor);
-    CGContextFillRect(con, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+    // http://stackoverflow.com/questions/1303855/how-to-draw-a-gradient-line-fading-in-out-with-core-graphics-iphone
+    CGColorSpaceRef myColorspace=CGColorSpaceCreateDeviceRGB();
+    size_t num_locations = 2;
+    CGFloat locations[2] = { 1.0, 0.0 };
+    CGFloat components[8] =	{ 0.129, 0.141, 0.173, 1.0, 0.29, 0.31, 0.361, 1.0 };
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
+    CGPoint startPoint, endPoint;
+    startPoint.x = 0.0;
+    startPoint.y = 0.0;
+    endPoint.x = 0.0;
+    endPoint.y = self.frame.size.height;
     
-    // Draw gradient
-    [backgroundImage drawInRect:CGRectMake(0, 0, self.frame.size.width, backgroundImage.size.height)];
+    CGContextSaveGState(con);
+    CGContextAddRect(con, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+    CGContextClip(con);
+    CGContextDrawLinearGradient(con, gradient, startPoint, endPoint, 0);
+    // CGContextRestoreGState(con);
     
+    // Draw top line
+    CGContextBeginPath(con);
+    CGContextSetStrokeColorWithColor(con, HEX(0x13151Bff).CGColor);
+    CGContextSetLineWidth(con, 1);
+    CGContextMoveToPoint(con, 0, 0);
+    CGContextAddLineToPoint(con, self.frame.size.width, 0);
+    CGContextStrokePath(con);
+    
+    // Draw inset line
+    CGContextBeginPath(con);
+    CGContextSetStrokeColorWithColor(con, HEX(0x788098ff).CGColor);
+    CGContextSetLineWidth(con, 1);
+    CGContextMoveToPoint(con, 0, 1);
+    CGContextAddLineToPoint(con, self.frame.size.width, 1);
+    CGContextStrokePath(con);
+
     // Draw Line
     CGFloat lineYAxis = self.frame.size.height - (kButtonPadding * 2 + kButtonHeight);
-    
+
     CGContextBeginPath(con);
-    CGContextSetStrokeColorWithColor(con, [UIColor blackColor].CGColor);
+    CGContextSetStrokeColorWithColor(con, HEX(0x13151Bff).CGColor);
     CGContextSetLineWidth(con, 1);
     CGContextMoveToPoint(con, 0, lineYAxis);
     CGContextAddLineToPoint(con, self.frame.size.width, lineYAxis);
     CGContextStrokePath(con);
     
+    // Draw inset line
     CGContextBeginPath(con);
-    UIColor *strokeColor = [UIColor colorWithRed:42/255.0 green:45/255.0 blue:48/255.0 alpha:1];
-    CGContextSetStrokeColorWithColor(con, strokeColor.CGColor);
+    CGContextSetStrokeColorWithColor(con, HEX(0x5C6478ff).CGColor);
     CGContextSetLineWidth(con, 1);
     CGContextMoveToPoint(con, 0, lineYAxis + 1);
     CGContextAddLineToPoint(con, self.frame.size.width, lineYAxis + 1);
     CGContextStrokePath(con);
-    
+
     UIImage *finishedBackground = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -244,8 +268,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - Button builders
 
 - (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
-    
-    CGSize newSize = [title sizeWithFont:[UIFont systemFontOfSize:13.0]
+    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:@"Avenir-Heavy" size:13.0]
                             constrainedToSize:CGSizeMake(300.0, NSIntegerMax)
                                 lineBreakMode:NSLineBreakByWordWrapping];
     
@@ -263,16 +286,14 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 - (UIButton *)buildButtonWithTitle:(NSString *)title {
-    
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button addTarget:self action:@selector(buttonWasPressed:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:title forState:UIControlStateNormal];
     button.accessibilityLabel = title;
     button.opaque = YES;
     
-    [button.titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16]];
-    UIColor *titleColor = [UIColor colorWithRed:18/255.0 green:22/255.0 blue:26/255.0 alpha:1];
-    [button setTitleColor:titleColor forState:UIControlStateNormal];
+    [button.titleLabel setFont:[UIFont fontWithName:@"Avenir-Bold" size:16]];
+    [button setTitleColor:HEX(0xffffffff) forState:UIControlStateNormal];
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
