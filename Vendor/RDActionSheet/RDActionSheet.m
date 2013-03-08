@@ -68,7 +68,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     if (self) {
         self.delegate = aDelegate;
     }
-    
+
     return self;
 }
 
