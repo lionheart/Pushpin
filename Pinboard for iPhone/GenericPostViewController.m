@@ -157,7 +157,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Yo" cancelButtonTitle:@"Yo" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Instapaper", nil];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Set read later service to:" cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Instapaper", @"Readability", @"Pocket", @"None", nil];
     actionSheet.delegate = self;
     [actionSheet showFrom:self.view];
     self.tableView.scrollEnabled = NO;
