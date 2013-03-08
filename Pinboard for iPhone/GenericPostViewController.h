@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
+#import "RDActionSheet.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -46,7 +47,7 @@ enum PostSources {
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate>
+@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate>
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic) BOOL processingPosts;
