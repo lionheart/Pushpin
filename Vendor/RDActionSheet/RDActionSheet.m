@@ -78,7 +78,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         // Build normal buttons
         for (NSString *title in otherButtonTitleArray) {
             UIButton *button = [self buildButtonWithTitle:title];
-            [self.buttons addObject:button];
+            [self.buttons insertObject:button atIndex:0];
         }
         
         // Build cancel button
@@ -129,6 +129,19 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
 	if ([title length]) {
 		_titleLabel = [self buildTitleLabelWithTitle:title];
+	}
+    
+    return self;
+}
+
+- (id)initWithTitle:(NSString *)title delegate:(NSObject <RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitleArray:(NSArray *)otherButtonTitles {
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitleArray:otherButtonTitles];
+    
+	if ([title length]) {
+		_titleLabel = [self buildTitleLabelWithTitle:title];
+	}
+	if (aDelegate) {
+		self.delegate = aDelegate;
 	}
     
     return self;
