@@ -52,7 +52,7 @@
     self.timerPaused = NO;
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
-    
+
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 
@@ -302,7 +302,7 @@
         [self showConfirmDeletionAlert];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        // [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark update:@(YES) callback:nil];
+        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.selectedPost update:@(YES) callback:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
         [self markPostAsRead];
