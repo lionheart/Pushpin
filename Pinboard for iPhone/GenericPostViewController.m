@@ -12,6 +12,10 @@
 #import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
+#import "OAuthConsumer.h"
+#import "KeychainItemWrapper.h"
+#import "PocketAPI.h"
+#import "ASPinboard/ASPinboard.h"
 
 @interface GenericPostViewController ()
 
@@ -25,17 +29,43 @@
 @synthesize longPressGestureRecognizer;
 @synthesize selectedIndexPath;
 @synthesize actionSheetVisible;
+@synthesize confirmDeletionAlertView;
+@synthesize timerPaused;
+
+- (void)checkForPostUpdates {
+    if (!timerPaused) {
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        if (delegate.bookmarksUpdated.boolValue) {
+            [self update];
+            delegate.bookmarksUpdated = @NO;
+        }
+    }
+}
 
 - (void)viewDidLoad {
-    self.processingPosts = NO;
-    self.actionSheetVisible = NO;
-    
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.timerPaused = NO;
+    self.processingPosts = NO;
+    self.actionSheetVisible = NO;
+    
+    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
+
     [self update];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    self.timerPaused = YES;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
@@ -49,11 +79,13 @@
 }
 
 - (void)update {
+    self.timerPaused = YES;
     self.processingPosts = YES;
     [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.processingPosts = NO;
+                self.timerPaused = NO;
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -262,8 +294,203 @@
 #pragma mark - RDActionSheet
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
     self.tableView.scrollEnabled = YES;
     self.actionSheetVisible = NO;
+    
+    if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
+        [self showConfirmDeletionAlert];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
+        // [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.bookmark update:@(YES) callback:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
+        [self markPostAsRead];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+        [self sendToReadLater];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+        [self sendToReadLater];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+        [self sendToReadLater];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+        [self copyURL];
+    }
+}
+
+#pragma mark - Post Action Methods
+
+- (void)markPostAsRead {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    if (![[delegate connectionAvailable] boolValue]) {
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertBody = @"Connection unavailable.";
+        notification.userInfo = @{@"success": @NO, @"updated": @YES};
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    }
+    else {
+        [self.postDataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            if (error == nil) {
+                notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                notification.userInfo = @{@"success": @YES, @"updated": @YES};
+            }
+            else {
+                notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                if (error.code == PinboardErrorBookmarkNotFound) {
+                    notification.alertBody = @"Error marking as read.";
+                }
+                else {
+                    notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
+                }
+            }
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        }];
+    }
+}
+
+- (void)copyURL {
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
+    notification.userInfo = @{@"success": @YES, @"updated": @NO};
+    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    
+    [[UIPasteboard generalPasteboard] setString:self.selectedPost[@"url"]];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
+}
+
+- (void)sendToReadLater {
+    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
+    NSString *urlString = self.selectedPost[@"url"];
+    if (readLater.integerValue == READLATER_INSTAPAPER) {
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        NSMutableArray *parameters = [[NSMutableArray alloc] init];
+        [parameters addObject:[OARequestParameter requestParameter:@"url" value:urlString]];
+        [parameters addObject:[OARequestParameter requestParameter:@"description" value:@"Sent from Pushpin"]];
+        [request setParameters:parameters];
+        [request prepare];
+        
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertAction = @"Open Pushpin";
+                                   if (httpResponse.statusCode == 200) {
+                                       notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                   }
+                                   else if (httpResponse.statusCode == 1221) {
+                                       notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                   }
+                                   else {
+                                       notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
+                                   }
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                               }];
+    }
+    else if (readLater.integerValue == READLATER_READABILITY) {
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
+        NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+        NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
+        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
+        OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+        [request setHTTPMethod:@"POST"];
+        [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
+        [request prepare];
+        
+        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                   notification.alertAction = @"Open Pushpin";
+                                   
+                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                   if (httpResponse.statusCode == 202) {
+                                       notification.alertBody = @"Sent to Readability.";
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                   }
+                                   else if (httpResponse.statusCode == 409) {
+                                       notification.alertBody = @"Link already sent to Readability.";
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                   }
+                                   else {
+                                       notification.alertBody = @"Error sending to Readability.";
+                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       
+                                       if (httpResponse.statusCode == 403) {
+                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
+                                       }
+                                   }
+                                   [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                               }];
+    }
+    else if (readLater.integerValue == READLATER_POCKET) {
+        [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:urlString]
+                             withTitle:self.selectedPost[@"title"]
+                               handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+                                   if (!error) {
+                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                       notification.alertBody = @"Sent to Pocket.";
+                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                       
+                                       [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                   }
+                               }];
+    }
+}
+
+- (void)showConfirmDeletionAlert {
+    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Delete Bookmark Warning", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    [self.confirmDeletionAlertView show];
+}
+
+
+#pragma mark - Alert View Delegate
+
+- (void)alertView:(WCAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == self.confirmDeletionAlertView) {
+        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
+            self.timerPaused = YES;
+            [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
+                        self.timerPaused = NO;
+                    });
+                });
+            }];
+        }
+    }
 }
 
 @end
