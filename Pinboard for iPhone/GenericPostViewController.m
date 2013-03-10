@@ -20,13 +20,29 @@
 
 @synthesize postDataSource;
 @synthesize processingPosts;
+@synthesize selectedPost;
+@synthesize longPressGestureRecognizer;
+@synthesize selectedIndexPath;
 
 - (void)viewDidLoad {
     self.processingPosts = NO;
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [self update];
+}
+
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if ([recognizer isEqual:longPressGestureRecognizer] && recognizer.state == UIGestureRecognizerStateBegan) {
+        CGPoint pressPoint;
+        pressPoint = [recognizer locationInView:self.tableView];
+        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+        self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+        [self openActionSheetForSelectedPost];
+    }
 }
 
 - (void)update {
@@ -143,7 +159,7 @@
         [cell.contentView addSubview:lockImageView];
     }
     
-    BOOL isStarred = YES;
+    BOOL isStarred = [self.postDataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
         starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
@@ -155,10 +171,13 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)openActionSheetForSelectedPost {
     [[UIActionSheet appearance] setBackgroundColor:[UIColor blackColor]];
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Set read later to:" delegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[@"Instapaper", @"Readability", @"Pocket", @"None"]];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedPost[@"url"] delegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    [actionSheet addButtonWithTitle:@"Delete Bookmark"];
+    [actionSheet addButtonWithTitle:@"Edit Bookmark"];
+    [actionSheet addButtonWithTitle:@"Mark as read"];
+    [actionSheet addButtonWithTitle:@"Copy URL"];
     [actionSheet showFrom:self.view];
     self.tableView.scrollEnabled = NO;
 }
