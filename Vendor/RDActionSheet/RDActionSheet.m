@@ -76,14 +76,12 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
     self = [self init];
     if (self) {
-        
         // Build normal buttons
         va_list argumentList;
         va_start(argumentList, otherButtonTitles);
         
         NSString *argString = otherButtonTitles;
         while (argString != nil) {
-            
             UIButton *button = [self buildButtonWithTitle:argString];
             [self.buttons addObject:button];
             
