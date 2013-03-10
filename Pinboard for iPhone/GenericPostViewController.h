@@ -51,12 +51,13 @@ enum PostSources {
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic) BOOL processingPosts;
+@property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 
 - (void)update;
-- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
+- (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
 

@@ -11,6 +11,7 @@
 #import "NSAttributedString+Attributes.h"
 #import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AppDelegate.h"
 
 @interface GenericPostViewController ()
 
@@ -23,11 +24,13 @@
 @synthesize selectedPost;
 @synthesize longPressGestureRecognizer;
 @synthesize selectedIndexPath;
+@synthesize actionSheetVisible;
 
 - (void)viewDidLoad {
     self.processingPosts = NO;
+    self.actionSheetVisible = NO;
     
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
@@ -35,8 +38,8 @@
     [self update];
 }
 
-- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if ([recognizer isEqual:longPressGestureRecognizer] && recognizer.state == UIGestureRecognizerStateBegan) {
+- (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint pressPoint;
         pressPoint = [recognizer locationInView:self.tableView];
         self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
@@ -172,14 +175,39 @@
 }
 
 - (void)openActionSheetForSelectedPost {
-    [[UIActionSheet appearance] setBackgroundColor:[UIColor blackColor]];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedPost[@"url"] delegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    [actionSheet addButtonWithTitle:@"Delete Bookmark"];
-    [actionSheet addButtonWithTitle:@"Edit Bookmark"];
-    [actionSheet addButtonWithTitle:@"Mark as read"];
-    [actionSheet addButtonWithTitle:@"Copy URL"];
-    [actionSheet showFrom:self.view];
-    self.tableView.scrollEnabled = NO;
+    if (!self.actionSheetVisible) {
+        NSString *urlString;
+        if ([self.selectedPost[@"url"] length] > 67) {
+            urlString = [NSString stringWithFormat:@"%@...", [self.selectedPost[@"url"] substringToIndex:67]];
+        }
+        else {
+            urlString = self.selectedPost[@"url"];
+        }
+        RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+        [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+        
+        if ([self.selectedPost[@"unread"] boolValue]) {
+            [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+        }
+
+        [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+
+        NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
+        if (readlater.integerValue == READLATER_INSTAPAPER) {
+            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+        }
+        else if (readlater.integerValue == READLATER_READABILITY) {
+            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+        }
+        else if (readlater.integerValue == READLATER_POCKET) {
+            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+        }
+        
+        [sheet showFrom:self.view];
+        self.tableView.scrollEnabled = NO;
+        self.actionSheetVisible = YES;
+    }
 }
 
 #pragma mark - Table view delegate
@@ -235,6 +263,7 @@
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     self.tableView.scrollEnabled = YES;
+    self.actionSheetVisible = NO;
 }
 
 @end
