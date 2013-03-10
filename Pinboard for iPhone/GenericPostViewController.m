@@ -156,9 +156,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [[UIActionSheet appearance] setBackgroundColor:[UIColor blackColor]];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Set read later service to:" cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@[@"Instapaper", @"Readability", @"Pocket", @"None"]];
-    actionSheet.delegate = self;
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Set read later to:" delegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[@"Instapaper", @"Readability", @"Pocket", @"None"]];
     [actionSheet showFrom:self.view];
     self.tableView.scrollEnabled = NO;
 }
