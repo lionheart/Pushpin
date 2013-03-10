@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 #import "RDActionSheet.h"
+#import "WCAlertView.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -24,6 +25,8 @@ enum PostSources {
 
 - (NSInteger)numberOfPosts;
 - (void)updatePosts:(void (^)(NSArray *, NSArray *, NSArray *))callback;
+- (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
+- (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
 
 - (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
@@ -47,7 +50,7 @@ enum PostSources {
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate>
+@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic) BOOL processingPosts;
@@ -55,7 +58,16 @@ enum PostSources {
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
+@property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
+@property (nonatomic) BOOL timerPaused;
+@property (nonatomic, retain) NSTimer *updateTimer;
 
+- (void)checkForPostUpdates;
+- (void)showConfirmDeletionAlert;
+- (void)markPostAsRead;
+- (void)deletePosts:(NSArray *)posts;
+- (void)copyURL;
+- (void)sendToReadLater;
 - (void)update;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;

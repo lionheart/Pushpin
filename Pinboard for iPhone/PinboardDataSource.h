@@ -11,7 +11,7 @@
 
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
-@property (nonatomic, retain) NSArray *posts;
+@property (nonatomic, retain) NSMutableArray *posts;
 @property (nonatomic, retain) NSArray *heights;
 @property (nonatomic, retain) NSArray *strings;
 @property (nonatomic, retain) NSArray *urls;

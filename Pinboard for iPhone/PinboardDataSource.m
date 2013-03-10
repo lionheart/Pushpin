@@ -10,6 +10,7 @@
 #import "FMDatabase.h"
 #import "AppDelegate.h"
 #import "NSAttributedString+Attributes.h"
+#import "ASPinboard/ASPinboard.h"
 
 @implementation PinboardDataSource
 
@@ -210,6 +211,97 @@
 
 - (NSDictionary *)postAtIndex:(NSInteger)index {
     return self.posts[index];
+}
+
+- (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+    [pinboard bookmarkWithURL:url
+                      success:^(NSDictionary *bookmark) {
+                          if ([bookmark[@"toread"] isEqualToString:@"no"]) {
+                              // Bookmark has already been marked as read on server.
+                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                              [db open];
+                              [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                              [db close];
+
+                              callback(nil);
+                              return;
+                          }
+                          
+                          NSMutableDictionary *newBookmark = [NSMutableDictionary dictionaryWithDictionary:bookmark];
+                          newBookmark[@"toread"] = @"no";
+                          newBookmark[@"url"] = newBookmark[@"href"];
+                          [newBookmark removeObjectsForKeys:@[@"href", @"hash", @"meta", @"time"]];
+                          [pinboard addBookmark:newBookmark
+                                        success:^{
+                                            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                            [db open];
+                                            [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                            [db close];
+                                            callback(nil);
+                                        }
+                                        failure:^(NSError *error) {
+                                            callback(error);
+                                        }];
+                      }
+                      failure:^(NSError *error) {
+                          if (error.code == PinboardErrorBookmarkNotFound) {
+                              callback(error);
+                          }
+                      }];
+}
+
+- (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback {
+    void (^SuccessBlock)();
+    void (^ErrorBlock)(NSError *);
+    
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+    for (NSDictionary *post in posts) {
+        SuccessBlock = ^{
+            dispatch_group_async(group, queue, ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+                
+                FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
+                [results next];
+                NSNumber *bookmarkId = @([results intForColumnIndex:0]);
+                
+                [db beginTransaction];
+                [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
+                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
+                [db commit];
+                [db close];
+                
+                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+                
+                NSUInteger index = [self.posts indexOfObject:post];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [self.posts removeObjectAtIndex:index];
+
+                callback(indexPath);
+            });
+        };
+        
+        ErrorBlock = ^(NSError *error) {
+        };
+        
+        [pinboard deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
+    }
+    
+    dispatch_group_notify(group, queue, ^{
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        if ([posts count] == 1) {
+            notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
+        }
+        else {
+            notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", [posts count]];
+        }
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    });
 }
 
 + (NSArray *)linksForPost:(NSDictionary *)post {
