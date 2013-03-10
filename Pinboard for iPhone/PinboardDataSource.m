@@ -208,6 +208,10 @@
     return [self.posts[index][@"private"] boolValue];
 }
 
+- (NSDictionary *)postAtIndex:(NSInteger)index {
+    return self.posts[index];
+}
+
 + (NSArray *)linksForPost:(NSDictionary *)post {
     NSMutableArray *links = [NSMutableArray array];
     int location = [post[@"title"] length] + 1;
