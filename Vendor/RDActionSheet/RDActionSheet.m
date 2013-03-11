@@ -200,7 +200,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     CGContextAddRect(con, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
     CGContextClip(con);
     CGContextDrawLinearGradient(con, gradient, startPoint, endPoint, 0);
-    // CGContextRestoreGState(con);
+    CGContextRestoreGState(con);
     
     // Draw top line
     CGContextBeginPath(con);

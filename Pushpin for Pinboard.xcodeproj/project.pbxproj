@@ -125,6 +125,7 @@
 		37B65FE41672E0090041DA8C /* Icon-settings-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */; };
 		37B65FE51672E0090041DA8C /* Icon-settings-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */; };
 		37B65FE61672E0090041DA8C /* iTunesArtwork-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */; };
+		37BA82FB16EE42850082FC4B /* PPAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BA82FA16EE42850082FC4B /* PPAlertView.m */; };
 		37C2BF011673A00A00EC66FF /* iTunesArtwork-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */; };
 		37C2BF021673A00A00EC66FF /* iTunesArtwork-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */; };
 		37C2BF031673A00A00EC66FF /* Icon-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFD1673A00A00EC66FF /* Icon-dev.png */; };
@@ -168,6 +169,7 @@
 		37D2351616B8DBD4007541DC /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351216B8DBD4007541DC /* cog@2x.png */; };
 		37D2351816B8DBE0007541DC /* icon_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351716B8DBE0007541DC /* icon_bookmark.png */; };
 		37D2351B16B8DDC0007541DC /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */; };
+		37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1016EE7A73005C9C24 /* TTAlertView.m */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF31158AF3FC00ED71B1 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1F158AF3FC00ED71B1 /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -415,6 +417,8 @@
 		37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta.png"; path = "Assets/Icon-settings-beta.png"; sourceTree = "<group>"; };
 		37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta@2x.png"; path = "Assets/Icon-settings-beta@2x.png"; sourceTree = "<group>"; };
 		37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta.png"; path = "Assets/iTunesArtwork-beta.png"; sourceTree = "<group>"; };
+		37BA82F916EE42850082FC4B /* PPAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAlertView.h; sourceTree = "<group>"; };
+		37BA82FA16EE42850082FC4B /* PPAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPAlertView.m; sourceTree = "<group>"; };
 		37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev.png"; path = "Assets/iTunesArtwork-dev.png"; sourceTree = "<group>"; };
 		37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev@2x.png"; path = "Assets/iTunesArtwork-dev@2x.png"; sourceTree = "<group>"; };
 		37C2BEFD1673A00A00EC66FF /* Icon-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-dev.png"; path = "Assets/Icon-dev.png"; sourceTree = "<group>"; };
@@ -460,6 +464,8 @@
 		37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TTTAttributedLabel.m; path = Vendor/TTTAttributedLabel.m; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
+		37D59A0F16EE7A73005C9C24 /* TTAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlertView.h; sourceTree = "<group>"; };
+		37D59A1016EE7A73005C9C24 /* TTAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlertView.m; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		37DCCF1C158AF3FC00ED71B1 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -580,6 +586,7 @@
 				37DCCF19158AF3FC00ED71B1 /* AFNetworking */,
 				37DCCF39158AF40900ED71B1 /* NSAttributedString+Attributes.h */,
 				37DCCF3A158AF40900ED71B1 /* NSAttributedString+Attributes.m */,
+				37D59A0E16EE7A73005C9C24 /* TTAlertView */,
 				37F5CA211679915700327AAC /* UserVoice */,
 				37D2351916B8DDC0007541DC /* TTTAttributedLabel.h */,
 				37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */,
@@ -877,6 +884,16 @@
 			path = Vendor/TestFlightSDK1.2;
 			sourceTree = "<group>";
 		};
+		37D59A0E16EE7A73005C9C24 /* TTAlertView */ = {
+			isa = PBXGroup;
+			children = (
+				37D59A0F16EE7A73005C9C24 /* TTAlertView.h */,
+				37D59A1016EE7A73005C9C24 /* TTAlertView.m */,
+			);
+			name = TTAlertView;
+			path = Vendor/TTAlertView;
+			sourceTree = "<group>";
+		};
 		37DCCF19158AF3FC00ED71B1 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1057,6 +1074,8 @@
 				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
 				3733251D16E155A2002E2AB0 /* GenericPostViewController.h */,
 				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
+				37BA82F916EE42850082FC4B /* PPAlertView.h */,
+				37BA82FA16EE42850082FC4B /* PPAlertView.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
@@ -1437,6 +1456,8 @@
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
 				3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */,
 				37EC2DF716ED252E00BE96AA /* WCAlertView.m in Sources */,
+				37BA82FB16EE42850082FC4B /* PPAlertView.m in Sources */,
+				37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
