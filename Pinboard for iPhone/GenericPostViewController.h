@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 #import "RDActionSheet.h"
-#import "WCAlertView.h"
+#import "TTAlertView.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -58,7 +58,7 @@ enum PostSources {
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
+@property (nonatomic, retain) TTAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL timerPaused;
 @property (nonatomic, retain) NSTimer *updateTimer;
 

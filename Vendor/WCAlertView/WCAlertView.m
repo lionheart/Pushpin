@@ -296,12 +296,13 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
                 }
                 
             }
-            
+
             //Find and get styles of UILabels
             if ([subview isMemberOfClass:[UILabel class]]) {
-                UILabel *label = (UILabel*)subview;	
-                label.textColor = self.labelTextColor;
-                label.shadowColor = self.labelShadowColor;
+                UILabel *label = (UILabel*)subview;
+                label.font = [UIFont fontWithName:@"Avenir-Heavy" size:18];
+                label.textColor = [UIColor whiteColor];
+                label.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
                 label.shadowOffset = self.labelShadowOffset;
             }
             
@@ -315,233 +316,224 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     
 }
 
-- (void)drawRect:(CGRect)rect 
-{
+- (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
+    /*
+     *  Current graphics context
+     */
     
-    if (self.style) {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    /*
+     *  Create base shape with rounded corners from bounds
+     */
+    
+    CGRect activeBounds = self.bounds;
+    CGFloat cornerRadius = self.cornerRadius;
+    CGFloat inset = 5.5f;
+    CGFloat originX = activeBounds.origin.x + inset;
+    CGFloat originY = activeBounds.origin.y + inset;
+    CGFloat width = activeBounds.size.width - (inset*2.0f);
+    CGFloat height = activeBounds.size.height - ((inset+2.0)*2.0f);
+    
+    CGFloat buttonOffset = self.bounds.size.height - 50.5f;
+    
+    CGRect bPathFrame = CGRectMake(originX, originY, width, height);
+    CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:bPathFrame cornerRadius:cornerRadius].CGPath;
+    
+    /*
+     *  Create base shape with fill and shadow
+     */
+    
+    CGContextAddPath(context, path);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0f].CGColor);
+    CGContextSetShadowWithColor(context, self.outerFrameShadowOffset, self.outerFrameShadowBlur, self.outerFrameShadowColor.CGColor);
+    CGContextDrawPath(context, kCGPathFill);
+    
+    /*
+     *  Clip state
+     */
+    
+    CGContextSaveGState(context); //Save Context State Before Clipping To "path"
+    CGContextAddPath(context, path);
+    CGContextClip(context);
+    
+    //////////////DRAW GRADIENT
+    /*
+     *  Draw grafient from gradientLocations
+     */
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    size_t count = [self.gradientLocations count];
+    
+    CGFloat *locations = malloc(count * sizeof(CGFloat));
+    [self.gradientLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        locations[idx] = [((NSNumber *)obj) floatValue];
+    }];
+    
+    CGFloat *components = malloc([self.gradientColors count] * 4 * sizeof(CGFloat));
+    
+    [self.gradientColors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        UIColor *color = (UIColor *)obj;
         
-        /*
-         *  Current graphics context
-         */
+        NSInteger startIndex = (idx * 4);
         
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        
-        /*
-         *  Create base shape with rounded corners from bounds
-         */
-        
-        CGRect activeBounds = self.bounds;
-        CGFloat cornerRadius = self.cornerRadius;
-        CGFloat inset = 5.5f;
-        CGFloat originX = activeBounds.origin.x + inset;
-        CGFloat originY = activeBounds.origin.y + inset;
-        CGFloat width = activeBounds.size.width - (inset*2.0f);
-        CGFloat height = activeBounds.size.height - ((inset+2.0)*2.0f);
-        
-        CGFloat buttonOffset = self.bounds.size.height - 50.5f;
-        
-        CGRect bPathFrame = CGRectMake(originX, originY, width, height);
-        CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:bPathFrame cornerRadius:cornerRadius].CGPath;
-        
-        /*
-         *  Create base shape with fill and shadow
-         */
-        
-        CGContextAddPath(context, path);
-        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0f].CGColor);
-        CGContextSetShadowWithColor(context, self.outerFrameShadowOffset, self.outerFrameShadowBlur, self.outerFrameShadowColor.CGColor);
-        CGContextDrawPath(context, kCGPathFill);
-        
-        /*
-         *  Clip state
-         */
-        
-        CGContextSaveGState(context); //Save Context State Before Clipping To "path"
-        CGContextAddPath(context, path);
-        CGContextClip(context);
-        
-        //////////////DRAW GRADIENT
-        /*
-         *  Draw grafient from gradientLocations
-         */
-        
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        size_t count = [self.gradientLocations count];
-        
-        CGFloat *locations = malloc(count * sizeof(CGFloat));
-        [self.gradientLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            locations[idx] = [((NSNumber *)obj) floatValue];
-        }];
-        
-        CGFloat *components = malloc([self.gradientColors count] * 4 * sizeof(CGFloat));
-        
-        [self.gradientColors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIColor *color = (UIColor *)obj;
+        if ([color respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+            [color getRed:&components[startIndex]
+                    green:&components[startIndex+1]
+                     blue:&components[startIndex+2]
+                    alpha:&components[startIndex+3]];
+        } else {
+            const CGFloat *colorComponent = CGColorGetComponents(color.CGColor);
             
-            NSInteger startIndex = (idx * 4);
+            components[startIndex]   = colorComponent[0];
+            components[startIndex+1] = colorComponent[1];
+            components[startIndex+2] = colorComponent[2];
+            components[startIndex+3] = colorComponent[3];
+        }
+    }];
+    
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, locations, count);
+    
+    CGPoint startPoint = CGPointMake(activeBounds.size.width * 0.5f, 0.0f);
+    CGPoint endPoint = CGPointMake(activeBounds.size.width * 0.5f, activeBounds.size.height);
+    
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+    CGColorSpaceRelease(colorSpace);
+    CGGradientRelease(gradient);
+    free(locations);
+    free(components);
+    
+    /*
+     *  Hatched background
+     */
+    
+    if (self.hatchedLinesColor || self.hatchedBackgroundColor) {
+        CGContextSaveGState(context); //Save Context State Before Clipping "hatchPath"
+        CGRect hatchFrame = CGRectMake(0.0f, buttonOffset-15, activeBounds.size.width, (activeBounds.size.height - buttonOffset+1.0f)+15);
+        CGContextClipToRect(context, hatchFrame);
+        
+        if (self.hatchedBackgroundColor) {
+            CGFloat red,green,blue,alpha;
             
-            if ([color respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
-                [color getRed:&components[startIndex]
-                        green:&components[startIndex+1]
-                         blue:&components[startIndex+2]
-                        alpha:&components[startIndex+3]];
+            if ([self.hatchedBackgroundColor respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+                [self.hatchedBackgroundColor getRed:&red green:&green blue:&blue alpha:&alpha];
             } else {
-                const CGFloat *colorComponent = CGColorGetComponents(color.CGColor);
+                const CGFloat *colorComponent = CGColorGetComponents(self.hatchedBackgroundColor.CGColor);
                 
-                components[startIndex]   = colorComponent[0];
-                components[startIndex+1] = colorComponent[1];
-                components[startIndex+2] = colorComponent[2];
-                components[startIndex+3] = colorComponent[3];
+                red = colorComponent[0];
+                green = colorComponent[1];
+                blue = colorComponent[2];
+                alpha = colorComponent[3];
             }
-        }];
-        
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, locations, count);
-        
-        CGPoint startPoint = CGPointMake(activeBounds.size.width * 0.5f, 0.0f);
-        CGPoint endPoint = CGPointMake(activeBounds.size.width * 0.5f, activeBounds.size.height);
-        
-        CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-        CGColorSpaceRelease(colorSpace);
-        CGGradientRelease(gradient);
-        free(locations);
-        free(components);
-        
-        /*
-         *  Hatched background
-         */
-        
-        if (self.hatchedLinesColor || self.hatchedBackgroundColor) {
-            CGContextSaveGState(context); //Save Context State Before Clipping "hatchPath"
-            CGRect hatchFrame = CGRectMake(0.0f, buttonOffset-15, activeBounds.size.width, (activeBounds.size.height - buttonOffset+1.0f)+15);
-            CGContextClipToRect(context, hatchFrame);
-            
-            if (self.hatchedBackgroundColor) {
-                CGFloat red,green,blue,alpha;
-                
-                if ([self.hatchedBackgroundColor respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
-                    [self.hatchedBackgroundColor getRed:&red green:&green blue:&blue alpha:&alpha];
-                } else {
-                    const CGFloat *colorComponent = CGColorGetComponents(self.hatchedBackgroundColor.CGColor);
-                    
-                    red = colorComponent[0];
-                    green = colorComponent[1];
-                    blue = colorComponent[2];
-                    alpha = colorComponent[3];
-                }
 
-                CGContextSetRGBFillColor(context, red,green, blue, alpha);
-                CGContextFillRect(context, hatchFrame);
-            }
-            
-            if (self.hatchedLinesColor) {
-                CGFloat spacer = 4.0f;
-                int rows = (activeBounds.size.width + activeBounds.size.height/spacer);
-                CGFloat padding = 0.0f;
-                CGMutablePathRef hatchPath = CGPathCreateMutable();
-                for(int i=1; i<=rows; i++) {
-                    CGPathMoveToPoint(hatchPath, NULL, spacer * i, padding);
-                    CGPathAddLineToPoint(hatchPath, NULL, padding, spacer * i);
-                }
-                CGContextAddPath(context, hatchPath);
-                CGPathRelease(hatchPath);
-                CGContextSetLineWidth(context, 1.0f);
-                CGContextSetLineCap(context, kCGLineCapButt);
-                CGContextSetStrokeColorWithColor(context, self.hatchedLinesColor.CGColor);
-                CGContextDrawPath(context, kCGPathStroke);
-            }
-            
-            CGContextRestoreGState(context); //Restore Last Context State Before Clipping "hatchPath"
+            CGContextSetRGBFillColor(context, red,green, blue, alpha);
+            CGContextFillRect(context, hatchFrame);
         }
         
-        /*
-         * Draw vertical line
-         */
-        
-        if (self.verticalLineColor) {
-            CGMutablePathRef linePath = CGPathCreateMutable();
-            CGFloat linePathY = (buttonOffset - 1.0f) - 15;
-            CGPathMoveToPoint(linePath, NULL, 0.0f, linePathY);
-            CGPathAddLineToPoint(linePath, NULL, activeBounds.size.width, linePathY);
-            CGContextAddPath(context, linePath);
-            CGPathRelease(linePath);
+        if (self.hatchedLinesColor) {
+            CGFloat spacer = 4.0f;
+            int rows = (activeBounds.size.width + activeBounds.size.height/spacer);
+            CGFloat padding = 0.0f;
+            CGMutablePathRef hatchPath = CGPathCreateMutable();
+            for(int i=1; i<=rows; i++) {
+                CGPathMoveToPoint(hatchPath, NULL, spacer * i, padding);
+                CGPathAddLineToPoint(hatchPath, NULL, padding, spacer * i);
+            }
+            CGContextAddPath(context, hatchPath);
+            CGPathRelease(hatchPath);
             CGContextSetLineWidth(context, 1.0f);
-            CGContextSaveGState(context); //Save Context State Before Drawing "linePath" Shadow
-            CGContextSetStrokeColorWithColor(context, self.verticalLineColor.CGColor);
-            CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 1.0f), 0.0f, [UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:0.2f].CGColor);
-            CGContextDrawPath(context, kCGPathStroke);
-            CGContextRestoreGState(context); //Restore Context State After Drawing "linePath" Shadow
-        }
-        
-        /*
-         *  Stroke color for inner path
-         */
-        
-        if (self.innerFrameShadowColor || self.innerFrameStrokeColor) {
-            CGContextAddPath(context, path);
-            CGContextSetLineWidth(context, 3.0f);
-            
-            if (self.innerFrameStrokeColor) {
-               CGContextSetStrokeColorWithColor(context, self.innerFrameStrokeColor.CGColor); 
-            }
-            if (self.innerFrameShadowColor) {
-                CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 6.0f, self.innerFrameShadowColor.CGColor);
-            }
-            
+            CGContextSetLineCap(context, kCGLineCapButt);
+            CGContextSetStrokeColorWithColor(context, self.hatchedLinesColor.CGColor);
             CGContextDrawPath(context, kCGPathStroke);
         }
         
-        /*
-         * Stroke path to cover up pixialation on corners from clipping
-         */
-        
-        CGContextRestoreGState(context); //Restore First Context State Before Clipping "path"
-        CGContextAddPath(context, path);
-        CGContextSetLineWidth(context, self.outerFrameLineWidth);
-        CGContextSetStrokeColorWithColor(context, self.outerFrameColor.CGColor);
-        CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 0.0f, [UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.1f].CGColor);
+        CGContextRestoreGState(context); //Restore Last Context State Before Clipping "hatchPath"
+    }
+    
+    /*
+     * Draw vertical line
+     */
+    
+    if (self.verticalLineColor) {
+        CGMutablePathRef linePath = CGPathCreateMutable();
+        CGFloat linePathY = (buttonOffset - 1.0f) - 15;
+        CGPathMoveToPoint(linePath, NULL, 0.0f, linePathY);
+        CGPathAddLineToPoint(linePath, NULL, activeBounds.size.width, linePathY);
+        CGContextAddPath(context, linePath);
+        CGPathRelease(linePath);
+        CGContextSetLineWidth(context, 1.0f);
+        CGContextSaveGState(context); //Save Context State Before Drawing "linePath" Shadow
+        CGContextSetStrokeColorWithColor(context, self.verticalLineColor.CGColor);
+        CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 1.0f), 0.0f, [UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:0.2f].CGColor);
         CGContextDrawPath(context, kCGPathStroke);
+        CGContextRestoreGState(context); //Restore Context State After Drawing "linePath" Shadow
+    }
+    
+    /*
+     *  Stroke color for inner path
+     */
+    
+    if (self.innerFrameShadowColor || self.innerFrameStrokeColor) {
+        CGContextAddPath(context, path);
+        CGContextSetLineWidth(context, 3.0f);
         
-        /*
-         *  Drawing button labels
-         */
+        if (self.innerFrameStrokeColor) {
+           CGContextSetStrokeColorWithColor(context, self.innerFrameStrokeColor.CGColor); 
+        }
+        if (self.innerFrameShadowColor) {
+            CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 6.0f, self.innerFrameShadowColor.CGColor);
+        }
         
-        for (UIView *subview in self.subviews){
+        CGContextDrawPath(context, kCGPathStroke);
+    }
+    
+    /*
+     * Stroke path to cover up pixialation on corners from clipping
+     */
+    
+    CGContextRestoreGState(context); //Restore First Context State Before Clipping "path"
+    CGContextAddPath(context, path);
+    CGContextSetLineWidth(context, self.outerFrameLineWidth);
+    CGContextSetStrokeColorWithColor(context, self.outerFrameColor.CGColor);
+    CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 0.0f, [UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.1f].CGColor);
+    CGContextDrawPath(context, kCGPathStroke);
+    
+    /*
+     *  Drawing button labels
+     */
+    
+    for (UIView *subview in self.subviews){
+        
+        if ([subview isKindOfClass:[UIButton class]])
+        {
+            UIButton *button = (UIButton *)subview;
             
-            if ([subview isKindOfClass:[UIButton class]])
-            {
-                UIButton *button = (UIButton *)subview;
-                
-                CGContextSetTextDrawingMode(context, kCGTextFill);
-                CGContextSetFillColorWithColor(context, self.buttonTextColor.CGColor);
-                CGContextSetShadowWithColor(context, self.buttonShadowOffset, self.buttonShadowBlur, self.buttonShadowColor.CGColor);
-                
-                UIFont *buttonFont = button.titleLabel.font;
+            CGContextSetTextDrawingMode(context, kCGTextFill);
+            CGContextSetFillColorWithColor(context, self.buttonTextColor.CGColor);
+            CGContextSetShadowWithColor(context, self.buttonShadowOffset, self.buttonShadowBlur, self.buttonShadowColor.CGColor);
+            
+            UIFont *buttonFont = [UIFont fontWithName:@"Avenir-Heavy" size:15];
 
-                if (self.buttonFont)
-                    buttonFont = self.buttonFont;
-
-                // Calculate the font size to make sure large text is rendered correctly
-                CGFloat neededFontSize;
-                [button.titleLabel.text sizeWithFont:buttonFont minFontSize:8.0 actualFontSize:&neededFontSize forWidth:button.frame.size.width-6 lineBreakMode:NSLineBreakByWordWrapping];
-                if (neededFontSize < buttonFont.pointSize){
-                    buttonFont = [UIFont fontWithName:buttonFont.fontName size:neededFontSize];
-                }
+            // Calculate the font size to make sure large text is rendered correctly
+            CGFloat neededFontSize;
+            [button.titleLabel.text sizeWithFont:buttonFont minFontSize:8.0 actualFontSize:&neededFontSize forWidth:button.frame.size.width-6 lineBreakMode:NSLineBreakByWordWrapping];
+            if (neededFontSize < buttonFont.pointSize){
+                buttonFont = [UIFont fontWithName:@"Avenir-Heavy" size:neededFontSize];
+            }
 
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0
-                
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+            
+            [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
 #else
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:UITextAlignmentCenter];
-                
+            [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:UITextAlignmentCenter];
+            
 #endif
-                
-            }
             
         }
+        
     }
-
 }
 
 @end
