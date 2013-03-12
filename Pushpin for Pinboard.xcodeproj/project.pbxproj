@@ -170,6 +170,8 @@
 		37D2351816B8DBE0007541DC /* icon_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351716B8DBE0007541DC /* icon_bookmark.png */; };
 		37D2351B16B8DDC0007541DC /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */; };
 		37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1016EE7A73005C9C24 /* TTAlertView.m */; };
+		37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1316EEDC91005C9C24 /* PPButton.m */; };
+		37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF31158AF3FC00ED71B1 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1F158AF3FC00ED71B1 /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -466,6 +468,10 @@
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
 		37D59A0F16EE7A73005C9C24 /* TTAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlertView.h; sourceTree = "<group>"; };
 		37D59A1016EE7A73005C9C24 /* TTAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlertView.m; sourceTree = "<group>"; };
+		37D59A1216EEDC91005C9C24 /* PPButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPButton.h; sourceTree = "<group>"; };
+		37D59A1316EEDC91005C9C24 /* PPButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPButton.m; sourceTree = "<group>"; };
+		37D59A1A16EEE2EB005C9C24 /* PPCoreGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPCoreGraphics.h; sourceTree = "<group>"; };
+		37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPCoreGraphics.m; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		37DCCF1C158AF3FC00ED71B1 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -1076,11 +1082,15 @@
 				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
 				37BA82F916EE42850082FC4B /* PPAlertView.h */,
 				37BA82FA16EE42850082FC4B /* PPAlertView.m */,
+				37D59A1216EEDC91005C9C24 /* PPButton.h */,
+				37D59A1316EEDC91005C9C24 /* PPButton.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
 				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
+				37D59A1A16EEE2EB005C9C24 /* PPCoreGraphics.h */,
+				37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -1458,6 +1468,8 @@
 				37EC2DF716ED252E00BE96AA /* WCAlertView.m in Sources */,
 				37BA82FB16EE42850082FC4B /* PPAlertView.m in Sources */,
 				37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */,
+				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
+				37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
