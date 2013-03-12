@@ -194,29 +194,6 @@
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextDrawImage(context, CGRectMake(0, 0, backButtonBackground.size.width, 44), backButtonBackground.CGImage);
 
-    /*
-    CGContextSaveGState(context);
-    CGContextBeginTransparencyLayer(context, 0);
-    CGContextSetLineWidth(context, 0.5);
-    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
-
-    CGContextMoveToPoint(context, backButtonBackground.size.width - 2, 0);
-    CGContextAddLineToPoint(context, backButtonBackground.size.width - 2, backButtonBackground.size.height);
-    CGContextStrokePath(context);
-    
-    CGContextMoveToPoint(context, backButtonBackground.size.width - 0.5, 0);
-    CGContextAddLineToPoint(context, backButtonBackground.size.width - 0.5, backButtonBackground.size.height);
-    CGContextStrokePath(context);
-
-    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
-    startPoint = CGPointMake(backButtonBackground.size.width - 2, 0);
-    endPoint = CGPointMake(backButtonBackground.size.width - 2, backButtonBackground.size.height);
-    CGContextDrawLinearGradient(context, lineGradient, startPoint, endPoint, 0);
-    
-    CGContextEndTransparencyLayer(context);
-    CGContextRestoreGState(context);
-     */
-
     CGContextSetLineWidth(context, 1);
     CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
     CGContextMoveToPoint(context, backButtonBackground.size.width - 1.5, 0);
