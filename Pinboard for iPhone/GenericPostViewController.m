@@ -16,6 +16,7 @@
 #import "KeychainItemWrapper.h"
 #import "PocketAPI.h"
 #import "ASPinboard/ASPinboard.h"
+#import "PPCoreGraphics.h"
 
 @interface GenericPostViewController ()
 
@@ -57,8 +58,6 @@
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 
     [self update];
-    
-    [self showConfirmDeletionAlert];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -477,7 +476,7 @@
 
 #pragma mark - Alert View Delegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(TTAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView == self.confirmDeletionAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {

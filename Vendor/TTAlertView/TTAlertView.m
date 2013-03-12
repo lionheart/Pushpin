@@ -7,7 +7,9 @@
 //
 
 #import "TTAlertView.h"
+#import "PPButton.h"
 #import <QuartzCore/QuartzCore.h>
+#import "PPCoreGraphics.h"
 
 static CGFloat const kTTDefaultDialogLeftInset = 20.0f;
 static CGFloat const kTTDefaultDialogRightInset = 20.0f;
@@ -46,15 +48,6 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
 - (void)layoutInWindow:(UIWindow *)window;
 
 @end
-
-void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) {
-    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
-    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);
-    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + radius, radius);
-    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height, radius);
-    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y + rect.size.height - radius, radius);
-    CGContextClosePath(context);
-}
 
 @implementation TTAlertView
 
@@ -206,12 +199,12 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     return [self.buttons count];
 }
 
-- (NSString *)buttonTitleAtIndex:(NSInteger)index
-{
+- (NSString *)buttonTitleAtIndex:(NSInteger)index {
     if (index == self.cancelButtonIndex) {
         return self.cancelButtonTitle;
-    } else if(index >= self.firstOtherButtonIndex) {
-        return [self.otherButtonTitles objectAtIndex:index];
+    }
+    else if (index >= self.firstOtherButtonIndex) {
+        return [self.otherButtonTitles objectAtIndex:index - self.firstOtherButtonIndex];
     } else {
         return nil;
     }
@@ -231,8 +224,8 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
 
 - (void)setButtonBackgroundImage:(UIImage *)image forState:(UIControlState)state atIndex:(NSUInteger)index
 {
-    [(UIButton *)[self.buttons objectAtIndex:index] setBackgroundImage:image forState:state];
-    [(UIButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
+    [(PPButton *)[self.buttons objectAtIndex:index] setBackgroundImage:image forState:state];
+    [(PPButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
     
     if ([self.buttonSizeStrings objectForKey:[NSNumber numberWithInteger:index]]) {
         [self.buttonSizeStrings removeObjectForKey:[NSNumber numberWithInteger:index]];
@@ -248,8 +241,8 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     self.usingCustomButtonSizes = YES;
     [self.buttonSizeStrings setObject:NSStringFromCGSize(size) forKey:[NSNumber numberWithInteger:index]];
     
-    [(UIButton *)[self.buttons objectAtIndex:index] setBackgroundImage:image forState:state];
-    [(UIButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
+    [(PPButton *)[self.buttons objectAtIndex:index] setBackgroundImage:image forState:state];
+    [(PPButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
     
     if(self.isVisible) {
         [self setNeedsLayout];
@@ -261,8 +254,8 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     self.usingCustomButtonSizes = YES;
     [self.buttonSizeStrings setObject:NSStringFromCGSize(size) forKey:[NSNumber numberWithInteger:index]];
     
-    [(UIButton *)[self.buttons objectAtIndex:index] setImage:image forState:state];
-    [(UIButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
+    [(PPButton *)[self.buttons objectAtIndex:index] setImage:image forState:state];
+    [(PPButton *)[self.buttons objectAtIndex:index] setBackgroundColor:[UIColor clearColor]];
     
     if(self.isVisible) {
         [self setNeedsLayout];
@@ -273,8 +266,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
 
 - (void)addButtonWithTitle:(NSString *)title
 {
-    UIButton *otherButton = [[UIButton alloc] init];
-    [otherButton setBackgroundColor:[UIColor blackColor]];
+    PPButton *otherButton = [[PPButton alloc] init];
     [otherButton addTarget:self action:@selector(otherButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [otherButton setTitle:title forState:UIControlStateNormal];
     [self.containerView addSubview:otherButton];
@@ -301,8 +293,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     
     self.buttons = [NSMutableArray array];
     
-    UIButton *cancelButton = [[UIButton alloc] init];
-    [cancelButton setBackgroundColor:[UIColor blackColor]];
+    PPButton *cancelButton = [[PPButton alloc] init];
     [cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
     [self.containerView addSubview:cancelButton];
@@ -402,7 +393,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     // single button layout case (center horizontaly inside of totalButtonWidth)
     if ([self.buttons count] == 1) {
         
-        UIButton *button = [self.buttons objectAtIndex:0];
+        PPButton *button = [self.buttons objectAtIndex:0];
         CGSize buttonSize = CGSizeMake(totalButtonWidth, totalButtonHeight);
         if ([self.buttonSizeStrings objectForKey:[NSNumber numberWithInteger:0]]) {
             buttonSize = CGSizeFromString([self.buttonSizeStrings objectForKey:[NSNumber numberWithInteger:0]]);
@@ -430,7 +421,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
         
         lastX = self.buttonInsets.left;
         [self.buttons enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIButton *button = (UIButton *)obj;
+            PPButton *button = (PPButton *)obj;
             
             CGSize buttonSize = CGSizeMake( standardButtonWidth, totalButtonHeight );
             if ([self.buttonSizeStrings objectForKey:[NSNumber numberWithInteger:idx]]) {
@@ -451,7 +442,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
         
         lastY = self.contentInsets.top + self.titleLabel.frame.size.height + self.contentTitleMessageSpacer + self.messageScrollView.frame.size.height + self.contentInsets.bottom + self.buttonInsets.top + totalButtonHeight;
         [self.buttons enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIButton *button = (UIButton *)obj;
+            PPButton *button = (PPButton *)obj;
             
             CGSize buttonSize = CGSizeMake(totalButtonWidth, kTTDefaultDialogButtonHeight);
             if ([self.buttonSizeStrings objectForKey:[NSNumber numberWithInteger:idx]]) {
@@ -560,10 +551,12 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     _containerView = dialogContainerView;
     
     UILabel *titleLabel = [[UILabel alloc] init];
-    [titleLabel setBackgroundColor:[UIColor clearColor]];
-    [titleLabel setTextColor:[UIColor whiteColor]];
-    [titleLabel setTextAlignment:NSTextAlignmentCenter];
-    [titleLabel setText:self.title];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.text = self.title;
+    titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:18.f];
+
     [self.containerView addSubview:titleLabel];
     _titleLabel = titleLabel;
     
@@ -572,17 +565,17 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     _messageScrollView = messageScrollView;
     
     UILabel *messageLabel = [[UILabel alloc] init];
-    [messageLabel setBackgroundColor:[UIColor clearColor]];
-    [messageLabel setTextColor:[UIColor whiteColor]];
-    [messageLabel setTextAlignment:NSTextAlignmentCenter];
-    [messageLabel setText:self.message];
-    [messageLabel setNumberOfLines:0];
-    [messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+    messageLabel.backgroundColor = [UIColor clearColor];
+    messageLabel.textColor = [UIColor whiteColor];
+    messageLabel.textAlignment = NSTextAlignmentCenter;
+    messageLabel.text = self.message;
+    messageLabel.numberOfLines = 0;
+    messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    messageLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16.f];
     [self.messageScrollView addSubview:messageLabel];
     _messageLabel = messageLabel;
     
     [self setupButtons];
-
 }
 
 #pragma mark - Button action methods

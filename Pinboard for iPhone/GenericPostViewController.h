@@ -50,7 +50,7 @@ enum PostSources {
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
+@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, TTAlertViewDelegate>
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic) BOOL processingPosts;
