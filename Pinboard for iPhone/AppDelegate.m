@@ -187,6 +187,7 @@
     
     // Customize UIBarButtonItem
     UIImage *backButtonBackground = [UIImage imageNamed:@"navigation-back-button"];
+    UIImage *selectedBackButtonImage = [UIImage imageNamed:@"navigation-back-button-selected"];
     
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(backButtonBackground.size.width, 44), NO, 0);
     context = UIGraphicsGetCurrentContext();
@@ -202,9 +203,25 @@
 
     UIImage *newBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, backButtonBackground.size.width, 0, 0) resizingMode:UIImageResizingModeStretch];
     UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(selectedBackButtonImage.size.width, selectedBackButtonImage.size.height), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+
+    CGContextTranslateCTM(context, 0.0, selectedBackButtonImage.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextDrawImage(context, CGRectMake(0, 0, selectedBackButtonImage.size.width, selectedBackButtonImage.size.height), selectedBackButtonImage.CGImage);
+    
+    CGContextSetLineWidth(context, 1);
+    CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
+    CGContextMoveToPoint(context, selectedBackButtonImage.size.width - 1.5, 0);
+    CGContextAddLineToPoint(context, selectedBackButtonImage.size.width - 1.5, selectedBackButtonImage.size.height);
+    CGContextStrokePath(context);
+    UIImage *selectedBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, selectedBackButtonImage.size.width, 0, 0)];
+
+    UIGraphicsEndImageContext();
 
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:newBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-//    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-INFINITY, -INFINITY) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackground forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100, -100) forBarMetrics:UIBarMetricsDefault];
 }
 
@@ -258,6 +275,7 @@
         pinboardViewController.title = @"Bookmarks";
         
         HomeViewController *homeViewController = [[HomeViewController alloc] init];
+        homeViewController.title = @"Browse";
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
         navigationController.viewControllers = @[homeViewController, pinboardViewController];
         [navigationController popToViewController:pinboardViewController animated:NO];

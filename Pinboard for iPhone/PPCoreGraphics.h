@@ -12,4 +12,6 @@
 
 void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius);
 
++ (UIImage *)pillImage:(NSString *)text;
+
 @end

@@ -174,6 +174,13 @@
 		37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */; };
 		37D59A1F16EFA19B005C9C24 /* navigation-back-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */; };
 		37D59A2016EFA19B005C9C24 /* navigation-back-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A1E16EFA19B005C9C24 /* navigation-back-button@2x.png */; };
+		37D59A2316EFDA76005C9C24 /* navigation-back-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2116EFDA76005C9C24 /* navigation-back-button-selected.png */; };
+		37D59A2416EFDA76005C9C24 /* navigation-back-button-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2216EFDA76005C9C24 /* navigation-back-button-selected@2x.png */; };
+		37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */; };
+		37D59A2A16EFDEAE005C9C24 /* accessory-caret.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2816EFDEAE005C9C24 /* accessory-caret.png */; };
+		37D59A2B16EFDEAE005C9C24 /* accessory-caret@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2916EFDEAE005C9C24 /* accessory-caret@2x.png */; };
+		37D59A2E16EFE096005C9C24 /* count-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2C16EFE096005C9C24 /* count-background.png */; };
+		37D59A2F16EFE096005C9C24 /* count-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2D16EFE096005C9C24 /* count-background@2x.png */; };
 		37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1D158AF3FC00ED71B1 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF31158AF3FC00ED71B1 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF1F158AF3FC00ED71B1 /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -476,6 +483,14 @@
 		37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPCoreGraphics.m; sourceTree = "<group>"; };
 		37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button.png"; path = "Assets/navigation-back-button.png"; sourceTree = "<group>"; };
 		37D59A1E16EFA19B005C9C24 /* navigation-back-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button@2x.png"; path = "Assets/navigation-back-button@2x.png"; sourceTree = "<group>"; };
+		37D59A2116EFDA76005C9C24 /* navigation-back-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected.png"; path = "Assets/navigation-back-button-selected.png"; sourceTree = "<group>"; };
+		37D59A2216EFDA76005C9C24 /* navigation-back-button-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected@2x.png"; path = "Assets/navigation-back-button-selected@2x.png"; sourceTree = "<group>"; };
+		37D59A2516EFDE08005C9C24 /* PPBrowseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowseCell.h; sourceTree = "<group>"; };
+		37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowseCell.m; sourceTree = "<group>"; };
+		37D59A2816EFDEAE005C9C24 /* accessory-caret.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accessory-caret.png"; path = "Assets/accessory-caret.png"; sourceTree = "<group>"; };
+		37D59A2916EFDEAE005C9C24 /* accessory-caret@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accessory-caret@2x.png"; path = "Assets/accessory-caret@2x.png"; sourceTree = "<group>"; };
+		37D59A2C16EFE096005C9C24 /* count-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "count-background.png"; path = "Assets/count-background.png"; sourceTree = "<group>"; };
+		37D59A2D16EFE096005C9C24 /* count-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "count-background@2x.png"; path = "Assets/count-background@2x.png"; sourceTree = "<group>"; };
 		37DCCF1A158AF3FC00ED71B1 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		37DCCF1B158AF3FC00ED71B1 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		37DCCF1C158AF3FC00ED71B1 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -1089,6 +1104,8 @@
 				37D59A1216EEDC91005C9C24 /* PPButton.h */,
 				37D59A1316EEDC91005C9C24 /* PPButton.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
+				37D59A2516EFDE08005C9C24 /* PPBrowseCell.h */,
+				37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
@@ -1125,6 +1142,12 @@
 				37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */,
 				37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */,
 				37D59A1E16EFA19B005C9C24 /* navigation-back-button@2x.png */,
+				37D59A2116EFDA76005C9C24 /* navigation-back-button-selected.png */,
+				37D59A2216EFDA76005C9C24 /* navigation-back-button-selected@2x.png */,
+				37D59A2C16EFE096005C9C24 /* count-background.png */,
+				37D59A2D16EFE096005C9C24 /* count-background@2x.png */,
+				37D59A2816EFDEAE005C9C24 /* accessory-caret.png */,
+				37D59A2916EFDEAE005C9C24 /* accessory-caret@2x.png */,
 				3738A59316EA683200316ED8 /* SheetBackground.png */,
 				3738A59416EA683200316ED8 /* SheetBackground@2x.png */,
 				3738A57316EA669500316ED8 /* SheetButtonGeneric.png */,
@@ -1376,6 +1399,12 @@
 				3738A59616EA683200316ED8 /* SheetBackground@2x.png in Resources */,
 				37D59A1F16EFA19B005C9C24 /* navigation-back-button.png in Resources */,
 				37D59A2016EFA19B005C9C24 /* navigation-back-button@2x.png in Resources */,
+				37D59A2316EFDA76005C9C24 /* navigation-back-button-selected.png in Resources */,
+				37D59A2416EFDA76005C9C24 /* navigation-back-button-selected@2x.png in Resources */,
+				37D59A2A16EFDEAE005C9C24 /* accessory-caret.png in Resources */,
+				37D59A2B16EFDEAE005C9C24 /* accessory-caret@2x.png in Resources */,
+				37D59A2E16EFE096005C9C24 /* count-background.png in Resources */,
+				37D59A2F16EFE096005C9C24 /* count-background@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1478,6 +1507,7 @@
 				37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */,
 				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
 				37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */,
+				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
