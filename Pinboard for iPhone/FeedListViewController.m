@@ -11,6 +11,8 @@
 #import "BookmarkViewController.h"
 #import "BookmarkFeedViewController.h"
 #import "AppDelegate.h"
+#import "PPBrowseCell.h"
+#import "PPCoreGraphics.h"
 
 @interface FeedListViewController ()
 
@@ -106,6 +108,9 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
+    
+    cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
+    UIImage *pillImage;
 
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -120,35 +125,35 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
+                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 1:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
+                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 2:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(NO)]];
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
+                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 3:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
+                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 4:
                     results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags = ''"];
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                    cell.detailTextLabel.text = [results stringForColumnIndex:0];
+                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
@@ -180,6 +185,10 @@
             break;
         }
     }
+    
+    UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
+    pillView.frame = CGRectMake(cell.contentView.frame.size.width - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    [cell.contentView addSubview:pillView];
 
     return cell;
 }

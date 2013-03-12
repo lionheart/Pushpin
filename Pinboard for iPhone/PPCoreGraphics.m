@@ -19,4 +19,31 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
 
 @implementation PPCoreGraphics
 
++ (UIImage *)pillImage:(NSString *)text {
+    UIImage *countBackground = [[UIImage imageNamed:@"count-background"] resizableImageWithCapInsets:UIEdgeInsetsMake(14, 15, 14, 15)];
+    UIFont *font = [UIFont fontWithName:@"Avenir-Black" size:14];
+    CGSize textSize = [text sizeWithFont:font];
+    CGSize size = textSize;
+    size.height = 27;
+    size.width = size.width + 20;
+
+    UIImageView *countBackgroundView = [[UIImageView alloc] initWithImage:countBackground];
+    countBackgroundView.frame = CGRectMake(0, 0, size.width, size.height);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextSaveGState(context);
+    [countBackgroundView drawRect:CGRectMake(0, 0, size.width, size.height)];
+    CGContextRestoreGState(context);
+
+    CGContextSetRGBFillColor(context, 1, 1, 1, 1);
+    CGContextSetShadowWithColor(context, CGSizeMake(1, 1), 1, HEX(0x00000044).CGColor);
+
+    [text drawInRect:CGRectInset(CGRectMake(0, 2, size.width, size.height), (size.width - textSize.width) / 2, (size.height - textSize.height) / 2) withFont:font];
+
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 @end
