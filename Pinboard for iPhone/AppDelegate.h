@@ -87,7 +87,7 @@ enum bookmarkupdateevents {
 - (void)resumeRefreshTimer;
 - (void)executeTimer;
 - (void)openSettings;
-
+- (void)customizeUIElements;
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 
 @end

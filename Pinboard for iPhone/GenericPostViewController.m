@@ -48,6 +48,12 @@
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.navigationItem.leftBarButtonItem.title = @"";
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.timerPaused = NO;
