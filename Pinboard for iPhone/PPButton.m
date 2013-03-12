@@ -14,6 +14,7 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.titleLabel.font = [UIFont fontWithName:@"Avenir" size:17.f];
         self.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
     }
