@@ -47,6 +47,15 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
 
 @end
 
+void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) {
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
+    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);
+    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + radius, radius);
+    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height, radius);
+    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y + rect.size.height - radius, radius);
+    CGContextClosePath(context);
+}
+
 @implementation TTAlertView
 
 - (id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
@@ -462,15 +471,34 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
     CGFloat dialogHeight = self.contentInsets.top + self.titleLabel.frame.size.height + self.contentTitleMessageSpacer + self.messageScrollView.frame.size.height + self.contentInsets.bottom + self.buttonInsets.top + totalButtonHeight + self.buttonInsets.bottom;
     CGRect containerFrame = (CGRect){ { self.containerLeftInset, MAX(self.containerMinVerticalInset, self.frame.size.height/2 - dialogHeight/2) }, { self.bounds.size.width - self.containerLeftInset - self.containerRightInset, dialogHeight } };
     [self.containerView setFrame:containerFrame];
+    self.containerView.opaque = NO;
     self.containerView.layer.shadowColor = [UIColor blackColor].CGColor;
     self.containerView.layer.shadowRadius = 10.f;
     self.containerView.layer.shadowOffset = CGSizeMake(0.0, 1.0);
     self.containerView.layer.shadowOpacity = 0.5;
 
-    UIGraphicsBeginImageContextWithOptions(containerFrame.size, YES, 0);
+    UIGraphicsBeginImageContextWithOptions(containerFrame.size, NO, 0);
     CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGRect outerBorderRect = CGRectMake(0, 0, containerFrame.size.width, containerFrame.size.height);
+    CGRect innerBorderRect = CGRectInset(outerBorderRect, 1, 1);
+    CGRect rect = CGRectInset(innerBorderRect, 1, 1);
     
-    CGColorSpaceRef myColorspace=CGColorSpaceCreateDeviceRGB();
+    CGContextSetLineWidth(context, 2.f);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.2);
+    CGContextAddRoundedRect(context, outerBorderRect, 8.f);
+    CGContextStrokePath(context);
+
+    CGContextSetLineWidth(context, 1.f);
+    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+    CGContextAddRoundedRect(context, innerBorderRect, 6.f);
+    CGContextStrokePath(context);
+
+    CGContextAddRoundedRect(context, rect, 4.f);
+    CGContextClip(context);
+    
+    CGColorSpaceRef myColorspace = CGColorSpaceCreateDeviceRGB();
+
     size_t num_locations = 3;
     CGFloat locations[3] = { 0.0, 0.5, 1.0 };
     CGFloat components[12] =	{
@@ -484,36 +512,56 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
     startPoint.y = 0.0;
     endPoint.x = 0.0;
     endPoint.y = containerFrame.size.height;
-
-    CGContextSaveGState(context);
-    CGContextAddRect(context, CGRectMake(0, 0, containerFrame.size.width, containerFrame.size.height));
-    CGContextClip(context);
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    CGContextRestoreGState(context);
     
     UIImage *finishedBackground = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     UIImageView *background = [[UIImageView alloc] initWithImage:finishedBackground];
+    background.opaque = NO;
+    background.backgroundColor = [UIColor clearColor];
+    background.layer.backgroundColor = [UIColor clearColor].CGColor;
     background.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.containerView insertSubview:background atIndex:0];
 }
 
-- (void)setupView {   
-    UIImageView *backgroundView = [[UIImageView alloc] init];
-    [backgroundView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.3]];
+- (void)setupView {
+    CGRect frame = CGRectMake(0, 0, 320, 480);
+    UIGraphicsBeginImageContextWithOptions(frame.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    size_t numGradientComponents = 4;
+    CGFloat gradientLocations[4] = { 0.0, 0.4, 0.6, 1.0 };
+    CGFloat gradientComponents[16] = {
+        0, 0, 0, 0.5,
+        0, 0, 0, 0.3,
+        0, 0, 0, 0.3,
+        0, 0, 0, 0.5
+    };
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, gradientComponents, gradientLocations, numGradientComponents);
+    CGPoint startPoint = CGPointMake(0, 0);
+    CGPoint endPoint = CGPointMake(320, 0);
+    CGContextSaveGState(context);
+    CGContextAddRect(context, frame);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+
+    UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+    backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self addSubview:backgroundView];
     _backgroundView = backgroundView;
     
     UIImageView *dialogContainerView = [[UIImageView alloc] init];
-    [dialogContainerView setBackgroundColor:[UIColor whiteColor]];
     [dialogContainerView setUserInteractionEnabled:YES];
     [self addSubview:dialogContainerView];
     _containerView = dialogContainerView;
     
     UILabel *titleLabel = [[UILabel alloc] init];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
-    [titleLabel setTextColor:[UIColor blackColor]];
+    [titleLabel setTextColor:[UIColor whiteColor]];
     [titleLabel setTextAlignment:NSTextAlignmentCenter];
     [titleLabel setText:self.title];
     [self.containerView addSubview:titleLabel];
@@ -525,7 +573,7 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
     
     UILabel *messageLabel = [[UILabel alloc] init];
     [messageLabel setBackgroundColor:[UIColor clearColor]];
-    [messageLabel setTextColor:[UIColor blackColor]];
+    [messageLabel setTextColor:[UIColor whiteColor]];
     [messageLabel setTextAlignment:NSTextAlignmentCenter];
     [messageLabel setText:self.message];
     [messageLabel setNumberOfLines:0];

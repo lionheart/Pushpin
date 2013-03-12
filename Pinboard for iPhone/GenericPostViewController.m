@@ -57,6 +57,8 @@
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 
     [self update];
+    
+    [self showConfirmDeletionAlert];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
