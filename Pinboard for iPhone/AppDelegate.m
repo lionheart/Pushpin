@@ -141,9 +141,101 @@
     [self.navigationViewController pushViewController:settingsViewController animated:YES];
 }
 
+- (void)customizeUIElements {
+    // Customize UINavigationBar
+    CGRect rect = CGRectMake(0, 0, 320, 44);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGColorSpaceRef myColorspace = CGColorSpaceCreateDeviceRGB();
+    
+    size_t num_locations = 2;
+    CGFloat locations[2] = { 0.0, 1.0 };
+    CGFloat components[8] =	{
+        0.996, 0.996, 0.996, 1.0,
+        0.804, 0.827, 0.875, 1.0
+    };
+    CGFloat lineColorComponents[8] = {
+        0.996, 0.996, 0.996, 1,
+        0.882, 0.898, 0.925, 1
+    };
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
+    CGGradientRef lineGradient = CGGradientCreateWithColorComponents(myColorspace, lineColorComponents, locations, num_locations);
+    CGPoint startPoint = CGPointMake(0, 0);
+    CGPoint endPoint = CGPointMake(0, 44);
+    
+    CGFloat radius = 4;
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
+    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);
+    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + radius, radius);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+    UIImage *background = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
+    [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{
+                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:20],
+                                UITextAttributeTextColor: HEX(0x4C586Aff),
+                          UITextAttributeTextShadowColor: [UIColor whiteColor] }];
+
+    // Customize Status Bar
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    
+    // Customize UIBarButtonItem
+    UIImage *backButtonBackground = [UIImage imageNamed:@"navigation-back-button"];
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(backButtonBackground.size.width, 44), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(context, 0.0, backButtonBackground.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextDrawImage(context, CGRectMake(0, 0, backButtonBackground.size.width, 44), backButtonBackground.CGImage);
+
+    /*
+    CGContextSaveGState(context);
+    CGContextBeginTransparencyLayer(context, 0);
+    CGContextSetLineWidth(context, 0.5);
+    CGContextSetRGBStrokeColor(context, 1, 0, 0, 1);
+
+    CGContextMoveToPoint(context, backButtonBackground.size.width - 2, 0);
+    CGContextAddLineToPoint(context, backButtonBackground.size.width - 2, backButtonBackground.size.height);
+    CGContextStrokePath(context);
+    
+    CGContextMoveToPoint(context, backButtonBackground.size.width - 0.5, 0);
+    CGContextAddLineToPoint(context, backButtonBackground.size.width - 0.5, backButtonBackground.size.height);
+    CGContextStrokePath(context);
+
+    CGContextSetBlendMode(context, kCGBlendModeSourceIn);
+    startPoint = CGPointMake(backButtonBackground.size.width - 2, 0);
+    endPoint = CGPointMake(backButtonBackground.size.width - 2, backButtonBackground.size.height);
+    CGContextDrawLinearGradient(context, lineGradient, startPoint, endPoint, 0);
+    
+    CGContextEndTransparencyLayer(context);
+    CGContextRestoreGState(context);
+     */
+
+    CGContextSetLineWidth(context, 1);
+    CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
+    CGContextMoveToPoint(context, backButtonBackground.size.width - 1.5, 0);
+    CGContextAddLineToPoint(context, backButtonBackground.size.width - 1.5, backButtonBackground.size.height);
+    CGContextStrokePath(context);
+
+    UIImage *newBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, backButtonBackground.size.width, 0, 0) resizingMode:UIImageResizingModeStretch];
+    UIGraphicsEndImageContext();
+
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:newBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+//    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-INFINITY, -INFINITY) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100, -100) forBarMetrics:UIBarMetricsDefault];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
+
+    [self customizeUIElements];
 
     [TestFlight takeOff:@"a4d1862d-30d8-4984-9e33-dba8872d2538"];
 #ifdef TESTING
@@ -186,8 +278,14 @@
 
         GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
         pinboardViewController.postDataSource = pinboardDataSource;
+        pinboardViewController.title = @"Bookmarks";
+        
+        HomeViewController *homeViewController = [[HomeViewController alloc] init];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+        navigationController.viewControllers = @[homeViewController, pinboardViewController];
+        [navigationController popToViewController:pinboardViewController animated:NO];
 
-        [self.window setRootViewController:pinboardViewController];
+        [self.window setRootViewController:navigationController];
         
         /*
 
