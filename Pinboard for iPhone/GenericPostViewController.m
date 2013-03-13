@@ -72,8 +72,6 @@
 
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
-
-   // [self update];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -253,7 +251,7 @@
             [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
         }
         
-        [sheet showFrom:self.view];
+        [sheet showFrom:self.navigationController.view];
         self.tableView.scrollEnabled = NO;
         self.actionSheetVisible = YES;
     }
