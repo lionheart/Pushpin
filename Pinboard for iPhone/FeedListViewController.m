@@ -15,6 +15,7 @@
 #import "PPCoreGraphics.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FeedListViewController ()
 
@@ -95,7 +96,7 @@
             [self.tableView reloadData];
         }];
     }
-
+    
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
     
@@ -204,6 +205,12 @@
     for (id subview in subviews) {
         [subview removeFromSuperview];
     }
+
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    selectedBackgroundView.backgroundColor = HEX(0xDDE1E9ff);
+    cell.selectedBackgroundView = selectedBackgroundView;
+    cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
+    cell.textLabel.textColor = HEX(0x33353Bff);
 
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
