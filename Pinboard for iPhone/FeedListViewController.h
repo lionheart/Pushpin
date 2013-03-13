@@ -23,6 +23,7 @@ enum PINBOARD_FEED_ITEMS {
 @property (nonatomic, retain) UINavigationController *navigationController;
 @property (nonatomic, retain) NSTimer *updateTimer;
 @property (nonatomic, retain) NSMutableArray *bookmarkCounts;
+@property (nonatomic) BOOL timerPaused;
 
 - (void)calculateBookmarkCounts;
 - (void)checkForPostUpdates;
