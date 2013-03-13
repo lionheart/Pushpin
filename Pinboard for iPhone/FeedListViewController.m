@@ -225,8 +225,25 @@
     }
 
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    selectedBackgroundView.layer.cornerRadius = 5;
+    selectedBackgroundView.layer.cornerRadius = 10;
     selectedBackgroundView.backgroundColor = HEX(0xDDE1E9ff);
+    
+
+
+    if (indexPath.row > 0) {
+        CALayer *topBarLayer = [CALayer layer];
+        topBarLayer.frame = CGRectMake(0, 0, 302, 10);
+        topBarLayer.backgroundColor = HEX(0xDDE1E9ff).CGColor;
+        [selectedBackgroundView.layer addSublayer:topBarLayer];
+    }
+    
+    if (indexPath.row < 5) {
+        CALayer *bottomBarLayer = [CALayer layer];
+        bottomBarLayer.frame = CGRectMake(0, 34, 302, 10);
+        bottomBarLayer.backgroundColor = HEX(0xDDE1E9ff).CGColor;
+        [selectedBackgroundView.layer addSublayer:bottomBarLayer];
+    }
+
     cell.selectedBackgroundView = selectedBackgroundView;
     cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
     cell.textLabel.textColor = HEX(0x33353Bff);
