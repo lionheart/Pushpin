@@ -55,8 +55,12 @@
     [self.scrollView addSubview:self.feedListViewController.tableView];
     [self.scrollView addSubview:self.tagViewController.view];
     [self.scrollView addSubview:self.noteViewController.view];
-
     [self.view addSubview:self.scrollView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.feedListViewController viewWillAppear:animated];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

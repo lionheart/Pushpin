@@ -33,40 +33,58 @@
     if (!self.timerPaused) {
         AppDelegate *delegate = [AppDelegate sharedDelegate];
         if (delegate.bookmarksUpdated.boolValue) {
-            [self calculateBookmarkCounts];
-            [self.tableView reloadData];
+            [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+            }];
             delegate.bookmarksUpdated = @NO;
         }
     }
 }
 
-- (void)calculateBookmarkCounts {
+- (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
+    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    FMResultSet *results;
+    NSString *count, *previousCount;
+    BOOL skip = [self.bookmarkCounts count] < 5;
 
     [db open];
+    
+    NSArray *resultSets = @[
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@YES]],
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@NO]],
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]],
+       [db executeQuery:@"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"]
+    ];
+    
+    int i = 0;
+    for (FMResultSet *resultSet in resultSets) {
+        [resultSet next];
+        count = [resultSet stringForColumnIndex:0];
 
-    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
-    [results next];
-    self.bookmarkCounts[PinboardFeedAllBookmarks] = [results stringForColumnIndex:0];
-    
-    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@YES]];
-    [results next];
-    self.bookmarkCounts[PinboardFeedPrivateBookmarks] = [results stringForColumnIndex:0];
-    
-    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@NO]];
-    [results next];
-    self.bookmarkCounts[PinboardFeedPublicBookmarks] = [results stringForColumnIndex:0];
-    
-    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
-    [results next];
-    self.bookmarkCounts[PinboardFeedUnreadBookmarks] = [results stringForColumnIndex:0];
+        if (skip) {
+            previousCount = @"";
+        }
+        else {
+            previousCount = [self.bookmarkCounts objectAtIndex:i];
+        }
 
-    results = [db executeQuery:@"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"];
-    [results next];
-    self.bookmarkCounts[PinboardFeedUntaggedBookmarks] = [results stringForColumnIndex:0];
+        if (previousCount != nil && ![count isEqualToString:previousCount]) {
+            self.bookmarkCounts[i] = count;
+            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        }
+              
+        i++;
+    }
 
     [db close];
+    
+    if (callback) {
+        callback(indexPathsToReload);
+    }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -78,7 +96,7 @@
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
-        [self calculateBookmarkCounts];
+        [self calculateBookmarkCounts:nil];
     }
     return self;
 }
@@ -100,7 +118,7 @@
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
     
-    [self calculateBookmarkCounts];
+    [self calculateBookmarkCounts:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
