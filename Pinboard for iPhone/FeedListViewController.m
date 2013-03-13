@@ -24,6 +24,46 @@
 
 @synthesize connectionAvailable;
 @synthesize navigationController;
+@synthesize updateTimer;
+@synthesize bookmarkCounts;
+
+- (void)checkForPostUpdates {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    if (delegate.bookmarksUpdated.boolValue) {
+        [self calculateBookmarkCounts];
+        [self.tableView reloadData];
+        delegate.bookmarksUpdated = @NO;
+    }
+}
+
+- (void)calculateBookmarkCounts {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    FMResultSet *results;
+
+    [db open];
+
+    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
+    [results next];
+    self.bookmarkCounts[PinboardFeedAllBookmarks] = [results stringForColumnIndex:0];
+    
+    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@YES]];
+    [results next];
+    self.bookmarkCounts[PinboardFeedPrivateBookmarks] = [results stringForColumnIndex:0];
+    
+    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@NO]];
+    [results next];
+    self.bookmarkCounts[PinboardFeedPublicBookmarks] = [results stringForColumnIndex:0];
+    
+    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
+    [results next];
+    self.bookmarkCounts[PinboardFeedUnreadBookmarks] = [results stringForColumnIndex:0];
+
+    results = [db executeQuery:@"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"];
+    [results next];
+    self.bookmarkCounts[PinboardFeedUntaggedBookmarks] = [results stringForColumnIndex:0];
+
+    [db close];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -32,9 +72,17 @@
         self.tableView.opaque = NO;
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
-        
+        self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
+        [self calculateBookmarkCounts];
     }
     return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -154,53 +202,33 @@
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
     UIImage *pillImage;
 
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-
-    FMResultSet *results;
-
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
-                    [results next];
-
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"cabinet"];
-                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedAllBookmarks]];
                     break;
                 case 1:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(YES)]];
-                    [results next];
-
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"lock"];
-                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPrivateBookmarks]];
                     break;
                 case 2:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@(NO)]];
-                    [results next];
-
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.imageView.image = [UIImage imageNamed:@"globe"];
-                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPublicBookmarks]];
                     break;
                 case 3:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]];
-                    [results next];
-
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"glasses"];
-                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUnreadBookmarks]];
                     break;
                 case 4:
-                    results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags = ''"];
-                    [results next];
-
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"tag"];
-                    pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUntaggedBookmarks]];
                     break;
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
