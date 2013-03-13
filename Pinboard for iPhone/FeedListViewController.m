@@ -207,11 +207,11 @@
     }
 
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    selectedBackgroundView.layer.cornerRadius = 5;
     selectedBackgroundView.backgroundColor = HEX(0xDDE1E9ff);
     cell.selectedBackgroundView = selectedBackgroundView;
     cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
     cell.textLabel.textColor = HEX(0x33353Bff);
-
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
     UIImage *pillImage;
@@ -219,32 +219,32 @@
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
-                case 0:
+                case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"cabinet"];
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedAllBookmarks]];
                     break;
-                case 1:
+                case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"lock"];
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPrivateBookmarks]];
                     break;
-                case 2:
+                case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.imageView.image = [UIImage imageNamed:@"globe"];
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPublicBookmarks]];
                     break;
-                case 3:
+                case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"glasses"];
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUnreadBookmarks]];
                     break;
-                case 4:
+                case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"tag"];
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUntaggedBookmarks]];
                     break;
-                case 5:
+                case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"star"];
                     break;
