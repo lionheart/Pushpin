@@ -203,11 +203,11 @@
 
     CGContextSetLineWidth(context, 1);
     CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
-    CGContextMoveToPoint(context, backButtonBackground.size.width - 1.5, 0);
-    CGContextAddLineToPoint(context, backButtonBackground.size.width - 1.5, backButtonBackground.size.height);
+    CGContextMoveToPoint(context, backButtonBackground.size.width, 0);
+    CGContextAddLineToPoint(context, backButtonBackground.size.width, backButtonBackground.size.height);
     CGContextStrokePath(context);
 
-    UIImage *newBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, backButtonBackground.size.width, 0, 0) resizingMode:UIImageResizingModeStretch];
+    UIImage *newBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     UIGraphicsEndImageContext();
     
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(selectedBackButtonImage.size.width, selectedBackButtonImage.size.height), NO, 0);
@@ -219,10 +219,10 @@
     
     CGContextSetLineWidth(context, 1);
     CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
-    CGContextMoveToPoint(context, selectedBackButtonImage.size.width - 1.5, 0);
-    CGContextAddLineToPoint(context, selectedBackButtonImage.size.width - 1.5, selectedBackButtonImage.size.height);
+    CGContextMoveToPoint(context, selectedBackButtonImage.size.width, 0);
+    CGContextAddLineToPoint(context, selectedBackButtonImage.size.width, selectedBackButtonImage.size.height);
     CGContextStrokePath(context);
-    UIImage *selectedBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, selectedBackButtonImage.size.width, 0, 0)];
+    UIImage *selectedBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
 
     UIGraphicsEndImageContext();
 
@@ -278,7 +278,7 @@
 
         GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
         pinboardViewController.postDataSource = pinboardDataSource;
-        pinboardViewController.title = @"Bookmarks";
+        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
         HomeViewController *homeViewController = [[HomeViewController alloc] init];
         homeViewController.title = @"Browse";
