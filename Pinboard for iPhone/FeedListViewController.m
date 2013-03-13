@@ -13,6 +13,8 @@
 #import "AppDelegate.h"
 #import "PPBrowseCell.h"
 #import "PPCoreGraphics.h"
+#import "GenericPostViewController.h"
+#import "PinboardDataSource.h"
 
 @interface FeedListViewController ()
 
@@ -27,6 +29,10 @@
     self = [super initWithStyle:style];
     if (self) {
         self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
+        self.tableView.opaque = NO;
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        
     }
     return self;
 }
@@ -89,6 +95,36 @@
     return 0;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    float width = tableView.bounds.size.width;
+
+    int fontSize = 17;
+    int padding = 15;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
+    NSString *sectionTitle;
+    switch (section) {
+        case 0:
+            sectionTitle = NSLocalizedString(@"Personal", nil);
+            break;
+        case 1:
+            sectionTitle = NSLocalizedString(@"Community", nil);
+            break;
+    }
+
+    label.text = sectionTitle;
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = HEX(0x808690ff);
+    label.shadowColor = [UIColor whiteColor];
+    label.shadowOffset = CGSizeMake(0,1);
+    label.font = [UIFont fontWithName:@"Avenir-Black" size:fontSize];
+    CGSize textSize = [sectionTitle sizeWithFont:label.font];
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
+    [view addSubview:label];
+    return view;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
@@ -109,6 +145,12 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
+    NSArray *subviews = [cell.contentView subviews];
+    for (id subview in subviews) {
+        [subview removeFromSuperview];
+    }
+
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
     UIImage *pillImage;
 
@@ -125,6 +167,7 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"cabinet"];
                     pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 1:
@@ -132,6 +175,7 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"lock"];
                     pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 2:
@@ -139,6 +183,7 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"globe"];
                     pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 3:
@@ -146,6 +191,7 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"glasses"];
                     pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 4:
@@ -153,11 +199,12 @@
                     [results next];
 
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"tag"];
                     pillImage = [PPCoreGraphics pillImage:[results stringForColumnIndex:0]];
                     break;
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
-                    cell.detailTextLabel.text = @"";
+                    cell.imageView.image = [UIImage imageNamed:@"star"];
                     break;
             }
             break;
@@ -187,8 +234,10 @@
     }
     
     UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-    pillView.frame = CGRectMake(cell.contentView.frame.size.width - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    
     [cell.contentView addSubview:pillView];
+    cell.backgroundColor = [UIColor whiteColor];
 
     return cell;
 }
@@ -200,42 +249,74 @@
     switch (indexPath.section) {
         case 0: {
             id bookmarkViewController;
+            PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
 
             switch (indexPath.row) {
-                case 0:
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"All Bookmarks", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                case 0: {
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                    
+                    pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
+
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+
+                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
-                case 1:
-                    parameters[@"private"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Private Bookmarks", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                }
+                case 1: {
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                    
+                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @YES, @"limit": @100, @"offset": @0}];
+
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+
+                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
-                case 2:
-                    parameters[@"private"] = @(NO);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"private"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Public", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                }
+                case 2: {
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                    
+                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @NO, @"limit": @100, @"offset": @0}];
+
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = NSLocalizedString(@"Public", nil);
+
+                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
-                case 3:
-                    parameters[@"unread"] = @(YES);
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"unread"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Unread", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                }
+                case 3: {
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                    
+                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE unread=:unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"unread": @YES, @"limit": @100, @"offset": @0}];
+
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = NSLocalizedString(@"Unread", nil);
+
+                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
-                case 4:
-                    parameters[@"tags"] = @"";
-                    bookmarkViewController = [[BookmarkViewController alloc] initWithFilters:@[@"tags"] parameters:parameters];
-                    [(BookmarkViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Untagged", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                }
+                case 4: {
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+
+                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @100, @"offset": @0}];
+                    
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = NSLocalizedString(@"Untagged", nil);
+
+                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
+                }
                 case 5: {
                     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];

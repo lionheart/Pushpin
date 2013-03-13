@@ -39,7 +39,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     CGContextSetRGBFillColor(context, 1, 1, 1, 1);
     CGContextSetShadowWithColor(context, CGSizeMake(1, 1), 1, HEX(0x00000044).CGColor);
 
-    [text drawInRect:CGRectInset(CGRectMake(0, 2, size.width, size.height), (size.width - textSize.width) / 2, (size.height - textSize.height) / 2) withFont:font];
+    [text drawInRect:CGRectInset(CGRectMake(0, 1, size.width, size.height), (size.width - textSize.width) / 2, (size.height - textSize.height) / 2) withFont:font];
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
