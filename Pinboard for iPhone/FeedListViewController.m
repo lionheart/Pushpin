@@ -227,8 +227,6 @@
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     selectedBackgroundView.layer.cornerRadius = 10;
     selectedBackgroundView.backgroundColor = HEX(0xDDE1E9ff);
-    
-
 
     if (indexPath.row > 0) {
         CALayer *topBarLayer = [CALayer layer];

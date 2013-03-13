@@ -27,6 +27,7 @@
     [super viewDidLoad];
     CGFloat height = [[UIScreen mainScreen] bounds].size.height;
     self.scrollView = [[UIScrollView alloc] init];
+    
     self.scrollView.pagingEnabled = YES;
     self.scrollView.canCancelContentTouches = NO;
     self.scrollView.delaysContentTouches = NO;
@@ -43,28 +44,34 @@
     self.tagViewController = [[TagViewController alloc] initWithStyle:UITableViewStylePlain];
     self.tagViewController.view.frame = CGRectMake(320, 0, 320, height);
     self.tagViewController.navigationController = self.navigationController;
-    
+
     self.scrollView.contentSize = CGSizeMake(320*3, self.feedListViewController.tableView.contentSize.height);
     self.scrollView.frame = CGRectMake(0, 0, 320, height);
-    
+
     UIPageControl *pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, 320, 0)];
     pageControl.numberOfPages = 3;
     pageControl.currentPage = 1;
     pageControl.backgroundColor = [UIColor groupTableViewBackgroundColor];
     [self.view addSubview:pageControl];
-    [self.scrollView addSubview:self.feedListViewController.tableView];
+    [self.scrollView addSubview:self.feedListViewController.view];
     [self.scrollView addSubview:self.tagViewController.view];
     [self.scrollView addSubview:self.noteViewController.view];
-    [self.view addSubview:self.scrollView];
+    self.view = self.scrollView;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
     [self.feedListViewController viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSUInteger pageNum = floor(((self.scrollView.contentOffset.x - 160) / 320) + 1);
+
     if (pageNum == 0) {
         self.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
     }
