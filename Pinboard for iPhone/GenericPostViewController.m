@@ -52,6 +52,16 @@
     [super viewWillAppear:animated];
     
     self.navigationItem.leftBarButtonItem.title = @"";
+    
+    [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.processingPosts = NO;
+                self.timerPaused = NO;
+                [self.tableView reloadData];
+            });
+        });
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -63,7 +73,7 @@
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 
-    [self update];
+   // [self update];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -94,9 +104,9 @@
                 self.processingPosts = NO;
                 self.timerPaused = NO;
                 [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
             });
         });

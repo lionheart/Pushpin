@@ -172,6 +172,12 @@
     CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
     CGContextClip(context);
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+
+    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+    CGContextStrokePath(context);
+
     UIImage *background = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
