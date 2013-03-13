@@ -26,13 +26,16 @@
 @synthesize navigationController;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
+@synthesize timerPaused;
 
 - (void)checkForPostUpdates {
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    if (delegate.bookmarksUpdated.boolValue) {
-        [self calculateBookmarkCounts];
-        [self.tableView reloadData];
-        delegate.bookmarksUpdated = @NO;
+    if (!self.timerPaused) {
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        if (delegate.bookmarksUpdated.boolValue) {
+            [self calculateBookmarkCounts];
+            [self.tableView reloadData];
+            delegate.bookmarksUpdated = @NO;
+        }
     }
 }
 
@@ -69,6 +72,7 @@
     self = [super initWithStyle:style];
     if (self) {
         self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
+        self.timerPaused = NO;
         self.tableView.opaque = NO;
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
@@ -76,13 +80,6 @@
         [self calculateBookmarkCounts];
     }
     return self;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -98,6 +95,16 @@
             [self.tableView reloadData];
         }];
     }
+
+    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
+    
+    [self calculateBookmarkCounts];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    self.timerPaused = YES;
 }
 
 - (void)connectionStatusDidChange:(NSNotification *)notification {
