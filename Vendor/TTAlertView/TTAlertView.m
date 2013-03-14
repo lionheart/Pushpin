@@ -90,37 +90,35 @@ static CGFloat const kTTDefaultDialogButtonHeight = 44.0f;
 
 #pragma mark - Show/Dismiss
 
-- (CAKeyframeAnimation *)popUpAnimation
-{
-    CAKeyframeAnimation *animation = [CAKeyframeAnimation
-                                      animationWithKeyPath:@"transform"];
+- (CAAnimationGroup *)popUpAnimation {
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     
+    CAKeyframeAnimation *opacityAnimation = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
+    opacityAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    opacityAnimation.keyTimes = @[@0.0, @1.0];
+    opacityAnimation.values = @[@0.0, @1.0];
+
+    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+
     CATransform3D scale1 = CATransform3DMakeScale(0.0, 0.0, 1);
     CATransform3D scale2 = CATransform3DMakeScale(1.1, 1.1, 1);
     CATransform3D scale3 = CATransform3DMakeScale(0.9, 0.9, 1);
     CATransform3D scale4 = CATransform3DMakeScale(1.0, 1.0, 1);
     
-    NSArray *frameValues = [NSArray arrayWithObjects:
-                            [NSValue valueWithCATransform3D:scale1],
-                            [NSValue valueWithCATransform3D:scale2],
-                            [NSValue valueWithCATransform3D:scale3],
-                            [NSValue valueWithCATransform3D:scale4],
-                            nil];
-    [animation setValues:frameValues];
+    scaleAnimation.values = @[
+        [NSValue valueWithCATransform3D:scale1],
+        [NSValue valueWithCATransform3D:scale2],
+        [NSValue valueWithCATransform3D:scale3],
+        [NSValue valueWithCATransform3D:scale4]
+    ];
+    scaleAnimation.keyTimes = @[@0.0, @0.50, @0.75, @1.0];
+    scaleAnimation.fillMode = kCAFillModeForwards;
+    scaleAnimation.removedOnCompletion = NO;
+    scaleAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    scaleAnimation.duration = .4;
     
-    NSArray *frameTimes = [NSArray arrayWithObjects:
-                           [NSNumber numberWithFloat:0.0],
-                           [NSNumber numberWithFloat:0.5],
-                           [NSNumber numberWithFloat:0.75],
-                           [NSNumber numberWithFloat:1.0],
-                           nil];    
-    [animation setKeyTimes:frameTimes];
-    
-    animation.fillMode = kCAFillModeForwards;
-    animation.removedOnCompletion = NO;
-    animation.duration = .4;
-    
-    return animation;
+    animationGroup.animations = @[opacityAnimation, scaleAnimation];
+    return animationGroup;
 }
 
 - (void)show
