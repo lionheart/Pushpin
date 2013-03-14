@@ -40,6 +40,7 @@ enum PostSources {
 - (NSString *)tagsForPostAtIndex:(NSInteger)index;
 - (NSInteger)sourceForPostAtIndex:(NSInteger)index;
 - (NSDate *)dateForPostAtIndex:(NSInteger)index;
+- (NSString *)formattedDateForPostAtIndex:(NSInteger)index;
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
 - (BOOL)isPostAtIndexRead:(NSInteger)index;

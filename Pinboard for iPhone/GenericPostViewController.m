@@ -140,17 +140,23 @@
     NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
     NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
     NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
+    NSString *dateString = [self.postDataSource formattedDateForPostAtIndex:indexPath.row];
 
-    height += ceilf([title sizeWithFont:titleFont constrainedToSize:CGSizeMake(320.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    height += ceilf([title sizeWithFont:titleFont constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     
     if (![description isEqualToString:@""]) {
-        height += ceilf([description sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(320.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+        height += ceilf([description sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     }
     
-    if (![tags isEqualToString:@""]) {
-        height += ceilf([tags sizeWithFont:tagsFont constrainedToSize:CGSizeMake(320.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    NSString *bottomString;
+    if ([tags isEqualToString:@""]) {
+        bottomString = dateString;
+    }
+    else {
+        bottomString = [NSString stringWithFormat:@"%@ · %@", tags, dateString];
     }
 
+    height += ceilf([bottomString sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     return height;
 }
 
@@ -267,6 +273,7 @@
     NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
     NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
     NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
+    NSString *dateString = [self.postDataSource formattedDateForPostAtIndex:indexPath.row];
     BOOL isRead = [self.postDataSource isPostAtIndexRead:indexPath.row];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -279,9 +286,15 @@
     
     NSRange tagRange = [self.postDataSource rangeForTagsForPostAtIndex:indexPath.row];
     BOOL hasTags = tagRange.location != NSNotFound;
+    NSInteger offset = 0;
+    [content appendString:@"\n"];
     if (hasTags) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", tags]];
+        offset += 3;
+        [content appendFormat:@"%@ · ", tags];
     }
+    
+    [content appendString:dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length - offset, dateString.length + offset);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
@@ -301,6 +314,9 @@
         [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
         [attributedString setFont:tagsFont range:tagRange];
     }
+
+    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
+    [attributedString setFont:tagsFont range:dateRange];
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     return attributedString;
