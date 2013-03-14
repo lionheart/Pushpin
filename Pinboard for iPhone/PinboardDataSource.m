@@ -220,7 +220,7 @@
 
 - (NSString *)formattedDateForPostAtIndex:(NSInteger)index {
     NSDateFormatter *relativeDateFormatter = [[NSDateFormatter alloc] init];
-    [relativeDateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    [relativeDateFormatter setTimeStyle:NSDateFormatterShortStyle];
     [relativeDateFormatter setDateStyle:NSDateFormatterMediumStyle];
     NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [relativeDateFormatter setLocale:locale];
