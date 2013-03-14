@@ -8,15 +8,21 @@
 
 #import "PPButton.h"
 #import "PPCoreGraphics.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation PPButton
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.titleLabel.font = [UIFont fontWithName:@"Avenir" size:17.f];
+        self.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17.f];
+        self.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.titleLabel.layer.shadowRadius = 0.0;
+        self.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);
+        self.titleLabel.layer.shadowOpacity = 0.5;
         self.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
+        [self setTitleColor:HEX(0xffffffff) forState:UIControlStateNormal];
 
         UIImage *normalBackgroundImage = [[UIImage imageNamed:@"gray-button-cap"] resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 23, 9)];
         UIImage *highlightedBackgroundImage = [[UIImage imageNamed:@"gray-button-highlighted-cap"] resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 23, 9)];
