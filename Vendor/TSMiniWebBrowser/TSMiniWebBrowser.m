@@ -93,39 +93,7 @@
 
 #pragma mark - Init
 
-// This method is only used in modal mode
--(void) initTitleBar {
-    UIBarButtonItem *buttonDone = [[UIBarButtonItem alloc] initWithTitle:modalDismissButtonTitle style:UIBarButtonItemStyleBordered target:self action:@selector(dismissController)];
-    
-    UINavigationItem *titleBar = [[UINavigationItem alloc] initWithTitle:@""];
-    titleBar.leftBarButtonItem = buttonDone;
-    
-    CGFloat width = self.view.frame.size.width;
-    navigationBarModal = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
-    //navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
-    navigationBarModal.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    navigationBarModal.barStyle = barStyle;
-    [navigationBarModal pushNavigationItem:titleBar animated:NO];
-    
-    [self.view addSubview:navigationBarModal];
-}
-
 -(void) initToolBar {
-    if (mode == TSMiniWebBrowserModeNavigation) {
-        self.navigationController.navigationBar.barStyle = barStyle;
-    }
-    
-    CGSize viewSize = self.view.frame.size;
-    if (mode == TSMiniWebBrowserModeTabBar) {
-        toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, -1, viewSize.width, kToolBarHeight)];
-    } else {
-        toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, viewSize.height-kToolBarHeight, viewSize.width, kToolBarHeight)];
-    }
-    
-    toolBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    toolBar.barStyle = barStyle;
-    [self.view addSubview:toolBar];
-    
     buttonGoBack = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_icon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backButtonTouchUp:)];
     
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
@@ -228,25 +196,12 @@
         self.view.frame = CGRectMake(0, 0, viewWidth, viewHeight);
     }
     
-    // Store the current navigationBar bar style to be able to restore it later.
-    if (mode == TSMiniWebBrowserModeNavigation) {
-        originalBarStyle = self.navigationController.navigationBar.barStyle;
-    }
-    
     // Init tool bar
     [self initToolBar];
 
     // Init web view
     [self initWebView];
-    
-    // Init title bar if presented modally
-    if (mode == TSMiniWebBrowserModeModal) {
-        [self initTitleBar];
-    }
-    
-    // Status bar style
-    [[UIApplication sharedApplication] setStatusBarStyle:barStyle animated:YES];
-    
+
     // UI state
     buttonGoBack.enabled = NO;
     buttonGoForward.enabled = NO;
@@ -256,12 +211,8 @@
     
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     self.numLoads = 0;
 }
 
@@ -275,18 +226,6 @@
     while (self.numLoads > 0) {
         [self hideActivityIndicators];
     }
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    // Restore navigationBar bar style.
-    if (mode == TSMiniWebBrowserModeNavigation) {
-        self.navigationController.navigationBar.barStyle = originalBarStyle;
-    }
-    
-    // Restore Status bar style
-    [[UIApplication sharedApplication] setStatusBarStyle:originalBarStyle animated:NO];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
