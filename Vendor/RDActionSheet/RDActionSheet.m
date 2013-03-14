@@ -7,6 +7,7 @@
 //
 
 #import "RDActionSheet.h"
+#import "PPButton.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface RDActionSheet ()
@@ -18,10 +19,10 @@
 - (void)setupBackground;
 - (UIView *)buildBlackOutViewWithFrame:(CGRect)frame;
 
-- (UIButton *)buildButtonWithTitle:(NSString *)title;
-- (UIButton *)buildCancelButtonWithTitle:(NSString *)title;
-- (UIButton *)buildPrimaryButtonWithTitle:(NSString *)title;
-- (UIButton *)buildDestroyButtonWithTitle:(NSString *)title;
+- (PPButton *)buildButtonWithTitle:(NSString *)title;
+- (PPButton *)buildCancelButtonWithTitle:(NSString *)title;
+- (PPButton *)buildPrimaryButtonWithTitle:(NSString *)title;
+- (PPButton *)buildDestroyButtonWithTitle:(NSString *)title;
 
 - (CGFloat)calculateSheetHeight;
 
@@ -77,23 +78,23 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     if (self) {
         // Build normal buttons
         for (NSString *title in otherButtonTitleArray) {
-            UIButton *button = [self buildButtonWithTitle:title];
+            PPButton *button = [self buildButtonWithTitle:title];
             [self.buttons insertObject:button atIndex:0];
         }
         
         // Build cancel button
-        UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
+        PPButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
         [self.buttons insertObject:cancelButton atIndex:0];
         
         // Add primary button
         if (primaryButtonTitle) {
-            UIButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
+            PPButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
             [self.buttons addObject:primaryButton];
         }
         
         // Add destroy button
         if (destructiveButtonTitle) {
-            UIButton *destroyButton = [self buildDestroyButtonWithTitle:destructiveButtonTitle];
+            PPButton *destroyButton = [self buildDestroyButtonWithTitle:destructiveButtonTitle];
             [self.buttons insertObject:destroyButton atIndex:1];
         }
     }
@@ -102,7 +103,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 - (void)addButtonWithTitle:(NSString *)title {
-    UIButton *button = [self buildButtonWithTitle:title];
+    PPButton *button = [self buildButtonWithTitle:title];
     [self.buttons addObject:button];
 }
 
@@ -249,8 +250,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     CGFloat yOffset = self.frame.size.height - kButtonPadding - floorf(kButtonHeight/2);
     
     BOOL cancelButton = YES;
-    for (UIButton *button in self.buttons) {
-        
+    for (PPButton *button in self.buttons) {
         CGFloat buttonWidth;
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
@@ -323,76 +323,24 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return label;
 }
 
-- (UIButton *)buildButtonWithTitle:(NSString *)title {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+- (PPButton *)buildButtonWithTitle:(NSString *)title {
+    PPButton *button = [[PPButton alloc] init];
     [button addTarget:self action:@selector(buttonWasPressed:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:title forState:UIControlStateNormal];
     button.accessibilityLabel = title;
-    button.opaque = YES;
-    
-    [button.titleLabel setFont:[UIFont fontWithName:@"Avenir-Bold" size:16]];
-    [button setTitleColor:HEX(0xffffffff) forState:UIControlStateNormal];
-    
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-    
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
-    
-    button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    button.titleLabel.layer.shadowRadius = 0.0;
-    button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);
-    button.titleLabel.layer.shadowOpacity = 0.5;
-    
     return button;
 }
 
-- (UIButton *)buildCancelButtonWithTitle:(NSString *)title {
-    UIButton *button = [self buildButtonWithTitle:title];
-    
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-    
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
-    
-    button.titleLabel.layer.shadowOpacity = 0.3;
-    
-    return button;
+- (PPButton *)buildCancelButtonWithTitle:(NSString *)title {
+    return [self buildButtonWithTitle:title];
 }
 
-- (UIButton *)buildPrimaryButtonWithTitle:(NSString *)title {
-    
-    UIButton *button = [self buildButtonWithTitle:title];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonGeneric"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-    
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
-    
-    button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
-    
-    return button;
+- (PPButton *)buildPrimaryButtonWithTitle:(NSString *)title {
+    return [self buildButtonWithTitle:title];
 }
 
-- (UIButton *)buildDestroyButtonWithTitle:(NSString *)title {
-    
-    UIButton *button = [self buildButtonWithTitle:title];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonDestroy.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-    
-    UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonDestroyTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
-    
-    button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
-    
-    return button;
+- (PPButton *)buildDestroyButtonWithTitle:(NSString *)title {
+    return [self buildButtonWithTitle:title];
 }
 
 - (NSString *)buttonTitleAtIndex:(NSInteger)buttonIndex {

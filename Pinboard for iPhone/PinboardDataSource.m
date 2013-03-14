@@ -117,6 +117,7 @@
             @"url": [results stringForColumn:@"url"],
             @"private": [results objectForColumnName:@"private"],
             @"tags": [results stringForColumn:@"tags"],
+            @"created_at": [results dateForColumn:@"created_at"]
         };
 
         [newPosts addObject:post];
@@ -211,6 +212,20 @@
 
 - (NSDictionary *)postAtIndex:(NSInteger)index {
     return self.posts[index];
+}
+
+- (NSDate *)dateForPostAtIndex:(NSInteger)index {
+    return self.posts[index][@"created_at"];
+}
+
+- (NSString *)formattedDateForPostAtIndex:(NSInteger)index {
+    NSDateFormatter *relativeDateFormatter = [[NSDateFormatter alloc] init];
+    [relativeDateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    [relativeDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    [relativeDateFormatter setLocale:locale];
+    [relativeDateFormatter setDoesRelativeDateFormatting:YES];
+    return [relativeDateFormatter stringFromDate:[self dateForPostAtIndex:index]];
 }
 
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
