@@ -34,6 +34,7 @@ enum PostSources {
 - (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
 
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
+- (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (NSString *)descriptionForPostAtIndex:(NSInteger)index;
 
 // These are separated by spaces

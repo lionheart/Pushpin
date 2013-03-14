@@ -210,6 +210,10 @@
     return [self.posts[index][@"private"] boolValue];
 }
 
+- (NSString *)urlForPostAtIndex:(NSInteger)index {
+    return self.posts[index][@"url"];
+}
+
 - (NSDictionary *)postAtIndex:(NSInteger)index {
     return self.posts[index];
 }
