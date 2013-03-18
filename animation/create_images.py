@@ -1,13 +1,5 @@
 #!/usr/bin/env
 
-"""
-After running this, run
-
-    convert -delay 10 -loop 0 image*.png animated.gif
-
-to generate the images
-"""
-
 from PIL import Image
 from PIL import ImageDraw
 
