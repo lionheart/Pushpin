@@ -19,6 +19,7 @@
 @property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic) NSInteger maxResults;
 
+- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure;
 - (void)filterWithParameters:(NSDictionary *)parameters;
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 

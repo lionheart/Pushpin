@@ -33,20 +33,9 @@
 @synthesize selectedIndexPath;
 @synthesize actionSheetVisible;
 @synthesize confirmDeletionAlertView;
-@synthesize timerPaused;
 @synthesize pullToRefreshView;
 @synthesize pullToRefreshImageView;
 @synthesize loading;
-
-- (void)checkForPostUpdates {
-    if (!timerPaused) {
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
-        if (delegate.bookmarksUpdated.boolValue) {
-            [self update];
-            delegate.bookmarksUpdated = @NO;
-        }
-    }
-}
 
 - (void)viewDidLoad {
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
@@ -64,31 +53,23 @@
     
     self.navigationItem.leftBarButtonItem.title = @"";
     
-    [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+    self.processingPosts = YES;
+    [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.processingPosts = NO;
-                self.timerPaused = NO;
                 [self.tableView reloadData];
             });
         });
-    }];
+    }
+     failure:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.timerPaused = NO;
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
-
-    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    self.timerPaused = YES;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -203,21 +184,30 @@
 }
 
 - (void)update {
-    self.timerPaused = YES;
     self.processingPosts = YES;
-    [self.postDataSource updatePosts:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.processingPosts = NO;
-                self.timerPaused = NO;
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.processingPosts = NO;
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    
+                    if (self.loading) {
+                        self.loading = NO;
+                        [UIView animateWithDuration:0.3 animations:^{
+                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        } completion:^(BOOL finished) {
+                            [self.pullToRefreshImageView stopAnimating];
+                        }];
+                    }
+                });
             });
-        });
-    }];
+        } failure:nil];
+    });
 }
 
 #pragma mark - Table view data source
@@ -617,14 +607,12 @@
     if (alertView == self.confirmDeletionAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
-            self.timerPaused = YES;
             [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
-                        self.timerPaused = NO;
                     });
                 });
             }];
@@ -636,19 +624,34 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!self.loading) {
-        NSMutableArray *images = [NSMutableArray array];
-        for (int i=1; i<21; i++) {
-            [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
+        CGFloat offset = scrollView.contentOffset.y;
+        if (offset < -60) {
+            NSMutableArray *images = [NSMutableArray array];
+            for (int i=1; i<21; i++) {
+                [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
+            }
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [UIView animateWithDuration:0.5 animations:^{
+                        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+                        self.loading = YES;
+                        
+                        self.pullToRefreshImageView.animationImages = images;
+                        self.pullToRefreshImageView.animationDuration = 0.8;
+                        [self.pullToRefreshImageView startAnimating];
+                    } completion:^(BOOL finished) {
+                        [UIView animateWithDuration:0.5 animations:^{
+                            self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+                            
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                [self update];
+                            });
+                        }];
+                    }];
+                });
+            });
         }
-
-        [UIView animateWithDuration:0.3 animations:^{
-            self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-            self.loading = YES;
-
-            self.pullToRefreshImageView.animationImages = images;
-            self.pullToRefreshImageView.animationDuration = 1;
-            [self.pullToRefreshImageView startAnimating];
-        }];
     }
 }
 

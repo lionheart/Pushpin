@@ -302,18 +302,12 @@
         [self.navigationViewController setViewControllers:@[homeViewController, allBookmarkViewController]];
         [self.navigationViewController popToViewController:allBookmarkViewController animated:NO];
         [self.window setRootViewController:self.navigationViewController];
-        [self resumeRefreshTimer];
          */
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
         [self.window setRootViewController:loginViewController];
-        [self pauseRefreshTimer];
     }
-
-    secondsLeft = 10;
-    self.refreshTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(executeTimer) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.refreshTimer forMode:NSDefaultRunLoopMode];
     
     [self.window makeKeyAndVisible];
     
@@ -715,7 +709,6 @@
 
         [db commit];
 
-        [self resumeRefreshTimer];
         [self setLastUpdated:[NSDate date]];
 
         if (newBookmarkCount > 0) {
@@ -734,7 +727,6 @@
     };
 
     void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
-        [self resumeRefreshTimer];
         self.bookmarksLoading = NO;
     };
 
@@ -746,34 +738,6 @@
 #warning Deprecated
 - (void)updateBookmarks {
     [self updateBookmarksWithDelegate:nil];
-}
-
-- (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
-    if (!self.connectionAvailable.boolValue) {
-        #warning FIX
-        return;
-    }
-
-    if (![self token]) {
-        return;
-    }
-    
-    [self pauseRefreshTimer];
-    void (^SuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
-        if (self.lastUpdated == nil || [self.lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [self.lastUpdated timeIntervalSinceReferenceDate] > 300) {
-            [self forceUpdateBookmarks:updateDelegate];
-        }
-        else {
-            [self resumeRefreshTimer];
-        }
-    };
-
-    void (^FailureBlock)(NSError *) = ^(NSError *error) {
-        [self resumeRefreshTimer];
-    };
-
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard lastUpdateWithSuccess:SuccessBlock failure:FailureBlock];
 }
 
 #pragma mark - Helpers
@@ -831,28 +795,6 @@
                                    callback(@"", @"");
                                }
                            }];
-}
-
-#pragma mark - Timer
-
-- (void)resumeRefreshTimer {
-    timerPaused = NO;
-}
-
-- (void)pauseRefreshTimer {
-    timerPaused = YES;
-}
-
-- (void)executeTimer {
-    if (!timerPaused) {
-        if (secondsLeft == 0) {
-            secondsLeft = 10;
-            [self updateBookmarks];
-        }
-        else {
-            secondsLeft--;
-        }
-    }
 }
 
 @end
