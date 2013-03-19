@@ -5,7 +5,7 @@ from PIL import ImageDraw
 import operator
 
 color_top = (254, 254, 254)
-color_bottom = (205, 211, 223)
+color_bottom = (76, 88, 106)
 color_difference = map(operator.sub, color_top, color_bottom)
 def color_for_ratio(ratio):
     return "rgb({}, {}, {})".format(*map(operator.sub, color_top, map(lambda k: int(k*ratio), color_difference)))
