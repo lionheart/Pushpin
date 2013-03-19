@@ -83,10 +83,6 @@
     return [self.posts count];
 }
 
-- (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
-
-}
-
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
