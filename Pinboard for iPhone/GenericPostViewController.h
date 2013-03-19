@@ -24,7 +24,8 @@ enum PostSources {
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
-- (void)updatePosts:(void (^)(NSArray *, NSArray *, NSArray *))callback;
+- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
@@ -63,9 +64,7 @@ enum PostSources {
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) TTAlertView *confirmDeletionAlertView;
-@property (nonatomic) BOOL timerPaused;
 @property (nonatomic) BOOL loading;
-@property (nonatomic, retain) NSTimer *updateTimer;
 
 - (void)checkForPostUpdates;
 - (void)showConfirmDeletionAlert;
