@@ -34,6 +34,8 @@
 @synthesize actionSheetVisible;
 @synthesize confirmDeletionAlertView;
 @synthesize timerPaused;
+@synthesize pullToRefreshView;
+@synthesize pullToRefreshImageView;
 
 - (void)checkForPostUpdates {
     if (!timerPaused) {
@@ -48,6 +50,11 @@
 - (void)viewDidLoad {
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
+    
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
+    self.pullToRefreshImageView = [[UIImageView alloc] init];
+    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
+    [self.tableView addSubview:self.pullToRefreshView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -256,7 +263,7 @@
         bottomString = [NSString stringWithFormat:@"%@ · %@", tags, dateString];
     }
 
-    height += ceilf([bottomString sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    height += ceilf([tags sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     return height;
 }
 
@@ -386,15 +393,13 @@
     
     NSRange tagRange = [self.postDataSource rangeForTagsForPostAtIndex:indexPath.row];
     BOOL hasTags = tagRange.location != NSNotFound;
-    NSInteger offset = 0;
-    [content appendString:@"\n"];
+
     if (hasTags) {
-        offset += 3;
-        [content appendFormat:@"%@ · ", tags];
+        [content appendFormat:@"\n%@", tags];
     }
     
-    [content appendString:dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length - offset, dateString.length + offset);
+    [content appendFormat:@"\n%@", dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
@@ -623,6 +628,28 @@
             }];
         }
     }
+}
+
+#pragma mark - Scroll View delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSInteger offset = scrollView.contentOffset.y;
+    NSInteger index = MIN((-offset / 80.) * 32, 32);
+//    NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
+    NSString *imageName = [NSString stringWithFormat:@"ptr_32"];
+    UIOffset imageOffset;
+    DLog(@"%@", imageName);
+
+    if (offset > -60) {
+        imageOffset = UIOffsetMake(0, -(50 + offset));
+    }
+    else {
+        imageOffset = UIOffsetMake(0, 10);
+    }
+
+    self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+    self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
+    self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
 }
 
 @end

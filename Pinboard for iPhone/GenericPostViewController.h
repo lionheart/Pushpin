@@ -54,6 +54,8 @@ enum PostSources {
 
 @interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, TTAlertViewDelegate>
 
+@property (nonatomic, strong) UIView *pullToRefreshView;
+@property (nonatomic, strong) UIImageView *pullToRefreshImageView;
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic) BOOL processingPosts;
 @property (nonatomic) BOOL actionSheetVisible;
