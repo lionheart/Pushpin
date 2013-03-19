@@ -633,23 +633,29 @@
 #pragma mark - Scroll View delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSInteger offset = scrollView.contentOffset.y;
+    CGFloat offset = scrollView.contentOffset.y;
     NSInteger index = MIN((-offset / 80.) * 32, 32);
 //    NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
-    NSString *imageName = [NSString stringWithFormat:@"ptr_32"];
+    NSString *imageName = [NSString stringWithFormat:@"ptr_01"];
     UIOffset imageOffset;
-    DLog(@"%@", imageName);
-
+    CGFloat angle;
     if (offset > -60) {
         imageOffset = UIOffsetMake(0, -(50 + offset));
+        angle = M_PI * offset / 30. + M_PI * 2;
     }
     else {
         imageOffset = UIOffsetMake(0, 10);
+        
+        angle = M_PI * 2;
     }
 
     self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+
+    DLog(@"%f", angle);
+
     self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
     self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
+    self.pullToRefreshImageView.transform = CGAffineTransformMakeRotation(angle);
 }
 
 @end
