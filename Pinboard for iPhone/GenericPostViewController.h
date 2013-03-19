@@ -64,6 +64,7 @@ enum PostSources {
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) TTAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL timerPaused;
+@property (nonatomic) BOOL loading;
 @property (nonatomic, retain) NSTimer *updateTimer;
 
 - (void)checkForPostUpdates;

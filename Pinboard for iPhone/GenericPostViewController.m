@@ -36,6 +36,7 @@
 @synthesize timerPaused;
 @synthesize pullToRefreshView;
 @synthesize pullToRefreshImageView;
+@synthesize loading;
 
 - (void)checkForPostUpdates {
     if (!timerPaused) {
@@ -51,6 +52,7 @@
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
+    self.loading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
     self.pullToRefreshImageView = [[UIImageView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
@@ -632,22 +634,41 @@
 
 #pragma mark - Scroll View delegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat offset = scrollView.contentOffset.y;
-    NSInteger index = MIN((-offset / 80.) * 32, 32);
-//    NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
-    NSString *imageName = [NSString stringWithFormat:@"ptr_01"];
-    UIOffset imageOffset;
-    if (offset > -60) {
-        imageOffset = UIOffsetMake(0, -(50 + offset));
-    }
-    else {
-        imageOffset = UIOffsetMake(0, 10);
-    }
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!self.loading) {
+        NSMutableArray *images = [NSMutableArray array];
+        for (int i=1; i<21; i++) {
+            [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
+        }
 
-    self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
-    self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-    self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
+        [UIView animateWithDuration:0.3 animations:^{
+            self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+            self.loading = YES;
+
+            self.pullToRefreshImageView.animationImages = images;
+            self.pullToRefreshImageView.animationDuration = 1;
+            [self.pullToRefreshImageView startAnimating];
+        }];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!self.loading) {
+        CGFloat offset = scrollView.contentOffset.y;
+        NSInteger index = MAX(1, 32 - MIN((-offset / 80.) * 32, 32));
+        NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
+        UIOffset imageOffset;
+        if (offset > -60) {
+            imageOffset = UIOffsetMake(0, -(50 + offset));
+        }
+        else {
+            imageOffset = UIOffsetMake(0, 10);
+        }
+        
+        self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+        self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
+        self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
+    }
 }
 
 @end
