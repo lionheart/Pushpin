@@ -12,6 +12,7 @@ for i in range(count):
     im = Image.new("L", (40, 40))
 
     draw = ImageDraw.Draw(im)
+    # draw.rectangle([(0, 40 - interval * i), (40, 40)], fill=255)
     draw.rectangle([(0, 0), (40, interval * i)], fill=255)
 
     im.putalpha(mask)
@@ -23,6 +24,7 @@ for i in range(count):
     im = Image.new("L", (80, 80))
 
     draw = ImageDraw.Draw(im)
+    # draw.rectangle([(0, 80 - interval * i), (80, 80)], fill=255)
     draw.rectangle([(0, 0), (80, interval * i)], fill=255)
 
     im.putalpha(mask)
