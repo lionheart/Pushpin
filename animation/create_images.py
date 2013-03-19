@@ -9,14 +9,26 @@ interval = 80. / count
 for i in range(count):
     mask = Image.open("mask.bmp").convert('L')
 
-    im = Image.new("L", (80, 79))
+    im = Image.new("L", (40, 40))
+
+    draw = ImageDraw.Draw(im)
+    draw.rectangle([(0, 0), (40, interval * i)], fill=255)
+
+    im.putalpha(mask)
+    im.save("../Assets/PullToRefresh/ptr_{0:02d}.png".format(count - i))
+
+    # Retina Images
+    mask = Image.open("mask@2x.bmp").convert('L')
+
+    im = Image.new("L", (80, 80))
 
     draw = ImageDraw.Draw(im)
     draw.rectangle([(0, 0), (80, interval * i)], fill=255)
 
     im.putalpha(mask)
-    im.save("ptr_{0:02d}.png".format(count - i))
+    im.save("../Assets/PullToRefresh/ptr_{0:02d}@2x.png".format(count - i))
 
+"""
 # Loading animation
 count = 20
 for i in range(count):
@@ -29,3 +41,4 @@ for i in range(count):
     im.putalpha(mask)
     im.save("loading_{0:02d}.png".format(count - i))
 
+"""
