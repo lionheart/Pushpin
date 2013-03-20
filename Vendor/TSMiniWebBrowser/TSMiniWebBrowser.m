@@ -94,20 +94,34 @@
 #pragma mark - Init
 
 -(void) initToolBar {
-    buttonGoBack = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_icon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(backButtonTouchUp:)];
-    
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace.width = 30;
     
-    buttonGoForward = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"forward_icon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(forwardButtonTouchUp:)];
+    UIButton *forwardButton = [[UIButton alloc] init];
+    [forwardButton setImage:[UIImage imageNamed:@"forward_icon"] forState:UIControlStateNormal];
+    [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    forwardButton.frame = CGRectMake(0, 0, 30, 30);
+    buttonGoForward = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
+    buttonGoForward.action = @selector(forwardButtonTouchUp:);
+    buttonGoForward.target = self;
+    
+    UIButton *backButton = [[UIButton alloc] init];
+    [backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.frame = CGRectMake(0, 0, 30, 30);
+    buttonGoBack = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    UIBarButtonItem *buttonReload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload_icon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(reloadButtonTouchUp:)];
+    UIButton *reloadButton = [[UIButton alloc] init];
+    [reloadButton setImage:[UIImage imageNamed:@"reload_icon"] forState:UIControlStateNormal];
+    [reloadButton addTarget:self action:@selector(reloadButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    reloadButton.frame = CGRectMake(0, 0, 30, 30);
+    UIBarButtonItem *buttonReload = [[UIBarButtonItem alloc] initWithCustomView:reloadButton];
     
     UIBarButtonItem *fixedSpace2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace2.width = 20;
-    
+
     UIBarButtonItem *buttonAction = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(buttonActionTouchUp:)];
     
     // Activity indicator is a bit special
