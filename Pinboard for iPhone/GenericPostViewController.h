@@ -25,10 +25,7 @@ enum PostSources {
 
 - (NSInteger)numberOfPosts;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
-- (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
-- (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
-- (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
+
 
 - (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
 - (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
@@ -47,9 +44,13 @@ enum PostSources {
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
 - (BOOL)isPostAtIndexRead:(NSInteger)index;
 
-- (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSDictionary *)postAtIndex:(NSInteger)index;
-- (NSAttributedString *)stringForPostAtIndex:(NSInteger)index;
+
+@optional
+
+- (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
+- (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
+- (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
 
 @end
 
