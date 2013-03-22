@@ -53,6 +53,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationItem.leftBarButtonItem.title = @"";
+    
+    if ([self.postDataSource numberOfPosts] == 0) {
+        self.tableView.separatorColor = [UIColor clearColor];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -61,8 +65,6 @@
     self.actionSheetVisible = NO;
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        self.tableView.separatorColor = [UIColor clearColor];
-
         NSMutableArray *images = [NSMutableArray array];
         for (int i=1; i<21; i++) {
             [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
@@ -351,24 +353,37 @@
             urlString = self.selectedPost[@"url"];
         }
         RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
-        [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
-        
-        if ([self.selectedPost[@"unread"] boolValue]) {
-            [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
-        }
 
-        [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-
-        NSNumber *readlater = [[AppDelegate sharedDelegate] readlater];
-        if (readlater.integerValue == READLATER_INSTAPAPER) {
-            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
-        }
-        else if (readlater.integerValue == READLATER_READABILITY) {
-            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
-        }
-        else if (readlater.integerValue == READLATER_POCKET) {
-            [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+        PPPostAction action;
+        for (id PPPAction in [self.postDataSource actionsForPost:self.selectedPost]) {
+            action = [PPPAction integerValue];
+            if (action == PPPostActionCopyToMine) {
+                [sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+            }
+            else if (action == PPPostActionCopyURL) {
+                [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+            }
+            else if (action == PPPostActionDelete) {
+                [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+            }
+            else if (action == PPPostActionEdit) {
+                [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+            }
+            else if (action == PPPostActionMarkAsRead) {
+                [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+            }
+            else if (action == PPPostActionReadLater) {
+                NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
+                if (readlater == READLATER_INSTAPAPER) {
+                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                }
+                else if (readlater == READLATER_READABILITY) {
+                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                }
+                else if (readlater == READLATER_POCKET) {
+                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                }
+            }
         }
         
         [sheet showFrom:self.navigationController.view];

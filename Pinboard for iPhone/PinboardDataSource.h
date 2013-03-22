@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
 
+
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
 @property (nonatomic, retain) NSMutableArray *posts;

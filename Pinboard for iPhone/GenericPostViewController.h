@@ -21,16 +21,26 @@ enum PostSources {
     POST_SOURCE_EMAIL,
 };
 
+enum PPPostActions {
+    PPPostActionCopyToMine,
+    PPPostActionCopyURL,
+    PPPostActionDelete,
+    PPPostActionEdit,
+    PPPostActionReadLater,
+    PPPostActionMarkAsRead
+};
+typedef NSInteger PPPostAction;
+
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 
-
 - (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
 - (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
 - (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
 
+- (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (NSString *)descriptionForPostAtIndex:(NSInteger)index;
