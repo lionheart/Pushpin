@@ -471,6 +471,24 @@
     });
 }
 
+- (NSArray *)actionsForPost:(NSDictionary *)post {
+    NSMutableArray *actions = [NSMutableArray array];
+    [actions addObject:@(PPPostActionDelete)];
+    [actions addObject:@(PPPostActionEdit)];
+    
+    if ([post[@"unread"] boolValue]) {
+        [actions addObject:@(PPPostActionMarkAsRead)];
+    }
+    
+    [actions addObject:@(PPPostActionCopyURL)];
+    
+    if ([[AppDelegate sharedDelegate] readlater]) {
+        [actions addObject:@(PPPostActionReadLater)];        
+    }
+
+    return actions;
+}
+
 + (NSArray *)linksForPost:(NSDictionary *)post {
     NSMutableArray *links = [NSMutableArray array];
     int location = [post[@"title"] length] + 1;

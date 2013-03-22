@@ -35,9 +35,13 @@
         AppDelegate *delegate = [AppDelegate sharedDelegate];
         if (delegate.bookmarksUpdated.boolValue) {
             [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    });
+                });
             }];
             delegate.bookmarksUpdated = @NO;
         }

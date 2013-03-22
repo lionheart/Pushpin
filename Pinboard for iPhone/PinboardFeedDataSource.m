@@ -32,6 +32,18 @@
 
 #pragma mark - Delegate Methods
 
+- (NSArray *)actionsForPost:(NSDictionary *)post {
+    NSMutableArray *actions = [NSMutableArray array];
+    [actions addObject:@(PPPostActionCopyToMine)];
+    [actions addObject:@(PPPostActionCopyURL)];
+    
+    if ([[AppDelegate sharedDelegate] readlater]) {
+        [actions addObject:@(PPPostActionReadLater)];
+    }
+    
+    return actions;
+}
+
 - (NSInteger)numberOfPosts {
     return self.posts.count;
 }
