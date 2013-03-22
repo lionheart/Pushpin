@@ -42,7 +42,9 @@
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
     self.loading = NO;
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
+    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[UIImageView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
@@ -50,26 +52,35 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     self.navigationItem.leftBarButtonItem.title = @"";
-    
-    self.processingPosts = YES;
-    [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.processingPosts = NO;
-                [self.tableView reloadData];
-            });
-        });
-    }
-     failure:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
+
+    if ([self.postDataSource numberOfPosts] == 0) {
+        self.tableView.separatorColor = [UIColor clearColor];
+
+        NSMutableArray *images = [NSMutableArray array];
+        for (int i=1; i<21; i++) {
+            [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
+        }
+        
+        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+        
+        self.loading = YES;
+        
+        self.pullToRefreshImageView.animationImages = images;
+        self.pullToRefreshImageView.animationDuration = 0.8;
+        [self.pullToRefreshImageView startAnimating];
+        self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self update];
+        });
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -190,15 +201,17 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.processingPosts = NO;
+                    
                     [self.tableView beginUpdates];
                     [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
                     [self.tableView endUpdates];
-                    
+                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
+
                     if (self.loading) {
                         self.loading = NO;
-                        [UIView animateWithDuration:0.3 animations:^{
+                        [UIView animateWithDuration:0.2 animations:^{
                             self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                         } completion:^(BOOL finished) {
                             [self.pullToRefreshImageView stopAnimating];
@@ -214,11 +227,13 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (!self.processingPosts) {
-        [self.postDataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
-            if (needsUpdate) {
-                [self update];
-            }
-        }];
+        if ([self.postDataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
+            [self.postDataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
+                if (needsUpdate) {
+                    [self update];
+                }
+            }];
+        }
     }
 }
 
@@ -289,7 +304,7 @@
             [layer removeFromSuperlayer];
         }
     }
-    
+
     CGFloat height = [self.tableView.delegate tableView:self.tableView heightForRowAtIndexPath:indexPath];
 
     CAGradientLayer *gradient = [CAGradientLayer layer];

@@ -173,14 +173,14 @@
     CGContextClip(context);
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
 
+    // Add bottom stroke
     CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
     CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
     CGContextStrokePath(context);
 
     UIImage *background = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
+
     [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
     [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTitleTextAttributes:@{
@@ -188,6 +188,18 @@
                                 UITextAttributeTextColor: HEX(0x4C586Aff),
                           UITextAttributeTextShadowColor: [UIColor whiteColor] }];
 
+    // Customize Tool Bar
+    
+    
+    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
+    CGContextStrokePath(context);
+    UIImage *toolbarBackground = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    [[UIToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
     // Customize Status Bar
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     

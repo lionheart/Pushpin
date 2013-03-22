@@ -15,6 +15,7 @@
 #import "PPCoreGraphics.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
+#import "PinboardFeedDataSource.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface FeedListViewController ()
@@ -248,6 +249,7 @@
     }
 
     cell.selectedBackgroundView = selectedBackgroundView;
+    cell.imageView.image = nil;
     cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
     cell.textLabel.textColor = HEX(0x33353Bff);
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
@@ -324,96 +326,71 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     switch (indexPath.section) {
         case 0: {
-            id bookmarkViewController;
             PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+            postViewController.postDataSource = pinboardDataSource;
 
             switch (indexPath.row) {
                 case 0: {
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                    
                     pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
                     pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
 
-                    postViewController.postDataSource = pinboardDataSource;
                     postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-
-                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                    
                     pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
                     pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @YES, @"limit": @100, @"offset": @0}];
 
-                    postViewController.postDataSource = pinboardDataSource;
                     postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
-
-                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                    
                     pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
                     pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @NO, @"limit": @100, @"offset": @0}];
 
-                    postViewController.postDataSource = pinboardDataSource;
                     postViewController.title = NSLocalizedString(@"Public", nil);
-
-                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                    
                     pinboardDataSource.query = @"SELECT * FROM bookmark WHERE unread=:unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
                     pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"unread": @YES, @"limit": @100, @"offset": @0}];
 
-                    postViewController.postDataSource = pinboardDataSource;
                     postViewController.title = NSLocalizedString(@"Unread", nil);
-
-                    [self.navigationController pushViewController:postViewController animated:YES];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-
                     pinboardDataSource.query = @"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
                     pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @100, @"offset": @0}];
-                    
-                    postViewController.postDataSource = pinboardDataSource;
-                    postViewController.title = NSLocalizedString(@"Untagged", nil);
 
-                    [self.navigationController pushViewController:postViewController animated:YES];
+                    postViewController.title = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
                     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                    NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username];
-                    bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                    [(BookmarkFeedViewController *)bookmarkViewController setTitle:NSLocalizedString(@"Starred", nil)];
-                    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+                    postViewController.postDataSource = [PinboardFeedDataSource dataSourceWithEndpoint:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username]];
+                    postViewController.title = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
             }
+            [self.navigationController pushViewController:postViewController animated:YES];
 
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         }
         case 1: {
-            BookmarkFeedViewController *bookmarkViewController;
+            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+            postViewController.postDataSource = feedDataSource;
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
             if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
@@ -424,34 +401,35 @@
                     case 0: {
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                        NSString *url = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:url];
-                        bookmarkViewController.title = NSLocalizedString(@"Network", nil);
+                        feedDataSource.endpoint = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
+                        postViewController.title = NSLocalizedString(@"Network", nil);
                         [mixpanel track:@"Browsed network bookmarks"];
                         break;
                     }
-                    case 1:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular"];
-                        bookmarkViewController.title = NSLocalizedString(@"Popular", nil);
+                    case 1: {
+                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular?count=100";
+                        postViewController.title = NSLocalizedString(@"Popular", nil);
                         [mixpanel track:@"Browsed popular bookmarks"];
                         break;
+                    }
                     case 2:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/wikipedia"];
-                        bookmarkViewController.title = @"Wikipedia";
+                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/wikipedia";
+                        postViewController.title = @"Wikipedia";
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
                         break;
                     case 3:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/fandom"];
-                        bookmarkViewController.title = NSLocalizedString(@"Fandom", nil);
+                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/fandom";
+                        postViewController.title = NSLocalizedString(@"Fandom", nil);
                         [mixpanel track:@"Browsed fandom bookmarks"];
                         break;
                     case 4:
-                        bookmarkViewController = [[BookmarkFeedViewController alloc] initWithURL:@"https://feeds.pinboard.in/json/popular/japanese"];
-                        bookmarkViewController.title = @"日本語";
+                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/japanese";
+                        postViewController.title = @"日本語";
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
                         break;
                 }
-                [self.navigationController pushViewController:bookmarkViewController animated:YES];
+
+                [self.navigationController pushViewController:postViewController animated:YES];
                 break;
             }
         }

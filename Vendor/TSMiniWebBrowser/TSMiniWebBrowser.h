@@ -25,6 +25,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RDActionSheet.h"
 
 @protocol TSMiniWebBrowserDelegate <NSObject>
 @optional
@@ -37,7 +38,7 @@ typedef enum {
     TSMiniWebBrowserModeTabBar,
 } TSMiniWebBrowserMode;
 
-@interface TSMiniWebBrowser : UIViewController <UIWebViewDelegate, UIActionSheetDelegate> {
+@interface TSMiniWebBrowser : UIViewController <UIWebViewDelegate, RDActionSheetDelegate> {
     // URL
     NSURL *urlToLoad;
     
@@ -50,6 +51,7 @@ typedef enum {
     UIActivityIndicatorView *activityIndicator;
     UIBarButtonItem *buttonGoBack;
     UIBarButtonItem *buttonGoForward;
+    UIBarButtonItem *buttonReload;
     
     // Customization
     TSMiniWebBrowserMode mode;

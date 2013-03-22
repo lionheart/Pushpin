@@ -26,6 +26,7 @@
 
 #import "TSMiniWebBrowser.h"
 #import "AppDelegate.h"
+#import "RDActionSheet.h"
 
 @implementation TSMiniWebBrowser
 
@@ -117,15 +118,20 @@
     [reloadButton setImage:[UIImage imageNamed:@"reload_icon"] forState:UIControlStateNormal];
     [reloadButton addTarget:self action:@selector(reloadButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     reloadButton.frame = CGRectMake(0, 0, 30, 30);
-    UIBarButtonItem *buttonReload = [[UIBarButtonItem alloc] initWithCustomView:reloadButton];
+    buttonReload = [[UIBarButtonItem alloc] initWithCustomView:reloadButton];
+    buttonReload.enabled = NO;
     
     UIBarButtonItem *fixedSpace2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace2.width = 20;
-
-    UIBarButtonItem *buttonAction = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(buttonActionTouchUp:)];
     
+    UIButton *actionButton = [[UIButton alloc] init];
+    [actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
+    [actionButton addTarget:self action:@selector(buttonActionTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    actionButton.frame = CGRectMake(0, 0, 30, 30);
+    UIBarButtonItem *buttonAction = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+
     // Activity indicator is a bit special
-    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activityIndicator.frame = CGRectMake(11, 7, 20, 20);
     UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 43, 33)];
     [containerView addSubview:activityIndicator];
@@ -294,10 +300,9 @@
         NSURL* url = [webView.request URL];
         urlString = [url absoluteString];
     }
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.title = urlString;
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     actionSheet.delegate = self;
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
         [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
     }
@@ -315,25 +320,10 @@
     }
 
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
-    
-    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-	actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    
-    if (mode == TSMiniWebBrowserModeTabBar) {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    }
-    else if (mode == TSMiniWebBrowserModeNavigation && self.navigationController.tabBarController != nil) {
-        [actionSheet showFromTabBar:self.navigationController.tabBarController.tabBar];
-    }
-    else {
-        [actionSheet showInView:self.view];
-    }
-    
+    [actionSheet showFrom:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == [actionSheet cancelButtonIndex]) return;
-    
     NSURL *theURL = [webView.request URL];
     NSURL *url;
     if (theURL == nil || [theURL isEqual:[NSURL URLWithString:@""]]) {
@@ -342,7 +332,10 @@
     NSString *urlString = [theURL absoluteString];
     
     NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    if ([title isEqualToString:NSLocalizedString(@"Open in Safari", nil)]) {
+    if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
+        return;
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Open in Safari", nil)]) {
         [[UIApplication sharedApplication] openURL:theURL];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
@@ -377,7 +370,7 @@
 
 - (void)reloadButtonTouchUp:(id)sender {
     [webView reload];
-    
+    buttonReload.enabled = NO;
     [self toggleBackForwardButtons];
 }
 
@@ -426,6 +419,7 @@
         [self setTitleBarText:pageTitle];
     }
 
+    buttonReload.enabled = YES;
     [self hideActivityIndicators];
     [self toggleBackForwardButtons];
 }

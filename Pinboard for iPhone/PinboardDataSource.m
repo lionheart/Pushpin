@@ -89,7 +89,6 @@
     NSDate *lastUpdated = [[AppDelegate sharedDelegate] lastUpdated];
     
     void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
-
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         [db beginTransaction];
@@ -129,7 +128,7 @@
         [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
         
         [mixpanel.people set:@"Bookmarks" to:@(total)];
-        
+
         for (NSDictionary *element in elements) {
             updated_or_created = NO;
             count++;
@@ -202,11 +201,11 @@
         for (NSString *bookmarkHash in bookmarksToDelete) {
             [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
         }
-        
+
         [db commit];
 
         [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
-        
+
         if (success) {
             success();
         }
@@ -234,8 +233,6 @@
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-    
-    NSMutableArray *posts = [NSMutableArray array];
     
     NSMutableArray *newPosts = [NSMutableArray array];
     NSMutableArray *newURLs = [NSMutableArray array];
@@ -278,8 +275,6 @@
             else {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
-            
-            [posts addObject:post];
         }
         index++;
     }
