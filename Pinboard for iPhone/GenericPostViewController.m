@@ -433,7 +433,8 @@
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath {
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
+    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
     NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
     NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
@@ -479,7 +480,7 @@
     }
 
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:tagsFont range:dateRange];
+    [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     return attributedString;
 }

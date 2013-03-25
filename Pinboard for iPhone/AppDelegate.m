@@ -429,6 +429,15 @@
                 [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
                 [db executeUpdate:@"PRAGMA user_version=3;"];
+                
+            case 3:
+                [db executeUpdate:@"DROP TABLE rejected_bookmark;"];
+                [db executeUpdate:
+                 @"CREATE TABLE rejected_bookmark("
+                    "created_at DATETIME DEFAULT CURRENT_TIMESTAMP,"
+                    "url TEXT UNIQUE CHECK(length(url) < 2000)"
+                 ");"];
+                [db executeUpdate:@"PRAGMA user_version=4;"];
 
             default:
                 break;
