@@ -34,6 +34,7 @@ typedef NSInteger PPPostAction;
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 
 - (NSArray *)actionsForPost:(NSDictionary *)post;
@@ -80,6 +81,7 @@ typedef NSInteger PPPostAction;
 - (void)copyURL;
 - (void)sendToReadLater;
 - (void)update;
+- (void)updateFromLocalDatabase;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
