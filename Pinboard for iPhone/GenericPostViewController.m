@@ -280,42 +280,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSAttributedString *string = [self attributedStringForPostAtIndexPath:indexPath];
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)(string));
-    CGSize size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), NULL, CGSizeMake(300, CGFLOAT_MAX), nil);
-    DLog(@"FIRST %f", size.height);
-    DLog(@"SECOND %f", [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height);
-    return size.height;
-//    CGRect rect = [string boundingRectWithSize:CGSizeMake(300, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) context:nil];
-    return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height;
-//    return ceilf(rect.size.height);
-
-    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12.f];
-    
-    CGFloat height = 20.0f;
-    NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
-    NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
-    NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
-    NSString *dateString = [self.postDataSource formattedDateForPostAtIndex:indexPath.row];
-
-    height += ceilf([title sizeWithFont:titleFont constrainedToSize:CGSizeMake(300.0f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    
-    if (![description isEqualToString:@""]) {
-        height += ceilf([description sizeWithFont:descriptionFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    }
-    
-    NSString *bottomString;
-    if ([tags isEqualToString:@""]) {
-        bottomString = dateString;
-    }
-    else {
-        bottomString = [NSString stringWithFormat:@"%@ · %@", tags, dateString];
-    }
-
-    height += ceilf([tags sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    height += ceilf([dateString sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
-    return height;
+    return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -488,7 +453,6 @@
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:tagsFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    DLog(@"STRING %f", [attributedString sizeConstrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].height);
     return attributedString;
 }
 
