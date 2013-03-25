@@ -434,9 +434,10 @@
                 [db executeUpdate:@"DROP TABLE rejected_bookmark;"];
                 [db executeUpdate:
                  @"CREATE TABLE rejected_bookmark("
-                    "created_at DATETIME DEFAULT CURRENT_TIMESTAMP,"
-                    "url TEXT UNIQUE CHECK(length(url) < 2000)"
+                    "url TEXT UNIQUE CHECK(length(url) < 2000),"
+                    "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                  ");"];
+                [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN starred BOOL DEFAULT 0;"];
                 [db executeUpdate:@"PRAGMA user_version=4;"];
 
             default:
