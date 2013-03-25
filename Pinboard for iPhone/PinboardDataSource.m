@@ -299,37 +299,6 @@
     } failure:failure];
 }
 
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(0, [[self titleForPostAtIndex:index] length]);
-}
-
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
-    NSString *description = [self descriptionForPostAtIndex:index];
-    if ([description isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
-    }
-}
-
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
-    NSString *tags = [self tagsForPostAtIndex:index];
-    if ([tags isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
-        NSInteger offset = 1;
-        if (descriptionRange.location != NSNotFound) {
-            offset++;
-        }
-        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
-    }
-}
-
 - (NSString *)titleForPostAtIndex:(NSInteger)index {
     return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 }

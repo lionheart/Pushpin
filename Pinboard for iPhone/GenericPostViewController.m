@@ -225,6 +225,37 @@
     });
 }
 
+- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
+    return NSMakeRange(0, [[self.postDataSource titleForPostAtIndex:index] length]);
+}
+
+- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
+    NSString *description = [self.postDataSource descriptionForPostAtIndex:index];
+    if ([description isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
+    }
+}
+
+- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
+    NSString *tags = [self.postDataSource tagsForPostAtIndex:index];
+    if ([tags isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
+        NSInteger offset = 1;
+        if (descriptionRange.location != NSNotFound) {
+            offset++;
+        }
+        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
+    }
+}
+
 #pragma mark - Table view data source
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -248,6 +279,16 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSAttributedString *string = [self attributedStringForPostAtIndexPath:indexPath];
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)(string));
+    CGSize size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), NULL, CGSizeMake(300, CGFLOAT_MAX), nil);
+    DLog(@"FIRST %f", size.height);
+    DLog(@"SECOND %f", [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height);
+    return size.height;
+//    CGRect rect = [string boundingRectWithSize:CGSizeMake(300, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) context:nil];
+    return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height;
+//    return ceilf(rect.size.height);
+
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12.f];
@@ -273,6 +314,7 @@
     }
 
     height += ceilf([tags sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300.f, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
+    height += ceilf([dateString sizeWithFont:tagsFont constrainedToSize:CGSizeMake(300, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap].height);
     return height;
 }
 
@@ -406,14 +448,14 @@
     BOOL isRead = [self.postDataSource isPostAtIndexRead:indexPath.row];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = [self.postDataSource rangeForTitleForPostAtIndex:indexPath.row];
+    NSRange titleRange = [self rangeForTitleForPostAtIndex:indexPath.row];
 
-    NSRange descriptionRange = [self.postDataSource rangeForDescriptionForPostAtIndex:indexPath.row];
+    NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:indexPath.row];
     if (descriptionRange.location != NSNotFound) {
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
     
-    NSRange tagRange = [self.postDataSource rangeForTagsForPostAtIndex:indexPath.row];
+    NSRange tagRange = [self rangeForTagsForPostAtIndex:indexPath.row];
     BOOL hasTags = tagRange.location != NSNotFound;
 
     if (hasTags) {
@@ -421,6 +463,7 @@
     }
     
     [content appendFormat:@"\n%@", dateString];
+    DLog(@"%@", content);
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
@@ -444,8 +487,8 @@
 
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:tagsFont range:dateRange];
-    
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    DLog(@"STRING %f", [attributedString sizeConstrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].height);
     return attributedString;
 }
 

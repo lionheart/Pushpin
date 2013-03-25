@@ -36,10 +36,6 @@ typedef NSInteger PPPostAction;
 - (NSInteger)numberOfPosts;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
-
 - (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
