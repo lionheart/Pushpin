@@ -94,6 +94,10 @@
     return [relativeDateFormatter stringFromDate:[self dateForPostAtIndex:index]];
 }
 
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
+    [self updatePostsWithSuccess:success failure:failure];
+}
+
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
