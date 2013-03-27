@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSMutableDictionary *queryParameters;
 @property (nonatomic) NSInteger maxResults;
 
+- (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure;
 - (void)filterWithParameters:(NSDictionary *)parameters;

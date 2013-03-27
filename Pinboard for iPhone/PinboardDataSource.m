@@ -203,12 +203,9 @@
         }
 
         [db commit];
+        [db close];
 
         [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
-
-        if (success) {
-            success();
-        }
     };
     
     void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -218,15 +215,68 @@
     };
     
     void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        
+        dispatch_group_enter(group);
+        [self updateStarredPosts:^{ dispatch_group_leave(group); } failure:^{ dispatch_group_leave(group); }];
+
         if (lastUpdated == nil || [lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300) {
-            [pinboard bookmarksWithSuccess:BookmarksSuccessBlock failure:BookmarksFailureBlock];
+
+            dispatch_group_enter(group);
+            [pinboard bookmarksWithSuccess:^(NSArray *bookmarks) {
+                BookmarksSuccessBlock(bookmarks);
+                dispatch_group_leave(group);
+            }
+                                   failure:BookmarksFailureBlock];
+            
         }
         else {
             success();
         }
+
+        dispatch_group_notify(group, queue, ^{
+            success();
+        });
     };
     
     [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+}
+
+- (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {
+    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+    NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [delegate setNetworkActivityIndicatorVisible:NO];
+                               
+                               
+                               if (error) {
+                                   if (failure) {
+                                       failure(error);
+                                   }
+                               }
+                               else {
+                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                   [db open];
+                                   [db beginTransaction];
+
+                                   [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE starred=1"];
+                                   for (NSDictionary *post in payload) {
+                                       [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[post[@"u"]]];
+                                   }
+                                   [db commit];
+                                   [db close];
+
+                                   success();
+                               }
+                           }];
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
@@ -257,11 +307,12 @@
         NSDictionary *post = @{
                                @"title": title,
                                @"description": [results stringForColumn:@"description"],
-                               @"unread": [results objectForColumnName:@"unread"],
+                               @"unread": @([results boolForColumn:@"unread"]),
                                @"url": [results stringForColumn:@"url"],
-                               @"private": [results objectForColumnName:@"private"],
+                               @"private": @([results boolForColumn:@"private"]),
                                @"tags": [results stringForColumn:@"tags"],
-                               @"created_at": [results dateForColumn:@"created_at"]
+                               @"created_at": [results dateForColumn:@"created_at"],
+                               @"starred": @([results boolForColumn:@"starred"])
                                };
         
         [newPosts addObject:post];
