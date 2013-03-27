@@ -438,6 +438,7 @@
                     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                  ");"];
                 [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN starred BOOL DEFAULT 0;"];
+                [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
                 [db executeUpdate:@"PRAGMA user_version=4;"];
 
             default:

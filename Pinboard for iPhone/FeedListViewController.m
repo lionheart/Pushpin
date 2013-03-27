@@ -62,7 +62,8 @@
        [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@YES]],
        [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private = ?" withArgumentsInArray:@[@NO]],
        [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread = ?" withArgumentsInArray:@[@(YES)]],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"]
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"],
+       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred = ?" withArgumentsInArray:@[@YES]]
     ];
     
     int i = 0;
@@ -291,6 +292,7 @@
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"star"];
+                    pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedStarredBookmarks]];
                     break;
             }
             break;
@@ -380,9 +382,8 @@
                     break;
                 }
                 case 5: {
-                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                    postViewController.postDataSource = [PinboardFeedDataSource dataSourceWithEndpoint:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/", feedToken, username]];
+                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE starred=:starred ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"starred": @YES, @"limit": @100, @"offset": @0}];
                     postViewController.title = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
