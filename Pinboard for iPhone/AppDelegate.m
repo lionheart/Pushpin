@@ -257,7 +257,7 @@
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
 
-    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
     self.connectionAvailable = @([reach isReachable]);
     reach.reachableBlock = ^(Reachability*reach) {
         self.connectionAvailable = @(YES);
@@ -382,9 +382,9 @@
                  @"CREATE TABLE tagging("
                      "tag_id INTEGER,"
                      "bookmark_id INTEGER,"
-                     "PRIMARY KEY(tag_id, bookmark_id),"
-                     "FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,"
-                     "FOREIGN KEY (bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE"
+                     "PRIMARY KEY (tag_id, bookmark_id),"
+                     "FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE,"
+                     "FOREIGN KEY (bookmark_id) REFERENCES bookmark (id) ON DELETE CASCADE"
                  ");" ];
                 [db executeUpdate:
                  @"CREATE TABLE note("
@@ -412,10 +412,11 @@
                 [db executeUpdate:@"CREATE INDEX bookmark_title_idx ON bookmark (title);"];
                 [db executeUpdate:@"CREATE INDEX note_title_idx ON note (title);"];
 
-                [db executeUpdate:@"PRAGMA foreign_keys=1;"];
+                // Has no effect here
+                // [db executeUpdate:@"PRAGMA foreign_keys=1;"];
 
                 // http://stackoverflow.com/a/875422/39155
-                [db executeUpdate:@"PRAGMA syncronous=1;"];
+                [db executeUpdate:@"PRAGMA syncronous=NORMAL;"];
                 [db executeUpdate:@"PRAGMA user_version=1;"];
 
             case 1:
@@ -431,12 +432,14 @@
                 [db executeUpdate:@"PRAGMA user_version=3;"];
                 
             case 3:
-                [db executeUpdate:@"DROP TABLE rejected_bookmark;"];
+                [db executeUpdate:@"ALTER TABLE rejected_bookmark RENAME TO rejected_bookmark_old;"];
                 [db executeUpdate:
                  @"CREATE TABLE rejected_bookmark("
                     "url TEXT UNIQUE CHECK(length(url) < 2000),"
                     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                  ");"];
+                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES (SELECT url FROM rejected_bookmark_old);"];
+                // [db executeUpdate:@"DROP TABLE rejected_bookmark_old"];
                 [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN starred BOOL DEFAULT 0;"];
                 [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
                 [db executeUpdate:@"PRAGMA user_version=4;"];

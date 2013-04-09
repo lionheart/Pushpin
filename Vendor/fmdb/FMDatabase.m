@@ -817,11 +817,11 @@
      ** executed is not a SELECT statement, we assume no data will be returned.
      */
     numberOfRetries = 0;
-    
+
     do {
         rc      = sqlite3_step(pStmt);
         retry   = NO;
-        
+
         if (SQLITE_BUSY == rc || SQLITE_LOCKED == rc) {
             // this will happen if the db is locked, like if we are doing an update or insert.
             // in that case, retry the step... and maybe wait just 10 milliseconds.
