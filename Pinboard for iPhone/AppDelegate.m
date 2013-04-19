@@ -761,11 +761,6 @@
                            failure:BookmarksFailureBlock];
 }
 
-#warning Deprecated
-- (void)updateBookmarks {
-    [self updateBookmarksWithDelegate:nil];
-}
-
 #pragma mark - Helpers
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {

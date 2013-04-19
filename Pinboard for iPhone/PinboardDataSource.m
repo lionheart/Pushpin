@@ -305,15 +305,15 @@
             title = @"untitled";
         }
         NSDictionary *post = @{
-                               @"title": title,
-                               @"description": [results stringForColumn:@"description"],
-                               @"unread": @([results boolForColumn:@"unread"]),
-                               @"url": [results stringForColumn:@"url"],
-                               @"private": @([results boolForColumn:@"private"]),
-                               @"tags": [results stringForColumn:@"tags"],
-                               @"created_at": [results dateForColumn:@"created_at"],
-                               @"starred": @([results boolForColumn:@"starred"])
-                               };
+               @"title": title,
+               @"description": [results stringForColumn:@"description"],
+               @"unread": @([results boolForColumn:@"unread"]),
+               @"url": [results stringForColumn:@"url"],
+               @"private": @([results boolForColumn:@"private"]),
+               @"tags": [results stringForColumn:@"tags"],
+               @"created_at": [results dateForColumn:@"created_at"],
+               @"starred": @([results boolForColumn:@"starred"])
+           };
         
         [newPosts addObject:post];
         [newURLs addObject:post[@"url"]];

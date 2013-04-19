@@ -131,7 +131,7 @@
         NSTimeInterval duration = 0;
         NSValue *infoDuration = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
         [infoDuration getValue:&duration];
-        
+
         CGRect frame = self.view.frame;
         frame.origin.y += keyboardSize.height - 100;
         frame.size.height -= keyboardSize.height - 100;
