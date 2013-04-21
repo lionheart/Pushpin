@@ -10,6 +10,7 @@
 #import "FeedListViewController.h"
 #import "NoteViewController.h"
 #import "TagViewController.h"
+#import "SettingsViewController.h"
 
 @interface HomeViewController ()
 
@@ -32,6 +33,13 @@
     self.scrollView.canCancelContentTouches = NO;
     self.scrollView.delaysContentTouches = NO;
     self.scrollView.delegate = self;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
+    [button addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
+    button.frame = CGRectMake(0, 0, 46, 48);
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     
     self.feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
     self.feedListViewController.tableView.frame = CGRectMake(0, 0, 320, height);
@@ -57,6 +65,11 @@
     [self.scrollView addSubview:self.tagViewController.view];
     [self.scrollView addSubview:self.noteViewController.view];
     self.view = self.scrollView;
+}
+
+- (void)openSettings {
+    SettingsViewController *svc = [[SettingsViewController alloc] init];
+    [self.navigationController pushViewController:svc animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -12,6 +12,8 @@
 #import "NSData+Additions.h"
 #import <ASPinboard/ASPinboard.h>
 #import "PrimaryNavigationViewController.h"
+#import "PinboardDataSource.h"
+#import "HomeViewController.h"
 
 @interface LoginViewController ()
 
@@ -190,7 +192,32 @@
                                        self.progressView.hidden = NO;
 
                                        [delegate setToken:token];
-                                       [delegate updateBookmarksWithDelegate:self];
+                                       
+                                       PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                                       [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
+                                           PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+                                           pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+                                           pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
+                                           
+                                           GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+                                           pinboardViewController.postDataSource = pinboardDataSource;
+                                           pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                                           
+                                           HomeViewController *homeViewController = [[HomeViewController alloc] init];
+                                           homeViewController.title = @"Browse";
+                                           UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+                                           navigationController.viewControllers = @[homeViewController, pinboardViewController];
+                                           navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                           [navigationController popToViewController:pinboardViewController animated:NO];
+                                           
+                                           [self presentViewController:navigationController animated:YES completion:nil];
+                                       }
+                                                                                       failure:nil
+                                                                                      progress:^(NSInteger current, NSInteger total) {
+                                                                                          [self.progressView setProgress:current/(float)total animated:YES];
+                                                                                      }];
+                                       
+                                       
                                        [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                            [delegate setFeedToken:feedToken];
                                        }];

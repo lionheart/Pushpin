@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMessageComposeViewController.h>
+#import "PPSwitch.h"
 
 @interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate>
 
@@ -25,8 +26,8 @@
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
-@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
-@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
+@property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
 @property (nonatomic, retain) NSMutableArray *availableBrowsers;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;

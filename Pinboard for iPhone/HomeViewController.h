@@ -22,5 +22,6 @@
 @property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeGestureRecognizer;
 
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
+- (void)openSettings;
 
 @end

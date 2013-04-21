@@ -67,7 +67,6 @@ enum bookmarkupdateevents {
 
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
-@property (nonatomic, retain) FMDatabaseQueue *dbQueue;
 @property (nonatomic, retain) NSTimer *refreshTimer;
 @property (nonatomic) BOOL bookmarksLoading;
 
@@ -77,7 +76,6 @@ enum bookmarkupdateevents {
 - (void)migrateDatabase;
 - (void)updateBookmarks;
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
-- (void)updateBookmarksWithDelegate:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;

@@ -59,6 +59,18 @@
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
+		372D432E1723A7AC00E802C0 /* SwitchOff.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D432A1723A7AC00E802C0 /* SwitchOff.png */; };
+		372D432F1723A7AC00E802C0 /* SwitchOff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D432B1723A7AC00E802C0 /* SwitchOff@2x.png */; };
+		372D43301723A7AC00E802C0 /* SwitchOn.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D432C1723A7AC00E802C0 /* SwitchOn.png */; };
+		372D43311723A7AC00E802C0 /* SwitchOn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D432D1723A7AC00E802C0 /* SwitchOn@2x.png */; };
+		372D43371723A87E00E802C0 /* SettingsNavigation.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43331723A87E00E802C0 /* SettingsNavigation.png */; };
+		372D43381723A87E00E802C0 /* SettingsNavigation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43341723A87E00E802C0 /* SettingsNavigation@2x.png */; };
+		372D43391723A87E00E802C0 /* SettingsNavigationDimmed.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43351723A87E00E802C0 /* SettingsNavigationDimmed.png */; };
+		372D433A1723A87E00E802C0 /* SettingsNavigationDimmed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */; };
+		372D433E1723AD2100E802C0 /* TTSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D433D1723AD2100E802C0 /* TTSwitch.m */; };
+		372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D433F1723AE1A00E802C0 /* SwitchThumb.png */; };
+		372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */; };
+		372D43491724492E00E802C0 /* PPSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D43481724492E00E802C0 /* PPSwitch.m */; };
 		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
 		372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887A1673EDEF0073D0B6 /* HTMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887C1673EDEF0073D0B6 /* HTMLParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -428,6 +440,20 @@
 		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3727558A161A66A2001A857B /* TagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagViewController.h; sourceTree = "<group>"; };
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
+		372D432A1723A7AC00E802C0 /* SwitchOff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SwitchOff.png; sourceTree = "<group>"; };
+		372D432B1723A7AC00E802C0 /* SwitchOff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchOff@2x.png"; sourceTree = "<group>"; };
+		372D432C1723A7AC00E802C0 /* SwitchOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SwitchOn.png; sourceTree = "<group>"; };
+		372D432D1723A7AC00E802C0 /* SwitchOn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchOn@2x.png"; sourceTree = "<group>"; };
+		372D43331723A87E00E802C0 /* SettingsNavigation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SettingsNavigation.png; sourceTree = "<group>"; };
+		372D43341723A87E00E802C0 /* SettingsNavigation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SettingsNavigation@2x.png"; sourceTree = "<group>"; };
+		372D43351723A87E00E802C0 /* SettingsNavigationDimmed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SettingsNavigationDimmed.png; sourceTree = "<group>"; };
+		372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SettingsNavigationDimmed@2x.png"; sourceTree = "<group>"; };
+		372D433C1723AD2100E802C0 /* TTSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSwitch.h; sourceTree = "<group>"; };
+		372D433D1723AD2100E802C0 /* TTSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSwitch.m; sourceTree = "<group>"; };
+		372D433F1723AE1A00E802C0 /* SwitchThumb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SwitchThumb.png; sourceTree = "<group>"; };
+		372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchThumb@2x.png"; sourceTree = "<group>"; };
+		372D43471724492E00E802C0 /* PPSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSwitch.h; sourceTree = "<group>"; };
+		372D43481724492E00E802C0 /* PPSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSwitch.m; sourceTree = "<group>"; };
 		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		372F88791673EDEF0073D0B6 /* HTMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLNode.h; sourceTree = "<group>"; };
@@ -866,6 +892,7 @@
 				37F5CA211679915700327AAC /* UserVoice */,
 				37D2351916B8DDC0007541DC /* TTTAttributedLabel.h */,
 				37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */,
+				372D433B1723AD2100E802C0 /* TTSwitch */,
 				3777C97716798DC50046D4EB /* TSMiniWebBrowser */,
 				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
 				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
@@ -965,6 +992,42 @@
 			);
 			name = PullToRefreshAnimating;
 			path = Assets/PullToRefreshAnimating;
+			sourceTree = "<group>";
+		};
+		372D43291723A7AC00E802C0 /* Appearance */ = {
+			isa = PBXGroup;
+			children = (
+				372D433F1723AE1A00E802C0 /* SwitchThumb.png */,
+				372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */,
+				372D432A1723A7AC00E802C0 /* SwitchOff.png */,
+				372D432B1723A7AC00E802C0 /* SwitchOff@2x.png */,
+				372D432C1723A7AC00E802C0 /* SwitchOn.png */,
+				372D432D1723A7AC00E802C0 /* SwitchOn@2x.png */,
+			);
+			name = Appearance;
+			path = Assets/Appearance;
+			sourceTree = "<group>";
+		};
+		372D43321723A87E00E802C0 /* Navigation Bar */ = {
+			isa = PBXGroup;
+			children = (
+				372D43331723A87E00E802C0 /* SettingsNavigation.png */,
+				372D43341723A87E00E802C0 /* SettingsNavigation@2x.png */,
+				372D43351723A87E00E802C0 /* SettingsNavigationDimmed.png */,
+				372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */,
+			);
+			name = "Navigation Bar";
+			path = "Assets/Navigation Bar";
+			sourceTree = "<group>";
+		};
+		372D433B1723AD2100E802C0 /* TTSwitch */ = {
+			isa = PBXGroup;
+			children = (
+				372D433C1723AD2100E802C0 /* TTSwitch.h */,
+				372D433D1723AD2100E802C0 /* TTSwitch.m */,
+			);
+			name = TTSwitch;
+			path = Vendor/TTSwitch;
 			sourceTree = "<group>";
 		};
 		372F88781673EDEF0073D0B6 /* HTMLParser */ = {
@@ -1484,6 +1547,8 @@
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
 				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
+				372D43471724492E00E802C0 /* PPSwitch.h */,
+				372D43481724492E00E802C0 /* PPSwitch.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
 				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
@@ -1512,6 +1577,8 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				372D43321723A87E00E802C0 /* Navigation Bar */,
+				372D43291723A7AC00E802C0 /* Appearance */,
 				371B27FE16F8FE0400E74D65 /* PullToRefreshAnimating */,
 				373C823C16F8043100A7D7C8 /* PullToRefresh */,
 				370EE75715ED23F300B262E2 /* Icons */,
@@ -1924,6 +1991,16 @@
 				371B285216F9449200E74D65 /* forward_icon_active@2x.png in Resources */,
 				37D78C6416FA83140060A4A3 /* UIButtonBarAction.png in Resources */,
 				37D78C6516FA83140060A4A3 /* UIButtonBarAction@2x.png in Resources */,
+				372D432E1723A7AC00E802C0 /* SwitchOff.png in Resources */,
+				372D432F1723A7AC00E802C0 /* SwitchOff@2x.png in Resources */,
+				372D43301723A7AC00E802C0 /* SwitchOn.png in Resources */,
+				372D43311723A7AC00E802C0 /* SwitchOn@2x.png in Resources */,
+				372D43371723A87E00E802C0 /* SettingsNavigation.png in Resources */,
+				372D43381723A87E00E802C0 /* SettingsNavigation@2x.png in Resources */,
+				372D43391723A87E00E802C0 /* SettingsNavigationDimmed.png in Resources */,
+				372D433A1723A87E00E802C0 /* SettingsNavigationDimmed@2x.png in Resources */,
+				372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */,
+				372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2028,6 +2105,8 @@
 				37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */,
 				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
+				372D433E1723AD2100E802C0 /* TTSwitch.m in Sources */,
+				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2112,7 +2191,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A611F94E-C6CD-443F-B85A-EA8815F71B7B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EFDD05F7-8D3A-4DE3-8896-A95DF6F63DD9";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
@@ -2178,7 +2257,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A974ECF7-6F7B-42F3-8F75-5EBF56C82467";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3B5BEC76-FA53-40FA-B75B-DAD4FF2A1D6C";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
@@ -2221,7 +2300,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "911118F9-7295-4044-B579-82619C0EE650";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "0F51BB45-151C-4A1A-85CE-EE7A9EF6D3A8";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;

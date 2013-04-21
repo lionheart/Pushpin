@@ -83,11 +83,19 @@
     return [self.posts count];
 }
 
-- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure {
+- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     NSDate *lastUpdated = [[AppDelegate sharedDelegate] lastUpdated];
     
+    if (!progress) {
+        progress = ^(NSInteger current, NSInteger total) {};
+    }
+    
+    if (!success) {
+        success = ^{};
+    }
+
     void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -129,9 +137,9 @@
         
         [mixpanel.people set:@"Bookmarks" to:@(total)];
 
+        progress(0, total);
         for (NSDictionary *element in elements) {
             updated_or_created = NO;
-            count++;
 
             bookmarkMeta = metas[element[@"hash"]];
             if (bookmarkMeta) {
@@ -195,6 +203,9 @@
                     [db executeUpdate:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
                 }
             }
+
+            progress(count, total);
+            count++;
         }
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
         
@@ -206,6 +217,7 @@
         [db close];
 
         [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
+        progress(total, total);
     };
     
     void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -219,20 +231,19 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         
         dispatch_group_enter(group);
-        [self updateStarredPosts:^{ dispatch_group_leave(group); } failure:^{ dispatch_group_leave(group); }];
-
         if (lastUpdated == nil || [lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300) {
 
             dispatch_group_enter(group);
             [pinboard bookmarksWithSuccess:^(NSArray *bookmarks) {
                 BookmarksSuccessBlock(bookmarks);
+                [self updateStarredPosts:^{ dispatch_group_leave(group); } failure:^{ dispatch_group_leave(group); }];
                 dispatch_group_leave(group);
             }
                                    failure:BookmarksFailureBlock];
             
         }
         else {
-            success();
+            dispatch_group_leave(group);
         }
 
         dispatch_group_notify(group, queue, ^{
@@ -254,7 +265,6 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
-                               
                                
                                if (error) {
                                    if (failure) {
@@ -344,11 +354,13 @@
     }
 }
 
+/*
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
     [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
         [self updatePostsFromDatabaseWithSuccess:success failure:failure];
-    } failure:failure];
+    } failure:failure progress:nil];
 }
+ */
 
 - (NSString *)titleForPostAtIndex:(NSInteger)index {
     return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
