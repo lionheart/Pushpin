@@ -1695,7 +1695,7 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 			};
-			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin for Pinboard" */;
+			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2352,7 +2352,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin for Pinboard" */ = {
+		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA415745488003F2B77 /* Debug */,
