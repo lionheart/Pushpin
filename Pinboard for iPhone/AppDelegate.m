@@ -23,6 +23,7 @@
 #import "SettingsViewController.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
+#import "TTSwitch.h"
 
 @implementation AppDelegate
 
@@ -37,7 +38,6 @@
 @synthesize dateFormatter;
 @synthesize bookmarksUpdated;
 @synthesize bookmarksUpdatedMessage;
-@synthesize dbQueue;
 @synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
 @synthesize navigationViewController;
@@ -190,7 +190,6 @@
 
     // Customize Tool Bar
     
-    
     CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
     CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
@@ -297,24 +296,7 @@
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
         navigationController.viewControllers = @[homeViewController, pinboardViewController];
         [navigationController popToViewController:pinboardViewController animated:NO];
-
         [self.window setRootViewController:navigationController];
-        
-        /*
-
-        BookmarkViewController *allBookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset" parameters:nil];
-        allBookmarkViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-
-        HomeViewController *homeViewController = [[HomeViewController alloc] init];
-        homeViewController.title = NSLocalizedString(@"Browse Tab Bar Title", nil);
-        homeViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"cog-white"] style:UIBarButtonItemStylePlain target:self action:@selector(openSettings)];
-
-        self.navigationViewController = [[PrimaryNavigationViewController alloc] initWithRootViewController:homeViewController];
-
-        [self.navigationViewController setViewControllers:@[homeViewController, allBookmarkViewController]];
-        [self.navigationViewController popToViewController:allBookmarkViewController animated:NO];
-        [self.window setRootViewController:self.navigationViewController];
-         */
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
@@ -329,7 +311,6 @@
     
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
-    self.dbQueue = [FMDatabaseQueue databaseQueueWithPath:[AppDelegate databasePath]];
 
     [self migrateDatabase];
     
@@ -337,8 +318,8 @@
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
     NSString *key = [NSString stringWithFormat:@"%@.DownloadedBeforeIAP", [[NSBundle mainBundle] bundleIdentifier]];
     if (store) {
-        [store setBool:YES forKey:key];
-        [store synchronize];
+        DLog(@"%@", [store boolForKey:key] ? @"yes" : @"no");
+        [store setBool:NO forKey:key];
     }
     
     didLaunchWithURL = NO;
@@ -576,189 +557,6 @@
 
 - (NSString *)username {
     return [[[self token] componentsSeparatedByString:@":"] objectAtIndex:0];
-}
-
-- (void)updateNotes {
-    if (!self.connectionAvailable.boolValue) {
-        // TODO
-        return;
-    }
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard notesWithSuccess:^(NSArray *notes) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_current_queue(), ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                [db open];
-                [db beginTransaction];
-                
-                for (id note in notes) {
-                    NSDictionary *params = @{
-                                             @"remote_id": note[@"id"],
-                                             @"title": note[@"title"],
-                                             @"length": note[@"length"],
-                                             @"hash": note[@"hash"],
-                                             @"text": note[@"text"],
-                                             @"created_at": [self.dateFormatter dateFromString:note[@"created_on"]],
-                                             @"updated_at": [self.dateFormatter dateFromString:note[@"updated_on"]]
-                                             };
-                    
-                    [db executeUpdate:@"INSERT INTO note (title, length, hash, text, created_at, updated_at) VALUES (:title, :length, :hash, :text, :created_at, :updated_at);" withParameterDictionary:params];
-                }
-                
-                [db commit];
-                [db close];
-            });
-        });
-    }];
-}
-
-- (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-
-    if (self.lastUpdated != nil) {
-        self.bookmarksLoading = YES;
-    }
-    
-    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        [db beginTransaction];
-
-        db.logsErrors = NO;
-        [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
-
-        FMResultSet *results;
-
-        results = [db executeQuery:@"SELECT * FROM tag"];
-        NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
-
-        while ([results next]) {
-            [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
-        }
-        results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
-
-        NSMutableDictionary *metas = [[NSMutableDictionary alloc] init];
-        NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
-        while ([results next]) {
-            [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
-            [metas setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
-        }
-        NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
-
-        NSString *bookmarkMeta;
-        NSNumber *tagIdNumber;
-        BOOL updated_or_created = NO;
-        NSUInteger count = 0;
-        NSUInteger skipCount = 0;
-        NSUInteger newBookmarkCount = 0;
-        NSUInteger total = elements.count;
-        NSDictionary *params;
-
-        [mixpanel.people set:@"Bookmarks" to:@(total)];
-
-        for (NSDictionary *element in elements) {
-            updated_or_created = NO;
-            count++;
-            
-            if (updateDelegate) {
-                [updateDelegate bookmarkUpdateEvent:@(count) total:@(total)];
-            }
-            
-            bookmarkMeta = metas[element[@"hash"]];
-            if (bookmarkMeta) {
-                while (skipCount < oldBookmarkHashes.count && ![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
-                    [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
-                    skipCount++;
-                }
-                skipCount++;
-                
-                if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
-                    updated_or_created = YES;
-                    params = @{
-                               @"url": element[@"href"],
-                               @"title": element[@"description"],
-                               @"description": element[@"extended"],
-                               @"meta": element[@"meta"],
-                               @"hash": element[@"hash"],
-                               @"tags": element[@"tags"],
-                               @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([element[@"shared"] isEqualToString:@"no"])
-                               };
-                    
-                    [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id IN (SELECT id FROM bookmark WHERE hash=?)" withArgumentsInArray:@[element[@"hash"]]];
-                }
-            }
-            else {
-                newBookmarkCount++;
-                updated_or_created = YES;
-                params = @{
-                           @"url": element[@"href"],
-                           @"title": element[@"description"],
-                           @"description": element[@"extended"],
-                           @"meta": element[@"meta"],
-                           @"hash": element[@"hash"],
-                           @"tags": element[@"tags"],
-                           @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                           @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                           @"created_at": [self.dateFormatter dateFromString:element[@"time"]]
-                           };
-                
-                [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-            }
-            
-            if ([element[@"tags"] length] == 0) {
-                continue;
-            }
-            
-            if (updated_or_created) {
-                for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                    tagIdNumber = [tags objectForKey:tagName];
-                    if (!tagIdNumber) {
-                        [db executeUpdate:@"INSERT INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                        
-                        results = [db executeQuery:@"SELECT last_insert_rowid();"];
-                        [results next];
-                        tagIdNumber = @([results intForColumnIndex:0]);
-                        [tags setObject:tagIdNumber forKey:tagName];
-                    }
-                    
-                    [db executeUpdate:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
-                }
-            }
-        }
-        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-
-        for (NSString *bookmarkHash in bookmarksToDelete) {
-            [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
-        }
-
-        [db commit];
-
-        [self setLastUpdated:[NSDate date]];
-
-        if (newBookmarkCount > 0) {
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            if (newBookmarkCount == 1) {
-                notification.alertBody = [NSString stringWithFormat:NSLocalizedString(@"1 bookmark was added.", nil)];
-            }
-            else {
-                notification.alertBody = [NSString stringWithFormat:NSLocalizedString(@"%d bookmarks were added.", nil), newBookmarkCount];
-            }
-            notification.alertAction = @"Open Pushpin";
-            notification.userInfo = @{@"success": @YES, @"updated": @YES};
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-        }
-        self.bookmarksLoading = NO;
-    };
-
-    void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
-        self.bookmarksLoading = NO;
-    };
-
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard bookmarksWithSuccess:BookmarksSuccessBlock
-                           failure:BookmarksFailureBlock];
 }
 
 #pragma mark - Helpers

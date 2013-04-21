@@ -101,6 +101,7 @@
         self.tableView.opaque = NO;
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        
         self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
         [self calculateBookmarkCounts:nil];
     }
