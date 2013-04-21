@@ -316,11 +316,8 @@
     
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
-    NSString *key = [NSString stringWithFormat:@"%@.DownloadedBeforeIAP", [[NSBundle mainBundle] bundleIdentifier]];
-    if (store) {
-        DLog(@"%@", [store boolForKey:key] ? @"yes" : @"no");
-        [store setBool:NO forKey:key];
-    }
+    [store synchronize];
+    DLog(@"%@", [store dictionaryRepresentation]);
     
     didLaunchWithURL = NO;
     return YES;
