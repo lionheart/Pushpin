@@ -22,7 +22,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.aurora.pushpin</string>
+	<string>io.aurora.pushpin2</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -30,18 +30,18 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.2</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.readitlater</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pocketapp11122</string>
 			</array>
-			<key>CFBundleURLName</key>
-			<string>com.readitlater</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
