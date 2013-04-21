@@ -579,8 +579,6 @@
             });
         });
     });
-
-    dispatch_release(group);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

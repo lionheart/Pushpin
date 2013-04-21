@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
-	<string>$(AppIdentifierPrefix)io.aurora.pushpindev</string>
+	<string>$(TeamIdentifierPrefix)io.aurora.pushpindev</string>
 	<key>get-task-allow</key>
 	<true/>
 	<key>keychain-access-groups</key>
