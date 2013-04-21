@@ -31,7 +31,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.aurora.pushpinbeta2</string>
+	<string>io.aurora.pushpin2beta</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -58,7 +58,7 @@
 			<key>CFBundleURLIconFile</key>
 			<string>Icon</string>
 			<key>CFBundleURLName</key>
-			<string>io.aurora.pushpinbeta</string>
+			<string>io.aurora.pushpin</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pushpin</string>
