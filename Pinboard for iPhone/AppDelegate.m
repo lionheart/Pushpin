@@ -316,7 +316,6 @@
     
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
-    [store synchronize];
     DLog(@"%@", [store dictionaryRepresentation]);
     
     didLaunchWithURL = NO;

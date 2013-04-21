@@ -833,7 +833,7 @@
 		37F5CA3C1679915700327AAC /* uv_x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uv_x.png; sourceTree = "<group>"; };
 		37F5CA3D1679915700327AAC /* uv_x@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uv_x@2x.png"; sourceTree = "<group>"; };
 		37F5CA3E1679915700327AAC /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/UserVoice.strings"; sourceTree = "<group>"; };
-		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEEB8E15745488003F2B77 /* Pushpin 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pushpin 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1477,7 +1477,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin.app */,
+				37FEEB8E15745488003F2B77 /* Pushpin 2.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1684,7 +1684,7 @@
 			);
 			name = "Pushpin 2";
 			productName = "Pinboard for iPhone";
-			productReference = 37FEEB8E15745488003F2B77 /* Pushpin.app */;
+			productReference = 37FEEB8E15745488003F2B77 /* Pushpin 2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
