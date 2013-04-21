@@ -1668,9 +1668,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37FEEB8D15745488003F2B77 /* Pushpin */ = {
+		37FEEB8D15745488003F2B77 /* Pushpin 2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
+			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin 2" */;
 			buildPhases = (
 				37B65FDA1672D0270041DA8C /* ShellScript */,
 				37FEEB8A15745488003F2B77 /* Sources */,
@@ -1682,7 +1682,7 @@
 			dependencies = (
 				37A7D60F16BA2FFC00B39DD8 /* PBXTargetDependency */,
 			);
-			name = Pushpin;
+			name = "Pushpin 2";
 			productName = "Pinboard for iPhone";
 			productReference = 37FEEB8E15745488003F2B77 /* Pushpin.app */;
 			productType = "com.apple.product-type.application";
@@ -1719,7 +1719,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				37FEEB8D15745488003F2B77 /* Pushpin */,
+				37FEEB8D15745488003F2B77 /* Pushpin 2 */,
 			);
 		};
 /* End PBXProject section */
@@ -2362,7 +2362,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */ = {
+		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin 2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEEBA715745488003F2B77 /* Debug */,
