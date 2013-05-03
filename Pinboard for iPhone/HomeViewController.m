@@ -69,6 +69,7 @@
 
 - (void)openSettings {
     SettingsViewController *svc = [[SettingsViewController alloc] init];
+    svc.title = NSLocalizedString(@"Settings", nil);
     [self.navigationController pushViewController:svc animated:YES];
 }
 

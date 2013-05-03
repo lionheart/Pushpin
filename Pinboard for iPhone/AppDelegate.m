@@ -240,6 +240,13 @@
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:newBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackground forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100, -100) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setTintColor:HEX(0xEAECF1FF)];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: HEX(0x4A5768FF),
+                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
+                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:12]
+     }
+                                                forState:UIControlStateNormal];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
