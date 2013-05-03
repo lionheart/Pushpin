@@ -121,6 +121,9 @@
                                                                  otherButtonTitles:nil];
         self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         self.availableBrowsers = [NSMutableArray array];
+        
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
     }
     return self;
 }
@@ -244,6 +247,7 @@
     }
     
     cell.accessoryView = nil;
+    cell.backgroundColor = [UIColor whiteColor];
     
     CGSize size;
     CGSize switchSize;

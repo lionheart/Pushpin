@@ -31,7 +31,7 @@
         CGContextClosePath(context);
 
         CGContextAddRoundedRect(context, CGRectMake(0, 8, 60, 23), 11.5);
-        CGContextSetFillColorWithColor(context, HEX(0xF7F7F7FF).CGColor);
+        CGContextSetFillColorWithColor(context, HEX(0xFFFFFFFF).CGColor);
         CGContextEOFillPath(context);
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         [self addSubview:[[UIImageView alloc] initWithImage:image]];
