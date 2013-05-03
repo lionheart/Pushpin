@@ -47,7 +47,7 @@
 }
 
 - (void)setOn:(BOOL)on {
-    if (!on) {
+    if (on) {
         self.offImageView.frame = CGRectMake(32, 8, 60, 23);
         self.onImageView.frame = CGRectMake(0, 8, 60, 23);
         self.onImageView.alpha = 1;
@@ -62,7 +62,6 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -76,6 +75,7 @@
             self.onImageView.frame = CGRectMake(0, 8, 60, 23);
             self.onImageView.alpha = 1;
             self.offImageView.alpha = 0;
+            [self sendActionsForControlEvents:UIControlEventValueChanged];
         }];
     }
     else {
@@ -84,6 +84,7 @@
             self.onImageView.frame = CGRectMake(-32, 8, 60, 23);
             self.onImageView.alpha = 0;
             self.offImageView.alpha = 1;
+            [self sendActionsForControlEvents:UIControlEventValueChanged];
         }];
     }
 }
