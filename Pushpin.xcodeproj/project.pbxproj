@@ -77,8 +77,6 @@
 		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */; };
-		372F8888167429DA0073D0B6 /* Beta-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8886167429DA0073D0B6 /* Beta-Info.plist */; };
-		372F8889167429DA0073D0B6 /* Dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372F8887167429DA0073D0B6 /* Dev-Info.plist */; };
 		372F890816755A2E0073D0B6 /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88FE16755A2E0073D0B6 /* MPCJSONDataSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890916755A2E0073D0B6 /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890016755A2E0073D0B6 /* MPCJSONSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890A16755A2E0073D0B6 /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890216755A2E0073D0B6 /* MPCSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -193,8 +191,6 @@
 		37561D8216ADC86100D69CDE /* OATestServer.rb in Resources */ = {isa = PBXBuildFile; fileRef = 37561D6B16ADC86100D69CDE /* OATestServer.rb */; };
 		37561D8316ADC86100D69CDE /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D6D16ADC86100D69CDE /* OAToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D8416ADC86100D69CDE /* OATokenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D6F16ADC86100D69CDE /* OATokenManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		37561D8516ADC86100D69CDE /* README in Resources */ = {isa = PBXBuildFile; fileRef = 37561D7116ADC86100D69CDE /* README */; };
-		37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37561D8816ADFEC400D69CDE /* Pushpin.entitlements */; };
 		37561D9116AE05B900D69CDE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9016AE05B900D69CDE /* KeychainItemWrapper.m */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		375A1003167D47FD00320495 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFB167D47FD00320495 /* PocketAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -329,8 +325,6 @@
 		37DCCF37158AF3FC00ED71B1 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF2C158AF3FC00ED71B1 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF38158AF3FC00ED71B1 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF2E158AF3FC00ED71B1 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37DCCF3D158AF40900ED71B1 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DCCF3A158AF40900ED71B1 /* NSAttributedString+Attributes.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		37DF2CC016C4B7EA00CFCA81 /* Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */; };
-		37DF2CC216C4B80600CFCA81 /* Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 37DF2CC116C4B80600CFCA81 /* Dev.entitlements */; };
 		37E3299D1629DF9500A6BC18 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329931629DF9500A6BC18 /* FMDatabase.m */; };
 		37E3299E1629DF9500A6BC18 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329951629DF9500A6BC18 /* FMDatabaseAdditions.m */; };
 		37E3299F1629DF9500A6BC18 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E329971629DF9500A6BC18 /* FMDatabasePool.m */; };
@@ -1772,8 +1766,6 @@
 				37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */,
 				37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */,
 				372F88801673EDEF0073D0B6 /* README.md in Resources */,
-				372F8888167429DA0073D0B6 /* Beta-Info.plist in Resources */,
-				372F8889167429DA0073D0B6 /* Dev-Info.plist in Resources */,
 				3777C98216798DC50046D4EB /* back_icon.png in Resources */,
 				3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */,
 				3777C98416798DC50046D4EB /* forward_icon.png in Resources */,
@@ -1802,8 +1794,6 @@
 				3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */,
 				3740A24116863CF000F95D82 /* Localizable.strings in Resources */,
 				37561D8216ADC86100D69CDE /* OATestServer.rb in Resources */,
-				37561D8516ADC86100D69CDE /* README in Resources */,
-				37561D8916ADFEC400D69CDE /* Pushpin.entitlements in Resources */,
 				37D2351316B8DBD4007541DC /* cog-white.png in Resources */,
 				37D2351416B8DBD4007541DC /* cog-white@2x.png in Resources */,
 				37D2351516B8DBD4007541DC /* cog.png in Resources */,
@@ -1835,8 +1825,6 @@
 				37D0D0BD16B8E0C10062C27E /* 58-bookmark@2x.png in Resources */,
 				37D0D0BE16B8E0C10062C27E /* 106-sliders.png in Resources */,
 				37D0D0BF16B8E0C10062C27E /* 106-sliders@2x.png in Resources */,
-				37DF2CC016C4B7EA00CFCA81 /* Beta.entitlements in Resources */,
-				37DF2CC216C4B80600CFCA81 /* Dev.entitlements in Resources */,
 				3780BB4C16E925A2006F5435 /* top-right-lock.png in Resources */,
 				3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */,
 				3780BB5016E9267F006F5435 /* top-left-star.png in Resources */,
