@@ -12,6 +12,7 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import "PPSwitch.h"
 #import "RDActionSheet.h"
+#import "TTAlertView.h"
 
 @interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
@@ -22,7 +23,7 @@
 @property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
 @property (nonatomic, retain) UIAlertView *instapaperAlertView;
 @property (nonatomic, retain) UIAlertView *readabilityAlertView;
-@property (nonatomic, retain) UIAlertView *logOutAlertView;
+@property (nonatomic, retain) TTAlertView *logOutAlertView;
 @property (nonatomic, retain) RDActionSheet *browserActionSheet;
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
