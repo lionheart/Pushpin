@@ -536,7 +536,6 @@
     }
     [db close];
 
-
     [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
     // [sheet addButtonWithTitle:NSLocalizedString(@"Copy Title", nil)];
 

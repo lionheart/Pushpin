@@ -50,42 +50,34 @@
         self.navigationItem.rightBarButtonItem = barButtonItem;
         
         self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
-        NSUInteger cancelButtonIndex = 2;
+        self.browserActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Webview", nil)];
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
 
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
-            cancelButtonIndex++;
         }
 
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
-            cancelButtonIndex++;
         }
         
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
-            cancelButtonIndex++;
         }
         
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
-            cancelButtonIndex++;
         }
         
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
-            cancelButtonIndex++;
         }
 
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-        self.browserActionSheet.cancelButtonIndex = cancelButtonIndex;
-
-        self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
-        self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
+        self.readLaterActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:nil];
         
         self.readLaterServices = [NSMutableArray array];
         
@@ -96,8 +88,6 @@
         [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
         [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"None", nil)];
-
-        self.readLaterActionSheet.cancelButtonIndex = [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
         self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Log In", nil];
         self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
@@ -630,10 +620,10 @@
     switch (indexPath.section) {
         case 0: {
             if (indexPath.row == 2) {
-                [self.browserActionSheet showInView:self.view];
+                [self.browserActionSheet showFrom:self.navigationController.view];
             }
             else if (indexPath.row == 3) {
-                [self.readLaterActionSheet showInView:self.view];
+                [self.readLaterActionSheet showFrom:self.navigationController.view];
             }
             else if (indexPath.row == 4) {
                 [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];

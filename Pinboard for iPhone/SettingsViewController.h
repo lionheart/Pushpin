@@ -11,8 +11,9 @@
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 #import "PPSwitch.h"
+#import "RDActionSheet.h"
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate>
+@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
 @property (nonatomic, retain) UIAlertView *installChromeAlertView;
 @property (nonatomic, retain) UIAlertView *installiCabMobileAlertView;
@@ -22,9 +23,9 @@
 @property (nonatomic, retain) UIAlertView *instapaperAlertView;
 @property (nonatomic, retain) UIAlertView *readabilityAlertView;
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
-@property (nonatomic, retain) UIActionSheet *browserActionSheet;
-@property (nonatomic, retain) UIActionSheet *supportActionSheet;
-@property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
+@property (nonatomic, retain) RDActionSheet *browserActionSheet;
+@property (nonatomic, retain) RDActionSheet *supportActionSheet;
+@property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
