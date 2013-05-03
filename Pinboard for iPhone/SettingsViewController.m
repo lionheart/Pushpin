@@ -49,7 +49,7 @@
                                                                          action:@selector(showAboutPage)];
         self.navigationItem.rightBarButtonItem = barButtonItem;
         
-        self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
+        self.logOutAlertView = [[TTAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
         
         self.browserActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
@@ -438,7 +438,7 @@
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
-                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                       [[[TTAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
                                                                    message:@"We couldn't log you into Instapaper with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
