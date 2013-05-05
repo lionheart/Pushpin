@@ -189,7 +189,6 @@
                           UITextAttributeTextShadowColor: [UIColor whiteColor] }];
 
     // Customize Tool Bar
-    
     CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
     CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
@@ -244,7 +243,7 @@
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:12]
+                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
      }
                                                 forState:UIControlStateNormal];
 }
@@ -323,7 +322,6 @@
     
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
-    DLog(@"%@", [store dictionaryRepresentation]);
     
     didLaunchWithURL = NO;
     return YES;
