@@ -48,8 +48,12 @@
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+
+        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
         self.urlTextField = [[UITextField alloc] init];
-        self.urlTextField.font = [UIFont systemFontOfSize:16];
+        self.urlTextField.font = font;
         self.urlTextField.delegate = self;
         self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.urlTextField.placeholder = @"https://pinboard.in/";
@@ -60,21 +64,21 @@
         self.previousURLContents = @"";
         
         self.descriptionTextField = [[UITextField alloc] init];
-        self.descriptionTextField.font = [UIFont systemFontOfSize:16];
+        self.descriptionTextField.font = font;
         self.descriptionTextField.delegate = self;
         self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
         
         self.titleTextField = [[UITextField alloc] init];
-        self.titleTextField.font = [UIFont systemFontOfSize:16];
+        self.titleTextField.font = font;
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
         self.titleTextField.text = @"";
         
         self.tagTextField = [[UITextField alloc] init];
-        self.tagTextField.font = [UIFont systemFontOfSize:16];
+        self.tagTextField.font = font;
         self.tagTextField.delegate = self;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.tagTextField.placeholder = NSLocalizedString(@"Add bookmark tag example", nil);
@@ -222,37 +226,65 @@
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 1) {
-        
-    }
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == 3) {
-        return NSLocalizedString(@"Separate tags with spaces", nil);
+        UIView *view = [[UIView alloc] init];
+        view.clipsToBounds = YES;
+        UILabel *label = [[UILabel alloc] init];
+        label.frame = CGRectMake(20, 5, 280, [self tableView:tableView heightForFooterInSection:3]);
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont fontWithName:@"Avenir-Medium" size:13];
+        label.textColor = HEX(0x4C586AFF);
+        label.numberOfLines = 0;
+        label.backgroundColor = HEX(0xF7F9FDff);
+        label.text = NSLocalizedString(@"Separate tags with spaces", nil);
+        [view addSubview:label];
+        return view;
     }
-    return @"";
+    return nil;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == 3) {
+        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:13];
+        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height + 10;
+    }
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    view.clipsToBounds = YES;
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(10, 0, 320, 44);
+    label.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    label.textColor = HEX(0x4C586AFF);
+    label.backgroundColor = HEX(0xF7F9FDff);
     switch (section) {
         case 0:
-            return NSLocalizedString(@"URL", nil);
+            label.text = NSLocalizedString(@"URL", nil);
             break;
         case 1:
-            return NSLocalizedString(@"Title", nil);
+            label.text = NSLocalizedString(@"Title", nil);
             break;
         case 2:
-            return NSLocalizedString(@"Description", nil);
+            label.text = NSLocalizedString(@"Description", nil);
             break;
         case 3:
-            return NSLocalizedString(@"Tags", nil);
+            label.text = NSLocalizedString(@"Tags", nil);
             break;
         case 4:
-            return NSLocalizedString(@"Other", nil);
+            label.text = NSLocalizedString(@"Other", nil);
             break;
         default:
             break;
     }
-    return @"";
+    [view addSubview:label];
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 40;
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -455,6 +487,7 @@
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
+    cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.enabled = YES;
     
     for (UIView *view in [cell.contentView subviews]) {
@@ -535,7 +568,7 @@
                         cell.textLabel.text = [NSString stringWithFormat:@"🔓 %@", NSLocalizedString(@"Set as private?", nil)];
                     }
 
-                    self.privateSwitch = [[UISwitch alloc] init];
+                    self.privateSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.privateSwitch.frame.size;
                     self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -551,7 +584,7 @@
                         cell.textLabel.text = [NSString stringWithFormat:@"📦 %@", NSLocalizedString(@"Mark as read?", nil)];
                     }
 
-                    self.readSwitch = [[UISwitch alloc] init];
+                    self.readSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.readSwitch.frame.size;
                     self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -572,12 +605,10 @@
 
 - (void)privateSwitchChanged:(id)sender {
     self.setAsPrivate = @(self.privateSwitch.on);
-    [self.tableView reloadData];
 }
 
 - (void)readSwitchChanged:(id)sender {
     self.markAsRead = @(self.readSwitch.on);
-    [self.tableView reloadData];
 }
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification {

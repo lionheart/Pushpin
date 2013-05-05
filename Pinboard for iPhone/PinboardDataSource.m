@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "NSAttributedString+Attributes.h"
 #import "ASPinboard/ASPinboard.h"
+#import "AddBookmarkViewController.h"
 
 @implementation PinboardDataSource
 
@@ -521,20 +522,113 @@
     return actions;
 }
 
-+ (NSArray *)linksForPost:(NSDictionary *)post {
-    NSMutableArray *links = [NSMutableArray array];
-    int location = [post[@"title"] length] + 1;
-    if (![post[@"description"] isEqualToString:@""]) {
-        location += [post[@"description"] length] + 1;
-    }
-    
-    if (![post[@"tags"] isEqualToString:@""]) {
-        for (NSString *tag in [post[@"tags"] componentsSeparatedByString:@" "]) {
-            NSRange range = [post[@"tags"] rangeOfString:tag];
-            [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-        }
+- (NSArray *)linksForPostAtIndex:(NSInteger)index {
+    NSMutableArray *links = [NSMutableArray array];    
+    NSInteger location = [self rangeForTagsForPostAtIndex:index].location;
+    NSString *tags = self.posts[index][@"tags"];
+    for (NSString *tag in [tags componentsSeparatedByString:@" "]) {
+        NSRange range = [tags rangeOfString:tag];
+        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
     return links;
+}
+
+- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
+    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    
+    NSString *title = [self titleForPostAtIndex:index];
+    NSString *description = [self descriptionForPostAtIndex:index];
+    NSString *tags = [self tagsForPostAtIndex:index];
+    NSString *dateString = [self formattedDateForPostAtIndex:index];
+    BOOL isRead = [self isPostAtIndexRead:index];
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+    NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+    
+    NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
+    if (descriptionRange.location != NSNotFound) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
+    }
+    
+    NSRange tagRange = [self rangeForTagsForPostAtIndex:index];
+    BOOL hasTags = tagRange.location != NSNotFound;
+    
+    if (hasTags) {
+        [content appendFormat:@"\n%@", tags];
+    }
+    
+    [content appendFormat:@"\n%@", dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:titleFont range:titleRange];
+    [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setTextColor:HEX(0x33353Bff)];
+    
+    if (isRead) {
+        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+    }
+    
+    if (hasTags) {
+        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
+        [attributedString setFont:tagsFont range:tagRange];
+    }
+    
+    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
+    [attributedString setFont:dateFont range:dateRange];
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    return attributedString;
+}
+
+- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
+    return NSMakeRange(0, [[self titleForPostAtIndex:index] length]);
+}
+
+- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
+    NSString *description = [self descriptionForPostAtIndex:index];
+    if ([description isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
+    }
+}
+
+- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
+    NSString *tags = [self tagsForPostAtIndex:index];
+    if ([tags isEqualToString:@""]) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
+        NSInteger offset = 1;
+        if (descriptionRange.location != NSNotFound) {
+            offset++;
+        }
+        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
+    }
+}
+
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withCallback:(void (^)())callback {
+    AddBookmarkViewController *vc = [[AddBookmarkViewController alloc] init];
+    vc.title = NSLocalizedString(@"Add Tab Bar Title", nil);
+    vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:nil action:nil];
+    vc.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+    vc.urlTextField.textColor = [UIColor grayColor];
+    vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:vc];
+    return addBookmarkViewNavigationController;
 }
 
 @end

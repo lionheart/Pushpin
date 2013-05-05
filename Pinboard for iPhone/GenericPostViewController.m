@@ -254,37 +254,6 @@
     });
 }
 
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(0, [[self.postDataSource titleForPostAtIndex:index] length]);
-}
-
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
-    NSString *description = [self.postDataSource descriptionForPostAtIndex:index];
-    if ([description isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
-    }
-}
-
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
-    NSString *tags = [self.postDataSource tagsForPostAtIndex:index];
-    if ([tags isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
-        NSInteger offset = 1;
-        if (descriptionRange.location != NSNotFound) {
-            offset++;
-        }
-        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
-    }
-}
-
 #pragma mark - Table view data source
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -308,7 +277,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSAttributedString *string = [self attributedStringForPostAtIndexPath:indexPath];
+    NSAttributedString *string = [self.postDataSource attributedStringForPostAtIndex:indexPath.row];
     return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
 }
 
@@ -324,11 +293,15 @@
 
     NSAttributedString *string;
 
-    string = [self attributedStringForPostAtIndexPath:indexPath];
+    string = [self.postDataSource attributedStringForPostAtIndex:indexPath.row];
 
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
+    
+    for (NSDictionary *link in [self.postDataSource linksForPostAtIndex:indexPath.row]) {
+        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
+    }
     
     for (id subview in [cell.contentView subviews]) {
         if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
@@ -430,60 +403,7 @@
 
 #pragma mark - Table view delegate
 
-- (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath {
-    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
-    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
-    NSString *title = [self.postDataSource titleForPostAtIndex:indexPath.row];
-    NSString *description = [self.postDataSource descriptionForPostAtIndex:indexPath.row];
-    NSString *tags = [self.postDataSource tagsForPostAtIndex:indexPath.row];
-    NSString *dateString = [self.postDataSource formattedDateForPostAtIndex:indexPath.row];
-    BOOL isRead = [self.postDataSource isPostAtIndexRead:indexPath.row];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = [self rangeForTitleForPostAtIndex:indexPath.row];
-
-    NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:indexPath.row];
-    if (descriptionRange.location != NSNotFound) {
-        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
-    }
-    
-    NSRange tagRange = [self rangeForTagsForPostAtIndex:indexPath.row];
-    BOOL hasTags = tagRange.location != NSNotFound;
-
-    if (hasTags) {
-        [content appendFormat:@"\n%@", tags];
-    }
-    
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
-    
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:titleFont range:titleRange];
-    [attributedString setFont:descriptionFont range:descriptionRange];
-    [attributedString setTextColor:HEX(0x33353Bff)];
-    
-    if (isRead) {
-        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
-        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-    }
-    else {
-        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
-    }
-
-    if (hasTags) {
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-        [attributedString setFont:tagsFont range:tagRange];
-    }
-
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    return attributedString;
-}
 
 #pragma mark - RDActionSheet
 
@@ -496,7 +416,10 @@
         [self showConfirmDeletionAlert];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        [[AppDelegate sharedDelegate] showAddBookmarkViewControllerWithBookmark:self.selectedPost update:@(YES) callback:nil];
+        UIViewController *vc = [self.postDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withCallback:^{
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [self presentViewController:vc animated:YES completion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
         [self markPostAsRead];

@@ -41,6 +41,13 @@ typedef NSInteger PPPostAction;
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (NSString *)descriptionForPostAtIndex:(NSInteger)index;
+- (NSArray *)linksForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
+- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
+- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
+- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
+
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withCallback:(void (^)())callback;
 
 // These are separated by spaces
 - (NSString *)tagsForPostAtIndex:(NSInteger)index;

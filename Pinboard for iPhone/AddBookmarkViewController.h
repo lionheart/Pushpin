@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
-
+#import "PPSwitch.h"
 
 @interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate> {
     UIEdgeInsets _oldContentInset;
@@ -18,8 +18,8 @@
 @property (nonatomic, retain) UITextField *urlTextField;
 @property (nonatomic, retain) UITextField *descriptionTextField;
 @property (nonatomic, retain) UITextField *titleTextField;
-@property (nonatomic, retain) UISwitch *privateSwitch;
-@property (nonatomic, retain) UISwitch *readSwitch;
+@property (nonatomic, retain) PPSwitch *privateSwitch;
+@property (nonatomic, retain) PPSwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
 @property (nonatomic, retain) NSArray *popularTags;
 @property (nonatomic, retain) NSArray *recommendedTags;

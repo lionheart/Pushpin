@@ -22,7 +22,6 @@
         self.textView.numberOfLines = 0;
         self.textView.textColor = [UIColor darkGrayColor];
         self.textView.lineBreakMode = kCTLineBreakByWordWrapping;
-        self.textView.textAlignment = UITextAlignmentLeft;
         self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
         self.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
 
