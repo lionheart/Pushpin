@@ -617,14 +617,13 @@
     }
 }
 
-- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withCallback:(void (^)())callback {
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
     AddBookmarkViewController *vc = [[AddBookmarkViewController alloc] init];
-    vc.callback = callback;
     vc.title = NSLocalizedString(@"Add Tab Bar Title", nil);
-    vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:vc action:@selector(callback)];
+    vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:delegate action:@selector(dismissViewController)];
     vc.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
     vc.urlTextField.textColor = [UIColor grayColor];
-    vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+    vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(dismissViewController)];
 
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:vc];
     return addBookmarkViewNavigationController;

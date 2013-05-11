@@ -12,7 +12,6 @@
 #import "NSString+URLEncoding2.h"
 #import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
-#import "AppDelegate.h"
 #import "OAuthConsumer.h"
 #import "KeychainItemWrapper.h"
 #import "PocketAPI.h"
@@ -416,9 +415,7 @@
         [self showConfirmDeletionAlert];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        UIViewController *vc = [self.postDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withCallback:^{
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }];
+        UIViewController *vc = [self.postDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
         [self presentViewController:vc animated:YES completion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
@@ -436,6 +433,10 @@
     else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
         [self copyURL];
     }
+}
+
+- (void)dismissViewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Post Action Methods
