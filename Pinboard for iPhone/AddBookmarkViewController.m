@@ -561,13 +561,7 @@
                 
             case 4: {
                 if (indexPath.row == 0) {
-                    if (self.setAsPrivate.boolValue) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"🔒 %@", NSLocalizedString(@"Set as private?", nil)];
-                    }
-                    else {
-                        cell.textLabel.text = [NSString stringWithFormat:@"🔓 %@", NSLocalizedString(@"Set as private?", nil)];
-                    }
-
+                    cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
                     self.privateSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.privateSwitch.frame.size;
@@ -577,13 +571,7 @@
                     cell.accessoryView = self.privateSwitch;
                 }
                 else if (indexPath.row == 1) {
-                    if (self.markAsRead.boolValue) {
-                        cell.textLabel.text = [NSString stringWithFormat:@"👏 %@", NSLocalizedString(@"Mark as read?", nil)];
-                    }
-                    else {
-                        cell.textLabel.text = [NSString stringWithFormat:@"📦 %@", NSLocalizedString(@"Mark as read?", nil)];
-                    }
-
+                    cell.textLabel.text = NSLocalizedString(@"Mark as read?", nil);
                     self.readSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.readSwitch.frame.size;

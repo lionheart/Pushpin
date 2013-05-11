@@ -355,13 +355,11 @@
     }
 }
 
-/*
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
     [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
         [self updatePostsFromDatabaseWithSuccess:success failure:failure];
     } failure:failure progress:nil];
 }
- */
 
 - (NSString *)titleForPostAtIndex:(NSInteger)index {
     return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
