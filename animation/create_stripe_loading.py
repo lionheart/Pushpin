@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
 from PIL import Image
-from PIL import ImageDraw
-import operator
 
 # Loading animation
 count = 20
-interval = 80 / count
 for i in range(count):
     mask = Image.open("mask.bmp").convert('L')
 
