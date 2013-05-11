@@ -65,7 +65,7 @@
 
     if ([self.postDataSource numberOfPosts] == 0) {
         NSMutableArray *images = [NSMutableArray array];
-        for (int i=1; i<21; i++) {
+        for (int i=1; i<81; i++) {
             [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
         }
         
@@ -618,7 +618,7 @@
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
             NSMutableArray *images = [NSMutableArray array];
-            for (int i=1; i<21; i++) {
+            for (int i=1; i<81; i++) {
                 [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
             }
 
@@ -629,7 +629,7 @@
                         self.loading = YES;
                         
                         self.pullToRefreshImageView.animationImages = images;
-                        self.pullToRefreshImageView.animationDuration = 0.8;
+                        self.pullToRefreshImageView.animationDuration = 3;
                         [self.pullToRefreshImageView startAnimating];
                     } completion:^(BOOL finished) {
                         [UIView animateWithDuration:0.5 animations:^{
