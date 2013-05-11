@@ -521,10 +521,10 @@
 }
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    NSMutableArray *links = [NSMutableArray array];    
+    NSMutableArray *links = [NSMutableArray array];
     NSInteger location = [self rangeForTagsForPostAtIndex:index].location;
-    NSString *tags = self.posts[index][@"tags"];
-    for (NSString *tag in [tags componentsSeparatedByString:@" "]) {
+    NSString *tags = [self.posts[index][@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" * "];
+    for (NSString *tag in [tags componentsSeparatedByString:@" * "]) {
         NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
