@@ -10,6 +10,7 @@
 #import "TTTAttributedLabel.h"
 #import "RDActionSheet.h"
 #import "TTAlertView.h"
+#import "AppDelegate.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -47,7 +48,7 @@ typedef NSInteger PPPostAction;
 - (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
 - (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
 
-- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withCallback:(void (^)())callback;
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
 
 // These are separated by spaces
 - (NSString *)tagsForPostAtIndex:(NSInteger)index;
@@ -81,6 +82,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) TTAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 
+- (void)dismissViewController;
 - (void)checkForPostUpdates;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
