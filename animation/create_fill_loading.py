@@ -16,7 +16,8 @@ for i in range(count):
     math.cos(i)
 
     draw = ImageDraw.Draw(im)
-    draw.rectangle([(0, 0), (40, 20 + 20 * math.cos(interval * i))], fill=255)
+    draw.rectangle([(0, 0), (40, 20 + 20 * math.cos(interval * i))], fill="rgb(76, 88, 106)")
+    draw.rectangle([(0, 40), (40, 20 + 20 * math.cos(interval * i))], fill="rgb(243,245,249)")
 
     im.putalpha(mask)
     im.save("../Assets/PullToRefreshAnimating/loading_{0:02d}.png".format(count - i))
@@ -26,7 +27,8 @@ for i in range(count):
     im = Image.new("L", (80, 80))
 
     draw = ImageDraw.Draw(im)
-    draw.rectangle([(0, 0), (80, 40 + 40 * math.cos(interval * i))], fill=255)
+    draw.rectangle([(0, 0), (80, 40 + 40 * math.cos(interval * i))], fill="rgb(76, 88, 106)")
+    draw.rectangle([(0, 80), (80, 40 + 40 * math.cos(interval * i))], fill="rgb(243,245,249)")
 
     box = (0, i - 10, 80, 80 + i)
     im.putalpha(mask)

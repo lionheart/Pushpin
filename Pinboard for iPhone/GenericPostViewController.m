@@ -74,7 +74,7 @@
         self.loading = YES;
         
         self.pullToRefreshImageView.animationImages = images;
-        self.pullToRefreshImageView.animationDuration = 0.8;
+        self.pullToRefreshImageView.animationDuration = 3;
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
         
