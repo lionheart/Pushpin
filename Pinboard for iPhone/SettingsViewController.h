@@ -12,18 +12,18 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import "PPSwitch.h"
 #import "RDActionSheet.h"
-#import "TTAlertView.h"
+#import "WCAlertView.h"
 
 @interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
-@property (nonatomic, retain) UIAlertView *installChromeAlertView;
-@property (nonatomic, retain) UIAlertView *installiCabMobileAlertView;
-@property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;
+@property (nonatomic, retain) WCAlertView *installChromeAlertView;
+@property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
+@property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
+@property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
 @property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
-@property (nonatomic, retain) UIAlertView *instapaperAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityAlertView;
-@property (nonatomic, retain) TTAlertView *logOutAlertView;
+@property (nonatomic, retain) WCAlertView *instapaperAlertView;
+@property (nonatomic, retain) WCAlertView *readabilityAlertView;
+@property (nonatomic, retain) WCAlertView *logOutAlertView;
 @property (nonatomic, retain) RDActionSheet *browserActionSheet;
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
