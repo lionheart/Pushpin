@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 #import "RDActionSheet.h"
-#import "TTAlertView.h"
+#import "WCAlertView.h"
 #import "AppDelegate.h"
 
 enum PostSources {
@@ -69,7 +69,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, TTAlertViewDelegate>
+@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) UIImageView *pullToRefreshImageView;
@@ -79,7 +79,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, retain) TTAlertView *confirmDeletionAlertView;
+@property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 
 - (void)dismissViewController;

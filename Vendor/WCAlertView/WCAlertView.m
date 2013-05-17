@@ -240,8 +240,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     self.buttonTextColor = [UIColor whiteColor];
     self.buttonShadowBlur = 2.0;
     self.buttonShadowColor = [UIColor colorWithRed:0.004 green:0.003 blue:0.006 alpha:1.000];
-    
-    
+
     if (hatched) {
         self.outerFrameColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.41f alpha:1.00f];
         self.outerFrameShadowOffset = CGSizeMake(0.0, 0.0);
@@ -338,12 +337,6 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
                     label.font = self.messageFont;
                 }
             }
-            
-            // Hide button title labels
-            if ([subview isKindOfClass:[UIButton class]]) {
-                UIButton *button = (UIButton *)subview;
-                button.titleLabel.alpha = 0;
-            }
         }
     }
     
@@ -372,7 +365,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
         CGFloat originY = activeBounds.origin.y + inset;
         CGFloat width = activeBounds.size.width - (inset*2.0f);
         CGFloat height = activeBounds.size.height - ((inset+2.0)*2.0f);
-        
+
         CGFloat buttonOffset = self.bounds.size.height - 50.5f;
         
         CGRect bPathFrame = CGRectMake(originX, originY, width, height);
@@ -381,7 +374,8 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
         /*
          *  Create base shape with fill and shadow
          */
-        
+
+        CGContextSetLineWidth(context, 1);
         CGContextAddPath(context, path);
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0f].CGColor);
         CGContextSetShadowWithColor(context, self.outerFrameShadowOffset, self.outerFrameShadowBlur, self.outerFrameShadowColor.CGColor);
@@ -541,41 +535,25 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
          */
         
         for (UIView *subview in self.subviews){
-            
-            if ([subview isKindOfClass:[UIButton class]])
-            {
+            if ([subview isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)subview;
+                button.titleLabel.textColor = [UIColor whiteColor];
+                button.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17.f];
+                button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+                button.titleLabel.layer.shadowRadius = 0.0;
+                button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);
+                button.titleLabel.layer.shadowOpacity = 0.5;
+                button.backgroundColor = [UIColor clearColor];
+                button.opaque = NO;
+                [button setTitleColor:self.buttonTextColor forState:UIControlStateNormal];
                 
-                CGContextSetTextDrawingMode(context, kCGTextFill);
-                CGContextSetFillColorWithColor(context, self.buttonTextColor.CGColor);
-                CGContextSetShadowWithColor(context, self.buttonShadowOffset, self.buttonShadowBlur, self.buttonShadowColor.CGColor);
-                
-                UIFont *buttonFont = button.titleLabel.font;
-
-                if (self.buttonFont)
-                    buttonFont = self.buttonFont;
-
-                // Calculate the font size to make sure large text is rendered correctly
-                CGFloat neededFontSize;
-                [button.titleLabel.text sizeWithFont:buttonFont minFontSize:8.0 actualFontSize:&neededFontSize forWidth:button.frame.size.width-6 lineBreakMode:NSLineBreakByWordWrapping];
-                if (neededFontSize < buttonFont.pointSize){
-                    buttonFont = [UIFont fontWithName:buttonFont.fontName size:neededFontSize];
-                }
-
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0
-                
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
-#else
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:UITextAlignmentCenter];
-                
-#endif
-                
+                UIImage *normalBackgroundImage = [[UIImage imageNamed:@"gray-button-cap"] resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 23, 9)];
+                UIImage *highlightedBackgroundImage = [[UIImage imageNamed:@"gray-button-highlighted-cap"] resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 23, 9)];
+                [button setBackgroundImage:normalBackgroundImage forState:UIControlStateNormal];
+                [button setBackgroundImage:highlightedBackgroundImage forState:UIControlStateHighlighted];
             }
-            
         }
     }
-
 }
 
 @end
