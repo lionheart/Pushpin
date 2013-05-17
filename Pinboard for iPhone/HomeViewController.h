@@ -23,5 +23,6 @@
 
 - (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
 - (void)openSettings;
+- (void)openTags;
 
 @end

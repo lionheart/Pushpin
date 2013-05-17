@@ -9,6 +9,7 @@
 #import "TagViewController.h"
 #import "BookmarkViewController.h"
 #import "FMDatabase.h"
+#import "PPCoreGraphics.h"
 
 @interface TagViewController ()
 
@@ -24,6 +25,16 @@
 @synthesize filteredTags;
 @synthesize navigationController;
 
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.tableView.opaque = NO;
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -34,7 +45,7 @@
 
     self.titleToTags = [@{@"#": [NSMutableArray array], @"A": [NSMutableArray array], @"B": [NSMutableArray array], @"C": [NSMutableArray array], @"D": [NSMutableArray array], @"E": [NSMutableArray array], @"F": [NSMutableArray array], @"G": [NSMutableArray array], @"H": [NSMutableArray array], @"I": [NSMutableArray array], @"J": [NSMutableArray array], @"K": [NSMutableArray array], @"L": [NSMutableArray array], @"M": [NSMutableArray array], @"N": [NSMutableArray array], @"O": [NSMutableArray array], @"P": [NSMutableArray array], @"Q": [NSMutableArray array], @"R": [NSMutableArray array], @"S": [NSMutableArray array], @"T": [NSMutableArray array], @"U": [NSMutableArray array], @"V": [NSMutableArray array], @"W": [NSMutableArray array], @"X": [NSMutableArray array], @"Y": [NSMutableArray array], @"Z": [NSMutableArray array]} mutableCopy];
 
-    FMResultSet *results = [db executeQuery:@"SELECT * FROM tag ORDER BY name ASC"];
+    FMResultSet *results = [db executeQuery:@"SELECT id, name, count FROM tag ORDER BY name ASC"];
     NSString *name;
     while ([results next]) {
         name = [results stringForColumn:@"name"];
@@ -48,7 +59,7 @@
         }
 
         NSMutableArray *temp = [self.titleToTags objectForKey:firstLetter];
-        [temp addObject:@{@"name": name, @"id": @([results intForColumn:@"id"])}];
+        [temp addObject:@{@"name": name, @"id": @([results intForColumn:@"id"]), @"count": [results stringForColumn:@"count"]}];
         [self.titleToTags setObject:temp forKey:firstLetter];
     }
 
@@ -133,6 +144,15 @@
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
     
+    NSArray *subviews = [cell.contentView subviews];
+    for (id subview in subviews) {
+        [subview removeFromSuperview];
+    }
+
+    cell.textLabel.textColor = HEX(0x33353Bff);
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    cell.backgroundColor = [UIColor whiteColor];
+    
     NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         tag = self.filteredTags[indexPath.row];
@@ -142,6 +162,11 @@
     }
 
     cell.textLabel.text = tag[@"name"];
+    
+    UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
+    UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
+    pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    [cell.contentView addSubview:pillView];
     return cell;
 }
 
@@ -150,7 +175,6 @@
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    DLog(@"%@", searchBar.text);
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {

@@ -34,12 +34,21 @@
     self.scrollView.delaysContentTouches = NO;
     self.scrollView.delegate = self;
     
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
-    [button setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
-    [button addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-    button.frame = CGRectMake(0, 0, 46, 48);
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
+    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
+    [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
+    settingsButton.frame = CGRectMake(0, 0, 30, 24);
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+
+    UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
+    [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
+    [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+    tagButton.frame = CGRectMake(0, 0, 30, 24);
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+
+    self.navigationItem.rightBarButtonItems = @[settingsBarButtonItem, tagBarButtonItem];
     
     self.feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
     self.feedListViewController.tableView.frame = CGRectMake(0, 0, 320, height);
@@ -71,6 +80,12 @@
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
     [self.navigationController pushViewController:svc animated:YES];
+}
+
+- (void)openTags {
+    TagViewController *tagViewController = [[TagViewController alloc] init];
+    tagViewController.title = NSLocalizedString(@"Tags", nil);
+    [self.navigationController pushViewController:tagViewController animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
