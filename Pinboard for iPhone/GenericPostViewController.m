@@ -584,32 +584,7 @@
 }
 
 - (void)showConfirmDeletionAlert {
-    [WCAlertView setDefaultStyle:WCAlertViewStyleWhite];
-    [WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
-        alertView.cornerRadius = 8;
-        alertView.outerFrameShadowBlur = 0;
-        alertView.labelTextColor = [UIColor whiteColor];
-        alertView.labelShadowColor = [UIColor clearColor];
-        
-        alertView.buttonFont = [UIFont fontWithName:@"Avenir-Heavy" size:18.f];
-        alertView.titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:18.f];
-        alertView.messageFont = [UIFont fontWithName:@"Avenir-Medium" size:16.f];
-        
-        UIColor *topGradient = [UIColor colorWithRed:0.212 green:0.227 blue:0.275 alpha:1];
-        UIColor *middleGradient = [UIColor colorWithRed:0.173 green:0.184 blue:0.224 alpha:1];
-        UIColor *bottomGradient = [UIColor colorWithRed:0.114 green:0.125 blue:0.161 alpha:1];
-        alertView.gradientColors = @[topGradient, middleGradient, bottomGradient];
-        alertView.outerFrameColor = [UIColor whiteColor];
-        alertView.innerFrameShadowColor = [UIColor clearColor];
-        alertView.innerFrameStrokeColor = [UIColor clearColor];
-        alertView.outerFrameLineWidth = 1;
-
-        alertView.buttonTextColor = [UIColor whiteColor];
-        alertView.buttonShadowColor = [UIColor blackColor];
-        alertView.buttonShadowOffset = CGSizeMake(1, 1);
-    }];
-
-    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Delete Bookmark Warning", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];    
+    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Delete Bookmark Warning", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
 
     [self.confirmDeletionAlertView show];
 }
