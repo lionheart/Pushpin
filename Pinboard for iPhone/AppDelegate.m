@@ -23,7 +23,6 @@
 #import "SettingsViewController.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
-#import "TTSwitch.h"
 
 @implementation AppDelegate
 
