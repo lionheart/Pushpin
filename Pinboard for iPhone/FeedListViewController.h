@@ -28,5 +28,7 @@ enum PINBOARD_FEED_ITEMS {
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
 - (void)checkForPostUpdates;
 - (void)connectionStatusDidChange:(NSNotification *)notification;
+- (void)openSettings;
+- (void)openTags;
 
 @end

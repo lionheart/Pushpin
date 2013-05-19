@@ -60,7 +60,7 @@ static NSInteger kPPNotificationHeight = 56;
 
     [self addSubview:self.notificationView];
 
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.2
                           delay:0
                         options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                      animations:^{

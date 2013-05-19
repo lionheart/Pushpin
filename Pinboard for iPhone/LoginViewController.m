@@ -13,7 +13,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import "PrimaryNavigationViewController.h"
 #import "PinboardDataSource.h"
-#import "HomeViewController.h"
+#import "FeedListViewController.h"
 
 @interface LoginViewController ()
 
@@ -203,10 +203,11 @@
                                            pinboardViewController.postDataSource = pinboardDataSource;
                                            pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
                                            
-                                           HomeViewController *homeViewController = [[HomeViewController alloc] init];
-                                           homeViewController.title = @"Browse";
-                                           UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-                                           navigationController.viewControllers = @[homeViewController, pinboardViewController];
+                                           FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                                           feedListViewController.title = @"Browse";
+                                           UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
+                                           navigationController.viewControllers = @[feedListViewController, pinboardViewController];
+                                           [navigationController popToViewController:pinboardViewController animated:NO];
                                            navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
                                            [navigationController popToViewController:pinboardViewController animated:NO];
                                            
