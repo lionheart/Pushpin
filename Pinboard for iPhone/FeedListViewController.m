@@ -8,8 +8,6 @@
 
 #import "FeedListViewController.h"
 #import <ASPinboard/ASPinboard.h>
-#import "BookmarkViewController.h"
-#import "BookmarkFeedViewController.h"
 #import "AppDelegate.h"
 #import "PPBrowseCell.h"
 #import "PPCoreGraphics.h"
