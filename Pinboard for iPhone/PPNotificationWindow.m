@@ -33,7 +33,7 @@ static NSInteger kPPNotificationHeight = 56;
         self.hiding = YES;
         CGRect hiddenFrame = CGRectMake(0, SCREEN.bounds.size.height, 320, kPPNotificationHeight);
         if (animated) {
-            [UIView animateWithDuration:0.3
+            [UIView animateWithDuration:0.2
                              animations:^{
                                  self.notificationView.frame = hiddenFrame;
                              }
