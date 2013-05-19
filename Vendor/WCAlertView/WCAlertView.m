@@ -319,6 +319,9 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
                 }
                 
             }
+            if ([subview isMemberOfClass:[UITextField class]]) {
+                DLog(@"%@", subview);
+            }
             
             //Find and get styles of UILabels
             if ([subview isMemberOfClass:[UILabel class]]) {

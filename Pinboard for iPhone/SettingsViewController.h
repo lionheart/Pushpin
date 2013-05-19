@@ -13,6 +13,7 @@
 #import "PPSwitch.h"
 #import "RDActionSheet.h"
 #import "WCAlertView.h"
+#import "PPLoadingView.h"
 
 @interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
@@ -20,7 +21,7 @@
 @property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
-@property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
+@property (nonatomic, retain) PPLoadingView *loadingIndicator;
 @property (nonatomic, retain) WCAlertView *instapaperAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityAlertView;
 @property (nonatomic, retain) WCAlertView *logOutAlertView;

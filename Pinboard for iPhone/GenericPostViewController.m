@@ -44,7 +44,7 @@
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
-    self.pullToRefreshImageView = [[UIImageView alloc] init];
+    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
 }
@@ -64,17 +64,10 @@
     self.actionSheetVisible = NO;
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        NSMutableArray *images = [NSMutableArray array];
-        for (int i=1; i<81; i++) {
-            [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
-        }
-        
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
         
         self.loading = YES;
-        
-        self.pullToRefreshImageView.animationImages = images;
-        self.pullToRefreshImageView.animationDuration = 3;
+
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
         
@@ -615,19 +608,11 @@
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
-            NSMutableArray *images = [NSMutableArray array];
-            for (int i=1; i<81; i++) {
-                [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading_%02d", i]]];
-            }
-
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [UIView animateWithDuration:0.5 animations:^{
                         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
                         self.loading = YES;
-                        
-                        self.pullToRefreshImageView.animationImages = images;
-                        self.pullToRefreshImageView.animationDuration = 3;
                         [self.pullToRefreshImageView startAnimating];
                     } completion:^(BOOL finished) {
                         [UIView animateWithDuration:0.5 animations:^{
