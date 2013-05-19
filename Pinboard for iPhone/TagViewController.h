@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "FMDatabase.h"
+#import "PPTableViewController.h"
 
-@interface TagViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
+@interface TagViewController : PPTableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
 
 @property (nonatomic, retain) NSArray *alphabet;
 @property (nonatomic, retain) NSMutableDictionary *titleToTags;

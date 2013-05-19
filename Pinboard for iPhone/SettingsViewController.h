@@ -14,8 +14,9 @@
 #import "RDActionSheet.h"
 #import "WCAlertView.h"
 #import "PPLoadingView.h"
+#import "PPTableViewController.h"
 
-@interface SettingsViewController : UITableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
 @property (nonatomic, retain) WCAlertView *installChromeAlertView;
 @property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;

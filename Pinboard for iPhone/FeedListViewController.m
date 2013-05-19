@@ -100,9 +100,6 @@
     if (self) {
         self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
         self.timerPaused = NO;
-        self.tableView.opaque = NO;
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-        self.tableView.backgroundColor = HEX(0xF7F9FDff);
         
         self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
         [self calculateBookmarkCounts:nil];
@@ -144,7 +141,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
     

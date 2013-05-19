@@ -12,6 +12,7 @@
 #import "WCAlertView.h"
 #import "AppDelegate.h"
 #import "PPLoadingView.h"
+#import "PPTableViewController.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -70,7 +71,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
+@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;

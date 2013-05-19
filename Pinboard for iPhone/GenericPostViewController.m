@@ -49,6 +49,14 @@
     [self.tableView addSubview:self.pullToRefreshView];
 }
 
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:UITableViewStylePlain];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationItem.leftBarButtonItem.title = @"";
@@ -581,7 +589,6 @@
 
     [self.confirmDeletionAlertView show];
 }
-
 
 #pragma mark - Alert View Delegate
 
