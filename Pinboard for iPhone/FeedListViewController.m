@@ -17,6 +17,8 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SettingsViewController.h"
+#import "TagViewController.h"
 
 @interface FeedListViewController ()
 
@@ -104,6 +106,22 @@
         
         self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
         [self calculateBookmarkCounts:nil];
+
+        UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
+        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
+        [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
+        settingsButton.frame = CGRectMake(0, 0, 30, 24);
+        UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        
+        UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
+        [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
+        [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+        tagButton.frame = CGRectMake(0, 0, 30, 24);
+        UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+        
+        self.navigationItem.rightBarButtonItems = @[settingsBarButtonItem, tagBarButtonItem];
     }
     return self;
 }
@@ -390,7 +408,7 @@
                     break;
                 }
             }
-            [self.navigationController pushViewController:postViewController animated:YES];
+            [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 
             break;
         }
@@ -435,11 +453,23 @@
                         break;
                 }
 
-                [self.navigationController pushViewController:postViewController animated:YES];
+                [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                 break;
             }
         }
     }
+}
+
+- (void)openSettings {
+    SettingsViewController *svc = [[SettingsViewController alloc] init];
+    svc.title = NSLocalizedString(@"Settings", nil);
+    [[AppDelegate sharedDelegate].navigationController pushViewController:svc animated:YES];
+}
+
+- (void)openTags {
+    TagViewController *tagViewController = [[TagViewController alloc] init];
+    tagViewController.title = NSLocalizedString(@"Tags", nil);
+    [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
 }
 
 @end

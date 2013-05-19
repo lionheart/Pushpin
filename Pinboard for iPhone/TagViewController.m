@@ -7,9 +7,10 @@
 //
 
 #import "TagViewController.h"
-#import "BookmarkViewController.h"
 #import "FMDatabase.h"
 #import "PPCoreGraphics.h"
+#import "GenericPostViewController.h"
+#import "PinboardDataSource.h"
 
 @interface TagViewController ()
 
@@ -208,9 +209,15 @@
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
-    BookmarkViewController *bookmarkViewController = [[BookmarkViewController alloc] initWithQuery:@"SELECT bookmark.* FROM bookmark LEFT JOIN tagging ON bookmark.id = tagging.bookmark_id LEFT JOIN tag ON tag.id = tagging.tag_id WHERE tag.id = :tag_id LIMIT :limit OFFSET :offset" parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys:tag[@"id"], @"tag_id", nil]];
-    bookmarkViewController.title = tag[@"name"];
-    [self.navigationController pushViewController:bookmarkViewController animated:YES];
+    
+    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE id IN (SELECT bookmark_id FROM tagging WHERE tag_id=:tag_id) ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @100, @"offset": @0, @"tag_id": tag[@"id"]}];
+    postViewController.postDataSource = pinboardDataSource;
+    postViewController.title = tag[@"name"];
+
+    [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 }
 
 @end

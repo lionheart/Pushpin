@@ -64,6 +64,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;

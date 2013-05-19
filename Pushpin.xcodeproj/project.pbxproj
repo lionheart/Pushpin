@@ -30,7 +30,6 @@
 		372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D433F1723AE1A00E802C0 /* SwitchThumb.png */; };
 		372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */; };
 		372D43491724492E00E802C0 /* PPSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D43481724492E00E802C0 /* PPSwitch.m */; };
-		372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372E2B3615ABE90B007514D8 /* HomeViewController.m */; };
 		372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887A1673EDEF0073D0B6 /* HTMLNode.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887C1673EDEF0073D0B6 /* HTMLParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
@@ -130,7 +129,6 @@
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
-		37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37483C5616194575000EE5D1 /* TabBarViewController.m */; };
 		37561D7216ADC86100D69CDE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D4A16ADC86100D69CDE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D7316ADC86100D69CDE /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D4C16ADC86100D69CDE /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D7416ADC86100D69CDE /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D4E16ADC86100D69CDE /* NSURL+Base.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -535,8 +533,6 @@
 		372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchThumb@2x.png"; sourceTree = "<group>"; };
 		372D43471724492E00E802C0 /* PPSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSwitch.h; sourceTree = "<group>"; };
 		372D43481724492E00E802C0 /* PPSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSwitch.m; sourceTree = "<group>"; };
-		372E2B3515ABE90B007514D8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		372E2B3615ABE90B007514D8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		372F88791673EDEF0073D0B6 /* HTMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLNode.h; sourceTree = "<group>"; };
 		372F887A1673EDEF0073D0B6 /* HTMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLNode.m; sourceTree = "<group>"; };
 		372F887B1673EDEF0073D0B6 /* HTMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLParser.h; sourceTree = "<group>"; };
@@ -655,8 +651,6 @@
 		3740A23D16863CF000F95D82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23E16863CF000F95D82 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
-		37483C5516194575000EE5D1 /* TabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarViewController.h; sourceTree = "<group>"; };
-		37483C5616194575000EE5D1 /* TabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarViewController.m; sourceTree = "<group>"; };
 		37561D4916ADC86100D69CDE /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
 		37561D4A16ADC86100D69CDE /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
 		37561D4B16ADC86100D69CDE /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
@@ -1878,12 +1872,8 @@
 				37A25A2115FC42B5009716BB /* NoteViewController.m */,
 				371BCAFD15772B4400BDA996 /* BookmarkCell.h */,
 				371BCAFE15772B4400BDA996 /* BookmarkCell.m */,
-				372E2B3515ABE90B007514D8 /* HomeViewController.h */,
-				372E2B3615ABE90B007514D8 /* HomeViewController.m */,
 				37919F1C16091DF5007708EF /* LoginViewController.h */,
 				37919F1D16091DF5007708EF /* LoginViewController.m */,
-				37483C5516194575000EE5D1 /* TabBarViewController.h */,
-				37483C5616194575000EE5D1 /* TabBarViewController.m */,
 				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
 				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
@@ -2529,10 +2519,8 @@
 				37DCCF37158AF3FC00ED71B1 /* AFXMLRequestOperation.m in Sources */,
 				37DCCF38158AF3FC00ED71B1 /* UIImageView+AFNetworking.m in Sources */,
 				37DCCF3D158AF40900ED71B1 /* NSAttributedString+Attributes.m in Sources */,
-				372E2B3715ABE90B007514D8 /* HomeViewController.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
-				37483C5716194575000EE5D1 /* TabBarViewController.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37E3299D1629DF9500A6BC18 /* FMDatabase.m in Sources */,
 				37E3299E1629DF9500A6BC18 /* FMDatabaseAdditions.m in Sources */,

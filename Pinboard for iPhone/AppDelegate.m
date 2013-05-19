@@ -9,7 +9,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import "AppDelegate.h"
 #import "BookmarkViewController.h"
-#import "HomeViewController.h"
 #import "NoteViewController.h"
 #import "LoginViewController.h"
 #import "PrimaryNavigationViewController.h"
@@ -24,6 +23,7 @@
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPNotificationWindow.h"
+#import "FeedListViewController.h"
 
 @implementation AppDelegate
 
@@ -56,23 +56,21 @@
     [application cancelAllLocalNotifications];
     if (application.applicationState == UIApplicationStateActive && !self.bookmarksUpdated.boolValue) {
         self.bookmarksUpdated = notification.userInfo[@"updated"];
-        [[PPNotificationWindow sharedInstance] showWithMessage:notification.alertBody];
-        /*
+
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [ZAActivityBar showSuccessWithStatus:notification.alertBody];
+                    [[PPNotificationWindow sharedInstance] showWithMessage:notification.alertBody];
                 });
             });
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [ZAActivityBar showErrorWithStatus:notification.alertBody];
+                    [[PPNotificationWindow sharedInstance] showWithMessage:notification.alertBody];
                 });
             });
         }
-         */
     }
 }
 
@@ -324,12 +322,12 @@
         pinboardViewController.postDataSource = pinboardDataSource;
         pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
-        HomeViewController *homeViewController = [[HomeViewController alloc] init];
-        homeViewController.title = @"Browse";
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-        navigationController.viewControllers = @[homeViewController, pinboardViewController];
-        [navigationController popToViewController:pinboardViewController animated:NO];
-        [self.window setRootViewController:navigationController];
+        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        feedListViewController.title = @"Browse";
+        self.navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
+        self.navigationController.viewControllers = @[feedListViewController, pinboardViewController];
+        [self.navigationController popToViewController:pinboardViewController animated:NO];
+        [self.window setRootViewController:self.navigationController];
     }
     else {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
