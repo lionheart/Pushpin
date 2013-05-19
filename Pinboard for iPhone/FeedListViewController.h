@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PPTableViewController.h"
 
 enum PINBOARD_FEED_ITEMS {
     PinboardFeedAllBookmarks,
@@ -17,7 +18,7 @@ enum PINBOARD_FEED_ITEMS {
     PinboardFeedStarredBookmarks
 };
 
-@interface FeedListViewController : UITableViewController
+@interface FeedListViewController : PPTableViewController
 
 @property (nonatomic) BOOL connectionAvailable;
 @property (nonatomic, retain) UINavigationController *navigationController;

@@ -166,6 +166,7 @@
 		376C9E8817488F2300A62CB5 /* NotificationX.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8617488F2300A62CB5 /* NotificationX.png */; };
 		376C9E8917488F2300A62CB5 /* NotificationX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8717488F2300A62CB5 /* NotificationX@2x.png */; };
 		376C9E8C17488FC500A62CB5 /* PPNotificationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */; };
+		376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8E1749969200A62CB5 /* PPTableViewController.m */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -724,6 +725,8 @@
 		376C9E8717488F2300A62CB5 /* NotificationX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NotificationX@2x.png"; path = "Assets/NotificationX@2x.png"; sourceTree = "<group>"; };
 		376C9E8A17488FC500A62CB5 /* PPNotificationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotificationWindow.h; sourceTree = "<group>"; };
 		376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotificationWindow.m; sourceTree = "<group>"; };
+		376C9E8D1749969200A62CB5 /* PPTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTableViewController.h; sourceTree = "<group>"; };
+		376C9E8E1749969200A62CB5 /* PPTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewController.m; sourceTree = "<group>"; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -1905,6 +1908,8 @@
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
 				376C9E8A17488FC500A62CB5 /* PPNotificationWindow.h */,
 				376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */,
+				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
+				376C9E8E1749969200A62CB5 /* PPTableViewController.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -2583,6 +2588,7 @@
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				376C9E8117485A7E00A62CB5 /* PPNotificationView.m in Sources */,
 				376C9E8C17488FC500A62CB5 /* PPNotificationWindow.m in Sources */,
+				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
