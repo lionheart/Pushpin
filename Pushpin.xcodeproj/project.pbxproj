@@ -162,6 +162,12 @@
 		375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* FeedListViewController.m */; };
 		3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */; };
 		376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
+		376C9E8117485A7E00A62CB5 /* PPNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8017485A7E00A62CB5 /* PPNotificationView.m */; };
+		376C9E8417488B8500A62CB5 /* NotificationBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8217488B8500A62CB5 /* NotificationBackground.png */; };
+		376C9E8517488B8500A62CB5 /* NotificationBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */; };
+		376C9E8817488F2300A62CB5 /* NotificationX.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8617488F2300A62CB5 /* NotificationX.png */; };
+		376C9E8917488F2300A62CB5 /* NotificationX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8717488F2300A62CB5 /* NotificationX@2x.png */; };
+		376C9E8C17488FC500A62CB5 /* PPNotificationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */; };
 		3777C98216798DC50046D4EB /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97916798DC50046D4EB /* back_icon.png */; };
 		3777C98316798DC50046D4EB /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97A16798DC50046D4EB /* back_icon@2x.png */; };
 		3777C98416798DC50046D4EB /* forward_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97B16798DC50046D4EB /* forward_icon.png */; };
@@ -716,6 +722,14 @@
 		3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrimaryNavigationViewController.m; sourceTree = "<group>"; };
 		376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoadingView.h; sourceTree = "<group>"; };
 		376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoadingView.m; sourceTree = "<group>"; };
+		376C9E7F17485A7E00A62CB5 /* PPNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotificationView.h; sourceTree = "<group>"; };
+		376C9E8017485A7E00A62CB5 /* PPNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotificationView.m; sourceTree = "<group>"; };
+		376C9E8217488B8500A62CB5 /* NotificationBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NotificationBackground.png; path = Assets/NotificationBackground.png; sourceTree = "<group>"; };
+		376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NotificationBackground@2x.png"; path = "Assets/NotificationBackground@2x.png"; sourceTree = "<group>"; };
+		376C9E8617488F2300A62CB5 /* NotificationX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NotificationX.png; path = Assets/NotificationX.png; sourceTree = "<group>"; };
+		376C9E8717488F2300A62CB5 /* NotificationX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NotificationX@2x.png"; path = "Assets/NotificationX@2x.png"; sourceTree = "<group>"; };
+		376C9E8A17488FC500A62CB5 /* PPNotificationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotificationWindow.h; sourceTree = "<group>"; };
+		376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotificationWindow.m; sourceTree = "<group>"; };
 		3777C97916798DC50046D4EB /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_icon.png; sourceTree = "<group>"; };
 		3777C97A16798DC50046D4EB /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
 		3777C97B16798DC50046D4EB /* forward_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward_icon.png; sourceTree = "<group>"; };
@@ -1880,6 +1894,8 @@
 				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
 				37BA82F916EE42850082FC4B /* PPAlertView.h */,
 				37BA82FA16EE42850082FC4B /* PPAlertView.m */,
+				376C9E7F17485A7E00A62CB5 /* PPNotificationView.h */,
+				376C9E8017485A7E00A62CB5 /* PPNotificationView.m */,
 				37D59A1216EEDC91005C9C24 /* PPButton.h */,
 				37D59A1316EEDC91005C9C24 /* PPButton.m */,
 				37D59A2516EFDE08005C9C24 /* PPBrowseCell.h */,
@@ -1897,6 +1913,8 @@
 				37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */,
 				376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */,
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
+				376C9E8A17488FC500A62CB5 /* PPNotificationWindow.h */,
+				376C9E8B17488FC500A62CB5 /* PPNotificationWindow.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -1920,6 +1938,10 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				376C9E8617488F2300A62CB5 /* NotificationX.png */,
+				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
+				376C9E8217488B8500A62CB5 /* NotificationBackground.png */,
+				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				372D43321723A87E00E802C0 /* Navigation Bar */,
 				372D43291723A7AC00E802C0 /* Appearance */,
 				371B27FE16F8FE0400E74D65 /* PullToRefreshAnimating */,
@@ -2462,6 +2484,10 @@
 				37EABA691741A87600B2684B /* TagNavigation@2x.png in Resources */,
 				37EABA6A1741A87600B2684B /* TagNavigationDimmed.png in Resources */,
 				37EABA6B1741A87600B2684B /* TagNavigationDimmed@2x.png in Resources */,
+				376C9E8417488B8500A62CB5 /* NotificationBackground.png in Resources */,
+				376C9E8517488B8500A62CB5 /* NotificationBackground@2x.png in Resources */,
+				376C9E8817488F2300A62CB5 /* NotificationX.png in Resources */,
+				376C9E8917488F2300A62CB5 /* NotificationX@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2567,6 +2593,8 @@
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
 				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
+				376C9E8117485A7E00A62CB5 /* PPNotificationView.m in Sources */,
+				376C9E8C17488FC500A62CB5 /* PPNotificationWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
