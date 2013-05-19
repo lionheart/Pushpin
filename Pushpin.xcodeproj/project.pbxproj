@@ -27,7 +27,6 @@
 		372D43381723A87E00E802C0 /* SettingsNavigation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43341723A87E00E802C0 /* SettingsNavigation@2x.png */; };
 		372D43391723A87E00E802C0 /* SettingsNavigationDimmed.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43351723A87E00E802C0 /* SettingsNavigationDimmed.png */; };
 		372D433A1723A87E00E802C0 /* SettingsNavigationDimmed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */; };
-		372D433E1723AD2100E802C0 /* TTSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D433D1723AD2100E802C0 /* TTSwitch.m */; };
 		372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D433F1723AE1A00E802C0 /* SwitchThumb.png */; };
 		372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */; };
 		372D43491724492E00E802C0 /* PPSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D43481724492E00E802C0 /* PPSwitch.m */; };
@@ -249,7 +248,6 @@
 		37D2351616B8DBD4007541DC /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351216B8DBD4007541DC /* cog@2x.png */; };
 		37D2351816B8DBE0007541DC /* icon_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351716B8DBE0007541DC /* icon_bookmark.png */; };
 		37D2351B16B8DDC0007541DC /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */; };
-		37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1016EE7A73005C9C24 /* TTAlertView.m */; };
 		37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1316EEDC91005C9C24 /* PPButton.m */; };
 		37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */; };
 		37D59A1F16EFA19B005C9C24 /* navigation-back-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */; };
@@ -527,8 +525,6 @@
 		372D43341723A87E00E802C0 /* SettingsNavigation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SettingsNavigation@2x.png"; sourceTree = "<group>"; };
 		372D43351723A87E00E802C0 /* SettingsNavigationDimmed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SettingsNavigationDimmed.png; sourceTree = "<group>"; };
 		372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SettingsNavigationDimmed@2x.png"; sourceTree = "<group>"; };
-		372D433C1723AD2100E802C0 /* TTSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSwitch.h; sourceTree = "<group>"; };
-		372D433D1723AD2100E802C0 /* TTSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSwitch.m; sourceTree = "<group>"; };
 		372D433F1723AE1A00E802C0 /* SwitchThumb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SwitchThumb.png; sourceTree = "<group>"; };
 		372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchThumb@2x.png"; sourceTree = "<group>"; };
 		372D43471724492E00E802C0 /* PPSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSwitch.h; sourceTree = "<group>"; };
@@ -819,8 +815,6 @@
 		37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TTTAttributedLabel.m; path = Vendor/TTTAttributedLabel.m; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
-		37D59A0F16EE7A73005C9C24 /* TTAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlertView.h; sourceTree = "<group>"; };
-		37D59A1016EE7A73005C9C24 /* TTAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlertView.m; sourceTree = "<group>"; };
 		37D59A1216EEDC91005C9C24 /* PPButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPButton.h; sourceTree = "<group>"; };
 		37D59A1316EEDC91005C9C24 /* PPButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPButton.m; sourceTree = "<group>"; };
 		37D59A1A16EEE2EB005C9C24 /* PPCoreGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPCoreGraphics.h; sourceTree = "<group>"; };
@@ -1133,11 +1127,9 @@
 				37DCCF19158AF3FC00ED71B1 /* AFNetworking */,
 				37DCCF39158AF40900ED71B1 /* NSAttributedString+Attributes.h */,
 				37DCCF3A158AF40900ED71B1 /* NSAttributedString+Attributes.m */,
-				37D59A0E16EE7A73005C9C24 /* TTAlertView */,
 				37F5CA211679915700327AAC /* UserVoice */,
 				37D2351916B8DDC0007541DC /* TTTAttributedLabel.h */,
 				37D2351A16B8DDC0007541DC /* TTTAttributedLabel.m */,
-				372D433B1723AD2100E802C0 /* TTSwitch */,
 				3777C97716798DC50046D4EB /* TSMiniWebBrowser */,
 				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
 				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
@@ -1387,16 +1379,6 @@
 			);
 			name = "Navigation Bar";
 			path = "Assets/Navigation Bar";
-			sourceTree = "<group>";
-		};
-		372D433B1723AD2100E802C0 /* TTSwitch */ = {
-			isa = PBXGroup;
-			children = (
-				372D433C1723AD2100E802C0 /* TTSwitch.h */,
-				372D433D1723AD2100E802C0 /* TTSwitch.m */,
-			);
-			name = TTSwitch;
-			path = Vendor/TTSwitch;
 			sourceTree = "<group>";
 		};
 		372F88781673EDEF0073D0B6 /* HTMLParser */ = {
@@ -1714,16 +1696,6 @@
 			);
 			name = TestFlightSDK1.2;
 			path = Vendor/TestFlightSDK1.2;
-			sourceTree = "<group>";
-		};
-		37D59A0E16EE7A73005C9C24 /* TTAlertView */ = {
-			isa = PBXGroup;
-			children = (
-				37D59A0F16EE7A73005C9C24 /* TTAlertView.h */,
-				37D59A1016EE7A73005C9C24 /* TTAlertView.m */,
-			);
-			name = TTAlertView;
-			path = Vendor/TTAlertView;
 			sourceTree = "<group>";
 		};
 		37DCCF19158AF3FC00ED71B1 /* AFNetworking */ = {
@@ -2589,12 +2561,10 @@
 				3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */,
 				37EC2DF716ED252E00BE96AA /* WCAlertView.m in Sources */,
 				37BA82FB16EE42850082FC4B /* PPAlertView.m in Sources */,
-				37D59A1116EE7A73005C9C24 /* TTAlertView.m in Sources */,
 				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
 				37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */,
 				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
-				372D433E1723AD2100E802C0 /* TTSwitch.m in Sources */,
 				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 			);
