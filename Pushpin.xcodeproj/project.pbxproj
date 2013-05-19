@@ -34,7 +34,6 @@
 		372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F887C1673EDEF0073D0B6 /* HTMLParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F88801673EDEF0073D0B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 372F887D1673EDEF0073D0B6 /* README.md */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
-		372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */; };
 		372F890816755A2E0073D0B6 /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F88FE16755A2E0073D0B6 /* MPCJSONDataSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890916755A2E0073D0B6 /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890016755A2E0073D0B6 /* MPCJSONSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890A16755A2E0073D0B6 /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890216755A2E0073D0B6 /* MPCSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -483,7 +482,6 @@
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
 		37FEEB9F15745488003F2B77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* AppDelegate.m */; };
-		37FEEBD715747E86003F2B77 /* BookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBD615747E85003F2B77 /* BookmarkViewController.m */; };
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 /* End PBXBuildFile section */
@@ -540,8 +538,6 @@
 		372F887C1673EDEF0073D0B6 /* HTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLParser.m; sourceTree = "<group>"; };
 		372F887D1673EDEF0073D0B6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		372F88831673F1D20073D0B6 /* BookmarkFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkFeedViewController.h; sourceTree = "<group>"; };
-		372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkFeedViewController.m; sourceTree = "<group>"; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
 		372F88FD16755A2E0073D0B6 /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
@@ -1092,8 +1088,6 @@
 		37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pushpin for Pinboard-Prefix.pch"; sourceTree = "<group>"; };
 		37FEEBA115745488003F2B77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		37FEEBA215745488003F2B77 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		37FEEBD515747E85003F2B77 /* BookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkViewController.h; sourceTree = "<group>"; };
-		37FEEBD615747E85003F2B77 /* BookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkViewController.m; sourceTree = "<group>"; };
 		37FEEBD815748BA2003F2B77 /* navigationbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navigationbar.png; path = Assets/navigationbar.png; sourceTree = "<group>"; };
 		37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigationbar@2x.png"; path = "Assets/navigationbar@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1863,10 +1857,6 @@
 				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
-				37FEEBD515747E85003F2B77 /* BookmarkViewController.h */,
-				37FEEBD615747E85003F2B77 /* BookmarkViewController.m */,
-				372F88831673F1D20073D0B6 /* BookmarkFeedViewController.h */,
-				372F88841673F1D20073D0B6 /* BookmarkFeedViewController.m */,
 				3727558A161A66A2001A857B /* TagViewController.h */,
 				3727558B161A66A2001A857B /* TagViewController.m */,
 				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
@@ -2511,7 +2501,6 @@
 			files = (
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
-				37FEEBD715747E86003F2B77 /* BookmarkViewController.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
 				37DCCF2F158AF3FC00ED71B1 /* AFHTTPClient.m in Sources */,
 				37DCCF30158AF3FC00ED71B1 /* AFHTTPRequestOperation.m in Sources */,
@@ -2538,7 +2527,6 @@
 				37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */,
 				372F887E1673EDEF0073D0B6 /* HTMLNode.m in Sources */,
 				372F887F1673EDEF0073D0B6 /* HTMLParser.m in Sources */,
-				372F88851673F1D20073D0B6 /* BookmarkFeedViewController.m in Sources */,
 				372F890816755A2E0073D0B6 /* MPCJSONDataSerializer.m in Sources */,
 				372F890916755A2E0073D0B6 /* MPCJSONSerializer.m in Sources */,
 				372F890A16755A2E0073D0B6 /* MPCSerializedJSONData.m in Sources */,
