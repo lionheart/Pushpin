@@ -500,7 +500,6 @@
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   DLog(@"%d", httpResponse.statusCode);
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
