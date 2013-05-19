@@ -29,6 +29,8 @@
 
 #define ALog(fmt, ...) NSLog((@"%s:%d - " fmt), __FILENAME__, __LINE__, ##__VA_ARGS__);
 
+#define SCREEN [UIScreen mainScreen]
+#define DEVICE [UIDevice currentDevice]
 #define HEX(c) [UIColor colorWithRed:((c>>24)&0xff)/255.0 green:((c>>16)&0xff)/255.0 blue:((c>>8)&0xff)/255.0 alpha:((c)&0xff)/255.0]
 
 #define MPTrackProperties(event, ...) [[MixpanelAPI sharedAPI] track:event properties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
