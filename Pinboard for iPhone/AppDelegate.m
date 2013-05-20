@@ -149,7 +149,7 @@
 
 - (WCAlertView *)addBookmarkFromClipboardAlertView {
     if (!_addBookmarkFromClipboardAlertView) {
-        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:@"yo" message:@"hey" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"URL in Clipboard Title", nil) message:NSLocalizedString(@"URL in Clipboard Message", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted No", nil) otherButtonTitles:NSLocalizedString(@"Lighthearted Yes", nil), nil];
     }
     return _addBookmarkFromClipboardAlertView;
 }
@@ -691,8 +691,8 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.addBookmarkFromClipboardAlertView) {
         if (buttonIndex == 1) {
-            AddBookmarkViewController *bookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
-            [self.navigationController presentViewController:bookmarkViewController animated:YES completion:nil];
+            UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+            [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
             [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }
         else {
