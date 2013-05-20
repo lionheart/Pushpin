@@ -52,7 +52,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        
+        self.tableView.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }

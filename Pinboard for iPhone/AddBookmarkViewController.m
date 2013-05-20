@@ -811,4 +811,60 @@
                          }];
 }
 
++ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    
+    if (isUpdate.boolValue) {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
+    }
+    else {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+    }
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeModal:)];
+
+    if (bookmark[@"title"]) {
+        addBookmarkViewController.titleTextField.text = bookmark[@"title"];
+    }
+    
+    if (bookmark[@"url"]) {
+        addBookmarkViewController.urlTextField.text = bookmark[@"url"];
+        
+        if (isUpdate.boolValue) {
+            addBookmarkViewController.urlTextField.enabled = NO;
+        }
+    }
+    
+    if (bookmark[@"tags"]) {
+        addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
+    }
+    
+    if (bookmark[@"description"]) {
+        addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+    }
+    
+    if (callback) {
+        addBookmarkViewController.callback = callback;
+    }
+    
+    if (bookmark[@"private"]) {
+        addBookmarkViewController.setAsPrivate = bookmark[@"private"];
+    }
+    else {
+        addBookmarkViewController.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+    }
+    
+    if (bookmark[@"unread"]) {
+        addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
+    }
+    else {
+        addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
+    }
+    
+    return addBookmarkViewNavigationController;
+}
+
 @end

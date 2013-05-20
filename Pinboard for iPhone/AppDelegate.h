@@ -52,7 +52,6 @@ enum bookmarkupdateevents {
     NSInteger secondsLeft;
 }
 
-@property (nonatomic, retain) PrimaryNavigationViewController *navigationViewController;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) NSString *token;
 @property (nonatomic, retain) NSDate *lastUpdated;
