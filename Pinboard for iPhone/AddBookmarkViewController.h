@@ -56,4 +56,6 @@
 - (void)close;
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer;
 
++ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
+
 @end

@@ -152,10 +152,7 @@
             [self.progressView setProgress:updated.floatValue / total.floatValue];
             
             if (updated.integerValue == total.integerValue) {
-                AppDelegate *delegate = [AppDelegate sharedDelegate];
-                delegate.navigationViewController = [[PrimaryNavigationViewController alloc] init];
-                delegate.navigationViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                [self presentViewController:delegate.navigationViewController animated:YES completion:nil];
+                #warning TODO
             }
         });
     });

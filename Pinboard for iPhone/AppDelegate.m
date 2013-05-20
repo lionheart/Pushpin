@@ -10,7 +10,6 @@
 #import "AppDelegate.h"
 #import "NoteViewController.h"
 #import "LoginViewController.h"
-#import "PrimaryNavigationViewController.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "Reachability.h"
@@ -23,6 +22,7 @@
 #import "PinboardDataSource.h"
 #import "PPNotificationWindow.h"
 #import "FeedListViewController.h"
+#import "AddBookmarkViewController.h"
 
 @implementation AppDelegate
 
@@ -39,7 +39,6 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
-@synthesize navigationViewController;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -74,7 +73,8 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
-    [self.navigationViewController showAddBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+    UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+    [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
@@ -112,7 +112,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     if (!didLaunchWithURL && self.token != nil) {
-        [self.navigationViewController promptUserToAddBookmark];
+// #error [self.navigationViewController promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
 }
@@ -138,7 +138,7 @@
 - (void)openSettings {
     SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
     settingsViewController.title = NSLocalizedString(@"Settings", nil);
-    [self.navigationViewController pushViewController:settingsViewController animated:YES];
+    [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 - (void)customizeUIElements {
