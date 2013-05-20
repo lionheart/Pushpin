@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WCAlertView.h"
 
 enum browsers {
     BROWSER_WEBVIEW,
@@ -64,6 +65,10 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, retain) WCAlertView *addBookmarkFromClipboardAlertView;
+
+@property (nonatomic, strong) NSString *clipboardBookmarkTitle;
+@property (nonatomic, strong) NSString *clipboardBookmarkURL;
 
 @property (nonatomic, retain) NSNumber *bookmarksUpdated;
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
@@ -87,5 +92,6 @@ enum bookmarkupdateevents {
 - (void)openSettings;
 - (void)customizeUIElements;
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
+- (void)promptUserToAddBookmark;
 
 @end
