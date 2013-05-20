@@ -152,7 +152,9 @@
             [self.progressView setProgress:updated.floatValue / total.floatValue];
             
             if (updated.integerValue == total.integerValue) {
-                #warning TODO
+                UINavigationController *controller = [AppDelegate sharedDelegate].navigationController;
+                controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                [self presentViewController:controller animated:YES completion:nil];
             }
         });
     });
@@ -169,7 +171,7 @@
 
 - (void)login {
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        __block AppDelegate *delegate = [AppDelegate sharedDelegate];
 
         self.activityIndicator.frame = self.activityIndicatorFrameTop;
         [self.activityIndicator startAnimating];
@@ -179,7 +181,7 @@
         self.passwordTextField.textColor = [UIColor grayColor];
         self.textView.text = NSLocalizedString(@"Login in Progress", nil);
         
-        ASPinboard *pinboard = [ASPinboard sharedInstance];
+        __block ASPinboard *pinboard = [ASPinboard sharedInstance];
         [pinboard authenticateWithUsername:usernameTextField.text
                                   password:passwordTextField.text
                                    success:^(NSString *token) {
@@ -192,23 +194,9 @@
                                        
                                        PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
                                        [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
-                                           PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-                                           pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                                           pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
-                                           
-                                           GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
-                                           pinboardViewController.postDataSource = pinboardDataSource;
-                                           pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-                                           
-                                           FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-                                           feedListViewController.title = @"Browse";
-                                           UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
-                                           navigationController.viewControllers = @[feedListViewController, pinboardViewController];
-                                           [navigationController popToViewController:pinboardViewController animated:NO];
-                                           navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                           [navigationController popToViewController:pinboardViewController animated:NO];
-                                           
-                                           [self presentViewController:navigationController animated:YES completion:nil];
+                                           UINavigationController *controller = delegate.navigationController;
+                                           controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                           [self presentViewController:controller animated:YES completion:nil];
                                        }
                                                                                        failure:nil
                                                                                       progress:^(NSInteger current, NSInteger total) {

@@ -112,9 +112,46 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     if (!didLaunchWithURL && self.token != nil) {
-// #error [self.navigationViewController promptUserToAddBookmark];
+        [self promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
+}
+
+- (void)promptUserToAddBookmark {
+    self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
+    if (!self.clipboardBookmarkURL) {
+        return;
+    }
+    
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+    [results next];
+    BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] == 0;
+    results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+    [results next];
+    BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
+    if (alreadyExistsInBookmarks && !alreadyRejected) {
+        NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
+        if (candidateURL && candidateURL.scheme && candidateURL.host) {
+            [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
+                                                   callback:^(NSString *title, NSString *description) {
+                                                       self.clipboardBookmarkTitle = title;
+                                                       [self.addBookmarkFromClipboardAlertView show];
+                                                       [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                                   }];
+            
+        }
+    }
+    [db close];
+}
+
+- (WCAlertView *)addBookmarkFromClipboardAlertView {
+    if (!_addBookmarkFromClipboardAlertView) {
+        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:@"yo" message:@"hey" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    }
+    return _addBookmarkFromClipboardAlertView;
 }
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
@@ -272,6 +309,25 @@
     }];
 }
 
+- (UINavigationController *)navigationController {
+    if (!_navigationController) {
+        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+        pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
+        
+        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        pinboardViewController.postDataSource = pinboardDataSource;
+        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+        
+        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        feedListViewController.title = @"Browse";
+        _navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
+        _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
+        [_navigationController popToViewController:pinboardViewController animated:NO];
+    }
+    return _navigationController;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -312,20 +368,6 @@
         [mixpanel identify:self.username];
         [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
-
-        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-        pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-        pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
-
-        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
-        pinboardViewController.postDataSource = pinboardDataSource;
-        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-        
-        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        feedListViewController.title = @"Browse";
-        self.navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
-        self.navigationController.viewControllers = @[feedListViewController, pinboardViewController];
-        [self.navigationController popToViewController:pinboardViewController animated:NO];
         [self.window setRootViewController:self.navigationController];
     }
     else {
@@ -346,6 +388,11 @@
     
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
+    NSString *key = [NSString stringWithFormat:@"%@.DownloadedBeforeIAP", [[NSBundle mainBundle] bundleIdentifier]];
+    if (store) {
+        [store setBool:YES forKey:key];
+        [store synchronize];
+    }
     
     didLaunchWithURL = NO;
     return YES;
@@ -640,5 +687,22 @@
                                }
                            }];
 }
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView == self.addBookmarkFromClipboardAlertView) {
+        if (buttonIndex == 1) {
+            AddBookmarkViewController *bookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+            [self.navigationController presentViewController:bookmarkViewController animated:YES completion:nil];
+            [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
+        }
+        else {
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkTitle]];
+            [db close];
+        }
+    }
+}
+
 
 @end
