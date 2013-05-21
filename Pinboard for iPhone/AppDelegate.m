@@ -72,8 +72,8 @@
     }
 }
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
-    UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
+    UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate delegate:delegate callback:callback];
     [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
 }
 
@@ -83,13 +83,13 @@
     }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
-        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@NO delegate:self callback:nil];
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
-            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@NO delegate:nil callback:^{
                 if (queryParameters[@"url"]) {
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
@@ -689,10 +689,14 @@
                            }];
 }
 
+- (void)closeModal:(UIViewController *)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.addBookmarkFromClipboardAlertView) {
         if (buttonIndex == 1) {
-            UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+            UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
             [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }

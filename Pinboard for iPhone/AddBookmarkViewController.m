@@ -489,6 +489,7 @@
     cell.textLabel.text = @"";
     cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.enabled = YES;
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
     
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
@@ -811,7 +812,7 @@
                          }];
 }
 
-+ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
++ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
     
@@ -824,7 +825,7 @@
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
     }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeModal:)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
 
     if (bookmark[@"title"]) {
         addBookmarkViewController.titleTextField.text = bookmark[@"title"];
@@ -844,6 +845,10 @@
     
     if (bookmark[@"description"]) {
         addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+    }
+    
+    if (delegate) {
+        addBookmarkViewController.modalDelegate = delegate;
     }
     
     if (callback) {

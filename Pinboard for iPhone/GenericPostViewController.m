@@ -36,12 +36,22 @@
 @synthesize pullToRefreshImageView;
 @synthesize loading;
 
+- (void)checkForBookmarkUpdates {
+    if (!self.bookmarkRefreshTimerPaused) {
+        self.bookmarkRefreshTimerPaused = YES;
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        if (delegate.bookmarksUpdated.boolValue) {
+            [self updateFromLocalDatabase];
+            delegate.bookmarksUpdated = @NO;
+        }
+    }
+}
+
 - (void)viewDidLoad {
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
     self.loading = NO;
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"XXXXX" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
@@ -71,6 +81,10 @@
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
 
+    self.bookmarkRefreshTimerPaused = NO;
+    self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
+
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
         
@@ -83,6 +97,12 @@
             [self updateFromLocalDatabase];
         });
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    self.bookmarkRefreshTimerPaused = YES;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -219,6 +239,8 @@
                             [self.pullToRefreshImageView stopAnimating];
                         }];
                     }
+                    
+                    self.bookmarkRefreshTimerPaused = NO;
                 });
             });
         } failure:nil];
@@ -401,7 +423,9 @@
 
 #pragma mark - Table view delegate
 
-
+- (void)closeModal:(UIViewController *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 #pragma mark - RDActionSheet
 
@@ -431,6 +455,10 @@
     }
     else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
         [self copyURL];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
+        UIViewController *vc = [self.postDataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+        [self presentViewController:vc animated:YES completion:nil];
     }
 }
 

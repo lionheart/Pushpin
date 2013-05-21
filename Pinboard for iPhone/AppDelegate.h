@@ -47,7 +47,7 @@ enum bookmarkupdateevents {
 - (void)bookmarkUpdateEvent:(int)type;
 @end
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, ModalDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
@@ -83,7 +83,7 @@ enum bookmarkupdateevents {
 - (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
 - (void)updateNotes;
 + (NSString *)databasePath;
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
 - (void)pauseRefreshTimer;
