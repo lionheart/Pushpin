@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "ASPinboard/ASPinboard.h"
 #import "NSAttributedString+Attributes.h"
+#import "AddBookmarkViewController.h"
 
 @implementation PinboardFeedDataSource
 
@@ -269,6 +270,10 @@
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
     return links;
+}
+
+- (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate {
+    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) delegate:delegate callback:nil];
 }
 
 @end

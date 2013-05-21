@@ -65,13 +65,14 @@ typedef NSInteger PPPostAction;
 
 @optional
 
+- (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
 
 @end
 
-@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
+@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate, ModalDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
@@ -84,12 +85,17 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 
+// Timer Stuff
+@property (nonatomic, strong) NSTimer *bookmarkRefreshTimer;
+@property (nonatomic) BOOL bookmarkRefreshTimerPaused;
+
 - (void)dismissViewController;
 - (void)checkForPostUpdates;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
 - (void)deletePosts:(NSArray *)posts;
 - (void)copyURL;
+- (void)copyToMine;
 - (void)sendToReadLater;
 - (void)update;
 - (void)updateFromLocalDatabase;
