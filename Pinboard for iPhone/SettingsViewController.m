@@ -7,6 +7,9 @@
 //
 
 #import <ASPinboard/ASPinboard.h>
+#import <Accounts/Accounts.h>
+#import <Social/Social.h>
+
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
@@ -194,7 +197,7 @@
             break;
             
         case 1:
-            return 1;
+            return 3;
             break;
             
         case 2:
@@ -337,8 +340,25 @@
             break;
         }
         case 1: {
-            cell.textLabel.text = NSLocalizedString(@"Rate us in the App Store", nil);
-            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            switch (indexPath.row) {
+                case 0:
+                    cell.textLabel.text = NSLocalizedString(@"Rate us in the App Store", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    break;
+                    
+                case 1:
+                    cell.textLabel.text = NSLocalizedString(@"Follow @dwlz on Twitter", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    break;
+                    
+                case 2:
+                    cell.textLabel.text = NSLocalizedString(@"Follow @Pushpin_app on Twitter", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
         }
         case 2: {
@@ -528,7 +548,7 @@
     }
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.browserActionSheet) {
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:@"Webview"]) {
@@ -607,6 +627,41 @@
     }
 }
 
+- (void)followScreenName:(NSString *)screenName {
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    [accountStore requestAccessToAccountsWithType:twitter
+                                          options:nil
+                                       completion:^(BOOL granted, NSError *error) {
+                                           if (granted) {
+                                               for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
+                                                   SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                                                                           requestMethod:SLRequestMethodPOST
+                                                                                                     URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
+                                                                                              parameters:@{@"screen_name": screenName, @"follow": @"true"}];
+                                                   [request setAccount:account];
+                                                   [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                                                       NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
+                                                       if (response[@"errors"]) {
+                                                           NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
+                                                           NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted Error", nil) otherButtonTitles:nil];
+                                                               [alertView show];
+                                                           });
+                                                       }
+                                                       else {
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+                                                               [alertView show];
+                                                           });
+                                                       }
+                                                   }];
+                                               }
+                                           }
+                                       }];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
@@ -623,9 +678,27 @@
             break;
         }
 
-        case 1:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard-best/id548052590"]];
+        case 1: {
+            
+            switch (indexPath.row) {
+                case 0:
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard-best/id548052590"]];
+                    break;
+                    
+                case 1:
+                    [self followScreenName:@"dwlz"];
+                    break;
+                    
+                case 2:
+                    [self followScreenName:@"pushpin_app"];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
             break;
+        }
 
         case 2: {
             switch (indexPath.row) {
