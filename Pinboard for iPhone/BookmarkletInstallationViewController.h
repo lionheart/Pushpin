@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PPTableViewController.h"
 
-@interface BookmarkletInstallationViewController : UITableViewController
+@interface BookmarkletInstallationViewController : PPTableViewController
 
 @end
