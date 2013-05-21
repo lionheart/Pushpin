@@ -16,6 +16,7 @@
 + (PPNotificationWindow *)sharedInstance;
 
 - (UIView *)notificationViewWithMessage:(NSString *)message;
+- (void)showInView:(UIView *)view withMessage:(NSString *)message;
 - (void)showWithMessage:(NSString *)message;
 - (void)hide;
 - (void)hide:(BOOL)animated;
