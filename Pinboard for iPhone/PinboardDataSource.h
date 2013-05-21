@@ -13,6 +13,7 @@
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
 @property (nonatomic, retain) NSMutableArray *posts;
+@property (nonatomic, retain) NSMutableDictionary *stringsForPosts;
 @property (nonatomic, retain) NSArray *heights;
 @property (nonatomic, retain) NSArray *strings;
 @property (nonatomic, retain) NSArray *urls;
