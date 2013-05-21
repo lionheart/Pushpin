@@ -173,6 +173,8 @@
 		3777C98716798DC50046D4EB /* reload_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3777C97E16798DC50046D4EB /* reload_icon@2x.png */; };
 		3777C98816798DC50046D4EB /* TSMiniWebBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3777C98016798DC50046D4EB /* TSMiniWebBrowser.m */; };
 		3777C98916798DC50046D4EB /* TSMiniWebBrowser.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3777C98116798DC50046D4EB /* TSMiniWebBrowser.xib */; };
+		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
+		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; };
 		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
 		37800E88162CF1A3009FCB17 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E70162CF1A2009FCB17 /* Reachability.m */; };
@@ -728,6 +730,8 @@
 		3777C97F16798DC50046D4EB /* TSMiniWebBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMiniWebBrowser.h; sourceTree = "<group>"; };
 		3777C98016798DC50046D4EB /* TSMiniWebBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMiniWebBrowser.m; sourceTree = "<group>"; };
 		3777C98116798DC50046D4EB /* TSMiniWebBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSMiniWebBrowser.xib; sourceTree = "<group>"; };
+		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		377E46DA174C3A7500CE3813 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		37800E3F162B2EDA009FCB17 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		37800E40162B2EDA009FCB17 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		37800E43162B389B009FCB17 /* AddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBookmarkViewController.h; sourceTree = "<group>"; };
@@ -1091,6 +1095,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
+				377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */,
 				375A1009167D4B3100320495 /* Security.framework in Frameworks */,
 				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
@@ -1825,6 +1831,8 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				377E46DA174C3A7500CE3813 /* Social.framework */,
+				377E46D6174C396C00CE3813 /* Accounts.framework */,
 				375A1008167D4B3100320495 /* Security.framework */,
 				372F88811673EE280073D0B6 /* libxml2.dylib */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,

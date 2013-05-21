@@ -16,7 +16,7 @@
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
 @property (nonatomic, retain) WCAlertView *installChromeAlertView;
 @property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
@@ -38,5 +38,6 @@
 - (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
+- (void)followScreenName:(NSString *)screenName;
 
 @end
