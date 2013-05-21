@@ -73,7 +73,7 @@
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback {
     NSInteger limit = [self.queryParameters[@"limit"] integerValue];
 
-    BOOL needsUpdate = indexPath.row >= limit / 2;
+    BOOL needsUpdate = indexPath.row >= limit * 3. / 4.;
     if (needsUpdate) {
         self.queryParameters[@"limit"] = @(limit + 50);
     }
