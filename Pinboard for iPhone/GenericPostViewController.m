@@ -281,7 +281,7 @@
         if ([self.postDataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
             [self.postDataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
-                    [self update];
+                    [self updateFromLocalDatabase];
                 }
             }];
         }
