@@ -20,7 +20,7 @@
 #import "SettingsViewController.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
-#import "PPNotificationWindow.h"
+#import "PPNotification.h"
 #import "FeedListViewController.h"
 #import "AddBookmarkViewController.h"
 
@@ -58,14 +58,14 @@
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[PPNotificationWindow sharedInstance] showWithMessage:notification.alertBody];
+                    [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
                 });
             });
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[PPNotificationWindow sharedInstance] showWithMessage:notification.alertBody];
+                    [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
                 });
             });
         }
