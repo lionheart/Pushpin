@@ -50,6 +50,8 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.backgroundColor = [UIColor whiteColor];
 
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
