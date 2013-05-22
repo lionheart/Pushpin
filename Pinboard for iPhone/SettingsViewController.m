@@ -257,7 +257,7 @@
                     break;
 
                 case 3:
-                    cell.textLabel.text = NSLocalizedString(@"Browsers", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;

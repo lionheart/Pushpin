@@ -109,100 +109,100 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     NSString *urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
-    
-    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-        NSRange httpRange = NSMakeRange(NSNotFound, 0);
-        if ([urlString hasPrefix:@"http"]) {
-            httpRange = [urlString rangeOfString:@"http"];
-        }
+    NSRange httpRange = NSMakeRange(NSNotFound, 0);
+    if ([urlString hasPrefix:@"http"]) {
+        httpRange = [urlString rangeOfString:@"http"];
+    }
 
-        case BROWSER_WEBVIEW: {
-            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-            TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:urlString]];
-            [self.navigationController pushViewController:webBrowser animated:YES];
-            break;
-        }
-            
-        case BROWSER_SAFARI: {
-            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-            break;
-        }
-            
-        case BROWSER_CHROME:
-            if (httpRange.location != NSNotFound) {
-                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+    DLog(@"%@", [[[AppDelegate sharedDelegate] openLinksInApp] boolValue] ? @"yes" : @"no");
+    if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
+        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+        TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:urlString]];
+        [self.navigationController pushViewController:webBrowser animated:YES];
+    }
+    else {
+        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+            case BROWSER_SAFARI: {
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                break;
+            }
+                
+            case BROWSER_CHROME:
+                if (httpRange.location != NSNotFound) {
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
+                    else {
+                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_ICAB_MOBILE:
+                if (httpRange.location != NSNotFound) {
+                    NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
                     [[UIApplication sharedApplication] openURL:url];
                 }
                 else {
-                    NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
-                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_OPERA:
+                if (httpRange.location != NSNotFound) {
+                    NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
                     [[UIApplication sharedApplication] openURL:url];
                 }
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_ICAB_MOBILE:
-            if (httpRange.location != NSNotFound) {
-                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_OPERA:
-            if (httpRange.location != NSNotFound) {
-                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_DOLPHIN:
-            if (httpRange.location != NSNotFound) {
-                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        case BROWSER_CYBERSPACE:
-            if (httpRange.location != NSNotFound) {
-                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                [[UIApplication sharedApplication] openURL:url];
-            }
-            else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                [alert show];
-            }
-            
-            break;
-            
-        default:
-            break;
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_DOLPHIN:
+                if (httpRange.location != NSNotFound) {
+                    NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            case BROWSER_CYBERSPACE:
+                if (httpRange.location != NSNotFound) {
+                    NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
+                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+                else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Disappointment", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    [alert show];
+                }
+                
+                break;
+                
+            default:
+                break;
+        }
     }
 }
 
