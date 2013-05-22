@@ -108,12 +108,15 @@
     void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
+        [db executeQuery:@"PRAGMA journal_mode=MEMORY"];
+        [db executeQuery:@"PRAGMA temp_store=MEMORY"];
+
         [db beginTransaction];
         [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
         
         FMResultSet *results;
         
-        results = [db executeQuery:@"SELECT * FROM tag"];
+        results = [db executeQuery:@"SELECT id, name FROM tag"];
         NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
         
         while ([results next]) {
@@ -128,7 +131,7 @@
             [metas setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
         }
         NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
-        
+
         NSString *bookmarkMeta;
         NSNumber *tagIdNumber;
         BOOL updated_or_created = NO;
@@ -167,8 +170,8 @@
                                @"tags": element[@"tags"],
                                @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
                                @"private": @([element[@"shared"] isEqualToString:@"no"])
-                               };
-                    
+                            };
+
                     [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id IN (SELECT id FROM bookmark WHERE hash=?)" withArgumentsInArray:@[element[@"hash"]]];
                 }
@@ -177,16 +180,16 @@
                 newBookmarkCount++;
                 updated_or_created = YES;
                 params = @{
-                           @"url": element[@"href"],
-                           @"title": element[@"description"],
-                           @"description": element[@"extended"],
-                           @"meta": element[@"meta"],
-                           @"hash": element[@"hash"],
-                           @"tags": element[@"tags"],
-                           @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                           @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                           @"created_at": [dateFormatter dateFromString:element[@"time"]]
-                           };
+                       @"url": element[@"href"],
+                       @"title": element[@"description"],
+                       @"description": element[@"extended"],
+                       @"meta": element[@"meta"],
+                       @"hash": element[@"hash"],
+                       @"tags": element[@"tags"],
+                       @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                       @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                       @"created_at": [dateFormatter dateFromString:element[@"time"]]
+                };
                 
                 [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
             }
