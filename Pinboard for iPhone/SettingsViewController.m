@@ -342,7 +342,7 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = NSLocalizedString(@"Rate us in the App Store", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Rate Pushpin in the App Store", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                     
@@ -630,34 +630,60 @@
 - (void)followScreenName:(NSString *)screenName {
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
     ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    [loadingAlertView show];
+
+    self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
+    [self.loadingIndicator startAnimating];
+    [loadingAlertView addSubview:self.loadingIndicator];
+
     [accountStore requestAccessToAccountsWithType:twitter
                                           options:nil
                                        completion:^(BOOL granted, NSError *error) {
                                            if (granted) {
+                                               self.twitterAccountActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
+                                               NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
                                                for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
-                                                   SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                                                                           requestMethod:SLRequestMethodPOST
-                                                                                                     URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
-                                                                                              parameters:@{@"screen_name": screenName, @"follow": @"true"}];
-                                                   [request setAccount:account];
-                                                   [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                                                       NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-                                                       if (response[@"errors"]) {
-                                                           NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
-                                                           NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:self cancelButtonTitle:NSLocalizedString(@"Lighthearted Error", nil) otherButtonTitles:nil];
-                                                               [alertView show];
-                                                           });
-                                                       }
-                                                       else {
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-                                                               [alertView show];
-                                                           });
-                                                       }
-                                                   }];
+                                                   [self.twitterAccountActionSheet addButtonWithTitle:account.username];
+                                                   [accounts setObject:account.identifier forKey:account.username];
                                                }
+                                               
+                                               [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+                                               self.twitterAccountActionSheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
+                                                   if (result == RDActionSheetCallbackTypeClickedButtonAtIndex) {
+                                                       ACAccount *account = [accountStore accountWithIdentifier:accounts[buttonTitle]];
+                                                       SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                                                                               requestMethod:SLRequestMethodPOST
+                                                                                                         URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
+                                                                                                  parameters:@{@"screen_name": screenName, @"follow": @"true"}];
+                                                       [request setAccount:account];
+                                                       [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                                                           [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                                           NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
+                                                           if (response[@"errors"]) {
+                                                               NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
+                                                               NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
+                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                   WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Lighthearted Error", nil) otherButtonTitles:nil];
+                                                                   [alertView show];
+                                                               });
+                                                           }
+                                                           else {
+                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                   WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+                                                                   [alertView show];
+                                                               });
+                                                           }
+                                                       }];
+                                                   }
+                                               };
+                                               
+                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                               [self.twitterAccountActionSheet showFrom:self.navigationController.view];
+                                           }
+                                           else {
+                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                            }
                                        }];
 }
