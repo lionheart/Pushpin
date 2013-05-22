@@ -29,6 +29,7 @@
 @property (nonatomic, retain) RDActionSheet *browserActionSheet;
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
+@property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
