@@ -58,6 +58,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSDate *lastUpdated;
 @property (nonatomic, retain) NSNumber *browser;
 @property (nonatomic, retain) NSNumber *readlater;
+@property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;
 @property (nonatomic, retain) NSString *feedToken;
