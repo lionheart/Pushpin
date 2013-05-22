@@ -23,6 +23,7 @@
 #import "PPNotification.h"
 #import "FeedListViewController.h"
 #import "AddBookmarkViewController.h"
+#import "PPWebViewController.h"
 
 @implementation AppDelegate
 

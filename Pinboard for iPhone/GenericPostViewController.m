@@ -17,7 +17,7 @@
 #import "PocketAPI.h"
 #import "ASPinboard/ASPinboard.h"
 #import "PPCoreGraphics.h"
-#import "TSMiniWebBrowser.h"
+#import "PPWebViewController.h"
 
 @interface GenericPostViewController ()
 
@@ -114,11 +114,10 @@
         httpRange = [urlString rangeOfString:@"http"];
     }
 
-    DLog(@"%@", [[[AppDelegate sharedDelegate] openLinksInApp] boolValue] ? @"yes" : @"no");
     if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
         [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-        TSMiniWebBrowser *webBrowser = [[TSMiniWebBrowser alloc] initWithUrl:[NSURL URLWithString:urlString]];
-        [self.navigationController pushViewController:webBrowser animated:YES];
+        PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+        [self.navigationController pushViewController:webViewController animated:YES];
     }
     else {
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
