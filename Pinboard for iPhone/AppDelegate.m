@@ -39,6 +39,7 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
+@synthesize openLinksInApp = _openLinksInApp;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -543,6 +544,24 @@
         }
     }
     return _privateByDefault;
+}
+
+- (NSNumber *)openLinksInApp {
+    if (!_openLinksInApp) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _openLinksInApp = [defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"];
+        if (!_openLinksInApp) {
+            _openLinksInApp = @(YES);
+        }
+    }
+    return _openLinksInApp;
+}
+
+- (void)setOpenLinksInApp:(NSNumber *)openLinksInApp {
+    _openLinksInApp = openLinksInApp;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:openLinksInApp forKey:@"io.aurora.pinboard.OpenLinksInApp"];
+    [defaults synchronize];
 }
 
 - (void)setReadByDefault:(NSNumber *)readByDefault {

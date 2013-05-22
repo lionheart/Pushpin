@@ -16,24 +16,21 @@
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, UITextFieldDelegate, RDActionSheetDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate>
 
-@property (nonatomic, retain) WCAlertView *installChromeAlertView;
-@property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
 @property (nonatomic, retain) PPLoadingView *loadingIndicator;
 @property (nonatomic, retain) WCAlertView *instapaperAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityAlertView;
 @property (nonatomic, retain) WCAlertView *logOutAlertView;
-@property (nonatomic, retain) RDActionSheet *browserActionSheet;
+
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
-@property (nonatomic, retain) NSMutableArray *availableBrowsers;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;

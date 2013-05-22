@@ -175,6 +175,7 @@
 		3777C98916798DC50046D4EB /* TSMiniWebBrowser.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3777C98116798DC50046D4EB /* TSMiniWebBrowser.xib */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; };
+		377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
 		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
 		37800E88162CF1A3009FCB17 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E70162CF1A2009FCB17 /* Reachability.m */; };
@@ -732,6 +733,8 @@
 		3777C98116798DC50046D4EB /* TSMiniWebBrowser.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSMiniWebBrowser.xib; sourceTree = "<group>"; };
 		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		377E46DA174C3A7500CE3813 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserSettingsViewController.h; sourceTree = "<group>"; };
+		377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserSettingsViewController.m; sourceTree = "<group>"; };
 		37800E3F162B2EDA009FCB17 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		37800E40162B2EDA009FCB17 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		37800E43162B389B009FCB17 /* AddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBookmarkViewController.h; sourceTree = "<group>"; };
@@ -1873,6 +1876,8 @@
 				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
+				377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */,
+				377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */,
 				375A638816C0CB0800665CA1 /* FeedListViewController.h */,
 				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
 				3733251D16E155A2002E2AB0 /* GenericPostViewController.h */,
@@ -2573,6 +2578,7 @@
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
+				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

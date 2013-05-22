@@ -20,7 +20,7 @@
 #import "NSString+URLEncoding.h"
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
-#import "BookmarkletInstallationViewController.h"
+#import "PPBrowserSettingsViewController.h"
 
 @interface SettingsViewController ()
 
@@ -29,14 +29,11 @@
 @implementation SettingsViewController
 
 @synthesize logOutAlertView;
-@synthesize browserActionSheet;
 @synthesize supportActionSheet;
 @synthesize readLaterServices;
 @synthesize readLaterActionSheet;
 @synthesize privateByDefaultSwitch;
 @synthesize instapaperAlertView;
-@synthesize installChromeAlertView;
-@synthesize installiCabMobileAlertView;
 @synthesize instapaperVerificationAlertView;
 @synthesize loadingIndicator;
 @synthesize readByDefaultSwitch;
@@ -53,31 +50,6 @@
         self.navigationItem.rightBarButtonItem = barButtonItem;
 
         self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
-        
-        self.browserActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Webview", nil)];
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
-
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
-        }
-
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
-        }
 
         self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
         self.readLaterActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:nil];
@@ -110,8 +82,6 @@
         [[self.readabilityAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
         [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
 
-        self.installChromeAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome Title", nil) message:NSLocalizedString(@"Install Chrome Description", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
-        self.installiCabMobileAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
         self.instapaperVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
                                                                           message:@"Logging into Instapaper"
                                                                          delegate:nil
@@ -123,7 +93,7 @@
                                                                  cancelButtonTitle:nil
                                                                  otherButtonTitles:nil];
         self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        self.availableBrowsers = [NSMutableArray array];
+
     }
     return self;
 }
@@ -187,13 +157,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            if (self.readLaterServices.count > 0) {
-                return 5;
-            }
-            else {
-                return 4;
-            }
-
+            return 4;
             break;
             
         case 1:
@@ -206,12 +170,6 @@
             
         default:
             break;
-    }
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 4) {
-        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
     }
 }
 
@@ -273,39 +231,8 @@
                     [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.readByDefaultSwitch;
                     break;
-
-                case 2:
-                    cell.textLabel.text = NSLocalizedString(@"Open links with:", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                        case BROWSER_WEBVIEW:
-                            cell.detailTextLabel.text = @"Webview";
-                            break;
-                        case BROWSER_SAFARI:
-                            cell.detailTextLabel.text = @"Safari";
-                            break;
-                        case BROWSER_CHROME:
-                            cell.detailTextLabel.text = @"Chrome";
-                            break;
-                        case BROWSER_ICAB_MOBILE:
-                            cell.detailTextLabel.text = @"iCab Mobile";
-                            break;
-                        case BROWSER_DOLPHIN:
-                            cell.detailTextLabel.text = @"Dolphin";
-                            break;
-                        case BROWSER_CYBERSPACE:
-                            cell.detailTextLabel.text = @"Cyberspace";
-                            break;
-                        case BROWSER_OPERA:
-                            cell.detailTextLabel.text = @"Opera";
-                            break;
-                        default:
-                            break;
-                    }
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    break;
                     
-                case 3:
+                case 2:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
@@ -328,10 +255,11 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     break;
-                case 4:
-                    cell.textLabel.text = NSLocalizedString(@"Browser integration", nil);
+
+                case 3:
+                    cell.textLabel.text = NSLocalizedString(@"Browsers", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
 
                 default:
@@ -540,49 +468,10 @@
                                    }
                                }];
     }
-    else if (alertView == self.installChromeAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
-    }
-    else if (alertView == self.installiCabMobileAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
-    }
 }
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.browserActionSheet) {
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:@"Webview"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
-        }
-        else if ([title isEqualToString:@"Safari"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
-        }
-        else if ([title isEqualToString:@"Chrome"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
-        }
-        else if ([title isEqualToString:@"iCab Mobile"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
-        }
-        else if ([title isEqualToString:@"Dolphin"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_DOLPHIN)];
-        }
-        else if ([title isEqualToString:@"Cyberspace"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CYBERSPACE)];
-        }
-        else if ([title isEqualToString:@"Opera"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_OPERA)];
-        }
-
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    else if (actionSheet == self.supportActionSheet) {
+    if (actionSheet == self.supportActionSheet) {
         if (buttonIndex == 3) {
             MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
             emailComposer.mailComposeDelegate = self;
@@ -651,7 +540,7 @@
                                                
                                                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
                                                self.twitterAccountActionSheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
-                                                   if (result == RDActionSheetCallbackTypeClickedButtonAtIndex) {
+                                                   if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
                                                        ACAccount *account = [accountStore accountWithIdentifier:accounts[buttonTitle]];
                                                        SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
                                                                                                requestMethod:SLRequestMethodPOST
@@ -693,13 +582,10 @@
     switch (indexPath.section) {
         case 0: {
             if (indexPath.row == 2) {
-                [self.browserActionSheet showFrom:self.navigationController.view];
-            }
-            else if (indexPath.row == 3) {
                 [self.readLaterActionSheet showFrom:self.navigationController.view];
             }
-            else if (indexPath.row == 4) {
-                [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
+            else if (indexPath.row == 3) {
+                [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
             }
             break;
         }
