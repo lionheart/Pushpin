@@ -146,7 +146,7 @@
                     self.openLinksInAppSwitch = [[PPSwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
+                    self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] openLinksInApp].boolValue;
                     [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.openLinksInAppSwitch;
                     break;

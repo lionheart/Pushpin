@@ -303,23 +303,36 @@
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     actionSheet.delegate = self;
 
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
+    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+        case BROWSER_SAFARI:
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
+            break;
+            
+        case BROWSER_OPERA:
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
+            break;
+            
+        case BROWSER_ICAB_MOBILE:
+            #warning XXX - switch to correct browser
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
+            break;
+            
+        case BROWSER_DOLPHIN:
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
+            break;
+            
+        case BROWSER_CYBERSPACE:
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
+            break;
+            
+        case BROWSER_CHROME:
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
+            break;
+            
+        default:
+            break;
     }
     
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
-    }
-
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
-    }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
-    }
-
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
     [actionSheet showFrom:self.view];
 }
 
