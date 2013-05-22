@@ -19,7 +19,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.title = NSLocalizedString(@"Browsers", nil);
+        self.title = NSLocalizedString(@"Browser Settings", nil);
 
         self.browserActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
@@ -238,7 +238,7 @@
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setReadByDefault:@(self.openLinksInAppSwitch.on)];
+    [[AppDelegate sharedDelegate] setOpenLinksInApp:@(self.openLinksInAppSwitch.on)];
 }
 
 @end

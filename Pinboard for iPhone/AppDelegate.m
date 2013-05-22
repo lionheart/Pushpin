@@ -595,8 +595,8 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _browser = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
         
-        if (!_browser) {
-            _browser = @(BROWSER_WEBVIEW);
+        if (!_browser || [_browser isEqual:@(BROWSER_WEBVIEW)]) {
+            _browser = @(BROWSER_SAFARI);
         }
     }
     return _browser;
