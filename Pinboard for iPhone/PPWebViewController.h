@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import "RDActionSheet.h"
+#import "AppDelegate.h"
 
-@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
+@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
@@ -23,6 +24,8 @@
 - (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)emailURL;
+- (void)showEditViewController;
+- (void)showAddViewController;
 - (BOOL)isMobilized;
 - (void)toggleMobilizer;
 - (NSURL *)url;

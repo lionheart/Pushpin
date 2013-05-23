@@ -541,62 +541,58 @@
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
-    if (!self.stringsForPosts[@(index)]) {
-        UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-        UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-        UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
-        UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
-        
-        NSString *title = [self titleForPostAtIndex:index];
-        NSString *description = [self descriptionForPostAtIndex:index];
-        NSString *tags = [self tagsForPostAtIndex:index];
-        NSString *dateString = [self formattedDateForPostAtIndex:index];
-        BOOL isRead = [self isPostAtIndexRead:index];
-        
-        NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        
-        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
-        if (descriptionRange.location != NSNotFound) {
-            [content appendString:[NSString stringWithFormat:@"\n%@", description]];
-        }
-        
-        NSRange tagRange = [self rangeForTagsForPostAtIndex:index];
-        BOOL hasTags = tagRange.location != NSNotFound;
-        
-        if (hasTags) {
-            [content appendFormat:@"\n%@", tags];
-        }
-        
-        [content appendFormat:@"\n%@", dateString];
-        NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
-        
-        NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-        [attributedString setFont:titleFont range:titleRange];
-        [attributedString setFont:descriptionFont range:descriptionRange];
-        [attributedString setTextColor:HEX(0x33353Bff)];
-        
-        if (isRead) {
-            [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
-            [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-        }
-        else {
-            [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-            [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
-        }
-        
-        if (hasTags) {
-            [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-            [attributedString setFont:tagsFont range:tagRange];
-        }
-        
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-        [attributedString setFont:dateFont range:dateRange];
-        [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-        [self.stringsForPosts setObject:attributedString forKey:@(index)];
-        return attributedString;
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
+    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    
+    NSString *title = [self titleForPostAtIndex:index];
+    NSString *description = [self descriptionForPostAtIndex:index];
+    NSString *tags = [self tagsForPostAtIndex:index];
+    NSString *dateString = [self formattedDateForPostAtIndex:index];
+    BOOL isRead = [self isPostAtIndexRead:index];
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+    NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+    
+    NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
+    if (descriptionRange.location != NSNotFound) {
+        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
-    return (NSAttributedString *)self.stringsForPosts[@(index)];
+    
+    NSRange tagRange = [self rangeForTagsForPostAtIndex:index];
+    BOOL hasTags = tagRange.location != NSNotFound;
+    
+    if (hasTags) {
+        [content appendFormat:@"\n%@", tags];
+    }
+    
+    [content appendFormat:@"\n%@", dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:titleFont range:titleRange];
+    [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setTextColor:HEX(0x33353Bff)];
+    
+    if (isRead) {
+        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+    }
+    
+    if (hasTags) {
+        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
+        [attributedString setFont:tagsFont range:tagRange];
+    }
+    
+    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
+    [attributedString setFont:dateFont range:dateRange];
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    return attributedString;
 }
 
 - (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {

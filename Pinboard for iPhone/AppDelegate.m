@@ -125,7 +125,7 @@
     if (!self.clipboardBookmarkURL) {
         return;
     }
-    
+
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];

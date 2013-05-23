@@ -9,7 +9,8 @@
 #import <MessageUI/MessageUI.h>
 
 #import "PPWebViewController.h"
-#import "AppDelegate.h"
+#import "AddBookmarkViewController.h"
+#import "FMDatabase.h"
 
 static NSInteger kToolbarHeight = 44;
 
@@ -67,6 +68,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
 }
 
@@ -75,15 +77,39 @@ static NSInteger kToolbarHeight = 44;
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
     self.readerBarButtonItem.enabled = YES;
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSString *pageTitle = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = pageTitle;
 
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
     self.readerBarButtonItem.enabled = YES;
+
+    NSString *theURLString;
+    if ([self.webView canGoBack]) {
+        theURLString = self.url.absoluteString;
+    }
+    else {
+        theURLString = self.urlString;
+    }
+
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+    [results next];
+    if ([results intForColumnIndex:0] > 0) {
+        UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
+        self.navigationItem.rightBarButtonItem = editBarButtonItem;
+    }
+    else {
+        UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
+        self.navigationItem.rightBarButtonItem = addBarButtonItem;
+    }
+    [db close];
+    
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
@@ -91,6 +117,7 @@ static NSInteger kToolbarHeight = 44;
     self.backBarButtonItem.enabled = NO;
     self.forwardBarButtonItem.enabled = NO;
     self.readerBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem = nil;
     self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
 }
@@ -236,6 +263,43 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSURL *)url {
     return [self.webView.request URL];
+}
+
+- (void)showAddViewController {
+    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    NSDictionary *post = @{
+        @"title": pageTitle,
+        @"url": self.url.absoluteString
+    };
+
+    UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(NO) delegate:self callback:nil];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (void)showEditViewController {
+    #warning TODO - make generic
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlString]];
+    [results next];
+    NSDictionary *post = @{
+        @"title": [results stringForColumn:@"title"],
+        @"description": [results stringForColumn:@"description"],
+        @"unread": @([results boolForColumn:@"unread"]),
+        @"url": [results stringForColumn:@"url"],
+        @"private": @([results boolForColumn:@"private"]),
+        @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+        @"created_at": [results dateForColumn:@"created_at"],
+        @"starred": @([results boolForColumn:@"starred"])
+    };
+    [db close];
+
+    UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (void)closeModal:(UIViewController *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)isMobilized {
