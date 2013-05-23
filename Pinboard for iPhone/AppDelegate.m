@@ -389,7 +389,6 @@
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
 
-    
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
     NSString *key = [NSString stringWithFormat:@"%@.DownloadedBeforeIAP", [[NSBundle mainBundle] bundleIdentifier]];
