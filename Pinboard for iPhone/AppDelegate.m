@@ -131,11 +131,11 @@
     [db open];
     FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
     [results next];
-    BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] == 0;
+    BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
     results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
     [results next];
     BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
-    if (alreadyExistsInBookmarks && !alreadyRejected) {
+    if (!alreadyExistsInBookmarks && !alreadyRejected) {
         NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
         if (candidateURL && candidateURL.scheme && candidateURL.host) {
             [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
@@ -744,7 +744,7 @@
         else {
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
-            [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkTitle]];
+            [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
             [db close];
         }
     }
