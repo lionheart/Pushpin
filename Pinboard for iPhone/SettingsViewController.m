@@ -52,10 +52,13 @@
         self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
 
         self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
+        
+        self.mobilizerActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@[@"Google", @"Readability", @"Instapaper"]];
+        self.mobilizerActionSheet.delegate = self;
+
         self.readLaterActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:nil];
         
         self.readLaterServices = [NSMutableArray array];
-        
         [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
         [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
@@ -157,7 +160,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 4;
+            return 5;
             break;
             
         case 1:
@@ -255,11 +258,31 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     break;
-
+                    
                 case 3:
-                    cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+                    switch ([[[AppDelegate sharedDelegate] mobilizer] integerValue]) {
+                        case MOBILIZER_GOOGLE:
+                            cell.detailTextLabel.text = @"Google";
+                            break;
+                        case MOBILIZER_READABILITY:
+                            cell.detailTextLabel.text = @"Readability";
+                            break;
+                        case MOBILIZER_INSTAPAPER:
+                            cell.detailTextLabel.text = @"Instapaper";
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
                     break;
 
                 default:
@@ -489,6 +512,21 @@
             return;
         }
     }
+    else if (actionSheet == self.mobilizerActionSheet) {
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+
+        if ([buttonTitle isEqualToString:@"Google"]) {
+            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_GOOGLE)];
+        }
+        else if ([buttonTitle isEqualToString:@"Instapaper"]) {
+            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_INSTAPAPER)];
+        }
+        else if ([buttonTitle isEqualToString:@"Readability"]) {
+            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_READABILITY)];
+        }
+
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    }
     else if (actionSheet == self.readLaterActionSheet) {
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
@@ -503,14 +541,14 @@
                 if (!error && API.loggedIn) {
                     [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
                     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
-                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                 }
             }];
         }
         else if ([buttonTitle isEqualToString:@"None"]) {
             [[AppDelegate sharedDelegate] setReadlater:nil];
             [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
 
     }
@@ -585,6 +623,9 @@
                 [self.readLaterActionSheet showFrom:self.navigationController.view];
             }
             else if (indexPath.row == 3) {
+                [self.mobilizerActionSheet showFrom:self.navigationController.view];
+            }
+            else if (indexPath.row == 4) {
                 [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
             }
             break;

@@ -42,6 +42,12 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
     self.forwardBarButtonItem.enabled = NO;
     
+    UIButton *readerButton = [[UIButton alloc] init];
+    [readerButton setImage:[UIImage imageNamed:@"glasses-square"] forState:UIControlStateNormal];
+    [readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    readerButton.frame = CGRectMake(0, 0, 30, 30);
+    self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:readerButton];
+    
     UIButton *actionButton = [[UIButton alloc] init];
     [actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -53,7 +59,7 @@ static NSInteger kToolbarHeight = 44;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
-    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, actionBarButtonItem];
+    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, fixedSpace, actionBarButtonItem];
     toolbar.frame = CGRectMake(0, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height, size.width, kToolbarHeight);
 
     [self.view addSubview:toolbar];
@@ -66,6 +72,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    self.backBarButtonItem.enabled = self.webView.canGoBack;
+    self.forwardBarButtonItem.enabled = self.webView.canGoForward;
+    self.readerBarButtonItem.enabled = YES;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -74,12 +83,14 @@ static NSInteger kToolbarHeight = 44;
 
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
+    self.readerBarButtonItem.enabled = YES;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     self.backBarButtonItem.enabled = NO;
     self.forwardBarButtonItem.enabled = NO;
+    self.readerBarButtonItem.enabled = NO;
     self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
 }
@@ -93,8 +104,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
-    NSURL* url = [self.webView.request URL];
-    NSString *urlString = [url absoluteString];
+    NSString *urlString = [self url].absoluteString;
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     actionSheet.delegate = self;
 
@@ -137,8 +147,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    NSURL *url = [self.webView.request URL];
-    NSString *urlString = [url absoluteString];
+    NSURL *url = [self url];
+    NSString *urlString = url.absoluteString;
     NSRange range = [urlString rangeOfString:url.scheme];
 
     if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
@@ -167,10 +177,46 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (void)toggleMobilizer {
+    NSURL *url;
+    if ([self isMobilized]) {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:57]];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:30]];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:33]];
+                break;
+        }
+    }
+    else {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", [self url].absoluteString]];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", [self url].absoluteString]];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", [self url].absoluteString]];
+                break;
+        }
+    }
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self.webView loadRequest:request];
+}
+
 - (void)emailURL {
     MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
     mailComposeViewController.mailComposeDelegate = self;
-    [mailComposeViewController setMessageBody:[self.webView.request URL].absoluteString isHTML:NO];
+    [mailComposeViewController setMessageBody:[self urlString] isHTML:NO];
     [self presentViewController:mailComposeViewController animated:YES completion:nil];
 }
 
@@ -180,12 +226,23 @@ static NSInteger kToolbarHeight = 44;
     notification.userInfo = @{@"success": @YES, @"updated": @NO};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
-    [[UIPasteboard generalPasteboard] setString:[self.webView.request URL].absoluteString];
+    [[UIPasteboard generalPasteboard] setString:[self url].absoluteString];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSURL *)url {
+    return [self.webView.request URL];
+}
+
+- (BOOL)isMobilized {
+    BOOL googleMobilized = [[self url].absoluteString hasPrefix:@"http://www.google.com/gwt/x"];
+    BOOL readabilityMobilized = [[self url].absoluteString hasPrefix:@"http://www.readability.com/m?url="];
+    BOOL instapaperMobilized = [[self url].absoluteString hasPrefix:@"http://www.instapaper.com/m?u="];
+    return googleMobilized || readabilityMobilized || instapaperMobilized;
 }
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url {

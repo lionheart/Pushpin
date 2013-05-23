@@ -16,12 +16,16 @@
 @property (nonatomic, strong) NSString *urlString;
 @property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
 
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
 - (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)emailURL;
+- (BOOL)isMobilized;
+- (void)toggleMobilizer;
+- (NSURL *)url;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 

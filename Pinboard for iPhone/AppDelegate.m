@@ -31,6 +31,7 @@
 @synthesize readlater = _readlater;
 @synthesize token = _token;
 @synthesize browser = _browser;
+@synthesize mobilizer = _mobilizer;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize privateByDefault = _privateByDefault;
 @synthesize feedToken = _feedToken;
@@ -632,6 +633,25 @@
         _readlater = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
     }
     return _readlater;
+}
+
+- (void)setMobilizer:(NSNumber *)mobilizer {
+    _mobilizer = mobilizer;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:mobilizer forKey:@"io.aurora.pinboard.Mobilizer"];
+    [defaults synchronize];
+}
+
+- (NSNumber *)mobilizer {
+    if (!_mobilizer) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _mobilizer = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
+        
+        if (!_mobilizer) {
+            _mobilizer = @(MOBILIZER_GOOGLE);
+        }
+    }
+    return _mobilizer;
 }
 
 - (void)setToken:(NSString *)token {
