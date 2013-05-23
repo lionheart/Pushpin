@@ -34,7 +34,7 @@ static NSInteger kToolbarHeight = 44;
     backButton.frame = CGRectMake(0, 0, 30, 30);
     self.backBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.backBarButtonItem.enabled = NO;
-    
+
     UIButton *forwardButton = [[UIButton alloc] init];
     [forwardButton setImage:[UIImage imageNamed:@"forward_icon"] forState:UIControlStateNormal];
     [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -48,9 +48,12 @@ static NSInteger kToolbarHeight = 44;
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     UIBarButtonItem *actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     
+    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixedSpace.width = 10;
+
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
-    toolbar.items = @[self.backBarButtonItem, self.forwardBarButtonItem, flexibleSpace, actionBarButtonItem];
+    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, actionBarButtonItem];
     toolbar.frame = CGRectMake(0, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height, size.width, kToolbarHeight);
 
     [self.view addSubview:toolbar];
