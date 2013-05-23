@@ -25,6 +25,7 @@
 @property (nonatomic, retain) WCAlertView *readabilityAlertView;
 @property (nonatomic, retain) WCAlertView *logOutAlertView;
 
+@property (nonatomic, retain) RDActionSheet *mobilizerActionSheet;
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;

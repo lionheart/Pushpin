@@ -26,6 +26,12 @@ enum readlaterservices {
     READLATER_POCKET
 };
 
+enum mobilizers {
+    MOBILIZER_GOOGLE,
+    MOBILIZER_INSTAPAPER,
+    MOBILIZER_READABILITY
+};
+
 enum bookmarkupdateevents {
     BOOKMARK_EVENT_ADD,
     BOOKMARK_EVENT_UPDATE,
@@ -58,6 +64,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSDate *lastUpdated;
 @property (nonatomic, retain) NSNumber *browser;
 @property (nonatomic, retain) NSNumber *readlater;
+@property (nonatomic, strong) NSNumber *mobilizer;
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;

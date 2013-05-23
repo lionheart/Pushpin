@@ -199,6 +199,10 @@
 		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
+		378BFF77174E8713001BE395 /* glyphicons_351_book_open.png in Resources */ = {isa = PBXBuildFile; fileRef = 378BFF75174E8713001BE395 /* glyphicons_351_book_open.png */; };
+		378BFF78174E8713001BE395 /* glyphicons_351_book_open@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378BFF76174E8713001BE395 /* glyphicons_351_book_open@2x.png */; };
+		378BFF7B174E8BA5001BE395 /* glasses-square.png in Resources */ = {isa = PBXBuildFile; fileRef = 378BFF79174E8BA5001BE395 /* glasses-square.png */; };
+		378BFF7C174E8BA5001BE395 /* glasses-square@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378BFF7A174E8BA5001BE395 /* glasses-square@2x.png */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
 		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
@@ -770,6 +774,10 @@
 		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
+		378BFF75174E8713001BE395 /* glyphicons_351_book_open.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = glyphicons_351_book_open.png; path = Assets/glyphicons_351_book_open.png; sourceTree = "<group>"; };
+		378BFF76174E8713001BE395 /* glyphicons_351_book_open@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glyphicons_351_book_open@2x.png"; path = "Assets/glyphicons_351_book_open@2x.png"; sourceTree = "<group>"; };
+		378BFF79174E8BA5001BE395 /* glasses-square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glasses-square.png"; path = "Assets/glasses-square.png"; sourceTree = "<group>"; };
+		378BFF7A174E8BA5001BE395 /* glasses-square@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glasses-square@2x.png"; path = "Assets/glasses-square@2x.png"; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		37919F1C16091DF5007708EF /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		37919F1D16091DF5007708EF /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
@@ -1164,6 +1172,10 @@
 		370EE75715ED23F300B262E2 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				378BFF79174E8BA5001BE395 /* glasses-square.png */,
+				378BFF7A174E8BA5001BE395 /* glasses-square@2x.png */,
+				378BFF75174E8713001BE395 /* glyphicons_351_book_open.png */,
+				378BFF76174E8713001BE395 /* glyphicons_351_book_open@2x.png */,
 				37D0D08C16B8E0780062C27E /* 71-compass.png */,
 				37D0D08D16B8E0780062C27E /* 71-compass@2x.png */,
 				37D0D09016B8E0890062C27E /* 112-group.png */,
@@ -2497,6 +2509,10 @@
 				377E46E8174C8F8700CE3813 /* AddNavigation@2x.png in Resources */,
 				377E46E9174C8F8700CE3813 /* AddNavigationDimmed.png in Resources */,
 				377E46EA174C8F8700CE3813 /* AddNavigationDimmed@2x.png in Resources */,
+				378BFF77174E8713001BE395 /* glyphicons_351_book_open.png in Resources */,
+				378BFF78174E8713001BE395 /* glyphicons_351_book_open@2x.png in Resources */,
+				378BFF7B174E8BA5001BE395 /* glasses-square.png in Resources */,
+				378BFF7C174E8BA5001BE395 /* glasses-square@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
