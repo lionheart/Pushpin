@@ -405,7 +405,10 @@
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     // http://stackoverflow.com/a/875422/39155
-    [db executeUpdate:@"PRAGMA cache_size = 100;"];
+    [db executeUpdate:@"PRAGMA cache_size=100;"];
+
+    // http://stackoverflow.com/a/875422/39155
+    [db executeUpdate:@"PRAGMA syncronous=OFF;"];
 
     FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
 
@@ -471,8 +474,6 @@
                 // Has no effect here
                 // [db executeUpdate:@"PRAGMA foreign_keys=1;"];
 
-                // http://stackoverflow.com/a/875422/39155
-                [db executeUpdate:@"PRAGMA syncronous=NORMAL;"];
                 [db executeUpdate:@"PRAGMA user_version=1;"];
 
             case 1:
