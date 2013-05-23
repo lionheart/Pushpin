@@ -817,7 +817,6 @@
      ** executed is not a SELECT statement, we assume no data will be returned.
      */
     numberOfRetries = 0;
-
     do {
         rc      = sqlite3_step(pStmt);
         retry   = NO;
