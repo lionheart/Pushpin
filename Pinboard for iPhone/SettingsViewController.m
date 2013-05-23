@@ -21,6 +21,7 @@
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
 #import "PPBrowserSettingsViewController.h"
+#import "FMDatabase.h"
 
 @interface SettingsViewController ()
 
@@ -168,7 +169,7 @@
             break;
             
         case 2:
-            return 3;
+            return 4;
             break;
             
         default:
@@ -323,6 +324,10 @@
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 case 2:
+                    cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    break;
+                case 3:
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
@@ -689,7 +694,36 @@
                     break;
                 }
                     
-                case 2:
+                case 2: {
+                    WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                    [loadingAlertView show];
+                    
+                    self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
+                    [self.loadingIndicator startAnimating];
+                    [loadingAlertView addSubview:self.loadingIndicator];
+
+                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    [db open];
+                    [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
+                    [db close];
+                    
+                    double delayInSeconds = 1.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+
+                        WCAlertView *successAlertView = [[WCAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        [successAlertView show];
+                        double delayInSeconds = 1.0;
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                            [successAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                        });
+                    });
+                    break;
+                }
+                    
+                case 3:
                     [self.logOutAlertView show];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
