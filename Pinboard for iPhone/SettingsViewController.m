@@ -415,7 +415,7 @@
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
                                        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
@@ -468,7 +468,7 @@
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
                                        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
