@@ -219,7 +219,7 @@
     CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
     CGContextStrokePath(context);
 
-    UIImage *background = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage *background = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 1, 5)];
 
     [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
     [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
