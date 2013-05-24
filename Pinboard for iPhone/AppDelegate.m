@@ -370,7 +370,6 @@
     if ([self token]) {
         [pinboard setToken:[self token]];
         [mixpanel identify:self.username];
-        [mixpanel.people identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
         [self.window setRootViewController:self.navigationController];
     }
