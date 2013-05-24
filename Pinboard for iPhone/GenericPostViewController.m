@@ -18,6 +18,7 @@
 #import "ASPinboard/ASPinboard.h"
 #import "PPCoreGraphics.h"
 #import "PPWebViewController.h"
+#import "PinboardDataSource.h"
 
 @interface GenericPostViewController ()
 
@@ -35,6 +36,7 @@
 @synthesize pullToRefreshView;
 @synthesize pullToRefreshImageView;
 @synthesize loading;
+@synthesize searchDisplayController = __searchDisplayController;
 
 - (void)checkForBookmarkUpdates {
     if (!self.bookmarkRefreshTimerPaused) {
@@ -48,6 +50,8 @@
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
@@ -70,14 +74,30 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationItem.leftBarButtonItem.title = @"";
-    
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
+    }
+
+    if ([self.postDataSource supportsSearch]) {
+        self.searchPostDataSource = [[PinboardDataSource alloc] init];
+        [self.searchPostDataSource filterWithQuery:@""];
+
+        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        self.searchBar.delegate = self;
+        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+        self.searchDisplayController.searchResultsDataSource = self;
+        self.searchDisplayController.searchResultsDelegate = self;
+        self.searchDisplayController.delegate = self;
+        self.tableView.tableHeaderView = self.searchBar;
+        [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self.searchDisplayController setActive:NO];
+
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
 
@@ -108,7 +128,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    NSString *urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
+    NSString *urlString;
+    if (tableView == self.tableView) {
+        urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
+    }
+    else {
+        urlString = [self.searchPostDataSource urlForPostAtIndex:indexPath.row];
+    }
     NSRange httpRange = NSMakeRange(NSNotFound, 0);
     if ([urlString hasPrefix:@"http"]) {
         httpRange = [urlString rangeOfString:@"http"];
@@ -209,8 +235,15 @@
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint pressPoint;
         pressPoint = [recognizer locationInView:self.tableView];
-        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
-        self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+        
+        if (self.searchDisplayController.isActive) {
+            self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
+            self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
+        }
+        else {
+            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+            self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+        }
         [self openActionSheetForSelectedPost];
     }
 }
@@ -246,6 +279,32 @@
     });
 }
 
+- (void)updateSearchResults {
+    if (!self.processingPosts) {
+        self.processingPosts = YES;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.processingPosts = NO;
+                        
+                        DLog(@"%d", indexPathsToAdd.count)
+                        DLog(@"%d", indexPathsToRemove.count);
+                        
+                        [self.searchDisplayController.searchResultsTableView beginUpdates];
+                        [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                        [self.searchDisplayController.searchResultsTableView endUpdates];
+                        self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
+
+                        self.bookmarkRefreshTimerPaused = NO;
+                    });
+                });
+            } failure:nil];
+        });
+    }
+}
+
 - (void)update {
     self.processingPosts = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -276,11 +335,24 @@
 #pragma mark - Table view data source
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    id <GenericPostDataSource> dataSource;
+    if (tableView == self.tableView) {
+        dataSource = self.postDataSource;
+    }
+    else {
+        dataSource = self.searchPostDataSource;
+    }
+
     if (!self.processingPosts) {
-        if ([self.postDataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
-            [self.postDataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
+        if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
+            [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
-                    [self updateFromLocalDatabase];
+                    if (self.tableView == tableView) {
+                        [self updateFromLocalDatabase];
+                    }
+                    else {
+                        [self updateSearchResults];
+                    }
                 }
             }];
         }
@@ -292,12 +364,28 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.postDataSource numberOfPosts];
+    if (tableView == self.tableView) {
+        return [self.postDataSource numberOfPosts];
+    }
+    else {
+        return [self.searchPostDataSource numberOfPosts];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSAttributedString *string = [self.postDataSource attributedStringForPostAtIndex:indexPath.row];
-    return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
+    id <GenericPostDataSource> dataSource;
+    if (tableView == self.tableView) {
+        dataSource = self.postDataSource;
+    }
+    else {
+        dataSource = self.searchPostDataSource;
+    }
+
+    if ([dataSource numberOfPosts] > indexPath.row) {
+        NSAttributedString *string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+        return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
+    }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -311,14 +399,21 @@
     }
 
     NSAttributedString *string;
+    id <GenericPostDataSource> dataSource;
+    if (tableView == self.tableView) {
+        dataSource = self.postDataSource;
+    }
+    else {
+        dataSource = self.searchPostDataSource;
+    }
 
-    string = [self.postDataSource attributedStringForPostAtIndex:indexPath.row];
+    string = [dataSource attributedStringForPostAtIndex:indexPath.row];
 
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
-    for (NSDictionary *link in [self.postDataSource linksForPostAtIndex:indexPath.row]) {
+    for (NSDictionary *link in [dataSource linksForPostAtIndex:indexPath.row]) {
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
     
@@ -335,7 +430,7 @@
         }
     }
 
-    CGFloat height = [self.tableView.delegate tableView:self.tableView heightForRowAtIndexPath:indexPath];
+    CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
 
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = CGRectMake(0, 0, 320.f, height);
@@ -352,14 +447,14 @@
     cell.selectedBackgroundView = selectedBackgroundView;
     [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
 
-    BOOL isPrivate = [self.postDataSource isPostAtIndexPrivate:indexPath.row];
+    BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
         lockImageView.frame = CGRectMake(302.f, 0, 18.f, 19.f);
         [cell.contentView addSubview:lockImageView];
     }
     
-    BOOL isStarred = [self.postDataSource isPostAtIndexStarred:indexPath.row];
+    BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
         starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
@@ -383,7 +478,16 @@
         RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         PPPostAction action;
-        for (id PPPAction in [self.postDataSource actionsForPost:self.selectedPost]) {
+        
+        id <GenericPostDataSource> dataSource;
+        if (self.searchDisplayController.isActive) {
+            dataSource = self.searchPostDataSource;
+        }
+        else {
+            dataSource = self.postDataSource;
+        }
+
+        for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
             if (action == PPPostActionCopyToMine) {
                 [sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
@@ -433,11 +537,19 @@
     self.tableView.scrollEnabled = YES;
     self.actionSheetVisible = NO;
     
+    id <GenericPostDataSource> dataSource;
+    if (self.searchDisplayController.isActive) {
+        dataSource = self.searchPostDataSource;
+    }
+    else {
+        dataSource = self.postDataSource;
+    }
+    
     if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
         [self showConfirmDeletionAlert];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        UIViewController *vc = [self.postDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+        UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
         [self presentViewController:vc animated:YES completion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
@@ -456,7 +568,7 @@
         [self copyURL];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-        UIViewController *vc = [self.postDataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+        UIViewController *vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
         [self presentViewController:vc animated:YES completion:nil];
     }
 }
@@ -476,7 +588,15 @@
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     }
     else {
-        [self.postDataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
+        id <GenericPostDataSource> dataSource;
+        if (self.searchDisplayController.isActive) {
+            dataSource = self.searchPostDataSource;
+        }
+        else {
+            dataSource = self.postDataSource;
+        }
+
+        [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             if (error == nil) {
                 notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
@@ -623,15 +743,28 @@
     if (alertView == self.confirmDeletionAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
-            [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.tableView beginUpdates];
-                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                        [self.tableView endUpdates];
+            if (self.searchDisplayController.isActive) {
+                [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.searchDisplayController.searchResultsTableView beginUpdates];
+                            [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                            [self.searchDisplayController.searchResultsTableView endUpdates];
+                        });
                     });
-                });
-            }];
+                }];
+            }
+            else {
+                [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.tableView beginUpdates];
+                            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                            [self.tableView endUpdates];
+                        });
+                    });
+                }];
+            }
         }
     }
 }
@@ -680,6 +813,17 @@
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
     }
+}
+
+#pragma mark Search Bar Delegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    [self.searchPostDataSource filterWithQuery:searchText];
+    [self updateSearchResults];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.tableView reloadData];
 }
 
 @end

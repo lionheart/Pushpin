@@ -276,4 +276,8 @@
     return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) delegate:delegate callback:nil];
 }
 
+- (BOOL)supportsSearch {
+    return NO;
+}
+
 @end
