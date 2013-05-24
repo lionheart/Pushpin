@@ -150,8 +150,8 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		data = [[NSMutableData alloc] initWithCapacity:0];
 	}else if([[response allHeaderFields] objectForKey:@"X-Error"]){
 		[connection cancel];
-		NSString *xError = [[response allHeaderFields] objectForKey:@"X-Error"];
-		NSDictionary *userInfo = xError ? [NSDictionary dictionaryWithObjectsAndKeys:xError,NSLocalizedDescriptionKey,nil] : nil;
+        NSString *xError = [[response allHeaderFields] objectForKey:@"X-Error"];
+        NSDictionary *userInfo = xError ? [NSDictionary dictionaryWithObjectsAndKeys:xError,NSLocalizedDescriptionKey,nil] : nil;
 		[self connection:connection didFailWithError:[NSError errorWithDomain:@"PocketSDK" 
 																		 code:[response statusCode] 
 																	 userInfo:userInfo]];
@@ -172,17 +172,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 -(void)connectionFinishedWithError:(NSError *)theError{
 	NSInteger statusCode = (self.response ? self.response.statusCode : theError.code);
-	BOOL needsToRelogin = !attemptedRelogin && statusCode == 401;
+	BOOL needsToRelogin = statusCode == 401;
 	BOOL needsToLogout = statusCode == 403;
-	BOOL serverError = statusCode >= 500;
 
 	NSInteger errorCode = [[self.response.allHeaderFields objectForKey:@"X-Error-Code"] intValue];
 	NSString *errorDescription = [self.response.allHeaderFields objectForKey:@"X-Error"];
-	if(serverError){
-		errorCode = PocketAPIErrorServerMaintenance;
-		errorDescription = @"There was a server error.";
-	}
-
 	NSError *pocketError = nil;
 	if(errorCode){
 		pocketError = [NSError errorWithDomain:(NSString *)PocketAPIErrorDomain
@@ -213,7 +207,6 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	// if it fails, then prompt for an error next time
 	if(needsToRelogin){
 		[self.API loginWithDelegate:self];
-		attemptedRelogin = YES;
 		return;
 	}
 	
