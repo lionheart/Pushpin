@@ -153,8 +153,6 @@
 		375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A0FFF167D47FD00320495 /* PocketAPIOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1002167D47FD00320495 /* SFHFKeychainUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
-		375A1015167E967D00320495 /* ZAActivityBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A1014167E967D00320495 /* ZAActivityBar.m */; };
-		375A1019167EB89E00320495 /* ZAActivityBar.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 375A1018167EB89E00320495 /* ZAActivityBar.bundle */; };
 		375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* FeedListViewController.m */; };
 		3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */; };
 		376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
@@ -684,9 +682,6 @@
 		375A1001167D47FD00320495 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		375A1002167D47FD00320495 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		375A1013167E967D00320495 /* ZAActivityBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZAActivityBar.h; sourceTree = "<group>"; };
-		375A1014167E967D00320495 /* ZAActivityBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZAActivityBar.m; sourceTree = "<group>"; };
-		375A1018167EB89E00320495 /* ZAActivityBar.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZAActivityBar.bundle; sourceTree = "<group>"; };
 		375A638816C0CB0800665CA1 /* FeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* FeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedListViewController.m; sourceTree = "<group>"; };
 		3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrimaryNavigationViewController.h; sourceTree = "<group>"; };
@@ -1085,7 +1080,6 @@
 				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
-				375A1012167E967D00320495 /* ZAActivityBar */,
 				375A0FF8167D47FD00320495 /* Pocket SDK */,
 				37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */,
 				37800E4D162CF1A2009FCB17 /* reachability */,
@@ -1561,17 +1555,6 @@
 			);
 			name = "Pocket SDK";
 			path = "Vendor/Pocket SDK";
-			sourceTree = "<group>";
-		};
-		375A1012167E967D00320495 /* ZAActivityBar */ = {
-			isa = PBXGroup;
-			children = (
-				375A1018167EB89E00320495 /* ZAActivityBar.bundle */,
-				375A1013167E967D00320495 /* ZAActivityBar.h */,
-				375A1014167E967D00320495 /* ZAActivityBar.m */,
-			);
-			name = ZAActivityBar;
-			path = Vendor/ZAActivityBar;
 			sourceTree = "<group>";
 		};
 		37800E4D162CF1A2009FCB17 /* reachability */ = {
@@ -2062,7 +2045,6 @@
 				37F5CA4E1679915700327AAC /* uv_vote_chicklet_empty@2x.png in Resources */,
 				37F5CA4F1679915700327AAC /* uv_x.png in Resources */,
 				37F5CA501679915700327AAC /* uv_x@2x.png in Resources */,
-				375A1019167EB89E00320495 /* ZAActivityBar.bundle in Resources */,
 				3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */,
 				3740A24116863CF000F95D82 /* Localizable.strings in Resources */,
 				37561D8216ADC86100D69CDE /* OATestServer.rb in Resources */,
@@ -2439,7 +2421,6 @@
 				375A1004167D47FD00320495 /* PocketAPILogin.m in Sources */,
 				375A1005167D47FD00320495 /* PocketAPIOperation.m in Sources */,
 				375A1006167D47FD00320495 /* SFHFKeychainUtils.m in Sources */,
-				375A1015167E967D00320495 /* ZAActivityBar.m in Sources */,
 				37561D7216ADC86100D69CDE /* NSMutableURLRequest+Parameters.m in Sources */,
 				37561D7316ADC86100D69CDE /* NSString+URLEncoding.m in Sources */,
 				37561D7416ADC86100D69CDE /* NSURL+Base.m in Sources */,

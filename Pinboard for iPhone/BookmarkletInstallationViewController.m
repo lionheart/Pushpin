@@ -7,7 +7,6 @@
 //
 
 #import "BookmarkletInstallationViewController.h"
-#import "ZAActivityBar.h"
 
 @interface BookmarkletInstallationViewController ()
 

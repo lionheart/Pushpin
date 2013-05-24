@@ -15,7 +15,6 @@
 #import "Reachability.h"
 #import "TestFlight.h"
 #import "PocketAPI.h"
-#import "ZAActivityBar.h"
 #import "HTMLParser.h"
 #import "SettingsViewController.h"
 #import "GenericPostViewController.h"
