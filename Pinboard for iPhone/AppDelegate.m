@@ -250,12 +250,6 @@
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextDrawImage(context, CGRectMake(0, 0, backButtonBackground.size.width, 44), backButtonBackground.CGImage);
 
-    CGContextSetLineWidth(context, 1);
-    CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
-    CGContextMoveToPoint(context, backButtonBackground.size.width, 0);
-    CGContextAddLineToPoint(context, backButtonBackground.size.width, backButtonBackground.size.height);
-    CGContextStrokePath(context);
-
     UIImage *newBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     UIGraphicsEndImageContext();
     
@@ -265,12 +259,7 @@
     CGContextTranslateCTM(context, 0.0, selectedBackButtonImage.size.height);
     CGContextScaleCTM(context, 1.0, -1.0);
     CGContextDrawImage(context, CGRectMake(0, 0, selectedBackButtonImage.size.width, selectedBackButtonImage.size.height), selectedBackButtonImage.CGImage);
-    
-    CGContextSetLineWidth(context, 1);
-    CGContextSetRGBStrokeColor(context, 0.69, 0.69, 0.741, 1);
-    CGContextMoveToPoint(context, selectedBackButtonImage.size.width, 0);
-    CGContextAddLineToPoint(context, selectedBackButtonImage.size.width, selectedBackButtonImage.size.height);
-    CGContextStrokePath(context);
+
     UIImage *selectedBackground = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
 
     UIGraphicsEndImageContext();
