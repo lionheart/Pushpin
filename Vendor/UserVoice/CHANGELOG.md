@@ -1,5 +1,64 @@
 ## master ##
 
+## 2.0.10 ##
+
+* Validate required custom fields
+* Fix a layout issue with long custom field values
+* Fix an issue with the flash message when the forum is turned off
+* Fix an issue where the navigation bar would sometimes be hidden after posting an idea
+* Tweak layout of welcome screen when both buttons are hidden
+* Fix an issue where incorrect idea status colors would be visible briefly when scrolling
+* Fix html entity codes showing up on the idea list
+* Fix html entity codes showing up in user names
+
+## 2.0.9 ##
+
+* Add German translation (thanks to vinzenzweber)
+* Fix a layout bug affecting translated labels on the idea form
+* Fix a bug where initialization would stall if sso fails
+
+## 2.0.8 ##
+
+* Fix a crash related to comments with null text
+* Fix a crash on iOS 4.3
+* Fix a bug where the number of remaining votes would not be set correctly
+* Fix a compatibility issue with libraries that introspect all classes in the VM (e.g. Pony Debugger)
+* Fix a bug related to showPostIdea = NO
+
+## 2.0.7 ##
+
+* Fix some compatibility issues with iOS 4.3
+* Change 'Connecting to UserVoice' to 'Loading...' since that message is displayed before we know if the account is white-label or not
+* Stop assuming that the app delegate responds to `window`
+
+## 2.0.6 ##
+
+* Fix a bug where kb browser would not work if forum was turned off
+
+## 2.0.5 ##
+
+* Fix a bug with scroll behavior on contact form
+* Only show topics that have articles
+* Fix a bug related to loading a single topic
+* Hide UserVoice logo for white label accounts
+
+## 2.0.4 ##
+
+* Fix a bug introduced in 2.0.3 where dismissing a form on the iPhone resulted in a blank screen
+* Fix a bug where the selected category was not displayed on the idea form
+
+## 2.0.3 ##
+
+* Fix a bug related to scroll insets not being set initially on form views on iPad
+* Tweak forms for bluetooth keyboards
+* Fix a bug related to nested modals on iPad
+* Fix an infinite loop in UVTruncatingLabel
+* Fix a bug related to sizing of comment text labels
+* Fix a bug with the layout of the comment form
+* Update Dutch translation (thanks @nvh)
+
+## 2.0.2 ##
+
 * Fix a bug related to textview text overflowing cell bounds on iPad
 * Fix a bug causing crashes on iOS 5
 * Add combined search to portal screen
