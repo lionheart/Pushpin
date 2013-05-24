@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097616F157B100E8FE29 /* gray-button-cap.png */; };
 		3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097716F157B100E8FE29 /* gray-button-cap@2x.png */; };
 		3714097C16F15CE000E8FE29 /* gray-button-highlighted-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097A16F15CE000E8FE29 /* gray-button-highlighted-cap.png */; };
@@ -474,6 +475,8 @@
 
 /* Begin PBXFileReference section */
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
+		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
 		3714097616F157B100E8FE29 /* gray-button-cap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-cap.png"; path = "Assets/gray-button-cap.png"; sourceTree = "<group>"; };
 		3714097716F157B100E8FE29 /* gray-button-cap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-cap@2x.png"; path = "Assets/gray-button-cap@2x.png"; sourceTree = "<group>"; };
 		3714097A16F15CE000E8FE29 /* gray-button-highlighted-cap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-highlighted-cap.png"; path = "Assets/gray-button-highlighted-cap.png"; sourceTree = "<group>"; };
@@ -1738,6 +1741,8 @@
 				374698BF174B33CF00407345 /* PPNotification.m */,
 				377E46E0174C85C500CE3813 /* PPWebViewController.h */,
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
+				370F92ED17500722005F0AD7 /* PPToolbar.h */,
+				370F92EE17500722005F0AD7 /* PPToolbar.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -2390,6 +2395,7 @@
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				37DE5AB7174F29B40073A2F4 /* ODIN.m in Sources */,
+				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

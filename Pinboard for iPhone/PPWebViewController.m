@@ -11,6 +11,7 @@
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
+#import "PPToolbar.h"
 
 static NSInteger kToolbarHeight = 44;
 
@@ -29,7 +30,7 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scalesPageToFit = YES;
     [self.view addSubview:self.webView];
     
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    PPToolbar *toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [[UIButton alloc] init];
     [backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -60,11 +61,18 @@ static NSInteger kToolbarHeight = 44;
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-
     toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, fixedSpace, self.actionBarButtonItem];
-    toolbar.frame = CGRectMake(0, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height, size.width, kToolbarHeight);
-
+    toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
+    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:toolbar];
+}
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -143,8 +151,6 @@ static NSInteger kToolbarHeight = 44;
 
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
-#warning TODO
-//    [actionSheet addButtonWithTitle:NSLocalizedString(@"Add to Pinboard", nil)];
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_SAFARI:
             [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
@@ -155,7 +161,7 @@ static NSInteger kToolbarHeight = 44;
             break;
             
         case BROWSER_ICAB_MOBILE:
-#warning XXX - switch to correct browser
+            #warning XXX - switch to correct browser
             [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
             break;
             
