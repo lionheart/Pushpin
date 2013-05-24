@@ -3,12 +3,12 @@ Overview
 
 UserVoice for iOS allows you to embed UserVoice directly in your iPhone or iPad app.
 
-![Tour](http://www.uservoice.com/_assets/images/content/UserVoice-iOS-animation-joshua.gif)
+![Tour](https://www.uservoice.com/assets/img/ios/ios-animation.gif)
 
 You will need to have a UserVoice account (free) for it to connect to. Go to [uservoice.com/ios](http://uservoice.com/ios) to sign up.
 
 Binary builds of the SDK are available for download.
-* Current release: [2.0.1](https://github.com/downloads/uservoice/uservoice-iphone-sdk/UserVoiceSDK-2.0.1.tar.gz)
+* Current release: [2.0.10](http://sdk-downloads.uservoice.com/ios/UserVoiceSDK-2.0.10.tar.gz)
 
 We also have an [example app](https://github.com/uservoice/uservoice-iphone-example) on GitHub that demonstrates how to build and integrate the SDK.
 
@@ -17,11 +17,15 @@ Installation
 
 * Download the latest build.
 * Drag `UVHeaders`, `UVResources`, and `libUserVoice.a` into your project.
+  * When adding the folders, make sure you have "Create groups for any added folders" selected rather than "Create folder references for any added folders".
 * Note that the `.h` files in  `UVHeaders` do not need to be added to your target.
 * Add QuartzCore and SystemConfiguration frameworks to your project.
 * Add `-ObjC` to `Other Linker Flags` in the Build Settings for your target. (There is also an `Other Linker Flags` setting for your entire project, but that's not the one you want.)
+  * Note: make sure that this flag is set for both Release and Debug builds (you can expand the setting by clicking the arrow on the right).
 
 See [DEV.md](https://github.com/uservoice/uservoice-iphone-sdk/blob/master/DEV.md) if you want to build the SDK yourself.
+
+Note: If you opt to compile pull the UserVoice source into your application rather than using `libUserVoice.a`, and your project uses ARC, you will need to set `-fno-objc-arc` for all of the UserVoice source files. We are not currently using ARC, although we are planning to migrate to it eventually.
 
 Obtain Key And Secret
 ---------------------
@@ -38,7 +42,7 @@ Once you have completed these steps, you are ready to launch the UserVoice UI
 from your code. Import `UserVoice.h` and create a `UVConfig` using one of the
 following options.
 
-#### Configuration
+### Configuration
 
 **1. Standard Login:** This is the most basic option, which will allow users to
 either sign in, or create a UserVoice account, from inside the UserVoice UI.
@@ -122,7 +126,7 @@ anywhere in the UserVoice UI.
 
 There are 4 options for how to launch UserVoice from within your app:
 
-**1. Standard UserVoice Interface:** This launches the UserVoice for iOS portal page where the user can browse suggestions, contact you or browse the knowledgebase. This is the full experience of everything the SDK can do:
+**1. Standard UserVoice Interface:** This launches the UserVoice for iOS portal page where the user can browse suggestions, contact you or browse the knowledgebase. This is the full experience of everything the SDK can do.
     
     [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
 
@@ -143,13 +147,13 @@ There are 4 options for how to launch UserVoice from within your app:
 You can also customize the appearance of the UserVoice user interface by
 creating a custom stylesheet.
 
-    #import "UVStylesheet.h"
+    #import "UVStyleSheet.h"
 
-    @interface MyStylesheet : UVStylesheet
+    @interface MyStyleSheet : UVStyleSheet
 
     @end
 
-    @implementation MyStylesheet
+    @implementation MyStyleSheet
     
     - (UIColor *)backgroundColor {
         return [UIColor colorWithRed:0.15f green:0.15f blue:0.15f alpha:1.0f];
@@ -157,7 +161,7 @@ creating a custom stylesheet.
 
     @end
 
-    [UVStylesheet setStylesheet:[[MyStylesheet alloc] init]];
+    [UVStyleSheet setStyleSheet:[[MyStyleSheet alloc] init]];
 
 ### User Language
 
@@ -201,7 +205,7 @@ If you have any other questions please contact support@uservoice.com.
 Translations
 ------------
 
-Currently the UI is available in English, French, Italian, Traditional Chinese, and Dutch.
+Currently the UI is available in English, French, German, Dutch, Italian, and Traditional Chinese.
 We are using [Twine](https://github.com/mobiata/twine) to manage the translations.
 
 To contribute to the translations, follow these steps:
@@ -216,7 +220,7 @@ If you want to go the extra mile and test your translations, do the following:
   * `mkdir Resources/YOURLOCALE.lproj`
   * `touch Resources/YOURLOCALE.lproj/UserVoice.strings`
 * Install the `twine` gem
-* Run `./strings.sh` to generate the strings files
+* Run `./update_strings.sh` to generate the strings files
 * Run the example app (or your own app) to see how things look in the UI
 * Make note of any layout issues in your pull request so that we can look at it
   and figure out what to do.
@@ -226,6 +230,26 @@ translation is missing for a string that does not appear in the SDK codebase,
 you will need to contribute to the main [UserVoice translation
 site](http://translate.uservoice.com/).
 
+iOS Versions
+------------
+
+* Full support for iOS 5.0+
+* For iOS 4.3 we accept patches, but don't guarantee support
+* Earlier versions of iOS are not supported
+* Builds are provided for armv7--there is no armv6 device that runs a supported version of iOS
+* In general, the plan is to keep in step with public releases of Xcode
+
+Contributors
+------------
+
+Special thanks to:
+
+* [netbe](https://github.com/netbe) for the French translation
+* [Piero87](https://github.com/Piero87) for the Italian translation
+* [zetachang](https://github.com/zetachang) for the Traditional Chinese translation
+* [nvh](https://github.com/nvh) for the Dutch translation
+* [vinzenzweber](https://github.com/vinzenzweber) and [Blockhaus Media](http://www.blockhaus-media.com/) for the German translation
+* Everyone else who [reported bugs or made pull requests](https://github.com/uservoice/uservoice-iphone-sdk/issues?state=closed)!
 
 License
 -------
