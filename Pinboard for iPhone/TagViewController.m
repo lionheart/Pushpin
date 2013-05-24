@@ -136,6 +136,29 @@
     return nil;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        view.clipsToBounds = YES;
+        UILabel *label = [[UILabel alloc] init];
+        label.frame = CGRectMake(20, 0, 320, 44);
+        label.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
+        label.textColor = HEX(0x4C586AFF);
+        label.backgroundColor = HEX(0xF7F9FDff);
+        label.text = self.sortedTitles[section];
+        [view addSubview:label];
+        return view;
+    }
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section > 0) {
+        return 44;
+    }
+    return 0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"TagCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -166,7 +189,13 @@
     
     UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
     UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-    pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        pillView.frame = CGRectMake(320 - pillImage.size.width - 5, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    }
+    else {
+        pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    }
     [cell.contentView addSubview:pillView];
     return cell;
 }
@@ -189,10 +218,10 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT * FROM tag_fts WHERE tag_fts.name MATCH ?" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+    FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?)" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
     NSMutableArray *tags = [[NSMutableArray alloc] init];
     while ([result next]) {
-        [tags addObject:@{@"id": @([result intForColumn:@"id"]), @"name": [result stringForColumn:@"name"]}];
+        [tags addObject:@{@"id": @([result intForColumn:@"id"]), @"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
     }
     [db close];
     self.filteredTags = tags;
