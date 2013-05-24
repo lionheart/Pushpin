@@ -27,6 +27,7 @@
     self = [super init];
     if (self) {
         self.stringsForPosts = [NSMutableDictionary dictionary];
+        self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
     }
     return self;
 }
@@ -40,6 +41,11 @@
     NSInteger limit = [parameters[@"limit"] integerValue];
 
     [self filterByPrivate:isPrivate isRead:isRead hasTags:hasTags tags:tags offset:offset limit:limit];
+}
+
+- (void)filterWithQuery:(NSString *)query {
+    self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];
+    self.query = @"SELECT * FROM bookmark WHERE id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query) LIMIT :limit OFFSET :offset";
 }
 
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
@@ -569,7 +575,7 @@
     
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
-    
+
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setFont:descriptionFont range:descriptionRange];
@@ -629,6 +635,10 @@
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
     UINavigationController *navigationController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) delegate:delegate callback:nil];
     return navigationController;
+}
+
+- (BOOL)supportsSearch {
+    return YES;
 }
 
 @end

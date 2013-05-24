@@ -36,6 +36,7 @@ typedef NSInteger PPPostAction;
 
 @protocol GenericPostDataSource <NSObject>
 
+- (void)filterWithQuery:(NSString *)query;
 - (NSInteger)numberOfPosts;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
@@ -60,6 +61,7 @@ typedef NSInteger PPPostAction;
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
 - (BOOL)isPostAtIndexRead:(NSInteger)index;
+- (BOOL)supportsSearch;
 
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 
@@ -72,11 +74,14 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate, ModalDelegate>
+@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
+
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
+@property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;
+
 @property (nonatomic) BOOL processingPosts;
 @property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
@@ -84,6 +89,9 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
 
 // Timer Stuff
 @property (nonatomic, strong) NSTimer *bookmarkRefreshTimer;
@@ -99,6 +107,7 @@ typedef NSInteger PPPostAction;
 - (void)sendToReadLater;
 - (void)update;
 - (void)updateFromLocalDatabase;
+- (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
