@@ -23,6 +23,7 @@
 #import "FeedListViewController.h"
 #import "AddBookmarkViewController.h"
 #import "PPWebViewController.h"
+#import "PPToolbar.h"
 
 @implementation AppDelegate
 
@@ -227,16 +228,6 @@
                                 UITextAttributeTextColor: HEX(0x4C586Aff),
                           UITextAttributeTextShadowColor: [UIColor whiteColor] }];
 
-    // Customize Tool Bar
-    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
-    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
-    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
-    CGContextStrokePath(context);
-    UIImage *toolbarBackground = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    [[UIToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-    
     // Customize Status Bar
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
@@ -275,6 +266,16 @@
      }
                                                 forState:UIControlStateNormal];
     
+    // Customize Toolbar
+    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
+    CGContextStrokePath(context);
+    UIImage *toolbarBackground = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    [[PPToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+
     [WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
         alertView.cornerRadius = 8;
         alertView.outerFrameShadowBlur = 0;
