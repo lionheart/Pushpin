@@ -210,7 +210,6 @@
                                        
                                        Mixpanel *mixpanel = [Mixpanel sharedInstance];
                                        [mixpanel identify:[delegate username]];
-                                       [mixpanel.people identify:[delegate username]];
                                        [mixpanel.people set:@"$created" to:[NSDate date]];
                                        [mixpanel.people set:@"$username" to:[delegate username]];
                                        [mixpanel.people set:@"Browser" to:@"Webview"];
