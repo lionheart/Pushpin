@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
