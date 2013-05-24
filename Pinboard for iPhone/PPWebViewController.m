@@ -26,6 +26,7 @@ static NSInteger kToolbarHeight = 44;
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
     self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
     [self.view addSubview:self.webView];
     
     UIToolbar *toolbar = [[UIToolbar alloc] init];
@@ -53,14 +54,14 @@ static NSInteger kToolbarHeight = 44;
     [actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     actionButton.frame = CGRectMake(0, 0, 30, 30);
-    UIBarButtonItem *actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+    self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
-    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, fixedSpace, actionBarButtonItem];
+    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, fixedSpace, self.actionBarButtonItem];
     toolbar.frame = CGRectMake(0, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height, size.width, kToolbarHeight);
 
     [self.view addSubview:toolbar];
@@ -69,14 +70,17 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
+    if (!self.url) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
+    }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-    self.readerBarButtonItem.enabled = YES;
+    self.readerBarButtonItem.enabled = NO;
+    self.actionBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem = nil;
 }
 
@@ -87,6 +91,7 @@ static NSInteger kToolbarHeight = 44;
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
     self.readerBarButtonItem.enabled = YES;
+    self.actionBarButtonItem.enabled = YES;
 
     NSString *theURLString;
     if ([self.webView canGoBack]) {
@@ -117,6 +122,7 @@ static NSInteger kToolbarHeight = 44;
     self.backBarButtonItem.enabled = NO;
     self.forwardBarButtonItem.enabled = NO;
     self.readerBarButtonItem.enabled = NO;
+    self.actionBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem = nil;
     self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
