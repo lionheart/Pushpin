@@ -179,7 +179,6 @@
 		3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */; };
 		3780BB5016E9267F006F5435 /* top-left-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4E16E9267F006F5435 /* top-left-star.png */; };
 		3780BB5116E9267F006F5435 /* top-left-star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4F16E9267F006F5435 /* top-left-star@2x.png */; };
-		3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 3786465E15773E6700A1D5F8 /* Bookmark.mustache */; };
 		3787FFEB15B49989008A477A /* Icon-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE515B49989008A477A /* Icon-settings.png */; };
 		3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE615B49989008A477A /* Icon-settings@2x.png */; };
 		3787FFED15B49989008A477A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE715B49989008A477A /* Icon.png */; };
@@ -717,7 +716,6 @@
 		3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-right-lock@2x.png"; path = "Assets/top-right-lock@2x.png"; sourceTree = "<group>"; };
 		3780BB4E16E9267F006F5435 /* top-left-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star.png"; path = "Assets/top-left-star.png"; sourceTree = "<group>"; };
 		3780BB4F16E9267F006F5435 /* top-left-star@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star@2x.png"; path = "Assets/top-left-star@2x.png"; sourceTree = "<group>"; };
-		3786465E15773E6700A1D5F8 /* Bookmark.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bookmark.mustache; path = Assets/Templates/Bookmark.mustache; sourceTree = "<group>"; };
 		3786466015773FDE00A1D5F8 /* libGRMustache4-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGRMustache4-iOS.a"; path = "Frameworks/GRMustache/lib/libGRMustache4-iOS.a"; sourceTree = "<group>"; };
 		3786466215773FF500A1D5F8 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache.h; path = Frameworks/GRMustache/include/GRMustache.h; sourceTree = "<group>"; };
 		3787FFE515B49989008A477A /* Icon-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings.png"; path = "Assets/Icon-settings.png"; sourceTree = "<group>"; };
@@ -1569,14 +1567,6 @@
 			path = Vendor/reachability;
 			sourceTree = "<group>";
 		};
-		3786465C15773E4300A1D5F8 /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-				3786465E15773E6700A1D5F8 /* Bookmark.mustache */,
-			);
-			name = Templates;
-			sourceTree = "<group>";
-		};
 		37A7D60616BA2FD000B39DD8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1839,7 +1829,6 @@
 				373C823C16F8043100A7D7C8 /* PullToRefresh */,
 				370EE75715ED23F300B262E2 /* Icons */,
 				3715EEC415787CA100FD21EE /* Stylesheets */,
-				3786465C15773E4300A1D5F8 /* Templates */,
 				37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */,
 				37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */,
 				3714097616F157B100E8FE29 /* gray-button-cap.png */,
@@ -1997,7 +1986,6 @@
 			files = (
 				37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */,
 				37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */,
-				3786465F15773E6700A1D5F8 /* Bookmark.mustache in Resources */,
 				3715EEC715787CAA00FD21EE /* main.css in Resources */,
 				3787FFEB15B49989008A477A /* Icon-settings.png in Resources */,
 				3787FFEC15B49989008A477A /* Icon-settings@2x.png in Resources */,
