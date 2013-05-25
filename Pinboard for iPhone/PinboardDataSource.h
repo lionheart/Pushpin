@@ -12,6 +12,7 @@
 
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
+@property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, retain) NSMutableArray *posts;
 @property (nonatomic, retain) NSMutableDictionary *stringsForPosts;
 @property (nonatomic, retain) NSArray *heights;
@@ -28,6 +29,8 @@
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
+
+- (PinboardDataSource *)searchDataSource;
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;

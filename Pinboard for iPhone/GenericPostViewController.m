@@ -79,8 +79,7 @@
     }
 
     if ([self.postDataSource supportsSearch]) {
-        self.searchPostDataSource = [[PinboardDataSource alloc] init];
-        [self.searchPostDataSource filterWithQuery:@""];
+        self.searchPostDataSource = [self.postDataSource searchDataSource];
 
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         self.searchBar.delegate = self;
@@ -287,10 +286,6 @@
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.processingPosts = NO;
-                        
-                        DLog(@"%d", indexPathsToAdd.count)
-                        DLog(@"%d", indexPathsToRemove.count);
-                        
                         [self.searchDisplayController.searchResultsTableView beginUpdates];
                         [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                         [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
@@ -381,11 +376,8 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if ([dataSource numberOfPosts] > indexPath.row) {
-        NSAttributedString *string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-        return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
-    }
-    return 0;
+    NSAttributedString *string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+    return [string sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -824,6 +816,10 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     [self.tableView reloadData];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    return NO;
 }
 
 @end
