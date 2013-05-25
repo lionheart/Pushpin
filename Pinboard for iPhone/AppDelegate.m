@@ -92,7 +92,7 @@
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
-            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@NO delegate:nil callback:^{
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@NO delegate:self callback:^{
                 if (queryParameters[@"url"]) {
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
