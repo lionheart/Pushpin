@@ -111,6 +111,12 @@
 
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+
+        CGFloat offset = self.tableView.contentOffset.y;
+        
+        if ([self.postDataSource supportsSearch]) {
+            self.pullToRefreshView.frame = CGRectMake(0, offset + 44, 320, -offset);
+        }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabase];
@@ -268,6 +274,8 @@
                             self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                         } completion:^(BOOL finished) {
                             [self.pullToRefreshImageView stopAnimating];
+                            CGFloat offset = self.tableView.contentOffset.y;
+                            self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
                         }];
                     }
                     
@@ -816,6 +824,10 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     [self.tableView reloadData];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+    return NO;
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
