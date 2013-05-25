@@ -255,6 +255,10 @@
     UIGraphicsEndImageContext();
 
     [[PPToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
+    // Customize UISearchBar
+    
+    [[UISearchBar appearance] setBackgroundImage:background];
 
     [WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
         alertView.cornerRadius = 8;

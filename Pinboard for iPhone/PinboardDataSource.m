@@ -45,7 +45,7 @@
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    self.queryParameters[@"query"] = query;
+    self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];
 }
 
 - (PinboardDataSource *)searchDataSource {
