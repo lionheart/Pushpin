@@ -28,6 +28,7 @@
     if (self) {
         self.stringsForPosts = [NSMutableDictionary dictionary];
         self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
+        self.tags = @[];
     }
     return self;
 }
@@ -45,14 +46,48 @@
 
 - (void)filterWithQuery:(NSString *)query {
     self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];
-    self.query = @"SELECT * FROM bookmark WHERE id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query) LIMIT :limit OFFSET :offset";
+}
+
+- (PinboardDataSource *)searchDataSource {
+    PinboardDataSource *search = [[PinboardDataSource alloc] init];
+
+    search.maxResults = 50;
+
+    NSMutableArray *queryComponents = [NSMutableArray array];
+    if (self.queryParameters[@"private"]) {
+        [queryComponents addObject:@"private = :private"];
+    }
+    
+    if (self.queryParameters[@"unread"]) {
+        [queryComponents addObject:@"unread = :unread"];
+    }
+    
+    if (self.queryParameters[@"tags"]) {
+        [queryComponents addObject:@"tags = :tags"];
+    }
+    
+    if (self.tags.count > 0) {
+        NSString *tagComponent = [self.tags componentsJoinedByString:@", "];
+        [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id IN (%@))", tagComponent]];
+    }
+    
+    [queryComponents addObject:@"id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
+
+    NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
+    search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
+    search.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
+    search.queryParameters[@"offset"] = @(0);
+    search.queryParameters[@"limit"] = @(50);
+    search.queryParameters[@"query"] = @"*";
+    search.tags = [self.tags copy];
+    return search;
 }
 
 - (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
     NSMutableArray *queryComponents = [NSMutableArray array];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
-    self.maxResults = limit;
-    
+    self.maxResults = limit;  
+
     if (&isPrivate != nil) {
         [queryComponents addObject:@"private = :private"];
         parameters[@"private"] = @(isPrivate);
@@ -68,19 +103,20 @@
         parameters[@"tags"] = @(hasTags);
     }
 
-    self.queryParameters = [NSDictionary dictionaryWithDictionary:parameters];
+    self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 
     if (tags != nil && [tags count] > 0) {
+        self.tags = tags;
         NSString *tagComponent = [tags componentsJoinedByString:@", "];
         [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id IN (%@))", tagComponent]];
     }
 
     if ([queryComponents count] > 0) {
         NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
-        self.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at LIMIT :limit OFFSET :offset", whereComponent];
+        self.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
     }
     else {
-        self.query = @"SELECT * FROM bookmark ORDER BY created_at LIMIT :limit OFFSET :offset";
+        self.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
     }
 }
 
@@ -551,7 +587,7 @@
     UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
-    
+
     NSString *title = [self titleForPostAtIndex:index];
     NSString *description = [self descriptionForPostAtIndex:index];
     NSString *tags = [self tagsForPostAtIndex:index];

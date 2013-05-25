@@ -154,6 +154,7 @@
     BOOL oldConnectionAvailable = self.connectionAvailable;
     self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
     if (oldConnectionAvailable != self.connectionAvailable) {
+        #warning XXX Consistency crash
         [self.tableView beginUpdates];
         if (self.connectionAvailable) {
             [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];

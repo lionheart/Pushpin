@@ -63,6 +63,8 @@ typedef NSInteger PPPostAction;
 - (BOOL)isPostAtIndexRead:(NSInteger)index;
 - (BOOL)supportsSearch;
 
+- (id <GenericPostDataSource>)searchDataSource;
+
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 
 @optional
