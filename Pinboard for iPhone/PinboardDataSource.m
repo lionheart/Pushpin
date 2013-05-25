@@ -34,9 +34,9 @@
 }
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
-    BOOL isPrivate = [parameters[@"private"] boolValue];
-    BOOL isRead = [parameters[@"read"] boolValue];
-    BOOL hasTags = [parameters[@"tagged"] boolValue];
+    NSNumber *isPrivate = parameters[@"private"];
+    NSNumber *isRead = parameters[@"read"];
+    NSNumber *hasTags = parameters[@"tagged"];
     NSArray *tags = parameters[@"tags"];
     NSInteger offset = [parameters[@"offset"] integerValue];
     NSInteger limit = [parameters[@"limit"] integerValue];
@@ -73,6 +73,7 @@
 
     [queryComponents addObject:@"id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
 
+
     NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
     search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
     search.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
@@ -83,36 +84,36 @@
     return search;
 }
 
-- (void)filterByPrivate:(BOOL)isPrivate isRead:(BOOL)isRead hasTags:(BOOL)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
+- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
     NSMutableArray *queryComponents = [NSMutableArray array];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
     self.maxResults = limit;  
 
-    if (&isPrivate != nil) {
+    if (isPrivate) {
         [queryComponents addObject:@"private = :private"];
-        parameters[@"private"] = @(isPrivate);
+        parameters[@"private"] = isPrivate;
     }
 
-    if (&isRead != nil) {
+    if (isRead) {
         [queryComponents addObject:@"unread = :unread"];
-        parameters[@"unread"] = @(!isRead);
+        parameters[@"unread"] = @(![isRead boolValue]);
     }
     
-    if (&hasTags != nil) {
+    if (hasTags) {
         [queryComponents addObject:@"tags = :tags"];
-        parameters[@"tags"] = @(hasTags);
+        parameters[@"tags"] = hasTags;
     }
 
     self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 
     if (tags != nil && [tags count] > 0) {
-        self.tags = tags;
+        self.tags = [tags copy];
         NSString *tagComponent = [tags componentsJoinedByString:@", "];
         [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id IN (%@))", tagComponent]];
     }
 
     if ([queryComponents count] > 0) {
-        NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
+        NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
         self.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
     }
     else {
