@@ -21,7 +21,7 @@
 @synthesize titleToTags;
 @synthesize alphabet;
 @synthesize sortedTitles;
-@synthesize searchDisplayController;
+@synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
 @synthesize filteredTags;
 @synthesize navigationController;
@@ -65,7 +65,10 @@
     }
 
     self.sortedTitles = @[UITableViewIndexSearch, @"#", @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
@@ -73,8 +76,7 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
-    [self.tableView setContentOffset:CGPointMake(0,self.searchDisplayController.searchBar.frame.size.height)];
-    [self.tableView reloadData];
+    [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -123,7 +125,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
     if (title == UITableViewIndexSearch) {
-        [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:NO];
+        [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:YES];
         return -1;
     }
     return index;
