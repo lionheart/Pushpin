@@ -50,6 +50,10 @@
     return self.posts.count;
 }
 
+- (NSInteger)totalNumberOfPosts {
+    return 0;
+}
+
 - (BOOL)isPostAtIndexStarred:(NSInteger)index {
     return NO;
 }
@@ -97,10 +101,10 @@
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
-    [self updatePostsWithSuccess:success failure:failure];
+    [self updatePostsWithSuccess:success failure:failure options:nil];
 }
 
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
