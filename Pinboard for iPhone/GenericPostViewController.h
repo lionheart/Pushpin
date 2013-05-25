@@ -38,8 +38,9 @@ typedef NSInteger PPPostAction;
 
 - (void)filterWithQuery:(NSString *)query;
 - (NSInteger)numberOfPosts;
+- (NSInteger)totalNumberOfPosts;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
+- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
 
 - (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
@@ -107,7 +108,7 @@ typedef NSInteger PPPostAction;
 - (void)copyURL;
 - (void)copyToMine;
 - (void)sendToReadLater;
-- (void)update;
+- (void)updateWithCount:(NSNumber *)count;
 - (void)updateFromLocalDatabase;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;

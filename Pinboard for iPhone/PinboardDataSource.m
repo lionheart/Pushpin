@@ -134,7 +134,17 @@
     return [self.posts count];
 }
 
-- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress {
+- (NSInteger)totalNumberOfPosts {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
+    [result next];
+    NSInteger count = [result intForColumnIndex:0];
+    [db close];
+    return count;
+}
+
+- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     NSDate *lastUpdated = [[AppDelegate sharedDelegate] lastUpdated];
@@ -150,8 +160,6 @@
     void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        [db executeQuery:@"PRAGMA journal_mode=MEMORY"];
-        [db executeQuery:@"PRAGMA temp_store=MEMORY"];
 
         [db beginTransaction];
         [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
@@ -283,15 +291,20 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         
         dispatch_group_enter(group);
-        if (lastUpdated == nil || [lastUpdated compare:updateTime] == NSOrderedAscending || [[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300) {
-
+        if ([lastUpdated compare:updateTime] == NSOrderedAscending || ([[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300)) {
             dispatch_group_enter(group);
-            [pinboard bookmarksWithSuccess:^(NSArray *bookmarks) {
+            [pinboard bookmarksWithTags:nil
+                                 offset:-1
+                                  count:[options[@"count"] integerValue]
+                               fromDate:nil
+                                 toDate:nil
+                            includeMeta:YES
+                                success:^(NSArray *bookmarks) {
                 BookmarksSuccessBlock(bookmarks);
                 [self updateStarredPosts:^{ dispatch_group_leave(group); } failure:^{ dispatch_group_leave(group); }];
                 dispatch_group_leave(group);
             }
-                                   failure:BookmarksFailureBlock];
+                                failure:BookmarksFailureBlock];
             
         }
         else {
@@ -406,10 +419,10 @@
     }
 }
 
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
     [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
         [self updatePostsFromDatabaseWithSuccess:success failure:failure];
-    } failure:failure progress:nil];
+    } failure:failure progress:nil options:options];
 }
 
 - (NSString *)titleForPostAtIndex:(NSInteger)index {

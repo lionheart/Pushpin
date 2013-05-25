@@ -201,7 +201,8 @@
                                                                                        failure:nil
                                                                                       progress:^(NSInteger current, NSInteger total) {
                                                                                           [self.progressView setProgress:current/(float)total animated:YES];
-                                                                                      }];
+                                                                                      }
+                                                                                       options:@{@"count": @(-1)}];
                                        
                                        
                                        [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
