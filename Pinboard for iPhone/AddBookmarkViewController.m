@@ -750,7 +750,7 @@
     }
 
     if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Add bookmark missing url or title", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Add bookmark missing url or title", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
         [alert show];
         [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
         return;
@@ -768,6 +768,7 @@
                           unread:!self.readSwitch.on
                          success:^{
                              [self.modalDelegate closeModal:self];
+
                              FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                              [db open];
                              [db beginTransaction];
@@ -805,10 +806,13 @@
                              [db close];
                              self.navigationItem.leftBarButtonItem.enabled = YES;
                              self.navigationItem.rightBarButtonItem.enabled = YES;
+                             
                          }
                          failure:^(NSError *error) {
                              self.navigationItem.leftBarButtonItem.enabled = YES;
                              self.navigationItem.rightBarButtonItem.enabled = YES;
+                             WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                             [alert show];
                          }];
 }
 
