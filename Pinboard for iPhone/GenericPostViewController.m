@@ -308,7 +308,7 @@
     }
 }
 
-- (void)update {
+- (void)updateWithCount:(NSNumber *)count {
     self.processingPosts = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
@@ -331,7 +331,7 @@
                     }];
                 }
             });
-        } failure:nil];
+        } failure:nil options:@{@"count": count}];
     });
 }
 
@@ -772,10 +772,11 @@
 #pragma mark - Scroll View delegate
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (!self.loading) {
+    if (!self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSInteger totalNumberOfPosts = [self.postDataSource totalNumberOfPosts];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [UIView animateWithDuration:0.5 animations:^{
                         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
@@ -784,9 +785,9 @@
                     } completion:^(BOOL finished) {
                         [UIView animateWithDuration:0.5 animations:^{
                             self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-                            
+                            NSNumber *count = @(round((totalNumberOfPosts - 200) * MIN((-offset - 60) / 70., 1)) + 200);
                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                [self update];
+                                [self updateWithCount:count];
                             });
                         }];
                     }];
