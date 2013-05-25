@@ -45,7 +45,7 @@
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];
+    self.queryParameters[@"query"] = query;
 }
 
 - (PinboardDataSource *)searchDataSource {
@@ -70,7 +70,7 @@
         NSString *tagComponent = [self.tags componentsJoinedByString:@", "];
         [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id IN (%@))", tagComponent]];
     }
-    
+
     [queryComponents addObject:@"id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
 
     NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
