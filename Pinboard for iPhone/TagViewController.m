@@ -243,8 +243,7 @@
     
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE id IN (SELECT bookmark_id FROM tagging WHERE tag_id=:tag_id) ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @100, @"offset": @0, @"tag_id": tag[@"id"]}];
+    [pinboardDataSource filterByPrivate:nil isRead:nil hasTags:nil tags:@[tag[@"id"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
 
