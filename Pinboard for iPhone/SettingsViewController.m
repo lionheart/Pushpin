@@ -169,7 +169,7 @@
             break;
             
         case 2:
-            return 4;
+            return 3;
             break;
             
         default:
@@ -316,18 +316,14 @@
         case 2: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = NSLocalizedString(@"Contact Support", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Feedback & Support", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Give Feedback", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    break;
-                case 2:
                     cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
-                case 3:
+                case 2:
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
@@ -681,20 +677,11 @@
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
                     [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
-                    [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
+                    [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
                     break;
                 }
                     
                 case 1: {
-                    UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
-                                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                    [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
-                    [UserVoice presentUserVoiceForumForParentViewController:self andConfig:config];
-                    break;
-                }
-                    
-                case 2: {
                     WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
@@ -723,7 +710,7 @@
                     break;
                 }
                     
-                case 3:
+                case 2:
                     [self.logOutAlertView show];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
