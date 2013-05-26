@@ -221,7 +221,6 @@
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView {
-    [self.tableView reloadSectionIndexTitles];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -239,7 +238,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?)" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+        FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
         
         NSMutableArray *oldTagIDs = [NSMutableArray array];
         NSMutableArray *newTagIDs = [NSMutableArray array];
