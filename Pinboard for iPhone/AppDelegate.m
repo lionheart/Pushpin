@@ -200,7 +200,6 @@
         0.882, 0.898, 0.925, 1
     };
     CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
-    CGGradientRef lineGradient = CGGradientCreateWithColorComponents(myColorspace, lineColorComponents, locations, num_locations);
     CGPoint startPoint = CGPointMake(0, 0);
     CGPoint endPoint = CGPointMake(0, 44);
     
