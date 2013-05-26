@@ -77,19 +77,6 @@
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
     }
-
-    if ([self.postDataSource supportsSearch]) {
-        self.searchPostDataSource = [self.postDataSource searchDataSource];
-
-        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        self.searchBar.delegate = self;
-        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-        self.searchDisplayController.searchResultsDataSource = self;
-        self.searchDisplayController.searchResultsDelegate = self;
-        self.searchDisplayController.delegate = self;
-        self.tableView.tableHeaderView = self.searchBar;
-        [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -111,12 +98,6 @@
 
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-
-        CGFloat offset = self.tableView.contentOffset.y;
-        
-        if ([self.postDataSource supportsSearch]) {
-            self.pullToRefreshView.frame = CGRectMake(0, offset + 44, 320, -offset);
-        }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabase];
@@ -240,13 +221,14 @@
     [self.view endEditing:YES];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint pressPoint;
-        pressPoint = [recognizer locationInView:self.tableView];
         
         if (self.searchDisplayController.isActive) {
+            pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
             self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
             self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
         }
         else {
+            pressPoint = [recognizer locationInView:self.tableView];
             self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
         }
@@ -255,36 +237,51 @@
 }
 
 - (void)updateFromLocalDatabase {
-    self.processingPosts = YES;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.processingPosts = NO;
-                    
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationTop];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
-                    [self.tableView endUpdates];
-                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
-                    
-                    if (self.loading) {
-                        self.loading = NO;
-                        [UIView animateWithDuration:0.2 animations:^{
-                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                        } completion:^(BOOL finished) {
-                            [self.pullToRefreshImageView stopAnimating];
-                            CGFloat offset = self.tableView.contentOffset.y;
-                            self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
-                        }];
-                    }
-                    
-                    self.bookmarkRefreshTimerPaused = NO;
+    if (!self.processingPosts) {
+        self.processingPosts = YES;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.processingPosts = NO;
+                        
+                        [self.tableView beginUpdates];
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                        self.tableView.separatorColor = HEX(0xE0E0E0ff);
+                        
+                        if (self.loading) {
+                            self.loading = NO;
+                            [UIView animateWithDuration:0.2 animations:^{
+                                self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                            } completion:^(BOOL finished) {
+                                [self.pullToRefreshImageView stopAnimating];
+                                CGFloat offset = self.tableView.contentOffset.y;
+                                self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+                                
+                                if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
+                                    self.searchPostDataSource = [self.postDataSource searchDataSource];
+
+                                    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+                                    self.searchBar.delegate = self;
+                                    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+                                    self.searchDisplayController.searchResultsDataSource = self;
+                                    self.searchDisplayController.searchResultsDelegate = self;
+                                    self.searchDisplayController.delegate = self;
+                                    self.tableView.tableHeaderView = self.searchBar;
+                                    [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+                                }
+                            }];
+                        }
+                        
+                        self.bookmarkRefreshTimerPaused = NO;
+                    });
                 });
-            });
-        } failure:nil];
-    });
+            } failure:nil];
+        });
+    }
 }
 
 - (void)updateSearchResults {
@@ -319,7 +316,7 @@
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationBottom];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
                 self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
@@ -802,7 +799,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
-        NSInteger index = MAX(1, 32 - MIN((-offset / 80.) * 32, 32));
+        NSInteger index = MAX(1, 32 - MIN((-offset / 60.) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
         if (offset > -60) {
