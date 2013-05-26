@@ -67,6 +67,10 @@ static NSInteger kToolbarHeight = 44;
     [self.view addSubview:toolbar];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.webView stopLoading];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
