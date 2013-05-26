@@ -19,6 +19,7 @@
 #import "PPCoreGraphics.h"
 #import "PPWebViewController.h"
 #import "PinboardDataSource.h"
+#import "FMDatabase.h"
 
 @interface GenericPostViewController ()
 
@@ -218,10 +219,10 @@
 }
 
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
-    [self.view endEditing:YES];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
+        [self.view endEditing:YES];
         CGPoint pressPoint;
-        
+
         if (self.searchDisplayController.isActive) {
             pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
             self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
@@ -464,6 +465,34 @@
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block NSString *tagName = url.absoluteString;
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tagName]];
+        [results next];
+        __block NSNumber *tagID = @([results intForColumnIndex:0]);
+
+        if (![[(PinboardDataSource *)self.postDataSource tags] containsObject:tagID]) {
+            __block PinboardDataSource *pinboardDataSource = [(PinboardDataSource *)self.postDataSource dataSourceWithAdditionalTagID:tagID];
+            results = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM tag WHERE id IN (%@) ORDER BY name ASC", [pinboardDataSource.tags componentsJoinedByString:@","]]];
+            __block NSMutableArray *tagNames = [NSMutableArray array];
+            while ([results next]) {
+                [tagNames addObject:[results stringForColumnIndex:0]];
+            }
+            [db close];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                postViewController.postDataSource = pinboardDataSource;
+                postViewController.title = [tagNames componentsJoinedByString:@"+"];
+                [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+            });
+        }
+    });
 }
 
 - (void)openActionSheetForSelectedPost {

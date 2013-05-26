@@ -31,6 +31,7 @@
 - (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 
 - (PinboardDataSource *)searchDataSource;
+- (PinboardDataSource *)dataSourceWithAdditionalTagID:(NSNumber *)tagID;
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;
