@@ -74,7 +74,7 @@
     [queryComponents addObject:@"id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
 
 
-    NSString *whereComponent = [queryComponents componentsJoinedByString:@" and "];
+    NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
     search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
     search.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
     search.queryParameters[@"offset"] = @(0);
@@ -82,6 +82,43 @@
     search.queryParameters[@"query"] = @"*";
     search.tags = [self.tags copy];
     return search;
+}
+
+- (PinboardDataSource *)dataSourceWithAdditionalTagID:(NSNumber *)tagID {
+    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+    
+    dataSource.maxResults = 50;
+    
+    NSMutableArray *queryComponents = [NSMutableArray array];
+    if (self.queryParameters[@"private"]) {
+        [queryComponents addObject:@"private = :private"];
+    }
+    
+    if (self.queryParameters[@"unread"]) {
+        [queryComponents addObject:@"unread = :unread"];
+    }
+
+    if (self.queryParameters[@"tags"]) {
+        [queryComponents addObject:@"tags = :tags"];
+    }
+    
+    NSMutableArray *newTags = [NSMutableArray arrayWithArray:self.tags];
+    if (![newTags containsObject:tagID]) {
+        [newTags addObject:tagID];
+    }
+    
+    for (NSNumber *tagID in newTags) {
+        [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id=%@)", tagID]];
+    }
+
+    NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
+
+    dataSource.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
+    dataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
+    dataSource.queryParameters[@"offset"] = @(0);
+    dataSource.queryParameters[@"limit"] = @(50);
+    dataSource.tags = newTags;
+    return dataSource;
 }
 
 - (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {

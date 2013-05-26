@@ -1022,9 +1022,12 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
     UITouch *touch = [touches anyObject];
     
     self.activeLink = [self linkAtPoint:[touch locationInView:self]];
-    
+
     if (!self.activeLink) {
         [super touchesBegan:touches withEvent:event];
+    }
+    else if ([self.delegate respondsToSelector:@selector(attributedLabel:didStartTouchWithTextCheckingResult:)]) {
+        [self.delegate attributedLabel:self didStartTouchWithTextCheckingResult:self.activeLink];
     }
 }
 
@@ -1094,6 +1097,11 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
                withEvent:(UIEvent *)event
 {
     if (self.activeLink) {
+        if ([self.delegate respondsToSelector:@selector(attributedLabel:didCancelTouchWithTextCheckingResult:)]) {
+            [self.delegate attributedLabel:self didCancelTouchWithTextCheckingResult:self.activeLink];
+            return;
+        }
+
         self.activeLink = nil;
     } else {
         [super touchesCancelled:touches withEvent:event];

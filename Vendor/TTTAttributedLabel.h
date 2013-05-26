@@ -309,6 +309,22 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
 @optional
 
 /**
+ Tells the delegate that the user started to touch a link.
+ 
+ @param label The label whose link is being selected.
+ @param url The URL for the selected link.
+ */
+- (void)attributedLabel:(TTTAttributedLabel *)label didStartTouchWithTextCheckingResult:(NSTextCheckingResult *)result;
+
+/**
+ Tells the delegate that the user cancelled a touch to a link.
+ 
+ @param label The label whose link is being selected.
+ @param url The URL for the selected link.
+ */
+- (void)attributedLabel:(TTTAttributedLabel *)label didCancelTouchWithTextCheckingResult:(NSTextCheckingResult *)result;
+
+/**
  Tells the delegate that the user did select a link to a URL.
  
  @param label The label whose link was selected.
