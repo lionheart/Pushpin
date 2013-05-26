@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import <ASPinboard/ASPinboard.h>
 #import "AppDelegate.h"
 #import "NoteViewController.h"
@@ -24,6 +25,7 @@
 #import "AddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
+#import "PPCoreGraphics.h"
 
 @implementation AppDelegate
 
@@ -195,11 +197,16 @@
         0.996, 0.996, 0.996, 1.0,
         0.804, 0.827, 0.875, 1.0
     };
+    CGFloat reverseComponents[8] =	{
+        0.804, 0.827, 0.875, 1.0,
+        0.996, 0.996, 0.996, 1.0
+    };
     CGFloat lineColorComponents[8] = {
         0.996, 0.996, 0.996, 1,
         0.882, 0.898, 0.925, 1
     };
     CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
+    CGGradientRef reverseGradient = CGGradientCreateWithColorComponents(myColorspace, reverseComponents, locations, num_locations);
     CGPoint startPoint = CGPointMake(0, 0);
     CGPoint endPoint = CGPointMake(0, 44);
     
@@ -233,11 +240,38 @@
     // Customize UIBarButtonItem
     UIImage *backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     UIImage *selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    
+    CGRect buttonRect = CGRectMake(0, 0, 6, 30);
+    CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
+    barButtonItemLayer.frame = buttonRect;
+    barButtonItemLayer.cornerRadius = 3;
+    barButtonItemLayer.masksToBounds = YES;
+    barButtonItemLayer.borderWidth = 0.5;
+    barButtonItemLayer.borderColor = HEX(0x4C586AFF).CGColor;
+    barButtonItemLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    barButtonItemLayer.startPoint = CGPointMake(0.5, 0);
+    barButtonItemLayer.endPoint = CGPointMake(0.5, 1.0);
+
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    barButtonItemLayer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
 
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-100, -100) forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setTintColor:HEX(0xEAECF1FF)];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-200, -00) forBarMetrics:UIBarMetricsDefault];
+    // [[UIBarButtonItem appearance] setTintColor:HEX(0xEAECF1FF)];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
@@ -246,6 +280,8 @@
                                                 forState:UIControlStateNormal];
     
     // Customize Toolbar
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
     CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y);
     CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y);
@@ -254,7 +290,7 @@
     UIGraphicsEndImageContext();
 
     [[PPToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-    
+
     // Customize UISearchBar
     
     [[UISearchBar appearance] setBackgroundImage:background];
