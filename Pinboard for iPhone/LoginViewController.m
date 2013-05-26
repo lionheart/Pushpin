@@ -77,7 +77,7 @@
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 340, 300, 80)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 342, 300, 80)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.editable = NO;
@@ -90,6 +90,7 @@
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
     self.activityIndicatorFrameTop = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameMiddle = CGRectMake((320 - activitySize.width) / 2., 400, activitySize.width, activitySize.height);
     self.activityIndicatorFrameBottom = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
     self.activityIndicator.frame = self.activityIndicatorFrameTop;
     [self.view addSubview:self.activityIndicator];
@@ -169,74 +170,95 @@
     self.passwordTextField.textColor = [UIColor blackColor];
 }
 
+- (void)updateLoadingMessage {
+    NSArray *messages = @[@"Avoiding Sleep", @"Brewing Espressos", @"Calibrating Snark Levels", @"Avoiding Acquisitions", @"Deleting Buggy Libraries", @"Depixilating Monads", @"Drinking Red Bull", @"Opening Fridge", @"Ordering Yet Another LEGO Set", @"Recovering Missing Rhinos", @"Refactoring Applicative Factors", @"Reticulating Splines", @"Returning Shoes", @"Rewriting Gnarly Code", @"Watching Gangnam Style", @"Herding Cats"];
+    self.textView.text = [messages objectAtIndex:arc4random_uniform(messages.count)];
+    self.progressView.frame = CGRectMake(20, 380, 280, 50);
+    self.activityIndicator.frame = self.activityIndicatorFrameMiddle;
+}
+
 - (void)login {
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
-        __block AppDelegate *delegate = [AppDelegate sharedDelegate];
-
-        self.activityIndicator.frame = self.activityIndicatorFrameTop;
-        [self.activityIndicator startAnimating];
-        self.usernameTextField.enabled = NO;
-        self.usernameTextField.textColor = [UIColor grayColor];
-        self.passwordTextField.enabled = NO;
-        self.passwordTextField.textColor = [UIColor grayColor];
-        self.textView.text = NSLocalizedString(@"Login in Progress", nil);
-        
-        __block ASPinboard *pinboard = [ASPinboard sharedInstance];
-        [pinboard authenticateWithUsername:usernameTextField.text
-                                  password:passwordTextField.text
-                                   success:^(NSString *token) {
-                                       self.activityIndicator.frame = self.activityIndicatorFrameBottom;
-                                       
-                                       self.textView.text = NSLocalizedString(@"Login Successful", nil);
-                                       self.progressView.hidden = NO;
-
-                                       [delegate setToken:token];
-                                       
-                                       PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-                                       [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
-                                           UINavigationController *controller = delegate.navigationController;
-                                           controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                           [self presentViewController:controller animated:YES completion:nil];
-                                       }
-                                                                                       failure:nil
-                                                                                      progress:^(NSInteger current, NSInteger total) {
-                                                                                          [self.progressView setProgress:current/(float)total animated:YES];
-                                                                                      }
-                                                                                       options:@{@"count": @(-1)}];
-                                       
-                                       
-                                       [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                           [delegate setFeedToken:feedToken];
-                                       }];
-                                       
-                                       Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                       [mixpanel identify:[delegate username]];
-                                       [mixpanel.people set:@"$created" to:[NSDate date]];
-                                       [mixpanel.people set:@"$username" to:[delegate username]];
-                                       [mixpanel.people set:@"Browser" to:@"Webview"];
-                                   }
-                                   failure:^(NSError *error) {
-                                       switch (error.code) {
-                                           case PinboardErrorInvalidCredentials: {
-                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                               [alert show];
-                                               [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                                               [self resetLoginScreen];
-                                               break;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __block AppDelegate *delegate = [AppDelegate sharedDelegate];
+            
+            self.activityIndicator.frame = self.activityIndicatorFrameTop;
+            [self.activityIndicator startAnimating];
+            self.usernameTextField.enabled = NO;
+            self.usernameTextField.textColor = [UIColor grayColor];
+            self.passwordTextField.enabled = NO;
+            self.passwordTextField.textColor = [UIColor grayColor];
+            self.textView.text = NSLocalizedString(@"Login in Progress", nil);
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __block ASPinboard *pinboard = [ASPinboard sharedInstance];
+                [pinboard authenticateWithUsername:usernameTextField.text
+                                          password:passwordTextField.text
+                                           success:^(NSString *token) {
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   self.activityIndicator.frame = self.activityIndicatorFrameBottom;
+                                                   self.textView.text = NSLocalizedString(@"Login Successful", nil);
+                                                   self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3.2 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                                   [[NSRunLoop currentRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
+                                                   
+                                                   self.progressView.hidden = NO;
+                                                   
+                                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                       [delegate setToken:token];
+                                                       
+                                                       PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                                                       [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               UINavigationController *controller = delegate.navigationController;
+                                                               controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                                               [self presentViewController:controller animated:YES completion:nil];
+                                                           });
+                                                       }
+                                                                                                       failure:nil
+                                                                                                      progress:^(NSInteger current, NSInteger total) {
+                                                                                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                              [self.progressView setProgress:current/(float)total animated:YES];
+                                                                                                          });
+                                                                                                      }
+                                                                                                       options:@{@"count": @(-1)}];
+                                                       
+                                                       
+                                                       [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                                                           [delegate setFeedToken:feedToken];
+                                                       }];
+                                                       
+                                                       Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                       [mixpanel identify:[delegate username]];
+                                                       [mixpanel.people set:@"$created" to:[NSDate date]];
+                                                       [mixpanel.people set:@"$username" to:[delegate username]];
+                                                       [mixpanel.people set:@"Browser" to:@"Webview"];
+                                                   });
+                                               });
                                            }
-                                               
-                                           case PinboardErrorTimeout: {
-                                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                               [alert show];
-                                               [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                                               [self resetLoginScreen];
-                                               break;
-                                           }
-
-                                           default:
-                                               break;
-                                       }
-                                   }];
+                                           failure:^(NSError *error) {
+                                               switch (error.code) {
+                                                   case PinboardErrorInvalidCredentials: {
+                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       [alert show];
+                                                       [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                                                       [self resetLoginScreen];
+                                                       break;
+                                                   }
+                                                       
+                                                   case PinboardErrorTimeout: {
+                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       [alert show];
+                                                       [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                                                       [self resetLoginScreen];
+                                                       break;
+                                                   }
+                                                       
+                                                   default:
+                                                       break;
+                                               }
+                                           }];
+            });
+        });
     }
 }
 
