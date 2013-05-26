@@ -237,6 +237,7 @@
 }
 
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
+    [self.view endEditing:YES];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint pressPoint;
         pressPoint = [recognizer locationInView:self.tableView];
@@ -527,7 +528,7 @@
 #pragma mark - Table view delegate
 
 - (void)closeModal:(UIViewController *)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - RDActionSheet
@@ -549,8 +550,9 @@
         [self showConfirmDeletionAlert];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
+        [self.searchDisplayController setActive:NO];
         UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
-        [self presentViewController:vc animated:YES completion:nil];
+        [self.navigationController presentViewController:vc animated:YES completion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
         [self markPostAsRead];
@@ -569,12 +571,12 @@
     }
     else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
         UIViewController *vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
-        [self presentViewController:vc animated:YES completion:nil];
+        [self.navigationController presentViewController:vc animated:YES completion:nil];
     }
 }
 
 - (void)dismissViewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Post Action Methods
