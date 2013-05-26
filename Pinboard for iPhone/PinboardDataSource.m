@@ -409,10 +409,10 @@
     
     for (int i=0; i<oldURLs.count; i++) {
         if (![newURLs containsObject:oldURLs[i]]) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
     }
-    
+
     self.posts = newPosts;
     
     if (success != nil) {
