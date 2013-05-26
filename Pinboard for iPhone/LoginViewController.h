@@ -20,8 +20,10 @@
 @property (nonatomic, retain) UIProgressView *progressView;
 @property (nonatomic, retain) UITextField *textField;
 @property (nonatomic) CGRect activityIndicatorFrameTop;
+@property (nonatomic) CGRect activityIndicatorFrameMiddle;
 @property (nonatomic) CGRect activityIndicatorFrameBottom;
 @property (nonatomic, retain) NSTimer *loginTimer;
+@property (nonatomic, strong) NSTimer *messageUpdateTimer;
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;
@@ -29,5 +31,6 @@
 - (void)cancelLogin;
 - (void)resetLoginScreen;
 - (void)loginFailed;
+- (void)updateLoadingMessage;
 
 @end
