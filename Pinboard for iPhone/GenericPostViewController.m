@@ -307,30 +307,32 @@
 }
 
 - (void)updateWithCount:(NSNumber *)count {
-    self.processingPosts = YES;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.processingPosts = NO;
-                
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                self.tableView.separatorColor = HEX(0xE0E0E0ff);
+    if (!self.processingPosts) {
+        self.processingPosts = YES;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.processingPosts = NO;
+                    
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
-                if (self.loading) {
-                    self.loading = NO;
-                    [UIView animateWithDuration:0.2 animations:^{
-                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                    } completion:^(BOOL finished) {
-                        [self.pullToRefreshImageView stopAnimating];
-                    }];
-                }
-            });
-        } failure:nil options:@{@"count": count}];
-    });
+                    if (self.loading) {
+                        self.loading = NO;
+                        [UIView animateWithDuration:0.2 animations:^{
+                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        } completion:^(BOOL finished) {
+                            [self.pullToRefreshImageView stopAnimating];
+                        }];
+                    }
+                });
+            } failure:nil options:@{@"count": count}];
+        });
+    }
 }
 
 #pragma mark - Table view data source
