@@ -43,7 +43,6 @@
     [db open];
 
     self.titleToTags = [NSMutableDictionary dictionary];
-
     self.titleToTags = [@{@"#": [NSMutableArray array], @"A": [NSMutableArray array], @"B": [NSMutableArray array], @"C": [NSMutableArray array], @"D": [NSMutableArray array], @"E": [NSMutableArray array], @"F": [NSMutableArray array], @"G": [NSMutableArray array], @"H": [NSMutableArray array], @"I": [NSMutableArray array], @"J": [NSMutableArray array], @"K": [NSMutableArray array], @"L": [NSMutableArray array], @"M": [NSMutableArray array], @"N": [NSMutableArray array], @"O": [NSMutableArray array], @"P": [NSMutableArray array], @"Q": [NSMutableArray array], @"R": [NSMutableArray array], @"S": [NSMutableArray array], @"T": [NSMutableArray array], @"U": [NSMutableArray array], @"V": [NSMutableArray array], @"W": [NSMutableArray array], @"X": [NSMutableArray array], @"Y": [NSMutableArray array], @"Z": [NSMutableArray array]} mutableCopy];
 
     FMResultSet *results = [db executeQuery:@"SELECT id, name, count FROM tag ORDER BY name ASC"];
@@ -65,10 +64,7 @@
     }
 
     self.sortedTitles = @[UITableViewIndexSearch, @"#", @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
-}
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
@@ -77,6 +73,11 @@
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.filteredTags = [NSMutableArray array];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -115,7 +116,7 @@
 }
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if ([self.searchDisplayController isActive]) {
         return nil;
     }
     else {
@@ -124,11 +125,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    if (title == UITableViewIndexSearch) {
-        [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:YES];
-        return -1;
+    if (tableView == self.tableView) {
+        if (title == UITableViewIndexSearch) {
+            [tableView scrollRectToVisible:CGRectMake(0, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height) animated:YES];
+            return -1;
+        }
+        return index;
     }
-    return index;
+    return 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -202,32 +206,83 @@
     return cell;
 }
 
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+    return NO;
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    return NO;
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
+}
+
 - (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
-    [self.tableView reloadData];
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadSectionIndexTitles];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self.tableView reloadData];
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
+    [self.tableView reloadSectionIndexTitles];
     [self.tableView reloadData];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?)" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
-    NSMutableArray *tags = [[NSMutableArray alloc] init];
-    while ([result next]) {
-        [tags addObject:@{@"id": @([result intForColumn:@"id"]), @"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
-    }
-    [db close];
-    self.filteredTags = tags;
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?)" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+        
+        NSMutableArray *oldTagIDs = [NSMutableArray array];
+        NSMutableArray *newTagIDs = [NSMutableArray array];
+        
+        __block NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        __block NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        __block NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        __block NSMutableArray *newTags = [[NSMutableArray alloc] init];
+        NSNumber *tagID;
+        NSInteger index = 0;
+
+        for (NSDictionary *tag in self.filteredTags) {
+            [oldTagIDs addObject:tag[@"id"]];
+        }
+
+        while ([result next]) {
+            tagID = @([result intForColumn:@"id"]);
+            [newTags addObject:@{@"id": tagID, @"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
+            [newTagIDs addObject:tagID];
+            
+            if (![oldTagIDs containsObject:tagID]) {
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            }
+            index++;
+        }
+        [db close];
+        
+        NSInteger i;
+        for (i=0; i<oldTagIDs.count; i++) {
+            if (![newTagIDs containsObject:oldTagIDs[i]]) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.searchDisplayController.searchResultsTableView beginUpdates];
+            self.filteredTags = newTags;
+            [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+            [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+            [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [self.searchDisplayController.searchResultsTableView endUpdates];
+        });
+    });
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -246,7 +301,6 @@
     [pinboardDataSource filterByPrivate:nil isRead:nil hasTags:nil tags:@[tag[@"id"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
-
     [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 }
 
