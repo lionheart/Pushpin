@@ -70,7 +70,7 @@
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
-        
+
         self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, SCREEN.bounds.size.height - 44)];
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = @"";
