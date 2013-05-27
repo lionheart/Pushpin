@@ -13,7 +13,7 @@ def color_for_ratio(ratio):
 # PTR Animation
 count = 32
 interval = 80. / count
-for i in range(count):
+for i in range(1, count + 1):
     mask = Image.open("mask.bmp").convert('L')
 
     im = Image.new("RGB", (40, 40))
