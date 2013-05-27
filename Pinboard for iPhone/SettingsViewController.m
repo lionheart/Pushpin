@@ -409,7 +409,7 @@
                                                                    message:@"We couldn't log you into Instapaper with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
+                                                         otherButtonTitles:NSLocalizedString(@"Shucks", nil), nil] show];
                                    }
                                    else {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
@@ -490,7 +490,7 @@
                                                                    message:@"We couldn't log you into Readability with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"Lighthearted Disappointment", nil), nil] show];
+                                                         otherButtonTitles:NSLocalizedString(@"Shucks", nil), nil] show];
                                    }
                                }];
     }
