@@ -104,7 +104,10 @@
 }
 
 - (void)progressNotificationReceived:(NSNotification *)notification {
-    [self.progressView setProgress:[notification.userInfo[@"current"] floatValue] / [notification.userInfo[@"total"] floatValue] animated:YES];
+    NSInteger current = [notification.userInfo[@"current"] integerValue];
+    NSInteger total = [notification.userInfo[@"total"] integerValue];
+    CGFloat f = current / (float)total;
+    [self.progressView setProgress:f animated:YES];
 }
 
 - (void)keyboardWasShown:(NSNotification *)notification {
@@ -176,10 +179,16 @@
 }
 
 - (void)updateLoadingMessage {
-    NSArray *messages = @[@"Avoiding Sleep", @"Brewing Espressos", @"Calibrating Snark Levels", @"Avoiding Acquisitions", @"Deleting Buggy Libraries", @"Depixilating Monads", @"Drinking Red Bull", @"Opening Fridge", @"Ordering Yet Another LEGO Set", @"Recovering Missing Rhinos", @"Refactoring Applicative Factors", @"Reticulating Splines", @"Returning Shoes", @"Rewriting Gnarly Code", @"Watching Gangnam Style", @"Herding Cats"];
-    self.textView.text = [messages objectAtIndex:arc4random_uniform(messages.count)];
-    self.progressView.frame = CGRectMake(20, 380, 280, 50);
-    self.activityIndicator.frame = self.activityIndicatorFrameMiddle;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *messages = @[@"Avoiding Sleep", @"Brewing Espressos", @"Calibrating Snark Levels", @"Avoiding Acquisitions", @"Deleting Buggy Libraries", @"Depixilating Monads", @"Drinking Red Bull", @"Opening Fridge", @"Ordering Yet Another LEGO Set", @"Recovering Missing Rhinos", @"Refactoring Applicative Factors", @"Reticulating Splines", @"Returning Shoes", @"Rewriting Gnarly Code", @"Watching Gangnam Style", @"Herding Cats"];
+        self.textView.text = [messages objectAtIndex:arc4random_uniform(messages.count)];
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            self.progressView.frame = CGRectMake(20, 380, 280, 50);
+            self.activityIndicator.frame = self.activityIndicatorFrameMiddle;
+        });
+    });
 }
 
 - (void)login {
@@ -200,7 +209,7 @@
                                        success:^(NSString *token) {
                                            self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                            self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
-                                           self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3.2 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                           self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2.5 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                            [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                            
                                            self.progressView.hidden = NO;
