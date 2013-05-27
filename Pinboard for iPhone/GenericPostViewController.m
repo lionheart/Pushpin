@@ -629,7 +629,7 @@
         [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             if (error == nil) {
-                notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
                 notification.userInfo = @{@"success": @YES, @"updated": @YES};
                 [self updateFromLocalDatabase];
             }
@@ -639,7 +639,7 @@
                     notification.alertBody = @"Error marking as read.";
                 }
                 else {
-                    notification.alertBody = NSLocalizedString(@"Bookmark Update Error Message", nil);
+                    notification.alertBody = NSLocalizedString(@"There was an error updating your bookmark.", nil);
                 }
             }
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
@@ -762,7 +762,7 @@
 }
 
 - (void)showConfirmDeletionAlert {
-    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Delete Bookmark Warning", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
 
     [self.confirmDeletionAlertView show];
 }

@@ -598,7 +598,7 @@
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.userInfo = @{@"success": @YES, @"updated": @NO};
         if ([posts count] == 1) {
-            notification.alertBody = NSLocalizedString(@"Bookmark Deleted Message", nil);
+            notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
         }
         else {
             notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", [posts count]];

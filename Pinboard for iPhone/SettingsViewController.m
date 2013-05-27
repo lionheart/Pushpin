@@ -50,7 +50,7 @@
                                                                          action:@selector(showAboutPage)];
         self.navigationItem.rightBarButtonItem = barButtonItem;
 
-        self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Log out warning title", nil) message:NSLocalizedString(@"Log out warning double check", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
+        self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
 
         self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
         
@@ -133,8 +133,8 @@
     [webView loadRequest:[NSURLRequest requestWithURL:url]];
     webView.delegate = self;
     aboutViewController.view = webView;
-    aboutViewController.title = NSLocalizedString(@"About Page Title", nil);
-    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About Page Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
+    aboutViewController.title = NSLocalizedString(@"About", nil);
+    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
     UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
     aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:aboutViewNavigationController animated:YES completion:nil];
@@ -343,7 +343,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     switch (section) {
         case 2:
-            return NSLocalizedString(@"Log out warning footer", nil);
+            return NSLocalizedString(@"Logging out of the application will reset the bookmark database on this device.", nil);
             break;
             
         default:
@@ -405,7 +405,7 @@
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
-                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                    message:@"We couldn't log you into Instapaper with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
@@ -486,7 +486,7 @@
                                        });
                                    }
                                    else {
-                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil)
+                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                    message:@"We couldn't log you into Readability with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
@@ -596,7 +596,7 @@
                                                            NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
                                                            NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Lighthearted Error", nil) otherButtonTitles:nil];
+                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil];
                                                                [alertView show];
                                                            });
                                                        }

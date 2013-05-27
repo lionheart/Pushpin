@@ -81,7 +81,7 @@
         self.tagTextField.font = font;
         self.tagTextField.delegate = self;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagTextField.placeholder = NSLocalizedString(@"Add bookmark tag example", nil);
+        self.tagTextField.placeholder = NSLocalizedString(@"pinboard .bookmarking", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagTextField.text = @"";
@@ -750,7 +750,7 @@
     }
 
     if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"Add bookmark missing url or title", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
         [alert show];
         [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
         return;
@@ -792,13 +792,13 @@
                              if ([results intForColumnIndex:0] > 0) {
                                  [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                  [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                 notification.alertBody = NSLocalizedString(@"Bookmark Updated Message", nil);
+                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
                              }
                              else {
                                  params[@"created_at"] = [NSDate date];
                                  [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
                                  [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                 notification.alertBody = NSLocalizedString(@"Bookmark Added Message", nil);
+                                 notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
                              }
                              [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                              
@@ -811,7 +811,7 @@
                          failure:^(NSError *error) {
                              self.navigationItem.leftBarButtonItem.enabled = YES;
                              self.navigationItem.rightBarButtonItem.enabled = YES;
-                             WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Lighthearted Error", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                             WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                              [alert show];
                          }];
 }
@@ -821,15 +821,15 @@
     UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
     
     if (isUpdate.boolValue) {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update Navigation Bar", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
-        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark Page Title", nil);
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
         addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     }
     else {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add Navigation Bar", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark Page Title", nil);
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel Navigation Bar", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
 
     if (bookmark[@"title"]) {
         addBookmarkViewController.titleTextField.text = bookmark[@"title"];

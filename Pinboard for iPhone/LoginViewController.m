@@ -84,7 +84,7 @@
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = UITextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
-    self.textView.text = NSLocalizedString(@"Login Instructions", nil);
+    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
     [self.view addSubview:self.textView];
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -168,7 +168,7 @@
 
 - (void)resetLoginScreen {
     [self.activityIndicator stopAnimating];
-    self.textView.text = NSLocalizedString(@"Login Instructions", nil);
+    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
     self.usernameTextField.enabled = YES;
     self.usernameTextField.textColor = [UIColor blackColor];
     self.passwordTextField.enabled = YES;
@@ -193,13 +193,13 @@
             self.usernameTextField.textColor = [UIColor grayColor];
             self.passwordTextField.enabled = NO;
             self.passwordTextField.textColor = [UIColor grayColor];
-            self.textView.text = NSLocalizedString(@"Login in Progress", nil);
+            self.textView.text = NSLocalizedString(@"Verifying your credentials...", nil);
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:usernameTextField.text
                                       password:passwordTextField.text
                                        success:^(NSString *token) {
                                            self.activityIndicator.frame = self.activityIndicatorFrameBottom;
-                                           self.textView.text = NSLocalizedString(@"Login Successful", nil);
+                                           self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
                                            self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3.2 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                            [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                            
@@ -233,7 +233,7 @@
                                        failure:^(NSError *error) {
                                            switch (error.code) {
                                                case PinboardErrorInvalidCredentials: {
-                                                   WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"Login Failed", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                   WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                                    [alert show];
                                                    [[Mixpanel sharedInstance] track:@"Failed to log in"];
                                                    [self resetLoginScreen];
