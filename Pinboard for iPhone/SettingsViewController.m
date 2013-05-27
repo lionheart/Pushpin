@@ -418,7 +418,6 @@
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
                                        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
@@ -430,6 +429,7 @@
                                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                            [alert dismissWithClickedButtonIndex:0 animated:YES];
+                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                        });
                                    }
                                }];

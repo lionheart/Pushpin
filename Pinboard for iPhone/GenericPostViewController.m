@@ -694,10 +694,6 @@
                                    else {
                                        notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
                                        notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                                       
-                                       if (httpResponse.statusCode == 403) {
-                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
-                                       }
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
@@ -735,10 +731,6 @@
                                    else {
                                        notification.alertBody = @"Error sending to Readability.";
                                        notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                                       
-                                       if (httpResponse.statusCode == 403) {
-                                           [[AppDelegate sharedDelegate] setReadlater:@(READLATER_NONE)];
-                                       }
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
