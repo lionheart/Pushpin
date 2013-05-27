@@ -12,6 +12,7 @@
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
 #import "PPToolbar.h"
+#import "NSString+URLEncoding2.h"
 
 static NSInteger kToolbarHeight = 44;
 
@@ -198,6 +199,13 @@ static NSInteger kToolbarHeight = 44;
     else {
         if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
             url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+            
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+            }
+            else {
+                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+            }
         }
         else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
             url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"ohttp"]];
