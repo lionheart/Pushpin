@@ -737,4 +737,8 @@
     return YES;
 }
 
+- (BOOL)supportsTagDrilldown {
+    return YES;
+}
+
 @end
