@@ -199,6 +199,7 @@
         vc.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
         vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
         [vc.view addSubview:self.postDescriptionTextView];
+        self.postDescriptionTextView.text = self.postDescription;
         [self.postDescriptionTextView becomeFirstResponder];
         [self.navigationController pushViewController:vc animated:YES];
     }
@@ -288,9 +289,6 @@
         case 3:
             label.text = NSLocalizedString(@"Tags", nil);
             break;
-        case 4:
-            label.text = NSLocalizedString(@"Other", nil);
-            break;
         default:
             break;
     }
@@ -301,6 +299,9 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         return 0;
+    }
+    if (section == 4) {
+        return 20;
     }
     return 40;
 }
