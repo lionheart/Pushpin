@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "WCAlertView.h"
+#import "LoginViewController.h"
 
 enum browsers {
     BROWSER_WEBVIEW,
@@ -69,10 +70,11 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;
 @property (nonatomic, retain) NSString *feedToken;
-@property (nonatomic, retain) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
+@property (nonatomic, weak) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, retain) WCAlertView *addBookmarkFromClipboardAlertView;
 
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;

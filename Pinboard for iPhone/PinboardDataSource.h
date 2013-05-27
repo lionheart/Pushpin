@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
 
+static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSourceProgressNotification";
 
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 

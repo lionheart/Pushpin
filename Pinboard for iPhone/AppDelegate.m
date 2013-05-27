@@ -339,6 +339,13 @@
     return _navigationController;
 }
 
+- (LoginViewController *)loginViewController {
+    if (!_loginViewController) {
+        _loginViewController = [[LoginViewController alloc] init];
+    }
+    return _loginViewController;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     [self migrateDatabase];
 
@@ -383,8 +390,7 @@
         [self.window setRootViewController:self.navigationController];
     }
     else {
-        LoginViewController *loginViewController = [[LoginViewController alloc] init];
-        [self.window setRootViewController:loginViewController];
+        [self.window setRootViewController:self.loginViewController];
     }
     
     [self.window makeKeyAndVisible];

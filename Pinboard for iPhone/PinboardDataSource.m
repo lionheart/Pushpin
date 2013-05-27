@@ -236,7 +236,10 @@
         [mixpanel.people set:@"Bookmarks" to:@(total)];
 
         progress(0, total);
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
         for (NSDictionary *element in elements) {
+            progress(count, total);
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
             updated_or_created = NO;
 
             bookmarkMeta = metas[element[@"hash"]];
@@ -302,7 +305,6 @@
                 }
             }
 
-            progress(count, total);
             count++;
         }
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
@@ -316,6 +318,7 @@
 
         [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
         progress(total, total);
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
     };
     
     void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
