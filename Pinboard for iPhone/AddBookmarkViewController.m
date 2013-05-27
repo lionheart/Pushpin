@@ -11,6 +11,7 @@
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
 #import <ASPinboard/ASPinboard.h>
+#import "PPViewController.h"
 
 @interface AddBookmarkViewController ()
 
@@ -69,6 +70,12 @@
         self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
+        self.descriptionTextField.userInteractionEnabled = NO;
+        
+        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, SCREEN.bounds.size.height - 44)];
+        self.postDescriptionTextView.font = font;
+        self.postDescriptionTextView.text = @"";
+        self.postDescriptionTextView.delegate = self;
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -155,6 +162,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.tagCompletions = [NSMutableArray array];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"X" style:UIBarButtonItemStylePlain target:nil action:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
@@ -184,7 +192,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 3 && indexPath.row > 0) {
+    if (indexPath.section == 2) {
+        PPViewController *vc = [[PPViewController alloc] init];
+        vc.title = NSLocalizedString(@"Description", nil);
+        vc.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
+        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
+        [vc.view addSubview:self.postDescriptionTextView];
+        [self.postDescriptionTextView becomeFirstResponder];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    else if (indexPath.section == 3 && indexPath.row > 0) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
@@ -527,7 +544,9 @@
                     cell.textLabel.enabled = NO;
                 }
                 else {
+                    cell.selectionStyle = UITableViewCellSelectionStyleGray;
                     self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
+                    self.descriptionTextField.text = self.postDescription;
                     cell.accessoryView = nil;
                     [cell.contentView addSubview:self.descriptionTextField];
                 }
@@ -722,7 +741,7 @@
         [[AppDelegate sharedDelegate] retrievePageTitle:url
                                                callback:^(NSString *title, NSString *description) {
                                                    self.titleTextField.text = title;
-                                                   self.descriptionTextField.text = description;
+                                                   self.postDescription = description;
                                                    self.loadingTitle = NO;
                                                    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
                                                }];
@@ -762,7 +781,7 @@
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard addBookmarkWithURL:self.urlTextField.text
                            title:self.titleTextField.text
-                     description:self.descriptionTextField.text
+                     description:self.postDescription
                             tags:self.tagTextField.text
                           shared:!self.privateSwitch.on
                           unread:!self.readSwitch.on
@@ -783,7 +802,7 @@
                              NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
                                                             @"url": self.urlTextField.text,
                                                             @"title": self.titleTextField.text,
-                                                            @"description": self.descriptionTextField.text,
+                                                            @"description": self.postDescription,
                                                             @"tags": self.tagTextField.text,
                                                             @"unread": @(!self.readSwitch.on),
                                                             @"private": @(self.privateSwitch.on)
@@ -848,6 +867,8 @@
     }
     
     if (bookmark[@"description"]) {
+        addBookmarkViewController.postDescription = bookmark[@"description"];
+        addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
         addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
     }
     
@@ -874,6 +895,16 @@
     }
     
     return addBookmarkViewNavigationController;
+}
+
+#pragma mark Text View Delegate
+
+- (void)finishEditingDescription {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    self.postDescription = textView.text;
 }
 
 @end

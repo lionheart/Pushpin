@@ -270,7 +270,7 @@
 
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-200, -00) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-200, -200) forBarMetrics:UIBarMetricsDefault];
     // [[UIBarButtonItem appearance] setTintColor:HEX(0xEAECF1FF)];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
