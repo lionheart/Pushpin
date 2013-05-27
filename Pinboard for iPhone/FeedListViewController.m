@@ -106,17 +106,18 @@
         [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
         [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
         [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-        settingsButton.frame = CGRectMake(0, 0, 30, 24);
+        settingsButton.frame = CGRectMake(0, 0, 45, 24);
         UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
         
         UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
         [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
         [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-        tagButton.frame = CGRectMake(0, 0, 30, 24);
+        tagButton.frame = CGRectMake(0, 0, 45, 24);
         UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
-        
-        self.navigationItem.rightBarButtonItems = @[settingsBarButtonItem, tagBarButtonItem];
+
+        self.navigationItem.leftBarButtonItem = tagBarButtonItem;
+        self.navigationItem.rightBarButtonItem = settingsBarButtonItem;
     }
     return self;
 }
