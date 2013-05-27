@@ -10,9 +10,12 @@
 #import "AppDelegate.h"
 #import "PPSwitch.h"
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate> {
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate> {
     UIEdgeInsets _oldContentInset;
 }
+
+@property (nonatomic, strong) NSString *postDescription;
+@property (nonatomic, strong) UITextView *postDescriptionTextView;
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
@@ -55,6 +58,7 @@
 - (void)addBookmark;
 - (void)close;
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer;
+- (void)finishEditingDescription;
 
 + (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
