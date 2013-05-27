@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, BookmarkUpdateProgressDelegate> {
+@interface LoginViewController : UIViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
     BOOL keyboard_shown;
 }
 
@@ -32,5 +31,6 @@
 - (void)resetLoginScreen;
 - (void)loginFailed;
 - (void)updateLoadingMessage;
+- (void)progressNotificationReceived:(NSNotification *)notification;
 
 @end

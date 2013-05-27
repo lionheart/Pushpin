@@ -357,14 +357,16 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
             [[ASPinboard sharedInstance] resetAuthentication];
-            [[AppDelegate sharedDelegate] setToken:nil];
-            [[AppDelegate sharedDelegate] setLastUpdated:nil];
+            [delegate setToken:nil];
+            [delegate setLastUpdated:nil];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:[AppDelegate databasePath] error:nil];
-            LoginViewController *loginViewController = [[LoginViewController alloc] init];
-            loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-            [self presentViewController:loginViewController
+            [delegate setLoginViewController:nil];
+            [delegate setNavigationController:nil];
+            delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:delegate.loginViewController
                                animated:YES
                              completion:nil];
 
