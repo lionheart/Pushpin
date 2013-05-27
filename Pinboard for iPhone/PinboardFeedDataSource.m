@@ -284,4 +284,8 @@
     return NO;
 }
 
+- (BOOL)supportsTagDrilldown {
+    return NO;
+}
+
 @end

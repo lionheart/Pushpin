@@ -63,6 +63,7 @@ typedef NSInteger PPPostAction;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
 - (BOOL)isPostAtIndexRead:(NSInteger)index;
 - (BOOL)supportsSearch;
+- (BOOL)supportsTagDrilldown;
 
 - (id <GenericPostDataSource>)searchDataSource;
 
