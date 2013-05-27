@@ -45,7 +45,13 @@
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];
+    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    if ([query rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@":"]].location == -1) {
+        self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];        
+    }
+    else {
+        self.queryParameters[@"query"] = query;
+    }
 }
 
 - (PinboardDataSource *)searchDataSource {
