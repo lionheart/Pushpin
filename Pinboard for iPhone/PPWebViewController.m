@@ -47,7 +47,7 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem.enabled = NO;
     
     UIButton *readerButton = [[UIButton alloc] init];
-    [readerButton setImage:[UIImage imageNamed:@"glasses-square"] forState:UIControlStateNormal];
+    [readerButton setImage:[UIImage imageNamed:@"glyphicons_110_align_left"] forState:UIControlStateNormal];
     [readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
     readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:readerButton];

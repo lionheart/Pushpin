@@ -205,7 +205,8 @@
 		37B65FE41672E0090041DA8C /* Icon-settings-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */; };
 		37B65FE51672E0090041DA8C /* Icon-settings-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */; };
 		37B65FE61672E0090041DA8C /* iTunesArtwork-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */; };
-		37C0164E1753BBFF004259FD /* PPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C0164D1753BBFF004259FD /* PPViewController.m */; };
+		37C016511753D5D9004259FD /* glyphicons_110_align_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C0164F1753D5D9004259FD /* glyphicons_110_align_left.png */; };
+		37C016521753D5D9004259FD /* glyphicons_110_align_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C016501753D5D9004259FD /* glyphicons_110_align_left@2x.png */; };
 		37C2BF011673A00A00EC66FF /* iTunesArtwork-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */; };
 		37C2BF021673A00A00EC66FF /* iTunesArtwork-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */; };
 		37C2BF031673A00A00EC66FF /* Icon-dev.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C2BEFD1673A00A00EC66FF /* Icon-dev.png */; };
@@ -741,8 +742,8 @@
 		37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta.png"; path = "Assets/Icon-settings-beta.png"; sourceTree = "<group>"; };
 		37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-settings-beta@2x.png"; path = "Assets/Icon-settings-beta@2x.png"; sourceTree = "<group>"; };
 		37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta.png"; path = "Assets/iTunesArtwork-beta.png"; sourceTree = "<group>"; };
-		37C0164C1753BBFF004259FD /* PPViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPViewController.h; sourceTree = "<group>"; };
-		37C0164D1753BBFF004259FD /* PPViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPViewController.m; sourceTree = "<group>"; };
+		37C0164F1753D5D9004259FD /* glyphicons_110_align_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = glyphicons_110_align_left.png; path = Assets/glyphicons_110_align_left.png; sourceTree = "<group>"; };
+		37C016501753D5D9004259FD /* glyphicons_110_align_left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glyphicons_110_align_left@2x.png"; path = "Assets/glyphicons_110_align_left@2x.png"; sourceTree = "<group>"; };
 		37C2BEFB1673A00A00EC66FF /* iTunesArtwork-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev.png"; path = "Assets/iTunesArtwork-dev.png"; sourceTree = "<group>"; };
 		37C2BEFC1673A00A00EC66FF /* iTunesArtwork-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-dev@2x.png"; path = "Assets/iTunesArtwork-dev@2x.png"; sourceTree = "<group>"; };
 		37C2BEFD1673A00A00EC66FF /* Icon-dev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-dev.png"; path = "Assets/Icon-dev.png"; sourceTree = "<group>"; };
@@ -1746,8 +1747,6 @@
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
 				370F92ED17500722005F0AD7 /* PPToolbar.h */,
 				370F92EE17500722005F0AD7 /* PPToolbar.m */,
-				37C0164C1753BBFF004259FD /* PPViewController.h */,
-				37C0164D1753BBFF004259FD /* PPViewController.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -1771,6 +1770,8 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				37C0164F1753D5D9004259FD /* glyphicons_110_align_left.png */,
+				37C016501753D5D9004259FD /* glyphicons_110_align_left@2x.png */,
 				37DE5AA0174EF8AE0073A2F4 /* back_icon.png */,
 				37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */,
 				37DE5AA2174EF8AE0073A2F4 /* forward_icon_active.png */,
@@ -2307,6 +2308,8 @@
 				37DE5AB1174EF8AF0073A2F4 /* reload_icon@2x.png in Resources */,
 				37DE5AB2174EF8AF0073A2F4 /* UIButtonBarAction.png in Resources */,
 				37DE5AB3174EF8AF0073A2F4 /* UIButtonBarAction@2x.png in Resources */,
+				37C016511753D5D9004259FD /* glyphicons_110_align_left.png in Resources */,
+				37C016521753D5D9004259FD /* glyphicons_110_align_left@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2401,7 +2404,6 @@
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				37DE5AB7174F29B40073A2F4 /* ODIN.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
-				37C0164E1753BBFF004259FD /* PPViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
