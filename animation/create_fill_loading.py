@@ -10,7 +10,7 @@ interval = (2 * math.pi) / count
 for i in range(count):
     mask = Image.open("mask.bmp").convert('L')
 
-    im = Image.new("L", (40, 40))
+    im = Image.new("RGB", (40, 40))
 
     box = (0, i - 15, 40, 30 + i)
     math.cos(i)
@@ -24,7 +24,7 @@ for i in range(count):
 
     mask = Image.open("mask@2x.bmp").convert('L')
 
-    im = Image.new("L", (80, 80))
+    im = Image.new("RGB", (80, 80))
 
     draw = ImageDraw.Draw(im)
     draw.rectangle([(0, 0), (80, 40 + 40 * math.cos(interval * i))], fill="rgb(76, 88, 106)")
