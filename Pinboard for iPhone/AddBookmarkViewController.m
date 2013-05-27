@@ -11,7 +11,6 @@
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
 #import <ASPinboard/ASPinboard.h>
-#import "PPViewController.h"
 
 @interface AddBookmarkViewController ()
 
@@ -76,6 +75,8 @@
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = @"";
         self.postDescriptionTextView.delegate = self;
+
+        self.postDescription = @"";
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -193,7 +194,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 2) {
-        PPViewController *vc = [[PPViewController alloc] init];
+        UIViewController *vc = [[UIViewController alloc] init];
         vc.title = NSLocalizedString(@"Description", nil);
         vc.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
         vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
@@ -278,9 +279,6 @@
     label.textColor = HEX(0x4C586AFF);
     label.backgroundColor = HEX(0xF7F9FDff);
     switch (section) {
-        case 0:
-            label.text = NSLocalizedString(@"URL", nil);
-            break;
         case 1:
             label.text = NSLocalizedString(@"Title", nil);
             break;
@@ -301,6 +299,9 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return 0;
+    }
     return 40;
 }
 
@@ -901,6 +902,9 @@
 
 - (void)finishEditingDescription {
     [self.navigationController popViewControllerAnimated:YES];
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:2]] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
