@@ -7,6 +7,7 @@ import operator
 color_top = (254, 254, 254)
 color_bottom = (76, 88, 106)
 color_difference = map(operator.sub, color_top, color_bottom)
+color_difference = (178, 166, 148)
 def color_for_ratio(ratio):
     return "rgb({}, {}, {})".format(*map(operator.sub, color_top, map(lambda k: int(k*ratio), color_difference)))
 
