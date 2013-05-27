@@ -807,7 +807,7 @@
                     } completion:^(BOOL finished) {
                         [UIView animateWithDuration:0.5 animations:^{
                             self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-                            NSNumber *count = @(round((totalNumberOfPosts - 200) * MIN((-offset - 60) / 70., 1)) + 200);
+                            NSNumber *count = @(round(MAX(totalNumberOfPosts - 200, 0) * MIN((-offset - 60) / 70., 1)) + 200);
                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                 [self updateWithCount:count];
                             });
