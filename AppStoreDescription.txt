@@ -1,0 +1,33 @@
+Pushpin is a blazing-fast and featureful Pinboard client for your iPhone and iPod Touch. No matter how it is you use Pinboard, Pushpin has got you covered. 
+
+Testimonials 
+
+"I wished hard enough and it came true: the clean, clear, and stable Pinboard iOS app of my dreams was written and released by someone much smarter than me and you should give them your money" - Jim Jazwiecki (@jimbecile) 
+
+"[T]he only option out there for a full-featured Pinboard experience on the iPhone" - Shawn Blanc (@shawnblanc) 
+
+"This is exactly what I want in a Pinboard app for iPhone." - Alex Payne (@al3x) 
+
+Awesome Features 
+
+* Super fast and live syncing with an easy-to-use interface--handles thousands of bookmarks without batting an eye 
+* Add new bookmarks and and edit existing ones 
+* Send links to Instapaper, Readability, or Pocket 
+* Click and hold a bookmark to mark as read, read later, edit, delete, or copy url 
+* Search bookmarks by tags, descriptions, or titles 
+* Filter bookmarks by unread, untagged, private, public, and starred 
+* Get prompted to add a bookmark when a URL is on the clipboard 
+* Tag autocompletion and tag suggestions when adding and editing bookmarks 
+* Optimized for Retina displays and iPhone 5 
+
+Features Other Pinboard Apps Don't Have 
+
+* Browse Network, All, Wikipedia, Fandom, and Japanese popular feeds. Click and hold one of these bookmarks to copy it to your collection. 
+* Browse all your tags in a straightforward interface 
+* Fully localized in English, German, Italian, French, and Portuguese 
+
+Fully Customizable 
+
+* Make new bookmarks private/public or read/unread by default 
+* Open URLs in either Chrome, Safari, iCab Mobile, or a built-in browser 
+* URL scheme support: e.g. pushpin://add?url=XXX&title=XXX (for use with Launch Center Pro and other app integration). To use callbacks, it's as simple as pushpin://x-callback-url/add?url=XXX&title=XXX. For more info, check out http://j.mp/PushpinURLs
