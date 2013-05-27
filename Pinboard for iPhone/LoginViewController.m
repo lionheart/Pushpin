@@ -208,27 +208,30 @@
                                            [delegate setToken:token];
 
                                            PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-                                           [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
-                                               [self.messageUpdateTimer invalidate];
-                                               delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                               [self presentViewController:delegate.navigationController
-                                                                  animated:YES
-                                                                completion:nil];
-                                           }
-                                                                                           failure:nil
-                                                                                          progress:nil
-                                                                                           options:@{@"count": @(-1)}];
-                                           
-                                           
-                                           [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                               [delegate setFeedToken:feedToken];
-                                           }];
-                                           
-                                           Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                           [mixpanel identify:[delegate username]];
-                                           [mixpanel.people set:@"$created" to:[NSDate date]];
-                                           [mixpanel.people set:@"$username" to:[delegate username]];
-                                           [mixpanel.people set:@"Browser" to:@"Webview"];
+                                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                               [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
+                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                       [self.messageUpdateTimer invalidate];
+                                                       delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                                       [self presentViewController:delegate.navigationController
+                                                                          animated:YES
+                                                                        completion:nil];
+                                                   });
+                                               }
+                                                                                               failure:nil
+                                                                                              progress:nil
+                                                                                               options:@{@"count": @(-1)}];
+
+                                               [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                                                   [delegate setFeedToken:feedToken];
+                                               }];
+                                               
+                                               Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                               [mixpanel identify:[delegate username]];
+                                               [mixpanel.people set:@"$created" to:[NSDate date]];
+                                               [mixpanel.people set:@"$username" to:[delegate username]];
+                                               [mixpanel.people set:@"Browser" to:@"Webview"];
+                                           });
                                        }
                                        failure:^(NSError *error) {
                                            switch (error.code) {
