@@ -46,7 +46,7 @@
 
 - (void)filterWithQuery:(NSString *)query {
     query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-    if ([query rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@":"]].location == -1) {
+    if ([query rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@":"]].location == NSNotFound) {
         self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];        
     }
     else {

@@ -83,8 +83,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self.searchDisplayController setActive:NO];
-
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
 
