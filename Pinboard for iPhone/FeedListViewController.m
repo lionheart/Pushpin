@@ -116,8 +116,8 @@
         tagButton.frame = CGRectMake(0, 0, 45, 24);
         UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
-        self.navigationItem.leftBarButtonItem = tagBarButtonItem;
-        self.navigationItem.rightBarButtonItem = settingsBarButtonItem;
+        self.navigationItem.rightBarButtonItem = tagBarButtonItem;
+        self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
     }
     return self;
 }
