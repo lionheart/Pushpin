@@ -253,23 +253,28 @@
         [subview removeFromSuperview];
     }
 
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    selectedBackgroundView.layer.cornerRadius = 10;
-    selectedBackgroundView.backgroundColor = HEX(0xDDE1E9ff);
+    CALayer *selectedBackgroundLayer = [CALayer layer];
+    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, 44);
+    selectedBackgroundLayer.cornerRadius = 10;
+    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
 
     if (indexPath.row > 0) {
         CALayer *topBarLayer = [CALayer layer];
         topBarLayer.frame = CGRectMake(0, 0, 302, 10);
-        topBarLayer.backgroundColor = HEX(0xDDE1E9ff).CGColor;
-        [selectedBackgroundView.layer addSublayer:topBarLayer];
+        topBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
+        [selectedBackgroundLayer addSublayer:topBarLayer];
     }
-    
+
     if (indexPath.row < 5) {
         CALayer *bottomBarLayer = [CALayer layer];
         bottomBarLayer.frame = CGRectMake(0, 34, 302, 10);
-        bottomBarLayer.backgroundColor = HEX(0xDDE1E9ff).CGColor;
-        [selectedBackgroundView.layer addSublayer:bottomBarLayer];
+        bottomBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
+        [selectedBackgroundLayer addSublayer:bottomBarLayer];
     }
+
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    [selectedBackgroundView.layer addSublayer:selectedBackgroundLayer];
+    selectedBackgroundView.layer.masksToBounds = YES;
 
     cell.selectedBackgroundView = selectedBackgroundView;
     cell.imageView.image = nil;
