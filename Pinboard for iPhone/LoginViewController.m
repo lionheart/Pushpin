@@ -194,7 +194,7 @@
 - (void)login {
     if (![usernameTextField.text isEqualToString:@""] && ![passwordTextField.text isEqualToString:@""]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            __weak AppDelegate *delegate = [AppDelegate sharedDelegate];
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
             
             self.activityIndicator.frame = self.activityIndicatorFrameTop;
             [self.activityIndicator startAnimating];
@@ -203,21 +203,22 @@
             self.passwordTextField.enabled = NO;
             self.passwordTextField.textColor = [UIColor grayColor];
             self.textView.text = NSLocalizedString(@"Verifying your credentials...", nil);
+        
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:usernameTextField.text
                                       password:passwordTextField.text
                                        success:^(NSString *token) {
-                                           self.activityIndicator.frame = self.activityIndicatorFrameBottom;
-                                           self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
-                                           self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2.5 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
-                                           [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
-                                           
-                                           self.progressView.hidden = NO;
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               self.activityIndicator.frame = self.activityIndicatorFrameBottom;
+                                               self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
+                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2.5 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                               [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
+                                               
+                                               self.progressView.hidden = NO;
 
-                                           [delegate setToken:token];
+                                               [delegate setToken:token];
+                                               PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
 
-                                           PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-                                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
                                                    dispatch_async(dispatch_get_main_queue(), ^{
                                                        [self.messageUpdateTimer invalidate];
@@ -230,7 +231,7 @@
                                                                                                failure:nil
                                                                                               progress:nil
                                                                                                options:@{@"count": @(-1)}];
-
+                                               
                                                [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                                    [delegate setFeedToken:feedToken];
                                                }];
@@ -243,26 +244,28 @@
                                            });
                                        }
                                        failure:^(NSError *error) {
-                                           switch (error.code) {
-                                               case PinboardErrorInvalidCredentials: {
-                                                   WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                   [alert show];
-                                                   [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                                                   [self resetLoginScreen];
-                                                   break;
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               switch (error.code) {
+                                                   case PinboardErrorInvalidCredentials: {
+                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       [alert show];
+                                                       [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                                                       [self resetLoginScreen];
+                                                       break;
+                                                   }
+                                                       
+                                                   case PinboardErrorTimeout: {
+                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       [alert show];
+                                                       [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                                                       [self resetLoginScreen];
+                                                       break;
+                                                   }
+                                                       
+                                                   default:
+                                                       break;
                                                }
-                                                   
-                                               case PinboardErrorTimeout: {
-                                                   WCAlertView *alert = [[WCAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                   [alert show];
-                                                   [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                                                   [self resetLoginScreen];
-                                                   break;
-                                               }
-                                                   
-                                               default:
-                                                   break;
-                                           }
+                                           });
                                        }];
         });
     }

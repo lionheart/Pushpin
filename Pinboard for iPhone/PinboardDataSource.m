@@ -253,9 +253,10 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
             for (NSDictionary *element in elements) {
-                progress(count + skipCount, total);
+                count++;
+                progress(count, total);
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count+skipCount), @"total": @(total)}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
                 });
                 
                 updated_or_created = NO;
@@ -322,8 +323,6 @@
                         [db executeUpdate:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
                     }
                 }
-                
-                count++;
             }
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
             
@@ -333,7 +332,7 @@
             
             [db commit];
             [db close];
-            
+
             [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
             progress(total, total);
             
@@ -358,19 +357,17 @@
                                  toDate:nil
                             includeMeta:YES
                                 success:^(NSArray *bookmarks) {
-                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                        BookmarksSuccessBlock(bookmarks);
-                                        
-                                        if (!lastUpdated) {
-                                            [self updateStarredPosts:^{
-                                                success();
-                                            }
-                                                             failure:nil];
+                                    BookmarksSuccessBlock(bookmarks);
+                                    
+                                    if (!lastUpdated) {
+                                        [self updateStarredPosts:^{
+                                            success();
                                         }
-                                        else {
-                                            success();                                            
-                                        }
-                                    });
+                                                         failure:nil];
+                                    }
+                                    else {
+                                        success();                                            
+                                    }
             }
                                 failure:BookmarksFailureBlock];
             
@@ -398,98 +395,103 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [delegate setNetworkActivityIndicatorVisible:NO];
                                    if (error) {
                                        if (failure) {
                                            failure(error);
                                        }
                                    }
                                    else {
-                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                       [db open];
-                                       [db beginTransaction];
-                                       
-                                       [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE starred=1"];
-                                       for (NSDictionary *post in payload) {
-                                           [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[post[@"u"]]];
-                                       }
-                                       [db commit];
-                                       [db close];
-                                       
-                                       success();
+                                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                           NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                           FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                           [db open];
+                                           [db beginTransaction];
+                                           
+                                           [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE starred=1"];
+                                           for (NSDictionary *post in payload) {
+                                               [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[post[@"u"]]];
+                                           }
+                                           [db commit];
+                                           [db close];
+                                           
+                                           success();
+                                       });
                                    }
-                               });
-                           }];
+                               }];
+    });
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-    
-    NSMutableArray *newPosts = [NSMutableArray array];
-    NSMutableArray *newURLs = [NSMutableArray array];
-    
-    NSMutableArray *oldPosts = [self.posts copy];
-    NSMutableArray *oldURLs = [NSMutableArray array];
-    for (NSDictionary *post in self.posts) {
-        [oldURLs addObject:post[@"url"]];
-    }
-    
-    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-    NSMutableArray *indexPathsToReload = [NSMutableArray array];
-    NSInteger index = 0;
-    
-    while ([results next]) {
-        NSString *title = [results stringForColumn:@"title"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
         
-        if ([title isEqualToString:@""]) {
-            title = @"untitled";
+        NSMutableArray *newPosts = [NSMutableArray array];
+        NSMutableArray *newURLs = [NSMutableArray array];
+        
+        NSMutableArray *oldPosts = [self.posts copy];
+        NSMutableArray *oldURLs = [NSMutableArray array];
+        for (NSDictionary *post in self.posts) {
+            [oldURLs addObject:post[@"url"]];
         }
-        NSDictionary *post = @{
-               @"title": title,
-               @"description": [results stringForColumn:@"description"],
-               @"unread": @([results boolForColumn:@"unread"]),
-               @"url": [results stringForColumn:@"url"],
-               @"private": @([results boolForColumn:@"private"]),
-               @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-               @"created_at": [results dateForColumn:@"created_at"],
-               @"starred": @([results boolForColumn:@"starred"])
-           };
         
-        [newPosts addObject:post];
-        [newURLs addObject:post[@"url"]];
+        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        NSInteger index = 0;
         
-        if (![oldPosts containsObject:post]) {
-            // Check if the bookmark is being updated (as opposed to entirely new)
-            if ([oldURLs containsObject:post[@"url"]]) {
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+        while ([results next]) {
+            NSString *title = [results stringForColumn:@"title"];
+            
+            if ([title isEqualToString:@""]) {
+                title = @"untitled";
             }
-            else {
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            NSDictionary *post = @{
+                                   @"title": title,
+                                   @"description": [results stringForColumn:@"description"],
+                                   @"unread": @([results boolForColumn:@"unread"]),
+                                   @"url": [results stringForColumn:@"url"],
+                                   @"private": @([results boolForColumn:@"private"]),
+                                   @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                   @"created_at": [results dateForColumn:@"created_at"],
+                                   @"starred": @([results boolForColumn:@"starred"])
+                                   };
+            
+            [newPosts addObject:post];
+            [newURLs addObject:post[@"url"]];
+            
+            if (![oldPosts containsObject:post]) {
+                // Check if the bookmark is being updated (as opposed to entirely new)
+                if ([oldURLs containsObject:post[@"url"]]) {
+                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+                else {
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+            }
+            index++;
+        }
+        [db close];
+        
+        for (int i=0; i<oldURLs.count; i++) {
+            if (![newURLs containsObject:oldURLs[i]]) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
         }
-        index++;
-    }
-    [db close];
-    
-    for (int i=0; i<oldURLs.count; i++) {
-        if (![newURLs containsObject:oldURLs[i]]) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        
+        self.posts = newPosts;
+        
+        if (success != nil) {
+            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
         }
-    }
-
-    self.posts = newPosts;
-    
-    if (success != nil) {
-        success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
-    }
+    });
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
