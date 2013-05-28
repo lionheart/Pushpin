@@ -71,11 +71,12 @@
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
 
-        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, SCREEN.bounds.size.height - 44)];
+        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, SCREEN.bounds.size.height - 44 - 240)];
+        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = @"";
         self.postDescriptionTextView.delegate = self;
-
         self.postDescription = @"";
         
         self.titleTextField = [[UITextField alloc] init];
@@ -334,9 +335,6 @@
 
     if (self.currentTextField == self.tagTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else if (self.currentTextField == self.descriptionTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.titleTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionTop animated:YES];
