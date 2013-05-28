@@ -192,7 +192,7 @@
             }
             break;
         case 1:
-            return 5;
+            return 6;
             break;
     }
     return 0;
@@ -336,6 +336,9 @@
                     break;
                 case 4:
                     cell.textLabel.text = @"日本語";
+                    break;
+                case 5:
+                    cell.textLabel.text = @"Custom Feeds";
                     break;
             }
             cell.detailTextLabel.text = @"";
