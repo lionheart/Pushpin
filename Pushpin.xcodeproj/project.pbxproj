@@ -12,6 +12,11 @@
 		3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097716F157B100E8FE29 /* gray-button-cap@2x.png */; };
 		3714097C16F15CE000E8FE29 /* gray-button-highlighted-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097A16F15CE000E8FE29 /* gray-button-highlighted-cap.png */; };
 		3714097D16F15CE000E8FE29 /* gray-button-highlighted-cap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097B16F15CE000E8FE29 /* gray-button-highlighted-cap@2x.png */; };
+		3714DB6F17556E6F00B23F4F /* NotesNavigation.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6B17556E6F00B23F4F /* NotesNavigation.png */; };
+		3714DB7017556E6F00B23F4F /* NotesNavigation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6C17556E6F00B23F4F /* NotesNavigation@2x.png */; };
+		3714DB7117556E6F00B23F4F /* NotesNavigationDimmed.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6D17556E6F00B23F4F /* NotesNavigationDimmed.png */; };
+		3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6E17556E6F00B23F4F /* NotesNavigationDimmed@2x.png */; };
+		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -483,6 +488,12 @@
 		3714097716F157B100E8FE29 /* gray-button-cap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-cap@2x.png"; path = "Assets/gray-button-cap@2x.png"; sourceTree = "<group>"; };
 		3714097A16F15CE000E8FE29 /* gray-button-highlighted-cap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-highlighted-cap.png"; path = "Assets/gray-button-highlighted-cap.png"; sourceTree = "<group>"; };
 		3714097B16F15CE000E8FE29 /* gray-button-highlighted-cap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "gray-button-highlighted-cap@2x.png"; path = "Assets/gray-button-highlighted-cap@2x.png"; sourceTree = "<group>"; };
+		3714DB6B17556E6F00B23F4F /* NotesNavigation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NotesNavigation.png; sourceTree = "<group>"; };
+		3714DB6C17556E6F00B23F4F /* NotesNavigation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NotesNavigation@2x.png"; sourceTree = "<group>"; };
+		3714DB6D17556E6F00B23F4F /* NotesNavigationDimmed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NotesNavigationDimmed.png; sourceTree = "<group>"; };
+		3714DB6E17556E6F00B23F4F /* NotesNavigationDimmed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NotesNavigationDimmed@2x.png"; sourceTree = "<group>"; };
+		3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardNotesDataSource.h; sourceTree = "<group>"; };
+		3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardNotesDataSource.m; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -1280,6 +1291,10 @@
 		372D43321723A87E00E802C0 /* Navigation Bar */ = {
 			isa = PBXGroup;
 			children = (
+				3714DB6B17556E6F00B23F4F /* NotesNavigation.png */,
+				3714DB6C17556E6F00B23F4F /* NotesNavigation@2x.png */,
+				3714DB6D17556E6F00B23F4F /* NotesNavigationDimmed.png */,
+				3714DB6E17556E6F00B23F4F /* NotesNavigationDimmed@2x.png */,
 				377E46E3174C8F8700CE3813 /* AddNavigation.png */,
 				377E46E4174C8F8700CE3813 /* AddNavigation@2x.png */,
 				377E46E5174C8F8700CE3813 /* AddNavigationDimmed.png */,
@@ -1728,8 +1743,6 @@
 				37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
-				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
-				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
 				372D43471724492E00E802C0 /* PPSwitch.h */,
 				372D43481724492E00E802C0 /* PPSwitch.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
@@ -1747,6 +1760,10 @@
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
 				370F92ED17500722005F0AD7 /* PPToolbar.h */,
 				370F92EE17500722005F0AD7 /* PPToolbar.m */,
+				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
+				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
+				3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */,
+				3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -2310,6 +2327,10 @@
 				37DE5AB3174EF8AF0073A2F4 /* UIButtonBarAction@2x.png in Resources */,
 				37C016511753D5D9004259FD /* glyphicons_110_align_left.png in Resources */,
 				37C016521753D5D9004259FD /* glyphicons_110_align_left@2x.png in Resources */,
+				3714DB6F17556E6F00B23F4F /* NotesNavigation.png in Resources */,
+				3714DB7017556E6F00B23F4F /* NotesNavigation@2x.png in Resources */,
+				3714DB7117556E6F00B23F4F /* NotesNavigationDimmed.png in Resources */,
+				3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2404,6 +2425,7 @@
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				37DE5AB7174F29B40073A2F4 /* ODIN.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
+				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -44,7 +44,7 @@ typedef NSInteger PPPostAction;
 
 - (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSString *)titleForPostAtIndex:(NSInteger)index;
-- (NSString *)urlForPostAtIndex:(NSInteger)index;
+
 - (NSString *)descriptionForPostAtIndex:(NSInteger)index;
 - (NSArray *)linksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
@@ -70,6 +70,10 @@ typedef NSInteger PPPostAction;
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 
 @optional
+
+// A data source may alternatively provide a UIViewController to push
+- (NSString *)urlForPostAtIndex:(NSInteger)index;
+- (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
 
 - (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
