@@ -360,7 +360,7 @@
                                 success:^(NSArray *bookmarks) {
                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                         BookmarksSuccessBlock(bookmarks);
-
+                                        
                                         if (!lastUpdated) {
                                             [self updateStarredPosts:^{
                                                 success();
@@ -368,7 +368,7 @@
                                                              failure:nil];
                                         }
                                         else {
-                                            success();
+                                            success();                                            
                                         }
                                     });
             }
@@ -387,7 +387,7 @@
     if (!success) {
         success = ^{};
     }
-
+    
     if (!failure) {
         failure = ^{};
     }
