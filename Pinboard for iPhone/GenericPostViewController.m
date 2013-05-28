@@ -286,51 +286,47 @@
 - (void)updateSearchResults {
     if (!self.processingPosts) {
         self.processingPosts = YES;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.processingPosts = NO;
-                        [self.searchDisplayController.searchResultsTableView beginUpdates];
-                        [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                        [self.searchDisplayController.searchResultsTableView endUpdates];
-                        self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
+        [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.processingPosts = NO;
+                    [self.searchDisplayController.searchResultsTableView beginUpdates];
+                    [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                    [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.searchDisplayController.searchResultsTableView endUpdates];
+                    self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
 
-                        self.bookmarkRefreshTimerPaused = NO;
-                    });
+                    self.bookmarkRefreshTimerPaused = NO;
                 });
-            } failure:nil];
-        });
+            });
+        } failure:nil];
     }
 }
 
 - (void)updateWithCount:(NSNumber *)count {
     if (!self.processingPosts) {
         self.processingPosts = YES;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.processingPosts = NO;
-                    
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
+        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.processingPosts = NO;
+                
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+                self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
-                    if (self.loading) {
-                        self.loading = NO;
-                        [UIView animateWithDuration:0.2 animations:^{
-                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                        } completion:^(BOOL finished) {
-                            [self.pullToRefreshImageView stopAnimating];
-                        }];
-                    }
-                });
-            } failure:nil options:@{@"count": count}];
-        });
+                if (self.loading) {
+                    self.loading = NO;
+                    [UIView animateWithDuration:0.2 animations:^{
+                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                    } completion:^(BOOL finished) {
+                        [self.pullToRefreshImageView stopAnimating];
+                    }];
+                }
+            });
+        } failure:nil options:@{@"count": count}];
     }
 }
 
@@ -848,7 +844,6 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self.tableView reloadData];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
