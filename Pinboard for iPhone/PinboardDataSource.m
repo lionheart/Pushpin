@@ -360,12 +360,10 @@
                                     BookmarksSuccessBlock(bookmarks);
                                     
                                     if (!lastUpdated) {
-                                        [self updateStarredPosts:^{
-                                            success();
-                                        }
-                                                         failure:nil];
+                                        [self updateStarredPosts:^{ success(); } failure:nil];
                                     }
                                     else {
+                                        [self updateStarredPosts:nil failure:nil];
                                         success();                                            
                                     }
             }
@@ -463,7 +461,7 @@
                                    @"created_at": [results dateForColumn:@"created_at"],
                                    @"starred": @([results boolForColumn:@"starred"])
                                    };
-            
+
             [newPosts addObject:post];
             [newURLs addObject:post[@"url"]];
             
