@@ -434,8 +434,34 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
 
 - (NSTextCheckingResult *)linkAtPoint:(CGPoint)p {
     CFIndex idx = [self characterIndexAtPoint:p];
+    NSInteger distance = 5;
+    CGPoint top = CGPointMake(p.x, p.y - distance);
+    CGPoint bottom = CGPointMake(p.x, p.y + distance);
+    CGPoint left = CGPointMake(p.x - distance, p.y);
+    CGPoint right = CGPointMake(p.x + distance, p.y);
+
+    NSTextCheckingResult *result = [self linkAtCharacterIndex:idx];
+    if (!result) {
+        idx = [self characterIndexAtPoint:top];
+        result = [self linkAtCharacterIndex:idx];
+    }
+
+    if (!result) {
+        idx = [self characterIndexAtPoint:bottom];
+        result = [self linkAtCharacterIndex:idx];
+    }
+
+    if (!result) {
+        idx = [self characterIndexAtPoint:left];
+        result = [self linkAtCharacterIndex:idx];
+    }
+
+    if (!result) {
+        idx = [self characterIndexAtPoint:right];
+        result = [self linkAtCharacterIndex:idx];
+    }
     
-    return [self linkAtCharacterIndex:idx];
+    return result;
 }
 
 - (CFIndex)characterIndexAtPoint:(CGPoint)p {
@@ -460,7 +486,7 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
         CFRelease(path);
         return NSNotFound;
     }
-    
+
     CFArrayRef lines = CTFrameGetLines(frame);
     NSInteger numberOfLines = self.numberOfLines > 0 ? MIN(self.numberOfLines, CFArrayGetCount(lines)) : CFArrayGetCount(lines);
     if (numberOfLines == 0) {
