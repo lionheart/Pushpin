@@ -728,7 +728,7 @@
                                            }
                                        }
                                        
-                                       if (titleTag != nil) {
+                                       if (titleTag && titleTag.contents) {
                                            callback(titleTag.contents, description);
                                        }
                                        else {
