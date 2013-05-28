@@ -17,6 +17,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SettingsViewController.h"
 #import "TagViewController.h"
+#import "PinboardNotesDataSource.h"
 
 @interface FeedListViewController ()
 
@@ -118,7 +119,14 @@
         tagButton.frame = CGRectMake(0, 0, 45, 24);
         UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
-        self.navigationItem.rightBarButtonItem = tagBarButtonItem;
+        UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
+        [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
+        [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
+        notesButton.frame = CGRectMake(0, 0, 20, 24);
+        UIBarButtonItem *notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
+
+        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, notesBarButtonItem];
         self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
     }
     return self;
@@ -471,6 +479,14 @@
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
     [[AppDelegate sharedDelegate].navigationController pushViewController:svc animated:YES];
+}
+
+- (void)openNotes {
+    GenericPostViewController *notesViewController = [[GenericPostViewController alloc] init];
+    PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
+    notesViewController.postDataSource = notesDataSource;
+    notesViewController.title = NSLocalizedString(@"Notes", nil);
+    [[AppDelegate sharedDelegate].navigationController pushViewController:notesViewController animated:YES];
 }
 
 - (void)openTags {
