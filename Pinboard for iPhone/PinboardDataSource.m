@@ -57,7 +57,7 @@
 - (PinboardDataSource *)searchDataSource {
     PinboardDataSource *search = [[PinboardDataSource alloc] init];
 
-    search.maxResults = 50;
+    search.maxResults = 10;
 
     NSMutableArray *queryComponents = [NSMutableArray array];
     if (self.queryParameters[@"private"]) {
@@ -84,7 +84,7 @@
     search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
     search.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
     search.queryParameters[@"offset"] = @(0);
-    search.queryParameters[@"limit"] = @(50);
+    search.queryParameters[@"limit"] = @(search.maxResults);
     search.queryParameters[@"query"] = @"*";
     search.tags = [self.tags copy];
     return search;
@@ -99,7 +99,7 @@
     if (self.queryParameters[@"private"]) {
         [queryComponents addObject:@"private = :private"];
     }
-    
+
     if (self.queryParameters[@"unread"]) {
         [queryComponents addObject:@"unread = :unread"];
     }
@@ -169,7 +169,12 @@
 
     BOOL needsUpdate = indexPath.row >= limit * 3. / 4.;
     if (needsUpdate) {
-        self.queryParameters[@"limit"] = @(limit + 50);
+        if (self.queryParameters[@"query"]) {
+            self.queryParameters[@"limit"] = @(limit + 10);
+        }
+        else {
+            self.queryParameters[@"limit"] = @(limit + 50);
+        }
     }
     callback(needsUpdate);
 }
@@ -680,7 +685,7 @@
     if (hasTags) {
         [content appendFormat:@"\n%@", tags];
     }
-    
+
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
 
