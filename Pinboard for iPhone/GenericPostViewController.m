@@ -841,12 +841,14 @@
 #pragma mark Search Bar Delegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [self.searchPostDataSource filterWithQuery:searchText];
-    [self updateSearchResults];
+    if (![searchText isEqualToString:@""]) {
+        [self.searchPostDataSource filterWithQuery:searchText];
+        [self updateSearchResults];
+    }
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self updateFromLocalDatabase];
+    [self.tableView reloadData];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
