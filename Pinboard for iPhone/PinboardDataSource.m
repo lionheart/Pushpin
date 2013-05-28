@@ -253,9 +253,9 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
             for (NSDictionary *element in elements) {
-                progress(count, total);
+                progress(count + skipCount, total);
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count+1), @"total": @(total)}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count+skipCount), @"total": @(total)}];
                 });
                 
                 updated_or_created = NO;
@@ -350,12 +350,7 @@
     };
     
     void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
-        dispatch_group_t group = dispatch_group_create();
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        
-        dispatch_group_enter(group);
-        if ([lastUpdated compare:updateTime] == NSOrderedAscending || ([[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300)) {
-            dispatch_group_enter(group);
+        if (!lastUpdated || ([lastUpdated compare:updateTime] == NSOrderedAscending && ([[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300))) {
             [pinboard bookmarksWithTags:nil
                                  offset:-1
                                   count:[options[@"count"] integerValue]
@@ -363,26 +358,40 @@
                                  toDate:nil
                             includeMeta:YES
                                 success:^(NSArray *bookmarks) {
-                BookmarksSuccessBlock(bookmarks);
-                [self updateStarredPosts:^{ dispatch_group_leave(group); } failure:^{ dispatch_group_leave(group); }];
-                dispatch_group_leave(group);
+                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                        BookmarksSuccessBlock(bookmarks);
+
+                                        if (!lastUpdated) {
+                                            [self updateStarredPosts:^{
+                                                success();
+                                            }
+                                                             failure:nil];
+                                        }
+                                        else {
+                                            success();
+                                        }
+                                    });
             }
                                 failure:BookmarksFailureBlock];
             
         }
         else {
-            dispatch_group_leave(group);
-        }
-
-        dispatch_group_notify(group, queue, ^{
             success();
-        });
+        }
     };
     
     [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
 }
 
 - (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {
+    if (!success) {
+        success = ^{};
+    }
+
+    if (!failure) {
+        failure = ^{};
+    }
+
     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
     NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
