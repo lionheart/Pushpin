@@ -49,48 +49,50 @@
 }
 
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
-    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
 
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    NSString *count, *previousCount;
-    BOOL skip = [self.bookmarkCounts count] < 5;
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        NSString *count, *previousCount;
+        BOOL skip = [self.bookmarkCounts count] < 5;
 
-    [db open];
-    
-    NSArray *resultSets = @[
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@YES]],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@NO]],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@YES]],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"],
-       [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@YES]]
-    ];
-    
-    int i = 0;
-    for (FMResultSet *resultSet in resultSets) {
-        [resultSet next];
-        count = [resultSet stringForColumnIndex:0];
+        [db open];
 
-        if (skip) {
-            previousCount = @"";
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@YES]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@NO]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@YES]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging)"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@YES]]
+                                ];
+
+        int i = 0;
+        for (FMResultSet *resultSet in resultSets) {
+            [resultSet next];
+            count = [resultSet stringForColumnIndex:0];
+
+            if (skip) {
+                previousCount = @"";
+            }
+            else {
+                previousCount = [self.bookmarkCounts objectAtIndex:i];
+            }
+
+            if (previousCount != nil && ![count isEqualToString:previousCount]) {
+                self.bookmarkCounts[i] = count;
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+
+            i++;
         }
-        else {
-            previousCount = [self.bookmarkCounts objectAtIndex:i];
-        }
 
-        if (previousCount != nil && ![count isEqualToString:previousCount]) {
-            self.bookmarkCounts[i] = count;
-            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-              
-        i++;
-    }
+        [db close];
 
-    [db close];
-    
-    if (callback) {
-        callback(indexPathsToReload);
-    }
+        if (callback) {
+            callback(indexPathsToReload);
+        }
+    });
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
