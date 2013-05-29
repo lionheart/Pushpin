@@ -290,9 +290,11 @@
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *tagName = url.absoluteString;
+        BOOL shouldPush = NO;
         NSMutableArray *components = [NSMutableArray array];
         if ([tagName hasPrefix:@"via:"]) {
             [components addObject:[NSString stringWithFormat:@"u:%@", [tagName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""]]];
+            shouldPush = YES;
         }
         else {
             if ([self.components[0] hasPrefix:@"t:"]) {
@@ -308,13 +310,16 @@
             NSString *tagNameWithPrefix = [NSString stringWithFormat:@"t:%@", tagName];
             if (![components containsObject:tagNameWithPrefix]) {
                 [components addObject:tagNameWithPrefix];
+                shouldPush = YES;
             }
         }
 
-        GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-        postViewController.postDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
-        postViewController.title = [components componentsJoinedByString:@"+"];
-        callback(postViewController);
+        if (shouldPush) {
+            GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+            postViewController.postDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+            postViewController.title = [components componentsJoinedByString:@"+"];
+            callback(postViewController);
+        }
     });
 }
 
