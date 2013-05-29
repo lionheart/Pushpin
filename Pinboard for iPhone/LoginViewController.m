@@ -106,8 +106,17 @@
 - (void)progressNotificationReceived:(NSNotification *)notification {
     NSInteger current = [notification.userInfo[@"current"] integerValue];
     NSInteger total = [notification.userInfo[@"total"] integerValue];
-    CGFloat f = current / (float)total;
-    [self.progressView setProgress:f animated:YES];
+    
+    if (total == current) {
+        [self.messageUpdateTimer invalidate];
+        self.activityIndicator.frame = self.activityIndicatorFrameTop;
+        self.progressView.hidden = YES;
+        self.textView.text = @"Finalizing Metadata";
+    }
+    else {
+        CGFloat f = current / (float)total;
+        [self.progressView setProgress:f animated:YES];
+    }
 }
 
 - (void)keyboardWasShown:(NSNotification *)notification {
@@ -180,7 +189,24 @@
 
 - (void)updateLoadingMessage {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *messages = @[@"Avoiding Sleep", @"Brewing Espressos", @"Calibrating Snark Levels", @"Avoiding Acquisitions", @"Deleting Buggy Libraries", @"Depixilating Monads", @"Drinking Red Bull", @"Opening Fridge", @"Ordering Yet Another LEGO Set", @"Recovering Missing Rhinos", @"Refactoring Applicative Factors", @"Reticulating Splines", @"Returning Shoes", @"Rewriting Gnarly Code", @"Watching Gangnam Style", @"Herding Cats"];
+        NSArray *messages = @[
+            @"Avoiding Acquisitions",
+            @"Calibrating Snark Levels",
+            @"Debugging Retain Cycles",
+            @"Depixilating Monads",
+            @"Dispatching UI Updates on the Main Thread",
+            @"Force Quitting Development Tools",
+            @"Generating Bookmark Indices",
+            @"Parsing UTF-8 Date Formatters",
+            @"Evaluating Sync Solutions",
+            @"Applying Bookmark Upgrades",
+            @"Calibrating Tag Optimizations",
+            @"Polishing Retina Displays",
+            @"Refactoring Applicative Factors",
+            @"Regenerating Provisioning Profiles",
+            @"Releasing View Controllers",
+            @"Reticulating Splines",
+        ];
         self.textView.text = [messages objectAtIndex:arc4random_uniform(messages.count)];
         
         static dispatch_once_t onceToken;
