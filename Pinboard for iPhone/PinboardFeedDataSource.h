@@ -12,10 +12,10 @@
 @interface PinboardFeedDataSource : NSObject <GenericPostDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
-@property (nonatomic, strong) NSString *endpoint;
-@property (nonatomic, strong) NSURL *endpointURL;
+@property (nonatomic, strong) NSArray *components;
 
-- (id)initWithEndpoint:(NSString *)endpoint;
-+ (PinboardFeedDataSource *)dataSourceWithEndpoint:(NSString *)endpoint;
+- (NSURL *)url;
+- (id)initWithComponents:(NSArray *)components;
++ (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 
 @end
