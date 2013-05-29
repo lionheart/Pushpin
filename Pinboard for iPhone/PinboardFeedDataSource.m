@@ -298,6 +298,9 @@
             if ([self.components[0] hasPrefix:@"t:"]) {
                 components = [NSMutableArray arrayWithArray:self.components];
             }
+            else if ([self.components[0] hasPrefix:@"u:"]) {
+                components = [NSMutableArray arrayWithArray:self.components];
+            }
             else {
                 components = [NSMutableArray array];
             }
