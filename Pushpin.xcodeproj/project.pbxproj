@@ -19,6 +19,7 @@
 		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
 		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
 		3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */; };
+		3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB7E175673E200B23F4F /* safari-instructions.html */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -500,6 +501,7 @@
 		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; };
 		3714DB791755B0D700B23F4F /* PPGroupedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGroupedTableViewCell.h; sourceTree = "<group>"; };
 		3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPGroupedTableViewCell.m; sourceTree = "<group>"; };
+		3714DB7E175673E200B23F4F /* safari-instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-instructions.html"; path = "Assets/safari-instructions.html"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -1894,6 +1896,7 @@
 				37B65FDD1672E0090041DA8C /* Icon-beta@2x.png */,
 				37B65FDE1672E0090041DA8C /* Icon-settings-beta.png */,
 				37B65FDF1672E0090041DA8C /* Icon-settings-beta@2x.png */,
+				3714DB7E175673E200B23F4F /* safari-instructions.html */,
 				37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */,
 				37D0D0C016B8E2310062C27E /* about.html */,
 			);
@@ -2341,6 +2344,7 @@
 				3714DB7017556E6F00B23F4F /* NotesNavigation@2x.png in Resources */,
 				3714DB7117556E6F00B23F4F /* NotesNavigationDimmed.png in Resources */,
 				3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */,
+				3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

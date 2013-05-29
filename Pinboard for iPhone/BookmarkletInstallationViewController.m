@@ -117,6 +117,19 @@
     }
     else {
         if (indexPath.row == 0) {
+            /*
+            NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"safari-instructions" ofType:@"html"]];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+            UIWebView *webView = [[UIWebView alloc] init];
+            [webView loadRequest:request];
+            webView.frame = CGRectMake(0, 0, 320, 460);
+            UIViewController *controller = [[UIViewController alloc] init];
+            controller.view = webView;
+
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:controller];
+            [self presentViewController:navController animated:YES completion:nil];
+             */
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.youtube.com/watch?v=svFHucdSjPI"]];
         }
         else {
