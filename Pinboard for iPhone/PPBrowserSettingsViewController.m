@@ -9,6 +9,8 @@
 #import "PPBrowserSettingsViewController.h"
 #import "BookmarkletInstallationViewController.h"
 #import "AppDelegate.h"
+#import "PPGroupedTableViewCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface PPBrowserSettingsViewController ()
 
@@ -95,14 +97,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
 
-    cell.accessoryView = nil;
-    cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
     switch (indexPath.section) {
         case 0: {
