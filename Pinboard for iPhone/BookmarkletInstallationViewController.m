@@ -36,13 +36,35 @@
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 1) {
+        float width = tableView.bounds.size.width;
+
+        int fontSize = 17;
+        int padding = 15;
+
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
+        NSString *sectionTitle = NSLocalizedString(@"Watch a video", nil);
+        label.text = sectionTitle;
+        label.backgroundColor = [UIColor clearColor];
+        label.textColor = HEX(0x4C566CFF);
+        label.shadowColor = [UIColor whiteColor];
+        label.shadowOffset = CGSizeMake(0,1);
+        label.font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+        CGSize textSize = [sectionTitle sizeWithFont:label.font];
+
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
+        [view addSubview:label];
+        return view;
+    }
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
-        return @"";
+        return 0;
     }
-    else {
-        return NSLocalizedString(@"Watch a video", nil);
-    }
+    return 40;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
