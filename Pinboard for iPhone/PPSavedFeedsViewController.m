@@ -48,6 +48,9 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.feeds.count == 0) {
+        return 1;
+    }
     return self.feeds.count;
 }
 
@@ -71,22 +74,32 @@
     
     CGFloat fontSize = 17;
     UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
-    NSString *title = self.feeds[indexPath.row][@"title"];
-    while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
-        fontSize -= 0.2;
-        font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+
+    NSString *title;
+    if (self.feeds.count > 0) {
+        title = self.feeds[indexPath.row][@"title"];
+        while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
+            fontSize -= 0.2;
+            font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+        }
+    }
+    else {
+        title = @"You have no saved feeds.";
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
     cell.textLabel.font = font;
-    cell.textLabel.text = self.feeds[indexPath.row][@"title"];
+    cell.textLabel.text = title;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
-    [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+    if (self.feeds.count > 0) {
+        GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+    }
 }
 
 @end
