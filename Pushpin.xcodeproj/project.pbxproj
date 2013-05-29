@@ -1677,7 +1677,7 @@
 			children = (
 				37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */,
 				3740A23616863CF000F95D82 /* Localizations */,
-				37FEEB9815745488003F2B77 /* Pushpin for Pinboard */,
+				37FEEB9815745488003F2B77 /* Pushpin */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
@@ -1716,7 +1716,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		37FEEB9815745488003F2B77 /* Pushpin for Pinboard */ = {
+		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
 				378A24F3167D28AA00FB07EF /* ASStyleSheet.h */,
@@ -1775,7 +1775,7 @@
 				3714DB791755B0D700B23F4F /* PPGroupedTableViewCell.h */,
 				3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */,
 			);
-			name = "Pushpin for Pinboard";
+			name = Pushpin;
 			path = "Pinboard for iPhone";
 			sourceTree = "<group>";
 		};
