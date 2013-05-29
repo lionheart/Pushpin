@@ -227,10 +227,10 @@
 
     label.text = sectionTitle;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = HEX(0x808690ff);
+    label.textColor = HEX(0x4C566CFF);
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0,1);
-    label.font = [UIFont fontWithName:@"Avenir-Black" size:fontSize];
+    label.font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
     CGSize textSize = [sectionTitle sizeWithFont:label.font];
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
