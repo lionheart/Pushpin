@@ -124,7 +124,7 @@
 
 - (void)promptUserToAddBookmark {
     self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
-    if (!self.clipboardBookmarkURL) {
+    if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
         return;
     }
 
@@ -144,6 +144,7 @@
                                                    callback:^(NSString *title, NSString *description) {
                                                        self.clipboardBookmarkTitle = title;
                                                        [self.addBookmarkFromClipboardAlertView show];
+                                                       self.addBookmarkAlertViewIsVisible = YES;
                                                        [mixpanel track:@"Prompted to add bookmark from clipboard"];
                                                    }];
             
@@ -401,6 +402,7 @@
     
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
+    self.addBookmarkAlertViewIsVisible = NO;
 
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
@@ -756,6 +758,7 @@
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.addBookmarkFromClipboardAlertView) {
+        self.addBookmarkAlertViewIsVisible = NO;
         if (buttonIndex == 1) {
             UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
