@@ -17,6 +17,7 @@
 		3714DB7117556E6F00B23F4F /* NotesNavigationDimmed.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6D17556E6F00B23F4F /* NotesNavigationDimmed.png */; };
 		3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB6E17556E6F00B23F4F /* NotesNavigationDimmed@2x.png */; };
 		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
+		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -494,6 +495,8 @@
 		3714DB6E17556E6F00B23F4F /* NotesNavigationDimmed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NotesNavigationDimmed@2x.png"; sourceTree = "<group>"; };
 		3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardNotesDataSource.h; sourceTree = "<group>"; };
 		3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardNotesDataSource.m; sourceTree = "<group>"; };
+		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
+		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -1764,6 +1767,8 @@
 				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
 				3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */,
 				3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */,
+				3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */,
+				3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */,
 			);
 			name = "Pushpin for Pinboard";
 			path = "Pinboard for iPhone";
@@ -2426,6 +2431,7 @@
 				37DE5AB7174F29B40073A2F4 /* ODIN.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
+				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

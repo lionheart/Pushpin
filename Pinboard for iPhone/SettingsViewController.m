@@ -205,7 +205,9 @@
     
     CGSize size;
     CGSize switchSize;
-    
+
+    cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
+    cell.textLabel.textColor = HEX(0x33353Bff);
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
     cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
 

@@ -11,6 +11,7 @@
 #import "ASPinboard/ASPinboard.h"
 #import "NSAttributedString+Attributes.h"
 #import "AddBookmarkViewController.h"
+#import "FMDatabase.h"
 
 @implementation PinboardFeedDataSource
 
@@ -318,12 +319,31 @@
         }
 
         if (shouldPush) {
-            GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-            postViewController.postDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
-            postViewController.title = [components componentsJoinedByString:@"+"];
+            GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
             callback(postViewController);
         }
     });
+}
+
++ (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components {
+    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+    
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@"/"]]];
+    [result next];
+    if ([result intForColumnIndex:0] > 0) {
+        postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:postViewController action:@selector(removeBarButtonTouchUpside:)];
+    }
+    else {
+        postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:postViewController action:@selector(addBarButtonTouchUpside:)];
+    }
+    [db close];
+    
+    postViewController.postDataSource = dataSource;
+    postViewController.title = [components componentsJoinedByString:@"+"];
+    return postViewController;
 }
 
 - (BOOL)supportsSearch {
@@ -332,6 +352,22 @@
 
 - (BOOL)supportsTagDrilldown {
     return NO;
+}
+
+- (void)addDataSource:(void (^)())callback {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@"/"]]];
+    [db close];
+    callback();
+}
+
+- (void)removeDataSource:(void (^)())callback {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@"/"]]];
+    [db close];
+    callback();
 }
 
 @end

@@ -17,5 +17,6 @@
 - (NSURL *)url;
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
++ (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
 
 @end
