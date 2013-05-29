@@ -293,8 +293,11 @@
         BOOL shouldPush = NO;
         NSMutableArray *components = [NSMutableArray array];
         if ([tagName hasPrefix:@"via:"]) {
-            [components addObject:[NSString stringWithFormat:@"u:%@", [tagName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""]]];
-            shouldPush = YES;
+            NSString *userNameWithPrefix = [NSString stringWithFormat:@"u:%@", [tagName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""]];
+            if (![self.components containsObject:userNameWithPrefix]) {
+                [components addObject:userNameWithPrefix];
+                shouldPush = YES;
+            }
         }
         else {
             if ([self.components[0] hasPrefix:@"t:"]) {
