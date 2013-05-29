@@ -11,6 +11,8 @@
 #import "PPCoreGraphics.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
+#import "PPGroupedTableViewCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface TagViewController ()
 
@@ -168,10 +170,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"TagCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
     
@@ -180,9 +182,16 @@
         [subview removeFromSuperview];
     }
 
-    cell.textLabel.textColor = HEX(0x33353Bff);
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-    cell.backgroundColor = [UIColor whiteColor];
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    }
+
+    if (indexPath.row < 5) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+    }
+
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
     NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
