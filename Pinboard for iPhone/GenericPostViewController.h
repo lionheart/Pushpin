@@ -71,6 +71,9 @@ typedef NSInteger PPPostAction;
 
 @optional
 
+- (void)addDataSource:(void (^)())callback;
+- (void)removeDataSource:(void (^)())callback;
+
 // A data source may alternatively provide a UIViewController to push
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
@@ -120,5 +123,8 @@ typedef NSInteger PPPostAction;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
+
+- (void)removeBarButtonTouchUpside:(id)sender;
+- (void)addBarButtonTouchUpside:(id)sender;
 
 @end

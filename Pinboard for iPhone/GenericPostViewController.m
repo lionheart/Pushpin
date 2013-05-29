@@ -842,4 +842,16 @@
     return NO;
 }
 
+- (void)removeBarButtonTouchUpside:(id)sender {
+    [self.postDataSource removeDataSource:^{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(addBarButtonTouchUpside:)];
+    }];
+}
+
+- (void)addBarButtonTouchUpside:(id)sender {
+    [self.postDataSource addDataSource:^{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(removeBarButtonTouchUpside:)];
+    }];
+}
+
 @end
