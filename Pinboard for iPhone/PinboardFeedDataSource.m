@@ -131,12 +131,20 @@
                                    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
                                    NSInteger index = 0;
+                                   NSMutableArray *tags = [NSMutableArray array];
                                    for (NSDictionary *element in payload) {
+                                       [tags removeAllObjects];
+                                       [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
+                                       for (NSString *tag in element[@"t"]) {
+                                           if (![tag isEqualToString:@""]) {
+                                               [tags addObject:tag];
+                                           }
+                                       }
                                        NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                         @"title": element[@"d"],
                                                                         @"description": element[@"n"],
                                                                         @"url": element[@"u"],
-                                                                        @"tags": [element[@"t"] componentsJoinedByString:@" "],
+                                                                        @"tags": [tags componentsJoinedByString:@" "],
                                                                         @"created_at": [dateFormatter dateFromString:element[@"dt"]]
                                                                     }];
                                        
@@ -277,6 +285,34 @@
 
 - (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate {
     return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) delegate:delegate callback:nil];
+}
+
+- (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *tagName = url.absoluteString;
+        NSMutableArray *components = [NSMutableArray array];
+        if ([tagName hasPrefix:@"via:"]) {
+            [components addObject:[NSString stringWithFormat:@"u:%@", [tagName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""]]];
+        }
+        else {
+            if ([self.components[0] hasPrefix:@"t:"]) {
+                components = [NSMutableArray arrayWithArray:self.components];
+            }
+            else {
+                components = [NSMutableArray array];
+            }
+            
+            NSString *tagNameWithPrefix = [NSString stringWithFormat:@"t:%@", tagName];
+            if (![components containsObject:tagNameWithPrefix]) {
+                [components addObject:tagNameWithPrefix];
+            }
+        }
+
+        GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+        postViewController.postDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+        postViewController.title = [components componentsJoinedByString:@"+"];
+        callback(postViewController);
+    });
 }
 
 - (BOOL)supportsSearch {

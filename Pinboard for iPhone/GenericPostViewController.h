@@ -74,6 +74,7 @@ typedef NSInteger PPPostAction;
 // A data source may alternatively provide a UIViewController to push
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
+- (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;
 
 - (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;

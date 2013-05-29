@@ -759,6 +759,32 @@
     return navigationController;
 }
 
+- (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block NSString *tagName = url.absoluteString;
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tagName]];
+        [results next];
+        __block NSNumber *tagID = @([results intForColumnIndex:0]);
+        
+        if (![self.tags containsObject:tagID]) {
+            __block PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTagID:tagID];
+            results = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM tag WHERE id IN (%@) ORDER BY name ASC", [pinboardDataSource.tags componentsJoinedByString:@","]]];
+            __block NSMutableArray *tagNames = [NSMutableArray array];
+            while ([results next]) {
+                [tagNames addObject:[results stringForColumnIndex:0]];
+            }
+            [db close];
+            
+            GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+            postViewController.postDataSource = pinboardDataSource;
+            postViewController.title = [tagNames componentsJoinedByString:@"+"];
+            callback(postViewController);
+        }
+    });
+}
+
 - (BOOL)supportsSearch {
     return YES;
 }
