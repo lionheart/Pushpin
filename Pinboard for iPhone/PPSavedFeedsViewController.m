@@ -85,6 +85,16 @@
     cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
     cell.textLabel.textColor = HEX(0x33353Bff);
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    
+    CGFloat fontSize = 17;
+    UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+    NSString *title = self.feeds[indexPath.row][@"title"];
+    while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
+        fontSize -= 0.2;
+        font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+    }
+
+    cell.textLabel.font = font;
     cell.textLabel.text = self.feeds[indexPath.row][@"title"];
     return cell;
 }

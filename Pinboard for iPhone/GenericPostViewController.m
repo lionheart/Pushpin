@@ -850,7 +850,7 @@
 
 - (void)addBarButtonTouchUpside:(id)sender {
     [self.postDataSource addDataSource:^{
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(removeBarButtonTouchUpside:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:self action:@selector(removeBarButtonTouchUpside:)];
     }];
 }
 
