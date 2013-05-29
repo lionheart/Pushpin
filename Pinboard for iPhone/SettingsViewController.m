@@ -9,6 +9,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
@@ -22,6 +23,7 @@
 #import "OAuthConsumer.h"
 #import "PPBrowserSettingsViewController.h"
 #import "FMDatabase.h"
+#import "PPGroupedTableViewCell.h"
 
 @interface SettingsViewController ()
 
@@ -180,19 +182,19 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     static NSString *ChoiceCellIdentifier = @"ChoiceCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
         switch (indexPath.section) {
             case 0:
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
+                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
                 break;
                 
             case 1:
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 break;
                 
             case 2:
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 break;
                 
             default:
@@ -201,15 +203,42 @@
     }
     
     cell.accessoryView = nil;
-    cell.backgroundColor = [UIColor whiteColor];
     
     CGSize size;
     CGSize switchSize;
 
-    cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
-    cell.textLabel.textColor = HEX(0x33353Bff);
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
     cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    }
+    
+    switch (indexPath.section) {
+        case 0:
+            if (indexPath.row < 4) {
+                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+            }
+            break;
+            
+        case 1:
+            if (indexPath.row < 2) {
+                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+            }
+            break;
+            
+        case 2:
+            if (indexPath.row < 2) {
+                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
 
     switch (indexPath.section) {
         case 0: {

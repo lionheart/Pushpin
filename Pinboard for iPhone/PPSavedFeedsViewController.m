@@ -12,6 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GenericPostViewController.h"
 #import "PinboardFeedDataSource.h"
+#import "PPGroupedTableViewCell.h"
 
 @interface PPSavedFeedsViewController ()
 
@@ -52,39 +53,21 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    CALayer *selectedBackgroundLayer = [CALayer layer];
-    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, 44);
-    selectedBackgroundLayer.cornerRadius = 10;
-    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-    
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {
-        CALayer *topBarLayer = [CALayer layer];
-        topBarLayer.frame = CGRectMake(0, 0, 302, 10);
-        topBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-        [selectedBackgroundLayer addSublayer:topBarLayer];
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
     }
-    
-    if (indexPath.row < self.feeds.count - 1) {
-        CALayer *bottomBarLayer = [CALayer layer];
-        bottomBarLayer.frame = CGRectMake(0, 34, 302, 10);
-        bottomBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-        [selectedBackgroundLayer addSublayer:bottomBarLayer];
-    }
-    
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    [selectedBackgroundView.layer addSublayer:selectedBackgroundLayer];
-    selectedBackgroundView.layer.masksToBounds = YES;
 
-    cell.selectedBackgroundView = selectedBackgroundView;
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
-    cell.textLabel.textColor = HEX(0x33353Bff);
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    if (indexPath.row < self.feeds.count - 1) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+    }
+
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
     CGFloat fontSize = 17;
     UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
