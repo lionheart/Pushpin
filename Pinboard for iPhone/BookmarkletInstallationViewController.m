@@ -7,6 +7,8 @@
 //
 
 #import "BookmarkletInstallationViewController.h"
+#import "PPGroupedTableViewCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface BookmarkletInstallationViewController ()
 
@@ -45,12 +47,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
-    cell.backgroundColor = [UIColor whiteColor];
+    
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.section == 1) {
+        if (indexPath.row == 1) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+        }
+        
+        if (indexPath.row == 0) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        }
+    }
+
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
 
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
