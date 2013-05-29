@@ -14,22 +14,17 @@
 
 @implementation PinboardFeedDataSource
 
-- (id)initWithEndpoint:(NSString *)endpoint {
+- (id)initWithComponents:(NSArray *)components {
     self = [super init];
     if (self) {
-        self.endpoint = endpoint;
+        self.components = components;
         self.posts = [NSMutableArray array];
     }
     return self;
 }
 
-+ (PinboardFeedDataSource *)dataSourceWithEndpoint:(NSString *)endpoint {
-    return [[PinboardFeedDataSource alloc] initWithEndpoint:endpoint];
-}
-
-- (void)setEndpoint:(NSString *)endpoint {
-    _endpoint = endpoint;
-    self.endpointURL = [NSURL URLWithString:endpoint];
++ (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components {
+    return [[PinboardFeedDataSource alloc] initWithComponents:components];
 }
 
 #pragma mark - Delegate Methods
@@ -104,6 +99,10 @@
     [self updatePostsWithSuccess:success failure:failure options:nil];
 }
 
+- (NSURL *)url {
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@", [self.components componentsJoinedByString:@"/"]]];
+}
+
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
@@ -117,7 +116,7 @@
         [oldURLs addObject:post[@"url"]];
     }
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.endpointURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request

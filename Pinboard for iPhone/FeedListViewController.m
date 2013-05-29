@@ -440,29 +440,29 @@
                     case 0: {
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                        feedDataSource.endpoint = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/network/", feedToken, username];
+                        feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
                         postViewController.title = NSLocalizedString(@"Network", nil);
                         [mixpanel track:@"Browsed network bookmarks"];
                         break;
                     }
                     case 1: {
-                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular?count=100";
+                        feedDataSource.components = @[@"popular?count=100"];
                         postViewController.title = NSLocalizedString(@"Popular", nil);
                         [mixpanel track:@"Browsed popular bookmarks"];
                         break;
                     }
                     case 2:
-                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/wikipedia";
+                        feedDataSource.components = @[@"popular", @"wikipedia"];
                         postViewController.title = @"Wikipedia";
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
                         break;
                     case 3:
-                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/fandom";
+                        feedDataSource.components = @[@"popular", @"fandom"];
                         postViewController.title = NSLocalizedString(@"Fandom", nil);
                         [mixpanel track:@"Browsed fandom bookmarks"];
                         break;
                     case 4:
-                        feedDataSource.endpoint = @"https://feeds.pinboard.in/json/popular/japanese";
+                        feedDataSource.components = @[@"popular", @"japanese"];
                         postViewController.title = @"日本語";
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
                         break;
