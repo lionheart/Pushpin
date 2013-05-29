@@ -19,6 +19,7 @@
 #import "TagViewController.h"
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
+#import "PPGroupedTableViewCell.h"
 
 @interface FeedListViewController ()
 
@@ -251,10 +252,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
     NSArray *subviews = [cell.contentView subviews];
@@ -262,37 +263,20 @@
         [subview removeFromSuperview];
     }
 
-    CALayer *selectedBackgroundLayer = [CALayer layer];
-    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, 44);
-    selectedBackgroundLayer.cornerRadius = 10;
-    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {
-        CALayer *topBarLayer = [CALayer layer];
-        topBarLayer.frame = CGRectMake(0, 0, 302, 10);
-        topBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-        [selectedBackgroundLayer addSublayer:topBarLayer];
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
     }
 
     if (indexPath.row < 5) {
-        CALayer *bottomBarLayer = [CALayer layer];
-        bottomBarLayer.frame = CGRectMake(0, 34, 302, 10);
-        bottomBarLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-        [selectedBackgroundLayer addSublayer:bottomBarLayer];
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
     }
-
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    [selectedBackgroundView.layer addSublayer:selectedBackgroundLayer];
-    selectedBackgroundView.layer.masksToBounds = YES;
-
-    cell.selectedBackgroundView = selectedBackgroundView;
-    cell.imageView.image = nil;
-    cell.textLabel.highlightedTextColor = HEX(0x33353Bff);
-    cell.textLabel.textColor = HEX(0x33353Bff);
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
-    UIImage *pillImage;
+    cell.imageView.image = nil;
 
+    UIImage *pillImage;
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
@@ -360,8 +344,6 @@
     pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
     
     [cell.contentView addSubview:pillView];
-    cell.backgroundColor = [UIColor whiteColor];
-
     return cell;
 }
 
