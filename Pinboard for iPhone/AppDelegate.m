@@ -278,6 +278,12 @@
                                      UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
      }
                                                 forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: HEX(0xA5A9B2FF),
+                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
+                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
+     }
+                                                forState:UIControlStateDisabled];
     
     // Customize Toolbar
     CAGradientLayer *toolbarLayer = [CAGradientLayer layer];
