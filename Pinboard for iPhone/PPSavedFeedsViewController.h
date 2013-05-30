@@ -7,9 +7,12 @@
 //
 
 #import "PPTableViewController.h"
+#import "AppDelegate.h"
 
-@interface PPSavedFeedsViewController : PPTableViewController
+@interface PPSavedFeedsViewController : PPTableViewController <ModalDelegate>
 
 @property (nonatomic, strong) NSMutableArray *feeds;
+
+- (void)addSavedFeedButtonTouchUpInside:(id)sender;
 
 @end
