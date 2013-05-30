@@ -628,16 +628,6 @@
     }
 
     dispatch_group_notify(group, queue, ^{
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.userInfo = @{@"success": @YES, @"updated": @NO};
-        if (indexPaths.count == 1) {
-            notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
-        }
-        else {
-            notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", indexPaths.count];
-        }
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
