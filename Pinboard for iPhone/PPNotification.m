@@ -43,23 +43,25 @@ static NSInteger kPPNotificationHeight = 56;
 - (void)showInView:(UIView *)view withMessage:(NSString *)message {
     self.notificationView = [self notificationViewWithMessage:message];
     
-    [view addSubview:self.notificationView];
-    
-    [UIView animateWithDuration:0.2
-                          delay:0
-                        options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
-                     animations:^{
-                         self.notificationView.frame = CGRectMake(0, SCREEN.bounds.size.height - kPPNotificationHeight, 320, kPPNotificationHeight);
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished) {
-                             double delayInSeconds = 2;
-                             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                 [self hide:YES];
-                             });
+    if (![self.notificationView isDescendantOfView:view]) {
+        [view addSubview:self.notificationView];
+        
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
+                         animations:^{
+                             self.notificationView.frame = CGRectMake(0, SCREEN.bounds.size.height - kPPNotificationHeight, 320, kPPNotificationHeight);
                          }
-                     }];
+                         completion:^(BOOL finished) {
+                             if (finished) {
+                                 double delayInSeconds = 2;
+                                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                     [self hide:YES];
+                                 });
+                             }
+                         }];
+    }
 }
 
 - (UIView *)notificationViewWithMessage:(NSString *)message {
