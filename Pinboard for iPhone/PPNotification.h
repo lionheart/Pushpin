@@ -11,6 +11,7 @@
 @interface PPNotification : NSObject
 
 @property (nonatomic) BOOL hiding;
+@property (nonatomic) BOOL visible;
 @property (nonatomic, strong) UIView *notificationView;
 
 + (PPNotification *)sharedInstance;
