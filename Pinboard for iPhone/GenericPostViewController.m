@@ -55,7 +55,7 @@
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-    
+
     self.loading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
@@ -392,7 +392,14 @@
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
 
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
         [self.tableView setEditing:NO animated:YES];
+        [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -411,7 +418,14 @@
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
         self.multipleDeleteButton.enabled = NO;
 
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
         [self.tableView setEditing:YES animated:YES];
+        [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -442,6 +456,7 @@
                 [self.tableView beginUpdates];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView endUpdates];
             }];
             [self.tableView setEditing:NO animated:YES];
@@ -547,6 +562,12 @@
         }
     }
 
+    for (id subview in [cell subviews]) {
+        if ([subview isKindOfClass:[UIImageView class]]) {
+            [subview removeFromSuperview];
+        }
+    }
+
     NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
     for (CALayer *layer in sublayers) {
         if ([layer.name isEqualToString:@"Gradient"]) {
@@ -564,7 +585,7 @@
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
     
-    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
+    if (tableView.editing) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
     else {
