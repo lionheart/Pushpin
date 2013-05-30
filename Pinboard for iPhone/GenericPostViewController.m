@@ -388,15 +388,18 @@
         }
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
-        [self.navigationItem setHidesBackButton:NO animated:YES];
+        self.editButton.enabled = NO;
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
+        [self.navigationItem setHidesBackButton:NO animated:YES];
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
+
+            self.editButton.enabled = YES;
         }];
         [self.tableView setEditing:NO animated:YES];
         [CATransaction commit];
@@ -412,17 +415,20 @@
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
-        [self.navigationItem setHidesBackButton:YES animated:YES];
+        self.editButton.enabled = NO;
         [self.editButton setStyle:UIBarButtonItemStyleDone];
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
-        [self.multipleDeleteButton setTitle:@"Delete (0)"];
-        self.multipleDeleteButton.enabled = NO;
+        [self.navigationItem setHidesBackButton:YES animated:YES];
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
+            
+            self.editButton.enabled = YES;
+            [self.multipleDeleteButton setTitle:@"Delete (0)"];
+            self.multipleDeleteButton.enabled = NO;
         }];
         [self.tableView setEditing:YES animated:YES];
         [CATransaction commit];
