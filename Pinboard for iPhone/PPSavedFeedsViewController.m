@@ -13,6 +13,7 @@
 #import "GenericPostViewController.h"
 #import "PinboardFeedDataSource.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPAddSavedFeedViewController.h"
 
 @interface PPSavedFeedsViewController ()
 
@@ -41,6 +42,14 @@
     }
     [db close];
     [self.tableView reloadData];
+
+    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [addButton setImage:[UIImage imageNamed:@"AddNavigationDimmed"] forState:UIControlStateNormal];
+    [addButton setImage:[UIImage imageNamed:@"AddNavigation"] forState:UIControlStateHighlighted];
+    [addButton addTarget:self action:@selector(addSavedFeedButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+    addButton.frame = CGRectMake(0, 0, 45, 24);
+    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:addButton];
+    self.navigationItem.rightBarButtonItem = addBarButtonItem;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -77,6 +86,7 @@
 
     NSString *title;
     if (self.feeds.count > 0) {
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
         title = self.feeds[indexPath.row][@"title"];
         while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
             fontSize -= 0.2;
@@ -100,6 +110,43 @@
         GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
     }
+}
+
+- (void)addSavedFeedButtonTouchUpInside:(id)sender {
+    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+    addSavedFeedViewController.modalDelegate = self;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+- (void)closeModal:(UIViewController *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *feed = self.feeds[indexPath.row];
+    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+    [dataSource removeDataSource:^{
+        [self.tableView beginUpdates];
+        [self.feeds removeObjectAtIndex:indexPath.row];
+        if (self.feeds.count == 0) {
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+
+        [self.tableView endUpdates];
+    }];
+    
 }
 
 @end
