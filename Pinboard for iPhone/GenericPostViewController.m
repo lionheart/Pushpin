@@ -428,21 +428,21 @@
             [self.navigationItem setHidesBackButton:NO animated:YES];
             [self.editButton setStyle:UIBarButtonItemStylePlain];
             [self.editButton setTitle:@"Edit"];
+            
+            [CATransaction begin];
+            [CATransaction setCompletionBlock:^{
+                [self.tableView beginUpdates];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+            }];
+            [self.tableView setEditing:NO animated:YES];
+            [CATransaction commit];
 
             [UIView animateWithDuration:0.25 animations:^{
                 CGRect bounds = [[UIScreen mainScreen] bounds];
                 CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
                 self.toolbar.frame = frame;
-
-                [CATransaction begin];
-                [CATransaction setCompletionBlock:^{
-                    [self.tableView beginUpdates];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                    [self.tableView endUpdates];
-                }];
-                [self.tableView setEditing:NO animated:YES];
-                [CATransaction commit];
             }];
         });
     }];
@@ -552,7 +552,7 @@
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
-
+    
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
