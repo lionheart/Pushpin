@@ -142,9 +142,9 @@
             if (self.suggestedTagsVisible) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
-                    NSInteger index = 1;
-                    while (index <= self.popularTagSuggestions.count) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                    NSInteger index = 4;
+                    while (index <= self.popularTagSuggestions.count + 3) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         index++;
                     }
                     
@@ -175,26 +175,26 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 4) {
+    if (section == 1) {
         return 2;
     }
-    else if (section == 3) {
+    else if (section == 0) {
         if (self.suggestedTagsVisible) {
-            return 1 + self.popularTagSuggestions.count;
+            return 4 + self.popularTagSuggestions.count;
         }
         else {
-            return 1 + self.tagCompletions.count;
+            return 4 + self.tagCompletions.count;
         }
     }
     return 1;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2) {
+    if (indexPath.section == 0 && indexPath.row == 2) {
         UIViewController *vc = [[UIViewController alloc] init];
         vc.title = NSLocalizedString(@"Description", nil);
         vc.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
@@ -204,7 +204,7 @@
         [self.postDescriptionTextView becomeFirstResponder];
         [self.navigationController pushViewController:vc animated:YES];
     }
-    else if (indexPath.section == 3 && indexPath.row > 0) {
+    else if (indexPath.section == 0 && indexPath.row > 3) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
@@ -212,12 +212,12 @@
                 NSString *completion;
                 
                 if (self.tagCompletions.count > 0) {
-                    completion = self.tagCompletions[indexPath.row - 1];
+                    completion = self.tagCompletions[indexPath.row - 4];
                     
                     NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-                    NSInteger index = 1;
-                    while (index <= self.tagCompletions.count) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                    NSInteger index = 4;
+                    while (index <= self.tagCompletions.count + 3) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         index++;
                     }
 
@@ -225,15 +225,15 @@
                     [self.tagCompletions removeAllObjects];
                 }
                 else if (self.popularTagSuggestions.count > 0) {
-                    completion = self.popularTagSuggestions[indexPath.row - 1];
-                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 1];
+                    completion = self.popularTagSuggestions[indexPath.row - 4];
+                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 4];
                     
                     unichar space = ' ';
                     if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
                         self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
                     }
                     
-                    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                 }
                 NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
                 NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
@@ -247,11 +247,11 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == 3) {
+    if (section == 0) {
         UIView *view = [[UIView alloc] init];
         view.clipsToBounds = YES;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, 5, 280, [self tableView:tableView heightForFooterInSection:3]);
+        label.frame = CGRectMake(20, 5, 280, [self tableView:tableView heightForFooterInSection:0]);
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont fontWithName:@"Avenir-Medium" size:13];
         label.textColor = HEX(0x4C586AFF);
@@ -265,59 +265,24 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 3) {
+    if (section == 0) {
         UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:13];
         return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height + 10;
     }
     return 0;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *view = [[UIView alloc] init];
-    view.clipsToBounds = YES;
-    UILabel *label = [[UILabel alloc] init];
-    label.frame = CGRectMake(10, 0, 320, 44);
-    label.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
-    label.textColor = HEX(0x4C586AFF);
-    label.backgroundColor = HEX(0xF7F9FDff);
-    switch (section) {
-        case 1:
-            label.text = NSLocalizedString(@"Title", nil);
-            break;
-        case 2:
-            label.text = NSLocalizedString(@"Description", nil);
-            break;
-        case 3:
-            label.text = NSLocalizedString(@"Tags", nil);
-            break;
-        default:
-            break;
-    }
-    [view addSubview:label];
-    return view;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        return 0;
-    }
-    if (section == 4) {
-        return 20;
-    }
-    return 40;
-}
-
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     self.currentTextField = textField;
 
     if (self.currentTextField == self.tagTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.descriptionTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.titleTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.urlTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -334,10 +299,10 @@
     }
 
     if (self.currentTextField == self.tagTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.titleTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.urlTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -380,13 +345,13 @@
             FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
             
             NSString *currentTag;
-            NSInteger index = 1;
+            NSInteger index = 4;
             while ([result next]) {
                 currentTag = [result stringForColumn:@"name"];
                 if (![existingTags containsObject:currentTag]) {
                     [newTagCompletions addObject:currentTag];
                     if (![oldTagCompletions containsObject:currentTag]) {
-                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         [self.tagCompletions addObject:currentTag];
                     }
                     index++;
@@ -397,9 +362,9 @@
             DLog(@"%@ %@", newString, newTagCompletions);
             
             if (self.suggestedTagsVisible) {
-                index = 1;
-                while (index <= self.popularTagSuggestions.count) {
-                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+                index = 4;
+                while (index <= self.popularTagSuggestions.count + 3) {
+                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                     index++;
                 }
                 
@@ -407,7 +372,7 @@
             else {
                 for (int i=0; i<oldTagCompletions.count; i++) {
                     if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:1+[self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:3]];
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:4 + [self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:0]];
                     }
                 }
             }
@@ -430,22 +395,21 @@
                     DLog(@"%@ %@", newString, newTagCompletions);
 
                     [self.tableView endUpdates];
-                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
                 });
             });
         }
         else if (!self.suggestedTagsVisible) {
-            NSInteger index = 1;
-            
-            while (index <= self.tagCompletions.count) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            NSInteger index = 4;
+            while (index <= self.tagCompletions.count + 3) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 index++;
             }
             
-            index = 1;
-            while (index <= self.popularTagSuggestions.count) {
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            index = 4;
+            while (index <= self.popularTagSuggestions.count + 3) {
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 index++;
             }
 
@@ -465,7 +429,7 @@
                     [self.tagCompletions removeAllObjects];
                     
                     [self.tableView endUpdates];
-                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
                 });
             });
@@ -507,7 +471,8 @@
     cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.enabled = YES;
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
-    
+    cell.imageView.image = nil;
+
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
     }
@@ -517,69 +482,79 @@
 
         switch (indexPath.section) {
             case 0:
-                self.urlTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
-                [cell.contentView addSubview:self.urlTextField];
+                switch (indexPath.row) {
+                    case 0:
+                        cell.imageView.image = [UIImage imageNamed:@"globe"];
+                        self.urlTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                        [cell.contentView addSubview:self.urlTextField];
+                        break;
+                        
+                    case 1:
+                        cell.imageView.image = [UIImage imageNamed:@"pencil"];
+                        if (self.loadingTitle) {
+                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                            [activity startAnimating];
+                            cell.accessoryView = activity;
+                            cell.textLabel.text = @"Loading";
+                            cell.textLabel.enabled = NO;
+                        }
+                        else {
+                            self.titleTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            [cell.contentView addSubview:self.titleTextField];
+                        }
+                        break;
+                        
+                    case 2:
+                        cell.imageView.image = [UIImage imageNamed:@"picture"];
+                        if (self.loadingTitle) {
+                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                            [activity startAnimating];
+                            cell.accessoryView = activity;
+                            cell.textLabel.text = @"Loading";
+                            cell.textLabel.enabled = NO;
+                        }
+                        else {
+                            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+                            self.descriptionTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            self.descriptionTextField.placeholder = @"Click to edit description.";
+                            self.descriptionTextField.text = self.postDescription;
+
+                            cell.accessoryView = nil;
+                            [cell.contentView addSubview:self.descriptionTextField];
+                        }
+                        break;
+                        
+                    case 3:
+                        cell.imageView.image = [UIImage imageNamed:@"tag"];
+                        if (self.loadingTags) {
+                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                            [activity startAnimating];
+                            cell.accessoryView = activity;
+                            cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
+                            cell.textLabel.enabled = NO;
+                        }
+                        else {
+                            self.tagTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            cell.accessoryView = nil;
+                            [cell.contentView addSubview:self.tagTextField];
+                        }
+                        break;
+                        
+                    default:
+                        if (self.tagCompletions.count > 0) {
+                            cell.textLabel.text = self.tagCompletions[indexPath.row - 4];
+                        }
+                        else {
+                            cell.textLabel.text = self.popularTagSuggestions[indexPath.row - 4];
+                        }
+                        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                        cell.editing = NO;
+
+                        break;
+                }
                 break;
-                
-            case 1:
-                if (self.loadingTitle) {
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    [activity startAnimating];
-                    cell.accessoryView = activity;
-                    cell.textLabel.text = @"Loading";
-                    cell.textLabel.enabled = NO;
-                }
-                else {
-                    self.titleTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
-                    [cell.contentView addSubview:self.titleTextField];
-                }
-                break;
-                
-            case 2:
-                if (self.loadingTitle) {
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    [activity startAnimating];
-                    cell.accessoryView = activity;
-                    cell.textLabel.text = @"Loading";
-                    cell.textLabel.enabled = NO;
-                }
-                else {
-                    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-                    self.descriptionTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
-                    self.descriptionTextField.text = self.postDescription;
-                    cell.accessoryView = nil;
-                    [cell.contentView addSubview:self.descriptionTextField];
-                }
-                break;
-                
-            case 3:
-                if (indexPath.row == 0) {
-                    if (self.loadingTags) {
-                        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                        [activity startAnimating];
-                        cell.accessoryView = activity;
-                        cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
-                        cell.textLabel.enabled = NO;
-                    }
-                    else {
-                        self.tagTextField.frame = CGRectMake((frame.size.width - 300) / 2.0, (frame.size.height - 31) / 2.0, 280, 31);
-                        cell.accessoryView = nil;
-                        [cell.contentView addSubview:self.tagTextField];
-                    }
-                }
-                else {
-                    if (self.tagCompletions.count > 0) {
-                        cell.textLabel.text = self.tagCompletions[indexPath.row - 1];
-                    }
-                    else {
-                        cell.textLabel.text = self.popularTagSuggestions[indexPath.row - 1];
-                    }
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    cell.editing = NO;
-                }
-                break;
-                
-            case 4: {
+
+            case 1: {
                 if (indexPath.row == 0) {
                     cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
                     self.privateSwitch = [[PPSwitch alloc] init];
@@ -634,10 +609,12 @@
         NSMutableArray *newPopularTagSuggestions = [[NSMutableArray alloc] init];
         [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
         
-        NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count : self.tagCompletions.count;
-        NSInteger index = 1;
+        NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count + 3 : self.tagCompletions.count + 3;
+
+        #warning XXX Should really be set dynamically based on which row the tags cell is in.
+        NSInteger index = 4;
         while (index <= previousRowCount) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             index++;
         }
     
@@ -661,24 +638,24 @@
             }
         }
         
-        index = 1;
-        while (index <= newPopularTagSuggestions.count) {
-            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:3]];
+        #warning XXX Should really be set dynamically based on which row the tags cell is in.
+        index = 4;
+        while (index <= newPopularTagSuggestions.count + 3) {
+            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             index++;
         }
-        DLog(@"%d", self.popularTagSuggestions.count);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                
+
                 self.popularTagSuggestions = newPopularTagSuggestions;
                 self.suggestedTagsVisible = YES;
                 
                 [self.tableView endUpdates];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                 
                 [self.tagTextField becomeFirstResponder];
             });
@@ -696,7 +673,7 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                 self.loadingTags = YES;
                 [self.tableView endUpdates];
             });
@@ -712,7 +689,7 @@
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        dispatch_async(dispatch_get_main_queue(), ^{
                                            [self.tableView beginUpdates];
-                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:3]] withRowAnimation:UITableViewRowAnimationFade];
+                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                            self.loadingTags = NO;
                                            [self.tableView endUpdates];
                                        });
@@ -736,7 +713,7 @@
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
 
-        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:0 inSection:2]];
+        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:1 inSection:0], [NSIndexPath indexPathForRow:2 inSection:0]];
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
         [[AppDelegate sharedDelegate] retrievePageTitle:url
                                                callback:^(NSString *title, NSString *description) {
@@ -902,7 +879,7 @@
 - (void)finishEditingDescription {
     [self.navigationController popViewControllerAnimated:YES];
     [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:2]] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
 }
 

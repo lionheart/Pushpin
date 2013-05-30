@@ -194,18 +194,21 @@
             @"Calibrating Snark Levels",
             @"Debugging Retain Cycles",
             @"Depixilating Monads",
-            @"Dispatching UI Updates on the Main Thread",
             @"Force Quitting Development Tools",
             @"Generating Bookmark Indices",
-            @"Parsing UTF-8 Date Formatters",
+            @"Parsing Unicode Date Formatters",
             @"Evaluating Sync Solutions",
+            @"Binding ARC Evaluators",
+            @"Garbage Collecting Stale Note Data",
             @"Applying Bookmark Upgrades",
+            @"Initializing Null Pointers",
             @"Calibrating Tag Optimizations",
             @"Polishing Retina Displays",
             @"Refactoring Applicative Factors",
             @"Regenerating Provisioning Profiles",
             @"Releasing View Controllers",
             @"Reticulating Splines",
+            @"Reversing Feed Originators",
         ];
         self.textView.text = [messages objectAtIndex:arc4random_uniform(messages.count)];
         

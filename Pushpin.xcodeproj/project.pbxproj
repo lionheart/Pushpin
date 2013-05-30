@@ -20,6 +20,10 @@
 		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
 		3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */; };
 		3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB7E175673E200B23F4F /* safari-instructions.html */; };
+		3714DB821756EC1F00B23F4F /* pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB801756EC1F00B23F4F /* pencil.png */; };
+		3714DB831756EC1F00B23F4F /* pencil@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB811756EC1F00B23F4F /* pencil@2x.png */; };
+		3714DB861756EF9E00B23F4F /* picture.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB841756EF9E00B23F4F /* picture.png */; };
+		3714DB871756EF9E00B23F4F /* picture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB851756EF9E00B23F4F /* picture@2x.png */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -502,6 +506,10 @@
 		3714DB791755B0D700B23F4F /* PPGroupedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGroupedTableViewCell.h; sourceTree = "<group>"; };
 		3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPGroupedTableViewCell.m; sourceTree = "<group>"; };
 		3714DB7E175673E200B23F4F /* safari-instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-instructions.html"; path = "Assets/safari-instructions.html"; sourceTree = "<group>"; };
+		3714DB801756EC1F00B23F4F /* pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pencil.png; path = Assets/pencil.png; sourceTree = "<group>"; };
+		3714DB811756EC1F00B23F4F /* pencil@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pencil@2x.png"; path = "Assets/pencil@2x.png"; sourceTree = "<group>"; };
+		3714DB841756EF9E00B23F4F /* picture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = picture.png; path = Assets/picture.png; sourceTree = "<group>"; };
+		3714DB851756EF9E00B23F4F /* picture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "picture@2x.png"; path = "Assets/picture@2x.png"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
@@ -1799,6 +1807,8 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				3714DB841756EF9E00B23F4F /* picture.png */,
+				3714DB851756EF9E00B23F4F /* picture@2x.png */,
 				37C0164F1753D5D9004259FD /* glyphicons_110_align_left.png */,
 				37C016501753D5D9004259FD /* glyphicons_110_align_left@2x.png */,
 				37DE5AA0174EF8AE0073A2F4 /* back_icon.png */,
@@ -1835,6 +1845,8 @@
 				37D59A4116EFFAB5005C9C24 /* star@2x.png */,
 				37D59A4216EFFAB5005C9C24 /* tag.png */,
 				37D59A4316EFFAB5005C9C24 /* tag@2x.png */,
+				3714DB801756EC1F00B23F4F /* pencil.png */,
+				3714DB811756EC1F00B23F4F /* pencil@2x.png */,
 				37D59A3C16EFFAB0005C9C24 /* glasses.png */,
 				37D59A3D16EFFAB0005C9C24 /* glasses@2x.png */,
 				37D59A3816EFF943005C9C24 /* globe.png */,
@@ -2345,6 +2357,10 @@
 				3714DB7117556E6F00B23F4F /* NotesNavigationDimmed.png in Resources */,
 				3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */,
 				3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */,
+				3714DB821756EC1F00B23F4F /* pencil.png in Resources */,
+				3714DB831756EC1F00B23F4F /* pencil@2x.png in Resources */,
+				3714DB861756EF9E00B23F4F /* picture.png in Resources */,
+				3714DB871756EF9E00B23F4F /* picture@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

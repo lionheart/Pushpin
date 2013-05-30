@@ -317,6 +317,10 @@
                 shouldPush = YES;
             }
         }
+        
+        if (components.count > 4) {
+            shouldPush = NO;
+        }
 
         if (shouldPush) {
             GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
