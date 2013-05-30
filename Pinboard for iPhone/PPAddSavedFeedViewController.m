@@ -27,9 +27,11 @@
         self.userTextField = [[UITextField alloc] init];
         self.userTextField.font = font;
         self.userTextField.delegate = self;
+        self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.userTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.userTextField.placeholder = NSLocalizedString(@"Username", nil);
+        self.tagsTextField.returnKeyType = UIReturnKeyNext;
         self.userTextField.text = @"";
 
         self.tagsTextField = [[UITextField alloc] init];
