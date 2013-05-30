@@ -142,6 +142,14 @@
         }
         else {
             [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            if (indexPath.row == 0) {
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+
+            if (indexPath.row == self.feeds.count) {
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(self.feeds.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         }
 
         [self.tableView endUpdates];
