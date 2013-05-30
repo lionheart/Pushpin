@@ -391,9 +391,13 @@
         [self.navigationItem setHidesBackButton:NO animated:YES];
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
+
         [self.tableView setEditing:NO animated:YES];
 
         [UIView animateWithDuration:0.25 animations:^{
+            UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+            searchTextField.enabled = YES;
+
             CGRect bounds = [[UIScreen mainScreen] bounds];
             CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
             self.toolbar.frame = frame;
@@ -406,9 +410,13 @@
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
         self.multipleDeleteButton.enabled = NO;
+
         [self.tableView setEditing:YES animated:YES];
 
         [UIView animateWithDuration:0.25 animations:^{
+            UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+            searchTextField.enabled = NO;
+
             CGRect bounds = [[UIScreen mainScreen] bounds];
             CGRect frame = CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44);
             self.toolbar.frame = frame;
@@ -440,6 +448,9 @@
             [CATransaction commit];
 
             [UIView animateWithDuration:0.25 animations:^{
+                UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+                searchTextField.enabled = YES;
+
                 CGRect bounds = [[UIScreen mainScreen] bounds];
                 CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
                 self.toolbar.frame = frame;
@@ -569,14 +580,14 @@
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
         lockImageView.frame = CGRectMake(302.f, 0, 18.f, 19.f);
-        [cell.contentView addSubview:lockImageView];
+        [cell addSubview:lockImageView];
     }
     
     BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
         starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
-        [cell.contentView addSubview:starImageView];
+        [cell addSubview:starImageView];
     }
 
     cell.textView.delegate = self;
@@ -891,7 +902,7 @@
 #pragma mark - Scroll View delegate
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (!self.loading && !self.searchDisplayController.isActive) {
+    if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
