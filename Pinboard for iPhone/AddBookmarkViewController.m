@@ -11,6 +11,8 @@
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
 #import <ASPinboard/ASPinboard.h>
+#import "PPGroupedTableViewCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface AddBookmarkViewController ()
 
@@ -459,16 +461,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
-    cell.backgroundColor = [UIColor whiteColor];
     cell.textLabel.enabled = YES;
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
     cell.imageView.image = nil;
@@ -476,6 +477,17 @@
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
     }
+
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    }
+
+    if (indexPath.row < 5) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+    }
+
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
 
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
