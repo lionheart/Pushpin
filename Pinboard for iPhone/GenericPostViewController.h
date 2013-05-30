@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
+#import "PPToolbar.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -82,6 +83,7 @@ typedef NSInteger PPPostAction;
 - (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback;
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
 
 @end
@@ -108,6 +110,13 @@ typedef NSInteger PPPostAction;
 // Timer Stuff
 @property (nonatomic, strong) NSTimer *bookmarkRefreshTimer;
 @property (nonatomic) BOOL bookmarkRefreshTimerPaused;
+
+// Multiple Deletion
+@property (nonatomic, strong) PPToolbar *toolbar;
+@property (nonatomic, strong) UIBarButtonItem *multipleDeleteButton;
+@property (nonatomic, strong) UIBarButtonItem *editButton;
+
+- (void)toggleEditingMode:(id)sender;
 
 - (void)dismissViewController;
 - (void)checkForPostUpdates;

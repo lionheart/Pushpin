@@ -62,6 +62,16 @@
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
+
+    CGRect bounds = [[UIScreen mainScreen] bounds];
+    CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+    self.toolbar = [[PPToolbar alloc] initWithFrame:frame];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.multipleDeleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete (0)" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMultipleDeletion:)];
+    self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
+    self.multipleDeleteButton.enabled = NO;
+    [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
+    [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -74,7 +84,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationItem.leftBarButtonItem.title = @"";
+
+    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
+        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
+        self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
+        self.navigationItem.rightBarButtonItem = self.editButton;
+    }
+
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
     }
@@ -82,6 +98,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self.navigationController.view addSubview:self.toolbar];
+
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
 
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
@@ -110,117 +131,138 @@
     self.bookmarkRefreshTimerPaused = YES;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    
-    if (![self.postDataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
-        NSString *urlString;
-        if (tableView == self.tableView) {
-            urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.isEditing) {
+        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+        if (selectedRowCount > 0) {
+            self.multipleDeleteButton.enabled = YES;
+            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
         }
         else {
-            urlString = [self.searchPostDataSource urlForPostAtIndex:indexPath.row];
+            self.multipleDeleteButton.enabled = NO;
+            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
         }
-        NSRange httpRange = NSMakeRange(NSNotFound, 0);
-        if ([urlString hasPrefix:@"http"]) {
-            httpRange = [urlString rangeOfString:@"http"];
-        }
+    }
+}
 
-        if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
-            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-            PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-            [self.navigationController pushViewController:webViewController animated:YES];
-        }
-        else {
-            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                case BROWSER_SAFARI: {
-                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-                    break;
-                }
-                    
-                case BROWSER_CHROME:
-                    if (httpRange.location != NSNotFound) {
-                        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.editing) {
+        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+        self.multipleDeleteButton.enabled = YES;
+        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+    }
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
+        if (![self.postDataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
+            NSString *urlString;
+            if (tableView == self.tableView) {
+                urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
+            }
+            else {
+                urlString = [self.searchPostDataSource urlForPostAtIndex:indexPath.row];
+            }
+            NSRange httpRange = NSMakeRange(NSNotFound, 0);
+            if ([urlString hasPrefix:@"http"]) {
+                httpRange = [urlString rangeOfString:@"http"];
+            }
+
+            if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                [self.navigationController pushViewController:webViewController animated:YES];
+            }
+            else {
+                switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+                    case BROWSER_SAFARI: {
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                        break;
+                    }
+
+                    case BROWSER_CHROME:
+                        if (httpRange.location != NSNotFound) {
+                            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                [[UIApplication sharedApplication] openURL:url];
+                            }
+                            else {
+                                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
+                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                [[UIApplication sharedApplication] openURL:url];
+                            }
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+
+                        break;
+
+                    case BROWSER_ICAB_MOBILE:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
                             [[UIApplication sharedApplication] openURL:url];
                         }
                         else {
-                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+
+                        break;
+
+                    case BROWSER_OPERA:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
                             [[UIApplication sharedApplication] openURL:url];
                         }
-                    }
-                    else {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                        [alert show];
-                    }
-                    
-                    break;
-                    
-                case BROWSER_ICAB_MOBILE:
-                    if (httpRange.location != NSNotFound) {
-                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                    else {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                        [alert show];
-                    }
-                    
-                    break;
-                    
-                case BROWSER_OPERA:
-                    if (httpRange.location != NSNotFound) {
-                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                    else {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                        [alert show];
-                    }
-                    
-                    break;
-                    
-                case BROWSER_DOLPHIN:
-                    if (httpRange.location != NSNotFound) {
-                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                    else {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                        [alert show];
-                    }
-                    
-                    break;
-                    
-                case BROWSER_CYBERSPACE:
-                    if (httpRange.location != NSNotFound) {
-                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                    else {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                        [alert show];
-                    }
-                    
-                    break;
-                    
-                default:
-                    break;
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+
+                        break;
+
+                    case BROWSER_DOLPHIN:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                            [[UIApplication sharedApplication] openURL:url];
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+
+                        break;
+
+                    case BROWSER_CYBERSPACE:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                            [[UIApplication sharedApplication] openURL:url];
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
-    }
-    else {
-        // The post data source will provide a view controller to push.
-        UIViewController *controller = [self.postDataSource viewControllerForPostAtIndex:indexPath.row];
-        [self.navigationController pushViewController:controller animated:YES];
+        else {
+            // The post data source will provide a view controller to push.
+            UIViewController *controller = [self.postDataSource viewControllerForPostAtIndex:indexPath.row];
+            [self.navigationController pushViewController:controller animated:YES];
+        }
     }
 }
 
@@ -338,6 +380,90 @@
     }
 }
 
+- (void)toggleEditingMode:(id)sender {
+    if (self.tableView.editing) {
+        NSArray *selectedIndexPaths = [self.tableView.indexPathsForSelectedRows copy];
+        for (NSIndexPath *indexPath in selectedIndexPaths) {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+
+        self.tableView.allowsMultipleSelectionDuringEditing = NO;
+        [self.navigationItem setHidesBackButton:NO animated:YES];
+        [self.editButton setStyle:UIBarButtonItemStylePlain];
+        [self.editButton setTitle:@"Edit"];
+
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
+        [self.tableView setEditing:NO animated:YES];
+        [CATransaction commit];
+
+        [UIView animateWithDuration:0.25 animations:^{
+            CGRect bounds = [[UIScreen mainScreen] bounds];
+            CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+            self.toolbar.frame = frame;
+        }];
+    }
+    else {
+        self.tableView.allowsMultipleSelectionDuringEditing = YES;
+        [self.navigationItem setHidesBackButton:YES animated:YES];
+        [self.editButton setStyle:UIBarButtonItemStyleDone];
+        [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
+        [self.multipleDeleteButton setTitle:@"Delete (0)"];
+        self.multipleDeleteButton.enabled = NO;
+
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
+        [self.tableView setEditing:YES animated:YES];
+        [CATransaction commit];
+
+        [UIView animateWithDuration:0.25 animations:^{
+            CGRect bounds = [[UIScreen mainScreen] bounds];
+            CGRect frame = CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44);
+            self.toolbar.frame = frame;
+        }];
+    }
+}
+
+- (void)toggleMultipleDeletion:(id)sender {
+    self.multipleDeleteButton.enabled = NO;
+    NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
+    [self.postDataSource deletePostsAtIndexPaths:selectedIndexPaths callback:^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [selectedIndexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                [self.tableView deselectRowAtIndexPath:obj animated:YES];
+            }];
+
+            [self.navigationItem setHidesBackButton:NO animated:YES];
+            [self.editButton setStyle:UIBarButtonItemStylePlain];
+            [self.editButton setTitle:@"Edit"];
+
+            [UIView animateWithDuration:0.25 animations:^{
+                CGRect bounds = [[UIScreen mainScreen] bounds];
+                CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+                self.toolbar.frame = frame;
+
+                [CATransaction begin];
+                [CATransaction setCompletionBlock:^{
+                [self.tableView beginUpdates];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+                }];
+                [self.tableView setEditing:NO animated:YES];
+                [CATransaction commit];
+            }];
+        });
+    }];
+}
+
 #pragma mark - Table view data source
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -443,12 +569,21 @@
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
 
-    CAGradientLayer *selectedGradient = [CAGradientLayer layer];
-    selectedGradient.frame = CGRectMake(0, 0, 320.f, height);
-    selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
-    cell.selectedBackgroundView = selectedBackgroundView;
-    [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+
+    /*
+    if (tableView.editing) {
+
+    }
+    else {
+        CAGradientLayer *selectedGradient = [CAGradientLayer layer];
+        selectedGradient.frame = CGRectMake(0, 0, 320.f, height);
+        selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
+        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
+        cell.selectedBackgroundView = selectedBackgroundView;
+        [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
+    }
+     */
 
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
@@ -470,13 +605,15 @@
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
-    if ([self.postDataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-        [self.postDataSource handleTapOnLinkWithURL:url
-                                           callback:^(UIViewController *controller) {
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [[AppDelegate sharedDelegate].navigationController pushViewController:controller animated:YES];
-                                               });
-                    }];
+    if (!self.tableView.editing || self.searchDisplayController.isActive) {
+        if ([self.postDataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+            [self.postDataSource handleTapOnLinkWithURL:url
+                                               callback:^(UIViewController *controller) {
+                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                       [[AppDelegate sharedDelegate].navigationController pushViewController:controller animated:YES];
+                                                   });
+                        }];
+        }
     }
 }
 
@@ -751,23 +888,19 @@
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.searchDisplayController.searchResultsTableView beginUpdates];
-                            [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                            [self.searchDisplayController.searchResultsTableView endUpdates];
-                        });
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.searchDisplayController.searchResultsTableView beginUpdates];
+                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.searchDisplayController.searchResultsTableView endUpdates];
                     });
                 }];
             }
             else {
                 [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.tableView beginUpdates];
-                            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                            [self.tableView endUpdates];
-                        });
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
                     });
                 }];
             }

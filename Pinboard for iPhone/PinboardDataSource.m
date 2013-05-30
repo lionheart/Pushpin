@@ -586,6 +586,88 @@
                       }];
 }
 
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback {
+    void (^SuccessBlock)();
+    void (^ErrorBlock)(NSError *);
+
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+    __block NSInteger index = 0;
+    NSString *url;
+
+    for (NSIndexPath *indexPath in indexPaths) {
+        url = [self urlForPostAtIndex:indexPath.row];
+        SuccessBlock = ^{
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            [db beginTransaction];
+            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id IN (SELECT id FROM bookmark WHERE url=?)" withArgumentsInArray:@[url]];
+            [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
+            [db commit];
+            [db close];
+
+            [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+            index++;
+
+            [indexPathsToDelete addObject:indexPath];
+            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:([self.queryParameters[@"limit"] integerValue] - index) inSection:0]];
+
+            dispatch_group_leave(group);
+        };
+
+        ErrorBlock = ^(NSError *error) {
+            dispatch_group_leave(group);
+        };
+
+        dispatch_group_enter(group);
+        [pinboard deleteBookmarkWithURL:url success:SuccessBlock failure:ErrorBlock];
+    }
+
+    dispatch_group_notify(group, queue, ^{
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        if (indexPaths.count == 1) {
+            notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
+        }
+        else {
+            notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", indexPaths.count];
+        }
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+
+        [self.posts removeAllObjects];
+        while ([results next]) {
+            NSString *title = [results stringForColumn:@"title"];
+
+            if ([title isEqualToString:@""]) {
+                title = @"untitled";
+            }
+            NSDictionary *post = @{
+                                   @"title": title,
+                                   @"description": [results stringForColumn:@"description"],
+                                   @"unread": @([results boolForColumn:@"unread"]),
+                                   @"url": [results stringForColumn:@"url"],
+                                   @"private": @([results boolForColumn:@"private"]),
+                                   @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                   @"created_at": [results dateForColumn:@"created_at"],
+                                   @"starred": @([results boolForColumn:@"starred"])
+                                   };
+
+            [self.posts addObject:post];
+        }
+        [db close];
+
+        callback(indexPathsToDelete, indexPathsToAdd);
+    });
+}
+
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback {
     void (^SuccessBlock)();
     void (^ErrorBlock)(NSError *);
@@ -603,7 +685,7 @@
                 FMResultSet *results = [db executeQuery:@"SELECT id FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                 [results next];
                 NSNumber *bookmarkId = @([results intForColumnIndex:0]);
-                
+
                 [db beginTransaction];
                 [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id=?" withArgumentsInArray:@[bookmarkId]];
@@ -611,7 +693,7 @@
                 [db close];
                 
                 [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-                
+
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [self.posts removeObjectAtIndex:index];
@@ -621,6 +703,7 @@
         };
         
         ErrorBlock = ^(NSError *error) {
+            callback(nil);
         };
         
         [pinboard deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
@@ -761,17 +844,17 @@
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __block NSString *tagName = url.absoluteString;
+        NSString *tagName = url.absoluteString;
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:@"SELECT id FROM tag WHERE name=?" withArgumentsInArray:@[tagName]];
         [results next];
-        __block NSNumber *tagID = @([results intForColumnIndex:0]);
+        NSNumber *tagID = @([results intForColumnIndex:0]);
         
         if (![self.tags containsObject:tagID]) {
-            __block PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTagID:tagID];
+            PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTagID:tagID];
             results = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM tag WHERE id IN (%@) ORDER BY name ASC", [pinboardDataSource.tags componentsJoinedByString:@","]]];
-            __block NSMutableArray *tagNames = [NSMutableArray array];
+            NSMutableArray *tagNames = [NSMutableArray array];
             while ([results next]) {
                 [tagNames addObject:[results stringForColumnIndex:0]];
             }
