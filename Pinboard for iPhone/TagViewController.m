@@ -41,11 +41,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
 
     self.titleToTags = [NSMutableDictionary dictionary];
-    self.titleToTags = [@{@"#": [NSMutableArray array], @"A": [NSMutableArray array], @"B": [NSMutableArray array], @"C": [NSMutableArray array], @"D": [NSMutableArray array], @"E": [NSMutableArray array], @"F": [NSMutableArray array], @"G": [NSMutableArray array], @"H": [NSMutableArray array], @"I": [NSMutableArray array], @"J": [NSMutableArray array], @"K": [NSMutableArray array], @"L": [NSMutableArray array], @"M": [NSMutableArray array], @"N": [NSMutableArray array], @"O": [NSMutableArray array], @"P": [NSMutableArray array], @"Q": [NSMutableArray array], @"R": [NSMutableArray array], @"S": [NSMutableArray array], @"T": [NSMutableArray array], @"U": [NSMutableArray array], @"V": [NSMutableArray array], @"W": [NSMutableArray array], @"X": [NSMutableArray array], @"Y": [NSMutableArray array], @"Z": [NSMutableArray array]} mutableCopy];
 
     FMResultSet *results = [db executeQuery:@"SELECT id, name, count FROM tag ORDER BY name ASC"];
     NSString *name;
@@ -56,17 +57,27 @@
         }
 
         NSString *firstLetter = [[name substringToIndex:1] uppercaseString];
-        if (![self.titleToTags objectForKey:firstLetter]) {
+        if (![letters containsObject:firstLetter]) {
             firstLetter = @"#";
         }
 
         NSMutableArray *temp = [self.titleToTags objectForKey:firstLetter];
+        if (!temp) {
+            temp = [NSMutableArray array];
+        }
         [temp addObject:@{@"name": name, @"id": @([results intForColumn:@"id"]), @"count": [results stringForColumn:@"count"]}];
         [self.titleToTags setObject:temp forKey:firstLetter];
     }
 
-    self.sortedTitles = @[UITableViewIndexSearch, @"#", @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+    NSArray *newSortedTitles = [[self.titleToTags allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    }];
+    NSMutableArray *newSortedTitlesWithSearch = [NSMutableArray arrayWithObject:UITableViewIndexSearch];
+    for (NSString *title in newSortedTitles) {
+        [newSortedTitlesWithSearch addObject:title];
+    }
 
+    self.sortedTitles = newSortedTitlesWithSearch;
     self.filteredTags = [NSMutableArray array];
 
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
