@@ -240,7 +240,7 @@
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                                self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
-                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2.5 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:6 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                                
                                                self.progressView.hidden = NO;
