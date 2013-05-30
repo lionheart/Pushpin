@@ -390,16 +390,8 @@
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.navigationItem setHidesBackButton:NO animated:YES];
         [self.editButton setStyle:UIBarButtonItemStylePlain];
-        [self.editButton setTitle:@"Edit"];
-
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-        }];
+        [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
         [self.tableView setEditing:NO animated:YES];
-        [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
             CGRect bounds = [[UIScreen mainScreen] bounds];
@@ -414,15 +406,7 @@
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
         self.multipleDeleteButton.enabled = NO;
-
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-        }];
         [self.tableView setEditing:YES animated:YES];
-        [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
             CGRect bounds = [[UIScreen mainScreen] bounds];
@@ -452,10 +436,10 @@
 
                 [CATransaction begin];
                 [CATransaction setCompletionBlock:^{
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView endUpdates];
+                    [self.tableView beginUpdates];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView endUpdates];
                 }];
                 [self.tableView setEditing:NO animated:YES];
                 [CATransaction commit];
@@ -569,11 +553,8 @@
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
 
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-
-    /*
-    if (tableView.editing) {
-
+    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
     else {
         CAGradientLayer *selectedGradient = [CAGradientLayer layer];
@@ -583,7 +564,6 @@
         cell.selectedBackgroundView = selectedBackgroundView;
         [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
     }
-     */
 
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {

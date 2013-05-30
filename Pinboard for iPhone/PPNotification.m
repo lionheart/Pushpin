@@ -66,7 +66,7 @@ static NSInteger kPPNotificationHeight = 56;
     if (!_notificationView) {
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, 320, kPPNotificationHeight)];
         _notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NotificationBackground"]];
-        
+
         UILabel *label = [[UILabel alloc] init];
         label.backgroundColor = [UIColor clearColor];
         label.font = [UIFont fontWithName:@"Avenir-Medium" size:15];
