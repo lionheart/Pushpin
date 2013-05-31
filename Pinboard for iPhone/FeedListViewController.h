@@ -27,7 +27,6 @@ enum PINBOARD_FEED_ITEMS {
 @property (nonatomic) BOOL timerPaused;
 
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
-- (void)checkForPostUpdates;
 - (void)connectionStatusDidChange:(NSNotification *)notification;
 - (void)openNotes;
 - (void)openSettings;
