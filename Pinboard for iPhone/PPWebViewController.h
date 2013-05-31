@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
@@ -27,6 +28,7 @@
 - (void)emailURL;
 - (void)showEditViewController;
 - (void)showAddViewController;
+- (void)popViewController;
 - (BOOL)isMobilized;
 - (void)toggleMobilizer;
 - (NSURL *)url;

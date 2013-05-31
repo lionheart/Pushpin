@@ -30,6 +30,12 @@ static NSInteger kToolbarHeight = 44;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     [self.view addSubview:self.webView];
+
+    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
+    self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
+    self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
+    [self.webView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
     PPToolbar *toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [[UIButton alloc] init];
@@ -69,6 +75,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.webView stopLoading];
 }
 
@@ -78,6 +85,10 @@ static NSInteger kToolbarHeight = 44;
     if (!self.url) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
     }
+}
+
+- (void)popViewController {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
