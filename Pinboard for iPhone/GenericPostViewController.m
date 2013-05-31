@@ -39,17 +39,6 @@
 @synthesize loading;
 @synthesize searchDisplayController = __searchDisplayController;
 
-- (void)checkForBookmarkUpdates {
-    if (!self.bookmarkRefreshTimerPaused) {
-        self.bookmarkRefreshTimerPaused = YES;
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
-        if (delegate.bookmarksUpdated.boolValue) {
-            [self updateFromLocalDatabase];
-            delegate.bookmarksUpdated = @NO;
-        }
-    }
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -113,28 +102,23 @@
     self.processingPosts = NO;
     self.actionSheetVisible = NO;
 
-    self.bookmarkRefreshTimerPaused = NO;
-    self.bookmarkRefreshTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForBookmarkUpdates) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.bookmarkRefreshTimer forMode:NSDefaultRunLoopMode];
-
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-        
+
         self.loading = YES;
 
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self updateFromLocalDatabase];
+            [self updateFromLocalDatabaseWithCallback:^{
+                if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
+                    [self updateWithCount:@(100)];
+                    [AppDelegate sharedDelegate].bookmarksNeedUpdate = NO;
+                }
+            }];
         });
     }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    self.bookmarkRefreshTimerPaused = YES;
 }
 
 - (void)popViewController {
@@ -295,48 +279,48 @@
     }
 }
 
-- (void)updateFromLocalDatabase {
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
     if (!self.processingPosts) {
         self.processingPosts = YES;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.processingPosts = NO;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.processingPosts = NO;
 
-                        [self.tableView beginUpdates];
-                        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
-                        self.tableView.separatorColor = HEX(0xE0E0E0ff);
-                        
-                        if (self.loading) {
-                            self.loading = NO;
-                            [UIView animateWithDuration:0.2 animations:^{
-                                self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                            } completion:^(BOOL finished) {
-                                [self.pullToRefreshImageView stopAnimating];
-                                CGFloat offset = self.tableView.contentOffset.y;
-                                self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
-                                
-                                if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
-                                    self.searchPostDataSource = [self.postDataSource searchDataSource];
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
+                    
+                    if (self.loading) {
+                        self.loading = NO;
+                        [UIView animateWithDuration:0.2 animations:^{
+                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        } completion:^(BOOL finished) {
+                            [self.pullToRefreshImageView stopAnimating];
+                            CGFloat offset = self.tableView.contentOffset.y;
+                            self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+                            
+                            if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
+                                self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                                    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-                                    self.searchBar.delegate = self;
-                                    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                                    self.searchDisplayController.searchResultsDataSource = self;
-                                    self.searchDisplayController.searchResultsDelegate = self;
-                                    self.searchDisplayController.delegate = self;
-                                    self.tableView.tableHeaderView = self.searchBar;
-                                    [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
-                                }
-                            }];
-                        }
-                        
-                        self.bookmarkRefreshTimerPaused = NO;
-                    });
+                                self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+                                self.searchBar.delegate = self;
+                                self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+                                self.searchDisplayController.searchResultsDataSource = self;
+                                self.searchDisplayController.searchResultsDelegate = self;
+                                self.searchDisplayController.delegate = self;
+                                self.tableView.tableHeaderView = self.searchBar;
+                                [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+                            }
+                        }];
+                    }
+                    
+                    if (callback) {
+                        callback();
+                    }
                 });
             } failure:nil];
         });
@@ -347,17 +331,13 @@
     if (!self.processingPosts) {
         self.processingPosts = YES;
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.processingPosts = NO;
-                    [self.searchDisplayController.searchResultsTableView beginUpdates];
-                    [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    [self.searchDisplayController.searchResultsTableView endUpdates];
-                    self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
-
-                    self.bookmarkRefreshTimerPaused = NO;
-                });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.processingPosts = NO;
+                [self.searchDisplayController.searchResultsTableView beginUpdates];
+                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchDisplayController.searchResultsTableView endUpdates];
+                self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
             });
         } failure:nil];
     }
@@ -502,7 +482,7 @@
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
                     if (self.tableView == tableView) {
-                        [self updateFromLocalDatabase];
+                        [self updateFromLocalDatabaseWithCallback:nil];
                     }
                     else {
                         [self updateSearchResults];
@@ -776,7 +756,7 @@
             if (error == nil) {
                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
                 notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                [self updateFromLocalDatabase];
+                [self updateFromLocalDatabaseWithCallback:nil];
             }
             else {
                 notification.userInfo = @{@"success": @NO, @"updated": @NO};

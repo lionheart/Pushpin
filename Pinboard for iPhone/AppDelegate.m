@@ -116,6 +116,8 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    self.bookmarksNeedUpdate = YES;
+
     if (!didLaunchWithURL && self.token != nil) {
         [self promptUserToAddBookmark];
         didLaunchWithURL = NO;
