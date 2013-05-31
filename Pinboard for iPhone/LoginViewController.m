@@ -179,8 +179,8 @@
         CGSize keyboardSize = [notificationData CGRectValue].size;
 
         CGRect frame = self.view.frame;
-        frame.origin.y -= keyboardSize.height - 100;
-        frame.size.height += keyboardSize.height - 100;
+        frame.origin.y -= keyboardSize.height - 50;
+        frame.size.height += keyboardSize.height - 50;
 
         [UIView animateWithDuration:duration animations:^(void) {
             self.view.frame = frame;
@@ -201,8 +201,8 @@
         [infoDuration getValue:&duration];
 
         CGRect frame = self.view.frame;
-        frame.origin.y += keyboardSize.height - 100;
-        frame.size.height -= keyboardSize.height - 100;
+        frame.origin.y += keyboardSize.height - 50;
+        frame.size.height -= keyboardSize.height - 50;
 
         [UIView animateWithDuration:duration animations:^(void) {
             self.view.frame = frame;
