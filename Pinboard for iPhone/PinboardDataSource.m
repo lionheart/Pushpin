@@ -13,6 +13,8 @@
 #import "ASPinboard/ASPinboard.h"
 #import "AddBookmarkViewController.h"
 
+static BOOL kPinboardDataSourceUpdateInProgress = NO;
+
 @implementation PinboardDataSource
 
 @synthesize query = _query;
@@ -409,22 +411,43 @@
                                     BookmarksSuccessBlock(bookmarks);
                                     
                                     if (!lastUpdated) {
-                                        [self updateStarredPosts:^{ success(); } failure:nil];
+                                        [self updateStarredPosts:^{
+                                            kPinboardDataSourceUpdateInProgress = NO;
+                                            success();
+                                        }
+                                                         failure:^(NSError *error) {
+                                                             kPinboardDataSourceUpdateInProgress = NO;
+                                                         }];
                                     }
                                     else {
-                                        [self updateStarredPosts:nil failure:nil];
+                                        [self updateStarredPosts:^{
+                                            kPinboardDataSourceUpdateInProgress = NO;
+                                        }
+                                                         failure:^(NSError *error) {
+                                                             kPinboardDataSourceUpdateInProgress = NO;
+                                                         }];
                                         success();                                            
                                     }
             }
-                                failure:BookmarksFailureBlock];
+                                failure:^(NSError *error) {
+                                    BookmarksFailureBlock(error);
+                                    kPinboardDataSourceUpdateInProgress= NO;
+                                }];
             
         }
         else {
+            kPinboardDataSourceUpdateInProgress= NO;
             success();
         }
     };
-    
-    [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+
+    if (kPinboardDataSourceUpdateInProgress) {
+        success();
+    }
+    else {
+        kPinboardDataSourceUpdateInProgress = YES;
+        [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+    }
 }
 
 - (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {

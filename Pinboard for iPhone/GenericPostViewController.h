@@ -99,10 +99,6 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
 
-// Timer Stuff
-@property (nonatomic, strong) NSTimer *bookmarkRefreshTimer;
-@property (nonatomic) BOOL bookmarkRefreshTimerPaused;
-
 // Multiple Deletion
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UIBarButtonItem *multipleDeleteButton;
@@ -116,7 +112,6 @@ typedef NSInteger PPPostAction;
 - (void)popViewController;
 
 - (void)dismissViewController;
-- (void)checkForPostUpdates;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
 - (void)deletePosts:(NSArray *)posts;
@@ -124,7 +119,7 @@ typedef NSInteger PPPostAction;
 - (void)copyToMine;
 - (void)sendToReadLater;
 - (void)updateWithCount:(NSNumber *)count;
-- (void)updateFromLocalDatabase;
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;

@@ -85,6 +85,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, retain) NSTimer *refreshTimer;
 @property (nonatomic) BOOL bookmarksLoading;
+@property (nonatomic) BOOL bookmarksNeedUpdate;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
