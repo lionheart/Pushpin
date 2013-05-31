@@ -396,7 +396,9 @@
     };
     
     void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
-        if (!lastUpdated || ([lastUpdated compare:updateTime] == NSOrderedAscending && ([[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300))) {
+        BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300;
+        BOOL outOfSyncWithAPI = [lastUpdated compare:updateTime] == NSOrderedAscending;
+        if (!lastUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
             [pinboard bookmarksWithTags:nil
                                  offset:-1
                                   count:[options[@"count"] integerValue]
