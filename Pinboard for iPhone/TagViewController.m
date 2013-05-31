@@ -298,7 +298,7 @@
     
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    [pinboardDataSource filterByPrivate:nil isRead:nil hasTags:nil tags:@[tag[@"id"]] offset:0 limit:50];
+    [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"id"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
     [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
