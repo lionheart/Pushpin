@@ -14,6 +14,7 @@
 #import "PrimaryNavigationViewController.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
+#import "RPSTPasswordManagementAppService.h"
 
 @interface LoginViewController ()
 
@@ -44,10 +45,9 @@
     [self.view addSubview:imageView];
 
     self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
-    self.usernameTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.usernameTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
     self.usernameTextField.textAlignment = UITextAlignmentCenter;
     self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.usernameTextField.borderStyle = UITextBorderStyleLine;
     self.usernameTextField.backgroundColor = [UIColor whiteColor];
     self.usernameTextField.delegate = self;
     self.usernameTextField.keyboardType = UIKeyboardTypeAlphabet;
@@ -56,20 +56,25 @@
     self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.usernameTextField.placeholder = NSLocalizedString(@"Username", nil);
+    self.usernameTextField.layer.cornerRadius = 3;
+    self.usernameTextField.layer.borderWidth = 1;
+    self.usernameTextField.layer.borderColor = HEX(0x4A5768FF).CGColor;
     [self.view addSubview:self.usernameTextField];
 
     self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
-    self.passwordTextField.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.passwordTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
     self.passwordTextField.textAlignment = UITextAlignmentCenter;
     self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.passwordTextField.borderStyle = UITextBorderStyleLine;
     self.passwordTextField.backgroundColor = [UIColor whiteColor];
     self.passwordTextField.delegate = self;
     self.passwordTextField.keyboardType = UIKeyboardTypeAlphabet;
-    self.passwordTextField.returnKeyType = UIReturnKeyGo;
+    self.passwordTextField.returnKeyType = UIReturnKeyDone;
     self.passwordTextField.secureTextEntry = YES;
     self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordTextField.placeholder = NSLocalizedString(@"Password", nil);
+    self.passwordTextField.layer.cornerRadius = 3;
+    self.passwordTextField.layer.borderWidth = 1;
+    self.passwordTextField.layer.borderColor = HEX(0x4A5768FF).CGColor;
     [self.view addSubview:self.passwordTextField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
@@ -77,15 +82,56 @@
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 342, 300, 80)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 342, 320, 80)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.editable = NO;
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = UITextAlignmentCenter;
-    self.textView.font = [UIFont fontWithName:@"Helvetica" size:14];
+    self.textView.font = [UIFont fontWithName:@"Avenir-Heavy" size:14];
     self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
     [self.view addSubview:self.textView];
+
+    CGFloat radius = 5;
+    CGRect buttonRect = CGRectMake(0, 0, radius * 2, 30);
+    CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
+    barButtonItemLayer.frame = buttonRect;
+    barButtonItemLayer.cornerRadius = radius;
+    barButtonItemLayer.masksToBounds = YES;
+    barButtonItemLayer.borderWidth = 0.5;
+    barButtonItemLayer.borderColor = HEX(0x4C586AFF).CGColor;
+    barButtonItemLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    barButtonItemLayer.startPoint = CGPointMake(0.5, 0);
+    barButtonItemLayer.endPoint = CGPointMake(0.5, 1.0);
+
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:radius topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    barButtonItemLayer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:radius topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 352, 180, 44)];
+    [self.onePasswordButton setTitle:@"Launch 1Password" forState:UIControlStateNormal];
+    [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateNormal];
+    [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateHighlighted];
+    [self.onePasswordButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, radius)];
+    [self.onePasswordButton setTitleEdgeInsets:UIEdgeInsetsMake(0, radius, 0, 0)];
+    [self.onePasswordButton setBackgroundImage:barButtonBackground forState:UIControlStateNormal];
+    [self.onePasswordButton setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted];
+    [self.onePasswordButton addTarget:self action:@selector(sendToOnePassword) forControlEvents:UIControlEventTouchUpInside];
+
+    self.onePasswordButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:15];
+    [self.onePasswordButton setTitleColor:HEX(0x4A5768FF) forState:UIControlStateNormal];
+    [self.onePasswordButton setTitleShadowColor:HEX(0xFFFFFF00) forState:UIControlStateNormal];
+    self.onePasswordButton.hidden = YES;
+    [self.view addSubview:self.onePasswordButton];
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
@@ -98,6 +144,8 @@
     keyboard_shown = false;
     self.loginTimer = nil;
     
+    [self resetLoginScreen];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasHidden:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(progressNotificationReceived:) name:kPinboardDataSourceProgressNotification object:nil];
@@ -185,6 +233,11 @@
     self.usernameTextField.textColor = [UIColor blackColor];
     self.passwordTextField.enabled = YES;
     self.passwordTextField.textColor = [UIColor blackColor];
+
+    if ([RPSTPasswordManagementAppService passwordManagementAppIsAvailable]) {
+        self.onePasswordButton.hidden = NO;
+        self.textView.hidden = YES;
+    }
 }
 
 - (void)updateLoadingMessage {
@@ -231,6 +284,8 @@
             self.usernameTextField.textColor = [UIColor grayColor];
             self.passwordTextField.enabled = NO;
             self.passwordTextField.textColor = [UIColor grayColor];
+            self.onePasswordButton.hidden = YES;
+            self.textView.hidden = NO;
             self.textView.text = NSLocalizedString(@"Verifying your credentials...", nil);
         
             ASPinboard *pinboard = [ASPinboard sharedInstance];
@@ -300,21 +355,21 @@
     }
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if ([textField.text isEqualToString:@""]) {
-        return NO;
-    }
-    
-    [textField setUserInteractionEnabled:YES];
+- (void)sendToOnePassword {
+    [[UIApplication sharedApplication] openURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
+}
 
-    if (textField == usernameTextField) {
-        [passwordTextField becomeFirstResponder];
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField == self.usernameTextField) {
+        [self.passwordTextField becomeFirstResponder];
     }
     else {
         [textField resignFirstResponder];
+        if (![textField.text isEqualToString:@""]) {
+            [self login];
+        }
     }
     
-    [self login];
     return YES;
 }
 

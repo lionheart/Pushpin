@@ -284,7 +284,6 @@
                                      UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
      }
                                                 forState:UIControlStateDisabled];
-    
     // Customize Toolbar
     CAGradientLayer *toolbarLayer = [CAGradientLayer layer];
     toolbarLayer.frame = rect;

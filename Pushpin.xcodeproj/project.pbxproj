@@ -54,6 +54,36 @@
 		372F890B16755A2E0073D0B6 /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890516755A2E0073D0B6 /* NSData+MPBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F890C16755A2E0073D0B6 /* Mixpanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 372F890716755A2E0073D0B6 /* Mixpanel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
+		3732DF7D1759148100978A68 /* 1p-icons.psd in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF5D1759148100978A68 /* 1p-icons.psd */; };
+		3732DF7E1759148100978A68 /* 1p-icons@2x.psd in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF5E1759148100978A68 /* 1p-icons@2x.psd */; };
+		3732DF7F1759148100978A68 /* one-password-text-field.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF5F1759148100978A68 /* one-password-text-field.png */; };
+		3732DF801759148100978A68 /* one-password-text-field@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF601759148100978A68 /* one-password-text-field@2x.png */; };
+		3732DF811759148100978A68 /* onepassword-share-sheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF611759148100978A68 /* onepassword-share-sheet.png */; };
+		3732DF821759148100978A68 /* onepassword-share-sheet@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF621759148100978A68 /* onepassword-share-sheet@2x.png */; };
+		3732DF831759148100978A68 /* 1P-29.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF631759148100978A68 /* 1P-29.png */; };
+		3732DF841759148100978A68 /* 1P-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF641759148100978A68 /* 1P-29@2x.png */; };
+		3732DF851759148100978A68 /* 1P-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF651759148100978A68 /* 1P-50.png */; };
+		3732DF861759148100978A68 /* 1P-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF661759148100978A68 /* 1P-50@2x.png */; };
+		3732DF871759148100978A68 /* 1P-57.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF671759148100978A68 /* 1P-57.png */; };
+		3732DF881759148100978A68 /* 1P-57@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF681759148100978A68 /* 1P-57@2x.png */; };
+		3732DF891759148100978A68 /* 1P-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF691759148100978A68 /* 1P-72.png */; };
+		3732DF8A1759148100978A68 /* 1P-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF6A1759148100978A68 /* 1P-72@2x.png */; };
+		3732DF8B1759148100978A68 /* onepassword_activityIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF6C1759148100978A68 /* onepassword_activityIcon.png */; };
+		3732DF8C1759148100978A68 /* onepassword_activityIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF6D1759148100978A68 /* onepassword_activityIcon@2x.png */; };
+		3732DF8D1759148100978A68 /* onePassword_v3.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF6E1759148100978A68 /* onePassword_v3.png */; };
+		3732DF8E1759148100978A68 /* onePassword_v3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF6F1759148100978A68 /* onePassword_v3@2x.png */; };
+		3732DF8F1759148100978A68 /* onePassword_v4.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF701759148100978A68 /* onePassword_v4.png */; };
+		3732DF901759148100978A68 /* onePassword_v4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF711759148100978A68 /* onePassword_v4@2x.png */; };
+		3732DF911759148100978A68 /* onePasswordButton_highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF721759148100978A68 /* onePasswordButton_highlighted.png */; };
+		3732DF921759148100978A68 /* onePasswordButton_highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF731759148100978A68 /* onePasswordButton_highlighted@2x.png */; };
+		3732DF931759148100978A68 /* onePasswordButton_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF741759148100978A68 /* onePasswordButton_normal.png */; };
+		3732DF941759148100978A68 /* onePasswordButton_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF751759148100978A68 /* onePasswordButton_normal@2x.png */; };
+		3732DF951759148100978A68 /* onePasswordButton_v4_highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF761759148100978A68 /* onePasswordButton_v4_highlighted.png */; };
+		3732DF961759148100978A68 /* onePasswordButton_v4_highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF771759148100978A68 /* onePasswordButton_v4_highlighted@2x.png */; };
+		3732DF971759148100978A68 /* onePasswordButton_v4_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF781759148100978A68 /* onePasswordButton_v4_normal.png */; };
+		3732DF981759148100978A68 /* onePasswordButton_v4_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF791759148100978A68 /* onePasswordButton_v4_normal@2x.png */; };
+		3732DF991759148100978A68 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF7A1759148100978A68 /* README.md */; };
+		3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */; };
 		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
 		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -557,6 +587,37 @@
 		372F890616755A2E0073D0B6 /* Mixpanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mixpanel.h; sourceTree = "<group>"; };
 		372F890716755A2E0073D0B6 /* Mixpanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mixpanel.m; sourceTree = "<group>"; };
 		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		3732DF5D1759148100978A68 /* 1p-icons.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1p-icons.psd"; sourceTree = "<group>"; };
+		3732DF5E1759148100978A68 /* 1p-icons@2x.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1p-icons@2x.psd"; sourceTree = "<group>"; };
+		3732DF5F1759148100978A68 /* one-password-text-field.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "one-password-text-field.png"; sourceTree = "<group>"; };
+		3732DF601759148100978A68 /* one-password-text-field@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "one-password-text-field@2x.png"; sourceTree = "<group>"; };
+		3732DF611759148100978A68 /* onepassword-share-sheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onepassword-share-sheet.png"; sourceTree = "<group>"; };
+		3732DF621759148100978A68 /* onepassword-share-sheet@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onepassword-share-sheet@2x.png"; sourceTree = "<group>"; };
+		3732DF631759148100978A68 /* 1P-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-29.png"; sourceTree = "<group>"; };
+		3732DF641759148100978A68 /* 1P-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-29@2x.png"; sourceTree = "<group>"; };
+		3732DF651759148100978A68 /* 1P-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-50.png"; sourceTree = "<group>"; };
+		3732DF661759148100978A68 /* 1P-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-50@2x.png"; sourceTree = "<group>"; };
+		3732DF671759148100978A68 /* 1P-57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-57.png"; sourceTree = "<group>"; };
+		3732DF681759148100978A68 /* 1P-57@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-57@2x.png"; sourceTree = "<group>"; };
+		3732DF691759148100978A68 /* 1P-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-72.png"; sourceTree = "<group>"; };
+		3732DF6A1759148100978A68 /* 1P-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1P-72@2x.png"; sourceTree = "<group>"; };
+		3732DF6C1759148100978A68 /* onepassword_activityIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onepassword_activityIcon.png; sourceTree = "<group>"; };
+		3732DF6D1759148100978A68 /* onepassword_activityIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onepassword_activityIcon@2x.png"; sourceTree = "<group>"; };
+		3732DF6E1759148100978A68 /* onePassword_v3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePassword_v3.png; sourceTree = "<group>"; };
+		3732DF6F1759148100978A68 /* onePassword_v3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePassword_v3@2x.png"; sourceTree = "<group>"; };
+		3732DF701759148100978A68 /* onePassword_v4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePassword_v4.png; sourceTree = "<group>"; };
+		3732DF711759148100978A68 /* onePassword_v4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePassword_v4@2x.png"; sourceTree = "<group>"; };
+		3732DF721759148100978A68 /* onePasswordButton_highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePasswordButton_highlighted.png; sourceTree = "<group>"; };
+		3732DF731759148100978A68 /* onePasswordButton_highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePasswordButton_highlighted@2x.png"; sourceTree = "<group>"; };
+		3732DF741759148100978A68 /* onePasswordButton_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePasswordButton_normal.png; sourceTree = "<group>"; };
+		3732DF751759148100978A68 /* onePasswordButton_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePasswordButton_normal@2x.png"; sourceTree = "<group>"; };
+		3732DF761759148100978A68 /* onePasswordButton_v4_highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePasswordButton_v4_highlighted.png; sourceTree = "<group>"; };
+		3732DF771759148100978A68 /* onePasswordButton_v4_highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePasswordButton_v4_highlighted@2x.png"; sourceTree = "<group>"; };
+		3732DF781759148100978A68 /* onePasswordButton_v4_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onePasswordButton_v4_normal.png; sourceTree = "<group>"; };
+		3732DF791759148100978A68 /* onePasswordButton_v4_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onePasswordButton_v4_normal@2x.png"; sourceTree = "<group>"; };
+		3732DF7A1759148100978A68 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		3732DF7B1759148100978A68 /* RPSTPasswordManagementAppService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPSTPasswordManagementAppService.h; sourceTree = "<group>"; };
+		3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPSTPasswordManagementAppService.m; sourceTree = "<group>"; };
 		3733251D16E155A2002E2AB0 /* GenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPostViewController.h; sourceTree = "<group>"; };
 		3733251E16E155A2002E2AB0 /* GenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericPostViewController.m; sourceTree = "<group>"; };
 		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
@@ -1089,6 +1150,7 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				3732DF591759148100978A68 /* RPSTPasswordManagementAppService */,
 				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
@@ -1389,6 +1451,77 @@
 				372F890516755A2E0073D0B6 /* NSData+MPBase64.m */,
 			);
 			path = NSData_Base64;
+			sourceTree = "<group>";
+		};
+		3732DF591759148100978A68 /* RPSTPasswordManagementAppService */ = {
+			isa = PBXGroup;
+			children = (
+				3732DF5A1759148100978A68 /* images */,
+				3732DF7A1759148100978A68 /* README.md */,
+				3732DF7B1759148100978A68 /* RPSTPasswordManagementAppService.h */,
+				3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */,
+			);
+			name = RPSTPasswordManagementAppService;
+			path = Vendor/RPSTPasswordManagementAppService;
+			sourceTree = "<group>";
+		};
+		3732DF5A1759148100978A68 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				3732DF5B1759148100978A68 /* official-1pw-icon-set */,
+				3732DF6B1759148100978A68 /* riposte-icons */,
+			);
+			path = images;
+			sourceTree = "<group>";
+		};
+		3732DF5B1759148100978A68 /* official-1pw-icon-set */ = {
+			isa = PBXGroup;
+			children = (
+				3732DF5C1759148100978A68 /* 1P mono icons */,
+				3732DF631759148100978A68 /* 1P-29.png */,
+				3732DF641759148100978A68 /* 1P-29@2x.png */,
+				3732DF651759148100978A68 /* 1P-50.png */,
+				3732DF661759148100978A68 /* 1P-50@2x.png */,
+				3732DF671759148100978A68 /* 1P-57.png */,
+				3732DF681759148100978A68 /* 1P-57@2x.png */,
+				3732DF691759148100978A68 /* 1P-72.png */,
+				3732DF6A1759148100978A68 /* 1P-72@2x.png */,
+			);
+			path = "official-1pw-icon-set";
+			sourceTree = "<group>";
+		};
+		3732DF5C1759148100978A68 /* 1P mono icons */ = {
+			isa = PBXGroup;
+			children = (
+				3732DF5D1759148100978A68 /* 1p-icons.psd */,
+				3732DF5E1759148100978A68 /* 1p-icons@2x.psd */,
+				3732DF5F1759148100978A68 /* one-password-text-field.png */,
+				3732DF601759148100978A68 /* one-password-text-field@2x.png */,
+				3732DF611759148100978A68 /* onepassword-share-sheet.png */,
+				3732DF621759148100978A68 /* onepassword-share-sheet@2x.png */,
+			);
+			path = "1P mono icons";
+			sourceTree = "<group>";
+		};
+		3732DF6B1759148100978A68 /* riposte-icons */ = {
+			isa = PBXGroup;
+			children = (
+				3732DF6C1759148100978A68 /* onepassword_activityIcon.png */,
+				3732DF6D1759148100978A68 /* onepassword_activityIcon@2x.png */,
+				3732DF6E1759148100978A68 /* onePassword_v3.png */,
+				3732DF6F1759148100978A68 /* onePassword_v3@2x.png */,
+				3732DF701759148100978A68 /* onePassword_v4.png */,
+				3732DF711759148100978A68 /* onePassword_v4@2x.png */,
+				3732DF721759148100978A68 /* onePasswordButton_highlighted.png */,
+				3732DF731759148100978A68 /* onePasswordButton_highlighted@2x.png */,
+				3732DF741759148100978A68 /* onePasswordButton_normal.png */,
+				3732DF751759148100978A68 /* onePasswordButton_normal@2x.png */,
+				3732DF761759148100978A68 /* onePasswordButton_v4_highlighted.png */,
+				3732DF771759148100978A68 /* onePasswordButton_v4_highlighted@2x.png */,
+				3732DF781759148100978A68 /* onePasswordButton_v4_normal.png */,
+				3732DF791759148100978A68 /* onePasswordButton_v4_normal@2x.png */,
+			);
+			path = "riposte-icons";
 			sourceTree = "<group>";
 		};
 		3738A57216EA65AC00316ED8 /* RDActionSheet */ = {
@@ -2374,6 +2507,35 @@
 				3714DB871756EF9E00B23F4F /* picture@2x.png in Resources */,
 				3714DB921757DFFD00B23F4F /* user.png in Resources */,
 				3714DB931757DFFD00B23F4F /* user@2x.png in Resources */,
+				3732DF7D1759148100978A68 /* 1p-icons.psd in Resources */,
+				3732DF7E1759148100978A68 /* 1p-icons@2x.psd in Resources */,
+				3732DF7F1759148100978A68 /* one-password-text-field.png in Resources */,
+				3732DF801759148100978A68 /* one-password-text-field@2x.png in Resources */,
+				3732DF811759148100978A68 /* onepassword-share-sheet.png in Resources */,
+				3732DF821759148100978A68 /* onepassword-share-sheet@2x.png in Resources */,
+				3732DF831759148100978A68 /* 1P-29.png in Resources */,
+				3732DF841759148100978A68 /* 1P-29@2x.png in Resources */,
+				3732DF851759148100978A68 /* 1P-50.png in Resources */,
+				3732DF861759148100978A68 /* 1P-50@2x.png in Resources */,
+				3732DF871759148100978A68 /* 1P-57.png in Resources */,
+				3732DF881759148100978A68 /* 1P-57@2x.png in Resources */,
+				3732DF891759148100978A68 /* 1P-72.png in Resources */,
+				3732DF8A1759148100978A68 /* 1P-72@2x.png in Resources */,
+				3732DF8B1759148100978A68 /* onepassword_activityIcon.png in Resources */,
+				3732DF8C1759148100978A68 /* onepassword_activityIcon@2x.png in Resources */,
+				3732DF8D1759148100978A68 /* onePassword_v3.png in Resources */,
+				3732DF8E1759148100978A68 /* onePassword_v3@2x.png in Resources */,
+				3732DF8F1759148100978A68 /* onePassword_v4.png in Resources */,
+				3732DF901759148100978A68 /* onePassword_v4@2x.png in Resources */,
+				3732DF911759148100978A68 /* onePasswordButton_highlighted.png in Resources */,
+				3732DF921759148100978A68 /* onePasswordButton_highlighted@2x.png in Resources */,
+				3732DF931759148100978A68 /* onePasswordButton_normal.png in Resources */,
+				3732DF941759148100978A68 /* onePasswordButton_normal@2x.png in Resources */,
+				3732DF951759148100978A68 /* onePasswordButton_v4_highlighted.png in Resources */,
+				3732DF961759148100978A68 /* onePasswordButton_v4_highlighted@2x.png in Resources */,
+				3732DF971759148100978A68 /* onePasswordButton_v4_normal.png in Resources */,
+				3732DF981759148100978A68 /* onePasswordButton_v4_normal@2x.png in Resources */,
+				3732DF991759148100978A68 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2472,6 +2634,7 @@
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
+				3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
