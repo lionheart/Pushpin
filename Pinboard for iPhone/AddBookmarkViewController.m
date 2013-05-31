@@ -13,6 +13,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "PPCoreGraphics.h"
 
 @interface AddBookmarkViewController ()
 
@@ -464,7 +465,7 @@
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     
     cell.accessoryView = nil;
@@ -473,6 +474,8 @@
     cell.textLabel.enabled = YES;
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
     cell.imageView.image = nil;
+    cell.detailTextLabel.text = @"";
+    cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
 
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
@@ -558,10 +561,11 @@
                         }
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - 4];
+                            cell.detailTextLabel.textColor = HEX(0x96989DFF);
+                            cell.detailTextLabel.text = @"popular";
                         }
                         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                         cell.editing = NO;
-
                         break;
                 }
                 break;
