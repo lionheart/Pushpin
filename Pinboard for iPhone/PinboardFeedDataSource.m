@@ -238,7 +238,7 @@
     
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
-    NSString *tags = post[@"tags"];
+    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = NO;
     
@@ -302,9 +302,8 @@
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;
-    NSString *dotSeparatedTags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" * "];
-    for (NSString *tag in [dotSeparatedTags componentsSeparatedByString:@" * "]) {
-        NSRange range = [dotSeparatedTags rangeOfString:tag];
+    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
+        NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
 
