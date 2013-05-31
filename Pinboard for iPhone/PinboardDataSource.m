@@ -70,7 +70,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
     NSNumber *isPrivate = parameters[@"private"];
-    NSNumber *isRead = parameters[@"read"];
+    NSNumber *isRead = @(!([parameters[@"unread"] boolValue]));
     NSNumber *isStarred = parameters[@"starred"];
     NSNumber *hasTags = parameters[@"tagged"];
     NSArray *tags = parameters[@"tags"];
@@ -111,14 +111,13 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
     if (self.queryParameters[@"tags"]) {
         [queryComponents addObject:@"tags = :tags"];
     }
-    
+
     if (self.tags.count > 0) {
         NSString *tagComponent = [self.tags componentsJoinedByString:@", "];
         [queryComponents addObject:[NSString stringWithFormat:@"id IN (SELECT bookmark_id FROM tagging WHERE tag_id IN (%@))", tagComponent]];
     }
 
     [queryComponents addObject:@"id in (SELECT id FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
-
 
     NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
     search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
@@ -193,7 +192,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
     if (hasTags) {
         [queryComponents addObject:@"tags = :tags"];
-        parameters[@"tags"] = hasTags;
+        parameters[@"tags"] = @"";
     }
 
     self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
