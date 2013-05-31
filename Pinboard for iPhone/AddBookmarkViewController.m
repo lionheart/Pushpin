@@ -109,6 +109,7 @@
         self.suggestedTagsPayload = nil;
         self.popularTags = @[];
         self.recommendedTags = @[];
+        self.tagDescriptions = [NSMutableDictionary dictionary];
 
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
@@ -133,6 +134,7 @@
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer == self.tagGestureRecognizer) {
         [self prefillPopularTags];
+        [self.tagTextField resignFirstResponder];
     }
     else if (gestureRecognizer == self.titleGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
@@ -141,6 +143,8 @@
         [self prefillTitleAndForceUpdate:YES];
     }
     else if (gestureRecognizer == self.leftSwipeTagGestureRecognizer) {
+        [self.tagTextField resignFirstResponder];
+
         if (self.popularTagSuggestions.count > 0) {
             if (self.suggestedTagsVisible) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -562,7 +566,7 @@
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - 4];
                             cell.detailTextLabel.textColor = HEX(0x96989DFF);
-                            cell.detailTextLabel.text = @"popular";
+                            cell.detailTextLabel.text = self.tagDescriptions[cell.textLabel.text];
                         }
                         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                         cell.editing = NO;
@@ -638,11 +642,13 @@
         
         for (id tag in self.popularTags) {
             if (![existingTags containsObject:tag]) {
+                self.tagDescriptions[tag] = @"popular";
                 [newPopularTagSuggestions addObject:tag];
             }
         }
         for (id tag in self.recommendedTags) {
             if (![existingTags containsObject:tag] && ![self.popularTags containsObject:tag]) {
+                self.tagDescriptions[tag] = @"recommended";
                 [newPopularTagSuggestions addObject:tag];
             }
         }
@@ -661,20 +667,18 @@
             index++;
         }
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
 
-                self.popularTagSuggestions = newPopularTagSuggestions;
-                self.suggestedTagsVisible = YES;
-                
-                [self.tableView endUpdates];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-                
-                [self.tagTextField becomeFirstResponder];
-            });
+            self.popularTagSuggestions = newPopularTagSuggestions;
+            self.suggestedTagsVisible = YES;
+            
+            [self.tableView endUpdates];
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            
+            [self.tagTextField becomeFirstResponder];
         });
     }
 }
@@ -686,13 +690,11 @@
         && [[UIApplication sharedApplication] canOpenURL:url]
         && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
     if (shouldPrefillTags) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                self.loadingTags = YES;
-                [self.tableView endUpdates];
-            });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            self.loadingTags = YES;
+            [self.tableView endUpdates];
         });
 
         ASPinboard *pinboard = [ASPinboard sharedInstance];
@@ -702,13 +704,11 @@
                                    self.recommendedTags = recommended;
                                    [self handleTagSuggestions];
 
-                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           [self.tableView beginUpdates];
-                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                                           self.loadingTags = NO;
-                                           [self.tableView endUpdates];
-                                       });
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       [self.tableView beginUpdates];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       self.loadingTags = NO;
+                                       [self.tableView endUpdates];
                                    });
                                }];
     }

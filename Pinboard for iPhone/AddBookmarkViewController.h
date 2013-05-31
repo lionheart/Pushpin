@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSString *postDescription;
 @property (nonatomic, strong) UITextView *postDescriptionTextView;
 @property (nonatomic, strong) NSDictionary *tagCounts;
+@property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
