@@ -41,6 +41,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
+        self.updateInProgress = NO;
     }
     return self;
 }
@@ -62,6 +63,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         [self filterWithParameters:parameters];
+        self.updateInProgress = NO;
     }
     return self;
 }
@@ -413,10 +415,12 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                     if (!lastUpdated) {
                                         [self updateStarredPosts:^{
                                             kPinboardDataSourceUpdateInProgress = NO;
+                                            self.updateInProgress = NO;
                                             success();
                                         }
                                                          failure:^(NSError *error) {
                                                              kPinboardDataSourceUpdateInProgress = NO;
+                                                             self.updateInProgress = NO;
                                                          }];
                                     }
                                     else {
@@ -425,6 +429,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                         }
                                                          failure:^(NSError *error) {
                                                              kPinboardDataSourceUpdateInProgress = NO;
+                                                             self.updateInProgress = NO;
                                                          }];
                                         success();                                            
                                     }
@@ -432,20 +437,23 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                 failure:^(NSError *error) {
                                     BookmarksFailureBlock(error);
                                     kPinboardDataSourceUpdateInProgress= NO;
+                                    self.updateInProgress = NO;
                                 }];
             
         }
         else {
             kPinboardDataSourceUpdateInProgress= NO;
+            self.updateInProgress = NO;
             success();
         }
     };
 
-    if (kPinboardDataSourceUpdateInProgress) {
+    if (kPinboardDataSourceUpdateInProgress || self.updateInProgress) {
         success();
     }
     else {
         kPinboardDataSourceUpdateInProgress = YES;
+        self.updateInProgress = YES;
         [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
     }
 }
@@ -556,12 +564,12 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             }
         }
         
-        self.posts = newPosts;
-        
+        self.posts = [NSMutableArray arrayWithArray:newPosts];
+
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
-        for (NSDictionary *post in newPosts) {
+        for (NSDictionary *post in self.posts) {
             [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newHeights addObject:height];
                 [newStrings addObject:string];
@@ -818,8 +826,8 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
-    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    NSString *description = post[@"description"];
+    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];

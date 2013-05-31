@@ -124,6 +124,7 @@ typedef NSInteger PPPostAction;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;

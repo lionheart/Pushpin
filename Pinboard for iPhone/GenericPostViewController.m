@@ -109,7 +109,7 @@
 
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
@@ -123,6 +123,18 @@
 
 - (void)popViewController {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.tableView == tableView;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self deletePostsAtIndexPaths:@[indexPath]];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -430,15 +442,13 @@
     }
 }
 
-- (void)toggleMultipleDeletion:(id)sender {
-    self.multipleDeleteButton.enabled = NO;
-    NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
-    [self.postDataSource deletePostsAtIndexPaths:selectedIndexPaths callback:^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
+    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [selectedIndexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 [self.tableView deselectRowAtIndexPath:obj animated:YES];
             }];
-
+            
             [self.navigationItem setHidesBackButton:NO animated:YES];
             [self.editButton setStyle:UIBarButtonItemStylePlain];
             [self.editButton setTitle:@"Edit"];
@@ -448,22 +458,27 @@
                 [self.tableView beginUpdates];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                // [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView endUpdates];
             }];
             [self.tableView setEditing:NO animated:YES];
             [CATransaction commit];
-
+            
             [UIView animateWithDuration:0.25 animations:^{
                 UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
                 searchTextField.enabled = YES;
-
+                
                 CGRect bounds = [[UIScreen mainScreen] bounds];
                 CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
                 self.toolbar.frame = frame;
             }];
         });
     }];
+}
+
+- (void)toggleMultipleDeletion:(id)sender {
+    self.multipleDeleteButton.enabled = NO;
+    NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
+    [self deletePostsAtIndexPaths:selectedIndexPaths];
 }
 
 #pragma mark - Table view data source
