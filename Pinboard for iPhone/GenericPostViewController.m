@@ -53,6 +53,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
+    self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
+    self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
+    [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
+
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
@@ -129,6 +135,10 @@
     [super viewWillDisappear:animated];
 
     self.bookmarkRefreshTimerPaused = YES;
+}
+
+- (void)popViewController {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
