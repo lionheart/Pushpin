@@ -745,13 +745,13 @@
                                        NSArray *metaTags = [root findChildTags:@"meta"];
                                        for (HTMLNode *tag in metaTags) {
                                            if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
-                                               description = [tag getAttributeNamed:@"content"];
+                                               description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                                                break;
                                            }
                                        }
                                        
                                        if (titleTag && titleTag.contents) {
-                                           callback(titleTag.contents, description);
+                                           callback([titleTag.contents stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]], description);
                                        }
                                        else {
                                            callback(@"", description);
