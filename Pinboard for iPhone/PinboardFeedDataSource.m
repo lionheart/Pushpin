@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "ASPinboard/ASPinboard.h"
 #import "NSAttributedString+Attributes.h"
+#import "NSString+URLEncoding2.h"
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
 
@@ -101,7 +102,22 @@
 }
 
 - (NSURL *)url {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@", [self.components componentsJoinedByString:@"/"]]];
+    NSMutableArray *escapedComponents = [NSMutableArray array];
+    for (NSString *component in self.components) {
+        NSString *substring = [component substringFromIndex:2];
+        if ([component hasPrefix:@"t:"]) {
+            substring = [NSString stringWithFormat:@"t:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            [escapedComponents addObject:substring];
+        }
+        else if ([component hasPrefix:@"u:"]) {
+            substring = [NSString stringWithFormat:@"u:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            [escapedComponents addObject:substring];
+        }
+        else {
+            [escapedComponents addObject:component];
+        }
+    }
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@", [escapedComponents componentsJoinedByString:@"/"]]];
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
@@ -137,7 +153,7 @@
                                        [tags removeAllObjects];
                                        [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
                                        for (NSString *tag in element[@"t"]) {
-                                           if (![tag isEqualToString:@""]) {
+                                           if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
                                                [tags addObject:tag];
                                            }
                                        }
@@ -335,7 +351,7 @@
     
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@"/"]]];
+    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
     [result next];
     if ([result intForColumnIndex:0] > 0) {
         postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:postViewController action:@selector(removeBarButtonTouchUpside:)];
@@ -361,7 +377,7 @@
 - (void)addDataSource:(void (^)())callback {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@"/"]]];
+    [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
     [db close];
     callback();
 }
@@ -369,7 +385,7 @@
 - (void)removeDataSource:(void (^)())callback {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
-    [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@"/"]]];
+    [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
     [db close];
     callback();
 }
