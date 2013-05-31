@@ -749,6 +749,9 @@
 }
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
+    if (index == 0) {
+        DLog(@"%@", self.links[index]);
+    }
     return self.links[index];
 }
 
@@ -760,7 +763,7 @@
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSString *description = post[@"description"];
-    NSString *tags = post[@"tags"];
+    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];
     
@@ -821,12 +824,11 @@
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
-    
+
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;
-    NSString *dotSeparatedTags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" * "];
-    for (NSString *tag in [dotSeparatedTags componentsSeparatedByString:@" * "]) {
-        NSRange range = [dotSeparatedTags rangeOfString:tag];
+    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
+        NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
 
