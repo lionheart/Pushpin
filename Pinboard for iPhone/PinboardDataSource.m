@@ -319,6 +319,7 @@
                 }
                 
                 if (updated_or_created) {
+                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id in (SELECT id FROM bookmark WHERE hash=?" withArgumentsInArray:@[element[@"hash"]]];
                     for (id tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
                         tagIdNumber = [tags objectForKey:tagName];
                         if (!tagIdNumber) {
@@ -329,13 +330,14 @@
                             tagIdNumber = @([results intForColumnIndex:0]);
                             [tags setObject:tagIdNumber forKey:tagName];
                         }
-                        
-                        [db executeUpdate:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
+
+                        [db executeUpdate:@"INSERT INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
                     }
                 }
             }
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-            
+            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+
             for (NSString *bookmarkHash in bookmarksToDelete) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
             }
