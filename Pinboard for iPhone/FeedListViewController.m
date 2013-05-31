@@ -354,53 +354,39 @@
 
     switch (indexPath.section) {
         case 0: {
-            PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-            postViewController.postDataSource = pinboardDataSource;
-
             switch (indexPath.row) {
                 case 0: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
-
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @YES, @"limit": @100, @"offset": @0}];
-
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE private=:private ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"private": @NO, @"limit": @100, @"offset": @0}];
-
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Public", nil);
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE unread=:unread ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"unread": @YES, @"limit": @100, @"offset": @0}];
-
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Unread", nil);
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE id NOT IN (SELECT DISTINCT bookmark_id FROM tagging) ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @100, @"offset": @0}];
-
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
-                    pinboardDataSource.query = @"SELECT * FROM bookmark WHERE starred=:starred ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-                    pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"starred": @YES, @"limit": @100, @"offset": @0}];
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;

@@ -43,15 +43,37 @@
     return self;
 }
 
+- (id)initWithParameters:(NSDictionary *)parameters {
+    self = [super init];
+    if (self) {
+        self.posts = [NSMutableArray array];
+        self.strings = [NSMutableArray array];
+        self.heights = [NSMutableArray array];
+        self.links = [NSMutableArray array];
+
+        self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
+        self.tags = @[];
+
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [self.dateFormatter setLocale:self.locale];
+        [self.dateFormatter setDoesRelativeDateFormatting:YES];
+        [self filterWithParameters:parameters];
+    }
+    return self;
+}
+
 - (void)filterWithParameters:(NSDictionary *)parameters {
     NSNumber *isPrivate = parameters[@"private"];
     NSNumber *isRead = parameters[@"read"];
+    NSNumber *isStarred = parameters[@"starred"];
     NSNumber *hasTags = parameters[@"tagged"];
     NSArray *tags = parameters[@"tags"];
     NSInteger offset = [parameters[@"offset"] integerValue];
     NSInteger limit = [parameters[@"limit"] integerValue];
 
-    [self filterByPrivate:isPrivate isRead:isRead hasTags:hasTags tags:tags offset:offset limit:limit];
+    [self filterByPrivate:isPrivate isRead:isRead isStarred:isStarred hasTags:hasTags tags:tags offset:offset limit:limit];
 }
 
 - (void)filterWithQuery:(NSString *)query {
@@ -78,6 +100,10 @@
         [queryComponents addObject:@"unread = :unread"];
     }
     
+    if (self.queryParameters[@"starred"]) {
+        [queryComponents addObject:@"starred = :starred"];
+    }
+
     if (self.queryParameters[@"tags"]) {
         [queryComponents addObject:@"tags = :tags"];
     }
@@ -114,6 +140,10 @@
         [queryComponents addObject:@"unread = :unread"];
     }
 
+    if (self.queryParameters[@"starred"]) {
+        [queryComponents addObject:@"starred = :starred"];
+    }
+
     if (self.queryParameters[@"tags"]) {
         [queryComponents addObject:@"tags = :tags"];
     }
@@ -137,7 +167,7 @@
     return dataSource;
 }
 
-- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
+- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead isStarred:(NSNumber *)starred hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
     NSMutableArray *queryComponents = [NSMutableArray array];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
     self.maxResults = limit;  
@@ -152,6 +182,11 @@
         parameters[@"unread"] = @(![isRead boolValue]);
     }
     
+    if (starred) {
+        [queryComponents addObject:@"starred = :starred"];
+        parameters[@"starred"] = starred;
+    }
+
     if (hasTags) {
         [queryComponents addObject:@"tags = :tags"];
         parameters[@"tags"] = hasTags;

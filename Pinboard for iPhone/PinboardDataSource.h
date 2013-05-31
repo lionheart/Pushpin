@@ -31,7 +31,7 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options;
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
-- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
+- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead isStarred:(NSNumber *)starred hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 
 - (PinboardDataSource *)searchDataSource;
 - (PinboardDataSource *)dataSourceWithAdditionalTagID:(NSNumber *)tagID;
@@ -41,5 +41,7 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 
 - (NSAttributedString *)attributedStringForPost:(NSDictionary *)post;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
+
+- (id)initWithParameters:(NSDictionary *)parameters;
 
 @end
