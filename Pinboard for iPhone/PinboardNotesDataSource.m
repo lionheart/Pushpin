@@ -15,7 +15,14 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.notes = [NSMutableArray array];
+        self.notes = [NSArray array];
+        self.strings = [NSArray array];
+        self.heights = [NSArray array];
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [self.dateFormatter setLocale:self.locale];
+        [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }
     return self;
 }
@@ -46,18 +53,6 @@
     return NO;
 }
 
-- (NSString *)titleForPostAtIndex:(NSInteger)index {
-    return [self.notes[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-}
-
-- (NSString *)descriptionForPostAtIndex:(NSInteger)index {
-    return @"";
-}
-
-- (NSString *)tagsForPostAtIndex:(NSInteger)index {
-    return @"";
-}
-
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.notes[index][@"id"]];
@@ -67,20 +62,6 @@
     return self.notes[index];
 }
 
-- (NSDate *)dateForPostAtIndex:(NSInteger)index {
-    return self.notes[index][@"updated_at"];
-}
-
-- (NSString *)formattedDateForPostAtIndex:(NSInteger)index {
-    NSDateFormatter *relativeDateFormatter = [[NSDateFormatter alloc] init];
-    [relativeDateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [relativeDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    [relativeDateFormatter setLocale:locale];
-    [relativeDateFormatter setDoesRelativeDateFormatting:YES];
-    return [relativeDateFormatter stringFromDate:[self dateForPostAtIndex:index]];
-}
-
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
     [self updatePostsWithSuccess:success failure:failure options:nil];
 }
@@ -88,7 +69,7 @@
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index {
     UIViewController *controller = [[UIViewController alloc] init];
     UIWebView *webView = [[UIWebView alloc] init];
-    controller.title = [self titleForPostAtIndex:index];
+    controller.title = [self.notes[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     webView.frame = controller.view.frame;
     controller.view = webView;
     
@@ -146,7 +127,7 @@
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             else {
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
             }
 
             index++;
@@ -160,6 +141,18 @@
         }
         
         self.notes = [newNotes copy];
+
+        NSMutableArray *newStrings = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        for (NSDictionary *note in newNotes) {
+            [self metadataForNote:note callback:^(NSAttributedString *string, NSNumber *height) {
+                [newHeights addObject:height];
+                [newStrings addObject:string];
+            }];
+        }
+        
+        self.strings = newStrings;
+        self.heights = newHeights;
         
         if (success) {
             success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
@@ -167,16 +160,36 @@
     }];
 }
 
+- (NSArray *)linksForPostAtIndex:(NSInteger)index {
+    return @[];
+}
+
+- (CGFloat)heightForPostAtIndex:(NSInteger)index {
+    return [self.heights[index] floatValue];
+}
+
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+    return self.strings[index];
+}
+
+- (BOOL)supportsSearch {
+    return NO;
+}
+
+- (BOOL)supportsTagDrilldown {
+    return NO;
+}
+
+- (void)metadataForNote:(NSDictionary *)note callback:(void (^)(NSAttributedString *, NSNumber *))callback {
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
     
-    NSString *title = [self titleForPostAtIndex:index];
-    NSString *dateString = [self formattedDateForPostAtIndex:index];
+    NSString *title = [note[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSString *dateString = [self.dateFormatter stringFromDate:note[@"updated_at"]];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-    
+    NSRange titleRange = NSMakeRange(0, title.length);
+
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
@@ -187,31 +200,9 @@
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    return attributedString;
-}
-
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(0, [[self titleForPostAtIndex:index] length]);
-}
-
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(NSNotFound, 0);
-}
-
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(NSNotFound, 0);
-}
-
-- (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    return @[];
-}
-
-- (BOOL)supportsSearch {
-    return NO;
-}
-
-- (BOOL)supportsTagDrilldown {
-    return NO;
+    
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    callback(attributedString, height);
 }
 
 @end

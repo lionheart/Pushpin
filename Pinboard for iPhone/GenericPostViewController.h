@@ -43,26 +43,18 @@ typedef NSInteger PPPostAction;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
 
-- (NSArray *)actionsForPost:(NSDictionary *)post;
-- (NSString *)titleForPostAtIndex:(NSInteger)index;
+- (CGFloat)heightForPostAtIndex:(NSInteger)index;
 
-- (NSString *)descriptionForPostAtIndex:(NSInteger)index;
+- (NSArray *)actionsForPost:(NSDictionary *)post;
+
 - (NSArray *)linksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index;
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index;
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index;
 
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
 
-// These are separated by spaces
-- (NSString *)tagsForPostAtIndex:(NSInteger)index;
 - (NSInteger)sourceForPostAtIndex:(NSInteger)index;
-- (NSDate *)dateForPostAtIndex:(NSInteger)index;
-- (NSString *)formattedDateForPostAtIndex:(NSInteger)index;
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
-- (BOOL)isPostAtIndexRead:(NSInteger)index;
 - (BOOL)supportsSearch;
 - (BOOL)supportsTagDrilldown;
 
