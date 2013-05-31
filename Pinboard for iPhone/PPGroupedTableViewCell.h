@@ -13,6 +13,7 @@
 + (CALayer *)topRectangleLayer;
 + (CALayer *)bottomRectangleLayer;
 + (CALayer *)baseLayerForSelectedBackground;
++ (CALayer *)layerForNonGroupedBackground;
 - (void)setSelectedBackgroundViewWithLayer:(CALayer *)layer;
 
 @end

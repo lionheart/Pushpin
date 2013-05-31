@@ -193,16 +193,21 @@
         [subview removeFromSuperview];
     }
 
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    if (tableView == self.tableView) {
+        CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+        if (indexPath.row > 0) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+        }
+
+        if (indexPath.row < 5) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        }
+        [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+    }
+    else {
+        [cell setSelectedBackgroundViewWithLayer:[PPGroupedTableViewCell layerForNonGroupedBackground]];
     }
 
-    if (indexPath.row < 5) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
     NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
