@@ -679,9 +679,9 @@
     if (!_mobilizer) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _mobilizer = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
-        
+
         if (!_mobilizer) {
-            _mobilizer = @(MOBILIZER_GOOGLE);
+            _mobilizer = @(MOBILIZER_INSTAPAPER);
         }
     }
     return _mobilizer;
