@@ -23,6 +23,7 @@
 @property (nonatomic) CGRect activityIndicatorFrameBottom;
 @property (nonatomic, retain) NSTimer *loginTimer;
 @property (nonatomic, strong) NSTimer *messageUpdateTimer;
+@property (nonatomic, strong) UIButton *onePasswordButton;
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;
@@ -32,5 +33,6 @@
 - (void)loginFailed;
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
+- (void)sendToOnePassword;
 
 @end
