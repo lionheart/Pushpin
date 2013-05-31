@@ -101,6 +101,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     if (textField == self.tagsTextField) {
+        self.tagsTextField.text = [self.tagsTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [self addButtonTouchUpInside:nil];
     }
     else {
@@ -128,11 +129,6 @@
 }
 
 - (void)addButtonTouchUpInside:(id)sender {
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    self.tagsTextField.enabled = NO;
-    self.userTextField.enabled = NO;
-    
     NSMutableArray *components = [NSMutableArray array];
     NSString *username = self.userTextField.text;
     if (username && username.length > 0) {
@@ -140,7 +136,7 @@
     }
     
     NSString *tags = self.tagsTextField.text;
-    if (tags) {
+    if (tags && tags.length > 0) {
         for (NSString *tag in [tags componentsSeparatedByString:@" "]) {
             if (tag.length > 0) {
                 [components addObject:[NSString stringWithFormat:@"t:%@", tag]];
@@ -148,10 +144,16 @@
         }
     }
     
-    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
-    [dataSource addDataSource:^{
-        [self.modalDelegate closeModal:self];
-    }];
+    if (components.count > 0) {
+        self.navigationItem.leftBarButtonItem.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        self.tagsTextField.enabled = NO;
+        self.userTextField.enabled = NO;
+        PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+        [dataSource addDataSource:^{
+            [self.modalDelegate closeModal:self];
+        }];
+    }
 }
 
 @end
