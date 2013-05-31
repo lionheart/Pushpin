@@ -84,6 +84,7 @@
 		3732DF981759148100978A68 /* onePasswordButton_v4_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF791759148100978A68 /* onePasswordButton_v4_normal@2x.png */; };
 		3732DF991759148100978A68 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF7A1759148100978A68 /* README.md */; };
 		3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */; };
+		3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
 		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
 		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -618,6 +619,8 @@
 		3732DF7A1759148100978A68 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		3732DF7B1759148100978A68 /* RPSTPasswordManagementAppService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPSTPasswordManagementAppService.h; sourceTree = "<group>"; };
 		3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPSTPasswordManagementAppService.m; sourceTree = "<group>"; };
+		3732DF9B175957F000978A68 /* PPAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAboutViewController.h; sourceTree = "<group>"; };
+		3732DF9C175957F000978A68 /* PPAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPAboutViewController.m; sourceTree = "<group>"; };
 		3733251D16E155A2002E2AB0 /* GenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPostViewController.h; sourceTree = "<group>"; };
 		3733251E16E155A2002E2AB0 /* GenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericPostViewController.m; sourceTree = "<group>"; };
 		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
@@ -1925,6 +1928,8 @@
 				3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */,
 				3714DB8D1757D81D00B23F4F /* PPAddSavedFeedViewController.h */,
 				3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */,
+				3732DF9B175957F000978A68 /* PPAboutViewController.h */,
+				3732DF9C175957F000978A68 /* PPAboutViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
 			name = Pushpin;
@@ -2635,6 +2640,7 @@
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
 				3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */,
+				3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
