@@ -191,8 +191,14 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
     }
 
     if (hasTags) {
-        [queryComponents addObject:@"tags = :tags"];
-        parameters[@"tags"] = @"";
+        if ([hasTags boolValue]) {
+            [queryComponents addObject:@"tags != :tags"];
+            parameters[@"tags"] = @"";
+        }
+        else {
+            [queryComponents addObject:@"tags = :tags"];
+            parameters[@"tags"] = @"";
+        }
     }
 
     self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
