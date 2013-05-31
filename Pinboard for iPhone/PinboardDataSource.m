@@ -891,11 +891,13 @@
                 [tagNames addObject:[results stringForColumnIndex:0]];
             }
             [db close];
-            
-            GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-            postViewController.postDataSource = pinboardDataSource;
-            postViewController.title = [tagNames componentsJoinedByString:@"+"];
-            callback(postViewController);
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                postViewController.postDataSource = pinboardDataSource;
+                postViewController.title = [tagNames componentsJoinedByString:@"+"];
+                callback(postViewController);
+            });
         }
     });
 }
