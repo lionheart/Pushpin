@@ -118,6 +118,11 @@ typedef NSInteger PPPostAction;
 
 - (void)toggleEditingMode:(id)sender;
 
+// Right swipe
+@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
+
+- (void)popViewController;
+
 - (void)dismissViewController;
 - (void)checkForPostUpdates;
 - (void)showConfirmDeletionAlert;
