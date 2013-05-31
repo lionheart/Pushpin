@@ -597,7 +597,7 @@
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-    __block NSInteger index = 0;
+    __block NSInteger numberOfPostsDeleted = 0;
     NSString *url;
 
     for (NSIndexPath *indexPath in indexPaths) {
@@ -612,11 +612,9 @@
             [db close];
 
             [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
-            index++;
 
             [indexPathsToDelete addObject:indexPath];
-            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:([self.queryParameters[@"limit"] integerValue] - index) inSection:0]];
-
+            numberOfPostsDeleted++;
             dispatch_group_leave(group);
         };
 
@@ -630,10 +628,6 @@
 
     dispatch_group_notify(group, queue, ^{
         NSInteger previousPostCount = [self numberOfPosts];
-        NSInteger total = [self.queryParameters[@"limit"] integerValue];
-        for (int i=total; i>previousPostCount; i--) {
-            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i-1 inSection:0]];
-        }
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -668,6 +662,10 @@
             }];
         }
         [db close];
+
+        for (int i=previousPostCount - numberOfPostsDeleted; i<self.posts.count; i++) {
+            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        }
 
         self.strings = newStrings;
         self.heights = newHeights;
@@ -751,9 +749,6 @@
 }
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    if (index == 0) {
-        DLog(@"%@", self.links[index]);
-    }
     return self.links[index];
 }
 
