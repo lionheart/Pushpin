@@ -529,6 +529,11 @@
                      "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                  ");"];
                 [db executeUpdate:@"PRAGMA user_version=5;"];
+                
+            case 5:
+                [db closeOpenResultSets];
+                [db executeUpdate:@"DROP INDEX bookmark_hash_idx"];
+                [db executeUpdate:@"PRAGMA user_version=6;"];
 
             default:
                 break;
