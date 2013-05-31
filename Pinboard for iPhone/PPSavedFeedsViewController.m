@@ -37,7 +37,7 @@
     FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
     [self.feeds removeAllObjects];
     while ([result next]) {
-        NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@"/"];
+        NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
         [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
     }
     [db close];

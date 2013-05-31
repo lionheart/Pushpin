@@ -10,6 +10,7 @@
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PinboardFeedDataSource.h"
+#import "NSString+URLEncoding2.h"
 
 @interface PPAddSavedFeedViewController ()
 
@@ -109,10 +110,6 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if ([string rangeOfString:@"/"].location != NSNotFound || [string rangeOfString:@":"].location != NSNotFound) {
-        return NO;
-    }
-
     if (textField == self.tagsTextField) {
         if ([string isEqualToString:@" "]) {
             NSMutableString *mutableTags = [NSMutableString stringWithString:textField.text];
