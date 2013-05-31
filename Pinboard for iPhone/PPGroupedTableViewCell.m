@@ -53,4 +53,11 @@
     return selectedBackgroundLayer;
 }
 
++ (CALayer *)layerForNonGroupedBackground {
+    CALayer *selectedBackgroundLayer = [CALayer layer];
+    selectedBackgroundLayer.frame = CGRectMake(0, 0, 320, 44);
+    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
+    return selectedBackgroundLayer;
+}
+
 @end
