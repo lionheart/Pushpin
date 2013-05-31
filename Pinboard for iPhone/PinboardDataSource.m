@@ -26,9 +26,19 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.stringsForPosts = [NSMutableDictionary dictionary];
+        self.posts = [NSMutableArray array];
+        self.strings = [NSMutableArray array];
+        self.heights = [NSMutableArray array];
+        self.links = [NSMutableArray array];
+
         self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
         self.tags = @[];
+        
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [self.dateFormatter setLocale:self.locale];
+        [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }
     return self;
 }
@@ -486,6 +496,21 @@
         
         self.posts = newPosts;
         
+        NSMutableArray *newStrings = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newLinks = [NSMutableArray array];
+        for (NSDictionary *post in newPosts) {
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newHeights addObject:height];
+                [newStrings addObject:string];
+                [newLinks addObject:links];
+            }];
+        }
+        
+        self.strings = newStrings;
+        self.heights = newHeights;
+        self.links = newLinks;
+        
         if (success != nil) {
             success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
         }
@@ -496,18 +521,6 @@
     [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
         [self updatePostsFromDatabaseWithSuccess:success failure:failure];
     } failure:failure progress:nil options:options];
-}
-
-- (NSString *)titleForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-}
-
-- (NSString *)descriptionForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-}
-
-- (NSString *)tagsForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
 }
 
 - (NSInteger)sourceForPostAtIndex:(NSInteger)index {
@@ -532,20 +545,6 @@
 
 - (NSDictionary *)postAtIndex:(NSInteger)index {
     return self.posts[index];
-}
-
-- (NSDate *)dateForPostAtIndex:(NSInteger)index {
-    return self.posts[index][@"created_at"];
-}
-
-- (NSString *)formattedDateForPostAtIndex:(NSInteger)index {
-    NSDateFormatter *relativeDateFormatter = [[NSDateFormatter alloc] init];
-    [relativeDateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [relativeDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    [relativeDateFormatter setLocale:locale];
-    [relativeDateFormatter setDoesRelativeDateFormatting:YES];
-    return [relativeDateFormatter stringFromDate:[self dateForPostAtIndex:index]];
 }
 
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
@@ -628,11 +627,20 @@
     }
 
     dispatch_group_notify(group, queue, ^{
+        NSInteger previousPostCount = [self numberOfPosts];
+        NSInteger total = [self.queryParameters[@"limit"] integerValue];
+        for (int i=total; i>previousPostCount; i--) {
+            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i-1 inSection:0]];
+        }
+
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
 
         [self.posts removeAllObjects];
+        NSMutableArray *newStrings = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newLinks = [NSMutableArray array];
         while ([results next]) {
             NSString *title = [results stringForColumn:@"title"];
 
@@ -651,9 +659,17 @@
                                    };
 
             [self.posts addObject:post];
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newHeights addObject:height];
+                [newStrings addObject:string];
+                [newLinks addObject:links];
+            }];
         }
         [db close];
 
+        self.strings = newStrings;
+        self.heights = newHeights;
+        self.links = newLinks;
         callback(indexPathsToDelete, indexPathsToAdd);
     });
 }
@@ -687,7 +703,9 @@
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [self.posts removeObjectAtIndex:index];
-
+                [self.heights removeObjectAtIndex:index];
+                [self.strings removeObjectAtIndex:index];
+                [self.links removeObjectAtIndex:index];
                 callback(indexPath);
             });
         };
@@ -731,37 +749,45 @@
 }
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    NSMutableArray *links = [NSMutableArray array];
-    NSInteger location = [self rangeForTagsForPostAtIndex:index].location;
-    NSString *tags = [self.posts[index][@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" * "];
-    for (NSString *tag in [tags componentsSeparatedByString:@" * "]) {
-        NSRange range = [tags rangeOfString:tag];
-        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-    }
-    return links;
+    return self.links[index];
 }
 
-- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
-    NSString *title = [self titleForPostAtIndex:index];
-    NSString *description = [self descriptionForPostAtIndex:index];
-    NSString *tags = [self tagsForPostAtIndex:index];
-    NSString *dateString = [self formattedDateForPostAtIndex:index];
-    BOOL isRead = [self isPostAtIndexRead:index];
+    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSString *description = post[@"description"];
+    NSString *tags = post[@"tags"];
+    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
+    BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
+    NSRange titleRange = NSMakeRange(0, title.length);
     
-    NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
-    if (descriptionRange.location != NSNotFound) {
+    NSRange descriptionRange;
+    if ([description isEqualToString:@""]) {
+        descriptionRange = NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        descriptionRange = NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
     
-    NSRange tagRange = [self rangeForTagsForPostAtIndex:index];
+    NSRange tagRange;
+    if ([tags isEqualToString:@""]) {
+        tagRange = NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSInteger offset = 1;
+        if (descriptionRange.location != NSNotFound) {
+            offset++;
+        }
+        tagRange = NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
+    }
+
     BOOL hasTags = tagRange.location != NSNotFound;
     
     if (hasTags) {
@@ -793,38 +819,18 @@
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    return attributedString;
-}
 
-- (NSRange)rangeForTitleForPostAtIndex:(NSInteger)index {
-    return NSMakeRange(0, [[self titleForPostAtIndex:index] length]);
-}
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    
+    NSMutableArray *links = [NSMutableArray array];
+    NSInteger location = tagRange.location;
+    NSString *dotSeparatedTags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" * "];
+    for (NSString *tag in [dotSeparatedTags componentsSeparatedByString:@" * "]) {
+        NSRange range = [dotSeparatedTags rangeOfString:tag];
+        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
+    }
 
-- (NSRange)rangeForDescriptionForPostAtIndex:(NSInteger)index {
-    NSString *description = [self descriptionForPostAtIndex:index];
-    if ([description isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        return NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
-    }
-}
-
-- (NSRange)rangeForTagsForPostAtIndex:(NSInteger)index {
-    NSString *tags = [self tagsForPostAtIndex:index];
-    if ([tags isEqualToString:@""]) {
-        return NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSRange titleRange = [self rangeForTitleForPostAtIndex:index];
-        NSRange descriptionRange = [self rangeForDescriptionForPostAtIndex:index];
-        NSInteger offset = 1;
-        if (descriptionRange.location != NSNotFound) {
-            offset++;
-        }
-        return NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
-    }
+    callback(attributedString, height, links);
 }
 
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
@@ -856,6 +862,14 @@
             callback(postViewController);
         }
     });
+}
+
+- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+    return self.strings[index];
+}
+
+- (CGFloat)heightForPostAtIndex:(NSInteger)index {
+    return [self.heights[index] floatValue];
 }
 
 - (BOOL)supportsSearch {

@@ -15,11 +15,13 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, retain) NSMutableArray *posts;
-@property (nonatomic, retain) NSMutableDictionary *stringsForPosts;
-@property (nonatomic, retain) NSArray *heights;
-@property (nonatomic, retain) NSArray *strings;
+@property (nonatomic, retain) NSMutableArray *heights;
+@property (nonatomic, retain) NSMutableArray *strings;
+@property (nonatomic, retain) NSMutableArray *links;
 @property (nonatomic, retain) NSArray *urls;
 @property (nonatomic) NSInteger maxResults;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSLocale *locale;
 
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, strong) NSMutableDictionary *queryParameters;
@@ -36,5 +38,8 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;
+
+- (NSAttributedString *)attributedStringForPost:(NSDictionary *)post;
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
 
 @end
