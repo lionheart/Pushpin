@@ -24,6 +24,7 @@
 #import "PPBrowserSettingsViewController.h"
 #import "FMDatabase.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPAboutViewController.h"
 
 @interface SettingsViewController ()
 
@@ -129,12 +130,7 @@
 
 - (void)showAboutPage {
     [[Mixpanel sharedInstance] track:@"Opened about page"];
-    UIViewController *aboutViewController = [[UIViewController alloc] init];
-    UIWebView *webView = [[UIWebView alloc] init];
-    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"about" ofType:@"html"]];
-    [webView loadRequest:[NSURLRequest requestWithURL:url]];
-    webView.delegate = self;
-    aboutViewController.view = webView;
+    PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
     aboutViewController.title = NSLocalizedString(@"About", nil);
     aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
     UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];

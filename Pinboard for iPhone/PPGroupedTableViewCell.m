@@ -24,33 +24,49 @@
     return self;
 }
 
-- (void)setSelectedBackgroundViewWithLayer:(CALayer *)layer {
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    [selectedBackgroundView.layer addSublayer:layer];
-    selectedBackgroundView.layer.masksToBounds = YES;
-    self.selectedBackgroundView = selectedBackgroundView;
++ (CALayer *)baseLayerForSelectedBackgroundForHeight:(CGFloat)height {
+    CALayer *selectedBackgroundLayer = [CALayer layer];
+    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, height);
+    selectedBackgroundLayer.cornerRadius = 10;
+    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
+    return selectedBackgroundLayer;
 }
 
-+ (CALayer *)topRectangleLayer {
++ (CALayer *)bottomRectangleLayerForHeight:(CGFloat)height {
+    CALayer *layer = [CALayer layer];
+    layer.frame = CGRectMake(0, height - 10, 302, 10);
+    layer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
+    return layer;
+}
+
++ (CALayer *)topRectangleLayerForHeight:(CGFloat)height {
     CALayer *layer = [CALayer layer];
     layer.frame = CGRectMake(0, 0, 302, 10);
     layer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
     return layer;
 }
 
+- (void)setSelectedBackgroundViewWithLayer:(CALayer *)layer forHeight:(CGFloat)height {
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+    [selectedBackgroundView.layer addSublayer:layer];
+    selectedBackgroundView.layer.masksToBounds = YES;
+    self.selectedBackgroundView = selectedBackgroundView;
+}
+
+- (void)setSelectedBackgroundViewWithLayer:(CALayer *)layer {
+    [self setSelectedBackgroundViewWithLayer:layer forHeight:44];
+}
+
++ (CALayer *)topRectangleLayer {
+    return [PPGroupedTableViewCell topRectangleLayerForHeight:44];
+}
+
 + (CALayer *)bottomRectangleLayer {
-    CALayer *layer = [CALayer layer];
-    layer.frame = CGRectMake(0, 34, 302, 10);
-    layer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-    return layer;
+    return [PPGroupedTableViewCell bottomRectangleLayerForHeight:44];
 }
 
 + (CALayer *)baseLayerForSelectedBackground {
-    CALayer *selectedBackgroundLayer = [CALayer layer];
-    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, 44);
-    selectedBackgroundLayer.cornerRadius = 10;
-    selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
-    return selectedBackgroundLayer;
+    return [PPGroupedTableViewCell baseLayerForSelectedBackgroundForHeight:44];
 }
 
 + (CALayer *)layerForNonGroupedBackground {
