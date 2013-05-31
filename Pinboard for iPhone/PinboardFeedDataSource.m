@@ -310,7 +310,7 @@
         BOOL shouldPush = NO;
         NSMutableArray *components = [NSMutableArray array];
         if ([tagName hasPrefix:@"via:"]) {
-            NSString *userNameWithPrefix = [NSString stringWithFormat:@"u:%@", [tagName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""]];
+            NSString *userNameWithPrefix = [NSString stringWithFormat:@"u:%@", [tagName substringFromIndex:4]];
             if (![self.components containsObject:userNameWithPrefix]) {
                 [components addObject:userNameWithPrefix];
                 shouldPush = YES;
