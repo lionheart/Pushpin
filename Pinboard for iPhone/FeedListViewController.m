@@ -33,24 +33,6 @@
 @synthesize bookmarkCounts;
 @synthesize timerPaused;
 
-- (void)checkForPostUpdates {
-    if (!self.timerPaused) {
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
-        if (delegate.bookmarksUpdated.boolValue) {
-            [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
-                    });
-                });
-            }];
-            delegate.bookmarksUpdated = @NO;
-        }
-    }
-}
-
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
@@ -147,16 +129,18 @@
             [self.tableView reloadData];
         }];
     }
+    
+    [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        });
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"X" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.updateTimer = [NSTimer timerWithTimeInterval:0.10 target:self selector:@selector(checkForPostUpdates) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.updateTimer forMode:NSDefaultRunLoopMode];
-    
-    [self calculateBookmarkCounts:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
