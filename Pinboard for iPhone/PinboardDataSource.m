@@ -588,11 +588,15 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
+
+        dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in self.posts) {
+            dispatch_group_enter(group);
             [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newHeights addObject:height];
                 [newStrings addObject:string];
                 [newLinks addObject:links];
+                dispatch_group_leave(group);
             }];
         }
         
@@ -601,7 +605,9 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.links = newLinks;
         
         if (success) {
-            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+            dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+            });
         }
     });
 }
@@ -715,6 +721,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
     dispatch_group_notify(group, queue, ^{
         NSInteger previousPostCount = [self numberOfPosts];
+        dispatch_group_t inner_group = dispatch_group_create();
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -742,10 +749,12 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                    };
 
             [self.posts addObject:post];
+            dispatch_group_enter(inner_group);
             [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newHeights addObject:height];
                 [newStrings addObject:string];
                 [newLinks addObject:links];
+                dispatch_group_leave(inner_group);
             }];
         }
         [db close];
@@ -757,7 +766,12 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
-        callback(indexPathsToDelete, indexPathsToAdd);
+
+        if (callback) {
+            dispatch_group_notify(inner_group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                callback(indexPathsToDelete, indexPathsToAdd);
+            });
+        }
     });
 }
 
