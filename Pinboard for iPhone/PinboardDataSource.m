@@ -87,13 +87,34 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-    if ([query rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@":"]].location == NSNotFound) {
-        self.queryParameters[@"query"] = [query stringByAppendingString:@"*"];        
+//    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    NSArray *components = [query componentsSeparatedByString:@" "];
+    NSMutableArray *newComponents = [NSMutableArray array];
+    for (NSString *component in components) {
+        if ([component isEqualToString:@"AND"]) {
+            [newComponents addObject:component];
+        }
+        else if ([component isEqualToString:@"OR"]) {
+            [newComponents addObject:component];
+        }
+        else if ([component isEqualToString:@"NOT"]) {
+            [newComponents addObject:component];
+        }
+        else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\":"]].location == NSNotFound) {
+            [newComponents addObject:[component stringByAppendingString:@"*"]];
+        }
+        else {
+            if ([component hasSuffix:@":"]) {
+                [newComponents addObject:[component stringByAppendingString:@"*"]];
+            }
+            else {
+                [newComponents addObject:component];
+            }
+        }
     }
-    else {
-        self.queryParameters[@"query"] = query;
-    }
+    NSString *newQuery = [newComponents componentsJoinedByString:@" "];
+    DLog(@"%@", newQuery);
+    self.queryParameters[@"query"] = newQuery;
 }
 
 - (PinboardDataSource *)searchDataSource {
