@@ -41,7 +41,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
-        self.updateInProgress = NO;
     }
     return self;
 }
@@ -63,7 +62,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         [self filterWithParameters:parameters];
-        self.updateInProgress = NO;
     }
     return self;
 }
@@ -87,7 +85,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 }
 
 - (void)filterWithQuery:(NSString *)query {
-//    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
     NSArray *components = [query componentsSeparatedByString:@" "];
     NSMutableArray *newComponents = [NSMutableArray array];
     for (NSString *component in components) {
@@ -113,7 +111,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         }
     }
     NSString *newQuery = [newComponents componentsJoinedByString:@" "];
-    DLog(@"%@", newQuery);
     self.queryParameters[@"query"] = newQuery;
 }
 
@@ -277,7 +274,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
-    NSDate *lastUpdated = [[AppDelegate sharedDelegate] lastUpdated];
     
     if (!progress) {
         progress = ^(NSInteger current, NSInteger total) {};
@@ -430,11 +426,12 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             failure(error);
         }
     };
-    
+
     void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
-        BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastUpdated timeIntervalSinceReferenceDate] > 300;
-        BOOL outOfSyncWithAPI = [lastUpdated compare:updateTime] == NSOrderedAscending;
-        if (!lastUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
+        NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
+        BOOL neverUpdated = lastLocalUpdate == nil;
+        BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
+        if (neverUpdated || outOfSyncWithAPI) {
             [pinboard bookmarksWithTags:nil
                                  offset:-1
                                   count:[options[@"count"] integerValue]
@@ -444,48 +441,38 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                 success:^(NSArray *bookmarks) {
                                     BookmarksSuccessBlock(bookmarks);
                                     
-                                    if (!lastUpdated) {
+                                    if (!lastLocalUpdate) {
                                         [self updateStarredPosts:^{
-                                            kPinboardDataSourceUpdateInProgress = NO;
-                                            self.updateInProgress = NO;
                                             success();
                                         }
-                                                         failure:^(NSError *error) {
-                                                             kPinboardDataSourceUpdateInProgress = NO;
-                                                             self.updateInProgress = NO;
-                                                         }];
+                                                         failure:nil];
                                     }
                                     else {
-                                        [self updateStarredPosts:^{
-                                            kPinboardDataSourceUpdateInProgress = NO;
-                                        }
-                                                         failure:^(NSError *error) {
-                                                             kPinboardDataSourceUpdateInProgress = NO;
-                                                             self.updateInProgress = NO;
-                                                         }];
+                                        [self updateStarredPosts:nil failure:nil];
                                         success();                                            
                                     }
             }
                                 failure:^(NSError *error) {
                                     BookmarksFailureBlock(error);
-                                    kPinboardDataSourceUpdateInProgress= NO;
-                                    self.updateInProgress = NO;
                                 }];
             
         }
         else {
-            kPinboardDataSourceUpdateInProgress= NO;
-            self.updateInProgress = NO;
             success();
         }
     };
-
-    if (kPinboardDataSourceUpdateInProgress || self.updateInProgress) {
-        success();
+    
+    NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
+    if (lastLocalUpdate) {
+        BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
+        if (lastUpdatedMoreThanFiveMinutesAgo) {
+            [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+        }
+        else {
+            success();
+        }
     }
     else {
-        kPinboardDataSourceUpdateInProgress = YES;
-        self.updateInProgress = YES;
         [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
     }
 }
@@ -613,7 +600,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.heights = newHeights;
         self.links = newLinks;
         
-        if (success != nil) {
+        if (success) {
             success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
         }
     });
