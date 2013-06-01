@@ -85,6 +85,10 @@
 		3732DF991759148100978A68 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF7A1759148100978A68 /* README.md */; };
 		3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */; };
 		3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
+		3732DFA017596D7500978A68 /* apple.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF9E17596D7500978A68 /* apple.png */; };
+		3732DFA117596D7500978A68 /* apple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF9F17596D7500978A68 /* apple@2x.png */; };
+		3732DFA41759703A00978A68 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA21759703A00978A68 /* twitter.png */; };
+		3732DFA51759703A00978A68 /* twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA31759703A00978A68 /* twitter@2x.png */; };
 		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
 		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37370710165CA4E0001BEDD8 /* NSData+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -621,6 +625,10 @@
 		3732DF7C1759148100978A68 /* RPSTPasswordManagementAppService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPSTPasswordManagementAppService.m; sourceTree = "<group>"; };
 		3732DF9B175957F000978A68 /* PPAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAboutViewController.h; sourceTree = "<group>"; };
 		3732DF9C175957F000978A68 /* PPAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPAboutViewController.m; sourceTree = "<group>"; };
+		3732DF9E17596D7500978A68 /* apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = apple.png; path = Assets/apple.png; sourceTree = "<group>"; };
+		3732DF9F17596D7500978A68 /* apple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "apple@2x.png"; path = "Assets/apple@2x.png"; sourceTree = "<group>"; };
+		3732DFA21759703A00978A68 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = twitter.png; path = Assets/twitter.png; sourceTree = "<group>"; };
+		3732DFA31759703A00978A68 /* twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "twitter@2x.png"; path = "Assets/twitter@2x.png"; sourceTree = "<group>"; };
 		3733251D16E155A2002E2AB0 /* GenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPostViewController.h; sourceTree = "<group>"; };
 		3733251E16E155A2002E2AB0 /* GenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericPostViewController.m; sourceTree = "<group>"; };
 		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
@@ -1954,6 +1962,10 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				3732DFA21759703A00978A68 /* twitter.png */,
+				3732DFA31759703A00978A68 /* twitter@2x.png */,
+				3732DF9E17596D7500978A68 /* apple.png */,
+				3732DF9F17596D7500978A68 /* apple@2x.png */,
 				3714DB901757DFFD00B23F4F /* user.png */,
 				3714DB911757DFFD00B23F4F /* user@2x.png */,
 				3714DB841756EF9E00B23F4F /* picture.png */,
@@ -2541,6 +2553,10 @@
 				3732DF971759148100978A68 /* onePasswordButton_v4_normal.png in Resources */,
 				3732DF981759148100978A68 /* onePasswordButton_v4_normal@2x.png in Resources */,
 				3732DF991759148100978A68 /* README.md in Resources */,
+				3732DFA017596D7500978A68 /* apple.png in Resources */,
+				3732DFA117596D7500978A68 /* apple@2x.png in Resources */,
+				3732DFA41759703A00978A68 /* twitter.png in Resources */,
+				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -37,6 +37,5 @@
 - (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
-- (void)followScreenName:(NSString *)screenName;
 
 @end

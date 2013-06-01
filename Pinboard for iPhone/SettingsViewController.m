@@ -7,8 +7,6 @@
 //
 
 #import <ASPinboard/ASPinboard.h>
-#import <Accounts/Accounts.h>
-#import <Social/Social.h>
 #import <QuartzCore/QuartzCore.h>
 
 #import "SettingsViewController.h"
@@ -129,13 +127,15 @@
 }
 
 - (void)showAboutPage {
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
-    PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
-    aboutViewController.title = NSLocalizedString(@"About", nil);
-    aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
-    UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
-    aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self presentViewController:aboutViewNavigationController animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[Mixpanel sharedInstance] track:@"Opened about page"];
+        PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
+        aboutViewController.title = NSLocalizedString(@"About", nil);
+        aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
+        UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
+        aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        [self presentViewController:aboutViewNavigationController animated:YES completion:nil];
+    });
 }
 
 - (void)closeAboutPage {
@@ -153,7 +153,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -161,12 +161,8 @@
         case 0:
             return 5;
             break;
-            
+
         case 1:
-            return 3;
-            break;
-            
-        case 2:
             return 3;
             break;
             
@@ -186,10 +182,6 @@
                 break;
                 
             case 1:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-                break;
-                
-            case 2:
                 cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 break;
                 
@@ -219,12 +211,6 @@
             break;
             
         case 1:
-            if (indexPath.row < 2) {
-                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-            }
-            break;
-            
-        case 2:
             if (indexPath.row < 2) {
                 [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
             }
@@ -321,28 +307,6 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.textLabel.text = NSLocalizedString(@"Rate Pushpin in the App Store", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    break;
-                    
-                case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Follow @dwlz on Twitter", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    break;
-                    
-                case 2:
-                    cell.textLabel.text = NSLocalizedString(@"Follow @Pushpin_app on Twitter", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
-        }
-        case 2: {
-            switch (indexPath.row) {
-                case 0:
                     cell.textLabel.text = NSLocalizedString(@"Feedback & Support", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
@@ -369,7 +333,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     switch (section) {
-        case 2:
+        case 1:
             return NSLocalizedString(@"Logging out of the application will reset the bookmark database on this device.", nil);
             break;
             
@@ -584,83 +548,6 @@
     }
 }
 
-- (void)followScreenName:(NSString *)screenName {
-    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-    ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-    [loadingAlertView show];
-
-    self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
-    [self.loadingIndicator startAnimating];
-    [loadingAlertView addSubview:self.loadingIndicator];
-
-    [accountStore requestAccessToAccountsWithType:twitter
-                                          options:nil
-                                       completion:^(BOOL granted, NSError *error) {
-                                           if (granted) {
-
-                                               self.twitterAccountActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-                                               NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
-                                               for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
-                                                   [self.twitterAccountActionSheet addButtonWithTitle:account.username];
-                                                   [accounts setObject:account.identifier forKey:account.username];
-                                               }
-
-                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                               
-                                               void (^Tweet)(NSString *) = ^(NSString *username) {
-                                                   ACAccount *account = [accountStore accountWithIdentifier:accounts[username]];
-                                                   SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                                                                           requestMethod:SLRequestMethodPOST
-                                                                                                     URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
-                                                                                              parameters:@{@"screen_name": screenName, @"follow": @"true"}];
-                                                   [request setAccount:account];
-                                                   [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                                       NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-                                                       if (response[@"errors"]) {
-                                                           NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
-                                                           NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil];
-                                                               [alertView show];
-                                                           });
-                                                       }
-                                                       else {
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-                                                               [alertView show];
-                                                           });
-                                                       }
-                                                   }];
-                                               };
-                                               
-                                               if ([accounts count] == 0) {
-                                               }
-                                               else if ([accounts count] == 1) {
-                                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-                                                   ACAccount *account = [accountStore accountsWithAccountType:twitter][0];
-                                                   Tweet(account.username);
-                                               }
-                                               else {
-                                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-                                                   
-                                                   self.twitterAccountActionSheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
-                                                       if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
-                                                           Tweet(buttonTitle);
-                                                       }
-                                                   };
-                                                   
-                                                   [self.twitterAccountActionSheet showFrom:self.navigationController.view];
-                                               }
-                                           }
-                                           else {
-                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                           }
-                                       }];
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
@@ -678,28 +565,6 @@
         }
 
         case 1: {
-            
-            switch (indexPath.row) {
-                case 0:
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard-best/id548052590"]];
-                    break;
-                    
-                case 1:
-                    [self followScreenName:@"dwlz"];
-                    break;
-                    
-                case 2:
-                    [self followScreenName:@"pushpin_app"];
-                    break;
-                    
-                default:
-                    break;
-            }
-            
-            break;
-        }
-
-        case 2: {
             switch (indexPath.row) {
                 case 0: {
                     UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
