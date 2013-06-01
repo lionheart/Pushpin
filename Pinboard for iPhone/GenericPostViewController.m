@@ -28,7 +28,7 @@
 @implementation GenericPostViewController
 
 @synthesize postDataSource;
-@synthesize processingPosts;
+@synthesize processingPosts = _processingPosts;
 @synthesize selectedPost;
 @synthesize longPressGestureRecognizer;
 @synthesize selectedIndexPath;
@@ -66,6 +66,7 @@
     self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
+    self.processingPosts = NO;
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 }
 
@@ -99,7 +100,6 @@
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
 
-    self.processingPosts = NO;
     self.actionSheetVisible = NO;
 
     if ([self.postDataSource numberOfPosts] == 0) {
