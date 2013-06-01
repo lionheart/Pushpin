@@ -70,7 +70,13 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
     NSNumber *isPrivate = parameters[@"private"];
-    NSNumber *isRead = @(!([parameters[@"unread"] boolValue]));
+    NSNumber *isRead;
+    if (parameters[@"unread"]) {
+        isRead = @(!([parameters[@"unread"] boolValue]));
+    }
+    else {
+        isRead = nil;
+    }
     NSNumber *isStarred = parameters[@"starred"];
     NSNumber *hasTags = parameters[@"tagged"];
     NSArray *tags = parameters[@"tags"];
