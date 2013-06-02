@@ -524,6 +524,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *newPosts = [NSMutableArray array];
 
         NSMutableArray *oldHashes = [NSMutableArray array];
+        NSMutableArray *newHashes = [NSMutableArray array];
         NSMutableDictionary *oldHashesToMetas = [NSMutableDictionary dictionary];
         for (NSDictionary *post in self.posts) {
             [oldHashes addObject:post[@"hash"]];
@@ -534,44 +535,43 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         NSInteger index = 0;
-        NSInteger skipIndex = 0;
-        BOOL matchExists = NO;
 
+        #warning XXX there is an O(n^2) algo here
         while ([results next]) {
             NSString *hash = [results stringForColumn:@"hash"];
-
-            while (skipIndex < oldHashes.count && ![oldHashes[skipIndex] isEqualToString:hash]) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:skipIndex inSection:0]];
-                skipIndex++;
-            }
+            [newHashes addObject:hash];
 
             NSDictionary *post;
-            if (skipIndex < oldHashes.count && [oldHashes[skipIndex] isEqualToString:hash]) {
-                // If this is satisfied, we know that the old hash corresponds to the new one. Therefore, it's the same post.
-                post = oldPosts[skipIndex];
-                
-                // Reload the post if its meta value has changed.
-                if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
-                    post = [PinboardDataSource postFromResultSet:results];
-                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            for (NSInteger i=0; i<oldHashes.count; i++) {
+                if ([oldHashes[i] isEqualToString:hash]) {
+                    post = oldPosts[i];
+
+                    // Reload the post if its meta value has changed.
+                    if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
+                        post = [PinboardDataSource postFromResultSet:results];
+                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                    }
+                    [newPosts addObject:post];
+                    break;
                 }
-                [newPosts addObject:post];
             }
-            else {
-                // It's a new post.
+
+            if (!post) {
                 post = [PinboardDataSource postFromResultSet:results];
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 [newPosts addObject:post];
             }
-
+            
             index++;
-            skipIndex++;
         }
         [db close];
+        
+        for (NSInteger i=0; i<oldHashes.count; i++) {
+            if (![newHashes containsObject:oldHashes[i]]) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+        }
 
-        DLog(@"%@", indexPathsToAdd);
-        DLog(@"%@", indexPathsToReload);
-//        DLog(@"%@", indexPathsToAdd);
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
