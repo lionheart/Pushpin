@@ -35,7 +35,8 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 - (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead isStarred:(NSNumber *)starred hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
 
 - (PinboardDataSource *)searchDataSource;
-- (PinboardDataSource *)dataSourceWithAdditionalTagID:(NSNumber *)tagID;
+- (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
+- (NSArray *)quotedTags;
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;

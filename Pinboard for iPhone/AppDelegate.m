@@ -537,6 +537,79 @@
                 [db executeUpdate:@"DROP INDEX bookmark_hash_idx"];
                 [db executeUpdate:@"PRAGMA user_version=6;"];
 
+            case 6:
+                db.logsErrors = YES;
+                [db closeOpenResultSets];
+                [db executeUpdate:@"ALTER TABLE bookmark RENAME TO bookmark_old;"];
+                [db executeUpdate:@"ALTER TABLE tagging RENAME TO tagging_old;"];
+                [db executeUpdate:@"ALTER TABLE tag RENAME TO tag_old;"];
+
+                [db executeUpdate:@"DROP INDEX bookmark_created_at_idx"];
+                [db executeUpdate:@"DROP INDEX bookmark_starred_idx"];
+                [db executeUpdate:@"DROP INDEX bookmark_title_idx"];
+                [db executeUpdate:
+                 @"CREATE TABLE bookmark("
+                     "title TEXT,"
+                     "description TEXT,"
+                     "tags TEXT,"
+                     "url TEXT,"
+                     "count INTEGER,"
+                     "private BOOL,"
+                     "unread BOOL,"
+                     "starred BOOL,"
+                     "hash VARCHAR(32) UNIQUE,"
+                     "meta VARCHAR(32),"
+                     "created_at DATETIME"
+                 ");" ];
+                [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
+                
+                // Tag
+                [db executeUpdate:@"ALTER TABLE tag RENAME TO tag_old;"];
+                [db executeUpdate:@"DROP TRIGGER tag_fts_insert_trigger;"];
+                [db executeUpdate:@"DROP TRIGGER tag_fts_update_trigger;"];
+
+                [db executeUpdate:
+                 @"CREATE TABLE tag("
+                     "name TEXT UNIQUE,"
+                     "count INTEGER"
+                 ");" ];
+
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (name) VALUES(new.name); END;"];
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_delete_trigger AFTER DELETE ON tag BEGIN DELETE FROM tag_fts WHERE name=new.name; END;"];
+                [db executeUpdate:@"INSERT INTO tag (name, count) SELECT name, count FROM tag_old;"];
+                
+                // Tagging
+                [db executeUpdate:
+                 @"CREATE TABLE tagging("
+                     "tag_name TEXT,"
+                     "bookmark_hash TEXT"
+                 ");" ];
+
+                [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) SELECT tagging_old.tag_name, bookmark_old.hash FROM bookmark_old, tagging_old, tag_old WHERE tagging_old.bookmark_id=bookmark_old.id, tagging_old.tag_id=tag_old.id"];
+                [db executeUpdate:@"DROP TABLE tagging_old;"];
+                [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
+                [db executeUpdate:@"CREATE INDEX tagging_bookmark_hash_idx ON tagging (bookmark_hash);"];
+
+                // FTS Updates
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_insert_trigger;"];
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];                
+                [db executeUpdate:@"DROP TABLE bookmark_fts;"];
+
+                [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url);"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash; END;"];
+
+                // Repopulate bookmarks
+                [db executeUpdate:@"INSERT INTO bookmark (title, description, tags, url, count, private, unread, starred, hash, meta, created_at) SELECT title, description, tags, url, count, private, unread, starred, hash, meta, created_at FROM bookmark_old;"];
+
+                [db executeUpdate:@"DROP TABLE tagging_old;"];
+                [db executeUpdate:@"DROP TABLE tag_old;"];
+                [db executeUpdate:@"DROP TABLE bookmark_old;"];
+                [db executeUpdate:@"PRAGMA user_version=7;"];
+
             default:
                 break;
         }
