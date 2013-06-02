@@ -398,7 +398,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                             [tags setObject:tagIdNumber forKey:tagName];
                         }
 
-                        [db executeUpdate:@"INSERT INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
+                        [db executeUpdate:@"INSERT OR IGNORE INTO tagging (tag_id, bookmark_id) SELECT ?, bookmark.id FROM bookmark WHERE bookmark.hash=?" withArgumentsInArray:@[tagIdNumber, element[@"hash"]]];
                     }
                 }
             }
@@ -535,6 +535,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         NSInteger index = 0;
         NSInteger skipIndex = 0;
+        BOOL matchExists = NO;
 
         while ([results next]) {
             NSString *hash = [results stringForColumn:@"hash"];
@@ -545,33 +546,32 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             }
 
             NSDictionary *post;
-            if (skipIndex < oldHashes.count) {
+            if (skipIndex < oldHashes.count && [oldHashes[skipIndex] isEqualToString:hash]) {
                 // If this is satisfied, we know that the old hash corresponds to the new one. Therefore, it's the same post.
                 post = oldPosts[skipIndex];
-
+                
                 // Reload the post if its meta value has changed.
                 if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
                     post = [PinboardDataSource postFromResultSet:results];
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 }
+                [newPosts addObject:post];
             }
             else {
                 // It's a new post.
                 post = [PinboardDataSource postFromResultSet:results];
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                [newPosts addObject:post];
             }
-            [newPosts addObject:post];
 
             index++;
             skipIndex++;
         }
         [db close];
-        
-        while (skipIndex < oldHashes.count) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:skipIndex inSection:0]];
-            skipIndex++;
-        }
 
+        DLog(@"%@", indexPathsToAdd);
+        DLog(@"%@", indexPathsToReload);
+//        DLog(@"%@", indexPathsToAdd);
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];

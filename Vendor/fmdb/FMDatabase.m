@@ -532,7 +532,16 @@
     if (![self databaseExists]) {
         return 0x00;
     }
-    
+   
+    /*
+    NSArray *rss = [self->_openResultSets allObjects];
+    FMResultSet *rs2;
+//    DLog(@"open result sets");
+    for (NSValue *v in rss) {
+        [v getValue:&rs2];
+
+    }
+     */
     if (_isExecutingStatement) {
         [self warnInUse];
         return 0x00;
