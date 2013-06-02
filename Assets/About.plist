@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>data</key>
+	<array>
+		<array>
+			<array>
+				<string>About Pushpin</string>
+				<string>Pushpin is the product of overwhelming amounts of caffeine, 80&apos;s club music, and kittens. Lionheart Software builds beautiful applications for the iPhone and for the web.</string>
+			</array>
+		</array>
+		<array>
+			<array>
+				<string>Dan Loewenherz</string>
+				<string>Product design and development.</string>
+				<string>dwlz</string>
+			</array>
+			<array>
+				<string>Martin Karasek</string>
+				<string>Visual design.</string>
+				<string>karimartin</string>
+			</array>
+		</array>
+	</array>
+	<key>titles</key>
+	<array>
+		<string></string>
+		<string>Team</string>
+		<string>Credits</string>
+		<string>Translations</string>
+		<string>Beta Testers</string>
+		<string>Software</string>
+	</array>
+</dict>
+</plist>
