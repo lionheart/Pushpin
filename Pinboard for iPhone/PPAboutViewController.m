@@ -14,6 +14,7 @@
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
 #import "RDActionSheet.h"
+#import <StoreKit/StoreKit.h>
 
 @interface PPAboutViewController ()
 
@@ -51,7 +52,8 @@
                                 "\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution."
                                 "\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.", @"https://github.com/tonymillion/Reachability",],
                               @[@"oauthconsumer", [NSNull null], @"https://github.com/jdg/oauthconsumer"], @[@"RPSTPasswordManagementAppService", [NSNull null], @"https://github.com/Riposte/RPSTPasswordManagementAppService"]];
-        NSArray *description = @[@[@"About Pushpin", @"Pushpin is the product of overwhelming amounts of caffeine, 80's club music, and kittens. Lionheart Software builds beautiful applications for the iPhone and for the web."], @[@"Follow Pushpin on Twitter", [NSNull null]], @[@"Review Pushpin on iTunes", [NSNull null]]];
+        NSString *build = [NSString stringWithFormat:@"Pushpin %@ (%@)", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+        NSArray *description = @[@[[NSNull null], @"Pushpin is the product of overwhelming amounts of caffeine, 80's club music, and . Lionheart Software builds beautiful applications for the iPhone and for the web."], @[@"Follow Pushpin on Twitter", [NSNull null]], @[@"Review Pushpin on iTunes", [NSNull null]]];
         NSArray *team = @[@[@"Dan Loewenherz", @"Product design and development.", @"dwlz"], @[@"Martin Karasek", @"Visual design.", [NSNull null]]];
         self.data = @[description, team, credits, translations, beta, licenses];
         self.titles = @[[NSNull null], @"Team", @"Credits", @"Translations", @"Beta Testers", @"Software"];
@@ -260,8 +262,29 @@
     if (indexPath.section == 0 && indexPath.row == 1) {
         [self followScreenName:@"pushpin_app"];
     }
-    else if (indexPath.section == 0 && indexPath.row == 3) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard-best/id548052590"]];
+    else if (indexPath.section == 0 && indexPath.row == 2) {
+        /*
+        SKStoreProductViewController *storeProductViewController = [[SKStoreProductViewController alloc] init];
+        [storeProductViewController setDelegate:self];
+        WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Opening the App Store." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+        [loadingAlertView show];
+        
+        self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
+        [self.loadingIndicator startAnimating];
+        [loadingAlertView addSubview:self.loadingIndicator];
+
+        [storeProductViewController loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier : @"548052590"}
+                                              completionBlock:^(BOOL result, NSError *error) {
+                                                  [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                                  if (error) {
+                                                      NSLog(@"Error %@ with User Info %@.", error, [error userInfo]);
+                                                  } else {
+                                                      [self presentViewController:storeProductViewController animated:YES completion:nil];
+                                                  }
+        }];
+        */
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
     }
     else {
         if ([self.expandedIndexPaths containsObject:indexPath]) {
@@ -277,6 +300,9 @@
     }
 }
 
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)followScreenName:(NSString *)screenName {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
