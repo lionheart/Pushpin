@@ -15,6 +15,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PPCoreGraphics.h"
 
+static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
+
 @interface AddBookmarkViewController ()
 
 @end
@@ -149,8 +151,8 @@
             if (self.suggestedTagsVisible) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
-                    NSInteger index = 4;
-                    while (index <= self.popularTagSuggestions.count + 3) {
+                    NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
+                    while (index <= self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset - 1) {
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         index++;
                     }
@@ -191,10 +193,10 @@
     }
     else if (section == 0) {
         if (self.suggestedTagsVisible) {
-            return 4 + self.popularTagSuggestions.count;
+            return kAddBookmarkViewControllerTagCompletionOffset + self.popularTagSuggestions.count;
         }
         else {
-            return 4 + self.tagCompletions.count;
+            return kAddBookmarkViewControllerTagCompletionOffset + self.tagCompletions.count;
         }
     }
     return 1;
@@ -219,11 +221,11 @@
                 NSString *completion;
                 
                 if (self.tagCompletions.count > 0) {
-                    completion = self.tagCompletions[indexPath.row - 4];
+                    completion = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                     
                     NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-                    NSInteger index = 4;
-                    while (index <= self.tagCompletions.count + 3) {
+                    NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
+                    while (index <= self.tagCompletions.count + kAddBookmarkViewControllerTagCompletionOffset - 1) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         index++;
                     }
@@ -232,8 +234,8 @@
                     [self.tagCompletions removeAllObjects];
                 }
                 else if (self.popularTagSuggestions.count > 0) {
-                    completion = self.popularTagSuggestions[indexPath.row - 4];
-                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - 4];
+                    completion = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
+                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                     
                     unichar space = ' ';
                     if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
@@ -352,7 +354,7 @@
             FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
             
             NSString *currentTag;
-            NSInteger index = 4;
+            NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
             while ([result next]) {
                 currentTag = [result stringForColumn:@"name"];
                 if (![existingTags containsObject:currentTag]) {
@@ -369,8 +371,8 @@
             DLog(@"%@ %@", newString, newTagCompletions);
             
             if (self.suggestedTagsVisible) {
-                index = 4;
-                while (index <= self.popularTagSuggestions.count + 3) {
+                index = kAddBookmarkViewControllerTagCompletionOffset;
+                while (index <= self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset - 1) {
                     [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                     index++;
                 }
@@ -379,7 +381,7 @@
             else {
                 for (int i=0; i<oldTagCompletions.count; i++) {
                     if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:4 + [self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:0]];
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:kAddBookmarkViewControllerTagCompletionOffset + [self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:0]];
                     }
                 }
             }
@@ -408,14 +410,14 @@
             });
         }
         else if (!self.suggestedTagsVisible) {
-            NSInteger index = 4;
-            while (index <= self.tagCompletions.count + 3) {
+            NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
+            while (index < self.tagCompletions.count + kAddBookmarkViewControllerTagCompletionOffset) {
                 [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 index++;
             }
             
-            index = 4;
-            while (index <= self.popularTagSuggestions.count + 3) {
+            index = kAddBookmarkViewControllerTagCompletionOffset;
+            while (index < self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 index++;
             }
@@ -629,10 +631,9 @@
         NSMutableArray *newPopularTagSuggestions = [[NSMutableArray alloc] init];
         [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
         
-        NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count + 3 : self.tagCompletions.count + 3;
+        NSInteger previousRowCount = self.suggestedTagsVisible ? self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset - 1 : self.tagCompletions.count + kAddBookmarkViewControllerTagCompletionOffset - 1;
 
-        #warning XXX Should really be set dynamically based on which row the tags cell is in.
-        NSInteger index = 4;
+        NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
         while (index <= previousRowCount) {
             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             index++;
@@ -659,10 +660,9 @@
                 self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
             }
         }
-        
-        #warning XXX Should really be set dynamically based on which row the tags cell is in.
-        index = 4;
-        while (index <= newPopularTagSuggestions.count + 3) {
+
+        index = kAddBookmarkViewControllerTagCompletionOffset;
+        while (index < newPopularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset) {
             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             index++;
         }
@@ -676,7 +676,7 @@
             self.suggestedTagsVisible = YES;
             
             [self.tableView endUpdates];
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kAddBookmarkViewControllerTagCompletionOffset - 1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
             
             [self.tagTextField becomeFirstResponder];
         });
@@ -692,7 +692,7 @@
     if (shouldPrefillTags) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kAddBookmarkViewControllerTagCompletionOffset - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
             self.loadingTags = YES;
             [self.tableView endUpdates];
         });
@@ -706,7 +706,7 @@
 
                                    dispatch_async(dispatch_get_main_queue(), ^{
                                        [self.tableView beginUpdates];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kAddBookmarkViewControllerTagCompletionOffset - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                        self.loadingTags = NO;
                                        [self.tableView endUpdates];
                                    });

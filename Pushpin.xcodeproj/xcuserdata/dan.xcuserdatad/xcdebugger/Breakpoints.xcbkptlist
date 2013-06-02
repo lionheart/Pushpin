@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Pinboard for iPhone/PinboardDataSource.m"
-         timestampString = "391902878.687429"
+         timestampString = "391904816.156976"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "581"
-         endingLineNumber = "581"
+         startingLineNumber = "589"
+         endingLineNumber = "589"
          landmarkName = "-updatePostsFromDatabaseWithSuccess:failure:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Pinboard for iPhone/PinboardDataSource.m"
-         timestampString = "391902878.687429"
+         timestampString = "391904816.156976"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "931"
-         endingLineNumber = "931"
+         startingLineNumber = "939"
+         endingLineNumber = "939"
          landmarkName = "-handleTapOnLinkWithURL:callback:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,12 +34,38 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Pinboard for iPhone/PinboardDataSource.m"
-         timestampString = "391902878.687429"
+         timestampString = "391904816.156976"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "936"
-         endingLineNumber = "936"
+         startingLineNumber = "944"
+         endingLineNumber = "944"
          landmarkName = "-handleTapOnLinkWithURL:callback:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Pinboard for iPhone/PinboardDataSource.m"
+         timestampString = "391904987.264316"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "505"
+         endingLineNumber = "505"
+         landmarkName = "-updateStarredPosts:failure:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Pinboard for iPhone/PinboardDataSource.m"
+         timestampString = "391905064.600525"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "515"
+         endingLineNumber = "515"
+         landmarkName = "-updateStarredPosts:failure:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
