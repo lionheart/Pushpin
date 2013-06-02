@@ -295,14 +295,14 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             
             FMResultSet *results;
             
-            results = [db executeQuery:@"SELECT id, name FROM tag"];
-            NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
+            results = [db executeQuery:@"SELECT name FROM tag"];
+            NSMutableArray *tags = [[NSMutableArray alloc] init];
             
             while ([results next]) {
-                [tags setObject:@([results intForColumn:@"id"]) forKey:[results stringForColumn:@"name"]];
+                [tags addObject:[results stringForColumn:@"name"]];
             }
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
-            
+
             NSMutableDictionary *metas = [[NSMutableDictionary alloc] init];
             NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
             while ([results next]) {
@@ -491,23 +491,16 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        
-                                       const char *dbPath = [[AppDelegate databasePath] UTF8String];
-                                       char *sqliteErrorMessage;
-                                       sqlite3_stmt *updateStatement = nil;
-                                       sqlite3 *db;
-                                       sqlite3_open(dbPath, &db);
-                                       sqlite3_exec(db, "BEGIN", NULL, NULL, &sqliteErrorMessage);
-                                       sqlite3_exec(db, "UPDATE bookmark SET starred=0 WHERE starred=1", NULL, NULL, &sqliteErrorMessage);
-
+                                       FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                       [db open];
+                                       [db beginTransaction];
+                                       [db executeUpdate:@"UPDATE bookmark SET starred=0"];
                                        for (NSDictionary *post in payload) {
-                                           sqlite3_prepare_v2(db, "UPDATE bookmark SET starred=1 WHERE url=?", -1, &updateStatement, NULL);
-                                           sqlite3_bind_text(updateStatement, 1, [post[@"u"] UTF8String], -1, SQLITE_STATIC);
-                                           sqlite3_step(updateStatement);
-                                           sqlite3_finalize(updateStatement);
+                                           [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[post[@"u"]]];
                                        }
+                                       [db commit];
+                                       [db close];
 
-                                       sqlite3_exec(db, "COMMIT", NULL, NULL, &sqliteErrorMessage);
-                                       sqlite3_close(db);
                                        success();
                                    });
                                }
