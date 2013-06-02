@@ -533,6 +533,7 @@
                 
             case 5:
                 [db closeOpenResultSets];
+                [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
                 [db executeUpdate:@"DROP INDEX bookmark_hash_idx"];
                 [db executeUpdate:@"PRAGMA user_version=6;"];
 
