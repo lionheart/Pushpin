@@ -349,7 +349,7 @@
             
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
-            FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag.id=tag_fts.id AND tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
+            FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name FROM tag_fts, tag WHERE tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
             
             NSString *currentTag;
             NSInteger index = 4;

@@ -48,7 +48,7 @@
 
     self.titleToTags = [NSMutableDictionary dictionary];
 
-    FMResultSet *results = [db executeQuery:@"SELECT id, name, count FROM tag ORDER BY name ASC"];
+    FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
     NSString *name;
     while ([results next]) {
         name = [results stringForColumn:@"name"];
@@ -65,7 +65,7 @@
         if (!temp) {
             temp = [NSMutableArray array];
         }
-        [temp addObject:@{@"name": name, @"id": @([results intForColumn:@"id"]), @"count": [results stringForColumn:@"count"]}];
+        [temp addObject:@{@"name": name, @"count": [results stringForColumn:@"count"]}];
         [self.titleToTags setObject:temp forKey:firstLetter];
     }
 
@@ -244,28 +244,28 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT id, name, count FROM tag WHERE id in (SELECT tag_fts.id FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
-        
-        NSMutableArray *oldTagIDs = [NSMutableArray array];
-        NSMutableArray *newTagIDs = [NSMutableArray array];
+        FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+
+        NSMutableArray *newTagNames = [NSMutableArray array];
+        NSMutableArray *oldTagNames = [NSMutableArray array];
         
         __block NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         __block NSMutableArray *indexPathsToAdd = [NSMutableArray array];
         __block NSMutableArray *indexPathsToReload = [NSMutableArray array];
         __block NSMutableArray *newTags = [[NSMutableArray alloc] init];
-        NSNumber *tagID;
+        NSString *tagName;
         NSInteger index = 0;
 
         for (NSDictionary *tag in self.filteredTags) {
-            [oldTagIDs addObject:tag[@"id"]];
+            [oldTagNames addObject:tag[@"name"]];
         }
 
         while ([result next]) {
-            tagID = @([result intForColumn:@"id"]);
-            [newTags addObject:@{@"id": tagID, @"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
-            [newTagIDs addObject:tagID];
+            tagName = [result stringForColumn:@"name"];
+            [newTags addObject:@{@"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
+            [newTagNames addObject:tagName];
             
-            if (![oldTagIDs containsObject:tagID]) {
+            if (![oldTagNames containsObject:tagName]) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             index++;
@@ -273,8 +273,8 @@
         [db close];
         
         NSInteger i;
-        for (i=0; i<oldTagIDs.count; i++) {
-            if (![newTagIDs containsObject:oldTagIDs[i]]) {
+        for (i=0; i<oldTagNames.count; i++) {
+            if (![newTagNames containsObject:oldTagNames[i]]) {
                 [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
         }
@@ -303,7 +303,7 @@
     
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"id"]] offset:0 limit:50];
+    [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
     [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
