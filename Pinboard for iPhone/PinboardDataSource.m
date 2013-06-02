@@ -285,7 +285,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         success = ^{};
     }
 
-    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *elements) {
+    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
@@ -304,10 +304,11 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
 
             NSMutableDictionary *metas = [[NSMutableDictionary alloc] init];
-            NSMutableArray *oldBookmarkHashes = [[NSMutableArray alloc] init];
+            NSMutableArray *oldHashes = [[NSMutableArray alloc] init];
             while ([results next]) {
-                [oldBookmarkHashes addObject:[results stringForColumn:@"hash"]];
-                [metas setObject:[results stringForColumn:@"meta"] forKey:[results stringForColumn:@"hash"]];
+                NSString *hash = [results stringForColumn:@"hash"];
+                [oldHashes addObject:hash];
+                [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
             }
             NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
             
@@ -316,7 +317,10 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             NSUInteger count = 0;
             NSUInteger skipCount = 0;
             NSUInteger newBookmarkCount = 0;
-            NSUInteger total = elements.count;
+            NSUInteger total = posts.count;
+            NSInteger skipPivot = 0;
+            NSInteger index = 0;
+            BOOL postFound = NO;
             NSDictionary *params;
             
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -330,69 +334,77 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
-            for (NSDictionary *element in elements) {
-                count++;
+            for (NSDictionary *post in posts) {
+                postFound = NO;
+                updated_or_created = NO;
+
+                NSString *hash = post[@"hash"];
+                
+                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                    if ([oldHashes[i] isEqualToString:hash]) {
+                        // Delete all posts that were skipped
+                        for (NSInteger j=skipPivot; j<i; j++) {
+                            [bookmarksToDelete addObject:oldHashes[j]];
+                        }
+                        
+                        skipPivot = i;
+
+                        // Skip doing anything to this bookmark if its meta value has changed.
+                        if (![post[@"meta"] isEqualToString:metas[hash]]) {
+                            params = @{
+                                @"url": post[@"href"],
+                                @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                @"meta": post[@"meta"],
+                                @"hash": post[@"hash"],
+                                @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                @"private": @([post[@"shared"] isEqualToString:@"no"])
+                            };
+
+                            // Update this bookmark
+                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
+                            updated_or_created = YES;
+                        }
+                        
+                        postFound = YES;
+                        skipPivot++;
+                        break;
+                    }
+                }
+                
+                // If the bookmark wasn't found by looping through, it's a new one
+                if (!postFound) {
+                    params = @{
+                        @"url": post[@"href"],
+                        @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"meta": post[@"meta"],
+                        @"hash": post[@"hash"],
+                        @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                        @"created_at": [dateFormatter dateFromString:post[@"time"]]
+                    };
+
+                    [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                    updated_or_created = YES;
+                }
+                
+                if ([post[@"tags"] length] > 0 && updated_or_created) {
+                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                    for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
+                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                    }
+                }
+                
+                index++;
                 progress(count, total);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
                 });
-                
-                updated_or_created = NO;
-                
-                bookmarkMeta = metas[element[@"hash"]];
-                if (bookmarkMeta) {
-                    while (skipCount < oldBookmarkHashes.count && ![oldBookmarkHashes[skipCount] isEqualToString:element[@"hash"]]) {
-                        [bookmarksToDelete addObject:oldBookmarkHashes[skipCount]];
-                        skipCount++;
-                    }
-                    skipCount++;
-                    
-                    if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
-                        updated_or_created = YES;
-                        params = @{
-                            @"url": element[@"href"],
-                            @"title": [element[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                            @"description": [element[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                            @"meta": element[@"meta"],
-                            @"hash": element[@"hash"],
-                            @"tags": [element[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                            @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                            @"private": @([element[@"shared"] isEqualToString:@"no"])
-                        };
-                        
-                        [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                        [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[element[@"hash"]]];
-                    }
-                }
-                else {
-                    newBookmarkCount++;
-                    updated_or_created = YES;
-                    params = @{
-                        @"url": element[@"href"],
-                        @"title": [element[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"description": [element[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"meta": element[@"meta"],
-                        @"hash": element[@"hash"],
-                        @"tags": [element[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                        @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                        @"created_at": [dateFormatter dateFromString:element[@"time"]]
-                    };
-                    
-                    [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                }
-                
-                if ([element[@"tags"] length] == 0) {
-                    continue;
-                }
-                
-                if (updated_or_created) {
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[element[@"hash"]]];
-                    for (NSString *tagName in [element[@"tags"] componentsSeparatedByString:@" "]) {
-                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, element[@"hash"]]];
-                    }
-                }
             }
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
@@ -494,7 +506,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
                                        [db beginTransaction];
-                                       [db executeUpdate:@"UPDATE bookmark SET starred=0"];
+                                       [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE starred=1;"];
                                        for (NSDictionary *post in payload) {
                                            [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[post[@"u"]]];
                                        }
@@ -517,7 +529,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *newPosts = [NSMutableArray array];
 
         NSMutableArray *oldHashes = [NSMutableArray array];
-        NSMutableArray *newHashes = [NSMutableArray array];
         NSMutableDictionary *oldHashesToMetas = [NSMutableDictionary dictionary];
         for (NSDictionary *post in self.posts) {
             [oldHashes addObject:post[@"hash"]];
@@ -533,12 +544,9 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSInteger skipPivot = 0;
         BOOL postFound = NO;
 
-        #warning XXX there is an O(n^2) algo here
         while ([results next]) {
             postFound = NO;
             NSString *hash = [results stringForColumn:@"hash"];
-            [newHashes addObject:hash];
-
             NSDictionary *post;
             
             // Go from the last found value to the end of the list.
@@ -559,7 +567,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                         post = [PinboardDataSource postFromResultSet:results];
                         
                         // Reloads effect the old index path
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                     }
                     
                     postFound = YES;
