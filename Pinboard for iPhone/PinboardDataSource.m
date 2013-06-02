@@ -537,41 +537,59 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         NSInteger index = 0;
+        
+        // The index of the list that `index` corresponds to
+        NSInteger skipPivot = 0;
+        BOOL postFound = NO;
 
         #warning XXX there is an O(n^2) algo here
         while ([results next]) {
+            postFound = NO;
             NSString *hash = [results stringForColumn:@"hash"];
             [newHashes addObject:hash];
 
             NSDictionary *post;
-            for (NSInteger i=0; i<oldHashes.count; i++) {
-                if ([oldHashes[i] isEqualToString:hash]) {
-                    post = oldPosts[i];
+            
+            // Go from the last found value to the end of the list.
+            // If you find something, break and set the pivot to the current skip index.
 
+            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                if ([oldHashes[i] isEqualToString:hash]) {
+                    // Delete all posts that were skipped
+                    for (NSInteger j=skipPivot; j<i; j++) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                    }
+
+                    skipPivot = i;
+                    post = oldPosts[i];
+                    
                     // Reload the post if its meta value has changed.
                     if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
                         post = [PinboardDataSource postFromResultSet:results];
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                        
+                        // Reloads effect the old index path
+                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                     }
-                    [newPosts addObject:post];
+                    
+                    postFound = YES;
+                    skipPivot++;
                     break;
                 }
             }
 
-            if (!post) {
+            // If the post wasn't found by looping through, it's a new one
+            if (!postFound) {
                 post = [PinboardDataSource postFromResultSet:results];
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                [newPosts addObject:post];
             }
-            
+
+            [newPosts addObject:post];
             index++;
         }
         [db close];
         
-        for (NSInteger i=0; i<oldHashes.count; i++) {
-            if (![newHashes containsObject:oldHashes[i]]) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-            }
+        for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
 
         NSMutableArray *newStrings = [NSMutableArray array];
