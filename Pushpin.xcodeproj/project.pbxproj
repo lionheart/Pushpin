@@ -212,6 +212,8 @@
 		376C9E8817488F2300A62CB5 /* NotificationX.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8617488F2300A62CB5 /* NotificationX.png */; };
 		376C9E8917488F2300A62CB5 /* NotificationX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8717488F2300A62CB5 /* NotificationX@2x.png */; };
 		376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8E1749969200A62CB5 /* PPTableViewController.m */; };
+		376E0A7E175AA245004CCDEE /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376E0A7D175AA245004CCDEE /* About.plist */; };
+		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; };
 		377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
@@ -796,6 +798,8 @@
 		376C9E8717488F2300A62CB5 /* NotificationX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NotificationX@2x.png"; path = "Assets/NotificationX@2x.png"; sourceTree = "<group>"; };
 		376C9E8D1749969200A62CB5 /* PPTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTableViewController.h; sourceTree = "<group>"; };
 		376C9E8E1749969200A62CB5 /* PPTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewController.m; sourceTree = "<group>"; };
+		376E0A7D175AA245004CCDEE /* About.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = About.plist; path = Assets/About.plist; sourceTree = "<group>"; };
+		376E0A7F175AA9EC004CCDEE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		377E46DA174C3A7500CE3813 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserSettingsViewController.h; sourceTree = "<group>"; };
@@ -1134,6 +1138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
 				37DE5AB9174F2A2F0073A2F4 /* AdSupport.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
@@ -1857,6 +1862,7 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				376E0A7F175AA9EC004CCDEE /* StoreKit.framework */,
 				37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */,
 				377E46DA174C3A7500CE3813 /* Social.framework */,
 				377E46D6174C396C00CE3813 /* Accounts.framework */,
@@ -2072,6 +2078,7 @@
 				3714DB7E175673E200B23F4F /* safari-instructions.html */,
 				37B65FE01672E0090041DA8C /* iTunesArtwork-beta.png */,
 				37D0D0C016B8E2310062C27E /* about.html */,
+				376E0A7D175AA245004CCDEE /* About.plist */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -2557,6 +2564,7 @@
 				3732DFA117596D7500978A68 /* apple@2x.png in Resources */,
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
+				376E0A7E175AA245004CCDEE /* About.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
