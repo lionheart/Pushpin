@@ -9,8 +9,9 @@
 #import "PPTableViewController.h"
 #import "PPLoadingView.h"
 #import "RDActionSheet.h"
+#import <StoreKit/StoreKit.h>
 
-@interface PPAboutViewController : PPTableViewController <RDActionSheetDelegate>
+@interface PPAboutViewController : PPTableViewController <RDActionSheetDelegate, SKStoreProductViewControllerDelegate>
 
 @property (nonatomic, strong) NSArray *data;
 @property (nonatomic, strong) NSArray *titles;
