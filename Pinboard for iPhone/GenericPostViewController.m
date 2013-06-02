@@ -28,7 +28,6 @@
 @implementation GenericPostViewController
 
 @synthesize postDataSource;
-@synthesize processingPosts = _processingPosts;
 @synthesize selectedPost;
 @synthesize longPressGestureRecognizer;
 @synthesize selectedIndexPath;
@@ -52,6 +51,7 @@
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
     self.loading = NO;
+    self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
@@ -66,7 +66,6 @@
     self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
-    self.processingPosts = NO;
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 }
 
@@ -104,8 +103,6 @@
 
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-
-        self.loading = YES;
 
         [self.pullToRefreshImageView startAnimating];
         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
@@ -292,43 +289,39 @@
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
-    if (!self.processingPosts) {
-        self.processingPosts = YES;
+    if (!self.loading) {
+        self.loading = YES;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.processingPosts = NO;
-
                     [self.tableView beginUpdates];
                     [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                     self.tableView.separatorColor = HEX(0xE0E0E0ff);
-                    
-                    if (self.loading) {
-                        self.loading = NO;
-                        [UIView animateWithDuration:0.2 animations:^{
-                            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                        } completion:^(BOOL finished) {
-                            [self.pullToRefreshImageView stopAnimating];
-                            CGFloat offset = self.tableView.contentOffset.y;
-                            self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
-                            
-                            if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
-                                self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                                self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-                                self.searchBar.delegate = self;
-                                self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                                self.searchDisplayController.searchResultsDataSource = self;
-                                self.searchDisplayController.searchResultsDelegate = self;
-                                self.searchDisplayController.delegate = self;
-                                self.tableView.tableHeaderView = self.searchBar;
-                                [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
-                            }
-                        }];
-                    }
+                    self.loading = NO;
+                    [UIView animateWithDuration:0.2 animations:^{
+                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                    } completion:^(BOOL finished) {
+                        [self.pullToRefreshImageView stopAnimating];
+                        CGFloat offset = self.tableView.contentOffset.y;
+                        self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+                        
+                        if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
+                            self.searchPostDataSource = [self.postDataSource searchDataSource];
+
+                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+                            self.searchBar.delegate = self;
+                            self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+                            self.searchDisplayController.searchResultsDataSource = self;
+                            self.searchDisplayController.searchResultsDelegate = self;
+                            self.searchDisplayController.delegate = self;
+                            self.tableView.tableHeaderView = self.searchBar;
+                            [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+                        }
+                    }];
                     
                     if (callback) {
                         callback();
@@ -340,11 +333,11 @@
 }
 
 - (void)updateSearchResults {
-    if (!self.processingPosts) {
-        self.processingPosts = YES;
+    if (!self.searchLoading) {
+        self.searchLoading = YES;
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.processingPosts = NO;
+                self.searchLoading = NO;
                 [self.searchDisplayController.searchResultsTableView beginUpdates];
                 [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
@@ -356,12 +349,11 @@
 }
 
 - (void)updateWithCount:(NSNumber *)count {
-    if (!self.processingPosts) {
-        self.processingPosts = YES;
+    if (!self.loading) {
+        self.loading = YES;
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.processingPosts = NO;
-                
+                self.loading = NO;
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -369,14 +361,11 @@
                 [self.tableView endUpdates];
                 self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
-                if (self.loading) {
-                    self.loading = NO;
-                    [UIView animateWithDuration:0.2 animations:^{
-                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-                    } completion:^(BOOL finished) {
-                        [self.pullToRefreshImageView stopAnimating];
-                    }];
-                }
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                } completion:^(BOOL finished) {
+                    [self.pullToRefreshImageView stopAnimating];
+                }];
             });
         } failure:nil options:@{@"count": count}];
     }
@@ -492,7 +481,7 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if (!self.processingPosts) {
+    if (!self.loading) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
@@ -932,23 +921,17 @@
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSInteger totalNumberOfPosts = [self.postDataSource totalNumberOfPosts];
-                dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.5 animations:^{
+                    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+                    [self.pullToRefreshImageView startAnimating];
+                } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-                        self.loading = YES;
-                        [self.pullToRefreshImageView startAnimating];
-                    } completion:^(BOOL finished) {
-                        [UIView animateWithDuration:0.5 animations:^{
-                            self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-                            NSNumber *count = @(round(MAX(totalNumberOfPosts - 200, 0) * MIN((-offset - 60) / 70., 1)) + 200);
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                [self updateWithCount:count];
-                            });
-                        }];
+                        self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+                        NSNumber *count = @(round(MAX([self.postDataSource totalNumberOfPosts] - 200, 0) * MIN((-offset - 60) / 70., 1)) + 200);
+                        [self updateWithCount:count];
                     }];
-                });
+                }];
             });
         }
     }
@@ -980,6 +963,10 @@
         [self.searchPostDataSource filterWithQuery:searchText];
         [self updateSearchResults];
     }
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
