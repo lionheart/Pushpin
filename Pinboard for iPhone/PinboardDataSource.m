@@ -35,8 +35,9 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
         self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
         self.tags = @[];
-        
+
         self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
@@ -57,6 +58,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         self.tags = @[];
 
         self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
