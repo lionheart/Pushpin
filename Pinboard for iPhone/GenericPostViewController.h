@@ -88,13 +88,13 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;
 
-@property (nonatomic) BOOL processingPosts;
 @property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
+@property (nonatomic) BOOL searchLoading;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;

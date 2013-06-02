@@ -98,7 +98,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         else if ([component isEqualToString:@"NOT"]) {
             [newComponents addObject:component];
         }
-        else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\":"]].location == NSNotFound) {
+        else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\": "]].location == NSNotFound) {
             [newComponents addObject:[component stringByAppendingString:@"*"]];
         }
         else {
@@ -349,15 +349,15 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                     if (![bookmarkMeta isEqualToString:element[@"meta"]]) {
                         updated_or_created = YES;
                         params = @{
-                                   @"url": element[@"href"],
-                                   @"title": element[@"description"],
-                                   @"description": element[@"extended"],
-                                   @"meta": element[@"meta"],
-                                   @"hash": element[@"hash"],
-                                   @"tags": element[@"tags"],
-                                   @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                                   @"private": @([element[@"shared"] isEqualToString:@"no"])
-                                   };
+                            @"url": element[@"href"],
+                            @"title": [element[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                            @"description": [element[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                            @"meta": element[@"meta"],
+                            @"hash": element[@"hash"],
+                            @"tags": [element[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                            @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                            @"private": @([element[@"shared"] isEqualToString:@"no"])
+                        };
                         
                         [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
                         [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_id IN (SELECT id FROM bookmark WHERE hash=?)" withArgumentsInArray:@[element[@"hash"]]];
@@ -367,16 +367,16 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                     newBookmarkCount++;
                     updated_or_created = YES;
                     params = @{
-                               @"url": element[@"href"],
-                               @"title": element[@"description"],
-                               @"description": element[@"extended"],
-                               @"meta": element[@"meta"],
-                               @"hash": element[@"hash"],
-                               @"tags": element[@"tags"],
-                               @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([element[@"shared"] isEqualToString:@"no"]),
-                               @"created_at": [dateFormatter dateFromString:element[@"time"]]
-                               };
+                        @"url": element[@"href"],
+                        @"title": [element[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"description": [element[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"meta": element[@"meta"],
+                        @"hash": element[@"hash"],
+                        @"tags": [element[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"unread": @([element[@"toread"] isEqualToString:@"yes"]),
+                        @"private": @([element[@"shared"] isEqualToString:@"no"]),
+                        @"created_at": [dateFormatter dateFromString:element[@"time"]]
+                    };
                     
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                 }
@@ -431,6 +431,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
         BOOL neverUpdated = lastLocalUpdate == nil;
         BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
+        // BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
         if (neverUpdated || outOfSyncWithAPI) {
             [pinboard bookmarksWithTags:nil
                                  offset:-1
@@ -462,19 +463,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         }
     };
     
-    NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
-    if (lastLocalUpdate) {
-        BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
-        if (lastUpdatedMoreThanFiveMinutesAgo) {
-            [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
-        }
-        else {
-            success();
-        }
-    }
-    else {
-        [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
-    }
+    [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
 }
 
 - (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {
@@ -528,69 +517,67 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
+        [db closeOpenResultSets];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
         
+        NSArray *oldPosts = [self.posts copy];
         NSMutableArray *newPosts = [NSMutableArray array];
-        NSMutableArray *newURLs = [NSMutableArray array];
-        
-        NSMutableArray *oldPosts = [self.posts copy];
-        NSMutableArray *oldURLs = [NSMutableArray array];
+
+        NSMutableArray *oldHashes = [NSMutableArray array];
+        NSMutableDictionary *oldHashesToMetas = [NSMutableDictionary dictionary];
         for (NSDictionary *post in self.posts) {
-            [oldURLs addObject:post[@"url"]];
+            [oldHashes addObject:post[@"hash"]];
+            oldHashesToMetas[post[@"hash"]] = post[@"meta"];
         }
         
         NSMutableArray *indexPathsToAdd = [NSMutableArray array];
         NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         NSInteger index = 0;
-        
-        while ([results next]) {
-            NSString *title = [results stringForColumn:@"title"];
-            
-            if ([title isEqualToString:@""]) {
-                title = @"untitled";
-            }
-            NSDictionary *post = @{
-                                   @"title": title,
-                                   @"description": [results stringForColumn:@"description"],
-                                   @"unread": @([results boolForColumn:@"unread"]),
-                                   @"url": [results stringForColumn:@"url"],
-                                   @"private": @([results boolForColumn:@"private"]),
-                                   @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                   @"created_at": [results dateForColumn:@"created_at"],
-                                   @"starred": @([results boolForColumn:@"starred"])
-                                   };
+        NSInteger skipIndex = 0;
 
-            [newPosts addObject:post];
-            [newURLs addObject:post[@"url"]];
-            
-            if (![oldPosts containsObject:post]) {
-                // Check if the bookmark is being updated (as opposed to entirely new)
-                if ([oldURLs containsObject:post[@"url"]]) {
+        while ([results next]) {
+            NSString *hash = [results stringForColumn:@"hash"];
+
+            while (skipIndex < oldHashes.count && ![oldHashes[skipIndex] isEqualToString:hash]) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:skipIndex inSection:0]];
+                skipIndex++;
+            }
+
+            NSDictionary *post;
+            if (skipIndex < oldHashes.count) {
+                // If this is satisfied, we know that the old hash corresponds to the new one. Therefore, it's the same post.
+                post = oldPosts[skipIndex];
+
+                // Reload the post if its meta value has changed.
+                if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
+                    post = [PinboardDataSource postFromResultSet:results];
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                 }
-                else {
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                }
             }
+            else {
+                // It's a new post.
+                post = [PinboardDataSource postFromResultSet:results];
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            }
+            [newPosts addObject:post];
+
             index++;
+            skipIndex++;
         }
         [db close];
         
-        for (int i=0; i<oldURLs.count; i++) {
-            if (![newURLs containsObject:oldURLs[i]]) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-            }
+        while (skipIndex < oldHashes.count) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:skipIndex inSection:0]];
+            skipIndex++;
         }
-        
-        self.posts = [NSMutableArray arrayWithArray:newPosts];
 
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
 
         dispatch_group_t group = dispatch_group_create();
-        for (NSDictionary *post in self.posts) {
+        for (NSDictionary *post in newPosts) {
             dispatch_group_enter(group);
             [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newHeights addObject:height];
@@ -599,7 +586,8 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                 dispatch_group_leave(group);
             }];
         }
-        
+
+        self.posts = newPosts;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
@@ -727,28 +715,14 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         [db open];
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
 
-        [self.posts removeAllObjects];
+        NSMutableArray *newPosts = [NSMutableArray array];
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
         while ([results next]) {
-            NSString *title = [results stringForColumn:@"title"];
+            NSDictionary *post = [PinboardDataSource postFromResultSet:results];
 
-            if ([title isEqualToString:@""]) {
-                title = @"untitled";
-            }
-            NSDictionary *post = @{
-                                   @"title": title,
-                                   @"description": [results stringForColumn:@"description"],
-                                   @"unread": @([results boolForColumn:@"unread"]),
-                                   @"url": [results stringForColumn:@"url"],
-                                   @"private": @([results boolForColumn:@"private"]),
-                                   @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                   @"created_at": [results dateForColumn:@"created_at"],
-                                   @"starred": @([results boolForColumn:@"starred"])
-                                   };
-
-            [self.posts addObject:post];
+            [newPosts addObject:post];
             dispatch_group_enter(inner_group);
             [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newHeights addObject:height];
@@ -759,10 +733,11 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         }
         [db close];
 
-        for (int i=previousPostCount - numberOfPostsDeleted; i<self.posts.count; i++) {
+        for (int i=previousPostCount - numberOfPostsDeleted; i<newPosts.count; i++) {
             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
 
+        self.posts = newPosts;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
@@ -859,8 +834,8 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
-    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *title = post[@"title"];
+    NSString *description = post[@"description"];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];
@@ -980,6 +955,26 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
 - (BOOL)supportsTagDrilldown {
     return YES;
+}
+
++ (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet {
+    NSString *title = [resultSet stringForColumn:@"title"];
+    
+    if ([title isEqualToString:@""]) {
+        title = @"untitled";
+    }
+    return @{
+        @"title": title,
+        @"description": [resultSet stringForColumn:@"description"],
+        @"unread": @([resultSet boolForColumn:@"unread"]),
+        @"url": [resultSet stringForColumn:@"url"],
+        @"private": @([resultSet boolForColumn:@"private"]),
+        @"tags": [resultSet stringForColumn:@"tags"],
+        @"created_at": [resultSet dateForColumn:@"created_at"],
+        @"starred": @([resultSet boolForColumn:@"starred"]),
+        @"hash": [resultSet stringForColumn:@"hash"],
+        @"meta": [resultSet stringForColumn:@"meta"],
+    };
 }
 
 @end

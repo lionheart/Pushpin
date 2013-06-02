@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
+#import "FMDatabase.h"
 
 static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSourceProgressNotification";
 
@@ -38,6 +39,7 @@ static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSource
 
 + (NSArray *)linksForPost:(NSDictionary *)post;
 + (CGFloat)heightForPost:(NSDictionary *)post;
++ (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 
 - (NSAttributedString *)attributedStringForPost:(NSDictionary *)post;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
