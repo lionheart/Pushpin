@@ -512,15 +512,12 @@ static BOOL kPinboardSyncInProgress = NO;
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
                                if (error) {
-                                   if (failure) {
-                                       failure(error);
-                                   }
+                                   failure(error);
                                }
                                else {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       
-                                       DLog(@"%@", [NSDate date]);
+
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
                                        [db beginTransaction];
@@ -530,7 +527,6 @@ static BOOL kPinboardSyncInProgress = NO;
                                        }
                                        [db commit];
                                        [db close];
-                                       DLog(@"%@", [NSDate date]);
                                        success();
                                    });
                                }
