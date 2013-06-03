@@ -357,6 +357,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 [db open];
                 FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name FROM tag_fts, tag WHERE tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
                 
+                #warning XXX Should all really be refactored.
                 NSString *currentTag;
                 NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
                 while ([result next]) {
