@@ -464,7 +464,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                         success:^(NSArray *bookmarks) {
                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                 BookmarksSuccessBlock(bookmarks);
-                                                
+
                                                 if (!lastLocalUpdate) {
                                                     [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:success failure:nil];
                                                 }
