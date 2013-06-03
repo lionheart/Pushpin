@@ -685,9 +685,11 @@
 #pragma mark - Table view delegate
 
 - (void)closeModal:(UIViewController *)sender {
-    [self.navigationController dismissViewControllerAnimated:YES completion:^{
-        [self updateFromLocalDatabaseWithCallback:nil];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.navigationController dismissViewControllerAnimated:YES completion:^{
+            [self updateFromLocalDatabaseWithCallback:nil];
+        }];
+    });
 }
 
 #pragma mark - RDActionSheet
