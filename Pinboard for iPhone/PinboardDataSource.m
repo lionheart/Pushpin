@@ -13,7 +13,7 @@
 #import "ASPinboard/ASPinboard.h"
 #import "AddBookmarkViewController.h"
 
-static BOOL kPinboardDataSourceUpdateInProgress = NO;
+static BOOL kPinboardSyncInProgress = NO;
 
 @implementation PinboardDataSource
 
@@ -22,12 +22,14 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 @synthesize posts = _posts;
 @synthesize heights = _heights;
 @synthesize strings = _strings;
+@synthesize totalNumberOfPosts = _totalNumberOfPosts;
 @synthesize urls;
 @synthesize maxResults;
 
 - (id)init {
     self = [super init];
     if (self) {
+        self.totalNumberOfPosts = 0;
         self.posts = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
@@ -49,6 +51,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 - (id)initWithParameters:(NSDictionary *)parameters {
     self = [super init];
     if (self) {
+        self.totalNumberOfPosts = 0;
         self.posts = [NSMutableArray array];
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
@@ -264,213 +267,228 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 }
 
 - (NSInteger)totalNumberOfPosts {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
-    [result next];
-    NSInteger count = [result intForColumnIndex:0];
-    [db close];
-    return count;
+    if (!_totalNumberOfPosts) {
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
+        [result next];
+        NSInteger count = [result intForColumnIndex:0];
+        [db close];
+        _totalNumberOfPosts = count;
+    }
+    return _totalNumberOfPosts;
 }
 
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    
-    if (!progress) {
-        progress = ^(NSInteger current, NSInteger total) {};
-    }
-    
-    if (!success) {
-        success = ^{};
-    }
+    if (!kPinboardSyncInProgress) {
+        kPinboardSyncInProgress = YES;
 
-    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-            [db open];
-            
-            [db beginTransaction];
-            [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
-            
-            FMResultSet *results;
-            
-            NSMutableArray *tags = [[NSMutableArray alloc] init];
-            results = [db executeQuery:@"SELECT name FROM tag"];
-            while ([results next]) {
-                [tags addObject:[results stringForColumn:@"name"]];
-            }
-
-            NSMutableDictionary *metas = [NSMutableDictionary dictionary];
-            NSMutableArray *oldHashes = [NSMutableArray array];
-
-            results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
-            while ([results next]) {
-                NSString *hash = [results stringForColumn:@"hash"];
-                [oldHashes addObject:hash];
-                [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
-            }
-            NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
-
-            BOOL updated_or_created = NO;
-            NSUInteger count = 0;
-            NSUInteger total = posts.count;
-            NSInteger skipPivot = 0;
-            NSInteger index = 0;
-            BOOL postFound = NO;
-            NSDictionary *params;
-            
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-            
-            [mixpanel.people set:@"Bookmarks" to:@(total)];
-            
-            progress(0, total);
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
-            });
-            for (NSDictionary *post in posts) {
-                postFound = NO;
-                updated_or_created = NO;
-
-                NSString *hash = post[@"hash"];
-                NSString *meta = post[@"meta"];
-                
-                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                    if ([oldHashes[i] isEqualToString:hash]) {
-                        // Delete all posts that were skipped
-                        for (NSInteger j=skipPivot; j<i; j++) {
-                            [bookmarksToDelete addObject:oldHashes[j]];
-                        }
-                        
-                        skipPivot = i;
-
-                        // Skip doing anything to this bookmark if its meta value has changed.
-                        if (![meta isEqualToString:metas[hash]]) {
-                            params = @{
-                                @"url": post[@"href"],
-                                @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                @"meta": meta,
-                                @"hash": hash,
-                                @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                @"private": @([post[@"shared"] isEqualToString:@"no"])
-                            };
-
-                            // Update this bookmark
-                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                            updated_or_created = YES;
-                        }
-                        
-                        postFound = YES;
-                        skipPivot++;
-                        break;
-                    }
-                }
-                
-                // If the bookmark wasn't found by looping through, it's a new one
-                if (!postFound && ![oldHashes containsObject:hash]) {
-                    params = @{
-                        @"url": post[@"href"],
-                        @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"meta": meta,
-                        @"hash": hash,
-                        @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                        @"created_at": [dateFormatter dateFromString:post[@"time"]]
-                    };
-
-                    [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-
-                    updated_or_created = YES;
-                }
-
-                if ([post[@"tags"] length] > 0 && updated_or_created) {
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                    for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
-                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                    }
-                }
-                
-                index++;
-                progress(count, total);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
-                });
-            }
-            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-
-            for (NSString *bookmarkHash in bookmarksToDelete) {
-                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
-            }
-            
-            [db commit];
-            [db close];
-
-            [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
-            progress(total, total);
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
-            });
-        });
-    };
-    
-    void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
-        if (failure) {
-            failure(error);
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        ASPinboard *pinboard = [ASPinboard sharedInstance];
+        
+        if (!progress) {
+            progress = ^(NSInteger current, NSInteger total) {};
         }
-    };
+        
+        if (!success) {
+            success = ^{};
+        }
+        
+        void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+                
+                [db beginTransaction];
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
+                
+                FMResultSet *results;
+                
+                NSMutableArray *tags = [[NSMutableArray alloc] init];
+                results = [db executeQuery:@"SELECT name FROM tag"];
+                while ([results next]) {
+                    [tags addObject:[results stringForColumn:@"name"]];
+                }
+                
+                NSMutableDictionary *metas = [NSMutableDictionary dictionary];
+                NSMutableArray *oldHashes = [NSMutableArray array];
+                
+                results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
+                while ([results next]) {
+                    NSString *hash = [results stringForColumn:@"hash"];
+                    [oldHashes addObject:hash];
+                    [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
+                }
+                NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
+                
+                BOOL updated_or_created = NO;
+                NSUInteger count = 0;
+                NSUInteger total = posts.count;
+                NSInteger skipPivot = 0;
+                NSInteger index = 0;
+                BOOL postFound = NO;
+                NSDictionary *params;
 
-    void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
-            BOOL neverUpdated = lastLocalUpdate == nil;
-            BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
-            // BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
-            if (neverUpdated || outOfSyncWithAPI) {
-                [pinboard bookmarksWithTags:nil
-                                     offset:-1
-                                      count:[options[@"count"] integerValue]
-                                   fromDate:nil
-                                     toDate:nil
-                                includeMeta:YES
-                                    success:^(NSArray *bookmarks) {
-                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                            BookmarksSuccessBlock(bookmarks);
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+                [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+                
+                [mixpanel.people set:@"Bookmarks" to:@(total)];
+                
+                progress(0, total);
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
+                });
+                for (NSDictionary *post in posts) {
+                    postFound = NO;
+                    updated_or_created = NO;
+                    
+                    NSString *hash = post[@"hash"];
+                    NSString *meta = post[@"meta"];
+                    
+                    for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                        if ([oldHashes[i] isEqualToString:hash]) {
+                            // Delete all posts that were skipped
+                            for (NSInteger j=skipPivot; j<i; j++) {
+                                [bookmarksToDelete addObject:oldHashes[j]];
+                            }
+                            
+                            skipPivot = i;
+                            
+                            // Skip doing anything to this bookmark if its meta value has changed.
+                            if (![meta isEqualToString:metas[hash]]) {
+                                params = @{
+                                           @"url": post[@"href"],
+                                           @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                           @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                           @"meta": meta,
+                                           @"hash": hash,
+                                           @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                           @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                           @"private": @([post[@"shared"] isEqualToString:@"no"])
+                                           };
+                                
+                                // Update this bookmark
+                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                                updated_or_created = YES;
+                            }
+                            
+                            postFound = YES;
+                            skipPivot++;
+                            break;
+                        }
+                    }
+                    
+                    // If the bookmark wasn't found by looping through, it's a new one
+                    if (!postFound && ![oldHashes containsObject:hash]) {
+                        params = @{
+                                   @"url": post[@"href"],
+                                   @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                   @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                   @"meta": meta,
+                                   @"hash": hash,
+                                   @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                   @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                   @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                                   @"created_at": [dateFormatter dateFromString:post[@"time"]]
+                                   };
+                        
+                        [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                        
+                        updated_or_created = YES;
+                    }
+                    
+                    if ([post[@"tags"] length] > 0 && updated_or_created) {
+                        [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                        for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
+                            [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                            [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                        }
+                    }
+                    
+                    index++;
+                    progress(count, total);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
+                    });
+                }
+                [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+                
+                for (NSString *bookmarkHash in bookmarksToDelete) {
+                    [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
+                }
+                
+                [db commit];
+                [db close];
+                
+                self.totalNumberOfPosts = index;
 
-                                            if (!lastLocalUpdate) {
-                                                [self updateStarredPosts:^{
+                [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
+                progress(total, total);
+                kPinboardSyncInProgress = NO;
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
+                });
+            });
+        };
+        
+        void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
+            if (failure) {
+                failure(error);
+            }
+            kPinboardSyncInProgress = NO;
+        };
+        
+        void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
+                BOOL neverUpdated = lastLocalUpdate == nil;
+                BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
+                // BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
+                if (neverUpdated || outOfSyncWithAPI) {
+                    [pinboard bookmarksWithTags:nil
+                                         offset:-1
+                                          count:[options[@"count"] integerValue]
+                                       fromDate:nil
+                                         toDate:nil
+                                    includeMeta:YES
+                                        success:^(NSArray *bookmarks) {
+                                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                BookmarksSuccessBlock(bookmarks);
+                                                
+                                                if (!lastLocalUpdate) {
+                                                    [self updateStarredPosts:^{
+                                                        success();
+                                                    }
+                                                                     failure:nil];
+                                                }
+                                                else {
+                                                    [self updateStarredPosts:nil failure:nil];
                                                     success();
                                                 }
-                                                                 failure:nil];
-                                            }
-                                            else {
-                                                [self updateStarredPosts:nil failure:nil];
-                                                success();
-                                            }
-                                        });
-                                    }
-                                    failure:^(NSError *error) {
-                                        BookmarksFailureBlock(error);
-                                    }];
-                
-            }
-            else {
-                success();
-            }
-        });
-    };
-    
-    [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+                                            });
+                                        }
+                                        failure:^(NSError *error) {
+                                            BookmarksFailureBlock(error);
+                                        }];
+                    
+                }
+                else {
+                    kPinboardSyncInProgress = NO;
+                    success();
+                }
+            });
+        };
+        
+        [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+    }
+    else {
+        failure([NSError errorWithDomain:PinboardDataSourceErrorDomain code:kPinboardSyncInProgress userInfo:nil]);
+    }
 }
 
 - (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {
@@ -502,6 +520,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        
+                                       DLog(@"%@", [NSDate date]);
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
                                        [db beginTransaction];
@@ -511,7 +530,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                                        }
                                        [db commit];
                                        [db close];
-
+                                       DLog(@"%@", [NSDate date]);
                                        success();
                                    });
                                }

@@ -11,6 +11,11 @@
 #import "FMDatabase.h"
 
 static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSourceProgressNotification";
+static NSString *PinboardDataSourceErrorDomain = @"PinboardDataSourceErrorDomain";
+
+enum PINBOARD_DATA_SOURCE_ERROR_CODES {
+    PinboardErrorSyncInProgress
+};
 
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
