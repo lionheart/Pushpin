@@ -388,7 +388,6 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
 
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
 
-                    DLog(@"%d %d %@ %@", index, skipPivot, [oldHashes containsObject:hash] ? @"yes" : @"no", hash);
                     updated_or_created = YES;
                 }
 
@@ -529,10 +528,10 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         NSMutableArray *newPosts = [NSMutableArray array];
 
         NSMutableArray *oldHashes = [NSMutableArray array];
-        NSMutableDictionary *oldHashesToMetas = [NSMutableDictionary dictionary];
+        NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
         for (NSDictionary *post in self.posts) {
             [oldHashes addObject:post[@"hash"]];
-            oldHashesToMetas[post[@"hash"]] = post[@"meta"];
+            oldMetas[post[@"hash"]] = post[@"meta"];
         }
         
         NSMutableArray *indexPathsToAdd = [NSMutableArray array];
@@ -547,6 +546,7 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
         while ([results next]) {
             postFound = NO;
             NSString *hash = [results stringForColumn:@"hash"];
+            NSString *meta = [results stringForColumn:@"meta"];
             NSDictionary *post;
             
             // Go from the last found value to the end of the list.
@@ -563,11 +563,11 @@ static BOOL kPinboardDataSourceUpdateInProgress = NO;
                     post = oldPosts[i];
                     
                     // Reload the post if its meta value has changed.
-                    if (![post[@"meta"] isEqualToString:oldHashesToMetas[hash]]) {
+                    if (![meta isEqualToString:oldMetas[hash]]) {
                         post = [PinboardDataSource postFromResultSet:results];
-                        
+
                         // Reloads effect the old index path
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
                     }
                     
                     postFound = YES;
