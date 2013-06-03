@@ -689,7 +689,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                                     [db open];
-                                                    [db executeUpdate:@"UPDATE bookmark SET unread=0 WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                    [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=? WHERE hash=?" withArgumentsInArray:@[@"NEEDSUPDATE", bookmark[@"hash"]]];
                                                     [db close];
                                                     callback(nil);
                                                 });

@@ -405,8 +405,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                     DLog(@"REMOVE %d", indexPathsToRemove.count);
                     DLog(@"NEW %d", newTagCompletions.count);
                     
-                    DLog(@"%@ %@", newString, newTagCompletions);
-                    
                     [self.tableView endUpdates];
                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
@@ -457,7 +455,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             return NO;
         }
         else {
-            DLog(@"%@", string);
             [self searchUpdatedWithRange:range andString:string];
         }
     }
@@ -787,14 +784,21 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         
+        NSString *url = self.urlTextField.text;
+        NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *description = [self.postDescription stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *tags = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        BOOL private = !self.privateSwitch.on;
+        BOOL unread = !self.readSwitch.on;
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
-            [pinboard addBookmarkWithURL:self.urlTextField.text
-                                   title:[self.titleTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                             description:[self.postDescription stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                    tags:[self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-                                  shared:!self.privateSwitch.on
-                                  unread:!self.readSwitch.on
+            [pinboard addBookmarkWithURL:url
+                                   title:title
+                             description:description
+                                    tags:tags
+                                  shared:!private
+                                  unread:unread
                                  success:^{
                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                          Mixpanel *mixpanel = [Mixpanel sharedInstance];
@@ -808,18 +812,19 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                          [results next];
                                          
                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                        @"url": self.urlTextField.text,
-                                                                        @"title": self.titleTextField.text,
-                                                                        @"description": self.postDescription,
-                                                                        @"tags": self.tagTextField.text,
-                                                                        @"unread": @(!self.readSwitch.on),
-                                                                        @"private": @(self.privateSwitch.on),
+                                                                        @"url": url,
+                                                                        @"title": title,
+                                                                        @"description": description,
+                                                                        @"tags": tags,
+                                                                        @"unread": @(unread),
+                                                                        @"private": @(private),
                                                                         @"starred": @(NO),
-                                                                        }];
+                                                                        @"meta": @"NEEDSUPDATE"
+                                                                    }];
                                          
                                          if ([results intForColumnIndex:0] > 0) {
                                              [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred WHERE url=:url" withParameterDictionary:params];
+                                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=:meta WHERE url=:url" withParameterDictionary:params];
                                              bookmarkAdded = NO;
                                          }
                                          else {
