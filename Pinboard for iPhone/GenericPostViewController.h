@@ -39,7 +39,6 @@ typedef NSInteger PPPostAction;
 
 - (void)filterWithQuery:(NSString *)query;
 - (NSInteger)numberOfPosts;
-- (NSInteger)totalNumberOfPosts;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
 
@@ -63,6 +62,8 @@ typedef NSInteger PPPostAction;
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 
 @optional
+
+@property (nonatomic) NSInteger totalNumberOfPosts;
 
 - (void)addDataSource:(void (^)())callback;
 - (void)removeDataSource:(void (^)())callback;
