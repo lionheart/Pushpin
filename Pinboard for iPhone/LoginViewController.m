@@ -152,10 +152,10 @@
 }
 
 - (void)progressNotificationReceived:(NSNotification *)notification {
+    NSInteger current = [notification.userInfo[@"current"] integerValue];
+    NSInteger total = [notification.userInfo[@"total"] integerValue];
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger current = [notification.userInfo[@"current"] integerValue];
-        NSInteger total = [notification.userInfo[@"total"] integerValue];
-        
         if (total == current) {
             [self.messageUpdateTimer invalidate];
             self.activityIndicator.frame = self.activityIndicatorFrameTop;

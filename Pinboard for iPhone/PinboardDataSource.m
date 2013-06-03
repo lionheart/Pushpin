@@ -321,10 +321,9 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
             
             BOOL updated_or_created = NO;
-            NSUInteger count = 0;
-            NSUInteger total = posts.count;
+            __block NSUInteger index = 0;
+            __block NSUInteger total = posts.count;
             NSInteger skipPivot = 0;
-            NSInteger index = 0;
             BOOL postFound = NO;
             NSDictionary *params;
 
@@ -408,8 +407,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 
                 index++;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    progress(count, total);
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
+                    progress(index, total);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                 });
             }
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
