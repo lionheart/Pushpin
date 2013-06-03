@@ -110,7 +110,7 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
-                    [self updateWithCount:@(100)];
+                    [self updateWithRatio:@(1.0)];
                     [AppDelegate sharedDelegate].bookmarksNeedUpdate = NO;
                 }
             }];
@@ -348,7 +348,7 @@
     }
 }
 
-- (void)updateWithCount:(NSNumber *)count {
+- (void)updateWithRatio:(NSNumber *)ratio {
     if (!self.loading) {
         self.loading = YES;
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
@@ -367,7 +367,7 @@
                     [self.pullToRefreshImageView stopAnimating];
                 }];
             });
-        } failure:nil options:@{@"count": count}];
+        } failure:nil options:@{@"ratio": ratio}];
     }
 }
 
@@ -936,8 +936,7 @@
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
                         self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
-                        NSNumber *count = @(round(MAX([self.postDataSource totalNumberOfPosts] - 200, 0) * MIN((-offset - 60) / 70., 1)) + 200);
-                        [self updateWithCount:count];
+                        [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
             });

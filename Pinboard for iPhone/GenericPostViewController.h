@@ -119,7 +119,7 @@ typedef NSInteger PPPostAction;
 - (void)copyURL;
 - (void)copyToMine;
 - (void)sendToReadLater;
-- (void)updateWithCount:(NSNumber *)count;
+- (void)updateWithRatio:(NSNumber *)ratio;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
