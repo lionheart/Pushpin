@@ -97,7 +97,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy URL", nil) action:@selector(copyURL:)];
+    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Project URL", nil) action:@selector(copyURL:)];
     UIMenuItem *followOnTwitterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Follow on Twitter", nil) action:@selector(followUserOnTwitter:)];
     [[UIMenuController sharedMenuController] setMenuItems:@[followOnTwitterMenuItem, copyURLMenuItem]];
     [[UIMenuController sharedMenuController] update];
