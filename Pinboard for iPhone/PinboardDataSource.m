@@ -333,10 +333,9 @@ static BOOL kPinboardSyncInProgress = NO;
             [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
             
             [mixpanel.people set:@"Bookmarks" to:@(total)];
-            
-            progress(0, total);
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
+                progress(0, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
             for (NSDictionary *post in posts) {
@@ -408,8 +407,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 index++;
-                progress(count, total);
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    progress(count, total);
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(count), @"total": @(total)}];
                 });
             }
@@ -426,10 +425,10 @@ static BOOL kPinboardSyncInProgress = NO;
             self.totalNumberOfPosts = index;
 
             [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
-            progress(total, total);
             kPinboardSyncInProgress = NO;
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                progress(total, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
             });
         };
