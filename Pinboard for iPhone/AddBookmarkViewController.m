@@ -767,78 +767,97 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 }
 
 - (void)addBookmark {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+            #warning XXX Should display a message to the user
+            return;
+        }
+        
+        if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+            WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            [alert show];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
+            });
+            return;
+        }
+        
+        self.navigationItem.leftBarButtonItem.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            ASPinboard *pinboard = [ASPinboard sharedInstance];
+            [pinboard addBookmarkWithURL:self.urlTextField.text
+                                   title:self.titleTextField.text
+                             description:self.postDescription
+                                    tags:self.tagTextField.text
+                                  shared:!self.privateSwitch.on
+                                  unread:!self.readSwitch.on
+                                 success:^{
+                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                         Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                         BOOL bookmarkAdded;
 
-    if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-        #warning Should display a message to the user
-        return;
-    }
+                                         [db open];
+                                         [db beginTransaction];
+                                         
+                                         FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlTextField.text]];
+                                         [results next];
+                                         
+                                         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                        @"url": self.urlTextField.text,
+                                                                        @"title": self.titleTextField.text,
+                                                                        @"description": self.postDescription,
+                                                                        @"tags": self.tagTextField.text,
+                                                                        @"unread": @(!self.readSwitch.on),
+                                                                        @"private": @(self.privateSwitch.on),
+                                                                        @"starred": @(NO),
+                                                                        }];
+                                         
+                                         if ([results intForColumnIndex:0] > 0) {
+                                             [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred WHERE url=:url" withParameterDictionary:params];
+                                             bookmarkAdded = NO;
+                                         }
+                                         else {
+                                             params[@"created_at"] = [NSDate date];
+                                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                             [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, starred, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
+                                             bookmarkAdded = YES;
+                                         }
+                                         
+                                         [db commit];
+                                         [db close];
+                                         
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                             if (bookmarkAdded) {
+                                                 notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
+                                             }
+                                             else {
+                                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
+                                             }
 
-    if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-        WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-        [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
-        return;
-    }
-
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard addBookmarkWithURL:self.urlTextField.text
-                           title:self.titleTextField.text
-                     description:self.postDescription
-                            tags:self.tagTextField.text
-                          shared:!self.privateSwitch.on
-                          unread:!self.readSwitch.on
-                         success:^{
-                             [self.modalDelegate closeModal:self];
-
-                             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                             [db open];
-                             [db beginTransaction];
-                             
-                             FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url = ?" withArgumentsInArray:@[self.urlTextField.text]];
-                             [results next];
-                             
-                             UILocalNotification *notification = [[UILocalNotification alloc] init];
-                             notification.alertAction = @"Open Pushpin";
-                             notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                             
-                             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                            @"url": self.urlTextField.text,
-                                                            @"title": self.titleTextField.text,
-                                                            @"description": self.postDescription,
-                                                            @"tags": self.tagTextField.text,
-                                                            @"unread": @(!self.readSwitch.on),
-                                                            @"private": @(self.privateSwitch.on)
-                                                            }];
-                             
-                             if ([results intForColumnIndex:0] > 0) {
-                                 [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private WHERE url=:url" withParameterDictionary:params];
-                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
-                             }
-                             else {
-                                 params[@"created_at"] = [NSDate date];
-                                 [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
-                                 [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, tags, created_at) VALUES (:title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-                                 notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
-                             }
-                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                             
-                             [db commit];
-                             [db close];
-                             self.navigationItem.leftBarButtonItem.enabled = YES;
-                             self.navigationItem.rightBarButtonItem.enabled = YES;
-                             
-                         }
-                         failure:^(NSError *error) {
-                             self.navigationItem.leftBarButtonItem.enabled = YES;
-                             self.navigationItem.rightBarButtonItem.enabled = YES;
-                             WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                             [alert show];
-                         }];
+                                             notification.alertAction = @"Open Pushpin";
+                                             notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                             [self.modalDelegate closeModal:self];
+                                         });
+                                     });
+                                 }
+                                 failure:^(NSError *error) {
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         self.navigationItem.leftBarButtonItem.enabled = YES;
+                                         self.navigationItem.rightBarButtonItem.enabled = YES;
+                                         WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                         [alert show];
+                                     });
+                                 }];
+        });
+    });
 }
 
 + (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
