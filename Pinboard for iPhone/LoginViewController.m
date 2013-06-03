@@ -152,19 +152,21 @@
 }
 
 - (void)progressNotificationReceived:(NSNotification *)notification {
-    NSInteger current = [notification.userInfo[@"current"] integerValue];
-    NSInteger total = [notification.userInfo[@"total"] integerValue];
-    
-    if (total == current) {
-        [self.messageUpdateTimer invalidate];
-        self.activityIndicator.frame = self.activityIndicatorFrameTop;
-        self.progressView.hidden = YES;
-        self.textView.text = @"Finalizing Metadata";
-    }
-    else {
-        CGFloat f = current / (float)total;
-        [self.progressView setProgress:f animated:YES];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSInteger current = [notification.userInfo[@"current"] integerValue];
+        NSInteger total = [notification.userInfo[@"total"] integerValue];
+        
+        if (total == current) {
+            [self.messageUpdateTimer invalidate];
+            self.activityIndicator.frame = self.activityIndicatorFrameTop;
+            self.progressView.hidden = YES;
+            self.textView.text = @"Finalizing Metadata";
+        }
+        else {
+            CGFloat f = current / (float)total;
+            [self.progressView setProgress:f animated:YES];
+        }
+    });
 }
 
 - (void)keyboardWasShown:(NSNotification *)notification {
@@ -213,16 +215,14 @@
 }
 
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.progressView setProgress:updated.floatValue / total.floatValue];
-            
-            if (updated.integerValue == total.integerValue) {
-                UINavigationController *controller = [AppDelegate sharedDelegate].navigationController;
-                controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                [self presentViewController:controller animated:YES completion:nil];
-            }
-        });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.progressView setProgress:updated.floatValue / total.floatValue];
+        
+        if (updated.integerValue == total.integerValue) {
+            UINavigationController *controller = [AppDelegate sharedDelegate].navigationController;
+            controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:controller animated:YES completion:nil];
+        }
     });
 }
 
@@ -300,31 +300,33 @@
                                                
                                                self.progressView.hidden = NO;
 
-                                               [delegate setToken:token];
-                                               PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-
-                                               [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
-                                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                                       [self.messageUpdateTimer invalidate];
-                                                       delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                                       [self presentViewController:delegate.navigationController
-                                                                          animated:YES
-                                                                        completion:nil];
-                                                   });
-                                               }
-                                                                                               failure:nil
-                                                                                              progress:nil
-                                                                                               options:@{@"count": @(-1)}];
-                                               
-                                               [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                                   [delegate setFeedToken:feedToken];
-                                               }];
-                                               
-                                               Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                               [mixpanel identify:[delegate username]];
-                                               [mixpanel.people set:@"$created" to:[NSDate date]];
-                                               [mixpanel.people set:@"$username" to:[delegate username]];
-                                               [mixpanel.people set:@"Browser" to:@"Webview"];
+                                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                   [delegate setToken:token];
+                                                   PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                                                   
+                                                   [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
+                                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                                           [self.messageUpdateTimer invalidate];
+                                                           delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                                           [self presentViewController:delegate.navigationController
+                                                                              animated:YES
+                                                                            completion:nil];
+                                                       });
+                                                   }
+                                                                                                   failure:nil
+                                                                                                  progress:nil
+                                                                                                   options:@{@"count": @(-1)}];
+                                                   
+                                                   [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                                                       [delegate setFeedToken:feedToken];
+                                                   }];
+                                                   
+                                                   Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                   [mixpanel identify:[delegate username]];
+                                                   [mixpanel.people set:@"$created" to:[NSDate date]];
+                                                   [mixpanel.people set:@"$username" to:[delegate username]];
+                                                   [mixpanel.people set:@"Browser" to:@"Webview"];
+                                               });
                                            });
                                        }
                                        failure:^(NSError *error) {
