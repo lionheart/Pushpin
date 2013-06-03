@@ -462,7 +462,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
     }
     else if (textField == self.urlTextField) {
-        if ([string isEqualToString:@" "]) {
+        if ([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location != NSNotFound) {
             return NO;
         }
     }
@@ -790,9 +790,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard addBookmarkWithURL:self.urlTextField.text
-                                   title:self.titleTextField.text
-                             description:self.postDescription
-                                    tags:self.tagTextField.text
+                                   title:[self.titleTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                             description:[self.postDescription stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                    tags:[self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
                                   shared:!self.privateSwitch.on
                                   unread:!self.readSwitch.on
                                  success:^{
