@@ -452,7 +452,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 if (neverUpdated || outOfSyncWithAPI) {
                     [pinboard bookmarksWithTags:nil
                                          offset:-1
-                                          count:[options[@"count"] integerValue]
+                                          count:(NSInteger)(MAX([self totalNumberOfPosts] * [options[@"ratio"] floatValue] - 200, 0) + 200)
                                        fromDate:nil
                                          toDate:nil
                                     includeMeta:YES
@@ -461,13 +461,10 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 BookmarksSuccessBlock(bookmarks);
                                                 
                                                 if (!lastLocalUpdate) {
-                                                    [self updateStarredPosts:^{
-                                                        success();
-                                                    }
-                                                                     failure:nil];
+                                                    [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:success failure:nil];
                                                 }
                                                 else {
-                                                    [self updateStarredPosts:nil failure:nil];
+                                                    [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:nil failure:nil];
                                                     success();
                                                 }
                                             });
@@ -491,7 +488,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure {
+- (void)updateStarredPostsWithRatio:(CGFloat)ratio success:(void (^)())success failure:(void (^)())failure {
     if (!success) {
         success = ^{};
     }
@@ -517,7 +514,8 @@ static BOOL kPinboardSyncInProgress = NO;
                                else {
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
+                                       
+                                       /*
                                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                                        [db open];
                                        [db beginTransaction];
@@ -527,6 +525,30 @@ static BOOL kPinboardSyncInProgress = NO;
                                        }
                                        [db commit];
                                        [db close];
+                                        */
+                                       
+                                       DLog(@"%@", [NSDate date]);
+                                       const char *dbPath = [[AppDelegate databasePath] UTF8String];
+                                       char *sqliteErrorMessage;
+                                       sqlite3_stmt *updateStatement = nil;
+                                       sqlite3 *db;
+                                       sqlite3_open(dbPath, &db);
+                                       sqlite3_exec(db, "BEGIN", NULL, NULL, &sqliteErrorMessage);
+                                       sqlite3_exec(db, "UPDATE bookmark SET starred=0 WHERE starred=1", NULL, NULL, &sqliteErrorMessage);
+                                       sqlite3_prepare_v2(db, "UPDATE bookmark SET starred=1 WHERE url=?", -1, &updateStatement, NULL);
+                                       
+                                       for (NSDictionary *post in payload) {
+                                           sqlite3_bind_text(updateStatement, 1, [post[@"u"] UTF8String], -1, SQLITE_TRANSIENT);
+                                           sqlite3_step(updateStatement);
+                                           sqlite3_clear_bindings(updateStatement);
+                                           sqlite3_reset(updateStatement);
+                                       }
+                                       
+                                       sqlite3_exec(db, "COMMIT", NULL, NULL, &sqliteErrorMessage);
+                                       sqlite3_finalize(updateStatement);
+                                       sqlite3_close(db);
+                                       DLog(@"%@", [NSDate date]);
+
                                        success();
                                    });
                                }

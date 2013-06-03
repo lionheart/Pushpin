@@ -32,7 +32,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, strong) NSMutableDictionary *queryParameters;
 
-- (void)updateStarredPosts:(void (^)())success failure:(void (^)())failure;
+- (void)updateStarredPostsWithRatio:(CGFloat)ratio success:(void (^)())success failure:(void (^)())failure;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options;
 - (void)filterWithQuery:(NSString *)query;
