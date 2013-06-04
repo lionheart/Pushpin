@@ -64,10 +64,6 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-}
-
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (!self.on) {
         [UIView animateWithDuration:0.2 animations:^{

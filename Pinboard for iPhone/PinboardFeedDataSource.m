@@ -384,10 +384,6 @@
     return postViewController;
 }
 
-- (BOOL)supportsSearch {
-    return NO;
-}
-
 - (BOOL)supportsTagDrilldown {
     return NO;
 }

@@ -16,7 +16,7 @@
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;

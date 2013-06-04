@@ -172,10 +172,6 @@
     return self.strings[index];
 }
 
-- (BOOL)supportsSearch {
-    return NO;
-}
-
 - (BOOL)supportsTagDrilldown {
     return NO;
 }
