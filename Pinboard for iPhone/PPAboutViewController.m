@@ -27,7 +27,7 @@
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         NSArray *credits = @[@[@"Rachel", @"For always believing in me."], @[@"Dante and Isabelle", @"For inspiring me and for making me laugh."], @[@"Maciej Ceglowski", @"For making Pinboard."]];
-        NSArray *beta = @[@[@"Michael Solis", [NSNull null], @"morphopod"], @[@"JB Bryant", [NSNull null], @"jb_bryant"], @[@"Phil Havens", [NSNull null], @"philhavens"], @[@"Riccardo Mori", @"For Italian translation.", @"morrick"], @[@"James Lepthien", @"For German translation.", @"0x86DD"], @[@"Jérôme Tomasini", @"For French translation.", @"c0wb0yz"], @[@"Vítor Galvão", @"For Portuguese translation.", @"vhgalvao"]];
+        NSArray *beta = @[@[@"Michael Solis", [NSNull null], @"morphorod"], @[@"JB Bryant", [NSNull null], @"jb_bryant"], @[@"Phil Havens", [NSNull null], @"philhavens"], @[@"Sam Cohen", @"For donating the getpushpin.com domain name.", @"Samography"], @[@"Riccardo Mori", @"For Italian translation.", @"morrick"], @[@"James Lepthien", @"For German translation.", @"0x86DD"], @[@"Jérôme Tomasini", @"For French translation.", @"c0wb0yz"], @[@"Vítor Galvão", @"For Portuguese translation.", @"vhgalvao"]];
         NSArray *translations = @[];
         NSArray *licenses = @[@[@"TTTAttributedLabel", @"Copyright (c) 2011 Mattt Thompson (http://mattt.me/)"
                                 "\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
@@ -55,7 +55,7 @@
                               @[@"oauthconsumer", [NSNull null], @"https://github.com/jdg/oauthconsumer"], @[@"RPSTPasswordManagementAppService", [NSNull null], @"https://github.com/Riposte/RPSTPasswordManagementAppService"]];
         NSString *build = [NSString stringWithFormat:@"Pushpin %@ (%@)", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
         NSArray *description = @[@[[NSNull null], @"Pushpin is the product of overwhelming amounts of caffeine, 80's club music, and cats. The truth is, blah."], @[@"Follow Pushpin on Twitter", [NSNull null]], @[@"Review Pushpin on iTunes", [NSNull null]]];
-        NSArray *team = @[@[@"Dan Loewenherz", @"Product design and development.", @"dwlz"], @[@"Martin Karasek", @"Visual design.", [NSNull null]]];
+        NSArray *team = @[@[@"Dan Loewenherz", @"Product design and development.", @"dwlz"], @[@"Martin Karasek", @"Visual design.", @"karimartin"]];
         self.data = @[description, team, credits, beta, licenses];
         self.titles = @[[NSNull null], @"Team", @"Credits", @"Acknowledgements", @"Software"];
         self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -229,27 +229,6 @@
         [self followScreenName:@"pushpin_app"];
     }
     else if (indexPath.section == 0 && indexPath.row == 2) {
-        /*
-        SKStoreProductViewController *storeProductViewController = [[SKStoreProductViewController alloc] init];
-        [storeProductViewController setDelegate:self];
-        WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Opening the App Store." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-        [loadingAlertView show];
-        
-        self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
-        [self.loadingIndicator startAnimating];
-        [loadingAlertView addSubview:self.loadingIndicator];
-
-        [storeProductViewController loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier : @"548052590"}
-                                              completionBlock:^(BOOL result, NSError *error) {
-                                                  [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                  if (error) {
-                                                      NSLog(@"Error %@ with User Info %@.", error, [error userInfo]);
-                                                  } else {
-                                                      [self presentViewController:storeProductViewController animated:YES completion:nil];
-                                                  }
-        }];
-        */
-        
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
     }
     else {
@@ -380,7 +359,7 @@
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
         NSArray *info = self.data[indexPath.section][indexPath.row];
         
-        if (indexPath.section == [self.titles indexOfObject:@"Software"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
+        if (indexPath.section == [self.titles indexOfObject:@"Software"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
             RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:info[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
             if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
                 [sheet addButtonWithTitle:@"Copy Project URL"];
@@ -390,7 +369,7 @@
                     }
                 };
             }
-            else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
+            else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
                 NSString *screenName = info[2];
                 [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@", screenName]];
                 sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
