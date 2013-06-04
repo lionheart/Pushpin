@@ -109,8 +109,9 @@ typedef NSInteger PPPostAction;
 // Right swipe
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 
-@property (nonatomic, strong) NSMutableArray *expandedIndexPaths;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
+@property (nonatomic, strong) NSMutableArray *compressedIndexPaths;
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property (nonatomic) CGFloat beginningScale;
 
 - (void)popViewController;
 
@@ -123,7 +124,7 @@ typedef NSInteger PPPostAction;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
-- (void)doubleTapGestureDetected:(UITapGestureRecognizer *)recognizer;
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 

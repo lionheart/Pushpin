@@ -47,16 +47,15 @@
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
-    self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapGestureDetected:)];
-    self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-    self.doubleTapGestureRecognizer.delaysTouchesBegan = YES;
-    self.doubleTapGestureRecognizer.cancelsTouchesInView = YES;
-    [self.tableView addGestureRecognizer:self.doubleTapGestureRecognizer];
+    if ([self.postDataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)]) {
+        self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
+    }
 
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    self.expandedIndexPaths = [NSMutableArray array];
+    self.compressedIndexPaths = [NSMutableArray array];
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
@@ -276,37 +275,11 @@
     }
 }
 
-- (void)doubleTapGestureDetected:(UITapGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateEnded) {
-        UITableView *tableView;
-
-        if (self.searchDisplayController.isActive) {
-            tableView = self.searchDisplayController.searchResultsTableView;
-        }
-        else {
-            tableView = self.tableView;
-        }
-
-        CGPoint pressPoint = [recognizer locationInView:tableView];
-        NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:pressPoint];
-        if ([self.expandedIndexPaths containsObject:indexPath]) {
-            [self.expandedIndexPaths removeObject:indexPath];
-        }
-        else {
-            [self.expandedIndexPaths addObject:indexPath];
-        }
-
-        [tableView beginUpdates];
-        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        [tableView endUpdates];
-    }
-}
-
-- (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.longPressGestureRecognizer) {
         [self.view endEditing:YES];
         CGPoint pressPoint;
-
+        
         if (self.searchDisplayController.isActive) {
             pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
             self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
@@ -318,6 +291,40 @@
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
         }
         [self openActionSheetForSelectedPost];
+    }
+    else if (recognizer == self.pinchGestureRecognizer) {
+        if (recognizer.state != UIGestureRecognizerStateBegan) {
+            CGFloat scale = self.pinchGestureRecognizer.scale;
+
+            if (scale > 1.5 || scale < 0.5) {
+                NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+                BOOL changesMade = NO;
+
+                if (scale < 1) {
+                    for (NSIndexPath *indexPath in visibleIndexPaths) {
+                        if (![self.compressedIndexPaths containsObject:indexPath]) {
+                            [self.compressedIndexPaths addObject:indexPath];
+                            changesMade = YES;
+                        }
+                    }
+                }
+                else {
+                    for (NSIndexPath *indexPath in visibleIndexPaths) {
+                        if ([self.compressedIndexPaths containsObject:indexPath]) {
+                            [self.compressedIndexPaths removeObject:indexPath];
+                            changesMade = YES;
+                        }
+                    }
+                }
+
+                if (changesMade) {
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                }
+            }
+        }
     }
 }
 
@@ -552,7 +559,7 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
         return [dataSource compressedHeightForPostAtIndex:indexPath.row];
     }
     return [dataSource heightForPostAtIndex:indexPath.row];
@@ -577,7 +584,7 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
     }
     else {
@@ -590,7 +597,7 @@
     
     NSArray *links;
     
-    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
         links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
     }
     else {
