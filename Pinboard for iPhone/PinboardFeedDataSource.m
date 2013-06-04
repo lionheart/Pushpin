@@ -85,24 +85,12 @@
     return NO;
 }
 
-- (NSString *)titleForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-}
-
-- (NSString *)descriptionForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-}
-
-- (NSString *)tagsForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
+- (NSDictionary *)postAtIndex:(NSInteger)index {
+    return self.posts[index];
 }
 
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
     return self.posts[index][@"url"];
-}
-
-- (NSDictionary *)postAtIndex:(NSInteger)index {
-    return self.posts[index];
 }
 
 - (NSDate *)dateForPostAtIndex:(NSInteger)index {
