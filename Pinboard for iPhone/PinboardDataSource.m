@@ -356,7 +356,8 @@ static BOOL kPinboardSyncInProgress = NO;
                             [bookmarksToDelete addObject:oldHashes[j]];
                         }
                         
-                        skipPivot = i;
+                        #warning XXX Don't understand why this works, but this prevents Pushpin from deleting bookmarks needlessly.
+                        skipPivot = i - 1;
                         
                         // Skip doing anything to this bookmark if its meta value has changed.
                         if (![meta isEqualToString:metas[hash]]) {
@@ -378,7 +379,6 @@ static BOOL kPinboardSyncInProgress = NO;
                         }
                         
                         postFound = YES;
-                        skipPivot++;
                         break;
                     }
                 }
