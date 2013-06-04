@@ -15,6 +15,7 @@
 #import <Social/Social.h>
 #import "RDActionSheet.h"
 #import <StoreKit/StoreKit.h>
+#import "RDActionSheet.h"
 
 @interface PPAboutViewController ()
 
@@ -26,8 +27,8 @@
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         NSArray *credits = @[@[@"Rachel", @"For always believing in me."], @[@"Dante and Isabelle", @"For inspiring me and for making me laugh."], @[@"Maciej Ceglowski", @"For making Pinboard."]];
-        NSArray *beta = @[@[@"Michael Solis", [NSNull null], @"morphopod"], @[@"Phil Havens", [NSNull null], @"philhavens"]];
-        NSArray *translations = @[@[@"Riccardo Mori", @"Italian", @"morrick"], @[@"James Lepthien", @"German", @"0x86DD"], @[@"Jérôme Tomasini", @"French", @"c0wb0yz"], @[@"Vítor Galvão", @"Portuguese", @"vhgalvao"]];
+        NSArray *beta = @[@[@"Michael Solis", [NSNull null], @"morphopod"], @[@"JB Bryant", [NSNull null], @"jb_bryant"], @[@"Phil Havens", [NSNull null], @"philhavens"], @[@"Riccardo Mori", @"For Italian translation.", @"morrick"], @[@"James Lepthien", @"For German translation.", @"0x86DD"], @[@"Jérôme Tomasini", @"For French translation.", @"c0wb0yz"], @[@"Vítor Galvão", @"For Portuguese translation.", @"vhgalvao"]];
+        NSArray *translations = @[];
         NSArray *licenses = @[@[@"TTTAttributedLabel", @"Copyright (c) 2011 Mattt Thompson (http://mattt.me/)"
                                 "\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
                                 "\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
@@ -55,9 +56,11 @@
         NSString *build = [NSString stringWithFormat:@"Pushpin %@ (%@)", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
         NSArray *description = @[@[[NSNull null], @"Pushpin is the product of overwhelming amounts of caffeine, 80's club music, and cats. The truth is, blah."], @[@"Follow Pushpin on Twitter", [NSNull null]], @[@"Review Pushpin on iTunes", [NSNull null]]];
         NSArray *team = @[@[@"Dan Loewenherz", @"Product design and development.", @"dwlz"], @[@"Martin Karasek", @"Visual design.", [NSNull null]]];
-        self.data = @[description, team, credits, translations, beta, licenses];
-        self.titles = @[[NSNull null], @"Team", @"Credits", @"Translations", @"Beta Testers", @"Software"];
+        self.data = @[description, team, credits, beta, licenses];
+        self.titles = @[[NSNull null], @"Team", @"Credits", @"Acknowledgements", @"Software"];
         self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
         
         self.heights = [NSMutableDictionary dictionary];
         UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
@@ -78,7 +81,7 @@
                     self.heights[description] = @(0);
                 }
                 else {
-                    if (index == 5) {
+                    if (index == 4) {
                         self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height);
                     }
                     else {
@@ -94,27 +97,11 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    UIMenuItem *copyURLMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Project URL", nil) action:@selector(copyURL:)];
-    UIMenuItem *followOnTwitterMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"Follow on Twitter", nil) action:@selector(followUserOnTwitter:)];
-    [[UIMenuController sharedMenuController] setMenuItems:@[followOnTwitterMenuItem, copyURLMenuItem]];
-    [[UIMenuController sharedMenuController] update];
-}
-
-- (BOOL)canBecomeFirstResponder {
-    return YES;
-}
-
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [self.titles indexOfObject:@"Translations"]) {
-        return YES;
-    }
     if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
         return YES;
     }
-    if (indexPath.section == [self.titles indexOfObject:@"Beta Testers"]) {
+    if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
         return YES;
     }
     return NO;
@@ -169,27 +156,6 @@
     }
 
     return topHeight + bottomHeight + 20;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    self.selectedIndexPath = indexPath;
-    return NO;
-}
-
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-}
-
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    if (self.selectedIndexPath.section == [self.titles indexOfObject:@"Software"]) {
-        return action == @selector(copyURL:);
-    }
-    else if (self.selectedIndexPath.section == [self.titles indexOfObject:@"Translations"]) {
-        return action == @selector(followUserOnTwitter:);
-    }
-    else if (self.selectedIndexPath.section == [self.titles indexOfObject:@"Beta Testers"]) {
-        return action == @selector(followUserOnTwitter:);
-    }
-    return NO;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -401,14 +367,41 @@
     });
 }
 
-- (void)copyURL:(id)sender {
-    [[UIPasteboard generalPasteboard] setString:self.data[self.selectedIndexPath.section][self.selectedIndexPath.row][2]];
-}
-
 - (void)followUserOnTwitter:(id)sender {
     NSString *screenName = self.data[self.selectedIndexPath.section][self.selectedIndexPath.row][2];
     if (![screenName isEqual:[NSNull null]]) {
         [self followScreenName:screenName];
+    }
+}
+
+- (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {
+        CGPoint pressPoint = [recognizer locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+        NSArray *info = self.data[indexPath.section][indexPath.row];
+        
+        if (indexPath.section == [self.titles indexOfObject:@"Software"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
+            RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:info[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
+                [sheet addButtonWithTitle:@"Copy Project URL"];
+                sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
+                    if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
+                        [[UIPasteboard generalPasteboard] setString:info[2]];
+                    }
+                };
+            }
+            else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
+                NSString *screenName = info[2];
+                [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@", screenName]];
+                sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
+                    if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
+                        [self followScreenName:screenName];
+                    }
+                };
+            }
+
+            [sheet showFrom:self.navigationController.view];
+        }
     }
 }
 
