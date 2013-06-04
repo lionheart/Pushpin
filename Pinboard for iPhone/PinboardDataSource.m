@@ -632,7 +632,10 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
-
+        
+        NSMutableArray *newCompressedStrings = [NSMutableArray array];
+        NSMutableArray *newCompressedHeights = [NSMutableArray array];
+        NSMutableArray *newCompressedLinks = [NSMutableArray array];
         dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in newPosts) {
             dispatch_group_enter(group);
@@ -642,12 +645,24 @@ static BOOL kPinboardSyncInProgress = NO;
                 [newLinks addObject:links];
                 dispatch_group_leave(group);
             }];
+            
+            dispatch_group_enter(group);
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newCompressedHeights addObject:height];
+                [newCompressedStrings addObject:string];
+                [newCompressedLinks addObject:links];
+                dispatch_group_leave(group);
+            }];
         }
 
         self.posts = newPosts;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
+
+        self.compressedStrings = newCompressedStrings;
+        self.compressedHeights = newCompressedHeights;
+        self.compressedLinks = newCompressedLinks;
         
         if (success) {
             dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -773,6 +788,11 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
+        
+        NSMutableArray *newCompressedStrings = [NSMutableArray array];
+        NSMutableArray *newCompressedHeights = [NSMutableArray array];
+        NSMutableArray *newCompressedLinks = [NSMutableArray array];
+
         while ([results next]) {
             NSDictionary *post = [PinboardDataSource postFromResultSet:results];
 
@@ -782,6 +802,14 @@ static BOOL kPinboardSyncInProgress = NO;
                 [newHeights addObject:height];
                 [newStrings addObject:string];
                 [newLinks addObject:links];
+                dispatch_group_leave(inner_group);
+            }];
+            
+            dispatch_group_enter(inner_group);
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newCompressedHeights addObject:height];
+                [newCompressedStrings addObject:string];
+                [newCompressedLinks addObject:links];
                 dispatch_group_leave(inner_group);
             }];
         }
@@ -795,6 +823,10 @@ static BOOL kPinboardSyncInProgress = NO;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
+
+        self.compressedStrings = newCompressedStrings;
+        self.compressedHeights = newCompressedHeights;
+        self.compressedLinks = newCompressedLinks;
 
         if (callback) {
             dispatch_group_notify(inner_group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -874,8 +906,67 @@ static BOOL kPinboardSyncInProgress = NO;
     return actions;
 }
 
-- (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    return self.links[index];
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
+    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    
+    NSString *title = post[@"title"];
+    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
+    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
+    BOOL isRead = ![post[@"unread"] boolValue];
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+    NSRange titleRange = NSMakeRange(0, title.length);
+    
+    NSRange tagRange;
+    if ([tags isEqualToString:@""]) {
+        tagRange = NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSInteger offset = 1;
+        tagRange = NSMakeRange(titleRange.location + titleRange.length + offset, [tags length]);
+    }
+    
+    BOOL hasTags = tagRange.location != NSNotFound;
+    
+    if (hasTags) {
+        [content appendFormat:@"\n%@", tags];
+    }
+    
+    [content appendFormat:@"\n%@", dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:titleFont range:titleRange];
+    [attributedString setTextColor:HEX(0x33353Bff)];
+    
+    if (isRead) {
+        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+    }
+    
+    if (hasTags) {
+        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
+        [attributedString setFont:tagsFont range:tagRange];
+    }
+    
+    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
+    [attributedString setFont:dateFont range:dateRange];
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    
+    NSMutableArray *links = [NSMutableArray array];
+    NSInteger location = tagRange.location;
+    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
+        NSRange range = [tags rangeOfString:tag];
+        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
+    }
+    
+    callback(attributedString, height, links);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
@@ -986,6 +1077,22 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
     return [self.heights[index] floatValue];
+}
+
+- (NSArray *)linksForPostAtIndex:(NSInteger)index {
+    return self.links[index];
+}
+
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
+    return [self.compressedHeights[index] floatValue];
+}
+
+- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index {
+    return self.compressedLinks[index];
+}
+
+- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
+    return self.compressedStrings[index];
 }
 
 - (BOOL)supportsTagDrilldown {

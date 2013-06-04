@@ -24,6 +24,9 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic, retain) NSMutableArray *heights;
 @property (nonatomic, retain) NSMutableArray *strings;
 @property (nonatomic, retain) NSMutableArray *links;
+@property (nonatomic, strong) NSArray *compressedStrings;
+@property (nonatomic, strong) NSArray *compressedHeights;
+@property (nonatomic, strong) NSArray *compressedLinks;
 @property (nonatomic, retain) NSArray *urls;
 @property (nonatomic) NSInteger maxResults;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
@@ -44,6 +47,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback;
 
 - (id)initWithParameters:(NSDictionary *)parameters;
 
