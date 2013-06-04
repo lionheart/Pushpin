@@ -46,10 +46,14 @@
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
+    
+    self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
 
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
+    self.compressPosts = NO;
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
@@ -269,11 +273,11 @@
     }
 }
 
-- (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.longPressGestureRecognizer) {
         [self.view endEditing:YES];
         CGPoint pressPoint;
-
+        
         if (self.searchDisplayController.isActive) {
             pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
             self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
@@ -285,6 +289,32 @@
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
         }
         [self openActionSheetForSelectedPost];
+    }
+    else if (recognizer == self.pinchGestureRecognizer) {
+        if (recognizer.state != UIGestureRecognizerStateBegan) {
+            NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+            BOOL needsReload = NO;
+            if (self.compressPosts) {
+                needsReload = self.pinchGestureRecognizer.scale > 1.5;
+            }
+            else {
+                needsReload = self.pinchGestureRecognizer.scale < 0.5;
+            }
+            
+            if (needsReload) {
+                self.compressPosts = !self.compressPosts;
+
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+
+                double delayInSeconds = 0.25;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                });
+            }
+        }
     }
 }
 
@@ -519,6 +549,9 @@
         dataSource = self.searchPostDataSource;
     }
 
+    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
+    }
     return [dataSource heightForPostAtIndex:indexPath.row];
 }
 
@@ -541,13 +574,27 @@
         dataSource = self.searchPostDataSource;
     }
 
-    string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
+        string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
+    }
+    else {
+        string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+    }
 
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
-    for (NSDictionary *link in [dataSource linksForPostAtIndex:indexPath.row]) {
+    NSArray *links;
+    
+    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && self.compressPosts) {
+        links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
+    }
+    else {
+        links = [dataSource linksForPostAtIndex:indexPath.row];
+    }
+
+    for (NSDictionary *link in links) {
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
     
