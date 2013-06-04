@@ -809,23 +809,23 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                          [results next];
                                          
                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                        @"url": url,
-                                                                        @"title": title,
-                                                                        @"description": description,
-                                                                        @"tags": tags,
-                                                                        @"unread": @(unread),
-                                                                        @"private": @(private),
-                                                                        @"starred": @(NO)
-                                                                    }];
+                                                @"url": url,
+                                                @"title": title,
+                                                @"description": description,
+                                                @"tags": tags,
+                                                @"unread": @(unread),
+                                                @"private": @(private),
+                                                @"starred": @(NO)
+                                            }];
                                          
                                          if ([results intForColumnIndex:0] > 0) {
-                                             [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                             [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                                              [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
                                              bookmarkAdded = NO;
                                          }
                                          else {
                                              params[@"created_at"] = [NSDate date];
-                                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(self.privateSwitch.on), @"Read": @(self.readSwitch.on)}];
+                                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                                              [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
                                              bookmarkAdded = YES;
                                          }
