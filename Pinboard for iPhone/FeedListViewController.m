@@ -20,7 +20,6 @@
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "PinboardStarredDataSource.h"
 
 @interface FeedListViewController ()
 
