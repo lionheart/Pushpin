@@ -306,25 +306,29 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showEditViewController {
-    #warning XXX - make generic
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlString]];
-    [results next];
-    NSDictionary *post = @{
-        @"title": [results stringForColumn:@"title"],
-        @"description": [results stringForColumn:@"description"],
-        @"unread": @([results boolForColumn:@"unread"]),
-        @"url": [results stringForColumn:@"url"],
-        @"private": @([results boolForColumn:@"private"]),
-        @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-        @"created_at": [results dateForColumn:@"created_at"],
-        @"starred": @([results boolForColumn:@"starred"])
-    };
-    [db close];
-
-    UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
-    [self presentViewController:vc animated:YES completion:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        #warning XXX - make generic
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlString]];
+        [results next];
+        NSDictionary *post = @{
+            @"title": [results stringForColumn:@"title"],
+            @"description": [results stringForColumn:@"description"],
+            @"unread": @([results boolForColumn:@"unread"]),
+            @"url": [results stringForColumn:@"url"],
+            @"private": @([results boolForColumn:@"private"]),
+            @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+            @"created_at": [results dateForColumn:@"created_at"],
+            @"starred": @([results boolForColumn:@"starred"])
+        };
+        [db close];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
+            [self presentViewController:vc animated:YES completion:nil];
+        });
+    });
 }
 
 - (void)closeModal:(UIViewController *)sender {
