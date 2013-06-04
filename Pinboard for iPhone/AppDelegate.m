@@ -14,7 +14,6 @@
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "Reachability.h"
-#import "TestFlight.h"
 #import "PocketAPI.h"
 #import "HTMLParser.h"
 #import "SettingsViewController.h"
@@ -345,6 +344,15 @@
     return _loginViewController;
 }
 
+- (NSString *)customDeviceIdentifierForUpdateManager:(BITUpdateManager *)updateManager {
+#ifdef TESTING
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)]) {
+        return [[UIDevice currentDevice] performSelector:@selector(uniqueIdentifier)];
+    }
+#endif
+    return nil;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     [self migrateDatabase];
 
@@ -353,10 +361,9 @@
 
     [self customizeUIElements];
 
-    [TestFlight takeOff:@"a4d1862d-30d8-4984-9e33-dba8872d2538"];
-#ifdef TESTING
-    [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
-#endif
+    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"
+                                                           delegate:self];
+    [[BITHockeyManager sharedHockeyManager] startManager];
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];

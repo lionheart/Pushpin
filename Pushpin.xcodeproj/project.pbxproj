@@ -846,9 +846,6 @@
 		37B348BA175E70C800929E2E /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
 		37B348BC175E70C800929E2E /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
 		37B348BD175E70C800929E2E /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
-		37B348BA175E70C800929E2E /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
-		37B348BC175E70C800929E2E /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
-		37B348BD175E70C800929E2E /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
 		37B348C2175E7AD300929E2E /* PinboardStarredDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardStarredDataSource.h; sourceTree = "<group>"; };
 		37B348C3175E7AD300929E2E /* PinboardStarredDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardStarredDataSource.m; sourceTree = "<group>"; };
 		37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta@2x.png"; path = "Assets/iTunesArtwork-beta@2x.png"; sourceTree = "<group>"; };
@@ -1159,9 +1156,9 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
-				37B65FD11672C6690041DA8C /* libTestFlight.a in Frameworks */,
 				37F5CA401679915700327AAC /* libUserVoice.a in Frameworks */,
 				37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */,
+				37B348BE175E70C800929E2E /* HockeySDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1171,12 +1168,12 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				37B348B9175E70C800929E2E /* HockeySDK.embeddedframework */,
 				3732DF591759148100978A68 /* RPSTPasswordManagementAppService */,
 				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				37561D8E16AE05B900D69CDE /* KeychainItemWrapper */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
 				375A0FF8167D47FD00320495 /* Pocket SDK */,
-				37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */,
 				37800E4D162CF1A2009FCB17 /* reachability */,
 				37E329911629DF9500A6BC18 /* fmdb */,
 				37DCCF39158AF40900ED71B1 /* NSAttributedString+Attributes.h */,
@@ -1747,16 +1744,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		37B65FCC1672C6690041DA8C /* TestFlightSDK1.2 */ = {
+		37B348B9175E70C800929E2E /* HockeySDK.embeddedframework */ = {
 			isa = PBXGroup;
 			children = (
-				37B65FCD1672C6690041DA8C /* libTestFlight.a */,
-				37B65FCE1672C6690041DA8C /* README.md */,
-				37B65FCF1672C6690041DA8C /* release_notes.md */,
-				37B65FD01672C6690041DA8C /* TestFlight.h */,
+				37B348BA175E70C800929E2E /* HockeySDK.framework */,
+				37B348BB175E70C800929E2E /* Resources */,
 			);
-			name = TestFlightSDK1.2;
-			path = Vendor/TestFlightSDK1.2;
+			name = HockeySDK.embeddedframework;
+			path = "Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework";
+			sourceTree = "<group>";
+		};
+		37B348BB175E70C800929E2E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				37B348BC175E70C800929E2E /* HockeySDK.xcconfig */,
+				37B348BD175E70C800929E2E /* HockeySDKResources.bundle */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		37DE5AB4174F29B40073A2F4 /* ODIN */ = {
@@ -2181,8 +2185,6 @@
 				37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */,
 				37C611EA16377D5D008DB30B /* Default.png in Resources */,
 				37C611EB16377D5D008DB30B /* Default@2x.png in Resources */,
-				37B65FD21672C6690041DA8C /* README.md in Resources */,
-				37B65FD31672C6690041DA8C /* release_notes.md in Resources */,
 				37B65FE11672E0090041DA8C /* iTunesArtwork-beta@2x.png in Resources */,
 				37B65FE21672E0090041DA8C /* Icon-beta.png in Resources */,
 				37B65FE31672E0090041DA8C /* Icon-beta@2x.png in Resources */,
@@ -2572,6 +2574,8 @@
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
 				376E0A7E175AA245004CCDEE /* About.plist in Resources */,
+				37B348BF175E70C800929E2E /* HockeySDK.xcconfig in Resources */,
+				37B348C0175E70C800929E2E /* HockeySDKResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2773,6 +2777,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Beta.entitlements";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
@@ -2780,7 +2788,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 					"\"$(SRCROOT)/Vendor/UserVoice\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2889,6 +2896,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Dev.entitlements";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
@@ -2896,7 +2907,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 					"\"$(SRCROOT)/Vendor/UserVoice\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2908,6 +2918,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
@@ -2915,7 +2929,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks/GRMustache/lib\"",
-					"\"$(SRCROOT)/Vendor/TestFlightSDK1.2\"",
 					"\"$(SRCROOT)/Vendor/UserVoice\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
