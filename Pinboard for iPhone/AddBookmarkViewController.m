@@ -359,7 +359,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 [db open];
                 FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name FROM tag_fts, tag WHERE tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
 
-                #warning XXX Should all really be refactored.
                 NSString *tag;
                 NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
                 NSInteger skipPivot = 0;
@@ -403,7 +402,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
                     }
                 }
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.suggestedTagsVisible = NO;
                     self.tagCompletions = newTagCompletions;
