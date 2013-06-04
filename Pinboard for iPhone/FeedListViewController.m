@@ -31,7 +31,6 @@
 @synthesize navigationController;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
-@synthesize timerPaused;
 
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -42,17 +41,16 @@
         BOOL skip = [self.bookmarkCounts count] < 5;
         
         [db open];
-        
         NSArray *resultSets = @[
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@YES]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@NO]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@YES]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@YES]]
-                                ];
-        
-        int i = 0;
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@YES]],
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@NO]],
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@YES]],
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
+            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@YES]]
+        ];
+
+        NSInteger i = 0;
         for (FMResultSet *resultSet in resultSets) {
             [resultSet next];
             count = [resultSet stringForColumnIndex:0];
@@ -83,10 +81,8 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
-        self.timerPaused = NO;
-        
-        self.bookmarkCounts = [NSMutableArray arrayWithCapacity:5];
+        self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
+        self.bookmarkCounts = [NSMutableArray array];
         [self calculateBookmarkCounts:nil];
 
         UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -108,9 +104,10 @@
         [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
         [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
         notesButton.frame = CGRectMake(0, 0, 20, 24);
-        UIBarButtonItem *notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
+        self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
+        self.notesBarButtonItem.enabled = self.connectionAvailable;
 
-        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, notesBarButtonItem];
+        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
         self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
     }
     return self;
@@ -129,7 +126,7 @@
             [self.tableView reloadData];
         }];
     }
-    
+
     [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];
@@ -139,31 +136,36 @@
     }];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    self.timerPaused = YES;
-}
-
 - (void)connectionStatusDidChange:(NSNotification *)notification {
-    BOOL oldConnectionAvailable = self.connectionAvailable;
-    self.connectionAvailable = [[[AppDelegate sharedDelegate] connectionAvailable] boolValue];
-    if (oldConnectionAvailable != self.connectionAvailable) {
-        #warning XXX Consistency crash
-        [self.tableView beginUpdates];
+    BOOL newConnectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
+    if (self.connectionAvailable != newConnectionAvailable) {
+        self.connectionAvailable = newConnectionAvailable;
+
         if (self.connectionAvailable) {
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self showAllFeeds];
         }
         else {
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self hideNetworkDependentFeeds];
         }
-        [self.tableView endUpdates];
     }
+}
+
+- (void)showAllFeeds {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.notesBarButtonItem.enabled = YES;
+        [self.tableView beginUpdates];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
+}
+
+- (void)hideNetworkDependentFeeds {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.notesBarButtonItem.enabled = NO;
+        [self.tableView beginUpdates];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    });
 }
 
 #pragma mark - Table view data source
@@ -176,20 +178,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            if (self.connectionAvailable) {
-                return 6;
-            }
-            else {
-                return 4;
-            }
-            break;
-        case 1:
-            return 6;
-            break;
-    }
-    return 0;
+    return 6;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -259,6 +248,7 @@
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
     cell.imageView.image = nil;
+    cell.detailTextLabel.text = nil;
 
     UIImage *pillImage;
     switch (indexPath.section) {
@@ -295,6 +285,11 @@
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedStarredBookmarks]];
                     break;
             }
+            
+            UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
+            pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+            
+            [cell.contentView addSubview:pillView];
             break;
         }
         case 1: {
@@ -318,16 +313,11 @@
                     cell.textLabel.text = @"Saved Feeds";
                     break;
             }
-            cell.detailTextLabel.text = @"";
 
             break;
         }
     }
-    
-    UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-    pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
-    
-    [cell.contentView addSubview:pillView];
+
     return cell;
 }
 
