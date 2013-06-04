@@ -47,15 +47,13 @@
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
-    if ([self.postDataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)]) {
-        self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-        [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
-    }
+    self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    self.compressedIndexPaths = [NSMutableArray array];
+    self.compressPosts = NO;
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
@@ -294,35 +292,27 @@
     }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
-            CGFloat scale = self.pinchGestureRecognizer.scale;
+            NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+            BOOL needsReload = NO;
+            if (self.compressPosts) {
+                needsReload = self.pinchGestureRecognizer.scale > 1.5;
+            }
+            else {
+                needsReload = self.pinchGestureRecognizer.scale < 0.5;
+            }
+            
+            if (needsReload) {
+                self.compressPosts = !self.compressPosts;
 
-            if (scale > 1.5 || scale < 0.5) {
-                NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-                BOOL changesMade = NO;
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
 
-                if (scale < 1) {
-                    for (NSIndexPath *indexPath in visibleIndexPaths) {
-                        if (![self.compressedIndexPaths containsObject:indexPath]) {
-                            [self.compressedIndexPaths addObject:indexPath];
-                            changesMade = YES;
-                        }
-                    }
-                }
-                else {
-                    for (NSIndexPath *indexPath in visibleIndexPaths) {
-                        if ([self.compressedIndexPaths containsObject:indexPath]) {
-                            [self.compressedIndexPaths removeObject:indexPath];
-                            changesMade = YES;
-                        }
-                    }
-                }
-
-                if (changesMade) {
-                    [self.tableView beginUpdates];
-                    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-                }
+                double delayInSeconds = 0.25;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                });
             }
         }
     }
@@ -559,7 +549,7 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
         return [dataSource compressedHeightForPostAtIndex:indexPath.row];
     }
     return [dataSource heightForPostAtIndex:indexPath.row];
@@ -584,7 +574,7 @@
         dataSource = self.searchPostDataSource;
     }
 
-    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
     }
     else {
@@ -597,7 +587,7 @@
     
     NSArray *links;
     
-    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && [self.compressedIndexPaths containsObject:indexPath]) {
+    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && self.compressPosts) {
         links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
     }
     else {

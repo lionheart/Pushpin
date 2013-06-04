@@ -109,7 +109,7 @@ typedef NSInteger PPPostAction;
 // Right swipe
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 
-@property (nonatomic, strong) NSMutableArray *compressedIndexPaths;
+@property (nonatomic) BOOL compressPosts;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic) CGFloat beginningScale;
 
