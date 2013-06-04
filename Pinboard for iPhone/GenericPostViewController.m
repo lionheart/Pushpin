@@ -988,14 +988,16 @@
 }
 
 - (void)removeBarButtonTouchUpside:(id)sender {
+    __weak GenericPostViewController *vc = self;
     [self.postDataSource removeDataSource:^{
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(addBarButtonTouchUpside:)];
+        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:vc action:@selector(addBarButtonTouchUpside:)];
     }];
 }
 
 - (void)addBarButtonTouchUpside:(id)sender {
+    __weak GenericPostViewController *vc = self;
     [self.postDataSource addDataSource:^{
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:self action:@selector(removeBarButtonTouchUpside:)];
+        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:vc action:@selector(removeBarButtonTouchUpside:)];
     }];
 }
 
