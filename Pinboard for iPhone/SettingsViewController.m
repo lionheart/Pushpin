@@ -169,6 +169,7 @@
         default:
             break;
     }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -453,7 +454,7 @@
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
@@ -627,7 +628,7 @@
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -10,8 +10,8 @@
 #import "GenericPostViewController.h"
 #import "FMDatabase.h"
 
-static NSString *kPinboardDataSourceProgressNotification = @"kPinboardDataSourceProgressNotification";
-static NSString *PinboardDataSourceErrorDomain = @"PinboardDataSourceErrorDomain";
+static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
+static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
 
 enum PINBOARD_DATA_SOURCE_ERROR_CODES {
     PinboardErrorSyncInProgress
