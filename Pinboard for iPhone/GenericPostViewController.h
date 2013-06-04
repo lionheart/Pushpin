@@ -51,6 +51,7 @@ typedef NSInteger PPPostAction;
 - (BOOL)supportsTagDrilldown;
 
 - (NSDictionary *)postAtIndex:(NSInteger)index;
+- (NSString *)urlForPostAtIndex:(NSInteger)index;
 
 @optional
 
@@ -64,7 +65,6 @@ typedef NSInteger PPPostAction;
 
 // A data source may alternatively provide a UIViewController to push
 - (NSInteger)sourceForPostAtIndex:(NSInteger)index;
-- (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;
 
