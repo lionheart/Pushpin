@@ -441,6 +441,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 progress(total, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
             });
+
+            [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:success failure:nil];
         };
         
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -463,6 +465,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 else {
                     count = [options[@"count"] integerValue];
                 }
+
                 if (neverUpdated || outOfSyncWithAPI) {
                     [pinboard bookmarksWithTags:nil
                                          offset:-1
@@ -473,7 +476,6 @@ static BOOL kPinboardSyncInProgress = NO;
                                         success:^(NSArray *bookmarks) {
                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                 BookmarksSuccessBlock(bookmarks);
-                                                success();
                                             });
                                         }
                                         failure:^(NSError *error) {
@@ -493,6 +495,80 @@ static BOOL kPinboardSyncInProgress = NO;
     else {
         failure([NSError errorWithDomain:PinboardDataSourceErrorDomain code:kPinboardSyncInProgress userInfo:nil]);
     }
+}
+
+- (void)updateStarredPostsWithRatio:(CGFloat)ratio success:(void (^)())success failure:(void (^)())failure {
+    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray *oldURLs = [NSMutableArray array];
+            NSUInteger index = 0;
+            NSInteger skipPivot = 0;
+            BOOL postFound = NO;
+            NSString *url;
+            
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            [db beginTransaction];
+            
+            FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1"];
+            while ([results next]) {
+                url = [results stringForColumnIndex:0];
+                [oldURLs addObject:url];
+            }
+            
+            for (NSDictionary *post in posts) {
+                postFound = NO;
+                url = post[@"u"];
+                
+                for (NSInteger i=skipPivot; i<oldURLs.count; i++) {
+                    if ([oldURLs[i] isEqualToString:url]) {
+                        // Delete all posts that were skipped
+                        for (NSInteger j=skipPivot; j<i; j++) {
+                            [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
+                        }
+                        
+                        skipPivot = i + 1;
+                        postFound = YES;
+                        break;
+                    }
+                }
+                
+                if (!postFound && ![oldURLs containsObject:url]) {
+                    [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[url]];
+                }
+                
+                index++;
+            }
+            [db commit];
+            [db close];
+            
+            success();
+        });
+    };
+    
+    if (!failure) {
+        failure = ^{};
+    }
+    
+    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+    NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    [delegate setNetworkActivityIndicatorVisible:YES];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               [delegate setNetworkActivityIndicatorVisible:NO];
+                               if (error) {
+                                   failure(error);
+                               }
+                               else {
+                                   NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                   BookmarksSuccessBlock(posts);
+                               }
+                           }];
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
