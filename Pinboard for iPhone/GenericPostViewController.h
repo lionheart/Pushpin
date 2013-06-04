@@ -37,27 +37,18 @@ typedef NSInteger PPPostAction;
 
 @protocol GenericPostDataSource <NSObject>
 
-- (void)filterWithQuery:(NSString *)query;
 - (NSInteger)numberOfPosts;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index;
-
 - (NSArray *)actionsForPost:(NSDictionary *)post;
-
 - (NSArray *)linksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
 
-- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
-
-- (NSInteger)sourceForPostAtIndex:(NSInteger)index;
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
-- (BOOL)supportsSearch;
 - (BOOL)supportsTagDrilldown;
-
-- (id <GenericPostDataSource>)searchDataSource;
 
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 
@@ -65,10 +56,14 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
+- (id <GenericPostDataSource>)searchDataSource;
+- (void)filterWithQuery:(NSString *)query;
 - (void)addDataSource:(void (^)())callback;
 - (void)removeDataSource:(void (^)())callback;
 
 // A data source may alternatively provide a UIViewController to push
+- (NSInteger)sourceForPostAtIndex:(NSInteger)index;
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;

@@ -309,7 +309,7 @@
                         CGFloat offset = self.tableView.contentOffset.y;
                         self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
                         
-                        if ([self.postDataSource supportsSearch] && !self.searchPostDataSource) {
+                        if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
                             self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];

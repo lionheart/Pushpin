@@ -985,10 +985,6 @@ static BOOL kPinboardSyncInProgress = NO;
     return [self.heights[index] floatValue];
 }
 
-- (BOOL)supportsSearch {
-    return YES;
-}
-
 - (BOOL)supportsTagDrilldown {
     return YES;
 }
