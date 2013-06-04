@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
 @property (nonatomic, strong) NSMutableArray *expandedIndices;
+@property (nonatomic) NSInteger count;
 
 - (NSURL *)url;
 - (id)initWithComponents:(NSArray *)components;

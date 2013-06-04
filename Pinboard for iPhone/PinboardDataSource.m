@@ -619,7 +619,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     if (![meta isEqualToString:oldMetas[hash]]) {
                         post = [PinboardDataSource postFromResultSet:results];
 
-                        // Reloads effect the old index path
+                        // Reloads affect the old index path
                         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
                     }
 
@@ -923,31 +923,14 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
     
     NSString *title = post[@"title"];
-    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
-    
-    NSRange tagRange;
-    if ([tags isEqualToString:@""]) {
-        tagRange = NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSInteger offset = 1;
-        tagRange = NSMakeRange(titleRange.location + titleRange.length + offset, [tags length]);
-    }
-    
-    BOOL hasTags = tagRange.location != NSNotFound;
-    
-    if (hasTags) {
-        [content appendFormat:@"\n%@", tags];
-    }
     
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
@@ -963,25 +946,12 @@ static BOOL kPinboardSyncInProgress = NO;
         [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
     }
     
-    if (hasTags) {
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-        [attributedString setFont:tagsFont range:tagRange];
-    }
-    
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
-    
-    NSMutableArray *links = [NSMutableArray array];
-    NSInteger location = tagRange.location;
-    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
-        NSRange range = [tags rangeOfString:tag];
-        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-    }
-    
-    callback(attributedString, height, links);
+    callback(attributedString, height, @[]);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
