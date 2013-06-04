@@ -304,7 +304,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showEditViewController {
-    #warning TODO - make generic
+    #warning XXX - make generic
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlString]];
