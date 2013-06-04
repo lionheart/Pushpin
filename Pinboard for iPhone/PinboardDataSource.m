@@ -442,7 +442,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
             });
 
-            [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:success failure:nil];
+            [self updateStarredPostsWithSuccess:success failure:nil];
         };
         
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -485,7 +485,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 else {
                     kPinboardSyncInProgress = NO;
-                    success();
+                    [self updateStarredPostsWithSuccess:success failure:nil];
                 }
             });
         };
@@ -497,7 +497,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (void)updateStarredPostsWithRatio:(CGFloat)ratio success:(void (^)())success failure:(void (^)())failure {
+- (void)updateStarredPostsWithSuccess:(void (^)())success failure:(void (^)())failure {
     void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *oldURLs = [NSMutableArray array];
@@ -510,7 +510,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db open];
             [db beginTransaction];
             
-            FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1"];
+            FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1 ORDER BY created_at DESC"];
             while ([results next]) {
                 url = [results stringForColumnIndex:0];
                 [oldURLs addObject:url];
@@ -527,7 +527,7 @@ static BOOL kPinboardSyncInProgress = NO;
                             [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
                         }
                         
-                        skipPivot = i + 1;
+                        skipPivot = i - 1;
                         postFound = YES;
                         break;
                     }
