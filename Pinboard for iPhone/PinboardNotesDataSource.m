@@ -49,10 +49,6 @@
     return NO;
 }
 
-- (BOOL)isPostAtIndexRead:(NSInteger)index {
-    return NO;
-}
-
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.notes[index][@"id"]];

@@ -65,10 +65,6 @@
     return actions;
 }
 
-- (NSString *)formattedDateForPostAtIndex:(NSInteger)index {
-    return [self.dateFormatter stringFromDate:[self dateForPostAtIndex:index]];
-}
-
 - (NSInteger)numberOfPosts {
     return self.posts.count;
 }
@@ -91,10 +87,6 @@
 
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
     return self.posts[index][@"url"];
-}
-
-- (NSDate *)dateForPostAtIndex:(NSInteger)index {
-    return self.posts[index][@"created_at"];
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
