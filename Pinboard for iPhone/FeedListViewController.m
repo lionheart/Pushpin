@@ -20,6 +20,7 @@
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "PinboardStarredDataSource.h"
 
 @interface FeedListViewController ()
 
@@ -360,7 +361,7 @@
                     break;
                 }
                 case 5: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.postDataSource = [[PinboardStarredDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;

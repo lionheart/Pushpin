@@ -308,7 +308,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             FMResultSet *results;
             
-            NSMutableArray *tags = [[NSMutableArray alloc] init];
+            NSMutableArray *tags = [NSMutableArray array];
             results = [db executeQuery:@"SELECT name FROM tag"];
             while ([results next]) {
                 [tags addObject:[results stringForColumn:@"name"]];
@@ -323,7 +323,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [oldHashes addObject:hash];
                 [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
             }
-            NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
+            NSMutableArray *bookmarksToDelete = [NSMutableArray array];
             
             BOOL updated_or_created = NO;
             __block NSUInteger index = 0;
@@ -473,14 +473,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                         success:^(NSArray *bookmarks) {
                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                 BookmarksSuccessBlock(bookmarks);
-
-                                                if (!lastLocalUpdate) {
-                                                    [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:success failure:nil];
-                                                }
-                                                else {
-                                                    [self updateStarredPostsWithRatio:[options[@"ratio"] floatValue] success:nil failure:nil];
-                                                    success();
-                                                }
+                                                success();
                                             });
                                         }
                                         failure:^(NSError *error) {
@@ -500,60 +493,6 @@ static BOOL kPinboardSyncInProgress = NO;
     else {
         failure([NSError errorWithDomain:PinboardDataSourceErrorDomain code:kPinboardSyncInProgress userInfo:nil]);
     }
-}
-
-- (void)updateStarredPostsWithRatio:(CGFloat)ratio success:(void (^)())success failure:(void (^)())failure {
-    if (!success) {
-        success = ^{};
-    }
-    
-    if (!failure) {
-        failure = ^{};
-    }
-
-    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-    NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
-
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               if (error) {
-                                   failure(error);
-                               }
-                               else {
-                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
-                                       const char *dbPath = [[AppDelegate databasePath] UTF8String];
-                                       char *sqliteErrorMessage;
-                                       sqlite3_stmt *updateStatement = nil;
-                                       sqlite3 *db;
-                                       sqlite3_open_v2(dbPath, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_SHAREDCACHE, NULL);
-                                       sqlite3_exec(db, "BEGIN", NULL, NULL, &sqliteErrorMessage);
-                                       sqlite3_exec(db, "UPDATE bookmark SET starred=0 WHERE starred=1", NULL, NULL, &sqliteErrorMessage);
-                                       sqlite3_prepare_v2(db, "UPDATE bookmark SET starred=1 WHERE url=?", -1, &updateStatement, NULL);
-                                       
-                                       NSInteger index = 0;
-                                       for (NSDictionary *post in payload) {
-                                           sqlite3_bind_text(updateStatement, 1, [post[@"u"] UTF8String], -1, SQLITE_STATIC);
-                                           sqlite3_step(updateStatement);
-                                           sqlite3_reset(updateStatement);
-                                           index++;
-                                       }
-
-                                       sqlite3_exec(db, "COMMIT", NULL, NULL, &sqliteErrorMessage);
-                                       sqlite3_finalize(updateStatement);
-                                       sqlite3_close(db);
-
-                                       success();
-                                   });
-                               }
-                           }];
 }
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
