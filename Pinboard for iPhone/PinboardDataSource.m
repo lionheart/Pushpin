@@ -652,16 +652,8 @@ static BOOL kPinboardSyncInProgress = NO;
     } failure:failure progress:nil options:options];
 }
 
-- (NSInteger)sourceForPostAtIndex:(NSInteger)index {
-    return [self.posts[index][@"source"] integerValue];
-}
-
 - (BOOL)isPostAtIndexStarred:(NSInteger)index {
     return [self.posts[index][@"starred"] boolValue];
-}
-
-- (BOOL)isPostAtIndexRead:(NSInteger)index {
-    return ![self.posts[index][@"unread"] boolValue];
 }
 
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index {
