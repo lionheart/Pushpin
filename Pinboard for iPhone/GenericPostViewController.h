@@ -110,16 +110,13 @@ typedef NSInteger PPPostAction;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
-- (void)deletePosts:(NSArray *)posts;
 - (void)copyURL;
-- (void)copyToMine;
 - (void)sendToReadLater;
 - (void)updateWithRatio:(NSNumber *)ratio;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
-- (NSMutableAttributedString *)attributedStringForPostAtIndexPath:(NSIndexPath *)indexPath;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 
 - (void)removeBarButtonTouchUpside:(id)sender;

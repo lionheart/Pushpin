@@ -18,6 +18,4 @@
 @property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
 @property (nonatomic, retain) PPSwitch *openLinksInAppSwitch;
 
-- (void)openLinksInAppSwitchChangedValue:(id)sender;
-
 @end

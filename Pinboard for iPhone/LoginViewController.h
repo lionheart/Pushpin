@@ -28,9 +28,7 @@
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;
 - (void)login;
-- (void)cancelLogin;
 - (void)resetLoginScreen;
-- (void)loginFailed;
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
 - (void)sendToOnePassword;

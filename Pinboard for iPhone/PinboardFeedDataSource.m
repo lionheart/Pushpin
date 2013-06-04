@@ -223,13 +223,13 @@
     UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
-    
+
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = NO;
-    
+
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
 

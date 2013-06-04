@@ -91,16 +91,10 @@ enum bookmarkupdateevents {
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
-- (void)updateBookmarks;
-- (void)forceUpdateBookmarks:(id<BookmarkUpdateProgressDelegate>)updateDelegate;
-- (void)updateNotes;
 + (NSString *)databasePath;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
-- (void)pauseRefreshTimer;
-- (void)resumeRefreshTimer;
-- (void)executeTimer;
 - (void)openSettings;
 - (void)customizeUIElements;
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
