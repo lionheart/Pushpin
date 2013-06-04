@@ -42,12 +42,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PinboardDataSource *)searchDataSource;
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
-
-+ (NSArray *)linksForPost:(NSDictionary *)post;
-+ (CGFloat)heightForPost:(NSDictionary *)post;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
-
-- (NSAttributedString *)attributedStringForPost:(NSDictionary *)post;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
 
 - (id)initWithParameters:(NSDictionary *)parameters;
