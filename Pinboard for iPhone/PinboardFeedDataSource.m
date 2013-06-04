@@ -20,9 +20,6 @@
     self = [super init];
     if (self) {
         self.components = components;
-        self.heights = [NSMutableDictionary dictionary];
-        self.posts = [NSMutableArray array];
-
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -36,9 +33,6 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.heights = [NSMutableDictionary dictionary];
-        self.posts = [NSMutableArray array];
-        
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -115,18 +109,6 @@
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
-    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-    NSMutableArray *indexPathsToReload = [NSMutableArray array];
-
-    NSMutableArray *newPosts = [NSMutableArray array];
-    NSMutableArray *newURLs = [NSMutableArray array];
-    NSMutableArray *oldPosts = [self.posts copy];
-    NSMutableArray *oldURLs = [NSMutableArray array];
-    for (NSDictionary *post in self.posts) {
-        [oldURLs addObject:post[@"url"]];
-    }
-
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
@@ -135,81 +117,186 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
 
-                               if (!error) {
-                                   NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                                   [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-                                   [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                   if (!error) {
+                                       NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+                                       NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+                                       NSMutableArray *indexPathsToReload = [NSMutableArray array];
+                                       
+                                       NSMutableArray *newPosts = [NSMutableArray array];
+                                       NSMutableArray *newURLs = [NSMutableArray array];
+                                       NSMutableArray *oldURLs = [NSMutableArray array];
+                                       NSMutableArray *oldPosts = [self.posts copy];
+                                       
+                                       for (NSDictionary *post in self.posts) {
+                                           [oldURLs addObject:post[@"url"]];
+                                       }
 
-                                   NSInteger index = 0;
-                                   NSMutableArray *tags = [NSMutableArray array];
-                                   for (NSDictionary *element in payload) {
-                                       [tags removeAllObjects];
-                                       [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
-                                       for (NSString *tag in element[@"t"]) {
-                                           if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
-                                               [tags addObject:tag];
+                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                                       [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+                                       [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+                                       
+                                       NSInteger index = 0;
+                                       NSMutableArray *tags = [NSMutableArray array];
+                                       
+                                       #warning XXX Should refactor to update / reload / delete more efficiently
+                                       for (NSDictionary *element in payload) {
+                                           [tags removeAllObjects];
+                                           [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
+                                           for (NSString *tag in element[@"t"]) {
+                                               if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
+                                                   [tags addObject:tag];
+                                               }
+                                           }
+                                           
+                                           NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                @"title": element[@"d"],
+                                                @"description": element[@"n"],
+                                                @"url": element[@"u"],
+                                                @"tags": [tags componentsJoinedByString:@" "],
+                                                @"created_at": [dateFormatter dateFromString:element[@"dt"]]
+                                            }];
+                                           
+                                           if (post[@"title"] == [NSNull null]) {
+                                               post[@"title"] = @"";
+                                           }
+                                           
+                                           if (post[@"description"] == [NSNull null]) {
+                                               post[@"description"] = @"";
+                                           }
+                                           
+                                           [newPosts addObject:post];
+                                           [newURLs addObject:post[@"url"]];
+                                           
+                                           if (![oldPosts containsObject:post]) {
+                                               // Check if the bookmark is being updated (as opposed to entirely new)
+                                               if ([oldURLs containsObject:post[@"url"]]) {
+                                                   [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                               }
+                                               else {
+                                                   [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                               }
+                                           }
+                                           index++;
+                                       }
+                                       
+                                       for (int i=0; i<oldURLs.count; i++) {
+                                           if (![newURLs containsObject:oldURLs[i]]) {
+                                               [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
                                            }
                                        }
-                                       NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                        @"title": element[@"d"],
-                                                                        @"description": element[@"n"],
-                                                                        @"url": element[@"u"],
-                                                                        @"tags": [tags componentsJoinedByString:@" "],
-                                                                        @"created_at": [dateFormatter dateFromString:element[@"dt"]]
-                                                                    }];
                                        
-                                       if (post[@"title"] == [NSNull null]) {
-                                           post[@"title"] = @"";
-                                       }
+                                       self.posts = newPosts;
                                        
-                                       if (post[@"description"] == [NSNull null]) {
-                                           post[@"description"] = @"";
-                                       }
-                                       
-                                       [newPosts addObject:post];
-                                       [newURLs addObject:post[@"url"]];
-                                       
-                                       if (![oldPosts containsObject:post]) {
-                                           // Check if the bookmark is being updated (as opposed to entirely new)
-                                           if ([oldURLs containsObject:post[@"url"]]) {
-                                               [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                                           }
-                                           else {
-                                               [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                                           }
-                                       }
-                                       index++;
-                                   }
-                                   
-                                   for (int i=0; i<oldURLs.count; i++) {
-                                       if (![newURLs containsObject:oldURLs[i]]) {
-                                           [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
-                                       }
-                                   }
-                                   
-                                   self.posts = newPosts;
-                                   
-                                   NSMutableArray *newStrings = [NSMutableArray array];
-                                   NSMutableArray *newHeights = [NSMutableArray array];
-                                   NSMutableArray *newLinks = [NSMutableArray array];
-                                   for (NSDictionary *post in newPosts) {
-                                       [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
-                                           [newHeights addObject:height];
-                                           [newStrings addObject:string];
-                                           [newLinks addObject:links];
-                                       }];
-                                   }
-                                   
-                                   self.strings = newStrings;
-                                   self.heights = newHeights;
-                                   self.links = newLinks;
+                                       NSMutableArray *newStrings = [NSMutableArray array];
+                                       NSMutableArray *newHeights = [NSMutableArray array];
+                                       NSMutableArray *newLinks = [NSMutableArray array];
 
-                                   if (success != nil) {
-                                       success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+                                       NSMutableArray *newCompressedStrings = [NSMutableArray array];
+                                       NSMutableArray *newCompressedHeights = [NSMutableArray array];
+                                       NSMutableArray *newCompressedLinks = [NSMutableArray array];
+                                       for (NSDictionary *post in newPosts) {
+                                           [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                                               [newHeights addObject:height];
+                                               [newStrings addObject:string];
+                                               [newLinks addObject:links];
+                                           }];
+                                           
+                                           [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                                               [newCompressedHeights addObject:height];
+                                               [newCompressedStrings addObject:string];
+                                               [newCompressedLinks addObject:links];
+                                           }];
+                                       }
+                                       
+                                       self.strings = newStrings;
+                                       self.heights = newHeights;
+                                       self.links = newLinks;
+
+                                       self.compressedStrings = newCompressedStrings;
+                                       self.compressedHeights = newCompressedHeights;
+                                       self.compressedLinks = newCompressedLinks;
+                                       
+                                       if (success != nil) {
+                                           success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+                                       }
                                    }
-                               }
+                               });
                            }];
+}
+
+#warning XXX Code smell, repeats metadataForPost
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
+    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    
+    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    description = @"";
+    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
+    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
+    BOOL isRead = NO;
+    
+    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+    NSRange titleRange = NSMakeRange(0, title.length);
+    
+    NSRange descriptionRange = NSMakeRange(NSNotFound, 0);
+    NSRange tagRange;
+    if ([tags isEqualToString:@""]) {
+        tagRange = NSMakeRange(NSNotFound, 0);
+    }
+    else {
+        NSInteger offset = 1;
+        if (descriptionRange.location != NSNotFound) {
+            offset++;
+        }
+        tagRange = NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, tags.length);
+    }
+    
+    BOOL hasTags = tagRange.location != NSNotFound;
+    
+    if (hasTags) {
+        [content appendFormat:@"\n%@", tags];
+    }
+    
+    [content appendFormat:@"\n%@", dateString];
+    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
+    
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
+    [attributedString setFont:titleFont range:titleRange];
+    [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setTextColor:HEX(0x33353Bff)];
+    
+    if (isRead) {
+        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+    }
+    else {
+        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+    }
+    
+    if (hasTags) {
+        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
+        [attributedString setFont:tagsFont range:tagRange];
+    }
+    
+    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
+    [attributedString setFont:dateFont range:dateRange];
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    
+    NSMutableArray *links = [NSMutableArray array];
+    NSInteger location = tagRange.location;
+    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
+        NSRange range = [tags rangeOfString:tag];
+        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
+    }
+    callback(attributedString, height, links);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
@@ -218,8 +305,8 @@
     UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
 
-    NSString *title = post[@"title"];
-    NSString *description = post[@"description"];
+    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = NO;
@@ -288,12 +375,27 @@
         NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
-
     callback(attributedString, height, links);
+}
+
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
+    return [self.compressedHeights[index] floatValue];
+}
+
+- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index {
+    return self.compressedLinks[index];
+}
+
+- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
+    return self.compressedStrings[index];
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
     return self.strings[index];
+}
+
+- (CGFloat)heightForPostAtIndex:(NSInteger)index {
+    return [self.heights[index] floatValue];
 }
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
@@ -370,24 +472,24 @@
     return NO;
 }
 
-- (CGFloat)heightForPostAtIndex:(NSInteger)index {
-    return [self.heights[index] floatValue];
-}
-
 - (void)addDataSource:(void (^)())callback {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
-    [db close];
-    callback();
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
+        [db close];
+        callback();
+    });
 }
 
 - (void)removeDataSource:(void (^)())callback {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
-    [db close];
-    callback();
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
+        [db close];
+        callback();
+    });
 }
 
 @end

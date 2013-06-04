@@ -46,10 +46,17 @@
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
+    
+    self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapGestureDetected:)];
+    self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+    self.doubleTapGestureRecognizer.delaysTouchesBegan = YES;
+    self.doubleTapGestureRecognizer.cancelsTouchesInView = YES;
+    [self.tableView addGestureRecognizer:self.doubleTapGestureRecognizer];
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
+    self.expandedIndexPaths = [NSMutableArray array];
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
@@ -266,6 +273,32 @@
             UIViewController *controller = [self.postDataSource viewControllerForPostAtIndex:indexPath.row];
             [self.navigationController pushViewController:controller animated:YES];
         }
+    }
+}
+
+- (void)doubleTapGestureDetected:(UITapGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        UITableView *tableView;
+
+        if (self.searchDisplayController.isActive) {
+            tableView = self.searchDisplayController.searchResultsTableView;
+        }
+        else {
+            tableView = self.tableView;
+        }
+
+        CGPoint pressPoint = [recognizer locationInView:tableView];
+        NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:pressPoint];
+        if ([self.expandedIndexPaths containsObject:indexPath]) {
+            [self.expandedIndexPaths removeObject:indexPath];
+        }
+        else {
+            [self.expandedIndexPaths addObject:indexPath];
+        }
+
+        [tableView beginUpdates];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
     }
 }
 
@@ -519,6 +552,9 @@
         dataSource = self.searchPostDataSource;
     }
 
+    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
+    }
     return [dataSource heightForPostAtIndex:indexPath.row];
 }
 
@@ -541,13 +577,27 @@
         dataSource = self.searchPostDataSource;
     }
 
-    string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+        string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
+    }
+    else {
+        string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+    }
 
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
-    for (NSDictionary *link in [dataSource linksForPostAtIndex:indexPath.row]) {
+    NSArray *links;
+    
+    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && ![self.expandedIndexPaths containsObject:indexPath]) {
+        links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
+    }
+    else {
+        links = [dataSource linksForPostAtIndex:indexPath.row];
+    }
+
+    for (NSDictionary *link in links) {
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
     
