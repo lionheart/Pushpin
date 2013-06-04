@@ -331,13 +331,14 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
-    NSString *tagTextFieldText = self.tagTextField.text;
+    if (!self.autocompleteInProgress) {
+        self.autocompleteInProgress = YES;
+            
+        NSString *tagTextFieldText = self.tagTextField.text;
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (!self.autocompleteInProgress) {
-            self.autocompleteInProgress = YES;
-            NSMutableArray *indexPathsToRemove = [[NSMutableArray alloc] init];
-            NSMutableArray *indexPathsToAdd = [[NSMutableArray alloc] init];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
             NSMutableArray *newTagCompletions = [NSMutableArray array];
             NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
             
@@ -357,87 +358,80 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                 [db open];
                 FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name FROM tag_fts, tag WHERE tag_fts.name MATCH ? ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
-                
-                #warning XXX Should all really be refactored.
-                NSString *currentTag;
-                NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
-                while ([result next]) {
-                    currentTag = [result stringForColumn:@"name"];
-                    if (![existingTags containsObject:currentTag]) {
-                        [newTagCompletions addObject:currentTag];
-                        if (![oldTagCompletions containsObject:currentTag]) {
-                            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                            [self.tagCompletions addObject:currentTag];
-                        }
-                        index++;
-                    }
-                }
-                [db close];
 
-                DLog(@"%@ %@", newString, newTagCompletions);
-                
-                if (self.suggestedTagsVisible) {
-                    index = kAddBookmarkViewControllerTagCompletionOffset;
-                    while (index <= self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset - 1) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                        index++;
-                    }
-                    
-                }
-                else {
-                    for (int i=0; i<oldTagCompletions.count; i++) {
-                        if (![newTagCompletions containsObject:oldTagCompletions[i]]) {
-                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:kAddBookmarkViewControllerTagCompletionOffset + [self.tagCompletions indexOfObject:oldTagCompletions[i]] inSection:0]];
+                #warning XXX Should all really be refactored.
+                NSString *tag;
+                NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
+                NSInteger skipPivot = 0;
+                BOOL tagFound = NO;
+
+                while ([result next]) {
+                    tagFound = NO;
+                    tag = [result stringForColumnIndex:0];
+                    if (![existingTags containsObject:tag]) {
+                        for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                            if ([oldTagCompletions[i] isEqualToString:tag]) {
+                                // Delete all posts that were skipped
+                                for (NSInteger j=skipPivot; j<i; j++) {
+                                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+                                }
+
+                                skipPivot = i;
+                                tagFound = YES;
+                                skipPivot++;
+                                break;
+                            }
                         }
+                        
+                        if (!tagFound) {
+                            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                        }
+                        
+                        index++;
+                        [newTagCompletions addObject:tag];
+                    }
+                }
+
+                [db close];
+                
+                for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+                }
+
+                if (self.suggestedTagsVisible) {
+                    for (NSInteger i=0; i<self.popularTagSuggestions.count; i++) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
                     }
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    
-                    DLog(@"OLD %d", oldTagCompletions.count);
-                    DLog(@"ADD %d", indexPathsToAdd.count);
-                    
                     self.suggestedTagsVisible = NO;
                     self.tagCompletions = newTagCompletions;
+
+                    [self.tableView beginUpdates];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    
-                    DLog(@"REMOVE %d", indexPathsToRemove.count);
-                    DLog(@"NEW %d", newTagCompletions.count);
-                    
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
                 });
             }
             else if (!self.suggestedTagsVisible) {
-                NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
-                while (index < self.tagCompletions.count + kAddBookmarkViewControllerTagCompletionOffset) {
-                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                    index++;
+                for (NSInteger i=0; i<self.tagCompletions.count; i++) {
+                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
                 }
-                
-                index = kAddBookmarkViewControllerTagCompletionOffset;
-                while (index < self.popularTagSuggestions.count + kAddBookmarkViewControllerTagCompletionOffset) {
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                    index++;
+
+                for (NSInteger i=0; i<self.popularTagSuggestions.count; i++) {
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:(i+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
                 }
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView beginUpdates];
-                    
-                    if ([indexPathsToRemove count] > 0) {
-                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    }
-                    
-                    if ([indexPathsToAdd count] > 0) {
-                        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    }
-                    
-                    self.suggestedTagsVisible = YES;
                     [self.tagCompletions removeAllObjects];
-                    
+                    self.suggestedTagsVisible = YES;
+
+                    [self.tableView beginUpdates];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                     self.autocompleteInProgress = NO;
@@ -446,8 +440,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             else {
                 self.autocompleteInProgress = NO;
             }
-        }
-    });
+        });
+    }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
