@@ -575,7 +575,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSString *hash = [results stringForColumn:@"hash"];
             NSString *meta = [results stringForColumn:@"meta"];
             NSDictionary *post;
-            
+
             // Go from the last found value to the end of the list.
             // If you find something, break and set the pivot to the current skip index.
 
@@ -588,7 +588,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                     skipPivot = i;
                     post = oldPosts[i];
-                    
+
                     // Reload the post if its meta value has changed.
                     if (![meta isEqualToString:oldMetas[hash]]) {
                         post = [PinboardDataSource postFromResultSet:results];
@@ -596,7 +596,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         // Reloads effect the old index path
                         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
                     }
-                    
+
                     postFound = YES;
                     skipPivot++;
                     break;
