@@ -200,19 +200,10 @@
         0.996, 0.996, 0.996, 1.0,
         0.804, 0.827, 0.875, 1.0
     };
-    CGFloat reverseComponents[8] =	{
-        0.804, 0.827, 0.875, 1.0,
-        0.996, 0.996, 0.996, 1.0
-    };
-    CGFloat lineColorComponents[8] = {
-        0.996, 0.996, 0.996, 1,
-        0.882, 0.898, 0.925, 1
-    };
     CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
-    CGGradientRef reverseGradient = CGGradientCreateWithColorComponents(myColorspace, reverseComponents, locations, num_locations);
     CGPoint startPoint = CGPointMake(0, 0);
     CGPoint endPoint = CGPointMake(0, 44);
-    
+
     CGFloat radius = 4;
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
     CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);

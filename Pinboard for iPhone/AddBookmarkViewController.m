@@ -373,7 +373,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                     }
                 }
                 [db close];
-                
+
                 DLog(@"%@ %@", newString, newTagCompletions);
                 
                 if (self.suggestedTagsVisible) {
