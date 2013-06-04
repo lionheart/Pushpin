@@ -215,42 +215,43 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         [self.navigationController pushViewController:vc animated:YES];
     }
     else if (indexPath.section == 0 && indexPath.row > 3) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        NSString *tagText = self.tagTextField.text;
+        NSInteger row = indexPath.row;
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{            
+            NSString *completion;
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+
+            if (self.tagCompletions.count > 0) {
+                completion = self.tagCompletions[row - kAddBookmarkViewControllerTagCompletionOffset];
+
+                for (NSInteger i=0; i<self.tagCompletions.count; i++) {
+                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+                }
+
+                [self.tagCompletions removeAllObjects];
+            }
+            else if (self.popularTagSuggestions.count > 0) {
+                completion = self.popularTagSuggestions[row - kAddBookmarkViewControllerTagCompletionOffset];
+                [self.popularTagSuggestions removeObjectAtIndex:(row - kAddBookmarkViewControllerTagCompletionOffset)];
+                
+                unichar space = ' ';
+                if (tagText.length > 0 && [tagText characterAtIndex:tagText.length - 1] != space) {
+                    self.tagTextField.text = [NSString stringWithFormat:@"%@ ", tagText];
+                }
+
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:0]];
+            }
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
-                
-                NSString *completion;
-                
-                if (self.tagCompletions.count > 0) {
-                    completion = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
-                    
-                    NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-                    NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
-                    while (index <= self.tagCompletions.count + kAddBookmarkViewControllerTagCompletionOffset - 1) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                        index++;
-                    }
-
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tagCompletions removeAllObjects];
-                }
-                else if (self.popularTagSuggestions.count > 0) {
-                    completion = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
-                    [self.popularTagSuggestions removeObjectAtIndex:indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
-                    
-                    unichar space = ' ';
-                    if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length - 1] != space) {
-                        self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
-                    }
-                    
-                    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                }
-                NSString *stringToReplace = [[self.tagTextField.text componentsSeparatedByString:@" "] lastObject];
-                NSRange range = NSMakeRange([self.tagTextField.text length] - [stringToReplace length], [stringToReplace length]);
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                self.tagTextField.text = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
+
+                NSString *stringToReplace = [[tagText componentsSeparatedByString:@" "] lastObject];
+                NSRange range = NSMakeRange(tagText.length - stringToReplace.length, stringToReplace.length);
+                self.tagTextField.text = [tagText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
             });
         });
     }
