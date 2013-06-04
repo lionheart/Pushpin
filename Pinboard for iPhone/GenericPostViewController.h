@@ -57,6 +57,10 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
+- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
+
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
 - (id <GenericPostDataSource>)searchDataSource;
 - (void)filterWithQuery:(NSString *)query;
@@ -105,6 +109,9 @@ typedef NSInteger PPPostAction;
 // Right swipe
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 
+@property (nonatomic, strong) NSMutableArray *expandedIndexPaths;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
+
 - (void)popViewController;
 
 - (void)dismissViewController;
@@ -116,6 +123,7 @@ typedef NSInteger PPPostAction;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
 - (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
+- (void)doubleTapGestureDetected:(UITapGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 
