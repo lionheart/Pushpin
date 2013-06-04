@@ -20,9 +20,10 @@
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) PPLoadingView *loadingIndicator;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 - (void)followScreenName:(NSString *)screenName;
-- (void)copyURL:(id)sender;
 - (void)followUserOnTwitter:(id)sender;
+- (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer;
 
 @end
