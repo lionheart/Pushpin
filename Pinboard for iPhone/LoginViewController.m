@@ -46,7 +46,7 @@
 
     self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
     self.usernameTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
-    self.usernameTextField.textAlignment = UITextAlignmentCenter;
+    self.usernameTextField.textAlignment = NSTextAlignmentCenter;
     self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.usernameTextField.backgroundColor = [UIColor whiteColor];
     self.usernameTextField.delegate = self;
@@ -63,7 +63,7 @@
 
     self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
     self.passwordTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
-    self.passwordTextField.textAlignment = UITextAlignmentCenter;
+    self.passwordTextField.textAlignment = NSTextAlignmentCenter;
     self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.passwordTextField.backgroundColor = [UIColor whiteColor];
     self.passwordTextField.delegate = self;
@@ -87,7 +87,7 @@
     self.textView.textColor = [UIColor whiteColor];
     self.textView.editable = NO;
     self.textView.userInteractionEnabled = NO;
-    self.textView.textAlignment = UITextAlignmentCenter;
+    self.textView.textAlignment = NSTextAlignmentCenter;
     self.textView.font = [UIFont fontWithName:@"Avenir-Heavy" size:14];
     self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
     [self.view addSubview:self.textView];
