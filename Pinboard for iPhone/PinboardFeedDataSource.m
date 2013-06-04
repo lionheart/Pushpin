@@ -122,7 +122,6 @@
                                        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
                                        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
                                        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                                       
                                        NSMutableArray *newPosts = [NSMutableArray array];
                                        NSMutableArray *newURLs = [NSMutableArray array];
                                        NSMutableArray *oldURLs = [NSMutableArray array];
