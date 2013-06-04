@@ -385,6 +385,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 
                 // If the bookmark wasn't found by looping through, it's a new one
                 if (!postFound && ![oldHashes containsObject:hash]) {
+                    NSDate *date = [dateFormatter dateFromString:post[@"time"]];
+                    if (!date) {
+                        #warning XXX See why this is happening.
+                        continue;
+                    }
+
                     params = @{
                                @"url": post[@"href"],
                                @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
@@ -394,7 +400,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
                                @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                               @"created_at": [dateFormatter dateFromString:post[@"time"]]
+                               @"created_at": date
                                };
                     
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
