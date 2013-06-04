@@ -14,6 +14,4 @@
 @property (nonatomic, strong) UIImageView *offImageView;
 @property (nonatomic) BOOL on;
 
-- (void)sendAction:(SEL)action to:(id)target forEvent:(UIEvent *)event;
-
 @end

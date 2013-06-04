@@ -23,7 +23,6 @@
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
-- (NSAttributedString *)attributedStringForPost:(NSDictionary *)post;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
 
 @end
