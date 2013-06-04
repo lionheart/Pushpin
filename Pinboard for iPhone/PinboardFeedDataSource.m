@@ -22,8 +22,9 @@
         self.components = components;
         self.heights = [NSMutableDictionary dictionary];
         self.posts = [NSMutableArray array];
-        
+
         self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
@@ -39,6 +40,7 @@
         self.posts = [NSMutableArray array];
         
         self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
