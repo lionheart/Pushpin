@@ -169,8 +169,7 @@ static NSInteger kToolbarHeight = 44;
             break;
             
         case BROWSER_ICAB_MOBILE:
-            #warning XXX - switch to correct browser
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in iCab Mobile", nil)];
             break;
             
         case BROWSER_DOLPHIN:
@@ -226,6 +225,9 @@ static NSInteger kToolbarHeight = 44;
         }
         else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
             url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"cyber"]];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
+            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
         }
         [[UIApplication sharedApplication] openURL:url];
     }
