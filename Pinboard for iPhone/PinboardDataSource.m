@@ -524,7 +524,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     if ([oldURLs[i] isEqualToString:url]) {
                         // Delete all posts that were skipped
                         for (NSInteger j=skipPivot; j<i; j++) {
-                            [db executeUpdate:@"UPDATE bookmark SET starred=0 WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
+                            [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
                         }
                         
                         skipPivot = i + 1;
@@ -534,9 +534,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 if (!postFound && ![oldURLs containsObject:url]) {
-                    [db executeUpdate:@"UPDATE bookmark SET starred=1 WHERE url=?" withArgumentsInArray:@[url]];
+                    [db executeUpdate:@"UPDATE bookmark SET starred=1, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
                 }
-                
+
                 index++;
             }
             [db commit];
