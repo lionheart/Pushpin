@@ -26,6 +26,7 @@
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
+        self.count = 100;
     }
     return self;
 }
@@ -39,6 +40,7 @@
         self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
+        self.count = 100;
     }
     return self;
 }
@@ -105,7 +107,7 @@
             [escapedComponents addObject:component];
         }
     }
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@", [escapedComponents componentsJoinedByString:@"/"]]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%d", [escapedComponents componentsJoinedByString:@"/"], self.count]];
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
@@ -228,74 +230,27 @@
 #warning XXX Code smell, repeats metadataForPost
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
     UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    description = @"";
-    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
-    BOOL isRead = NO;
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
-    
-    NSRange descriptionRange = NSMakeRange(NSNotFound, 0);
-    NSRange tagRange;
-    if ([tags isEqualToString:@""]) {
-        tagRange = NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        NSInteger offset = 1;
-        if (descriptionRange.location != NSNotFound) {
-            offset++;
-        }
-        tagRange = NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, tags.length);
-    }
-    
-    BOOL hasTags = tagRange.location != NSNotFound;
-    
-    if (hasTags) {
-        [content appendFormat:@"\n%@", tags];
-    }
     
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
-    [attributedString setFont:descriptionFont range:descriptionRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
-    
-    if (isRead) {
-        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
-        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-    }
-    else {
-        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
-    }
-    
-    if (hasTags) {
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-        [attributedString setFont:tagsFont range:tagRange];
-    }
-    
+    [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
-    
-    NSMutableArray *links = [NSMutableArray array];
-    NSInteger location = tagRange.location;
-    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
-        NSRange range = [tags rangeOfString:tag];
-        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-    }
-    callback(attributedString, height, links);
+    callback(attributedString, height, @[]);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
@@ -403,6 +358,14 @@
 
 - (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate {
     return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) delegate:delegate callback:nil];
+}
+
+- (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback {
+    BOOL needsUpdate = indexPath.row >= self.count * 3. / 4. && self.count < 400;
+    if (needsUpdate) {
+        self.count = MAX(self.count + 100, 400);
+    }
+    callback(needsUpdate);
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
