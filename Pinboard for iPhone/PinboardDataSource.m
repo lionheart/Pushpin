@@ -280,6 +280,11 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
+    
+    if (!failure) {
+        failure = ^(NSError *error) {};
+    }
+
     if (!kPinboardSyncInProgress) {
         kPinboardSyncInProgress = YES;
 
