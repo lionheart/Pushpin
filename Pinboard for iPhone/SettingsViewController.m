@@ -20,6 +20,7 @@
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
 #import "PPBrowserSettingsViewController.h"
+#import "PPDisplaySettingsViewController.h"
 #import "FMDatabase.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
@@ -142,10 +143,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)compressPostsSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setCompressPosts:self.compressPostsSwitch.on];
-}
-
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
     [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
 }
@@ -255,18 +252,6 @@
                     break;
                     
                 case 2:
-                    cell.textLabel.text = NSLocalizedString(@"Hide descriptions & tags?", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    size = cell.frame.size;
-                    self.compressPostsSwitch = [[PPSwitch alloc] init];
-                    switchSize = self.compressPostsSwitch.frame.size;
-                    self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
-                    [self.compressPostsSwitch addTarget:self action:@selector(compressPostsSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
-                    cell.accessoryView = self.compressPostsSwitch;
-                    break;
-                    
-                case 3:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
@@ -290,7 +275,7 @@
 
                     break;
                     
-                case 4:
+                case 3:
                     cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -308,6 +293,13 @@
                         default:
                             break;
                     }
+                    break;
+
+
+                case 4:
+                    cell.textLabel.text = NSLocalizedString(@"Display Settings", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
                     break;
 
                 case 5:
@@ -576,6 +568,9 @@
                 [self.mobilizerActionSheet showFrom:self.navigationController.view];
             }
             else if (indexPath.row == 4) {
+                [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
+            }
+            else if (indexPath.row == 5) {
                 [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
             }
             break;

@@ -35,6 +35,7 @@
 @synthesize mobilizer = _mobilizer;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize privateByDefault = _privateByDefault;
+@synthesize dimReadPosts = _dimReadPosts;
 @synthesize feedToken = _feedToken;
 @synthesize connectionAvailable;
 @synthesize dateFormatter;
@@ -372,7 +373,8 @@
         @"io.aurora.pinboard.PrivateByDefault": @(NO),
         @"io.aurora.pinboard.ReadByDefault": @(NO),
         @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
-        @"io.aurora.pinboard.CompressPosts": @(NO)
+        @"io.aurora.pinboard.CompressPosts": @(NO),
+        @"io.aurora.pinboard.DimReadPosts": @(YES)
      }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
@@ -700,6 +702,21 @@
     _compressPosts = compressPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)dimReadPosts {
+    if (!_dimReadPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _dimReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.DimReadPosts"] boolValue];
+    }
+    return _dimReadPosts;
+}
+
+- (void)setDimReadPosts:(BOOL)dimReadPosts {
+    _dimReadPosts = dimReadPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(dimReadPosts) forKey:@"io.aurora.pinboard.DimReadPosts"];
     [defaults synchronize];
 }
 
