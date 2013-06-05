@@ -16,6 +16,7 @@
 #import "RDActionSheet.h"
 #import <StoreKit/StoreKit.h>
 #import "RDActionSheet.h"
+#import "PPWebViewController.h"
 
 @interface PPAboutViewController ()
 
@@ -28,6 +29,7 @@
     if (self) {
         NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
         self.data = [NSArray arrayWithContentsOfFile:plistPath];
+
         self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
@@ -154,25 +156,33 @@
     cell.imageView.image = nil;
     
     if (indexPath.section == 0 && indexPath.row == 1) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    if (indexPath.section == 0 && indexPath.row == 2) {
         cell.imageView.image = [UIImage imageNamed:@"twitter"];
     }
-    else if (indexPath.section == 0 && indexPath.row == 2) {
+    else if (indexPath.section == 0 && indexPath.row == 3) {
         cell.imageView.image = [UIImage imageNamed:@"apple"];
     }
     
-    NSString *title = self.data[indexPath.section][1][indexPath.row][0];
-    NSString *detail = self.data[indexPath.section][1][indexPath.row][1];
+    NSArray *info = self.data[indexPath.section][1];
+    NSString *title = info[indexPath.row][0];
+    NSString *detail = info[indexPath.row][1];
     
     CGFloat height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackgroundForHeight:height];
     if (indexPath.row > 0) {
         [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayerForHeight:height]];
     }
-    
-    if (indexPath.row < [self.data[indexPath.section][1] count] - 1) {
+
+    if (indexPath.row < info.count - 1) {
         [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayerForHeight:height]];
     }
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer forHeight:height];
+
+    if ([info[indexPath.row] count] > 3) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
 
     if (![title isEqualToString:@""]) {
         cell.textLabel.text = title;
@@ -197,11 +207,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.section == 0 && indexPath.row == 1) {
+    if (indexPath.section == 0 && indexPath.row == 2) {
         [self followScreenName:@"pushpin_app"];
     }
-    else if (indexPath.section == 0 && indexPath.row == 2) {
+    else if (indexPath.section == 0 && indexPath.row == 3) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+    }
+    else if ([self.data[indexPath.section][1][indexPath.row] count] > 3) {
+        PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:self.data[indexPath.section][1][indexPath.row][3]];
+        [self.navigationController pushViewController:webViewController animated:YES];
     }
     else {
         if ([self.expandedIndexPaths containsObject:indexPath]) {
@@ -343,7 +357,7 @@
             }
             else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
                 NSString *screenName = info[2];
-                [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@", screenName]];
+                [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
                 sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
                     if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
                         [self followScreenName:screenName];
