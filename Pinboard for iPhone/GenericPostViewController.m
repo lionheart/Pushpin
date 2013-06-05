@@ -42,7 +42,6 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
@@ -103,6 +102,13 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
+    
+    #warning XXX Slows down UI a bit too much. :( #113
+    /*
+    self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+    [self.navigationController.navigationBar addGestureRecognizer:self.doubleTapGestureRecognizer];
+     */
 
     self.actionSheetVisible = NO;
     
@@ -359,6 +365,19 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
                 }
             }
         }
+    }
+    else if (recognizer == self.doubleTapGestureRecognizer) {
+        self.dimReadPosts = !self.dimReadPosts;
+        [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPosts];
+
+        [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *realIndexPathsToReload = self.tableView.indexPathsForVisibleRows;
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:realIndexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+            });
+        } failure:nil];
     }
 }
 
