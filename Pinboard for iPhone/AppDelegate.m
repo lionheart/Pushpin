@@ -60,17 +60,13 @@
         self.bookmarksUpdated = notification.userInfo[@"updated"];
 
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
-                });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
             });
         }
         else {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
-                });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
             });
         }
     }
@@ -368,6 +364,14 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults registerDefaults:@{
+        @"io.aurora.pinboard.OpenLinksInApp": @(YES),
+        @"io.aurora.pinboard.PrivateByDefault": @(NO),
+        @"io.aurora.pinboard.ReadByDefault": @(NO),
+        @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI)
+     }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
     self.connectionAvailable = @([reach isReachable]);
@@ -390,8 +394,8 @@
         [self setNetworkActivityIndicatorVisible:YES];
     }];
 
-    if ([self token]) {
-        [pinboard setToken:[self token]];
+    if (self.token) {
+        [pinboard setToken:self.token];
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
         [self.window setRootViewController:self.navigationController];
@@ -648,10 +652,6 @@
     if (!_privateByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _privateByDefault = [defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"];
-        
-        if (!_privateByDefault) {
-            _privateByDefault = @(NO);
-        }
     }
     return _privateByDefault;
 }
@@ -660,9 +660,6 @@
     if (!_openLinksInApp) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _openLinksInApp = [defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"];
-        if (!_openLinksInApp) {
-            _openLinksInApp = @(YES);
-        }
     }
     return _openLinksInApp;
 }
@@ -685,10 +682,6 @@
     if (!_readByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _readByDefault = [defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"];
-
-        if (!_readByDefault) {
-            _readByDefault = @(NO);
-        }
     }
     return _readByDefault;
 }
@@ -705,7 +698,7 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _browser = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
         
-        if (!_browser || [_browser isEqual:@(BROWSER_WEBVIEW)]) {
+        if ([_browser isEqual:@(BROWSER_WEBVIEW)]) {
             _browser = @(BROWSER_SAFARI);
         }
     }
@@ -790,11 +783,6 @@
     else {
         NumberOfCallsToSetVisible--;
     }
-    
-    // The assertion helps to find programmer errors in activity indicator management.
-    // Since a negative NumberOfCallsToSetVisible is not a fatal error,
-    // it should probably be removed from production code.
-//    NSAssert(NumberOfCallsToSetVisible >= 0, @"Network Activity Indicator was asked to hide more often than shown");
     
     // Display the indicator as long as our static counter is > 0.
     dispatch_async(dispatch_get_main_queue(), ^{

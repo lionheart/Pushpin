@@ -1090,6 +1090,8 @@ static BOOL kPinboardSyncInProgress = NO;
     if ([title isEqualToString:@""]) {
         title = @"untitled";
     }
+    
+    #warning XXX J.B. Bryant Crash
     return @{
         @"title": title,
         @"description": [resultSet stringForColumn:@"description"],
