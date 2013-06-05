@@ -633,8 +633,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 4) {
-        [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
+    if (indexPath.section == 0) {
+        if (indexPath.row == 4) {
+            [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
+        }
+        else if (indexPath.row == 5) {
+            [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
+        }
     }
 }
 
