@@ -251,6 +251,7 @@
 		37B348BE175E70C800929E2E /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B348BA175E70C800929E2E /* HockeySDK.framework */; };
 		37B348BF175E70C800929E2E /* HockeySDK.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 37B348BC175E70C800929E2E /* HockeySDK.xcconfig */; };
 		37B348C0175E70C800929E2E /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 37B348BD175E70C800929E2E /* HockeySDKResources.bundle */; };
+		37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
 		37B65FE11672E0090041DA8C /* iTunesArtwork-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */; };
 		37B65FE21672E0090041DA8C /* Icon-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDC1672E0090041DA8C /* Icon-beta.png */; };
 		37B65FE31672E0090041DA8C /* Icon-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDD1672E0090041DA8C /* Icon-beta@2x.png */; };
@@ -845,6 +846,8 @@
 		37B348BA175E70C800929E2E /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
 		37B348BC175E70C800929E2E /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
 		37B348BD175E70C800929E2E /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
+		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
+		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta@2x.png"; path = "Assets/iTunesArtwork-beta@2x.png"; sourceTree = "<group>"; };
 		37B65FDC1672E0090041DA8C /* Icon-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-beta.png"; path = "Assets/Icon-beta.png"; sourceTree = "<group>"; };
 		37B65FDD1672E0090041DA8C /* Icon-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-beta@2x.png"; path = "Assets/Icon-beta@2x.png"; sourceTree = "<group>"; };
@@ -1951,6 +1954,8 @@
 				3732DF9B175957F000978A68 /* PPAboutViewController.h */,
 				3732DF9C175957F000978A68 /* PPAboutViewController.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
+				37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */,
+				37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2671,6 +2676,7 @@
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
 				3732DF9A1759148100978A68 /* RPSTPasswordManagementAppService.m in Sources */,
 				3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */,
+				37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

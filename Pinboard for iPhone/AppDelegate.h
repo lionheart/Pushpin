@@ -68,6 +68,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSNumber *readlater;
 @property (nonatomic, strong) NSNumber *mobilizer;
 @property (nonatomic) BOOL compressPosts;
+@property (nonatomic) BOOL dimReadPosts;
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;

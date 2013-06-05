@@ -111,6 +111,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic) CGFloat beginningScale;
 @property (nonatomic) BOOL compressPosts;
+@property (nonatomic) BOOL dimReadPosts;
 
 - (void)popViewController;
 

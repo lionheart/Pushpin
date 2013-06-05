@@ -117,6 +117,18 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
         }
     }
 
+    BOOL oldDimReadPosts = self.dimReadPosts;
+    self.dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
+    if (oldDimReadPosts != self.dimReadPosts) {
+        #warning XXX Use another static var here
+        if (!kGenericPostViewControllerResizingPosts) {
+            kGenericPostViewControllerResizingPosts = YES;
+            [self.tableView beginUpdates];
+            [self.tableView endUpdates];
+            kGenericPostViewControllerResizingPosts = NO;
+        }
+    }
+
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 

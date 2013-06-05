@@ -939,7 +939,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     
-    if (isRead) {
+    if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
         [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
     }
     else {
@@ -1003,8 +1003,8 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setFont:descriptionFont range:descriptionRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
-    
-    if (isRead) {
+
+    if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
         [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
     }
