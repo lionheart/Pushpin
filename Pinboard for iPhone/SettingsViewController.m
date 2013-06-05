@@ -142,6 +142,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)compressPostsSwitchChangedValue:(id)sender {
+    [[AppDelegate sharedDelegate] setCompressPosts:self.compressPostsSwitch.on];
+}
+
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
     [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
 }
@@ -159,7 +163,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return 5;
+            return 6;
             break;
 
         case 1:
@@ -251,6 +255,18 @@
                     break;
                     
                 case 2:
+                    cell.textLabel.text = NSLocalizedString(@"Hide descriptions & tags?", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    self.compressPostsSwitch = [[PPSwitch alloc] init];
+                    switchSize = self.compressPostsSwitch.frame.size;
+                    self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
+                    [self.compressPostsSwitch addTarget:self action:@selector(compressPostsSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+                    cell.accessoryView = self.compressPostsSwitch;
+                    break;
+                    
+                case 3:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
@@ -274,7 +290,7 @@
 
                     break;
                     
-                case 3:
+                case 4:
                     cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -294,7 +310,7 @@
                     }
                     break;
 
-                case 4:
+                case 5:
                     cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;

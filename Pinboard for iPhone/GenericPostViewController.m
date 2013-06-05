@@ -21,6 +21,8 @@
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
 
+static BOOL kGenericPostViewControllerResizingPosts = NO;
+
 @interface GenericPostViewController ()
 
 @end
@@ -53,7 +55,6 @@
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    self.compressPosts = NO;
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
@@ -104,6 +105,17 @@
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
 
     self.actionSheetVisible = NO;
+    
+    BOOL oldCompressPosts = self.compressPosts;
+    self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
+    if (self.compressPosts != oldCompressPosts) {
+        if (!kGenericPostViewControllerResizingPosts) {
+            kGenericPostViewControllerResizingPosts = YES;
+            [self.tableView beginUpdates];
+            [self.tableView endUpdates];
+            kGenericPostViewControllerResizingPosts = NO;
+        }
+    }
 
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
@@ -120,6 +132,11 @@
             }];
         });
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
 
 - (void)popViewController {
@@ -292,33 +309,42 @@
     }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
-            NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-            BOOL needsReload = NO;
-            if (self.compressPosts) {
-                needsReload = self.pinchGestureRecognizer.scale > 1.5;
-            }
-            else {
-                needsReload = self.pinchGestureRecognizer.scale < 0.5;
-            }
-            
-            if (needsReload) {
-                self.compressPosts = !self.compressPosts;
-                NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                for (NSIndexPath *indexPath in visibleIndexPaths) {
-                    if ([self.postDataSource heightForPostAtIndex:indexPath.row] != [self.postDataSource compressedHeightForPostAtIndex:indexPath.row]) {
-                        [indexPathsToReload addObject:indexPath];
-                    }
+            if (!kGenericPostViewControllerResizingPosts) {
+                kGenericPostViewControllerResizingPosts = YES;
+
+                NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+                BOOL needsReload = NO;
+                
+                if (self.compressPosts) {
+                    needsReload = self.pinchGestureRecognizer.scale > 1.5;
                 }
-
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-
-                double delayInSeconds = 0.25;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                });
+                else {
+                    needsReload = self.pinchGestureRecognizer.scale < 0.5;
+                }
+                
+                if (needsReload) {
+                    self.compressPosts = !self.compressPosts;
+                    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+                    for (NSIndexPath *indexPath in visibleIndexPaths) {
+                        if ([self.postDataSource heightForPostAtIndex:indexPath.row] != [self.postDataSource compressedHeightForPostAtIndex:indexPath.row]) {
+                            [indexPathsToReload addObject:indexPath];
+                        }
+                    }
+                    
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                    
+                    double delayInSeconds = 0.25;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                        kGenericPostViewControllerResizingPosts = NO;
+                    });
+                }
+                else {
+                    kGenericPostViewControllerResizingPosts = NO;
+                }
             }
         }
     }
