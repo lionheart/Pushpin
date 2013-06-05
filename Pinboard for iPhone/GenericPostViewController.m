@@ -608,6 +608,18 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.contentView.backgroundColor = [UIColor clearColor];
     }
+    
+    for (id subview in [cell.contentView subviews]) {
+        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
+            [subview removeFromSuperview];
+        }
+    }
+    
+    for (id subview in [cell subviews]) {
+        if ([subview isKindOfClass:[UIImageView class]]) {
+            [subview removeFromSuperview];
+        }
+    }
 
     NSAttributedString *string;
     id <GenericPostDataSource> dataSource;
@@ -630,7 +642,6 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
     [cell.textView setText:string];
     
     NSArray *links;
-    
     if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && self.compressPosts) {
         links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
     }
@@ -641,24 +652,17 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
     for (NSDictionary *link in links) {
         [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
-    
-    for (id subview in [cell.contentView subviews]) {
-        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
-            [subview removeFromSuperview];
-        }
-    }
 
-    for (id subview in [cell subviews]) {
-        if ([subview isKindOfClass:[UIImageView class]]) {
-            [subview removeFromSuperview];
-        }
-    }
-
-    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
+    NSArray* sublayers = cell.contentView.layer.sublayers;
     for (CALayer *layer in sublayers) {
         if ([layer.name isEqualToString:@"Gradient"]) {
             [layer removeFromSuperlayer];
         }
+    }
+
+    sublayers = cell.selectedBackgroundView.layer.sublayers;
+    for (CALayer *layer in sublayers) {
+        [layer removeFromSuperlayer];
     }
 
     CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
@@ -673,6 +677,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
     
     if (tableView.editing) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.selectedBackgroundView = nil;
     }
     else {
         CAGradientLayer *selectedGradient = [CAGradientLayer layer];
