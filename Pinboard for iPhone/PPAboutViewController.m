@@ -26,58 +26,30 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        NSArray *credits = @[@[@"Rachel", @"For always believing in me."], @[@"Dante and Isabelle", @"For inspiring me and for making me laugh."], @[@"Maciej Ceglowski", @"For making Pinboard."]];
-        NSArray *beta = @[@[@"Michael Solis", [NSNull null], @"morphorod"], @[@"JB Bryant", [NSNull null], @"jb_bryant"], @[@"Phil Havens", [NSNull null], @"philhavens"], @[@"Chase McCoy", [NSNull null], @"chase_mccoy"], @[@"Sam Cohen", @"For donating the getpushpin.com domain name.", @"Samography"], @[@"Riccardo Mori", @"For Italian translation.", @"morrick"], @[@"James Lepthien", @"For German translation.", @"0x86DD"], @[@"Jérôme Tomasini", @"For French translation.", @"c0wb0yz"], @[@"Vítor Galvão", @"For Portuguese translation.", @"vhgalvao"]];
-        NSArray *translations = @[];
-        NSArray *licenses = @[@[@"TTTAttributedLabel", @"Copyright (c) 2011 Mattt Thompson (http://mattt.me/)"
-                                "\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
-                                "\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
-                                "\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", @"https://github.com/mattt/TTTAttributedLabel"],
-                              @[@"KeychainItemWrapper", @"Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple Inc. (\"Apple\") in consideration of your agreement to the following terms, and your use, installation, modification or redistribution of this Apple software constitutes acceptance of these terms.  If you do not agree with these terms, please do not use, install, modify or redistribute this Apple software."
-                                "\n\nIn consideration of your agreement to abide by the following terms, and subject to these terms, Apple grants you a personal, non-exclusive license, under Apple's copyrights in this original Apple software (the \"Apple Software\"), to use, reproduce, modify and redistribute the Apple Software, with or without modifications, in source and/or binary forms; provided that if you redistribute the Apple Software in its entirety and without modifications, you must retain this notice and the following text and disclaimers in all such redistributions of the Apple Software.  Neither the name, trademarks, service marks or logos of Apple Inc. may be used to endorse or promote products derived from the Apple Software without specific prior written permission from Apple.  Except as expressly stated in this notice, no other rights or licenses, express or implied, are granted by Apple herein, including but not limited to any patent rights that may be infringed by your derivative works or by other works in which the Apple Software may be incorporated."
-                                "\n\nThe Apple Software is provided by Apple on an \"AS IS\" basis.  APPLE MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS."
-                                "\n\nIN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-                                "\n\nCopyright (C) 2010 Apple Inc. All Rights Reserved.", @"http://developer.apple.com/library/ios/#samplecode/GenericKeychain/Listings/Classes_KeychainItemWrapper_m.html"],
-                              @[@"ASPinboard", @"Copyright 2012-2013 Aurora Software LLC"
-                              "\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at"
-                              "\n\n\thttp://www.apache.org/licenses/LICENSE-2.0"
-                              "\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.", @"https://github.com/aurorasoftware/ASPinboard"],
-                              @[@"fmdb", @"Copyright (c) 2008 Flying Meat Inc."
-                                "\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
-                                "\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
-                                "\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", @"https://github.com/ccgus/fmdb"],
-                              @[@"Reachability", @"Copyright (c) 2011-2013, Tony Million."
-                                "\nAll rights reserved."
-                                "\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:"
-                                "\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer."
-                                "\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution."
-                                "\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.", @"https://github.com/tonymillion/Reachability",],
-                              @[@"oauthconsumer", [NSNull null], @"https://github.com/jdg/oauthconsumer"], @[@"RPSTPasswordManagementAppService", [NSNull null], @"https://github.com/Riposte/RPSTPasswordManagementAppService"]];
-        NSString *build = [NSString stringWithFormat:@"Pushpin %@ (%@)", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-        NSArray *description = @[@[[NSNull null], @"Pushpin is the product of overwhelming amounts of caffeine, 80's club music, and cats. The truth is, blah."], @[@"Follow Pushpin on Twitter", [NSNull null]], @[@"Review Pushpin on iTunes", [NSNull null]]];
-        NSArray *team = @[@[@"Dan Loewenherz", @"Product design and development.", @"dwlz"], @[@"Martin Karasek", @"Visual design.", @"karimartin"]];
-        self.data = @[description, team, credits, beta, licenses];
-        self.titles = @[[NSNull null], @"Team", @"Credits", @"Acknowledgements", @"Software"];
+        NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
+        self.data = [NSArray arrayWithContentsOfFile:plistPath];
         self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
         
         self.heights = [NSMutableDictionary dictionary];
+        self.titles = [NSMutableArray array];
         UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
         UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
         NSInteger index = 0;
         for (NSArray *list in self.data) {
-            for (NSArray *pair in list) {
+            [self.titles addObject:list[0]];
+            for (NSArray *pair in list[1]) {
                 NSString *title = pair[0];
                 NSString *description = pair[1];
 
-                if ([title isEqual:[NSNull null]]) {
+                if ([title isEqualToString:@""]) {
                     self.heights[title] = @(0);
                 }
                 else {
                     self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height));
                 }
-                if ([description isEqual:[NSNull null]]) {
+                if ([description isEqualToString:@""]) {
                     self.heights[description] = @(0);
                 }
                 else {
@@ -112,12 +84,12 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.data[section] count];
+    return [self.data[section][1] count];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
-    if (![title isEqual:[NSNull null]]) {
+    if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
         
         int fontSize = 17;
@@ -141,7 +113,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
-    if (![title isEqual:[NSNull null]]) {
+    if (![title isEqual:@""]) {
         UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
         return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
     }
@@ -149,8 +121,8 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat topHeight = [self.heights[self.data[indexPath.section][indexPath.row][0]] floatValue];
-    CGFloat bottomHeight = [self.heights[self.data[indexPath.section][indexPath.row][1]] floatValue];
+    CGFloat topHeight = [self.heights[self.data[indexPath.section][1][indexPath.row][0]] floatValue];
+    CGFloat bottomHeight = [self.heights[self.data[indexPath.section][1][indexPath.row][1]] floatValue];
     if (bottomHeight > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
         bottomHeight = 22;
     }
@@ -188,8 +160,8 @@
         cell.imageView.image = [UIImage imageNamed:@"apple"];
     }
     
-    NSString *title = self.data[indexPath.section][indexPath.row][0];
-    NSString *detail = self.data[indexPath.section][indexPath.row][1];
+    NSString *title = self.data[indexPath.section][1][indexPath.row][0];
+    NSString *detail = self.data[indexPath.section][1][indexPath.row][1];
     
     CGFloat height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackgroundForHeight:height];
@@ -197,12 +169,12 @@
         [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayerForHeight:height]];
     }
     
-    if (indexPath.row < [self.data[indexPath.section] count] - 1) {
+    if (indexPath.row < [self.data[indexPath.section][1] count] - 1) {
         [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayerForHeight:height]];
     }
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer forHeight:height];
 
-    if (![title isEqual:[NSNull null]]) {
+    if (![title isEqualToString:@""]) {
         cell.textLabel.text = title;
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
@@ -215,7 +187,7 @@
         }
     }
     else {
-        if (![detail isEqual:[NSNull null]]) {
+        if (![detail isEqualToString:@""]) {
             cell.detailTextLabel.text = detail;
         }
     }
@@ -347,8 +319,8 @@
 }
 
 - (void)followUserOnTwitter:(id)sender {
-    NSString *screenName = self.data[self.selectedIndexPath.section][self.selectedIndexPath.row][2];
-    if (![screenName isEqual:[NSNull null]]) {
+    NSString *screenName = self.data[self.selectedIndexPath.section][1][self.selectedIndexPath.row][2];
+    if (![screenName isEqualToString:@""]) {
         [self followScreenName:screenName];
     }
 }
@@ -357,7 +329,7 @@
     if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint pressPoint = [recognizer locationInView:self.tableView];
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
-        NSArray *info = self.data[indexPath.section][indexPath.row];
+        NSArray *info = self.data[indexPath.section][1][indexPath.row];
         
         if (indexPath.section == [self.titles indexOfObject:@"Software"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
             RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:info[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
