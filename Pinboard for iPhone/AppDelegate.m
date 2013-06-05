@@ -43,6 +43,7 @@
 @synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
 @synthesize openLinksInApp = _openLinksInApp;
+@synthesize compressPosts = _compressPosts;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -370,7 +371,8 @@
         @"io.aurora.pinboard.OpenLinksInApp": @(YES),
         @"io.aurora.pinboard.PrivateByDefault": @(NO),
         @"io.aurora.pinboard.ReadByDefault": @(NO),
-        @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI)
+        @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
+        @"io.aurora.pinboard.CompressPosts": @(NO)
      }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
@@ -684,6 +686,21 @@
         _readByDefault = [defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"];
     }
     return _readByDefault;
+}
+
+- (BOOL)compressPosts {
+    if (!_compressPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _compressPosts = [[defaults objectForKey:@"io.aurora.pinboard.CompressPosts"] boolValue];
+    }
+    return _compressPosts;
+}
+
+- (void)setCompressPosts:(BOOL)compressPosts {
+    _compressPosts = compressPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
+    [defaults synchronize];
 }
 
 - (void)setBrowser:(NSNumber *)browser {

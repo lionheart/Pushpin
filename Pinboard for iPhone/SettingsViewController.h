@@ -30,9 +30,12 @@
 @property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
+
+@property (nonatomic, retain) PPSwitch *compressPostsSwitch;
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
 
+- (void)compressPostsSwitchChangedValue:(id)sender;
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
