@@ -14,7 +14,7 @@
 @interface PPAboutViewController : PPTableViewController <RDActionSheetDelegate, SKStoreProductViewControllerDelegate>
 
 @property (nonatomic, strong) NSArray *data;
-@property (nonatomic, strong) NSArray *titles;
+@property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, strong) NSMutableDictionary *heights;
 @property (nonatomic, strong) NSMutableArray *expandedIndexPaths;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
