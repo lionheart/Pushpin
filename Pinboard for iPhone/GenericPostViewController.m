@@ -477,6 +477,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
+        self.editButton.enabled = NO;
         
         [self.navigationItem setHidesBackButton:NO animated:YES];
 
@@ -485,6 +486,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
+            self.editButton.enabled = YES;
         }];
         [self.tableView setEditing:NO animated:YES];
         [CATransaction commit];
@@ -502,6 +504,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.editButton setStyle:UIBarButtonItemStyleDone];
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
+        self.editButton.enabled = NO;
         [self.navigationItem setHidesBackButton:YES animated:YES];
 
         [self.multipleDeleteButton setTitle:@"Delete (0)"];
@@ -512,6 +515,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
+            self.editButton.enabled = YES;
         }];
         [self.tableView setEditing:YES animated:YES];
         [CATransaction commit];
