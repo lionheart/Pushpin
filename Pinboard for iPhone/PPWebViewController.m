@@ -153,7 +153,7 @@ static NSInteger kToolbarHeight = 44;
         
         NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         self.title = pageTitle;
-        
+
         NSString *theURLString;
         if ([self.webView canGoBack]) {
             theURLString = self.url.absoluteString;
@@ -293,7 +293,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)toggleMobilizer {
     NSURL *url;
-    if ([self isMobilized]) {
+    if (self.isMobilized) {
+        [AppDelegate sharedDelegate].openLinksWithMobilizer = NO;
         switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
             case MOBILIZER_GOOGLE:
                 url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:57]];
@@ -309,17 +310,18 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else {
+        [AppDelegate sharedDelegate].openLinksWithMobilizer = YES;
         switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
             case MOBILIZER_GOOGLE:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", [self url].absoluteString]];
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.url.absoluteString]];
                 break;
                 
             case MOBILIZER_INSTAPAPER:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", [self url].absoluteString]];
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", self.url.absoluteString]];
                 break;
                 
             case MOBILIZER_READABILITY:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", [self url].absoluteString]];
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.url.absoluteString]];
                 break;
         }
     }
@@ -404,9 +406,45 @@ static NSInteger kToolbarHeight = 44;
     return googleMobilized || readabilityMobilized || instapaperMobilized;
 }
 
+- (BOOL)isURLStringMobilized:(NSString *)url {
+    BOOL googleMobilized = [url hasPrefix:@"http://www.google.com/gwt/x"];
+    BOOL readabilityMobilized = [url hasPrefix:@"http://www.readability.com/m?url="];
+    BOOL instapaperMobilized = [url hasPrefix:@"http://www.instapaper.com/m?u="];
+    return googleMobilized || readabilityMobilized || instapaperMobilized;
+}
+
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url {
     PPWebViewController *webViewController = [[PPWebViewController alloc] init];
     webViewController.urlString = url;
+    return webViewController;
+}
+
++ (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url {
+    PPWebViewController *webViewController = [[PPWebViewController alloc] init];
+    NSString *urlString;
+    if (![webViewController isURLStringMobilized:url]) {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                urlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", url];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                urlString = [NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", url];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                urlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", url];
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else {
+        urlString = url;
+    }
+
+    webViewController.urlString = urlString;
     return webViewController;
 }
 
