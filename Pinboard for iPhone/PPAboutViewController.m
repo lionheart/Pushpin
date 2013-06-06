@@ -17,6 +17,7 @@
 #import <StoreKit/StoreKit.h>
 #import "RDActionSheet.h"
 #import "PPWebViewController.h"
+#import "PPChangelogViewController.h"
 
 @interface PPAboutViewController ()
 
@@ -207,7 +208,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.section == 0 && indexPath.row == 2) {
+    if (indexPath.section == 0 && indexPath.row == 1) {
+        PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] init];
+        [self.navigationController pushViewController:changelogViewController animated:YES];
+    }
+    else if (indexPath.section == 0 && indexPath.row == 2) {
         [self followScreenName:@"pushpin_app"];
     }
     else if (indexPath.section == 0 && indexPath.row == 3) {
