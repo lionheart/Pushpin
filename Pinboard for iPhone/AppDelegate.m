@@ -153,9 +153,11 @@
 }
 
 - (WCAlertView *)addBookmarkFromClipboardAlertView {
-    if (!_addBookmarkFromClipboardAlertView) {
+    static dispatch_once_t onceToken;
+    static WCAlertView *_addBookmarkFromClipboardAlertView;
+    dispatch_once(&onceToken, ^{
         _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
-    }
+    });
     return _addBookmarkFromClipboardAlertView;
 }
 
