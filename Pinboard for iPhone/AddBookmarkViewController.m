@@ -376,9 +376,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                     [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
                                 }
 
-                                skipPivot = i;
                                 tagFound = YES;
-                                skipPivot++;
+                                skipPivot = i+1;
                                 break;
                             }
                         }

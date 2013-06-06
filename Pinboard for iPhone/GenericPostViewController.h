@@ -40,6 +40,7 @@ typedef NSInteger PPPostAction;
 - (NSInteger)numberOfPosts;
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
+- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSArray *)actionsForPost:(NSDictionary *)post;

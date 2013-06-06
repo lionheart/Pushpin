@@ -415,7 +415,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
                             [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
                         }
                     }];
-                    
+
                     if (callback) {
                         callback();
                     }
@@ -428,13 +428,10 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 - (void)updateSearchResults {
     if (!self.searchLoading) {
         self.searchLoading = YES;
-        [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        [self.searchPostDataSource updatePostsFromDatabase:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.searchLoading = NO;
-                [self.searchDisplayController.searchResultsTableView beginUpdates];
-                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.searchDisplayController.searchResultsTableView endUpdates];
+                [self.searchDisplayController.searchResultsTableView reloadData];
                 self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
             });
         } failure:nil];
