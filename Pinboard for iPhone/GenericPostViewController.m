@@ -214,7 +214,13 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 
             if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                PPWebViewController *webViewController;
+                if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
+                    webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
+                }
+                else {
+                    webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                }
                 [self.navigationController pushViewController:webViewController animated:YES];
             }
             else {

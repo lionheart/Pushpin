@@ -34,10 +34,12 @@
 - (void)showAddViewController;
 - (void)popViewController;
 - (BOOL)isMobilized;
+- (BOOL)isURLStringMobilized:(NSString *)url;
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
 - (NSURL *)url;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
++ (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
 
 @end

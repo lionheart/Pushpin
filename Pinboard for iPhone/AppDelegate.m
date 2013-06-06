@@ -45,6 +45,7 @@
 @synthesize readByDefault = _readByDefault;
 @synthesize openLinksInApp = _openLinksInApp;
 @synthesize compressPosts = _compressPosts;
+@synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -378,7 +379,8 @@
         @"io.aurora.pinboard.ReadByDefault": @(NO),
         @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
         @"io.aurora.pinboard.CompressPosts": @(NO),
-        @"io.aurora.pinboard.DimReadPosts": @(YES)
+        @"io.aurora.pinboard.DimReadPosts": @(YES),
+        @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO)
      }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
@@ -706,6 +708,21 @@
     _compressPosts = compressPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)openLinksWithMobilizer {
+    if (!_openLinksWithMobilizer) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _openLinksWithMobilizer = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"] boolValue];
+    }
+    return _openLinksWithMobilizer;
+}
+
+- (void)setOpenLinksWithMobilizer:(BOOL)openLinksWithMobilizer {
+    _openLinksWithMobilizer = openLinksWithMobilizer;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(openLinksWithMobilizer) forKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"];
     [defaults synchronize];
 }
 
