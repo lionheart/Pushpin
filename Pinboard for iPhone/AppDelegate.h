@@ -78,7 +78,6 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) LoginViewController *loginViewController;
-@property (nonatomic, retain) WCAlertView *addBookmarkFromClipboardAlertView;
 @property (nonatomic) BOOL addBookmarkAlertViewIsVisible;
 
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
