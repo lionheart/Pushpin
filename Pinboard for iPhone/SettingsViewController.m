@@ -240,7 +240,7 @@
                     break;
 
                 case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Read by default", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     self.readByDefaultSwitch = [[PPSwitch alloc] init];
