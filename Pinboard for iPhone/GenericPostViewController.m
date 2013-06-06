@@ -428,10 +428,14 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 - (void)updateSearchResults {
     if (!self.searchLoading) {
         self.searchLoading = YES;
-        [self.searchPostDataSource updatePostsFromDatabase:^{
+        [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.searchLoading = NO;
-                [self.searchDisplayController.searchResultsTableView reloadData];
+                [self.searchDisplayController.searchResultsTableView beginUpdates];
+                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
+                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                [self.searchDisplayController.searchResultsTableView endUpdates];
                 self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
             });
         } failure:nil];
