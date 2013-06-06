@@ -7,6 +7,7 @@
 //
 
 #import <MessageUI/MessageUI.h>
+#import <Social/Social.h>
 
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
@@ -24,6 +25,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.numberOfRequestsInProgress = 0;
     
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
@@ -52,23 +55,29 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
     self.forwardBarButtonItem.enabled = NO;
     
-    UIButton *readerButton = [[UIButton alloc] init];
-    [readerButton setImage:[UIImage imageNamed:@"book-dash"] forState:UIControlStateNormal];
-    [readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-    readerButton.frame = CGRectMake(0, 0, 30, 30);
-    self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:readerButton];
-    
+    self.readerButton = [[UIButton alloc] init];
+    [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    self.readerButton.frame = CGRectMake(0, 0, 30, 30);
+    self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
+
     UIButton *actionButton = [[UIButton alloc] init];
     [actionButton setImage:[UIImage imageNamed:@"action-dash"] forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+
+    UIButton *socialButton = [[UIButton alloc] init];
+    [socialButton setImage:[UIImage imageNamed:@"share2-dash"] forState:UIControlStateNormal];
+    [socialButton addTarget:self action:@selector(socialActionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    socialButton.frame = CGRectMake(0, 0, 30, 30);
+    self.socialBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:socialButton];
     
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    toolbar.items = @[self.backBarButtonItem, fixedSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, fixedSpace, self.actionBarButtonItem];
+    toolbar.items = @[self.backBarButtonItem, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, self.actionBarButtonItem];
     toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
     toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:toolbar];
@@ -91,55 +100,87 @@ static NSInteger kToolbarHeight = 44;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)socialActionButtonTouchUp:(id)sender {
+    NSString *urlString = [self url].absoluteString;
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    actionSheet.delegate = self;
+
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Twitter", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Facebook", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Messages", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
+    [actionSheet showFrom:self.navigationController.view];
+}
+
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    self.numberOfRequestsInProgress--;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    self.backBarButtonItem.enabled = self.webView.canGoBack;
-    self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-    self.readerBarButtonItem.enabled = NO;
-    self.actionBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem = nil;
+    [self enableOrDisableButtons];
+    
+    if (self.numberOfRequestsInProgress == 0) {
+    }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.title = pageTitle;
-
-    self.backBarButtonItem.enabled = self.webView.canGoBack;
-    self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-    self.readerBarButtonItem.enabled = YES;
-    self.actionBarButtonItem.enabled = YES;
-
-    NSString *theURLString;
-    if ([self.webView canGoBack]) {
-        theURLString = self.url.absoluteString;
-    }
-    else {
-        theURLString = self.urlString;
-    }
-
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
-    [results next];
-    if ([results intForColumnIndex:0] > 0) {
-        UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
-        self.navigationItem.rightBarButtonItem = editBarButtonItem;
-    }
-    else {
-        UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
-        self.navigationItem.rightBarButtonItem = addBarButtonItem;
-    }
-    [db close];
+    self.numberOfRequestsInProgress--;
+    [self enableOrDisableButtons];
     
+    if (self.isMobilized) {
+        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+    }
+    else {
+        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+    }
+
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
+- (void)enableOrDisableButtons {
+    if (self.numberOfRequestsInProgress > 0) {
+        self.backBarButtonItem.enabled = NO;
+        self.forwardBarButtonItem.enabled = NO;
+        self.readerBarButtonItem.enabled = NO;
+        self.actionBarButtonItem.enabled = NO;
+        self.socialBarButtonItem.enabled = NO;
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    else {
+        self.backBarButtonItem.enabled = self.webView.canGoBack;
+        self.forwardBarButtonItem.enabled = self.webView.canGoForward;
+        self.readerBarButtonItem.enabled = YES;
+        self.actionBarButtonItem.enabled = YES;
+        self.socialBarButtonItem.enabled = YES;
+        
+        NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        self.title = pageTitle;
+        
+        NSString *theURLString;
+        if ([self.webView canGoBack]) {
+            theURLString = self.url.absoluteString;
+        }
+        else {
+            theURLString = self.urlString;
+        }
+
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+        [results next];
+        if ([results intForColumnIndex:0] > 0) {
+            UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
+            self.navigationItem.rightBarButtonItem = editBarButtonItem;
+        }
+        else {
+            UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
+            self.navigationItem.rightBarButtonItem = addBarButtonItem;
+        }
+        [db close];
+    }
+}
+
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    self.backBarButtonItem.enabled = NO;
-    self.forwardBarButtonItem.enabled = NO;
-    self.readerBarButtonItem.enabled = NO;
-    self.actionBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem = nil;
+    self.numberOfRequestsInProgress++;
+    [self enableOrDisableButtons];
     self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
 }
@@ -158,7 +199,6 @@ static NSInteger kToolbarHeight = 44;
     actionSheet.delegate = self;
 
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
         case BROWSER_SAFARI:
             [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
@@ -193,7 +233,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    NSURL *url = [self url];
+    NSURL *url = self.url;
     NSString *urlString = url.absoluteString;
     NSRange range = [urlString rangeOfString:url.scheme];
 
@@ -205,6 +245,24 @@ static NSInteger kToolbarHeight = 44;
     }
     else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
         return;
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
+        SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [socialComposeViewController setInitialText:self.title];
+        [socialComposeViewController addURL:url];
+        [self presentViewController:socialComposeViewController animated:YES completion:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
+        SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [socialComposeViewController setInitialText:self.title];
+        [socialComposeViewController addURL:url];
+        [self presentViewController:socialComposeViewController animated:YES completion:nil];
+    }
+    else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
+        MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
+        [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
+        composeViewController.messageComposeDelegate = self;
+        [self presentViewController:composeViewController animated:YES completion:nil];
     }
     else {
         if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
@@ -286,6 +344,10 @@ static NSInteger kToolbarHeight = 44;
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -336,9 +398,9 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (BOOL)isMobilized {
-    BOOL googleMobilized = [[self url].absoluteString hasPrefix:@"http://www.google.com/gwt/x"];
-    BOOL readabilityMobilized = [[self url].absoluteString hasPrefix:@"http://www.readability.com/m?url="];
-    BOOL instapaperMobilized = [[self url].absoluteString hasPrefix:@"http://www.instapaper.com/m?u="];
+    BOOL googleMobilized = [self.url.absoluteString hasPrefix:@"http://www.google.com/gwt/x"];
+    BOOL readabilityMobilized = [self.url.absoluteString hasPrefix:@"http://www.readability.com/m?url="];
+    BOOL instapaperMobilized = [self.url.absoluteString hasPrefix:@"http://www.instapaper.com/m?u="];
     return googleMobilized || readabilityMobilized || instapaperMobilized;
 }
 
