@@ -52,6 +52,7 @@
                 else {
                     self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height));
                 }
+
                 if ([description isEqualToString:@""]) {
                     self.heights[description] = @(0);
                 }
@@ -70,16 +71,6 @@
         self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     }
     return self;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
-        return YES;
-    }
-    if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"]) {
-        return YES;
-    }
-    return NO;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -145,7 +136,7 @@
     
     cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
 
-    if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
+    if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
         cell.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:12];
     }
     else {
@@ -190,7 +181,7 @@
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
         cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
-        if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
+        if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
             cell.detailTextLabel.text = @"Tap to view license.";
         }
         else {
@@ -350,9 +341,9 @@
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
         NSArray *info = self.data[indexPath.section][1][indexPath.row];
         
-        if (indexPath.section == [self.titles indexOfObject:@"Software"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
+        if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
             RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:info[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            if (indexPath.section == [self.titles indexOfObject:@"Software"]) {
+            if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
                 [sheet addButtonWithTitle:@"Copy Project URL"];
                 sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
                     if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
