@@ -37,6 +37,7 @@
 - (BOOL)isURLStringMobilized:(NSString *)url;
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
+- (void)sendToReadLater;
 - (NSURL *)url;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
