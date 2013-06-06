@@ -31,7 +31,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -42,9 +42,12 @@
             [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
         }
         [db close];
-        [self.tableView reloadData];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
     });
-
+    
     UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [addButton setImage:[UIImage imageNamed:@"AddNavigationDimmed"] forState:UIControlStateNormal];
     [addButton setImage:[UIImage imageNamed:@"AddNavigation"] forState:UIControlStateHighlighted];
