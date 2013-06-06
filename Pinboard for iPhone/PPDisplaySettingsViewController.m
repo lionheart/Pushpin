@@ -86,7 +86,7 @@
 
     switch (indexPath.row) {
         case 0:
-            cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
+            cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
             self.dimReadPostsSwitch = [[PPSwitch alloc] init];
@@ -98,7 +98,7 @@
             break;
 
         case 1:
-            cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions", nil);
+            cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
             self.compressPostsSwitch = [[PPSwitch alloc] init];
