@@ -15,11 +15,13 @@
 #import "WCAlertView.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
+#import "PocketAPI.h"
 
 @interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
+@property (nonatomic, strong) WCAlertView *pocketVerificationAlertView;
 @property (nonatomic, retain) PPLoadingView *loadingIndicator;
 @property (nonatomic, retain) WCAlertView *instapaperAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityAlertView;
@@ -38,5 +40,8 @@
 - (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
+
+- (void)pocketFinishedLogin;
+- (void)pocketStartedLogin;
 
 @end

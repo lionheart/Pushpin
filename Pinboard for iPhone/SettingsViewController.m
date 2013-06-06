@@ -15,7 +15,6 @@
 #import "UserVoice.h"
 #import "UVStyleSheet.h"
 #import "ASStyleSheet.h"
-#import "PocketAPI.h"
 #import "NSString+URLEncoding.h"
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
@@ -89,17 +88,24 @@
         [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
 
         self.instapaperVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
-                                                                          message:@"Logging into Instapaper"
+                                                                          message:@"Logging into Instapaper."
                                                                          delegate:nil
                                                                 cancelButtonTitle:nil
                                                                 otherButtonTitles:nil];
         self.readabilityVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
-                                                                           message:@"Logging into Readability"
+                                                                           message:@"Logging into Readability."
                                                                           delegate:nil
                                                                  cancelButtonTitle:nil
                                                                  otherButtonTitles:nil];
+        self.pocketVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
+                                                                      message:@"Logging into Pocket."
+                                                                     delegate:nil
+                                                            cancelButtonTitle:nil
+                                                            otherButtonTitles:nil];
         self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
 
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketStartedLogin) name:(NSString *)PocketAPILoginStartedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketFinishedLogin) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
     }
     return self;
 }
@@ -540,13 +546,7 @@
             [self.readabilityAlertView show];
         }
         else if ([buttonTitle isEqualToString:@"Pocket"]) {
-            [[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *API, NSError *error) {
-                if (!error && API.loggedIn) {
-                    [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
-                    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
-                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                }
-            }];
+            [[PocketAPI sharedAPI] loginWithDelegate:nil];;
         }
         else if ([buttonTitle isEqualToString:@"None"]) {
             [[AppDelegate sharedDelegate] setReadlater:nil];
@@ -555,6 +555,23 @@
         }
 
     }
+}
+
+- (void)pocketStartedLogin {
+    [self.pocketVerificationAlertView show];
+    
+    if (self.pocketVerificationAlertView != nil) {
+        self.loadingIndicator.center = CGPointMake(self.pocketVerificationAlertView.bounds.size.width/2, self.pocketVerificationAlertView.bounds.size.height-45);
+        [self.loadingIndicator startAnimating];
+        [self.pocketVerificationAlertView addSubview:self.loadingIndicator];
+    }
+}
+
+- (void)pocketFinishedLogin {
+    [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
+    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
