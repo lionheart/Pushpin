@@ -3,6 +3,67 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>2.0</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Give the user interface some pizzazz.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Pull-to-refresh. Need I say more?</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>You can now view links with Instapaper, Readability, and Google mobilizers. This makes reading webpages not specifically formatted for mobile viewing much easier on the eyes.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Hide bookmark descriptions and tags by pinching in on the view bookmark screen. Show them again by pinching out.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Filter by multiple tags. Just keep clicking on them.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add ability to edit multi-line descriptions when adding or editing a bookmark.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add custom feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to "Saved Feeds", or by clicking the "Add" button when browsing a feed through the popular and network sections.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Click "Edit" when viewing the bookmarks screen to delete multiple bookmarks at once.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add support for 1Password when first logging in.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+        <string>When displaying tag suggestions in the add / edit bookmark screen, show whether tag is popular or recommended.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+        <string>Order autocompleted tags by most frequently used, as opposed to alphabetically</string>
+			</array>
+			<array>
+				<string>NEW</string>
+        <string>Edit or add a bookmark when using the in-app browser.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+        <string>Make tappable tag area much larger.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+        <string>Hide tag sections that didn't have any tags associated with them.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>1.4.2</string>
 		<array>
 			<array>
