@@ -494,6 +494,7 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
+            searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
             CGRect bounds = [[UIScreen mainScreen] bounds];
             CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
