@@ -72,6 +72,10 @@ static BOOL kPPNotificationIsVisible = NO;
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, 320, kPPNotificationHeight)];
         _notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NotificationBackground"]];
 
+        UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        gestureRecognizer.numberOfTapsRequired = 1;
+        [_notificationView addGestureRecognizer:gestureRecognizer];
+
         UILabel *label = [[UILabel alloc] init];
         label.backgroundColor = [UIColor clearColor];
         label.font = [UIFont fontWithName:@"Avenir-Medium" size:15];
