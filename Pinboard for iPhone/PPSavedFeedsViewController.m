@@ -32,16 +32,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-    [self.feeds removeAllObjects];
-    while ([result next]) {
-        NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
-        [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
-    }
-    [db close];
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+        [self.feeds removeAllObjects];
+        while ([result next]) {
+            NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
+            [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+        }
+        [db close];
+        [self.tableView reloadData];
+    });
 
     UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [addButton setImage:[UIImage imageNamed:@"AddNavigationDimmed"] forState:UIControlStateNormal];

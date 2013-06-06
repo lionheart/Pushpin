@@ -151,7 +151,9 @@
         self.userTextField.enabled = NO;
         PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
         [dataSource addDataSource:^{
-            [self.modalDelegate closeModal:self];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.modalDelegate closeModal:self];
+            });
         }];
     }
 }
