@@ -1116,14 +1116,18 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
 - (void)removeBarButtonTouchUpside:(id)sender {
     __weak GenericPostViewController *vc = self;
     [self.postDataSource removeDataSource:^{
-        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:vc action:@selector(addBarButtonTouchUpside:)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:vc action:@selector(addBarButtonTouchUpside:)];
+        });
     }];
 }
 
 - (void)addBarButtonTouchUpside:(id)sender {
     __weak GenericPostViewController *vc = self;
     [self.postDataSource addDataSource:^{
-        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:vc action:@selector(removeBarButtonTouchUpside:)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:vc action:@selector(removeBarButtonTouchUpside:)];
+        });
     }];
 }
 
