@@ -1188,7 +1188,11 @@ static BOOL kPinboardSyncInProgress = NO;
         title = @"untitled";
     }
     
-    #warning XXX J.B. Bryant Crash
+    NSString *hash = [resultSet stringForColumn:@"hash"];
+    if (!hash) {
+        hash = @"";
+    }
+
     return @{
         @"title": title,
         @"description": [resultSet stringForColumn:@"description"],
@@ -1198,7 +1202,7 @@ static BOOL kPinboardSyncInProgress = NO;
         @"tags": [resultSet stringForColumn:@"tags"],
         @"created_at": [resultSet dateForColumn:@"created_at"],
         @"starred": @([resultSet boolForColumn:@"starred"]),
-        @"hash": [resultSet stringForColumn:@"hash"],
+        @"hash": hash,
         @"meta": [resultSet stringForColumn:@"meta"],
     };
 }
