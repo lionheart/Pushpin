@@ -117,7 +117,9 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
     if (self.compressPosts != oldCompressPosts) {
         if (!kGenericPostViewControllerResizingPosts) {
             kGenericPostViewControllerResizingPosts = YES;
+            NSArray *indexPathsToReload = [self.tableView indexPathsForVisibleRows];
             [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
             kGenericPostViewControllerResizingPosts = NO;
         }
