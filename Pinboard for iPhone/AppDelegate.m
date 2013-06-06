@@ -58,7 +58,7 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     [application cancelAllLocalNotifications];
-    if (application.applicationState == UIApplicationStateActive && !self.bookmarksUpdated.boolValue) {
+    if (application.applicationState == UIApplicationStateActive) {
         self.bookmarksUpdated = notification.userInfo[@"updated"];
 
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
