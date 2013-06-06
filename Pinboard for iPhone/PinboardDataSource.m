@@ -571,6 +571,104 @@ static BOOL kPinboardSyncInProgress = NO;
                            }];
 }
 
+- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
+        
+        NSArray *oldPosts = [self.posts copy];
+        NSMutableArray *newPosts = [NSMutableArray array];
+        
+        NSMutableArray *oldHashes = [NSMutableArray array];
+        NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
+        for (NSDictionary *post in self.posts) {
+            [oldHashes addObject:post[@"hash"]];
+            oldMetas[post[@"hash"]] = post[@"meta"];
+        }
+
+        NSInteger index = 0;
+        
+        // The index of the list that `index` corresponds to
+        NSInteger skipPivot = 0;
+        BOOL postFound = NO;
+        
+        while ([results next]) {
+            postFound = NO;
+            NSString *hash = [results stringForColumn:@"hash"];
+            NSString *meta = [results stringForColumn:@"meta"];
+            NSDictionary *post;
+            
+            // Go from the last found value to the end of the list.
+            // If you find something, break and set the pivot to the current skip index.
+            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                if ([oldHashes[i] isEqualToString:hash]) {
+                    post = oldPosts[i];
+                    
+                    // Reload the post if its meta value has changed.
+                    if (![meta isEqualToString:oldMetas[hash]]) {
+                        post = [PinboardDataSource postFromResultSet:results];
+                    }
+
+                    postFound = YES;
+                    skipPivot = i+1;
+                    break;
+                }
+            }
+            
+            // If the post wasn't found by looping through, it's a new one
+            if (!postFound) {
+                post = [PinboardDataSource postFromResultSet:results];
+            }
+            
+            [newPosts addObject:post];
+            index++;
+        }
+        [db close];
+        
+        NSMutableArray *newStrings = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newLinks = [NSMutableArray array];
+
+        NSMutableArray *newCompressedStrings = [NSMutableArray array];
+        NSMutableArray *newCompressedHeights = [NSMutableArray array];
+        NSMutableArray *newCompressedLinks = [NSMutableArray array];
+        dispatch_group_t group = dispatch_group_create();
+        for (NSDictionary *post in newPosts) {
+            dispatch_group_enter(group);
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newHeights addObject:height];
+                [newStrings addObject:string];
+                [newLinks addObject:links];
+                dispatch_group_leave(group);
+            }];
+
+            dispatch_group_enter(group);
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newCompressedHeights addObject:height];
+                [newCompressedStrings addObject:string];
+                [newCompressedLinks addObject:links];
+                dispatch_group_leave(group);
+            }];
+        }
+        
+        self.posts = newPosts;
+        self.strings = newStrings;
+        self.heights = newHeights;
+        self.links = newLinks;
+        
+        self.compressedStrings = newCompressedStrings;
+        self.compressedHeights = newCompressedHeights;
+        self.compressedLinks = newCompressedLinks;
+        
+        if (success) {
+            dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                success();
+            });
+        }
+    });
+}
+
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -612,7 +710,6 @@ static BOOL kPinboardSyncInProgress = NO;
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
                     }
 
-                    skipPivot = i;
                     post = oldPosts[i];
 
                     // Reload the post if its meta value has changed.
@@ -624,7 +721,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     }
 
                     postFound = YES;
-                    skipPivot++;
+                    skipPivot = i+1;
                     break;
                 }
             }
