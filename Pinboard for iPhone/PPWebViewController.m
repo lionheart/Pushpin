@@ -39,27 +39,27 @@ static NSInteger kToolbarHeight = 44;
     
     PPToolbar *toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [[UIButton alloc] init];
-    [backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
+    [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     backButton.frame = CGRectMake(0, 0, 30, 30);
     self.backBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.backBarButtonItem.enabled = NO;
 
     UIButton *forwardButton = [[UIButton alloc] init];
-    [forwardButton setImage:[UIImage imageNamed:@"forward_icon"] forState:UIControlStateNormal];
+    [forwardButton setImage:[UIImage imageNamed:@"forward-dash"] forState:UIControlStateNormal];
     [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     forwardButton.frame = CGRectMake(0, 0, 30, 30);
     self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
     self.forwardBarButtonItem.enabled = NO;
     
     UIButton *readerButton = [[UIButton alloc] init];
-    [readerButton setImage:[UIImage imageNamed:@"glyphicons_110_align_left"] forState:UIControlStateNormal];
+    [readerButton setImage:[UIImage imageNamed:@"book-dash"] forState:UIControlStateNormal];
     [readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
     readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:readerButton];
     
     UIButton *actionButton = [[UIButton alloc] init];
-    [actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
+    [actionButton setImage:[UIImage imageNamed:@"action-dash"] forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
