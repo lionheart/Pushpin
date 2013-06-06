@@ -9,6 +9,7 @@
 #import "PPNotification.h"
 
 static NSInteger kPPNotificationHeight = 56;
+static BOOL kPPNotificationIsVisible = NO;
 
 @implementation PPNotification
 
@@ -29,6 +30,7 @@ static NSInteger kPPNotificationHeight = 56;
                                  if (finished) {
                                      self.notificationView = nil;
                                      self.hiding = NO;
+                                     kPPNotificationIsVisible = NO;
                                  }
                              }];
         }
@@ -36,16 +38,17 @@ static NSInteger kPPNotificationHeight = 56;
             self.notificationView.frame = hiddenFrame;
             self.notificationView = nil;
             self.hiding = NO;
+            kPPNotificationIsVisible = NO;
         }
     }
 }
 
 - (void)showInView:(UIView *)view withMessage:(NSString *)message {
-    self.notificationView = [self notificationViewWithMessage:message];
-    
-    if (![self.notificationView isDescendantOfView:view]) {
+    if (!kPPNotificationIsVisible) {
+        kPPNotificationIsVisible = YES;
+
+        self.notificationView = [self notificationViewWithMessage:message];
         [view addSubview:self.notificationView];
-        
         [UIView animateWithDuration:0.2
                               delay:0
                             options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
@@ -60,7 +63,7 @@ static NSInteger kPPNotificationHeight = 56;
                                      [self hide:YES];
                                  });
                              }
-                         }];
+                             }];
     }
 }
 
