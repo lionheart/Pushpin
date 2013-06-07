@@ -1,6 +1,6 @@
-Pushpin is a beautiful, blazing-fast, feature-packed Pinboard client for your iPhone and iPod Touch.
+Pushpin is a beautiful, blazing-fast, and feature-packed Pinboard client for your iPhone and iPod Touch.
 
-Testimonials:
+Testimonials
 
 "I wished hard enough and it came true: the clean, clear, and stable Pinboard iOS app of my dreams was written and released by someone much smarter than me and you should give them your money" - Jim Jazwiecki (@jimbecile)
 
@@ -10,14 +10,14 @@ Testimonials:
 
 Features
 
-* Search bookmarks blazingly fast, across titles, descriptions, URLs, or tags.
-* Filter your own bookmarks by unread, starred, private, untagged, public. You can even filter with multiple tags!
-* Share links with friends over Twitter, Facebook, or Messages.
+* Search bookmarks at ridiculous speeds across titles, descriptions, URLs, and tags.
+* View bookmarks by unread, starred, private, untagged, public, or any tag. You can even filter by multiple tags!
+* Share links on Twitter, Facebook, or Messages.
 * Send your links to Pocket, Instapaper, or Readability.
 * View tag suggestions and autocompletions when adding or updating bookmarks.
 * Browse Network, Popular, Wikipedia, Fandom, and Japanese feeds.
-* View feeds for specific users, tags, or a combination of the two.
+* View and save feeds for specific users, tags, or a combination of the two.
 * Browse tags and view the number of times they've each been used.
 * Add bookmarks by switching to Pushpin with a URL on your clipboard.
-* In-app browser with support for Google, Readability, and Instapaper mobilizers.
+* A full-featured in-app browser with support for Google, Readability, and Instapaper mobilizers.
 
