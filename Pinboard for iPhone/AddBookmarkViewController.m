@@ -357,7 +357,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                 [db open];
-                FMResultSet *result = [db executeQuery:@"SELECT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
+                
+                #warning XXX For some reason, getting double results here sometimes. Search duplication?
+                FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
 
                 NSString *tag;
                 NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;

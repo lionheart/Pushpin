@@ -39,6 +39,7 @@
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
 - (NSURL *)url;
+- (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;

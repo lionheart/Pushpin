@@ -167,7 +167,7 @@ static NSInteger kToolbarHeight = 44;
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:theURLString]]]];
         [results next];
         if ([results intForColumnIndex:0] > 0) {
             UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
@@ -410,23 +410,30 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (NSString *)urlStringForDemobilizedURL:(NSURL *)url {
+    if ([self isURLStringMobilized:url.absoluteString]) {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                return [url.absoluteString substringFromIndex:57];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                return [url.absoluteString substringFromIndex:30];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                return [url.absoluteString substringFromIndex:33];
+                break;
+        }
+    }
+    return url.absoluteString;
+}
+
 - (void)toggleMobilizer {
     NSURL *url;
     if (self.isMobilized) {
         [AppDelegate sharedDelegate].openLinksWithMobilizer = NO;
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:57]];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:30]];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                url = [NSURL URLWithString:[self.url.absoluteString substringFromIndex:33]];
-                break;
-        }
+        url = [NSURL URLWithString:[self urlStringForDemobilizedURL:self.url]];
     }
     else {
         [AppDelegate sharedDelegate].openLinksWithMobilizer = YES;
@@ -493,7 +500,7 @@ static NSInteger kToolbarHeight = 44;
         #warning XXX - make generic
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlString]];
+        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:self.urlString]]]];
         [results next];
         NSDictionary *post = @{
             @"title": [results stringForColumn:@"title"],
@@ -501,12 +508,12 @@ static NSInteger kToolbarHeight = 44;
             @"unread": @([results boolForColumn:@"unread"]),
             @"url": [results stringForColumn:@"url"],
             @"private": @([results boolForColumn:@"private"]),
-            @"tags": [[results stringForColumn:@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+            @"tags": [results stringForColumn:@"tags"],
             @"created_at": [results dateForColumn:@"created_at"],
             @"starred": @([results boolForColumn:@"starred"])
         };
         [db close];
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
             UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
             [self presentViewController:vc animated:YES completion:nil];
