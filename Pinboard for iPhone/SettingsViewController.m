@@ -513,7 +513,7 @@
             return;
         }
         else if (buttonIndex == 0) {
-            UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
+            UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                  andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                               andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
             
@@ -596,7 +596,7 @@
         case 1: {
             switch (indexPath.row) {
                 case 0: {
-                    UVConfig *config = [UVConfig configWithSite:@"aurorasoftware.uservoice.com"
+                    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
                     [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
