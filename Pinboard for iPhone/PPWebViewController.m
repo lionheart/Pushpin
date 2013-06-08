@@ -28,8 +28,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.numberOfRequestsInProgress = 0;
+    self.alreadyLoaded = NO;
     
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
@@ -58,9 +59,9 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
     self.forwardBarButtonItem.enabled = NO;
     
-    self.readerButton = [[UIButton alloc] init];
-    [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    self.readerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.readerButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
     self.readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
 
@@ -94,8 +95,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    if (!self.url) {
-        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
+    if (!self.alreadyLoaded) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
     }
 }
 
@@ -104,7 +105,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)socialActionButtonTouchUp:(id)sender {
-    NSString *urlString = [self url].absoluteString;
+    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     actionSheet.delegate = self;
 
@@ -127,14 +128,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsInProgress--;
     [self enableOrDisableButtons];
-    
-    if (self.isMobilized) {
-        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
-    }
-    else {
-        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-    }
-
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 }
 
@@ -142,17 +135,14 @@ static NSInteger kToolbarHeight = 44;
     if (self.numberOfRequestsInProgress > 0) {
         self.backBarButtonItem.enabled = NO;
         self.forwardBarButtonItem.enabled = NO;
-        self.readerBarButtonItem.enabled = NO;
-        self.actionBarButtonItem.enabled = NO;
-        self.socialBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem = nil;
+        [self.readerButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+        [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
     }
     else {
         self.backBarButtonItem.enabled = self.webView.canGoBack;
         self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-        self.readerBarButtonItem.enabled = YES;
-        self.actionBarButtonItem.enabled = YES;
-        self.socialBarButtonItem.enabled = YES;
+        self.alreadyLoaded = YES;
         
         NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         self.title = pageTitle;
@@ -178,6 +168,15 @@ static NSInteger kToolbarHeight = 44;
             self.navigationItem.rightBarButtonItem = addBarButtonItem;
         }
         [db close];
+
+        if (self.isMobilized) {
+            [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+        }
+        else {
+            [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+        }
+
+        [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
     }
 }
 
@@ -197,7 +196,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
-    NSString *urlString = [self url].absoluteString;
+    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     actionSheet.delegate = self;
 
@@ -247,8 +246,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    NSURL *url = self.url;
-    NSString *urlString = url.absoluteString;
+    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSRange range = [urlString rangeOfString:url.scheme];
 
     if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
@@ -274,8 +273,8 @@ static NSInteger kToolbarHeight = 44;
     }
     else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
         MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
-        [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
         composeViewController.messageComposeDelegate = self;
+        [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
         [self presentViewController:composeViewController animated:YES completion:nil];
     }
     else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
@@ -316,7 +315,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)sendToReadLater {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
-    NSString *urlString = self.url.absoluteString;
+    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
     if (readLater.integerValue == READLATER_INSTAPAPER) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
@@ -458,7 +457,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)emailURL {
     MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
     mailComposeViewController.mailComposeDelegate = self;
-    [mailComposeViewController setMessageBody:[self urlString] isHTML:NO];
+    [mailComposeViewController setMessageBody:[self urlStringForDemobilizedURL:self.url] isHTML:NO];
     [self presentViewController:mailComposeViewController animated:YES completion:nil];
 }
 
@@ -468,7 +467,7 @@ static NSInteger kToolbarHeight = 44;
     notification.userInfo = @{@"success": @YES, @"updated": @NO};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
-    [[UIPasteboard generalPasteboard] setString:[self url].absoluteString];
+    [[UIPasteboard generalPasteboard] setString:[self urlStringForDemobilizedURL:self.url]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
@@ -481,14 +480,18 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSURL *)url {
-    return [self.webView.request URL];
+    NSURL *url = [self.webView.request URL];
+    if (!url) {
+        return [NSURL URLWithString:self.urlString];
+    }
+    return url;
 }
 
 - (void)showAddViewController {
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSDictionary *post = @{
         @"title": pageTitle,
-        @"url": self.url.absoluteString
+        @"url": [self urlStringForDemobilizedURL:self.url]
     };
 
     UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(NO) delegate:self callback:nil];
@@ -500,7 +503,7 @@ static NSInteger kToolbarHeight = 44;
         #warning XXX - make generic
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:self.urlString]]]];
+        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:self.url]]];
         [results next];
         NSDictionary *post = @{
             @"title": [results stringForColumn:@"title"],

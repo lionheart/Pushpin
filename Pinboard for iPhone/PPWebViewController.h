@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIButton *readerButton;
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
+@property (nonatomic) BOOL alreadyLoaded;
 
 - (void)socialActionButtonTouchUp:(id)sender;
 - (void)actionButtonTouchUp:(id)sender;
