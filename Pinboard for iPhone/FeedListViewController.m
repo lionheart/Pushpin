@@ -89,7 +89,7 @@
         [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
         [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
         [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-        settingsButton.frame = CGRectMake(0, 0, 45, 24);
+        settingsButton.frame = CGRectMake(0, 0, 30, 24);
         UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
         
         UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
