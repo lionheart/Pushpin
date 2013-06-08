@@ -298,7 +298,7 @@ static BOOL kPinboardSyncInProgress = NO;
         if (!success) {
             success = ^{};
         }
-        
+
         void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
