@@ -60,8 +60,14 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem.enabled = NO;
     
     self.readerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.readerButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-    [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
+    if (self.isMobilized) {
+        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+    }
+    else {
+        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+    }
+    
+    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
     self.readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
 
@@ -120,9 +126,6 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress--;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
-    
-    if (self.numberOfRequestsInProgress == 0) {
-    }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
