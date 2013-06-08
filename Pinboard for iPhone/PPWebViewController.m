@@ -87,7 +87,7 @@ static NSInteger kToolbarHeight = 44;
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    toolbar.items = @[self.backBarButtonItem, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, self.actionBarButtonItem];
+    toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
     toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
     toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:toolbar];
