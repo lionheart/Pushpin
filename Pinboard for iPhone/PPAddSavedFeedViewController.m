@@ -40,6 +40,7 @@
         self.tagsTextField.delegate = self;
         self.tagsTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.tagsTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagsTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
         self.tagsTextField.returnKeyType = UIReturnKeyDone;
         self.tagsTextField.text = @"";
@@ -113,10 +114,18 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.tagsTextField) {
         if ([string isEqualToString:@" "]) {
-            NSMutableString *mutableTags = [NSMutableString stringWithString:textField.text];
-            NSInteger numberOfSpaces = [mutableTags replaceOccurrencesOfString:@" " withString:@"." options:NSLiteralSearch range:NSMakeRange(0, mutableTags.length)];
-            if (numberOfSpaces > 2) {
+            if ([textField.text length] == 0) {
                 return NO;
+            }
+            else if ([textField.text hasSuffix:@" "]) {
+                return NO;
+            }
+            else {
+                NSMutableString *mutableTags = [NSMutableString stringWithString:textField.text];
+                NSInteger numberOfSpaces = [mutableTags replaceOccurrencesOfString:@" " withString:@"." options:NSLiteralSearch range:NSMakeRange(0, mutableTags.length)];
+                if (numberOfSpaces > 2) {
+                    return NO;
+                }
             }
         }
     }
