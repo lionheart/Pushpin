@@ -894,6 +894,9 @@ static BOOL kPinboardSyncInProgress = NO;
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
+        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+        [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+
         FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
 
         NSMutableArray *newPosts = [NSMutableArray array];
