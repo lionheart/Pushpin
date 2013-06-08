@@ -45,14 +45,14 @@ static NSInteger kToolbarHeight = 44;
     [self.webView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
     PPToolbar *toolbar = [[PPToolbar alloc] init];
-    UIButton *backButton = [[UIButton alloc] init];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     backButton.frame = CGRectMake(0, 0, 30, 30);
     self.backBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.backBarButtonItem.enabled = NO;
 
-    UIButton *forwardButton = [[UIButton alloc] init];
+    UIButton *forwardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [forwardButton setImage:[UIImage imageNamed:@"forward-dash"] forState:UIControlStateNormal];
     [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     forwardButton.frame = CGRectMake(0, 0, 30, 30);
@@ -71,13 +71,13 @@ static NSInteger kToolbarHeight = 44;
     self.readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
 
-    UIButton *actionButton = [[UIButton alloc] init];
+    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [actionButton setImage:[UIImage imageNamed:@"action-dash"] forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
 
-    UIButton *socialButton = [[UIButton alloc] init];
+    UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [socialButton setImage:[UIImage imageNamed:@"share2-dash"] forState:UIControlStateNormal];
     [socialButton addTarget:self action:@selector(socialActionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     socialButton.frame = CGRectMake(0, 0, 30, 30);
