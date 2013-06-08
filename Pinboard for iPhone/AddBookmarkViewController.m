@@ -806,8 +806,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                          [db open];
                                          [db beginTransaction];
                                          
-                                         FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlTextField.text]];
+                                         FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlTextField.text]];
                                          [results next];
+                                         
+                                         NSString *hash = [results stringForColumnIndex:0];
+                                         NSInteger count = [results intForColumnIndex:1];
                                          
                                          NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
                                                 @"url": url,
@@ -818,16 +821,23 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                                 @"private": @(private),
                                                 @"starred": @(NO)
                                             }];
-                                         
-                                         if ([results intForColumnIndex:0] > 0) {
+
+                                         if (count > 0) {
+                                             params[@"hash"] = hash;
                                              [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
-                                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
+                                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+                                             [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                                             for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
+                                                 [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                                 [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                                             }
                                              bookmarkAdded = NO;
                                          }
                                          else {
                                              params[@"created_at"] = [NSDate date];
                                              [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                                              [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
+
                                              bookmarkAdded = YES;
                                          }
                                          
