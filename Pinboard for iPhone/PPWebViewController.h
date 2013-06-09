@@ -10,8 +10,9 @@
 #import <MessageUI/MessageUI.h>
 #import "RDActionSheet.h"
 #import "AppDelegate.h"
+#import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate>
+@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
@@ -21,11 +22,16 @@
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *socialBarButtonItem;
 @property (nonatomic, strong) UIButton *readerButton;
+@property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
+@property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL stopped;
+@property (nonatomic) CGFloat lastContentOffset;
 
+- (void)singleTapInWebview;
 - (void)socialActionButtonTouchUp:(id)sender;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
@@ -42,8 +48,10 @@
 - (void)sendToReadLater;
 - (void)loadURL;
 - (void)stopLoading;
+- (BOOL)isWebViewExpanded;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
+- (void)expandWebViewToFullScreen;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
