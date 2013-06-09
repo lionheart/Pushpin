@@ -22,6 +22,7 @@
 #import "FMDatabase.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
+static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 @interface GenericPostViewController ()
 
@@ -128,12 +129,11 @@ static BOOL kGenericPostViewControllerResizingPosts = NO;
     BOOL oldDimReadPosts = self.dimReadPosts;
     self.dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
     if (oldDimReadPosts != self.dimReadPosts) {
-        #warning XXX Use another static var here
-        if (!kGenericPostViewControllerResizingPosts) {
-            kGenericPostViewControllerResizingPosts = YES;
+        if (!kGenericPostViewControllerDimmingReadPosts) {
+            kGenericPostViewControllerDimmingReadPosts = YES;
             [self.tableView beginUpdates];
             [self.tableView endUpdates];
-            kGenericPostViewControllerResizingPosts = NO;
+            kGenericPostViewControllerDimmingReadPosts = NO;
         }
     }
 

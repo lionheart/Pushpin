@@ -29,9 +29,7 @@
         for (NSArray *list in self.data) {
             [self.titles addObject:list[0]];
             for (NSArray *pair in list[1]) {
-                NSString *type = pair[0];
                 NSString *description = pair[1];
-                NSString *fullLine = [NSString stringWithFormat:@"[%@] %@", type, description];
 
                 if ([description isEqualToString:@""]) {
                     self.heights[description] = @(0);
@@ -89,9 +87,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *info = self.data[indexPath.section][1];
-    NSString *type = info[indexPath.row][0];
     NSString *description = info[indexPath.row][1];
-    NSString *fullLine = [NSString stringWithFormat:@"[%@] %@", type, description];
 
     CGFloat topHeight = [self.heights[description] floatValue];
     return topHeight + 20;
@@ -124,7 +120,6 @@
     }
     
     NSString *description = info[indexPath.row][1];
-    NSString *fullLine = [NSString stringWithFormat:@"[%@] %@", type, description];
     cell.textLabel.text = description;
     return cell;
 }
