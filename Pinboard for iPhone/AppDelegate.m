@@ -25,6 +25,7 @@
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
 #import "PPCoreGraphics.h"
+#import "PinboardFeedDataSource.h"
 
 @implementation AppDelegate
 
@@ -77,7 +78,14 @@
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
     UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate delegate:delegate callback:callback];
-    [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
+    if (self.navigationController.presentedViewController) {
+        [self.navigationController dismissViewControllerAnimated:NO completion:^{
+            [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
+        }];
+    }
+    else {
+        [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
@@ -89,7 +97,32 @@
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@NO delegate:self callback:nil];
     }
     else if ([url.host isEqualToString:@"feed"]) {
-        #warning XXX Open up this feed?
+        NSDictionary *data = [self parseQueryParameters:url.query];
+        NSMutableArray *components = [NSMutableArray array];
+        if (data[@"user"]) {
+            [components addObject:[NSString stringWithFormat:@"u:%@", data[@"user"]]];
+        }
+        
+        if (data[@"tags"]) {
+            for (NSString *tag in [data[@"tags"] componentsSeparatedByString:@","]) {
+                if (![tag isEqualToString:@""]) {
+                    [components addObject:[NSString stringWithFormat:@"t:%@", tag]];
+                }
+            }
+        }
+
+        GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:postViewController];
+
+        if (self.navigationController.presentedViewController) {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                [self.navigationController presentViewController:navController animated:NO completion:nil];
+            }];
+        }
+        else {
+            [self.navigationController presentViewController:navController animated:NO completion:nil];
+        }
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
@@ -129,34 +162,39 @@
 }
 
 - (void)promptUserToAddBookmark {
-    self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
-    if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
-        return;
-    }
-
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-    [results next];
-    BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
-    results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-    [results next];
-    BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
-    if (!alreadyExistsInBookmarks && !alreadyRejected) {
-        NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
-        if (candidateURL && candidateURL.scheme && candidateURL.host) {
-            [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
-                                                   callback:^(NSString *title, NSString *description) {
-                                                       self.clipboardBookmarkTitle = title;
-                                                       [self.addBookmarkFromClipboardAlertView show];
-                                                       self.addBookmarkAlertViewIsVisible = YES;
-                                                       [mixpanel track:@"Prompted to add bookmark from clipboard"];
-                                                   }];
-            
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
+        if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
+            return;
         }
-    }
-    [db close];
+        
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+        [results next];
+        BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
+        results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+        [results next];
+        BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
+        if (!alreadyExistsInBookmarks && !alreadyRejected) {
+            NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
+            if (candidateURL && candidateURL.scheme && candidateURL.host) {
+                [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
+                                                       callback:^(NSString *title, NSString *description) {
+                                                           self.clipboardBookmarkTitle = title;
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               [self.addBookmarkFromClipboardAlertView show];
+                                                           });
+
+                                                           self.addBookmarkAlertViewIsVisible = YES;
+                                                           [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                                       }];
+                
+            }
+        }
+        [db close];
+    });
 }
 
 - (WCAlertView *)addBookmarkFromClipboardAlertView {
@@ -179,7 +217,7 @@
             NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
             [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
             NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
-            [strValue setString:[[[arrKeyValue objectAtIndex:1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            [strValue setString:[[[arrKeyValue objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
             if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
         }
     }

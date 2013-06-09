@@ -103,7 +103,7 @@
         [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
         [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
         [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-        notesButton.frame = CGRectMake(0, 0, 30, 24);
+        notesButton.frame = CGRectMake(0, 0, 20, 24);
         self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
         self.notesBarButtonItem.enabled = self.connectionAvailable;
 
