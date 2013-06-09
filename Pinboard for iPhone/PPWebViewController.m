@@ -107,7 +107,9 @@ static NSInteger kToolbarHeight = 44;
         self.webView.frame = CGRectMake(0, 0, size.width, size.height);
         self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
         [self.navigationController setNavigationBarHidden:YES animated:YES];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
         [self.stoppedScrollingTimer invalidate];
+        self.stoppedScrollingTimer = nil;
     }];
 }
 
@@ -118,6 +120,10 @@ static NSInteger kToolbarHeight = 44;
     self.stoppedScrollingTimer = nil;
     if (self.navigationController.navigationBarHidden) {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
+    
+    if ([UIApplication sharedApplication].statusBarHidden) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     }
 }
 
@@ -134,6 +140,7 @@ static NSInteger kToolbarHeight = 44;
         [self.stoppedScrollingTimer invalidate];
         self.stoppedScrollingTimer = nil;
         [UIView animateWithDuration:0.25 animations:^{
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
             [self.navigationController setNavigationBarHidden:NO animated:YES];
             CGSize size = self.view.frame.size;
             self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
