@@ -187,7 +187,7 @@
         if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
             return;
         }
-        
+
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];

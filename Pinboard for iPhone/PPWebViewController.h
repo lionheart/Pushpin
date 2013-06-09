@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
+@property (nonatomic) BOOL stopped;
 
 - (void)socialActionButtonTouchUp:(id)sender;
 - (void)actionButtonTouchUp:(id)sender;
@@ -39,6 +40,8 @@
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
+- (void)loadURL;
+- (void)stopLoading;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 

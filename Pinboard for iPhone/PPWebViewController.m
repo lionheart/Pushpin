@@ -31,6 +31,7 @@ static NSInteger kToolbarHeight = 44;
 
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
+    self.stopped = NO;
     
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
@@ -60,14 +61,8 @@ static NSInteger kToolbarHeight = 44;
     self.forwardBarButtonItem.enabled = NO;
     
     self.readerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    if (self.isMobilized) {
-        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
-    }
-    else {
-        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-    }
-    
-    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
     self.readerButton.frame = CGRectMake(0, 0, 30, 30);
     self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
 
@@ -98,12 +93,22 @@ static NSInteger kToolbarHeight = 44;
     [self.webView stopLoading];
 }
 
+- (void)stopLoading {
+    self.stopped = YES;
+    [self.webView stopLoading];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
     if (!self.alreadyLoaded) {
-        [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+        [self loadURL];
     }
+}
+
+- (void)loadURL {
+    self.stopped = NO;
+    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
 - (void)popViewController {
@@ -130,8 +135,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsInProgress--;
-    [self enableOrDisableButtons];
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [self enableOrDisableButtons];
 }
 
 - (void)enableOrDisableButtons {
@@ -139,7 +144,7 @@ static NSInteger kToolbarHeight = 44;
         self.backBarButtonItem.enabled = NO;
         self.forwardBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem = nil;
-        [self.readerButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+        [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
         [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
     }
     else {
@@ -150,44 +155,49 @@ static NSInteger kToolbarHeight = 44;
         NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         self.title = pageTitle;
 
-        NSString *theURLString;
-        if ([self.webView canGoBack]) {
-            theURLString = self.url.absoluteString;
-        }
-        else {
-            theURLString = self.urlString;
-        }
+        NSString *theURLString = self.url.absoluteString;
 
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:theURLString]]]];
-        [results next];
-        if ([results intForColumnIndex:0] > 0) {
-            UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
-            self.navigationItem.rightBarButtonItem = editBarButtonItem;
-        }
-        else {
-            UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
-            self.navigationItem.rightBarButtonItem = addBarButtonItem;
-        }
-        [db close];
-
-        if (self.isMobilized) {
-            [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
-        }
-        else {
-            [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-        }
-
-        [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:theURLString]]]];
+            [results next];
+            BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
+            [db close];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (bookmarkExists) {
+                    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
+                    self.navigationItem.rightBarButtonItem = editBarButtonItem;
+                }
+                else {
+                    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
+                    self.navigationItem.rightBarButtonItem = addBarButtonItem;
+                }
+                
+                if (self.stopped) {
+                    [self.readerButton addTarget:self action:@selector(loadURL) forControlEvents:UIControlEventTouchUpInside];
+                    [self.readerButton setImage:[UIImage imageNamed:@"reload-dash"] forState:UIControlStateNormal];
+                }
+                else {
+                    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+                    if (self.isMobilized) {
+                        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+                    }
+                    else {
+                        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+                    }
+                }
+            });
+        });
     }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     self.numberOfRequestsInProgress++;
-    [self enableOrDisableButtons];
     self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    [self enableOrDisableButtons];
 }
 
 - (void)backButtonTouchUp:(id)sender {
@@ -453,6 +463,7 @@ static NSInteger kToolbarHeight = 44;
                 break;
         }
     }
+    self.stopped = NO;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
 }
@@ -484,7 +495,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSURL *)url {
     NSURL *url = [self.webView.request URL];
-    if (!url) {
+    if (!url || [url class] != [NSURL class] || [url.absoluteString isEqualToString:@""]) {
         return [NSURL URLWithString:self.urlString];
     }
     return url;
@@ -532,10 +543,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (BOOL)isMobilized {
-    BOOL googleMobilized = [self.url.absoluteString hasPrefix:@"http://www.google.com/gwt/x"];
-    BOOL readabilityMobilized = [self.url.absoluteString hasPrefix:@"http://www.readability.com/m?url="];
-    BOOL instapaperMobilized = [self.url.absoluteString hasPrefix:@"http://www.instapaper.com/m?u="];
-    return googleMobilized || readabilityMobilized || instapaperMobilized;
+    return [self isURLStringMobilized:self.url.absoluteString];
 }
 
 - (BOOL)isURLStringMobilized:(NSString *)url {
