@@ -147,7 +147,27 @@
         }
     }
     else {
-        #warning XXX Open the built in browser?
+        NSRange range = [url.absoluteString rangeOfString:@"pushpin"];
+        NSString *urlString = [url.absoluteString stringByReplacingCharactersInRange:range withString:@"http"];
+        PPWebViewController *webViewController;
+        if (self.openLinksWithMobilizer) {
+            webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
+        }
+        else {
+            webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+        }
+
+        webViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+        
+        if (self.navigationController.presentedViewController) {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                [self.navigationController presentViewController:navController animated:NO completion:nil];
+            }];
+        }
+        else {
+            [self.navigationController presentViewController:navController animated:NO completion:nil];
+        }
     }
     return YES;
 }
