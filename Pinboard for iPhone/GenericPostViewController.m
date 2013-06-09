@@ -746,7 +746,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             [self.postDataSource handleTapOnLinkWithURL:url
                                                callback:^(UIViewController *controller) {
                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                       [[AppDelegate sharedDelegate].navigationController pushViewController:controller animated:YES];
+                                                       [self.navigationController pushViewController:controller animated:YES];
                                                    });
                         }];
         }
