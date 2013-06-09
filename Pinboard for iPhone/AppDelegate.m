@@ -88,6 +88,9 @@
         didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@NO delegate:self callback:nil];
     }
+    else if ([url.host isEqualToString:@"feed"]) {
+        #warning XXX Open up this feed?
+    }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
@@ -109,6 +112,9 @@
                 }
             }];
         }
+    }
+    else {
+        #warning XXX Open the built in browser?
     }
     return YES;
 }
