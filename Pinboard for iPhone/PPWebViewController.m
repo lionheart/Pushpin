@@ -12,7 +12,6 @@
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
-#import "PPToolbar.h"
 #import "NSString+URLEncoding2.h"
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
@@ -32,11 +31,13 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
-    
+
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
+    self.webView.scrollView.delegate = self;
+    self.webView.scrollView.bounces = NO;
     [self.view addSubview:self.webView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
@@ -45,7 +46,7 @@ static NSInteger kToolbarHeight = 44;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.webView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
-    PPToolbar *toolbar = [[PPToolbar alloc] init];
+    self.toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -82,15 +83,42 @@ static NSInteger kToolbarHeight = 44;
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
-    toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
-    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:toolbar];
+    self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
+    self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:self.toolbar];
+}
+
+- (BOOL)isWebViewExpanded {
+    return self.navigationController.navigationBarHidden;
+}
+
+- (void)singleTapInWebview {
+    if (self.isWebViewExpanded) {
+    }
+    else {
+        [self expandWebViewToFullScreen];
+    }
+}
+
+- (void)expandWebViewToFullScreen {
+    [UIView animateWithDuration:0.25 animations:^{
+        CGSize size = SCREEN.bounds.size;
+        self.webView.frame = CGRectMake(0, 0, size.width, size.height);
+        self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        [self.stoppedScrollingTimer invalidate];
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.webView stopLoading];
+    [self.stoppedScrollingTimer invalidate];
+    self.stoppedScrollingTimer = nil;
+    if (self.navigationController.navigationBarHidden) {
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
 }
 
 - (void)stopLoading {
@@ -98,9 +126,31 @@ static NSInteger kToolbarHeight = 44;
     [self.webView stopLoading];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    BOOL scrolledUp = self.lastContentOffset > scrollView.contentOffset.y;
+    self.lastContentOffset = scrollView.contentOffset.y;
+
+    if (scrolledUp) {
+        [self.stoppedScrollingTimer invalidate];
+        self.stoppedScrollingTimer = nil;
+        [UIView animateWithDuration:0.25 animations:^{
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+            CGSize size = self.view.frame.size;
+            self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+            self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight , size.width, kToolbarHeight);
+        }];
+    }
+    else {
+        if (!self.stoppedScrollingTimer) {
+            self.stoppedScrollingTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(expandWebViewToFullScreen) userInfo:nil repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.stoppedScrollingTimer forMode:NSRunLoopCommonModes];
+        }
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
+    
     if (!self.alreadyLoaded) {
         [self loadURL];
     }
