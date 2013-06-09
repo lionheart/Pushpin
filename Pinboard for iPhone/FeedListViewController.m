@@ -96,14 +96,14 @@
         [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
         [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
         [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-        tagButton.frame = CGRectMake(0, 0, 45, 24);
+        tagButton.frame = CGRectMake(0, 0, 30, 24);
         UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
         UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
         [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
         [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-        notesButton.frame = CGRectMake(0, 0, 20, 24);
+        notesButton.frame = CGRectMake(0, 0, 30, 24);
         self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
         self.notesBarButtonItem.enabled = self.connectionAvailable;
 
