@@ -140,26 +140,27 @@
     NSDictionary *feed = self.feeds[indexPath.row];
     PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
     [dataSource removeDataSource:^{
-        [self.tableView beginUpdates];
-        [self.feeds removeObjectAtIndex:indexPath.row];
-        if (self.feeds.count == 0) {
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
-            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.feeds removeObjectAtIndex:indexPath.row];
+            if (self.feeds.count == 0) {
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else {
+                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                
+                if (indexPath.row == 0) {
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
+                
+                if (indexPath.row == self.feeds.count) {
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(self.feeds.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
+            }
             
-            if (indexPath.row == 0) {
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-
-            if (indexPath.row == self.feeds.count) {
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(self.feeds.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-        }
-
-        [self.tableView endUpdates];
+            [self.tableView endUpdates];
+        });
     }];
-    
 }
 
 @end
