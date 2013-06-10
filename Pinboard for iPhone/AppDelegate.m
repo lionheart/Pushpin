@@ -198,7 +198,19 @@
         results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
         [results next];
         BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
-        if (!alreadyExistsInBookmarks && !alreadyRejected) {
+        if (alreadyExistsInBookmarks) {
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            notification.alertBody = [NSString stringWithFormat:@"%@ is already in your bookmarks.", self.clipboardBookmarkURL];
+            notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        }
+        else if (alreadyRejected) {
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+            notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        }
+        else {
             NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
             if (candidateURL && candidateURL.scheme && candidateURL.host) {
                 [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
