@@ -285,19 +285,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     self.currentTextField = textField;
-
-    if (self.currentTextField == self.tagTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else if (self.currentTextField == self.descriptionTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else if (self.currentTextField == self.titleTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else if (self.currentTextField == self.urlTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
     return YES;
 }
 
