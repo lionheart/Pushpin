@@ -26,6 +26,7 @@
 #import "PPToolbar.h"
 #import "PPCoreGraphics.h"
 #import "PinboardFeedDataSource.h"
+#import "PPMultipleEditViewController.h"
 
 @implementation AppDelegate
 
@@ -435,7 +436,7 @@
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
-    
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{
         @"io.aurora.pinboard.OpenLinksInApp": @(YES),
@@ -477,7 +478,11 @@
     else {
         [self.window setRootViewController:self.loginViewController];
     }
-    
+
+     /*
+    PPMultipleEditViewController *mevc = [[PPMultipleEditViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.window setRootViewController:mevc];
+     */    
     [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
