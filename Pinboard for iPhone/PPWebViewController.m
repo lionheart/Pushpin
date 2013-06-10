@@ -8,6 +8,7 @@
 
 #import <MessageUI/MessageUI.h>
 #import <Social/Social.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
@@ -31,6 +32,7 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
+    
 
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
@@ -40,11 +42,83 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scrollView.bounces = NO;
     [self.view addSubview:self.webView];
 
-    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
-    self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-    self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
-    self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
-    [self.webView addGestureRecognizer:self.rightSwipeGestureRecognizer];
+    CAGradientLayer *layer = [CAGradientLayer layer];
+    layer.frame = CGRectMake(0, 0, 40, 40);
+    layer.cornerRadius = 20;
+    layer.masksToBounds = YES;
+    layer.borderWidth = 0.5;
+    layer.borderColor = HEX(0x4C586AFF).CGColor;
+    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+
+    CALayer *enterReaderModeImageLayer = [CALayer layer];
+    enterReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
+    enterReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"expand-dash"].CGImage;
+    
+    CALayer *exitReaderModeImageLayer = [CALayer layer];
+    exitReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
+    exitReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"compress-dash"].CGImage;
+
+    [layer addSublayer:enterReaderModeImageLayer];
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [layer renderInContext:context];
+    UIImage *buttonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    layer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [layer renderInContext:context];
+    UIImage *buttonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    [enterReaderModeImageLayer removeFromSuperlayer];
+    [layer addSublayer:exitReaderModeImageLayer];
+
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    [layer renderInContext:context];
+    UIImage *exitReaderModeButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    [layer renderInContext:context];
+    UIImage *exitReaderModeButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
+    [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
+
+    self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
+    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
+    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
+    self.exitReaderModeButton.hidden = YES;
+
+    self.panGestureRecognizerForNormalMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.panGestureRecognizerForNormalMode.minimumNumberOfTouches = 1;
+    self.panGestureRecognizerForNormalMode.maximumNumberOfTouches = 1;
+
+    self.panGestureRecognizerForReaderMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.panGestureRecognizerForReaderMode.minimumNumberOfTouches = 1;
+    self.panGestureRecognizerForReaderMode.maximumNumberOfTouches = 1;
+    [self.exitReaderModeButton addGestureRecognizer:self.panGestureRecognizerForReaderMode];
+    [self.enterReaderModeButton addGestureRecognizer:self.panGestureRecognizerForNormalMode];
+
+    [self.webView addSubview:self.enterReaderModeButton];
+    [self.webView addSubview:self.exitReaderModeButton];
+    
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.activityIndicator startAnimating];
+    self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
+    self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
     self.toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -89,35 +163,46 @@ static NSInteger kToolbarHeight = 44;
     [self.view addSubview:self.toolbar];
 }
 
-- (BOOL)isWebViewExpanded {
-    return self.navigationController.navigationBarHidden;
-}
-
-- (void)singleTapInWebview {
-    if (self.isWebViewExpanded) {
+- (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
+    CGFloat x;
+    CGFloat y;
+    if (point.y > self.webView.bounds.size.height / 2) {
+        y = self.webView.bounds.size.height - 50;
     }
     else {
-        [self expandWebViewToFullScreen];
+        y = 10;
     }
+    
+    if (point.x > self.webView.bounds.size.width / 2) {
+        x = self.webView.bounds.size.width - 50;
+    }
+    else {
+        x = 10;
+    }
+    return CGPointMake(x, y);
 }
 
-- (void)expandWebViewToFullScreen {
-    [UIView animateWithDuration:0.25 animations:^{
-        CGSize size = SCREEN.bounds.size;
-        self.webView.frame = CGRectMake(0, 0, size.width, size.height);
-        self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-        [self.stoppedScrollingTimer invalidate];
-        self.stoppedScrollingTimer = nil;
-    }];
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.panGestureRecognizerForReaderMode || recognizer == self.panGestureRecognizerForNormalMode) {
+        CGPoint point = [recognizer locationInView:self.webView];
+        if (recognizer.state == UIGestureRecognizerStateChanged) {
+            self.exitReaderModeButton.center = point;
+            self.enterReaderModeButton.center = point;
+        }
+        else if (recognizer.state == UIGestureRecognizerStateEnded) {
+            CGPoint newPoint = [self adjustedPuckPositionWithPoint:point];
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+                self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+            }];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.webView stopLoading];
-    [self.stoppedScrollingTimer invalidate];
-    self.stoppedScrollingTimer = nil;
     if (self.navigationController.navigationBarHidden) {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
@@ -132,26 +217,38 @@ static NSInteger kToolbarHeight = 44;
     [self.webView stopLoading];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    BOOL scrolledUp = self.lastContentOffset > scrollView.contentOffset.y;
-    self.lastContentOffset = scrollView.contentOffset.y;
+- (void)toggleFullScreen {
+    UIButton *visibleButton = self.enterReaderModeButton.hidden ? self.exitReaderModeButton : self.enterReaderModeButton;
 
-    if (scrolledUp) {
-        [self.stoppedScrollingTimer invalidate];
-        self.stoppedScrollingTimer = nil;
+    if (self.navigationController.navigationBarHidden) {
         [UIView animateWithDuration:0.25 animations:^{
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
             [self.navigationController setNavigationBarHidden:NO animated:YES];
             CGSize size = self.view.frame.size;
             self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
             self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight , size.width, kToolbarHeight);
+
+            CGPoint newPoint = [self adjustedPuckPositionWithPoint:visibleButton.frame.origin];
+            self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+            self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+            self.enterReaderModeButton.hidden = NO;
+            self.exitReaderModeButton.hidden = YES;
         }];
     }
     else {
-        if (!self.stoppedScrollingTimer) {
-            self.stoppedScrollingTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(expandWebViewToFullScreen) userInfo:nil repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.stoppedScrollingTimer forMode:NSRunLoopCommonModes];
-        }
+        [UIView animateWithDuration:0.25 animations:^{
+            CGSize size = SCREEN.bounds.size;
+            self.webView.frame = CGRectMake(0, 0, size.width, size.height);
+            self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+
+            CGPoint newPoint = [self adjustedPuckPositionWithPoint:visibleButton.frame.origin];
+            self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+            self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+            self.enterReaderModeButton.hidden = YES;
+            self.exitReaderModeButton.hidden = NO;
+        }];
     }
 }
 
@@ -200,7 +297,7 @@ static NSInteger kToolbarHeight = 44;
     if (self.numberOfRequestsInProgress > 0) {
         self.backBarButtonItem.enabled = NO;
         self.forwardBarButtonItem.enabled = NO;
-        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = self.activityIndicatorBarButtonItem;
         [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
         [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
     }
