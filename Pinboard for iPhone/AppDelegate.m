@@ -200,7 +200,7 @@
         BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
         if (alreadyExistsInBookmarks) {
             UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = [NSString stringWithFormat:@"%@ is already in your bookmarks.", self.clipboardBookmarkURL];
+            notification.alertBody = [NSString stringWithFormat:@"Not prompting to add as %@ is already in your bookmarks.", self.clipboardBookmarkURL];
             notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         }
