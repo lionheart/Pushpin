@@ -90,15 +90,13 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
     }
     
-    if (indexPath.row < 5) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-    
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    
     CGRect frame = cell.frame;
     
     if (indexPath.section == 0) {
+        if (indexPath.row < self.tagsToAddCompletions.count) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        }
+
         switch (indexPath.row) {
             case 0:
                 cell.imageView.image = [UIImage imageNamed:@"tag-plus-dash"];
@@ -108,6 +106,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                 break;
                 
             default: {
+                cell.selectionStyle = UITableViewCellSelectionStyleGray;
                 NSString *tag = self.tagsToAddCompletions[indexPath.row - kMultipleEditViewControllerTagIndexOffset];
                 cell.textLabel.text = tag;
                 UIImage *pillImage = [PPCoreGraphics pillImage:self.tagCounts[tag]];
@@ -119,6 +118,10 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         }
     }
     else {
+        if (indexPath.row < self.tagsToRemoveCompletions.count) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        }
+
         switch (indexPath.row) {
             case 0:
                 cell.imageView.image = [UIImage imageNamed:@"tag-minus-dash"];
@@ -128,18 +131,59 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                 break;
                 
             default: {
+                cell.selectionStyle = UITableViewCellSelectionStyleGray;
                 NSString *tag = self.tagsToRemoveCompletions[indexPath.row - kMultipleEditViewControllerTagIndexOffset];
                 cell.textLabel.text = tag;
                 break;
             }
         }
     }
-
+    
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    UITextField *textField;
+    NSMutableArray *tagCompletions;
+    if (indexPath.section == 0) {
+        textField = self.tagsToAddTextField;
+        tagCompletions = self.tagsToAddCompletions;
+    }
+    else {
+        textField = self.tagsToRemoveTextField;
+        tagCompletions = self.tagsToRemoveCompletions;
+    }
+
+    NSString *tagText = textField.text;
+    NSInteger row = indexPath.row;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *completion;
+        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+        
+        if (tagCompletions.count > 0) {
+            completion = tagCompletions[row - kMultipleEditViewControllerTagIndexOffset];
+            
+            for (NSInteger i=0; i<tagCompletions.count; i++) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + kMultipleEditViewControllerTagIndexOffset) inSection:indexPath.section]];
+            }
+            
+            [tagCompletions removeAllObjects];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+            
+            NSString *stringToReplace = [[tagText componentsSeparatedByString:@" "] lastObject];
+            NSRange range = NSMakeRange(tagText.length - stringToReplace.length, stringToReplace.length);
+            textField.text = [tagText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
+        });
+    });
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -210,11 +254,11 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                                 if ([oldTagCompletions[i] isEqualToString:tag]) {
                                     // Delete all posts that were skipped
                                     for (NSInteger j=skipPivot; j<i; j++) {
-                                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:0]];
+                                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:1]];
                                     }
                                     
                                     tagFound = YES;
-                                    skipPivot = i+1;
+                                    skipPivot = i + 1;
                                     break;
                                 }
                             }
