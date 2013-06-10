@@ -236,10 +236,12 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                     [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts4(name);"];
                     
                     for (NSString *tag in self.existingTags) {
-                        [db executeUpdate:@"INSERT INTO tag_fts (name) VALUES(?)" withArgumentsInArray:@[tag]];
+                        if (![existingTags containsObject:tag]) {
+                            [db executeUpdate:@"INSERT INTO tag_fts (name) VALUES(?)" withArgumentsInArray:@[tag]];
+                        }
                     }
 
-                    FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE name MATCH ? LIMIT 6" withArgumentsInArray:@[searchString]];
+                    FMResultSet *result = [db executeQuery:@"SELECT name FROM tag_fts WHERE name MATCH ? ORDER BY name ASC LIMIT 6" withArgumentsInArray:@[searchString]];
                     
                     NSString *tag;
                     NSInteger index = kMultipleEditViewControllerTagIndexOffset;
@@ -249,27 +251,26 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                     while ([result next]) {
                         tagFound = NO;
                         tag = [result stringForColumnIndex:0];
-                        if (![existingTags containsObject:tag]) {
-                            for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                                if ([oldTagCompletions[i] isEqualToString:tag]) {
-                                    // Delete all posts that were skipped
-                                    for (NSInteger j=skipPivot; j<i; j++) {
-                                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:1]];
-                                    }
-                                    
-                                    tagFound = YES;
-                                    skipPivot = i + 1;
-                                    break;
+
+                        for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                            if ([oldTagCompletions[i] isEqualToString:tag]) {
+                                // Delete all posts that were skipped
+                                for (NSInteger j=skipPivot; j<i; j++) {
+                                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:1]];
                                 }
+                                
+                                tagFound = YES;
+                                skipPivot = i + 1;
+                                break;
                             }
-                            
-                            if (!tagFound) {
-                                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:1]];
-                            }
-                            
-                            index++;
-                            [newTagCompletions addObject:tag];
                         }
+                        
+                        if (!tagFound) {
+                            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:1]];
+                        }
+                        
+                        index++;
+                        [newTagCompletions addObject:tag];
                     }
                     
                     [db close];
