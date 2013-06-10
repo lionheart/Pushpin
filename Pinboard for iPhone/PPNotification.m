@@ -9,6 +9,7 @@
 #import "PPNotification.h"
 
 static NSInteger kPPNotificationHeight = 56;
+static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;
 
 @implementation PPNotification
@@ -20,7 +21,7 @@ static BOOL kPPNotificationIsVisible = NO;
 - (void)hide:(BOOL)animated {
     if (!self.hiding) {
         self.hiding = YES;
-        CGRect hiddenFrame = CGRectMake(0, SCREEN.bounds.size.height, 320, kPPNotificationHeight);
+        CGRect hiddenFrame = CGRectMake(0, SCREEN.bounds.size.height, 320, self.notificationView.frame.size.height);
         if (animated) {
             [UIView animateWithDuration:0.2
                              animations:^{
@@ -53,11 +54,11 @@ static BOOL kPPNotificationIsVisible = NO;
                               delay:0
                             options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
-                             self.notificationView.frame = CGRectMake(0, SCREEN.bounds.size.height - kPPNotificationHeight, 320, kPPNotificationHeight);
+                             self.notificationView.frame = CGRectMake(0, SCREEN.bounds.size.height - self.notificationView.frame.size.height, 320, self.notificationView.frame.size.height);
                          }
                          completion:^(BOOL finished) {
                              if (finished) {
-                                 double delayInSeconds = 2;
+                                 double delayInSeconds = 2.5;
                                  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                                  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                      [self hide:YES];
@@ -69,7 +70,10 @@ static BOOL kPPNotificationIsVisible = NO;
 
 - (UIView *)notificationViewWithMessage:(NSString *)message {
     if (!_notificationView) {
-        _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, 320, kPPNotificationHeight)];
+        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:15];
+        CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake(260, CGFLOAT_MAX)];
+
+        _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, 320, size.height + 2 * kPPNotificationPadding)];
         _notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NotificationBackground"]];
 
         UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
@@ -77,17 +81,17 @@ static BOOL kPPNotificationIsVisible = NO;
         [_notificationView addGestureRecognizer:gestureRecognizer];
 
         UILabel *label = [[UILabel alloc] init];
+        label.numberOfLines = 0;
         label.backgroundColor = [UIColor clearColor];
-        label.font = [UIFont fontWithName:@"Avenir-Medium" size:15];
+        label.font = font;
         label.textColor = [UIColor whiteColor];
         label.text = message;
-        CGSize size = [message sizeWithFont:label.font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)];
-        label.frame = CGRectMake(20, (kPPNotificationHeight - size.height) / 2, size.width, size.height);
-        
+        label.frame = CGRectMake(17, kPPNotificationPadding, 260, size.height);
+
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake(293, (kPPNotificationHeight - 17) / 2, 17, 17);
+        button.frame = CGRectMake(293, _notificationView.frame.size.height / 2 - 17, 17, 17);
         
         [_notificationView addSubview:label];
         [_notificationView addSubview:button];
