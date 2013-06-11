@@ -19,7 +19,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add support for viewing webpages in full screen by clicking the "puck" on the bottom right. Click and drag the puck to move it around if it's in the way of something.</string>
+				<string>Add support for viewing webpages in full screen by tapping the "puck" in the bottom right. Tap and drag the puck to move it around if it's in the way of something.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -27,7 +27,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Filter by multiple tags. Just keep clicking on them.</string>
+				<string>Filter by multiple tags. Just keep tapping them.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -35,7 +35,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to &quot;Saved Feeds&quot;, or by clicking the &quot;Add&quot; button when viewing a feed through the popular and network sections.</string>
+				<string>View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to &quot;Saved Feeds&quot;, or by tapping the &quot;Add&quot; button when viewing a feed through the popular and network sections.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -47,7 +47,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Delete multiple bookmarks at the same time by clicking on the &quot;Edit&quot; button when viewing bookmarks.</string>
+				<string>Delete multiple bookmarks at the same time by tapping the &quot;Edit&quot; button when viewing bookmarks.</string>
 			</array>
 			<array>
 				<string>NEW</string>
