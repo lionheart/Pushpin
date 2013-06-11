@@ -17,7 +17,7 @@ Features, welche andere Pinboard Apps nicht haben
 
 * Durchstöbere das Netzwerk, alle Lesezeichen, Wikipedia, Fangemeinde und japanische populäre Feeds. Klicke und halte eines dieser Lesezeichen, um es zu deiner Sammlung hinzuzufügen
 * Anklickbare Tags! Klicke auf ein Tag um weitere Lesezeichen mit gleichem Tag anzuschauen
-* Volle englische und deutsche Lokalisierung (weitere Sprachen werden bald folgen--Wenn ihr uns unterstützen wollt, schickt eine E-Mail an support@aurora.io)
+* Volle englische und deutsche Lokalisierung (weitere Sprachen werden bald folgen--Wenn ihr uns unterstützen wollt, schickt eine E-Mail an support@lionheartsw.com)
 
 Voll anpassbar
 
@@ -31,4 +31,4 @@ Sehr viele weitere Updates sind bereits geplant!
 
 Kontakt
 
-Wenn du ein Problem melden, ein Feature vorschlagen oder einfach nur mit uns sprechen willst, so schreib uns direkt über support@aurora.io an. Wir kommen dann so schnell wie möglich auf dich zu.
+Wenn du ein Problem melden, ein Feature vorschlagen oder einfach nur mit uns sprechen willst, so schreib uns direkt über support@lionheartsw.com an. Wir kommen dann so schnell wie möglich auf dich zu.
