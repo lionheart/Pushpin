@@ -87,6 +87,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
+        self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
@@ -95,6 +96,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.tagTextField = [[UITextField alloc] init];
         self.tagTextField.font = font;
         self.tagTextField.delegate = self;
+        self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.tagTextField.placeholder = NSLocalizedString(@"pinboard .bookmarking", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
