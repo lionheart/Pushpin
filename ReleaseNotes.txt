@@ -22,6 +22,8 @@ Here are the details:
 
 More information on Pushpin's new-and-improved URL scheme can be found at http://bit.ly/PushpinURL. I hope you enjoy this release. It's been a long time coming. :)
 
+In company news, as a part of my move from California to Texas, Aurora Software is now Lionheart Software. Yay change!
+
 Alright. I'm actually sort of amazed you've made it this far. As a reward, here's a speedily-written haiku.
 
 Pushpin's here, refreshed
