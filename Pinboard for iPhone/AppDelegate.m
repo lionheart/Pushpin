@@ -341,7 +341,7 @@
 
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
