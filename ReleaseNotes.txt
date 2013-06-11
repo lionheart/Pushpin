@@ -1,6 +1,6 @@
-2.0
+Hi all. It's been a while. This is a huge release. It's basically a brand new app, rebuilt from the ground up to be fast, stable, and full of awesome features. Details below.
 
-* Pizzazzified the user interface.
+* Pizzazzified user interface.
 * Pull-to-refresh.
 * Add support for popular mobilizers (Readability, Instapaper) in the in-app browser.
 * Add support for viewing webpages in full screen by clicking the "puck" on the bottom right. Click and drag the puck to move it around if it's in the way of something.
@@ -19,4 +19,10 @@
 * Hide tag sections that don't have any tags associated with them.
 
 More information on Pushpin's new-and-improved URL scheme can be found at http://bit.ly/PushpinURL. We hope you enjoy this release. It's been a long time coming. :)
+
+Congrats, I'm amazed you've made it this far. As a reward, here's a haiku.
+
+Pushpin, UI refreshed
+From sync to search, amazement awaits
+It's love at first sight
 
