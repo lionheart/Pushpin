@@ -7,23 +7,23 @@
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>Give the user interface some pizzazz.</string>
+				<string>Pizzazzified the user interface.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Pull-to-refresh. Need I say more?</string>
+				<string>Pull-to-refresh.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Built in support for Instapaper, Readability, and Google mobilizers for the in-app browser. This makes reading webpages not specifically formatted for mobile viewing much easier on the eyes.</string>
+				<string>Add support for popular mobilizers in the in-app browser. This helps make webpages not specifically formatted for mobile viewing much easier to read.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>View webpages in full screen by clicking the &quot;puck&quot; on the bottom right. Tap and drag the puck around the screen if it's in an inconvenient place.</string>
+				<string>Add support for viewing webpages in full screen by clicking the "puck" on the bottom right. Click and drag the puck to move it around if it's in the way of something.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Hide bookmark descriptions and tags by pinching two fingers towards each other on the view bookmark screen. Show them again by pinching out. This is also configurable in display settings.</string>
+				<string>Hide bookmark descriptions and tags by pinching two fingers towards each other on any view bookmark screen. Show them by pinching out. This is also configurable in display settings.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -31,7 +31,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add multiple-line descriptions when adding and editing bookmarks.</string>
+				<string>Add multiple-line descriptions for new and existing bookmarks.</string>
 			</array>
 			<array>
 				<string>NEW</string>
