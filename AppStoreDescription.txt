@@ -20,4 +20,4 @@ Pushpin is a beautiful, blazing-fast, and feature-packed Pinboard client for you
 * Browse tags along with the number of times they've each been used.
 * Add bookmarks by switching to Pushpin with a URL on your clipboard.
 * Comes with a full-featured in-app browser with support for popular mobilizers.
-* Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags. Visit http://j.mp/PushpinURL for more information on Pushpin's URL scheme.
+* Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags. Visit http://bit.ly/PushpinURL for more information on Pushpin's URL scheme.
