@@ -15,11 +15,15 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>You can now view links with Instapaper, Readability, and Google mobilizers. This makes reading webpages not specifically formatted for mobile viewing much easier on the eyes.</string>
+				<string>Built in support for Instapaper, Readability, and Google mobilizers for the in-app browser. This makes reading webpages not specifically formatted for mobile viewing much easier on the eyes.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Hide bookmark descriptions and tags by pinching in on the view bookmark screen. Show them again by pinching out.</string>
+				<string>View webpages in full screen by clicking the &quot;puck&quot; on the bottom right. Tap and drag the puck around the screen if it's in an inconvenient place.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Hide bookmark descriptions and tags by pinching two fingers towards each other on the view bookmark screen. Show them again by pinching out. This is also configurable in display settings.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -27,39 +31,47 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add ability to edit multi-line descriptions when adding or editing a bookmark.</string>
+				<string>Add multiple-line descriptions when adding and editing bookmarks.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add custom feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to "Saved Feeds", or by clicking the "Add" button when browsing a feed through the popular and network sections.</string>
+				<string>View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to &quot;Saved Feeds&quot;, or by clicking the &quot;Add&quot; button when viewing a feed through the popular and network sections.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Click "Edit" when viewing the bookmarks screen to delete multiple bookmarks at once.</string>
+				<string>URL scheme support for viewing feeds (&quot;pushpin://feed?user=ticci&amp;tags=pythonista,python&quot;)</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add 1Password support.</string>
+        <string>URL scheme support for viewing URLs using the Pushpin browser (&quot;pushpin://morrick.me/&quot;)</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>When displaying tag suggestions in the add / edit bookmark screen, show whether tag is popular or recommended.</string>
+				<string>Delete multiple bookmarks at the same time by clicking on the &quot;Edit&quot; button when viewing bookmarks.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>Order autocompleted tags by most frequently used, as opposed to alphabetically</string>
+				<string>1Password support.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>Edit or add a bookmark when using the in-app browser.</string>
+				<string>Show whether suggested tags are popular or recommended when adding and editing bookmarks.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>Make tappable tag area much larger.</string>
+				<string>Order autocompleted tags by most frequently used, as opposed to alphabetically.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>Hide tag sections that didn't have any tags associated with them.</string>
+				<string>Edit or add bookmarks when using the in-app browser.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Make tappable tag area much larger.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Hide tag sections that don&apos;t have any tags associated with them.</string>
 			</array>
 		</array>
 	</array>
@@ -97,7 +109,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add "Read by Default" in settings.</string>
+				<string>Add &quot;Read by Default&quot; in settings.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -153,7 +165,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Chrome install link wouldn't open when iTunes app was disabled.</string>
+				<string>Chrome install link wouldn&apos;t open when iTunes app was disabled.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -161,7 +173,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Don't prompt to add a URL to the clipboard if it has already been rejected.</string>
+				<string>Don&apos;t prompt to add a URL to the clipboard if it has already been rejected.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -186,11 +198,11 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Don't show add bookmark prompt when not yet logged in.</string>
+				<string>Don&apos;t show add bookmark prompt when not yet logged in.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Change "Done" to "Next" when focused on username field on login screen.</string>
+				<string>Change &quot;Done&quot; to &quot;Next&quot; when focused on username field on login screen.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -207,7 +219,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>In the add new bookmark screen, autocompleted tags are now ordered by how often they're used.</string>
+				<string>In the add new bookmark screen, autocompleted tags are now ordered by how often they&apos;re used.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -251,7 +263,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>URL is now editable when using "Copy to Mine" feature.</string>
+				<string>URL is now editable when using &quot;Copy to Mine&quot; feature.</string>
 			</array>
 		</array>
 	</array>
@@ -308,7 +320,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Share menu wouldn't appear after switching views</string>
+				<string>Share menu wouldn&apos;t appear after switching views</string>
 			</array>
 			<array>
 				<string>FIX</string>
