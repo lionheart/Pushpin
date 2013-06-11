@@ -1,4 +1,4 @@
-Hi all. It's been a while. This is a huge release. Pushpin has gotten a huge makeover. It's essentially a brand new app, rebuilt from the ground up to be fast, stable, and full of awesome features.
+Hi all. It's been a while. Pushpin has gotten a huge makeover. It's essentially a brand new app, rebuilt from the ground up to be fast, stable, and full of awesome features.
 
 Here are the details:
 
@@ -7,7 +7,7 @@ Here are the details:
 * Use popular mobilizers (Readability, Instapaper) in the in-app browser.
 * View webpages in full screen by tapping the "puck" in the bottom right. Tap and drag the puck to move it around if it's in the way of something.
 * Hide bookmark descriptions and tags by pinching two fingers towards each other on any view bookmark screen. Show them by pinching out. This is also configurable in display settings.
-* Filter by multiple tags. Just keep tapping on them.
+* Filter by multiple tags. Just keep tapping them.
 * Add multiple-line descriptions for new and existing bookmarks.
 * View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to "Saved Feeds", or by tapping the "Add" button when viewing a feed through the popular and network sections.
 * URL scheme support for viewing feeds ("pushpin://feed?user=ticci&tags=pythonista,python")
@@ -20,9 +20,9 @@ Here are the details:
 * Make tappable tag area much larger.
 * Hide tag sections that don't have any tags associated with them.
 
-More information on Pushpin's new-and-improved URL scheme can be found at http://bit.ly/PushpinURL. We hope you enjoy this release. It's been a long time coming. :)
+More information on Pushpin's new-and-improved URL scheme can be found at http://bit.ly/PushpinURL. I hope you enjoy this release. It's been a long time coming. :)
 
-Alright. I'm actually sort of amazed you've made it this far. As a reward, here's a haiku.
+Alright. I'm actually sort of amazed you've made it this far. As a reward, here's a speedily-written haiku.
 
 Pushpin's here, refreshed
 Syncing, searching, built for speed
