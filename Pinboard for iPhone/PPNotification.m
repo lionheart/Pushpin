@@ -74,7 +74,10 @@ static BOOL kPPNotificationIsVisible = NO;
         CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake(260, CGFLOAT_MAX)];
 
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, 320, size.height + 2 * kPPNotificationPadding)];
-        _notificationView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NotificationBackground"]];
+        
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, size.height + 2 * kPPNotificationPadding)];
+        imageView.image = [[UIImage imageNamed:@"NotificationBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(4, 160, 52, 160)];
+        [_notificationView addSubview:imageView];
 
         UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
         gestureRecognizer.numberOfTapsRequired = 1;
@@ -91,7 +94,7 @@ static BOOL kPPNotificationIsVisible = NO;
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake(293, _notificationView.frame.size.height / 2 - 17, 17, 17);
+        button.frame = CGRectMake(293, (_notificationView.frame.size.height - 17) / 2, 17, 17);
         
         [_notificationView addSubview:label];
         [_notificationView addSubview:button];
