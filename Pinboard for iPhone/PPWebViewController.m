@@ -46,7 +46,7 @@ static NSInteger kToolbarHeight = 44;
     layer.frame = CGRectMake(0, 0, 40, 40);
     layer.cornerRadius = 20;
     layer.masksToBounds = YES;
-    layer.borderWidth = 0.5;
+    layer.borderWidth = 0.8;
     layer.borderColor = HEX(0x4C586AFF).CGColor;
     layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
 
