@@ -199,16 +199,20 @@
         [results next];
         BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
         if (alreadyExistsInBookmarks) {
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = [NSString stringWithFormat:@"Not prompting to add as %@ is already in your bookmarks.", self.clipboardBookmarkURL];
-            notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UILocalNotification *notification = [[UILocalNotification alloc] init];
+                notification.alertBody = [NSString stringWithFormat:@"Not prompting to add as %@ is already in your bookmarks.", self.clipboardBookmarkURL];
+                notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            });
         }
         else if (alreadyRejected) {
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
-            notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UILocalNotification *notification = [[UILocalNotification alloc] init];
+                notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+                notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            });
         }
         else {
             NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
