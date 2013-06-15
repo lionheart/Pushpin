@@ -141,31 +141,31 @@
     if (self.connectionAvailable != newConnectionAvailable) {
         self.connectionAvailable = newConnectionAvailable;
 
-        if (self.connectionAvailable) {
-            [self showAllFeeds];
-        }
-        else {
-            [self hideNetworkDependentFeeds];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.connectionAvailable) {
+                [self showAllFeeds];
+            }
+            else {
+                [self hideNetworkDependentFeeds];
+            }
+        });
     }
 }
 
+// Dispatched on main thread
 - (void)showAllFeeds {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.notesBarButtonItem.enabled = YES;
-        [self.tableView beginUpdates];
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    });
+    self.notesBarButtonItem.enabled = YES;
+    [self.tableView beginUpdates];
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
 }
 
+// Dispatched on main thread
 - (void)hideNetworkDependentFeeds {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.notesBarButtonItem.enabled = NO;
-        [self.tableView beginUpdates];
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    });
+    self.notesBarButtonItem.enabled = NO;
+    [self.tableView beginUpdates];
+    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
 }
 
 #pragma mark - Table view data source
