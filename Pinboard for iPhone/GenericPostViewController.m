@@ -719,14 +719,15 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
-    if (!self.tableView.editing || self.searchDisplayController.isActive) {
-        if ([self.postDataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-            [self.postDataSource handleTapOnLinkWithURL:url
-                                               callback:^(UIViewController *controller) {
-                                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                                       [self.navigationController pushViewController:controller animated:YES];
-                                                   });
-                        }];
+    id <GenericPostDataSource> dataSource = [self currentDataSource];
+    if (!self.tableView.editing) {
+        if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+            [dataSource handleTapOnLinkWithURL:url
+                                      callback:^(UIViewController *controller) {
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              [self.navigationController pushViewController:controller animated:YES];
+                                          });
+                                      }];
         }
     }
 }
