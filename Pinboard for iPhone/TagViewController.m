@@ -49,10 +49,15 @@
     self.titleToTags = [NSMutableDictionary dictionary];
 
     FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
-    NSString *name;
+    NSString *name, *count;
     while ([results next]) {
-        name = [results stringForColumn:@"name"];
-        if (name.length == 0) {
+        name = [results stringForColumnIndex:0];
+        count = [results stringForColumnIndex:1];
+        if (!name || name.length == 0) {
+            continue;
+        }
+
+        if (!count || count.length == 0) {
             continue;
         }
 
@@ -65,6 +70,7 @@
         if (!temp) {
             temp = [NSMutableArray array];
         }
+
         [temp addObject:@{@"name": name, @"count": [results stringForColumn:@"count"]}];
         [self.titleToTags setObject:temp forKey:firstLetter];
     }
