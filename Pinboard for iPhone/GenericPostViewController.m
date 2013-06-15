@@ -190,6 +190,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    id <GenericPostDataSource> dataSource;
+    if (tableView == self.tableView) {
+        dataSource = self.postDataSource;
+    }
+    else {
+        dataSource = self.searchPostDataSource;
+    }
+
     if (tableView.editing) {
         NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
         self.multipleDeleteButton.enabled = YES;
@@ -199,14 +207,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
-        if (![self.postDataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
-            NSString *urlString;
-            if (tableView == self.tableView) {
-                urlString = [self.postDataSource urlForPostAtIndex:indexPath.row];
-            }
-            else {
-                urlString = [self.searchPostDataSource urlForPostAtIndex:indexPath.row];
-            }
+        if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
+            NSString *urlString = [dataSource urlForPostAtIndex:indexPath.row];
             NSRange httpRange = NSMakeRange(NSNotFound, 0);
             if ([urlString hasPrefix:@"http"]) {
                 httpRange = [urlString rangeOfString:@"http"];
@@ -310,7 +312,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         }
         else {
             // The post data source will provide a view controller to push.
-            UIViewController *controller = [self.postDataSource viewControllerForPostAtIndex:indexPath.row];
+            UIViewController *controller = [dataSource viewControllerForPostAtIndex:indexPath.row];
             [self.navigationController pushViewController:controller animated:YES];
         }
     }
