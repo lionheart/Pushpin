@@ -140,7 +140,8 @@
                                        
                                        NSInteger index = 0;
                                        NSMutableArray *tags = [NSMutableArray array];
-                                       
+                                       NSDate *date;
+
                                        #warning XXX Should refactor to update / reload / delete more efficiently
                                        for (NSDictionary *element in payload) {
                                            [tags removeAllObjects];
@@ -151,12 +152,18 @@
                                                }
                                            }
                                            
+                                           date = [dateFormatter dateFromString:element[@"dt"]];
+                                           if (!date) {
+                                               // https://rink.hockeyapp.net/manage/apps/33685/app_versions/4/crash_reasons/4734816
+                                               date = [NSDate date];
+                                           }
+
                                            NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
                                                 @"title": element[@"d"],
                                                 @"description": element[@"n"],
                                                 @"url": element[@"u"],
                                                 @"tags": [tags componentsJoinedByString:@" "],
-                                                @"created_at": [dateFormatter dateFromString:element[@"dt"]]
+                                                @"created_at": date
                                             }];
                                            
                                            if (post[@"title"] == [NSNull null]) {
