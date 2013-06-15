@@ -132,5 +132,7 @@ typedef NSInteger PPPostAction;
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
+- (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
+- (id<GenericPostDataSource>)currentDataSource;
 
 @end
