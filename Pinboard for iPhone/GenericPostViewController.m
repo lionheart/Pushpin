@@ -190,13 +190,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource;
-    if (tableView == self.tableView) {
-        dataSource = self.postDataSource;
-    }
-    else {
-        dataSource = self.searchPostDataSource;
-    }
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if (tableView.editing) {
         NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
@@ -582,13 +576,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 #pragma mark - Table view data source
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource;
-    if (tableView == self.tableView) {
-        dataSource = self.postDataSource;
-    }
-    else {
-        dataSource = self.searchPostDataSource;
-    }
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if (!self.loading) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
@@ -620,13 +608,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource;
-    if (tableView == self.tableView) {
-        dataSource = self.postDataSource;
-    }
-    else {
-        dataSource = self.searchPostDataSource;
-    }
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
         return [dataSource compressedHeightForPostAtIndex:indexPath.row];
@@ -657,13 +639,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 
     NSAttributedString *string;
-    id <GenericPostDataSource> dataSource;
-    if (tableView == self.tableView) {
-        dataSource = self.postDataSource;
-    }
-    else {
-        dataSource = self.searchPostDataSource;
-    }
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
@@ -768,13 +744,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
         PPPostAction action;
         
-        id <GenericPostDataSource> dataSource;
-        if (self.searchDisplayController.isActive) {
-            dataSource = self.searchPostDataSource;
-        }
-        else {
-            dataSource = self.postDataSource;
-        }
+        id <GenericPostDataSource> dataSource = [self currentDataSource];
 
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
@@ -830,13 +800,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.tableView.scrollEnabled = YES;
     self.actionSheetVisible = NO;
     
-    id <GenericPostDataSource> dataSource;
-    if (self.searchDisplayController.isActive) {
-        dataSource = self.searchPostDataSource;
-    }
-    else {
-        dataSource = self.postDataSource;
-    }
+    id <GenericPostDataSource> dataSource = [self currentDataSource];
     
     if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
         [self showConfirmDeletionAlert];
@@ -882,13 +846,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     }
     else {
-        id <GenericPostDataSource> dataSource;
-        if (self.searchDisplayController.isActive) {
-            dataSource = self.searchPostDataSource;
-        }
-        else {
-            dataSource = self.postDataSource;
-        }
+        id <GenericPostDataSource> dataSource = [self currentDataSource];
 
         [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1145,6 +1103,28 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:vc action:@selector(removeBarButtonTouchUpside:)];
         });
     }];
+}
+
+- (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView {
+    id <GenericPostDataSource> dataSource;
+    if (tableView == self.tableView) {
+        dataSource = self.postDataSource;
+    }
+    else {
+        dataSource = self.searchPostDataSource;
+    }
+    return dataSource;
+}
+
+- (id<GenericPostDataSource>)currentDataSource {
+    id <GenericPostDataSource> dataSource;
+    if (self.searchDisplayController.isActive) {
+        dataSource = self.searchPostDataSource;
+    }
+    else {
+        dataSource = self.postDataSource;
+    }
+    return dataSource;
 }
 
 @end
