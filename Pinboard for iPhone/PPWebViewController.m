@@ -609,7 +609,7 @@ static NSInteger kToolbarHeight = 44;
                 break;
                 
             case MOBILIZER_INSTAPAPER:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", self.url.absoluteString]];
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.url.absoluteString]];
                 break;
                 
             case MOBILIZER_READABILITY:
@@ -706,7 +706,7 @@ static NSInteger kToolbarHeight = 44;
 - (BOOL)isURLStringMobilized:(NSString *)url {
     BOOL googleMobilized = [url hasPrefix:@"http://www.google.com/gwt/x"];
     BOOL readabilityMobilized = [url hasPrefix:@"http://www.readability.com/m?url="];
-    BOOL instapaperMobilized = [url hasPrefix:@"http://www.instapaper.com/m?u="];
+    BOOL instapaperMobilized = [url hasPrefix:@"http://mobilizer.instapaper.com/m?u="];
     return googleMobilized || readabilityMobilized || instapaperMobilized;
 }
 
@@ -726,7 +726,7 @@ static NSInteger kToolbarHeight = 44;
                 break;
                 
             case MOBILIZER_INSTAPAPER:
-                urlString = [NSString stringWithFormat:@"http://www.instapaper.com/m?u=%@", url];
+                urlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", url];
                 break;
                 
             case MOBILIZER_READABILITY:
