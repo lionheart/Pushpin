@@ -350,7 +350,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                 FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
 
-                NSString *tag;
+                NSString *tag, *count;
                 NSInteger index = kAddBookmarkViewControllerTagCompletionOffset;
                 NSInteger skipPivot = 0;
                 BOOL tagFound = NO;
@@ -358,7 +358,13 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 while ([result next]) {
                     tagFound = NO;
                     tag = [result stringForColumnIndex:0];
-                    self.tagCounts[tag] = [result stringForColumnIndex:1];
+                    count = [result stringForColumnIndex:1];
+                    
+                    if (!count || count.length == 0) {
+                        count = @"0";
+                    }
+
+                    self.tagCounts[tag] = count;
                     if (![existingTags containsObject:tag]) {
                         for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
                             if ([oldTagCompletions[i] isEqualToString:tag]) {
