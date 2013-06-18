@@ -420,17 +420,15 @@ static BOOL kPinboardSyncInProgress = NO;
                     addCount++;
                 }
                 
-                if ([post[@"tags"] length] > 0 && updated_or_created) {
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                if (!updated_or_created) {
+                    skipCount++;
+                }
+                else if ([post[@"tags"] length] > 0) {
                     for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
                         [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                         [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
                         tagAddCount++;
                     }
-                }
-                
-                if (!updated_or_created) {
-                    skipCount++;
                 }
                 
                 index++;
