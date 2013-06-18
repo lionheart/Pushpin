@@ -1,3 +1,14 @@
+* 2.1 *
+
+* Speed up bookmark updates.
+
+Fixes
+
+* Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.
+* Fixed a crash when a new tag was added before viewing the tag list.
+
+* 2.0 *
+
 Hi all. It's been a while. Pushpin has gotten a huge makeover. It's essentially a brand new app, rebuilt from the ground up to be fast, stable, and full of awesome features.
 
 Here are the details:
