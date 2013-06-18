@@ -325,12 +325,20 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             NSMutableArray *bookmarksToDelete = [NSMutableArray array];
             
-            BOOL updated_or_created = NO;
-            __block NSUInteger index = 0;
-            __block NSUInteger total = posts.count;
-            NSInteger skipPivot = 0;
-            BOOL postFound = NO;
             NSDictionary *params;
+
+            BOOL updated_or_created = NO;
+            BOOL postFound = NO;
+
+            NSUInteger index = 0;
+            NSUInteger total = posts.count;
+            NSInteger skipPivot = 0;
+            
+            NSUInteger updateCount = 0;
+            NSUInteger addCount = 0;
+            NSUInteger deleteCount = 0;
+            NSUInteger skipCount = 0;
+            NSUInteger tagAddCount = 0;
 
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
@@ -338,6 +346,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
+            DLog(@"%@", [NSDate date]);
             dispatch_async(dispatch_get_main_queue(), ^{
                 progress(0, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
@@ -354,6 +363,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         // Delete all posts that were skipped
                         for (NSInteger j=skipPivot; j<i; j++) {
                             [bookmarksToDelete addObject:oldHashes[j]];
+                            deleteCount++;
                         }
                         
                         #warning XXX Don't understand why this works, but this prevents Pushpin from deleting bookmarks needlessly.
@@ -376,6 +386,7 @@ static BOOL kPinboardSyncInProgress = NO;
                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
                             [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                             updated_or_created = YES;
+                            updateCount++;
                         }
                         
                         postFound = YES;
@@ -406,6 +417,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                     
                     updated_or_created = YES;
+                    addCount++;
                 }
                 
                 if ([post[@"tags"] length] > 0 && updated_or_created) {
@@ -413,7 +425,12 @@ static BOOL kPinboardSyncInProgress = NO;
                     for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
                         [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                         [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                        tagAddCount++;
                     }
+                }
+                
+                if (!updated_or_created) {
+                    skipCount++;
                 }
                 
                 index++;
@@ -422,6 +439,14 @@ static BOOL kPinboardSyncInProgress = NO;
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                 });
             }
+            
+            DLog(@"%@", [NSDate date]);
+            
+            DLog(@"added %d", addCount);
+            DLog(@"updated %d", updateCount);
+            DLog(@"skipped %d", skipCount);
+            DLog(@"removed %d", deleteCount);
+            DLog(@"tags added %d", tagAddCount);
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
@@ -490,7 +515,9 @@ static BOOL kPinboardSyncInProgress = NO;
             });
         };
         
-        [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:failure];
+        });
     }
     else {
         failure([NSError errorWithDomain:PinboardDataSourceErrorDomain code:kPinboardSyncInProgress userInfo:nil]);
@@ -550,25 +577,27 @@ static BOOL kPinboardSyncInProgress = NO;
         failure = ^{};
     }
     
-    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-    NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
-    
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               if (error) {
-                                   failure(error);
-                               }
-                               else {
-                                   NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   BookmarksSuccessBlock(posts);
-                               }
-                           }];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+        NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        [delegate setNetworkActivityIndicatorVisible:YES];
+        
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [delegate setNetworkActivityIndicatorVisible:NO];
+                                   if (error) {
+                                       failure(error);
+                                   }
+                                   else {
+                                       NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                       BookmarksSuccessBlock(posts);
+                                   }
+                               }];
+    });
 }
 
 - (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure {
@@ -944,7 +973,8 @@ static BOOL kPinboardSyncInProgress = NO;
         self.compressedLinks = newCompressedLinks;
 
         if (callback) {
-            dispatch_group_notify(inner_group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_group_notify(inner_group, queue, ^{
+                #warning XXX There is a bug here with consistency
                 callback(indexPathsToDelete, indexPathsToAdd);
             });
         }

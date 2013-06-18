@@ -270,7 +270,7 @@
             tagName = [result stringForColumn:@"name"];
             [newTags addObject:@{@"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
             [newTagNames addObject:tagName];
-            
+
             if (![oldTagNames containsObject:tagName]) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }

@@ -182,9 +182,10 @@
     }
 }
 
-- (void)promptUserToAddBookmark {
+- (void)promptUserToAddBookmark {    
+    self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
         if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
             return;
         }
