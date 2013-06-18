@@ -339,6 +339,10 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger deleteCount = 0;
             NSUInteger skipCount = 0;
             NSUInteger tagAddCount = 0;
+            
+            NSString *hash;
+            NSString *meta;
+            NSString *postTags;
 
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
@@ -355,8 +359,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 postFound = NO;
                 updated_or_created = NO;
                 
-                NSString *hash = post[@"hash"];
-                NSString *meta = post[@"meta"];
+                hash = post[@"hash"];
+                meta = post[@"meta"];
+                postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
                 for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
                     if ([oldHashes[i] isEqualToString:hash]) {
@@ -372,19 +377,18 @@ static BOOL kPinboardSyncInProgress = NO;
                         // Skip doing anything to this bookmark if its meta value has changed.
                         if (![meta isEqualToString:metas[hash]]) {
                             params = @{
-                                       @"url": post[@"href"],
-                                       @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                       @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                       @"meta": meta,
-                                       @"hash": hash,
-                                       @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                       @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                       @"private": @([post[@"shared"] isEqualToString:@"no"])
-                                       };
+                                @"url": post[@"href"],
+                                @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                @"meta": meta,
+                                @"hash": hash,
+                                @"tags": postTags,
+                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                @"private": @([post[@"shared"] isEqualToString:@"no"])
+                            };
                             
                             // Update this bookmark
                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                             updated_or_created = YES;
                             updateCount++;
                         }
@@ -403,16 +407,16 @@ static BOOL kPinboardSyncInProgress = NO;
                     }
 
                     params = @{
-                               @"url": post[@"href"],
-                               @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                               @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                               @"meta": meta,
-                               @"hash": hash,
-                               @"tags": [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                               @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                               @"created_at": date
-                               };
+                        @"url": post[@"href"],
+                        @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"meta": meta,
+                        @"hash": hash,
+                        @"tags": postTags,
+                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                        @"created_at": date
+                    };
                     
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                     
@@ -423,8 +427,10 @@ static BOOL kPinboardSyncInProgress = NO;
                 if (!updated_or_created) {
                     skipCount++;
                 }
-                else if ([post[@"tags"] length] > 0) {
-                    for (NSString *tagName in [post[@"tags"] componentsSeparatedByString:@" "]) {
+                else if (postTags.length > 0) {
+                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+
+                    for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
                         [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                         [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
                         tagAddCount++;
