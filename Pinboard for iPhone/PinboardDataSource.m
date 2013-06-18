@@ -319,7 +319,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
             while ([results next]) {
-                NSString *hash = [results stringForColumn:@"hash"];
+                NSString *hash = [[results stringForColumn:@"hash"] substringToIndex:8];
                 [oldHashes addObject:hash];
                 [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
             }
@@ -341,6 +341,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger tagAddCount = 0;
             
             NSString *hash;
+            NSString *shortHash;
             NSString *meta;
             NSString *postTags;
 
@@ -360,11 +361,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 updated_or_created = NO;
                 
                 hash = post[@"hash"];
+                shortHash = [hash substringToIndex:8];
                 meta = post[@"meta"];
                 postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
                 for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                    if ([oldHashes[i] isEqualToString:hash]) {
+                    if ([oldHashes[i] isEqualToString:shortHash]) {
                         // Delete all posts that were skipped
                         for (NSInteger j=skipPivot; j<i; j++) {
                             [bookmarksToDelete addObject:oldHashes[j]];
@@ -375,7 +377,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         skipPivot = i - 1;
                         
                         // Skip doing anything to this bookmark if its meta value has changed.
-                        if (![meta isEqualToString:metas[hash]]) {
+                        if (![meta isEqualToString:metas[shortHash]]) {
                             params = @{
                                 @"url": post[@"href"],
                                 @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
@@ -399,7 +401,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 // If the bookmark wasn't found by looping through, it's a new one
-                if (!postFound && ![oldHashes containsObject:hash]) {
+                if (!postFound && ![oldHashes containsObject:shortHash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
                     if (!date) {
                         #warning XXX See why this is happening.
