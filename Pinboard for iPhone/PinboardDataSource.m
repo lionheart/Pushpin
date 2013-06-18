@@ -317,9 +317,9 @@ static BOOL kPinboardSyncInProgress = NO;
             
             NSMutableDictionary *metas = [NSMutableDictionary dictionary];
             NSMutableArray *oldHashes = [NSMutableArray array];
-            
-            // http://hur.st/bloomfilter?n=10000&p=0.00001
-            BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:718000 andWithNumberOfHashes:17];
+
+            // http://hur.st/bloomfilter?n=50000&p=1.0E-7
+            BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:1667386 andWithNumberOfHashes:23];
 
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
             while ([results next]) {
