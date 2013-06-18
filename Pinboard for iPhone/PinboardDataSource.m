@@ -319,7 +319,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *oldHashes = [NSMutableArray array];
             
             // http://hur.st/bloomfilter?n=10000&p=0.00001
-            BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:240000 andWithNumberOfHashes:17];
+            BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:718000 andWithNumberOfHashes:17];
 
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
             while ([results next]) {
