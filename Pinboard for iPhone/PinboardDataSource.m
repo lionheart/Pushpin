@@ -12,6 +12,7 @@
 #import "NSAttributedString+Attributes.h"
 #import "ASPinboard/ASPinboard.h"
 #import "AddBookmarkViewController.h"
+#import "BloomFilter.h"
 
 static BOOL kPinboardSyncInProgress = NO;
 
@@ -317,10 +318,14 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableDictionary *metas = [NSMutableDictionary dictionary];
             NSMutableArray *oldHashes = [NSMutableArray array];
             
+            // http://hur.st/bloomfilter?n=10000&p=0.00001
+            BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:240000 andWithNumberOfHashes:17];
+
             results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
             while ([results next]) {
                 NSString *hash = [[results stringForColumn:@"hash"] substringToIndex:8];
                 [oldHashes addObject:hash];
+                [bloom addToSet:hash];
                 [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
             }
             NSMutableArray *bookmarksToDelete = [NSMutableArray array];
@@ -401,7 +406,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 // If the bookmark wasn't found by looping through, it's a new one
-                if (!postFound && ![oldHashes containsObject:shortHash]) {
+                if (!postFound && ![bloom lookup:shortHash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
                     if (!date) {
                         #warning XXX See why this is happening.
