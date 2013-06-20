@@ -1,12 +1,12 @@
-Pushpin is a beautiful, blazing-fast, and feature-packed Pinboard client for your iPhone and iPod Touch.
+Pushpin is a beautiful, blazing-fast, and feature-packed Pinboard client for your iPhone, iPad, or iPod Touch.
 
 # Testimonials #
 
 "I wished hard enough and it came true: the clean, clear, and stable Pinboard iOS app of my dreams was written and released by someone much smarter than me and you should give them your money" - Jim Jazwiecki (@jimbecile)
 
-"[T]he only option out there for a full-featured Pinboard experience on the iPhone" - Shawn Blanc (@shawnblanc)
+"[T]he only option out there for a full-featured Pinboard experience" - Shawn Blanc (@shawnblanc)
 
-"This is exactly what I want in a Pinboard app for iPhone." - Alex Payne (@al3x)
+"This is exactly what I want in a Pinboard app" - Alex Payne (@al3x)
 
 # Features #
 
