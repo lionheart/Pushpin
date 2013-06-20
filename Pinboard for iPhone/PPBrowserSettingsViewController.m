@@ -79,7 +79,7 @@
         label.textColor = HEX(0x4C566CFF);
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = CGSizeMake(0,1);
-        label.font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+        label.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
         CGSize textSize = [sectionTitle sizeWithFont:label.font];
         
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
@@ -103,7 +103,7 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
 
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];

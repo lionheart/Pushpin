@@ -24,7 +24,7 @@
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self.modalDelegate action:@selector(closeModal:)];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(addButtonTouchUpInside:)];
         
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         self.userTextField = [[UITextField alloc] init];
         self.userTextField.font = font;
         self.userTextField.delegate = self;

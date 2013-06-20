@@ -9,13 +9,14 @@
 #import "PPButton.h"
 #import "PPCoreGraphics.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AppDelegate.h"
 
 @implementation PPButton
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17.f];
+        self.titleLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17.f];
         self.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
         self.titleLabel.layer.shadowRadius = 0.0;
         self.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);

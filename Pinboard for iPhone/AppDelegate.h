@@ -103,4 +103,9 @@ enum bookmarkupdateevents {
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 - (void)promptUserToAddBookmark;
 
++ (NSString *)heavyFontName;
++ (NSString *)mediumFontName;
++ (NSString *)bookFontName;
++ (NSString *)blackFontName;
+
 @end

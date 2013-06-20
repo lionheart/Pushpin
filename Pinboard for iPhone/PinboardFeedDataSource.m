@@ -13,6 +13,7 @@
 #import "NSString+URLEncoding2.h"
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
+#import "UIApplication+AppDimensions.h"
 
 @implementation PinboardFeedDataSource
 
@@ -236,8 +237,8 @@
 
 #warning XXX Code smell, repeats metadataForPost
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
+    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
@@ -256,15 +257,15 @@
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height + 20);
     callback(attributedString, height, @[]);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:@"Avenir-Book" size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:@"Avenir-Medium" size:12];
-    UIFont *dateFont = [UIFont fontWithName:@"Avenir-Medium" size:10];
+    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
+    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
+    UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
+    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -328,7 +329,7 @@
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height + 20);
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;

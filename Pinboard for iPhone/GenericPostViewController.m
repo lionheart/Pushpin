@@ -20,6 +20,7 @@
 #import "PPWebViewController.h"
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
+#import "UIApplication+AppDimensions.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
@@ -57,7 +58,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
     self.loading = NO;
     self.searchLoading = NO;
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, SCREEN.bounds.size.width, 30)];
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
@@ -141,7 +142,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 
         [self.pullToRefreshImageView startAnimating];
-        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, 10, 40, 40);
+        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
@@ -404,12 +405,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
                         CGFloat offset = self.tableView.contentOffset.y;
-                        self.pullToRefreshView.frame = CGRectMake(0, offset, SCREEN.bounds.size.width, -offset);
+                        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
                         
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, 44)];
+                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
                             self.searchBar.delegate = self;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
@@ -679,10 +680,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
 
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, SCREEN.bounds.size.width, height);
+    gradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
     gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
     gradient.name = @"Gradient";
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, height)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
+    backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
     
@@ -692,9 +694,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
     else {
         CAGradientLayer *selectedGradient = [CAGradientLayer layer];
-        selectedGradient.frame = CGRectMake(0, 0, SCREEN.bounds.size.width, height);
+        selectedGradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
         selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
-        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, height)];
+        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
         cell.selectedBackgroundView = selectedBackgroundView;
         [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
     }
@@ -702,7 +704,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.frame = CGRectMake(SCREEN.bounds.size.width - 18, 0, 18.f, 19.f);
+        lockImageView.frame = CGRectMake([UIApplication currentSize].width - 18, 0, 18.f, 19.f);
         [cell addSubview:lockImageView];
     }
     
@@ -741,7 +743,16 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         else {
             urlString = self.selectedPost[@"url"];
         }
-        RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        
+        id sheet;
+        if (isIPad) {
+            sheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
 
         PPPostAction action;
         
@@ -750,37 +761,42 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
             if (action == PPPostActionCopyToMine) {
-                [sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
             }
             else if (action == PPPostActionCopyURL) {
-                [sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
             }
             else if (action == PPPostActionDelete) {
-                [sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
             }
             else if (action == PPPostActionEdit) {
-                [sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
             }
             else if (action == PPPostActionMarkAsRead) {
-                [sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
             }
             else if (action == PPPostActionReadLater) {
                 NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
                 if (readlater == READLATER_INSTAPAPER) {
-                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
                 }
                 else if (readlater == READLATER_READABILITY) {
-                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
                 }
                 else if (readlater == READLATER_POCKET) {
-                    [sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
                 }
             }
         }
-        
-        [sheet showFrom:self.navigationController.view];
+
+        self.actionSheetVisible = YES;        
+        if (isIPad) {
+            [(UIActionSheet *)sheet showFromRect:[self.tableView rectForRowAtIndexPath:self.selectedIndexPath] inView:self.tableView animated:YES];
+        }
+        else {
+            [(RDActionSheet *)sheet showFrom:self.navigationController.view];
+        }
         self.tableView.scrollEnabled = NO;
-        self.actionSheetVisible = YES;
     }
 }
 
@@ -1025,7 +1041,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, 10, 40, 40);
+                        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
                         [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
@@ -1047,9 +1063,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             imageOffset = UIOffsetMake(0, 10);
         }
         
-        self.pullToRefreshView.frame = CGRectMake(0, offset, SCREEN.bounds.size.width, -offset);
+        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, imageOffset.vertical, 40, 40);
+        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
     }
 }
 
@@ -1126,6 +1142,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         dataSource = self.postDataSource;
     }
     return dataSource;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self.tableView reloadData];
 }
 
 @end

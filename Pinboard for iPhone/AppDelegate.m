@@ -305,8 +305,9 @@
 
     [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
     [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
+
     [[UINavigationBar appearance] setTitleTextAttributes:@{
-                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:20],
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
                                 UITextAttributeTextColor: HEX(0x4C586Aff),
                           UITextAttributeTextShadowColor: [UIColor whiteColor] }];
 
@@ -350,13 +351,13 @@
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
      }
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0xA5A9B2FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     UITextAttributeFont: [UIFont fontWithName:@"Avenir-Heavy" size:13]
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
      }
                                                 forState:UIControlStateDisabled];
     // Customize Toolbar
@@ -382,9 +383,9 @@
         alertView.labelTextColor = [UIColor whiteColor];
         alertView.labelShadowColor = [UIColor clearColor];
         
-        alertView.buttonFont = [UIFont fontWithName:@"Avenir-Heavy" size:18.f];
-        alertView.titleFont = [UIFont fontWithName:@"Avenir-Heavy" size:18.f];
-        alertView.messageFont = [UIFont fontWithName:@"Avenir-Medium" size:16.f];
+        alertView.buttonFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
+        alertView.titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
+        alertView.messageFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:16.f];
         
         UIColor *topGradient = [UIColor colorWithRed:0.212 green:0.227 blue:0.275 alpha:1];
         UIColor *middleGradient = [UIColor colorWithRed:0.173 green:0.184 blue:0.224 alpha:1];
@@ -436,7 +437,8 @@
     return nil;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    DLog(@"%d", SQLITE_VERSION_NUMBER);
     [self migrateDatabase];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -701,6 +703,9 @@
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
 
+                #warning XXX Causes EXC_BAD_ACCESS on iOS 5.1 Device
+                [db commit];
+                [db beginTransaction];
                 // Repopulate bookmarks
                 [db executeUpdate:@"INSERT INTO bookmark (title, description, tags, url, count, private, unread, starred, hash, meta, created_at) SELECT title, description, tags, url, count, private, unread, starred, hash, meta, created_at FROM bookmark_old;"];
 
@@ -989,5 +994,44 @@
     }
 }
 
++ (NSString *)heavyFontName {
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    if (isIPad) {
+        return @"HelveticaNeue-Bold";
+    }
+    else {
+        return @"Avenir-Heavy";
+    }
+}
+
++ (NSString *)mediumFontName {
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    if (isIPad) {
+        return @"HelveticaNeue-Medium";
+    }
+    else {
+        return @"Avenir-Medium";
+    }
+}
+
++ (NSString *)bookFontName {
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    if (isIPad) {
+        return @"HelveticaNeue-Bold";
+    }
+    else {
+        return @"Avenir-Book";
+    }
+}
+
++ (NSString *)blackFontName {
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    if (isIPad) {
+        return @"HelveticaNeue-Bold";
+    }
+    else {
+        return @"Avenir-Black";
+    }
+}
 
 @end

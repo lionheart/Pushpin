@@ -27,6 +27,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import "AppDelegate.h"
 
 @interface WCAlertView () <UIAlertViewDelegate>
 
@@ -541,7 +542,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             if ([subview isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)subview;
                 button.titleLabel.textColor = [UIColor whiteColor];
-                button.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17.f];
+                button.titleLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17.f];
                 button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
                 button.titleLabel.layer.shadowRadius = 0.0;
                 button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);

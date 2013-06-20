@@ -13,6 +13,7 @@
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIApplication+AppDimensions.h"
 
 @interface TagViewController ()
 
@@ -168,11 +169,11 @@
         BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, 44)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
         view.clipsToBounds = YES;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(padding, 0, SCREEN.bounds.size.width - padding, 44);
-        label.font = [UIFont fontWithName:@"Avenir-Medium" size:fontSize];
+        label.frame = CGRectMake(padding, 0, [UIApplication currentSize].width - padding, 44);
+        label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:fontSize];
         label.textColor = HEX(0x4C586AFF);
         label.backgroundColor = HEX(0xF7F9FDff);
         label.text = self.sortedTitles[section];
@@ -241,7 +242,7 @@
         offset = isIPad ? 100 : 45;
     }
 
-    pillView.frame = CGRectMake(SCREEN.bounds.size.width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+    pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
     [cell.contentView addSubview:pillView];
     return cell;
 }

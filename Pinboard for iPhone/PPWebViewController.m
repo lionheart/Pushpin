@@ -17,6 +17,7 @@
 #import "KeychainItemWrapper.h"
 #import "OAuthConsumer.h"
 #import "PocketAPI.h"
+#import "UIApplication+AppDimensions.h"
 
 static NSInteger kToolbarHeight = 44;
 
@@ -237,7 +238,7 @@ static NSInteger kToolbarHeight = 44;
     }
     else {
         [UIView animateWithDuration:0.25 animations:^{
-            CGSize size = SCREEN.bounds.size;
+            CGSize size = [UIApplication currentSize];
             self.webView.frame = CGRectMake(0, 0, size.width, size.height);
             self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
             [self.navigationController setNavigationBarHidden:YES animated:YES];

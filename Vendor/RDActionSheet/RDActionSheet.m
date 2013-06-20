@@ -9,6 +9,8 @@
 #import "RDActionSheet.h"
 #import "PPButton.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AppDelegate.h"
+#import "UIApplication+AppDimensions.h"
 
 @interface RDActionSheet ()
 
@@ -256,7 +258,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             if (isIPad) {
-                buttonWidth = SCREEN.bounds.size.width - 20;
+                buttonWidth = [UIApplication currentSize].width - 20;
             }
             else {
                 buttonWidth = kLandscapeButtonWidth;
@@ -264,7 +266,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         } 
         else {
             if (isIPad) {
-                buttonWidth = SCREEN.bounds.size.width - 45;
+                buttonWidth = [UIApplication currentSize].width - 45;
             }
             else {
                 buttonWidth = kPortraitButtonWidth;
@@ -292,7 +294,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
         if (isIPad) {
-            labelWidth = SCREEN.bounds.size.width - 20;
+            labelWidth = [UIApplication currentSize].width - 20;
         }
         else {
             labelWidth = kLandscapeButtonWidth;
@@ -300,7 +302,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     }
     else {
         if (isIPad) {
-            labelWidth = SCREEN.bounds.size.width - 45;
+            labelWidth = [UIApplication currentSize].width - 45;
         }
         else {
             labelWidth = kPortraitButtonWidth;
@@ -328,11 +330,11 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - Button builders
 
 - (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
-    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:@"Avenir-Heavy" size:13.0]
-                            constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, NSIntegerMax)
+    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:[AppDelegate heavyFontName] size:13.0]
+                            constrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, NSIntegerMax)
                                 lineBreakMode:NSLineBreakByWordWrapping];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, SCREEN.bounds.size.width - 20, newSize.height + 5.0)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, [UIApplication currentSize].width - 20, newSize.height + 5.0)];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:13.0];
     label.numberOfLines = 0;

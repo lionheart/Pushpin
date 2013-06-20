@@ -20,6 +20,7 @@
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "UIApplication+AppDimensions.h"
 
 @interface FeedListViewController ()
 
@@ -109,6 +110,10 @@
 
         self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
         self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
+
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        self.tableView.opaque = NO;
     }
     return self;
 }
@@ -204,7 +209,7 @@
     label.textColor = HEX(0x4C566CFF);
     label.shadowColor = [UIColor whiteColor];
     label.shadowOffset = CGSizeMake(0,1);
-    label.font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+    label.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
     CGSize textSize = [sectionTitle sizeWithFont:label.font];
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
@@ -290,7 +295,7 @@
             UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
             BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
             CGFloat offset = isIPad ? 115 : 45;
-            pillView.frame = CGRectMake(SCREEN.bounds.size.width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+            pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
             
             [cell.contentView addSubview:pillView];
             break;

@@ -45,7 +45,7 @@
     [self.view addSubview:imageView];
 
     self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
-    self.usernameTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
+    self.usernameTextField.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:18];
     self.usernameTextField.textAlignment = NSTextAlignmentCenter;
     self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.usernameTextField.backgroundColor = [UIColor whiteColor];
@@ -62,7 +62,7 @@
     [self.view addSubview:self.usernameTextField];
 
     self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
-    self.passwordTextField.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
+    self.passwordTextField.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:18];
     self.passwordTextField.textAlignment = NSTextAlignmentCenter;
     self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.passwordTextField.backgroundColor = [UIColor whiteColor];
@@ -88,7 +88,7 @@
     self.textView.editable = NO;
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = NSTextAlignmentCenter;
-    self.textView.font = [UIFont fontWithName:@"Avenir-Heavy" size:14];
+    self.textView.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:14];
     self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
     [self.view addSubview:self.textView];
 
@@ -127,7 +127,7 @@
     [self.onePasswordButton setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     [self.onePasswordButton addTarget:self action:@selector(sendToOnePassword) forControlEvents:UIControlEventTouchUpInside];
 
-    self.onePasswordButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:15];
+    self.onePasswordButton.titleLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:15];
     [self.onePasswordButton setTitleColor:HEX(0x4A5768FF) forState:UIControlStateNormal];
     [self.onePasswordButton setTitleShadowColor:HEX(0xFFFFFF00) forState:UIControlStateNormal];
     self.onePasswordButton.hidden = YES;
