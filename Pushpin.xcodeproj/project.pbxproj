@@ -288,6 +288,10 @@
 		37B5F4D917737DC0005687DA /* navigation-back-button-selected-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D517737DC0005687DA /* navigation-back-button-selected-landscape@2x.png */; };
 		37B5F4DA17737DC0005687DA /* navigation-back-button-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D617737DC0005687DA /* navigation-back-button-landscape.png */; };
 		37B5F4DB17737DC0005687DA /* navigation-back-button-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D717737DC0005687DA /* navigation-back-button-landscape@2x.png */; };
+		37B5F4E01773816B005687DA /* navigation-back-button-selected-ios5.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4DC1773816B005687DA /* navigation-back-button-selected-ios5.png */; };
+		37B5F4E11773816B005687DA /* navigation-back-button-selected-ios5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4DD1773816B005687DA /* navigation-back-button-selected-ios5@2x.png */; };
+		37B5F4E21773816B005687DA /* navigation-back-button-ios5.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4DE1773816B005687DA /* navigation-back-button-ios5.png */; };
+		37B5F4E31773816B005687DA /* navigation-back-button-ios5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4DF1773816B005687DA /* navigation-back-button-ios5@2x.png */; };
 		37B65FE11672E0090041DA8C /* iTunesArtwork-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */; };
 		37B65FE21672E0090041DA8C /* Icon-beta.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDC1672E0090041DA8C /* Icon-beta.png */; };
 		37B65FE31672E0090041DA8C /* Icon-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B65FDD1672E0090041DA8C /* Icon-beta@2x.png */; };
@@ -941,6 +945,10 @@
 		37B5F4D517737DC0005687DA /* navigation-back-button-selected-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected-landscape@2x.png"; path = "Assets/navigation-back-button-selected-landscape@2x.png"; sourceTree = "<group>"; };
 		37B5F4D617737DC0005687DA /* navigation-back-button-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-landscape.png"; path = "Assets/navigation-back-button-landscape.png"; sourceTree = "<group>"; };
 		37B5F4D717737DC0005687DA /* navigation-back-button-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-landscape@2x.png"; path = "Assets/navigation-back-button-landscape@2x.png"; sourceTree = "<group>"; };
+		37B5F4DC1773816B005687DA /* navigation-back-button-selected-ios5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected-ios5.png"; path = "Assets/navigation-back-button-selected-ios5.png"; sourceTree = "<group>"; };
+		37B5F4DD1773816B005687DA /* navigation-back-button-selected-ios5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected-ios5@2x.png"; path = "Assets/navigation-back-button-selected-ios5@2x.png"; sourceTree = "<group>"; };
+		37B5F4DE1773816B005687DA /* navigation-back-button-ios5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-ios5.png"; path = "Assets/navigation-back-button-ios5.png"; sourceTree = "<group>"; };
+		37B5F4DF1773816B005687DA /* navigation-back-button-ios5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-ios5@2x.png"; path = "Assets/navigation-back-button-ios5@2x.png"; sourceTree = "<group>"; };
 		37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork-beta@2x.png"; path = "Assets/iTunesArtwork-beta@2x.png"; sourceTree = "<group>"; };
 		37B65FDC1672E0090041DA8C /* Icon-beta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-beta.png"; path = "Assets/Icon-beta.png"; sourceTree = "<group>"; };
 		37B65FDD1672E0090041DA8C /* Icon-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-beta@2x.png"; path = "Assets/Icon-beta@2x.png"; sourceTree = "<group>"; };
@@ -2117,6 +2125,10 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				37B5F4DC1773816B005687DA /* navigation-back-button-selected-ios5.png */,
+				37B5F4DD1773816B005687DA /* navigation-back-button-selected-ios5@2x.png */,
+				37B5F4DE1773816B005687DA /* navigation-back-button-ios5.png */,
+				37B5F4DF1773816B005687DA /* navigation-back-button-ios5@2x.png */,
 				37B5F4D417737DC0005687DA /* navigation-back-button-selected-landscape.png */,
 				37B5F4D517737DC0005687DA /* navigation-back-button-selected-landscape@2x.png */,
 				37B5F4D617737DC0005687DA /* navigation-back-button-landscape.png */,
@@ -2811,6 +2823,10 @@
 				37B5F4D917737DC0005687DA /* navigation-back-button-selected-landscape@2x.png in Resources */,
 				37B5F4DA17737DC0005687DA /* navigation-back-button-landscape.png in Resources */,
 				37B5F4DB17737DC0005687DA /* navigation-back-button-landscape@2x.png in Resources */,
+				37B5F4E01773816B005687DA /* navigation-back-button-selected-ios5.png in Resources */,
+				37B5F4E11773816B005687DA /* navigation-back-button-selected-ios5@2x.png in Resources */,
+				37B5F4E21773816B005687DA /* navigation-back-button-ios5.png in Resources */,
+				37B5F4E31773816B005687DA /* navigation-back-button-ios5@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
