@@ -317,6 +317,8 @@
     // Customize UIBarButtonItem
     UIImage *backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     UIImage *selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    UIImage *backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    UIImage *selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     
     CGRect buttonRect = CGRectMake(0, 0, 6, 30);
     CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
@@ -344,10 +346,17 @@
 
     [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
 
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackgroundLandscape forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImageLandscape forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsLandscapePhone];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),

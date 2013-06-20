@@ -20,5 +20,6 @@
 - (UIView *)notificationViewWithMessage:(NSString *)message;
 - (void)hide;
 - (void)hide:(BOOL)animated;
+- (void)didRotate:(NSNotification *)notification;
 
 @end
