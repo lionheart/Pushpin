@@ -26,7 +26,7 @@
 
 + (CALayer *)baseLayerForSelectedBackgroundForHeight:(CGFloat)height {
     CALayer *selectedBackgroundLayer = [CALayer layer];
-    selectedBackgroundLayer.frame = CGRectMake(0, 0, 302, height);
+    selectedBackgroundLayer.frame = CGRectMake(0, 0, SCREEN.bounds.size.width - 18, height);
     selectedBackgroundLayer.cornerRadius = 10;
     selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
     return selectedBackgroundLayer;
@@ -34,20 +34,20 @@
 
 + (CALayer *)bottomRectangleLayerForHeight:(CGFloat)height {
     CALayer *layer = [CALayer layer];
-    layer.frame = CGRectMake(0, height - 10, 302, 10);
+    layer.frame = CGRectMake(0, height - 10, SCREEN.bounds.size.width - 18, 10);
     layer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
     return layer;
 }
 
 + (CALayer *)topRectangleLayerForHeight:(CGFloat)height {
     CALayer *layer = [CALayer layer];
-    layer.frame = CGRectMake(0, 0, 302, 10);
+    layer.frame = CGRectMake(0, 0, SCREEN.bounds.size.width - 18, 10);
     layer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
     return layer;
 }
 
 - (void)setSelectedBackgroundViewWithLayer:(CALayer *)layer forHeight:(CGFloat)height {
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, height)];
     [selectedBackgroundView.layer addSublayer:layer];
     selectedBackgroundView.layer.masksToBounds = YES;
     self.selectedBackgroundView = selectedBackgroundView;
@@ -71,7 +71,7 @@
 
 + (CALayer *)layerForNonGroupedBackground {
     CALayer *selectedBackgroundLayer = [CALayer layer];
-    selectedBackgroundLayer.frame = CGRectMake(0, 0, 320, 44);
+    selectedBackgroundLayer.frame = CGRectMake(0, 0, SCREEN.bounds.size.width, 44);
     selectedBackgroundLayer.backgroundColor = HEX(0xDDE1E9FF).CGColor;
     return selectedBackgroundLayer;
 }

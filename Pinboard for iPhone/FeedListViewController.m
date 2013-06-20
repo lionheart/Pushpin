@@ -183,9 +183,10 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     float width = tableView.bounds.size.width;
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
 
-    int fontSize = 17;
-    int padding = 15;
+    NSUInteger fontSize = 17;
+    NSUInteger padding = isIPad ? 45 : 15;
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
     NSString *sectionTitle;
@@ -287,7 +288,9 @@
             }
             
             UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-            pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            CGFloat offset = isIPad ? 115 : 45;
+            pillView.frame = CGRectMake(SCREEN.bounds.size.width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
             
             [cell.contentView addSubview:pillView];
             break;

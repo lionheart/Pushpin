@@ -253,11 +253,22 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     for (PPButton *button in self.buttons) {
         CGFloat buttonWidth;
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-            buttonWidth = kLandscapeButtonWidth;
+            if (isIPad) {
+                buttonWidth = SCREEN.bounds.size.width - 20;
+            }
+            else {
+                buttonWidth = kLandscapeButtonWidth;
+            }
         } 
         else {
-            buttonWidth = kPortraitButtonWidth;
+            if (isIPad) {
+                buttonWidth = SCREEN.bounds.size.width - 45;
+            }
+            else {
+                buttonWidth = kPortraitButtonWidth;
+            }
         }
         
         button.frame = CGRectMake(0, 0, buttonWidth, kButtonHeight);
@@ -278,11 +289,22 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
     CGFloat labelWidth;
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-        labelWidth = kLandscapeButtonWidth;
+        if (isIPad) {
+            labelWidth = SCREEN.bounds.size.width - 20;
+        }
+        else {
+            labelWidth = kLandscapeButtonWidth;
+        }
     }
     else {
-        labelWidth = kPortraitButtonWidth;
+        if (isIPad) {
+            labelWidth = SCREEN.bounds.size.width - 45;
+        }
+        else {
+            labelWidth = kPortraitButtonWidth;
+        }
     }
     
     self.titleLabel.frame = CGRectMake((self.bounds.size.width - labelWidth) / 2, self.titleLabel.frame.origin.y, labelWidth, self.titleLabel.bounds.size.height);
@@ -307,10 +329,10 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
     CGSize newSize = [title sizeWithFont:[UIFont fontWithName:@"Avenir-Heavy" size:13.0]
-                            constrainedToSize:CGSizeMake(300.0, NSIntegerMax)
+                            constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, NSIntegerMax)
                                 lineBreakMode:NSLineBreakByWordWrapping];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, kPortraitButtonWidth, newSize.height + 5.0)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, SCREEN.bounds.size.width - 20, newSize.height + 5.0)];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:13.0];
     label.numberOfLines = 0;
@@ -319,7 +341,6 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     label.textColor = [UIColor whiteColor];
     label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
     label.shadowOffset = CGSizeMake(0.0, -1.0);
-    
     return label;
 }
 

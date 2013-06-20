@@ -50,7 +50,7 @@
                     self.heights[title] = @(0);
                 }
                 else {
-                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height));
+                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height));
                 }
 
                 if ([description isEqualToString:@""]) {
@@ -58,10 +58,10 @@
                 }
                 else {
                     if (index == 4) {
-                        self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height);
+                        self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height);
                     }
                     else {
-                        self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height);
+                        self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height);
                     }
                 }
             }
@@ -85,9 +85,9 @@
     NSString *title = self.titles[section];
     if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
-        
-        int fontSize = 17;
-        int padding = 15;
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        NSUInteger fontSize = 17;
+        NSUInteger padding = isIPad ? 45 : 15;
         UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
@@ -109,7 +109,7 @@
     NSString *title = self.titles[section];
     if (![title isEqual:@""]) {
         UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
+        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, CGFLOAT_MAX)].height + 20;
     }
     return 0;
 }

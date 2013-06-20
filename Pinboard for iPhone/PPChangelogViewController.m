@@ -57,8 +57,9 @@
     if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
         
-        int fontSize = 17;
-        int padding = 15;
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        NSUInteger fontSize = 17;
+        NSUInteger padding = isIPad ? 45 : 15;
         UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;

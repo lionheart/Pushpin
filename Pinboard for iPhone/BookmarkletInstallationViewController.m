@@ -38,10 +38,11 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        float width = tableView.bounds.size.width;
+        float width = tableView.bounds.size.width;        
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
 
-        int fontSize = 17;
-        int padding = 15;
+        NSUInteger fontSize = 17;
+        NSUInteger padding = isIPad ? 45 : 15;
 
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
         NSString *sectionTitle = NSLocalizedString(@"Watch a video", nil);
