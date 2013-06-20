@@ -17,7 +17,6 @@
 #import "PocketAPI.h"
 #import "ASPinboard/ASPinboard.h"
 #import "PPCoreGraphics.h"
-#import "PPWebViewController.h"
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
 #import "UIApplication+AppDimensions.h"
@@ -153,6 +152,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             }];
         });
     }
+    else {
+        [self.tableView reloadData];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -211,14 +213,13 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
             if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                PPWebViewController *webViewController;
                 if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
-                    webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
+                    self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
                 }
                 else {
-                    webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                    self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                 }
-                [self.navigationController pushViewController:webViewController animated:YES];
+                [self.navigationController pushViewController:self.webViewController animated:YES];
             }
             else {
                 switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -1145,7 +1146,18 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [self.tableView reloadData];
+    NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
 }
 
 @end

@@ -33,10 +33,9 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
-    
 
     CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
@@ -746,6 +745,20 @@ static NSInteger kToolbarHeight = 44;
 
     webViewController.urlString = urlString;
     return webViewController;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {    
+    CGRect frame = self.webView.frame;
+    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width;
+    self.webView.frame = frame;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
 }
 
 @end

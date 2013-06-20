@@ -16,6 +16,14 @@ static BOOL kPPNotificationIsVisible = NO;
 
 @implementation PPNotification
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    }
+    return self;
+}
+
 - (void)hide {
     [self hide:YES];
 }
@@ -111,6 +119,10 @@ static BOOL kPPNotificationIsVisible = NO;
         shared = [[PPNotification alloc] init];
     });
     return shared;
+}
+
+- (void)didRotate:(NSNotification *)notification {
+    [self hide:NO];
 }
 
 @end
