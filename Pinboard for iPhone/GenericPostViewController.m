@@ -736,7 +736,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)openActionSheetForSelectedPost {
-    if (!self.actionSheetVisible) {
+    if (!self.actionSheet) {
         NSString *urlString;
         if ([self.selectedPost[@"url"] length] > 67) {
             urlString = [NSString stringWithFormat:@"%@...", [self.selectedPost[@"url"] substringToIndex:67]];
@@ -746,58 +746,59 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         }
         
         BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-        
-        id sheet;
         if (isIPad) {
-            sheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
         else {
-            sheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
 
         PPPostAction action;
-        
         id <GenericPostDataSource> dataSource = [self currentDataSource];
 
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
             if (action == PPPostActionCopyToMine) {
-                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
             }
             else if (action == PPPostActionCopyURL) {
-                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
             }
             else if (action == PPPostActionDelete) {
-                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
             }
             else if (action == PPPostActionEdit) {
-                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
             }
             else if (action == PPPostActionMarkAsRead) {
-                [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
             }
             else if (action == PPPostActionReadLater) {
                 NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
                 if (readlater == READLATER_INSTAPAPER) {
-                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
                 }
                 else if (readlater == READLATER_READABILITY) {
-                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
                 }
                 else if (readlater == READLATER_POCKET) {
-                    [(UIActionSheet *)sheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
                 }
             }
         }
 
         self.actionSheetVisible = YES;        
         if (isIPad) {
-            [(UIActionSheet *)sheet showFromRect:[self.tableView rectForRowAtIndexPath:self.selectedIndexPath] inView:self.tableView animated:YES];
+            [(UIActionSheet *)self.actionSheet showFromRect:[self.tableView rectForRowAtIndexPath:self.selectedIndexPath] inView:self.tableView animated:YES];
         }
         else {
-            [(RDActionSheet *)sheet showFrom:self.navigationController.view];
+            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
         }
         self.tableView.scrollEnabled = NO;
+    }
+    else {
+        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+        self.actionSheet = nil;
     }
 }
 
@@ -814,38 +815,41 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 #pragma mark - RDActionSheet
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    self.tableView.scrollEnabled = YES;
-    self.actionSheetVisible = NO;
-    
-    id <GenericPostDataSource> dataSource = [self currentDataSource];
-    
-    if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
-        [self showConfirmDeletionAlert];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-        [self.searchDisplayController setActive:NO];
-        UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
-        [self.navigationController presentViewController:vc animated:YES completion:nil];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
-        [self markPostAsRead];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-        [self sendToReadLater];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-        [self sendToReadLater];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-        [self sendToReadLater];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-        [self copyURL];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-        UIViewController *vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
-        [self.navigationController presentViewController:vc animated:YES completion:nil];
+    if (buttonIndex >= 0) {
+        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+        self.tableView.scrollEnabled = YES;
+        
+        id <GenericPostDataSource> dataSource = [self currentDataSource];
+        
+        if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
+            [self showConfirmDeletionAlert];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
+            [self.searchDisplayController setActive:NO];
+            UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+            [self.navigationController presentViewController:vc animated:YES completion:nil];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
+            [self markPostAsRead];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+            [self copyURL];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
+            UIViewController *vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+            [self.navigationController presentViewController:vc animated:YES completion:nil];
+        }
+
+        self.actionSheet = nil;
     }
 }
 

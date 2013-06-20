@@ -54,12 +54,21 @@
         self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
 
         self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
-        
-        self.mobilizerActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@[@"Google", @"Readability", @"Instapaper"]];
-        self.mobilizerActionSheet.delegate = self;
 
-        self.readLaterActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:nil];
-        
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        if (isIPad) {
+            self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
+
+            self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.mobilizerActionSheet = (UIActionSheet *)[[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@[@"Google", @"Readability", @"Instapaper"]];
+            self.mobilizerActionSheet.delegate = self;
+            
+            self.readLaterActionSheet = (UIActionSheet *)[[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:nil];
+            self.readLaterActionSheet.delegate = self;
+        }
+
         self.readLaterServices = [NSMutableArray array];
         [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
         [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
@@ -502,58 +511,64 @@
     }
 }
 
-- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.supportActionSheet) {
-        if (buttonIndex == 3) {
-            MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
-            emailComposer.mailComposeDelegate = self;
-            [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
-            [emailComposer setToRecipients:@[@"support@aurora.io"]];
-            [self presentViewController:emailComposer animated:YES completion:nil];
-            return;
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex >= 0) {
+        if (actionSheet == (UIActionSheet *)self.supportActionSheet) {
+            if (buttonIndex == 3) {
+                MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
+                emailComposer.mailComposeDelegate = self;
+                [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
+                [emailComposer setToRecipients:@[@"support@aurora.io"]];
+                [self presentViewController:emailComposer animated:YES completion:nil];
+                return;
+            }
+            else if (buttonIndex == 0) {
+                UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
+                                                     andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                                  andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+                
+                [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
+                return;
+            }
         }
-        else if (buttonIndex == 0) {
-            UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                                 andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                              andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-            
-            [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
-            return;
+        else if (actionSheet == (UIActionSheet *)self.mobilizerActionSheet) {
+            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+
+            if ([buttonTitle isEqualToString:@"Google"]) {
+                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_GOOGLE)];
+            }
+            else if ([buttonTitle isEqualToString:@"Instapaper"]) {
+                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_INSTAPAPER)];
+            }
+            else if ([buttonTitle isEqualToString:@"Readability"]) {
+                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_READABILITY)];
+            }
+
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
+        else if (actionSheet == (UIActionSheet *)self.readLaterActionSheet) {
+            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+
+            if ([buttonTitle isEqualToString:@"Instapaper"]) {
+                [self.instapaperAlertView show];
+            }
+            else if ([buttonTitle isEqualToString:@"Readability"]) {
+                [self.readabilityAlertView show];
+            }
+            else if ([buttonTitle isEqualToString:@"Pocket"]) {
+                [[PocketAPI sharedAPI] loginWithDelegate:nil];;
+            }
+            else if ([buttonTitle isEqualToString:@"None"]) {
+                [[AppDelegate sharedDelegate] setReadlater:nil];
+                [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            }
+        }
+
+        self.actionSheet = nil;
     }
-    else if (actionSheet == self.mobilizerActionSheet) {
-        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-        if ([buttonTitle isEqualToString:@"Google"]) {
-            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_GOOGLE)];
-        }
-        else if ([buttonTitle isEqualToString:@"Instapaper"]) {
-            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_INSTAPAPER)];
-        }
-        else if ([buttonTitle isEqualToString:@"Readability"]) {
-            [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_READABILITY)];
-        }
-
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    }
-    else if (actionSheet == self.readLaterActionSheet) {
-        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-        if ([buttonTitle isEqualToString:@"Instapaper"]) {
-            [self.instapaperAlertView show];
-        }
-        else if ([buttonTitle isEqualToString:@"Readability"]) {
-            [self.readabilityAlertView show];
-        }
-        else if ([buttonTitle isEqualToString:@"Pocket"]) {
-            [[PocketAPI sharedAPI] loginWithDelegate:nil];;
-        }
-        else if ([buttonTitle isEqualToString:@"None"]) {
-            [[AppDelegate sharedDelegate] setReadlater:nil];
-            [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-        }
-
+    else {
+        self.actionSheet = nil;
     }
 }
 
@@ -578,11 +593,29 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
+            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
             if (indexPath.row == 2) {
-                [self.readLaterActionSheet showFrom:self.navigationController.view];
+                if (isIPad) {
+                    if (!self.actionSheet) {
+                        [self.readLaterActionSheet showFromRect:rect inView:tableView animated:YES];
+                        self.actionSheet = self.readLaterActionSheet;
+                    }
+                }
+                else {
+                    [(RDActionSheet *)self.readLaterActionSheet showFrom:self.navigationController.view];
+                }
             }
             else if (indexPath.row == 3) {
-                [self.mobilizerActionSheet showFrom:self.navigationController.view];
+                if (isIPad) {
+                    if (!self.actionSheet) {
+                        [self.mobilizerActionSheet showFromRect:rect inView:tableView animated:YES];
+                        self.actionSheet = self.mobilizerActionSheet;
+                    }
+                }
+                else {
+                    [(RDActionSheet *)self.mobilizerActionSheet showFrom:self.navigationController.view];
+                }
             }
             else if (indexPath.row == 4) {
                 [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];

@@ -1018,8 +1018,8 @@
 }
 
 + (NSString *)heavyFontName {
-    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS5) {
+    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS6) {
         return @"HelveticaNeue-Bold";
     }
     else {
@@ -1028,8 +1028,8 @@
 }
 
 + (NSString *)mediumFontName {
-    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS5) {
+    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS6) {
         return @"HelveticaNeue-Medium";
     }
     else {
@@ -1038,8 +1038,8 @@
 }
 
 + (NSString *)bookFontName {
-    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS5) {
+    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS6) {
         return @"HelveticaNeue-Bold";
     }
     else {
@@ -1048,8 +1048,8 @@
 }
 
 + (NSString *)blackFontName {
-    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS5) {
+    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS6) {
         return @"HelveticaNeue-Bold";
     }
     else {

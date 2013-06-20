@@ -23,7 +23,13 @@
     if (self) {
         self.title = NSLocalizedString(@"Browser Settings", nil);
 
-        self.browserActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        if (isIPad) {
+            self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.browserActionSheet = (UIActionSheet *)[[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
 
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
         
@@ -179,10 +185,16 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            [self.browserActionSheet showFrom:self.navigationController.view];
-        }
-        else {
-            
+            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            if (isIPad) {
+                if (!self.actionSheet) {
+                    CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+                    [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
+                }
+            }
+            else {
+                [(RDActionSheet *)self.browserActionSheet showFrom:self.navigationController.view];
+            }
         }
     }
     else {
@@ -205,39 +217,44 @@
     }
 }
 
-- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.browserActionSheet) {
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:@"Webview"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex >= 0) {
+        if (actionSheet == (UIActionSheet *)self.browserActionSheet) {
+            NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+            if ([title isEqualToString:@"Webview"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+            }
+            else if ([title isEqualToString:@"Safari"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+            }
+            else if ([title isEqualToString:@"Chrome"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+            }
+            else if ([title isEqualToString:@"iCab Mobile"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
+            }
+            else if ([title isEqualToString:@"Dolphin"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_DOLPHIN)];
+            }
+            else if ([title isEqualToString:@"Cyberspace"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CYBERSPACE)];
+            }
+            else if ([title isEqualToString:@"Opera"]) {
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
+                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_OPERA)];
+            }
+            
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
-        else if ([title isEqualToString:@"Safari"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
-        }
-        else if ([title isEqualToString:@"Chrome"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
-        }
-        else if ([title isEqualToString:@"iCab Mobile"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
-        }
-        else if ([title isEqualToString:@"Dolphin"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_DOLPHIN)];
-        }
-        else if ([title isEqualToString:@"Cyberspace"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CYBERSPACE)];
-        }
-        else if ([title isEqualToString:@"Opera"]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
-            [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_OPERA)];
-        }
-        
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else {
+        self.actionSheet = nil;
     }
 }
 

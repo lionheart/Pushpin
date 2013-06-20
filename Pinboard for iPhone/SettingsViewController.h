@@ -17,7 +17,7 @@
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
@@ -27,14 +27,16 @@
 @property (nonatomic, retain) WCAlertView *readabilityAlertView;
 @property (nonatomic, retain) WCAlertView *logOutAlertView;
 
-@property (nonatomic, retain) RDActionSheet *mobilizerActionSheet;
+@property (nonatomic, retain) UIActionSheet *mobilizerActionSheet;
 @property (nonatomic, retain) RDActionSheet *supportActionSheet;
-@property (nonatomic, retain) RDActionSheet *readLaterActionSheet;
+@property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
+
+@property (nonatomic, strong) id actionSheet;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
