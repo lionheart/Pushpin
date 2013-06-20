@@ -9,6 +9,7 @@
 #import <MessageUI/MessageUI.h>
 #import <Social/Social.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Twitter/Twitter.h>
 
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
@@ -35,7 +36,7 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
 
     CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height)];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
@@ -91,13 +92,13 @@ static NSInteger kToolbarHeight = 44;
     
     self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 75, 40, 40);
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
     [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
     [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
 
     self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 75, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     self.exitReaderModeButton.hidden = YES;
@@ -159,6 +160,7 @@ static NSInteger kToolbarHeight = 44;
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
     self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
+
     self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.toolbar];
 }
@@ -270,15 +272,57 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)socialActionButtonTouchUp:(id)sender {
-    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    actionSheet.delegate = self;
+    if (!self.actionSheet) {
+        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
+        
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        if (isIPad) {
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            [(RDActionSheet *)self.actionSheet setDelegate:self];
+        }
 
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Twitter", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Facebook", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Messages", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
-    [actionSheet showFrom:self.navigationController.view];
+        BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+        BOOL canSendTweet;
+        BOOL canPostToFacebook;
+        if (isIOS6) {
+            canSendTweet = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
+            canPostToFacebook = [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
+        }
+        else {
+            canSendTweet = [TWTweetComposeViewController canSendTweet];
+            canPostToFacebook = NO;
+        }
+
+        if (canSendTweet) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Twitter", nil)];
+        }
+
+        if (canPostToFacebook) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Facebook", nil)];
+        }
+
+        if ([MFMessageComposeViewController canSendText]) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Messages", nil)];
+        }
+        
+        if ([MFMailComposeViewController canSendMail]) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
+        }
+
+        if (isIPad) {
+            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
+        }
+        else {
+            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+        }
+    }
+    else {
+        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+        self.actionSheet = nil;
+    }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -363,121 +407,155 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
-    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    actionSheet.delegate = self;
+    if (!self.actionSheet) {
+        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
 
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-        case BROWSER_SAFARI:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
-            break;
-            
-        case BROWSER_OPERA:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
-            break;
-            
-        case BROWSER_ICAB_MOBILE:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in iCab Mobile", nil)];
-            break;
-            
-        case BROWSER_DOLPHIN:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
-            break;
-            
-        case BROWSER_CYBERSPACE:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
-            break;
-            
-        case BROWSER_CHROME:
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
-            break;
-            
-        default:
-            break;
-    }
-    
-    NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
-    if (readlater == READLATER_INSTAPAPER) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
-    }
-    else if (readlater == READLATER_READABILITY) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
-    }
-    else if (readlater == READLATER_POCKET) {
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
-    }
-    
-    [actionSheet showFrom:self.navigationController.view];
-}
-
-- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-    NSString *urlString = [self urlStringForDemobilizedURL:self.url];
-    NSURL *url = [NSURL URLWithString:urlString];
-    if (url.scheme) {
-        NSRange range = [urlString rangeOfString:url.scheme];
-
-        if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-            [self copyURL];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Email URL", nil)]) {
-            [self emailURL];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
-            return;
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
-            SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-            [socialComposeViewController setInitialText:self.title];
-            [socialComposeViewController addURL:url];
-            [self presentViewController:socialComposeViewController animated:YES completion:nil];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
-            SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-            [socialComposeViewController setInitialText:self.title];
-            [socialComposeViewController addURL:url];
-            [self presentViewController:socialComposeViewController animated:YES completion:nil];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
-            MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
-            composeViewController.messageComposeDelegate = self;
-            [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
-            [self presentViewController:composeViewController animated:YES completion:nil];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-            [self sendToReadLater];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-            [self sendToReadLater];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-            [self sendToReadLater];
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        if (isIPad) {
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
         else {
-            if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
-                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            [(RDActionSheet *)self.actionSheet setDelegate:self];
+        }
+
+        [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+            case BROWSER_SAFARI:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
+                break;
                 
-                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                    url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+            case BROWSER_OPERA:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
+                break;
+                
+            case BROWSER_ICAB_MOBILE:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in iCab Mobile", nil)];
+                break;
+                
+            case BROWSER_DOLPHIN:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
+                break;
+                
+            case BROWSER_CYBERSPACE:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
+                break;
+                
+            case BROWSER_CHROME:
+                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
+                break;
+                
+            default:
+                break;
+        }
+        
+        NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
+        if (readlater == READLATER_INSTAPAPER) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+        }
+        else if (readlater == READLATER_READABILITY) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+        }
+        else if (readlater == READLATER_POCKET) {
+            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+        }
+
+        if (isIPad) {
+            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+        }
+        else {
+            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+        }
+    }
+    else {
+        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+        self.actionSheet = nil;
+    }
+}
+
+- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
+    self.actionSheet = nil;
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex >= 0) {
+        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+        self.actionSheet = nil;
+        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
+        NSURL *url = [NSURL URLWithString:urlString];
+        if (url.scheme) {
+            NSRange range = [urlString rangeOfString:url.scheme];
+
+            if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+                [self copyURL];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Email URL", nil)]) {
+                [self emailURL];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
+                return;
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
+                BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+                if (isIOS6) {
+                    SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                    [socialComposeViewController setInitialText:self.title];
+                    [socialComposeViewController addURL:url];
+                    [self presentViewController:socialComposeViewController animated:YES completion:nil];
                 }
                 else {
-                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+                    TWTweetComposeViewController *tweetComposeViewController = [[TWTweetComposeViewController alloc] init];
+                    [tweetComposeViewController setInitialText:self.title];
+                    [tweetComposeViewController addURL:url];
+                    [self presentViewController:tweetComposeViewController animated:YES completion:nil];
                 }
             }
-            else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
-                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"ohttp"]];
+            else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
+                SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+                [socialComposeViewController setInitialText:self.title];
+                [socialComposeViewController addURL:url];
+                [self presentViewController:socialComposeViewController animated:YES completion:nil];
             }
-            else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
-                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"dolphin"]];
+            else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
+                MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
+                composeViewController.messageComposeDelegate = self;
+                [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
+                [self presentViewController:composeViewController animated:YES completion:nil];
             }
-            else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
-                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"cyber"]];
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+                [self sendToReadLater];
             }
-            else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
-                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+                [self sendToReadLater];
             }
-            [[UIApplication sharedApplication] openURL:url];
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+                [self sendToReadLater];
+            }
+            else {
+                if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+                    
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                        url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                    }
+                    else {
+                        url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+                    }
+                }
+                else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"ohttp"]];
+                }
+                else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"dolphin"]];
+                }
+                else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"cyber"]];
+                }
+                else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
+                }
+                [[UIApplication sharedApplication] openURL:url];
+            }
         }
     }
 }
@@ -749,8 +827,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {    
     CGRect frame = self.webView.frame;
-    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width - kToolbarHeight - self.navigationController.navigationBar.frame.size.height;
-    frame.size.height = [UIApplication sizeInOrientation:toInterfaceOrientation].height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height;
+    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width;
+    frame.size.height = [UIApplication sizeInOrientation:toInterfaceOrientation].height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height;
     self.webView.frame = frame;
 
     CGPoint newPoint = [self adjustedPuckPositionWithPoint:self.webView.frame.origin];

@@ -9,6 +9,7 @@
 #import "PinboardNotesDataSource.h"
 #import "ASPinboard/ASPinboard.h"
 #import "NSAttributedString+Attributes.h"
+#import "UIApplication+AppDimensions.h"
 
 @implementation PinboardNotesDataSource
 
@@ -194,7 +195,7 @@
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20);
     callback(attributedString, height);
 }
 

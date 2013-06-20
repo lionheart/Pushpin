@@ -87,6 +87,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
+@property (nonatomic, strong) id actionSheet;
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;

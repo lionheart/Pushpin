@@ -11,7 +11,7 @@
 #import "RDActionSheet.h"
 #import <StoreKit/StoreKit.h>
 
-@interface PPAboutViewController : PPTableViewController <RDActionSheetDelegate, SKStoreProductViewControllerDelegate>
+@interface PPAboutViewController : PPTableViewController <RDActionSheetDelegate, UIActionSheetDelegate, SKStoreProductViewControllerDelegate>
 
 @property (nonatomic, strong) NSArray *data;
 @property (nonatomic, strong) NSMutableArray *titles;

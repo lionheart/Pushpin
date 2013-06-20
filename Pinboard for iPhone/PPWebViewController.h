@@ -12,7 +12,7 @@
 #import "AppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
@@ -36,6 +36,8 @@
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL stopped;
 @property (nonatomic) CGFloat lastContentOffset;
+@property (nonatomic) BOOL actionSheetIsVisible;
+@property (nonatomic, strong) id actionSheet;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
