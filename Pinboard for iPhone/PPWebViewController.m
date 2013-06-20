@@ -35,7 +35,7 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
 
     CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
@@ -91,13 +91,13 @@ static NSInteger kToolbarHeight = 44;
     
     self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 75, 40, 40);
     [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
     [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
 
     self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 75, 40, 40);
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     self.exitReaderModeButton.hidden = YES;
@@ -749,8 +749,13 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {    
     CGRect frame = self.webView.frame;
-    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width;
+    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width - kToolbarHeight - self.navigationController.navigationBar.frame.size.height;
+    frame.size.height = [UIApplication sizeInOrientation:toInterfaceOrientation].height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height;
     self.webView.frame = frame;
+
+    CGPoint newPoint = [self adjustedPuckPositionWithPoint:self.webView.frame.origin];
+    self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

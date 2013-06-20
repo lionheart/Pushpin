@@ -315,11 +315,25 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
     // Customize UIBarButtonItem
-    UIImage *backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    UIImage *selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    UIImage *backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    UIImage *selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    
+    UIImage *backButtonBackground;
+    UIImage *selectedBackButtonImage;
+    UIImage *backButtonBackgroundLandscape;
+    UIImage *selectedBackButtonImageLandscape;
+
+    NSString *version = [[UIDevice currentDevice] systemVersion];
+    if ([version floatValue] < 6.0) {
+        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
+        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+    }
+    else {
+        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
+        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+    }
+
     CGRect buttonRect = CGRectMake(0, 0, 6, 30);
     CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
     barButtonItemLayer.frame = buttonRect;
@@ -1004,8 +1018,8 @@
 }
 
 + (NSString *)heavyFontName {
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    if (isIPad) {
+    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS5) {
         return @"HelveticaNeue-Bold";
     }
     else {
@@ -1014,8 +1028,8 @@
 }
 
 + (NSString *)mediumFontName {
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    if (isIPad) {
+    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS5) {
         return @"HelveticaNeue-Medium";
     }
     else {
@@ -1024,8 +1038,8 @@
 }
 
 + (NSString *)bookFontName {
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    if (isIPad) {
+    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS5) {
         return @"HelveticaNeue-Bold";
     }
     else {
@@ -1034,8 +1048,8 @@
 }
 
 + (NSString *)blackFontName {
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    if (isIPad) {
+    BOOL isIOS5 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
+    if (!isIOS5) {
         return @"HelveticaNeue-Bold";
     }
     else {
