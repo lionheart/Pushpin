@@ -57,7 +57,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
     self.loading = NO;
     self.searchLoading = NO;
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, 320, 30)];
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, SCREEN.bounds.size.width, 30)];
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
@@ -141,7 +141,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 
         [self.pullToRefreshImageView startAnimating];
-        self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, 10, 40, 40);
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
@@ -404,12 +404,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
                         CGFloat offset = self.tableView.contentOffset.y;
-                        self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+                        self.pullToRefreshView.frame = CGRectMake(0, offset, SCREEN.bounds.size.width, -offset);
                         
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, 44)];
                             self.searchBar.delegate = self;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
@@ -679,10 +679,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
 
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, 320.f, height);
+    gradient.frame = CGRectMake(0, 0, SCREEN.bounds.size.width, height);
     gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
     gradient.name = @"Gradient";
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, height)];
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
     
@@ -692,9 +692,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
     else {
         CAGradientLayer *selectedGradient = [CAGradientLayer layer];
-        selectedGradient.frame = CGRectMake(0, 0, 320.f, height);
+        selectedGradient.frame = CGRectMake(0, 0, SCREEN.bounds.size.width, height);
         selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
-        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.f, height)];
+        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, height)];
         cell.selectedBackgroundView = selectedBackgroundView;
         [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
     }
@@ -702,7 +702,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.frame = CGRectMake(302.f, 0, 18.f, 19.f);
+        lockImageView.frame = CGRectMake(SCREEN.bounds.size.width - 18, 0, 18.f, 19.f);
         [cell addSubview:lockImageView];
     }
     
@@ -1025,7 +1025,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.pullToRefreshImageView.frame = CGRectMake(140, 10, 40, 40);
+                        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, 10, 40, 40);
                         [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
@@ -1047,9 +1047,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             imageOffset = UIOffsetMake(0, 10);
         }
         
-        self.pullToRefreshView.frame = CGRectMake(0, offset, 320, -offset);
+        self.pullToRefreshView.frame = CGRectMake(0, offset, SCREEN.bounds.size.width, -offset);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-        self.pullToRefreshImageView.frame = CGRectMake(140, imageOffset.vertical, 40, 40);
+        self.pullToRefreshImageView.frame = CGRectMake((SCREEN.bounds.size.width - 40) / 2, imageOffset.vertical, 40, 40);
     }
 }
 

@@ -15,7 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         CALayer *topBorder = [CALayer layer];
-        topBorder.frame = CGRectMake(0, -0.5, 600, 1);
+        topBorder.frame = CGRectMake(0, -0.5, SCREEN.bounds.size.width, 1);
         topBorder.borderWidth = 1;
         topBorder.borderColor = [UIColor colorWithRed:0.161 green:0.176 blue:0.318 alpha:1].CGColor;
         [self.layer insertSublayer:topBorder atIndex:[self.layer.sublayers count]];

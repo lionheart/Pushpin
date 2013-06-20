@@ -164,11 +164,15 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        NSUInteger fontSize = 17;
+        NSUInteger padding = isIPad ? 45 : 15;
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, 44)];
         view.clipsToBounds = YES;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, 0, 320, 44);
-        label.font = [UIFont fontWithName:@"Avenir-Medium" size:18];
+        label.frame = CGRectMake(padding, 0, SCREEN.bounds.size.width - padding, 44);
+        label.font = [UIFont fontWithName:@"Avenir-Medium" size:fontSize];
         label.textColor = HEX(0x4C586AFF);
         label.backgroundColor = HEX(0xF7F9FDff);
         label.text = self.sortedTitles[section];
@@ -228,12 +232,16 @@
     UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
     UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
     
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    CGFloat offset;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        pillView.frame = CGRectMake(320 - pillImage.size.width - 5, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+        offset = isIPad ? 15 : 5;
     }
     else {
-        pillView.frame = CGRectMake(320 - pillImage.size.width - 45, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+        offset = isIPad ? 100 : 45;
     }
+
+    pillView.frame = CGRectMake(SCREEN.bounds.size.width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
     [cell.contentView addSubview:pillView];
     return cell;
 }

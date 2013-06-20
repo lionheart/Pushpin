@@ -344,6 +344,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger deleteCount = 0;
             NSUInteger skipCount = 0;
             NSUInteger tagAddCount = 0;
+            NSUInteger tagDeleteCount = 0;
             
             NSString *hash;
             NSString *shortHash;
@@ -375,7 +376,6 @@ static BOOL kPinboardSyncInProgress = NO;
                         // Delete all posts that were skipped
                         for (NSInteger j=skipPivot; j<i; j++) {
                             [bookmarksToDelete addObject:oldHashes[j]];
-                            deleteCount++;
                         }
                         
                         #warning XXX Don't understand why this works, but this prevents Pushpin from deleting bookmarks needlessly.
@@ -430,12 +430,10 @@ static BOOL kPinboardSyncInProgress = NO;
                     updated_or_created = YES;
                     addCount++;
                 }
-                
-                if (!updated_or_created) {
-                    skipCount++;
-                }
-                else if (postTags.length > 0) {
+
+                if (updated_or_created && postTags.length > 0) {
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                    tagDeleteCount++;
 
                     for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
                         [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
@@ -452,21 +450,22 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             
             DLog(@"%@", [NSDate date]);
+            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+            
+            for (NSString *bookmarkHash in bookmarksToDelete) {
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
+                deleteCount++;
+            }
+            
+            [db commit];
+            [db close];
             
             DLog(@"added %d", addCount);
             DLog(@"updated %d", updateCount);
             DLog(@"skipped %d", skipCount);
             DLog(@"removed %d", deleteCount);
             DLog(@"tags added %d", tagAddCount);
-            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-            
-            for (NSString *bookmarkHash in bookmarksToDelete) {
-                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
-            }
-            
-            [db commit];
-            [db close];
             
             self.totalNumberOfPosts = index;
 
@@ -1091,7 +1090,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, CGFLOAT_MAX)].height + 20);
     callback(attributedString, height, @[]);
 }
 
@@ -1163,7 +1162,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, CGFLOAT_MAX)].height + 20);
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;

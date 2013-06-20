@@ -255,8 +255,8 @@
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width, CGFLOAT_MAX)].height + 20);
     callback(attributedString, height, @[]);
 }
 
@@ -327,8 +327,8 @@
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20);
+
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake(SCREEN.bounds.size.width, CGFLOAT_MAX)].height + 20);
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;
@@ -410,8 +410,10 @@
         }
 
         if (shouldPush) {
-            GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
-            callback(postViewController);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+                callback(postViewController);
+            });
         }
     });
 }

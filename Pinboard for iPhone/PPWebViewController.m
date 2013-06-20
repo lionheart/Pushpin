@@ -415,68 +415,70 @@ static NSInteger kToolbarHeight = 44;
     NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
     NSString *urlString = [self urlStringForDemobilizedURL:self.url];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSRange range = [urlString rangeOfString:url.scheme];
+    if (url.scheme) {
+        NSRange range = [urlString rangeOfString:url.scheme];
 
-    if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-        [self copyURL];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Email URL", nil)]) {
-        [self emailURL];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
-        return;
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
-        SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [socialComposeViewController setInitialText:self.title];
-        [socialComposeViewController addURL:url];
-        [self presentViewController:socialComposeViewController animated:YES completion:nil];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
-        SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [socialComposeViewController setInitialText:self.title];
-        [socialComposeViewController addURL:url];
-        [self presentViewController:socialComposeViewController animated:YES completion:nil];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
-        MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
-        composeViewController.messageComposeDelegate = self;
-        [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
-        [self presentViewController:composeViewController animated:YES completion:nil];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-        [self sendToReadLater];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-        [self sendToReadLater];
-    }
-    else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-        [self sendToReadLater];
-    }
-    else {
-        if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
-            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
-            
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-            }
-            else {
+        if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+            [self copyURL];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Email URL", nil)]) {
+            [self emailURL];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
+            return;
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
+            SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            [socialComposeViewController setInitialText:self.title];
+            [socialComposeViewController addURL:url];
+            [self presentViewController:socialComposeViewController animated:YES completion:nil];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
+            SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+            [socialComposeViewController setInitialText:self.title];
+            [socialComposeViewController addURL:url];
+            [self presentViewController:socialComposeViewController animated:YES completion:nil];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
+            MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
+            composeViewController.messageComposeDelegate = self;
+            [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, urlString]];
+            [self presentViewController:composeViewController animated:YES completion:nil];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+            [self sendToReadLater];
+        }
+        else {
+            if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
                 url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+                
+                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                    url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                }
+                else {
+                    url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
+                }
             }
+            else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
+                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"ohttp"]];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
+                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"dolphin"]];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
+                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"cyber"]];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
+                url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
+            }
+            [[UIApplication sharedApplication] openURL:url];
         }
-        else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
-            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"ohttp"]];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
-            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"dolphin"]];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
-            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"cyber"]];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
-            url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
-        }
-        [[UIApplication sharedApplication] openURL:url];
     }
 }
 
@@ -584,7 +586,7 @@ static NSInteger kToolbarHeight = 44;
                 break;
                 
             case MOBILIZER_INSTAPAPER:
-                return [url.absoluteString substringFromIndex:30];
+                return [url.absoluteString substringFromIndex:36];
                 break;
                 
             case MOBILIZER_READABILITY:

@@ -66,11 +66,12 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        
         float width = tableView.bounds.size.width;
-        
         int fontSize = 17;
-        int padding = 15;
-        
+        int padding = isIPad ? 45 : 15;
+
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
         NSString *sectionTitle = NSLocalizedString(@"Browser Bookmarklet", nil);
         label.text = sectionTitle;
