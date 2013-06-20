@@ -18,6 +18,7 @@
 #import "RDActionSheet.h"
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"
+#import "UIApplication+AppDimensions.h"
 
 @interface PPAboutViewController ()
 
@@ -37,7 +38,7 @@
         
         self.heights = [NSMutableDictionary dictionary];
         self.titles = [NSMutableArray array];
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
         NSInteger index = 0;
         for (NSArray *list in self.data) {
@@ -50,7 +51,7 @@
                     self.heights[title] = @(0);
                 }
                 else {
-                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height));
+                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height));
                 }
 
                 if ([description isEqualToString:@""]) {
@@ -58,10 +59,10 @@
                 }
                 else {
                     if (index == 4) {
-                        self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height);
+                        self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height);
                     }
                     else {
-                        self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 40, CGFLOAT_MAX)].height);
+                        self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height);
                     }
                 }
             }
@@ -88,7 +89,7 @@
         BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
-        UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
@@ -108,8 +109,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
     if (![title isEqual:@""]) {
-        UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 20, CGFLOAT_MAX)].height + 20;
+        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17];
+        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20;
     }
     return 0;
 }
@@ -134,13 +135,13 @@
     
     cell.accessoryView = nil;
     
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
     if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
         cell.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:12];
     }
     else {
-        cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+        cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     }
     cell.detailTextLabel.numberOfLines = 0;
     cell.textLabel.text = nil;
@@ -180,7 +181,7 @@
         cell.textLabel.text = title;
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+        cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
             cell.detailTextLabel.text = @"Tap to view license.";
         }

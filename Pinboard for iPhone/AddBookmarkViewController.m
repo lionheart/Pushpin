@@ -15,6 +15,7 @@
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "PPCoreGraphics.h"
+#import "UIApplication+AppDimensions.h"
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
@@ -54,10 +55,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
 
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.font = font;
         self.urlTextField.delegate = self;
@@ -77,7 +78,15 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
 
-        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, SCREEN.bounds.size.height - 44 - 240)];
+        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        CGFloat offset;
+        if (isIPad) {
+            offset = 285;
+        }
+        else {
+            offset = 240;
+        }
+        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height - 44 - offset)];
         self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.postDescriptionTextView.font = font;
@@ -264,9 +273,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         UIView *view = [[UIView alloc] init];
         view.clipsToBounds = YES;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, 5, 280, [self tableView:tableView heightForFooterInSection:0]);
+        label.frame = CGRectMake(20, 5, [UIApplication currentSize].width - 40, [self tableView:tableView heightForFooterInSection:0]);
         label.textAlignment = NSTextAlignmentCenter;
-        label.font = [UIFont fontWithName:@"Avenir-Medium" size:13];
+        label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
         label.textColor = HEX(0x4C586AFF);
         label.numberOfLines = 0;
         label.backgroundColor = HEX(0xF7F9FDff);
@@ -279,8 +288,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:13];
-        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake(280, CGFLOAT_MAX)].height + 10;
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
+        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height + 10;
     }
     return 0;
 }
@@ -467,10 +476,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
     for (UIView *view in [cell.contentView subviews]) {
         [view removeFromSuperview];
@@ -486,6 +495,15 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     }
 
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+    
+    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    CGFloat textFieldWidth;
+    if (isIPad) {
+        textFieldWidth = [UIApplication currentSize].width - 135;
+    }
+    else {
+        textFieldWidth = [UIApplication currentSize].width - 62;
+    }
 
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
@@ -495,7 +513,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 switch (indexPath.row) {
                     case 0:
                         cell.imageView.image = [UIImage imageNamed:@"globe"];
-                        self.urlTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                        self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                         [cell.contentView addSubview:self.urlTextField];
                         break;
                         
@@ -509,7 +527,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                             cell.textLabel.enabled = NO;
                         }
                         else {
-                            self.titleTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            self.titleTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                             [cell.contentView addSubview:self.titleTextField];
                         }
                         break;
@@ -525,7 +543,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         }
                         else {
                             cell.selectionStyle = UITableViewCellSelectionStyleGray;
-                            self.descriptionTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            self.descriptionTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                             self.descriptionTextField.placeholder = @"Click to edit description.";
                             self.descriptionTextField.text = self.postDescription;
 
@@ -544,19 +562,22 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                             cell.textLabel.enabled = NO;
                         }
                         else {
-                            self.tagTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+                            self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                             cell.accessoryView = nil;
                             [cell.contentView addSubview:self.tagTextField];
                         }
                         break;
                         
-                    default:
+                    default: {
+                        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+                        CGFloat offset = isIPad ? 95 : 25;
+
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
                             UIImage *pillImage = [PPCoreGraphics pillImage:self.tagCounts[tag]];
                             UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-                            pillView.frame = CGRectMake(320 - pillImage.size.width - 30, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+                            pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
                             [cell.contentView addSubview:pillView];
                         }
                         else {
@@ -567,6 +588,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                         cell.editing = NO;
                         break;
+                    }
                 }
                 break;
 

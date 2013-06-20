@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PPChangelogViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "AppDelegate.h"
 
 @interface PPChangelogViewController ()
 
@@ -24,7 +25,7 @@
         self.title = @"Changelog";
         self.heights = [NSMutableDictionary dictionary];
         self.titles = [NSMutableArray array];
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:15];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
         NSInteger index = 0;
         for (NSArray *list in self.data) {
             [self.titles addObject:list[0]];
@@ -60,7 +61,7 @@
         BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
-        UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:fontSize];
+        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
@@ -80,7 +81,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
     if (![title isEqual:@""]) {
-        UIFont *font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17];
         return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
     }
     return 0;
@@ -103,7 +104,7 @@
     }
 
     cell.accessoryView = nil;
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:15];
+    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
     cell.textLabel.text = nil;
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.text = nil;

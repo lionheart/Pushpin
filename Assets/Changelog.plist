@@ -2,374 +2,378 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-  <array>
-    <string>2.1</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>Speed up bookmark updates.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Fixed a crash when a new tag was added before viewing the tag list.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>2.0</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>Pizzazzified user interface.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Pull-to-refresh.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add support for popular mobilizers in the in-app browser. This helps make webpages not specifically formatted for mobile viewing much easier to read.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add support for viewing webpages in full screen by tapping the "puck" in the bottom right. Tap and drag the puck to move it around if it's in the way of something.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Hide bookmark descriptions and tags by pinching two fingers towards each other on any view bookmark screen. Show them by pinching out. This is also configurable in display settings.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Filter by multiple tags. Just keep tapping them.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add multiple-line descriptions for new and existing bookmarks.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to &quot;Saved Feeds&quot;, or by tapping the &quot;Add&quot; button when viewing a feed through the popular and network sections.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>URL scheme support for viewing feeds (&quot;pushpin://feed?user=ticci&amp;tags=pythonista,python&quot;)</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>URL scheme support for viewing URLs using the Pushpin browser (&quot;pushpin://morrick.me/&quot;)</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Delete multiple bookmarks at the same time by tapping the &quot;Edit&quot; button when viewing bookmarks.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>1Password support.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Show whether suggested tags are popular or recommended when adding and editing bookmarks.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Order autocompleted tags by most frequently used, as opposed to alphabetically.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Edit or add bookmarks when using the in-app browser.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Make tappable tag area much larger.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Hide tag sections that don&apos;t have any tags associated with them.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.4.2</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>Clear notifications when app is open.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Change keyboard type for URL field when adding a bookmark.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add support for opening links in Dolphin, Cyberspace, and Opera.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Italian localization updates.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>App would crash when autocompleting tags.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.4.1</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>More sync speed improvements.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add &quot;Read by Default&quot; in settings.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Show notification when bookmarks have been updated.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Make connecting to Pocket and Instapaper a bit easier (no longer need the apps installed).</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>CHange activity indicator while loading bookmarks.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Minor localization edits.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Remove emoji from add bookmark view.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Use action sheet instead of context menu for bookmark tap and hold actions.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add iCab Mobile support.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add bookmarklet installation instructional videos in settings.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Swipe right on tags on add bookmark screen to suggest tags for popular URLs.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Swipe right on title or description to prefill from URL.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Add message when logging in and API is down.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Better Chrome x-callback-url support.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Major code cleanup.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Chrome install link wouldn&apos;t open when iTunes app was disabled.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Display newest bookmarks first when opening any tag screen.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Don&apos;t prompt to add a URL to the clipboard if it has already been rejected.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Fixed a bug that caused the app to crash when typing two spaces or pasting into the tags text field.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.3.1</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>Significantly speed up bookmark syncing.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Starred bookmark section now disappears when Internet connection is lost.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Redirect to Chrome without opening a new tab when using the callback URL scheme.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Don&apos;t show add bookmark prompt when not yet logged in.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Change &quot;Done&quot; to &quot;Next&quot; when focused on username field on login screen.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Starred section showed popular bookmarks instead.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.3</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>Way smoother scrolling and smoother animations when bookmarks are changed added, or deleted.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>In the add new bookmark screen, autocompleted tags are now ordered by how often they&apos;re used.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>When pasting a URL in the add bookmark screen, the title and description is now pulled in automatically.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Added a much better built-in browser.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Added support for Pocket (formerly Read it Later).</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Added support for viewing starred bookmarks.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Only show update HUD when on bookmark list screens.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Added support for callbacks for the bookmarklet with both Chrome and Safari. This means you can set up a bookmarklet to go to Pushpin, add the bookmark, and after the bookmark is added, get sent right back to the browser you were using.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Network activity indicator would display incorrectly.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>App would crash when Internet connection was spotty or unavailable.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Bookmarks with certain characters in tags would cause a crash.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Various stability improvements.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>URL is now editable when using &quot;Copy to Mine&quot; feature.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.2</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>URL scheme support: e.g., pushpin://add?url=XXX&amp;title=XXX</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Click and hold a bookmark to mark as read, read later, edit, delete, copy the url, or copy the title.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Instapaper and Readability integration. To enable, go to your settings and select your Read Later provider or choice.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Can now add private bookmarks by default (just go to your settings to enable).</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Browse all, network, Wikipedia, Fandom, and Japanese popular feeds. Click and hold one of these bookmarks to add it to your collection.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Click a tag to drill down to view other bookmarks tagged with that tag.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Notifications when adding, updating, or removing a bookmark.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Tag autocomplete when creating or editing a bookmark.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Improved sync mechanism.</string>
-      </array>
-      <array>
-        <string>NEW</string>
-        <string>Fully localized in both German and English</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Add filler text for bookmarks with empty titles</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Miscellaneous bookmark display issues</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Share menu wouldn&apos;t appear after switching views</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Remove unused code</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.1</string>
-    <array>
-      <array>
-        <string>FIX</string>
-        <string>Adjusted layout of login screen just a tad (it looked a little...off).</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Improved user messaging when logging in and API is unresponsive.</string>
-      </array>
-      <array>
-        <string>FIX</string>
-        <string>Bookmarks were inconsistently highlighted when scrolling.</string>
-      </array>
-    </array>
-  </array>
-  <array>
-    <string>1.0</string>
-    <array>
-      <array>
-        <string>NEW</string>
-        <string>First release!</string>
-      </array>
-    </array>
-  </array>
+	<array>
+		<string>2.1</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>iPad support.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Speed up bookmark updates.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed a crash when a new tag was added before viewing the tag list.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>2.0</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Pizzazzified user interface.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Pull-to-refresh.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add support for popular mobilizers in the in-app browser. This helps make webpages not specifically formatted for mobile viewing much easier to read.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add support for viewing webpages in full screen by tapping the &quot;puck&quot; in the bottom right. Tap and drag the puck to move it around if it&apos;s in the way of something.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Hide bookmark descriptions and tags by pinching two fingers towards each other on any view bookmark screen. Show them by pinching out. This is also configurable in display settings.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Filter by multiple tags. Just keep tapping them.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add multiple-line descriptions for new and existing bookmarks.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>View feeds for users, tags, or a combination of the two. You can add saved feeds by navigating directly to &quot;Saved Feeds&quot;, or by tapping the &quot;Add&quot; button when viewing a feed through the popular and network sections.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>URL scheme support for viewing feeds (&quot;pushpin://feed?user=ticci&amp;tags=pythonista,python&quot;)</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>URL scheme support for viewing URLs using the Pushpin browser (&quot;pushpin://morrick.me/&quot;)</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Delete multiple bookmarks at the same time by tapping the &quot;Edit&quot; button when viewing bookmarks.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>1Password support.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Show whether suggested tags are popular or recommended when adding and editing bookmarks.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Order autocompleted tags by most frequently used, as opposed to alphabetically.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Edit or add bookmarks when using the in-app browser.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Make tappable tag area much larger.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Hide tag sections that don&apos;t have any tags associated with them.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.4.2</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Clear notifications when app is open.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Change keyboard type for URL field when adding a bookmark.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add support for opening links in Dolphin, Cyberspace, and Opera.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Italian localization updates.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>App would crash when autocompleting tags.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.4.1</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>More sync speed improvements.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add &quot;Read by Default&quot; in settings.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Show notification when bookmarks have been updated.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Make connecting to Pocket and Instapaper a bit easier (no longer need the apps installed).</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>CHange activity indicator while loading bookmarks.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Minor localization edits.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Remove emoji from add bookmark view.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Use action sheet instead of context menu for bookmark tap and hold actions.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add iCab Mobile support.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add bookmarklet installation instructional videos in settings.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Swipe right on tags on add bookmark screen to suggest tags for popular URLs.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Swipe right on title or description to prefill from URL.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add message when logging in and API is down.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Better Chrome x-callback-url support.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Major code cleanup.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Chrome install link wouldn&apos;t open when iTunes app was disabled.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Display newest bookmarks first when opening any tag screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Don&apos;t prompt to add a URL to the clipboard if it has already been rejected.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed a bug that caused the app to crash when typing two spaces or pasting into the tags text field.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.3.1</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Significantly speed up bookmark syncing.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Starred bookmark section now disappears when Internet connection is lost.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Redirect to Chrome without opening a new tab when using the callback URL scheme.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Don&apos;t show add bookmark prompt when not yet logged in.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Change &quot;Done&quot; to &quot;Next&quot; when focused on username field on login screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Starred section showed popular bookmarks instead.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.3</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Way smoother scrolling and smoother animations when bookmarks are changed added, or deleted.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>In the add new bookmark screen, autocompleted tags are now ordered by how often they&apos;re used.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>When pasting a URL in the add bookmark screen, the title and description is now pulled in automatically.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Added a much better built-in browser.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Added support for Pocket (formerly Read it Later).</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Added support for viewing starred bookmarks.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Only show update HUD when on bookmark list screens.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Added support for callbacks for the bookmarklet with both Chrome and Safari. This means you can set up a bookmarklet to go to Pushpin, add the bookmark, and after the bookmark is added, get sent right back to the browser you were using.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Network activity indicator would display incorrectly.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>App would crash when Internet connection was spotty or unavailable.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Bookmarks with certain characters in tags would cause a crash.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Various stability improvements.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>URL is now editable when using &quot;Copy to Mine&quot; feature.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.2</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>URL scheme support: e.g., pushpin://add?url=XXX&amp;title=XXX</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Click and hold a bookmark to mark as read, read later, edit, delete, copy the url, or copy the title.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Instapaper and Readability integration. To enable, go to your settings and select your Read Later provider or choice.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Can now add private bookmarks by default (just go to your settings to enable).</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Browse all, network, Wikipedia, Fandom, and Japanese popular feeds. Click and hold one of these bookmarks to add it to your collection.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Click a tag to drill down to view other bookmarks tagged with that tag.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Notifications when adding, updating, or removing a bookmark.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Tag autocomplete when creating or editing a bookmark.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Improved sync mechanism.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Fully localized in both German and English</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add filler text for bookmarks with empty titles</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Miscellaneous bookmark display issues</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Share menu wouldn&apos;t appear after switching views</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Remove unused code</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.1</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Adjusted layout of login screen just a tad (it looked a little...off).</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Improved user messaging when logging in and API is unresponsive.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Bookmarks were inconsistently highlighted when scrolling.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<string>1.0</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>First release!</string>
+			</array>
+		</array>
+	</array>
 </array>
 </plist>

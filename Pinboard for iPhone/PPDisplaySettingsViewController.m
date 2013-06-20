@@ -57,8 +57,8 @@
     CGSize size;
     CGSize switchSize;
     
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
-    cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-Medium" size:16];
+    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {

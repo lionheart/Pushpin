@@ -7,6 +7,8 @@
 //
 
 #import "PPNotification.h"
+#import "AppDelegate.h"
+#import "UIApplication+AppDimensions.h"
 
 static NSInteger kPPNotificationHeight = 56;
 static NSInteger kPPNotificationPadding = 16;
@@ -21,7 +23,7 @@ static BOOL kPPNotificationIsVisible = NO;
 - (void)hide:(BOOL)animated {
     if (!self.hiding) {
         self.hiding = YES;
-        CGRect hiddenFrame = CGRectMake(0, SCREEN.bounds.size.height, SCREEN.bounds.size.width, self.notificationView.frame.size.height);
+        CGRect hiddenFrame = CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, self.notificationView.frame.size.height);
         if (animated) {
             [UIView animateWithDuration:0.2
                              animations:^{
@@ -54,7 +56,7 @@ static BOOL kPPNotificationIsVisible = NO;
                               delay:0
                             options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
-                             self.notificationView.frame = CGRectMake(0, SCREEN.bounds.size.height - self.notificationView.frame.size.height, SCREEN.bounds.size.width, self.notificationView.frame.size.height);
+                             self.notificationView.frame = CGRectMake(0, [UIApplication currentSize].height - self.notificationView.frame.size.height, [UIApplication currentSize].width, self.notificationView.frame.size.height);
                          }
                          completion:^(BOOL finished) {
                              if (finished) {
@@ -70,13 +72,13 @@ static BOOL kPPNotificationIsVisible = NO;
 
 - (UIView *)notificationViewWithMessage:(NSString *)message {
     if (!_notificationView) {
-        UIFont *font = [UIFont fontWithName:@"Avenir-Medium" size:15];
-        CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake(SCREEN.bounds.size.width - 60, CGFLOAT_MAX)];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
+        CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 60, CGFLOAT_MAX)];
 
-        _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN.bounds.size.height, SCREEN.bounds.size.width, size.height + 2 * kPPNotificationPadding)];
+        _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN.bounds.size.width, size.height + 2 * kPPNotificationPadding)];
-        imageView.image = [[UIImage imageNamed:@"NotificationBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(4, SCREEN.bounds.size.width / 2., 52, SCREEN.bounds.size.width / 2.)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
+        imageView.image = [[UIImage imageNamed:@"NotificationBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(4, [UIApplication currentSize].width / 2., 52, [UIApplication currentSize].width / 2.)];
         [_notificationView addSubview:imageView];
 
         UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
@@ -89,12 +91,12 @@ static BOOL kPPNotificationIsVisible = NO;
         label.font = font;
         label.textColor = [UIColor whiteColor];
         label.text = message;
-        label.frame = CGRectMake(17, kPPNotificationPadding, SCREEN.bounds.size.width - 60, size.height);
+        label.frame = CGRectMake(17, kPPNotificationPadding, [UIApplication currentSize].width - 60, size.height);
 
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake(SCREEN.bounds.size.width - 27, (_notificationView.frame.size.height - 17) / 2, 17, 17);
+        button.frame = CGRectMake([UIApplication currentSize].width - 27, (_notificationView.frame.size.height - 17) / 2, 17, 17);
         
         [_notificationView addSubview:label];
         [_notificationView addSubview:button];
