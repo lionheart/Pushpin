@@ -1,6 +1,7 @@
 = 2.1 =
 
 * Speed up bookmark updates.
+* iPad and iOS 5 support.
 
 Fixes
 
