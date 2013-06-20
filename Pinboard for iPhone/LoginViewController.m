@@ -15,6 +15,7 @@
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
 #import "RPSTPasswordManagementAppService.h"
+#import "UIApplication+AppDimensions.h"
 
 @interface LoginViewController ()
 
@@ -33,18 +34,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    CGSize size = [UIApplication currentSize];
+    
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    gradient.frame = CGRectMake(0, 0, 320, screenBounds.size.height);
+    gradient.frame = CGRectMake(0, 0, size.width, size.height);
     gradient.colors = [NSArray arrayWithObjects:(id)[HEX(0x06C6FFFF) CGColor], (id)[HEX(0x2E63FFFF) CGColor], nil];
+    gradient.startPoint = CGPointMake(0, 0);
+    gradient.endPoint = CGPointMake(size.width, size.height);
     [self.view.layer addSublayer:gradient];
-    
+
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pin"]];
-    imageView.frame = CGRectMake(60, 10, 218, 213);
+    imageView.frame = CGRectMake((size.width - 218) / 2, 10, 218, 213);
     [self.view addSubview:imageView];
 
-    self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 250, 300, 40)];
+    self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectMake((size.width - 300) / 2, 250, 300, 40)];
     self.usernameTextField.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:18];
     self.usernameTextField.textAlignment = NSTextAlignmentCenter;
     self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -61,7 +64,7 @@
     self.usernameTextField.layer.borderColor = HEX(0x4A5768FF).CGColor;
     [self.view addSubview:self.usernameTextField];
 
-    self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 300, 300, 40)];
+    self.passwordTextField = [[UITextField alloc] initWithFrame:CGRectMake((size.width - 300) / 2, 300, 300, 40)];
     self.passwordTextField.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:18];
     self.passwordTextField.textAlignment = NSTextAlignmentCenter;
     self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -78,11 +81,11 @@
     [self.view addSubview:self.passwordTextField];
 
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.frame = CGRectMake(20, 400, 280, 50);
+    self.progressView.frame = CGRectMake((size.width - 280) / 2, 400, 280, 50);
     self.progressView.hidden = YES;
     [self.view addSubview:self.progressView];
     
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 342, 320, 80)];
+    self.textView = [[UITextView alloc] initWithFrame:CGRectMake((size.width - 320) / 2, 342, 320, 80)];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.textColor = [UIColor whiteColor];
     self.textView.editable = NO;
@@ -117,7 +120,7 @@
     UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:radius topCapHeight:15];
     UIGraphicsEndImageContext();
 
-    self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 352, 180, 44)];
+    self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake((size.width - 180) / 2, 352, 180, 44)];
     [self.onePasswordButton setTitle:@"Launch 1Password" forState:UIControlStateNormal];
     [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateNormal];
     [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateHighlighted];
@@ -135,9 +138,9 @@
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicatorFrameTop = CGRectMake((320 - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
-    self.activityIndicatorFrameMiddle = CGRectMake((320 - activitySize.width) / 2., 400, activitySize.width, activitySize.height);
-    self.activityIndicatorFrameBottom = CGRectMake((320 - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameTop = CGRectMake((size.width - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameMiddle = CGRectMake((size.width - activitySize.width) / 2., 400, activitySize.width, activitySize.height);
+    self.activityIndicatorFrameBottom = CGRectMake((size.width - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
     self.activityIndicator.frame = self.activityIndicatorFrameTop;
     [self.view addSubview:self.activityIndicator];
 
@@ -267,7 +270,7 @@
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            self.progressView.frame = CGRectMake(20, 380, 280, 50);
+            self.progressView.frame = CGRectMake(([UIApplication currentSize].width - 280) / 2, 380, 280, 50);
             self.activityIndicator.frame = self.activityIndicatorFrameMiddle;
         });
     });
