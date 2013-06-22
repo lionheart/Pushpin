@@ -13,6 +13,7 @@
 static NSInteger kPPNotificationHeight = 56;
 static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;
+static PPNotification *shared;
 
 @implementation PPNotification
 
@@ -114,7 +115,6 @@ static BOOL kPPNotificationIsVisible = NO;
 
 + (PPNotification *)sharedInstance {
     static dispatch_once_t once;
-    static PPNotification *shared;
     dispatch_once(&once, ^ {
         shared = [[PPNotification alloc] init];
     });
@@ -122,7 +122,8 @@ static BOOL kPPNotificationIsVisible = NO;
 }
 
 - (void)didRotate:(NSNotification *)notification {
-    [self hide:NO];
+    self.notificationView.hidden = YES;
+    self.notificationView = nil;
 }
 
 @end
