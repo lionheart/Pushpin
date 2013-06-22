@@ -19,6 +19,7 @@
 #import "OAuthConsumer.h"
 #import "PocketAPI.h"
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 static NSInteger kToolbarHeight = 44;
 
@@ -275,7 +276,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
         
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         if (isIPad) {
             self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
@@ -410,7 +411,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
 
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         if (isIPad) {
             self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }

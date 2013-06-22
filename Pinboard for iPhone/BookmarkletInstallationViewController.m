@@ -10,6 +10,7 @@
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
+#import "UIApplication+Additions.h"
 
 @interface BookmarkletInstallationViewController ()
 
@@ -40,7 +41,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
         float width = tableView.bounds.size.width;        
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
 
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;

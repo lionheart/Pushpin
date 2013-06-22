@@ -16,6 +16,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PPCoreGraphics.h"
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
@@ -78,7 +79,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
 
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         CGFloat offset;
         if (isIPad) {
             offset = 285;
@@ -496,7 +497,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    BOOL isIPad = [UIApplication isIPad];
     CGFloat textFieldWidth;
     if (isIPad) {
         textFieldWidth = [UIApplication currentSize].width - 135;
@@ -569,7 +570,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         break;
                         
                     default: {
-                        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+                        BOOL isIPad = [UIApplication isIPad];
                         CGFloat offset = isIPad ? 95 : 25;
 
                         if (self.tagCompletions.count > 0) {

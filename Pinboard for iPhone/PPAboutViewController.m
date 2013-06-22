@@ -19,6 +19,7 @@
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 @interface PPAboutViewController ()
 
@@ -86,7 +87,7 @@
     NSString *title = self.titles[section];
     if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
         UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];

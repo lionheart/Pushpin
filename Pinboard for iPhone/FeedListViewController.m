@@ -21,6 +21,7 @@
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 @interface FeedListViewController ()
 
@@ -188,7 +189,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     float width = tableView.bounds.size.width;
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    BOOL isIPad = [UIApplication isIPad];
 
     NSUInteger fontSize = 17;
     NSUInteger padding = isIPad ? 45 : 15;
@@ -293,7 +294,7 @@
             }
             
             UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            BOOL isIPad = [UIApplication isIPad];
             CGFloat offset = isIPad ? 115 : 45;
             pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
             

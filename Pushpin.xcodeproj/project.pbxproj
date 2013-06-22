@@ -566,6 +566,7 @@
 		37F5CA4E1679915700327AAC /* uv_vote_chicklet_empty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F5CA3B1679915700327AAC /* uv_vote_chicklet_empty@2x.png */; };
 		37F5CA4F1679915700327AAC /* uv_x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F5CA3C1679915700327AAC /* uv_x.png */; };
 		37F5CA501679915700327AAC /* uv_x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F5CA3D1679915700327AAC /* uv_x@2x.png */; };
+		37FCF2B217756F7600093F41 /* UIApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FCF2B117756F7600093F41 /* UIApplication+Additions.m */; };
 		37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
@@ -1256,6 +1257,8 @@
 		37F5CA3C1679915700327AAC /* uv_x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uv_x.png; sourceTree = "<group>"; };
 		37F5CA3D1679915700327AAC /* uv_x@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uv_x@2x.png"; sourceTree = "<group>"; };
 		37F5CA3E1679915700327AAC /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/UserVoice.strings"; sourceTree = "<group>"; };
+		37FCF2B017756F7600093F41 /* UIApplication+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+Additions.h"; sourceTree = "<group>"; };
+		37FCF2B117756F7600093F41 /* UIApplication+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+Additions.m"; sourceTree = "<group>"; };
 		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -2114,6 +2117,8 @@
 				37B348CB175FF9D500929E2E /* PPChangelogViewController.m */,
 				37C012B71765423900938D81 /* PPMultipleEditViewController.h */,
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
+				37FCF2B017756F7600093F41 /* UIApplication+Additions.h */,
+				37FCF2B117756F7600093F41 /* UIApplication+Additions.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2954,6 +2959,7 @@
 				37E0440217702F7700F9543E /* BloomFilter.m in Sources */,
 				37E0440317702F7700F9543E /* HashFunctions.m in Sources */,
 				37B5F4D3177372ED005687DA /* UIApplication+AppDimensions.m in Sources */,
+				37FCF2B217756F7600093F41 /* UIApplication+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

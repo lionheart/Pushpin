@@ -23,6 +23,7 @@
 #import "FMDatabase.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
+#import "UIApplication+Additions.h"
 
 @interface SettingsViewController ()
 
@@ -55,7 +56,7 @@
 
         self.supportActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitleArray:@[NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil)]];
 
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         if (isIPad) {
             self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
@@ -593,7 +594,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0: {
-            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            BOOL isIPad = [UIApplication isIPad];
             CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
             if (indexPath.row == 2) {
                 if (isIPad) {

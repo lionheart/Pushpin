@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 @interface RDActionSheet ()
 
@@ -255,7 +256,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     for (PPButton *button in self.buttons) {
         CGFloat buttonWidth;
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             if (isIPad) {
                 buttonWidth = [UIApplication currentSize].width - 20;
@@ -291,7 +292,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
     CGFloat labelWidth;
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    BOOL isIPad = [UIApplication isIPad];
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
         if (isIPad) {
             labelWidth = [UIApplication currentSize].width - 20;

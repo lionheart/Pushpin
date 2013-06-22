@@ -14,6 +14,7 @@
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 @interface TagViewController ()
 
@@ -166,7 +167,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
 
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
@@ -233,7 +234,7 @@
     UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
     UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
     
-    BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    BOOL isIPad = [UIApplication isIPad];
     CGFloat offset;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         offset = isIPad ? 15 : 5;
