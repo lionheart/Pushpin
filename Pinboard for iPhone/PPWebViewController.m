@@ -321,8 +321,10 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else {
-        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-        self.actionSheet = nil;
+        if ([UIApplication isIPad]) {
+            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            self.actionSheet = nil;
+        }
     }
 }
 
@@ -469,8 +471,10 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else {
-        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-        self.actionSheet = nil;
+        if ([UIApplication isIPad]) {
+            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            self.actionSheet = nil;
+        }
     }
 }
 
