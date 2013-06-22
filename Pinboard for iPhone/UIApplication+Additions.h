@@ -6,21 +6,11 @@
 //
 //
 
-#import "UIApplication+Additions.h"
+@interface UIApplication (Additions)
 
-@implementation UIApplication (Additions)
++ (BOOL)isIPad;
++ (BOOL)isIOS6OrGreater;
++ (CGSize)currentSize;
++ (CGSize)sizeInOrientation:(UIInterfaceOrientation)orientation;
 
-+ (BOOL)isIPad {
-    __block BOOL isIPad;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    });
-    return isIPad;
-}
-
-+ (BOOL)isIOS6OrGreater {
-    return [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-}
- 
 @end
