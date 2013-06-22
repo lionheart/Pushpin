@@ -49,7 +49,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLIconFile</key>
-			<string>Icon</string>
+			<string>Icon~iphone</string>
 			<key>CFBundleURLName</key>
 			<string>io.aurora.pushpin</string>
 			<key>CFBundleURLSchemes</key>

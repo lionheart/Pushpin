@@ -19,7 +19,9 @@
 #import "PPCoreGraphics.h"
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
+
 #import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
@@ -744,9 +746,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         else {
             urlString = self.selectedPost[@"url"];
         }
-        
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-        if (isIPad) {
+
+        if ([UIApplication isIPad]) {
             self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
         else {
@@ -788,7 +789,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         }
 
         self.actionSheetVisible = YES;        
-        if (isIPad) {
+        if ([UIApplication isIPad]) {
             [(UIActionSheet *)self.actionSheet showFromRect:[self.tableView rectForRowAtIndexPath:self.selectedIndexPath] inView:self.tableView animated:YES];
         }
         else {
@@ -797,8 +798,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         self.tableView.scrollEnabled = NO;
     }
     else {
-        [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-        self.actionSheet = nil;
+        if ([UIApplication isIPad]) {
+            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            self.actionSheet = nil;
+        }
     }
 }
 

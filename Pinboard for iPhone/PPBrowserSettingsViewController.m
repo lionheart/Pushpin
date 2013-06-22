@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIApplication+Additions.h"
 
 @interface PPBrowserSettingsViewController ()
 
@@ -23,7 +24,7 @@
     if (self) {
         self.title = NSLocalizedString(@"Browser Settings", nil);
 
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         if (isIPad) {
             self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         }
@@ -72,7 +73,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+        BOOL isIPad = [UIApplication isIPad];
         
         float width = tableView.bounds.size.width;
         int fontSize = 17;
@@ -185,7 +186,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            BOOL isIPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+            BOOL isIPad = [UIApplication isIPad];
             if (isIPad) {
                 if (!self.actionSheet) {
                     CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
