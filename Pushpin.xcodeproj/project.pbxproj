@@ -2110,7 +2110,6 @@
 				3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */,
 				3732DF9B175957F000978A68 /* PPAboutViewController.h */,
 				3732DF9C175957F000978A68 /* PPAboutViewController.m */,
-				37FEEB9915745488003F2B77 /* Supporting Files */,
 				37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */,
 				37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */,
 				37B348CA175FF9D400929E2E /* PPChangelogViewController.h */,
@@ -2119,6 +2118,7 @@
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
 				37FCF2B017756F7600093F41 /* UIApplication+Additions.h */,
 				37FCF2B117756F7600093F41 /* UIApplication+Additions.m */,
+				37FEEB9915745488003F2B77 /* Supporting Files */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
