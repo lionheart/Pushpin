@@ -486,7 +486,7 @@
         @"io.aurora.pinboard.ReadByDefault": @(NO),
         @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
         @"io.aurora.pinboard.CompressPosts": @(NO),
-        @"io.aurora.pinboard.DimReadPosts": @(YES),
+        @"io.aurora.pinboard.DimReadPosts": @(NO),
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO)
      }];
 
