@@ -34,7 +34,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 @synthesize postDataSource;
 @synthesize selectedPost;
-@synthesize longPressGestureRecognizer;
 @synthesize selectedIndexPath;
 @synthesize actionSheetVisible;
 @synthesize confirmDeletionAlertView;
@@ -195,125 +194,175 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
+    self.numberOfTapsSinceTapReset++;
+    self.selectedTableView = tableView;
+    self.selectedIndexPath = indexPath;
 
-    if (tableView.editing) {
-        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
-        self.multipleDeleteButton.enabled = YES;
-        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+    if (!self.singleTapTimer) {
+        self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
     }
     else {
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
-        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        [self.singleTapTimer invalidate];
+        self.singleTapTimer = nil;
+        [self handleCellTap];
+    }
+}
 
-        if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
-            NSString *urlString = [dataSource urlForPostAtIndex:indexPath.row];
-            NSRange httpRange = NSMakeRange(NSNotFound, 0);
-            if ([urlString hasPrefix:@"http"]) {
-                httpRange = [urlString rangeOfString:@"http"];
-            }
+- (void)handleCellTap {
+    if (self.numberOfTapsSinceTapReset > 0) {
+        id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
 
-            if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
-                    self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
-                }
-                else {
-                    self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-                }
-                [self.navigationController pushViewController:self.webViewController animated:YES];
-            }
-            else {
-                switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                    case BROWSER_SAFARI: {
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-                        break;
-                    }
-
-                    case BROWSER_CHROME:
-                        if (httpRange.location != NSNotFound) {
-                            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                [[UIApplication sharedApplication] openURL:url];
-                            }
-                            else {
-                                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
-                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                [[UIApplication sharedApplication] openURL:url];
-                            }
-                        }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-
-                        break;
-
-                    case BROWSER_ICAB_MOBILE:
-                        if (httpRange.location != NSNotFound) {
-                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                            [[UIApplication sharedApplication] openURL:url];
-                        }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-
-                        break;
-
-                    case BROWSER_OPERA:
-                        if (httpRange.location != NSNotFound) {
-                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                            [[UIApplication sharedApplication] openURL:url];
-                        }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-
-                        break;
-
-                    case BROWSER_DOLPHIN:
-                        if (httpRange.location != NSNotFound) {
-                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                            [[UIApplication sharedApplication] openURL:url];
-                        }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-
-                        break;
-
-                    case BROWSER_CYBERSPACE:
-                        if (httpRange.location != NSNotFound) {
-                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                            [[UIApplication sharedApplication] openURL:url];
-                        }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-
-                        break;
-
-                    default:
-                        break;
-                }
-            }
+        if (self.selectedTableView.editing) {
+            NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
+            self.multipleDeleteButton.enabled = YES;
+            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
         }
         else {
-            // The post data source will provide a view controller to push.
-            UIViewController *controller = [dataSource viewControllerForPostAtIndex:indexPath.row];
-            [self.navigationController pushViewController:controller animated:YES];
+            [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
+            switch (self.numberOfTapsSinceTapReset) {
+                case 1:
+                    if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
+                        NSString *urlString = [dataSource urlForPostAtIndex:self.selectedIndexPath.row];
+                        NSRange httpRange = NSMakeRange(NSNotFound, 0);
+                        if ([urlString hasPrefix:@"http"]) {
+                            httpRange = [urlString rangeOfString:@"http"];
+                        }
+                        
+                        if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                            if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
+                                self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
+                            }
+                            else {
+                                self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                            }
+                            
+                            if ([self.navigationController topViewController] == self) {
+                                [self.navigationController pushViewController:self.webViewController animated:YES];
+                            }
+                        }
+                        else {
+                            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
+                                case BROWSER_SAFARI: {
+                                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                                    break;
+                                }
+                                    
+                                case BROWSER_CHROME:
+                                    if (httpRange.location != NSNotFound) {
+                                        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                                            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                            [[UIApplication sharedApplication] openURL:url];
+                                        }
+                                        else {
+                                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
+                                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                            [[UIApplication sharedApplication] openURL:url];
+                                        }
+                                    }
+                                    else {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                        [alert show];
+                                    }
+                                    
+                                    break;
+                                    
+                                case BROWSER_ICAB_MOBILE:
+                                    if (httpRange.location != NSNotFound) {
+                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
+                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
+                                        [[UIApplication sharedApplication] openURL:url];
+                                    }
+                                    else {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                        [alert show];
+                                    }
+                                    
+                                    break;
+                                    
+                                case BROWSER_OPERA:
+                                    if (httpRange.location != NSNotFound) {
+                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
+                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
+                                        [[UIApplication sharedApplication] openURL:url];
+                                    }
+                                    else {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                        [alert show];
+                                    }
+                                    
+                                    break;
+                                    
+                                case BROWSER_DOLPHIN:
+                                    if (httpRange.location != NSNotFound) {
+                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
+                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                                        [[UIApplication sharedApplication] openURL:url];
+                                    }
+                                    else {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                        [alert show];
+                                    }
+                                    
+                                    break;
+                                    
+                                case BROWSER_CYBERSPACE:
+                                    if (httpRange.location != NSNotFound) {
+                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
+                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                                        [[UIApplication sharedApplication] openURL:url];
+                                    }
+                                    else {
+                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                                        [alert show];
+                                    }
+                                    
+                                    break;
+                                    
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else {
+                        // The post data source will provide a view controller to push.
+                        UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
+                        
+                        if ([self.navigationController topViewController] == self) {
+                            [self.navigationController pushViewController:controller animated:YES];
+                        }
+                    }
+                    break;
+                    
+                case 2: {
+                    UIViewController *vc;
+                    if ([dataSource respondsToSelector:@selector(addViewControllerForPostAtIndex:delegate:)]) {
+                        vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+                    }
+                    else {
+                        vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+                    }
+
+                    if ([self.navigationController topViewController] == self) {
+                        [self.navigationController presentViewController:vc animated:YES completion:nil];
+                    }
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
         }
     }
+
+    self.singleTapTimer = nil;
+    self.doubleTapTimer = nil;
+    self.numberOfTapsSinceTapReset = 0;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
