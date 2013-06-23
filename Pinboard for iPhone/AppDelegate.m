@@ -461,7 +461,10 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    DLog(@"%d", SQLITE_VERSION_NUMBER);
+    self.bookmarksUpdated = @(NO);
+    self.bookmarksUpdatedMessage = nil;
+    self.addBookmarkAlertViewIsVisible = NO;
+
     [self migrateDatabase];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -530,10 +533,6 @@
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-    
-    self.bookmarksUpdated = @(NO);
-    self.bookmarksUpdatedMessage = nil;
-    self.addBookmarkAlertViewIsVisible = NO;
 
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
