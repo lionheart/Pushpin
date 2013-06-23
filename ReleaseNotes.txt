@@ -2,6 +2,7 @@
 
 * iPad support.
 * Extend compatibility to iOS 5.1.
+* Add landscape support.
 * Speed up bookmark updates.
 * Don't dim read posts by default.
 * Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.
