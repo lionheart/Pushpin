@@ -7,11 +7,23 @@
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>iPad and iOS 5 support.</string>
+        <string>iPad support.</string>
+      </array>
+			<array>
+				<string>NEW</string>
+        <string>Extend support to iOS 5.1.</string>
 			</array>
 			<array>
 				<string>NEW</string>
 				<string>Speed up bookmark updates.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Don't dim read posts by default.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed an issue where viewing feeds with unicode data would fail.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -19,7 +31,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed a crash when a new tag was added before viewing the tag list.</string>
+				<string>Fixed a crash when viewing the tag list after adding a new tag.</string>
 			</array>
 		</array>
 	</array>
