@@ -147,7 +147,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [[Mixpanel sharedInstance] track:@"Opened about page"];
         PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
-        aboutViewController.title = NSLocalizedString(@"About", nil);
+        aboutViewController.title = @"Pushpin 2.1";
         aboutViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeAboutPage)];
         UINavigationController *aboutViewNavigationController = [[UINavigationController alloc] initWithRootViewController:aboutViewController];
         aboutViewNavigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
