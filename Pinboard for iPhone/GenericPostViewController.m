@@ -198,13 +198,18 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;
 
-    if (!self.singleTapTimer) {
-        self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
+    if ([AppDelegate sharedDelegate].doubleTapToEdit) {
+        if (!self.singleTapTimer) {
+            self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
+        }
+        else {
+            [self.singleTapTimer invalidate];
+            self.singleTapTimer = nil;
+            [self handleCellTap];
+        }
     }
     else {
-        [self.singleTapTimer invalidate];
-        self.singleTapTimer = nil;
         [self handleCellTap];
     }
 }

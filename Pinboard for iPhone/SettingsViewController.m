@@ -313,7 +313,7 @@
 
 
                 case 4:
-                    cell.textLabel.text = NSLocalizedString(@"Display Settings", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Advanced Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
                     break;

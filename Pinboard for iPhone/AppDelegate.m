@@ -48,6 +48,7 @@
 @synthesize openLinksInApp = _openLinksInApp;
 @synthesize compressPosts = _compressPosts;
 @synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
+@synthesize doubleTapToEdit = _doubleTapToEdit;
 
 + (NSString *)databasePath {
 #if TARGET_IPHONE_SIMULATOR
@@ -490,7 +491,8 @@
         @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
         @"io.aurora.pinboard.CompressPosts": @(NO),
         @"io.aurora.pinboard.DimReadPosts": @(NO),
-        @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO)
+        @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
+        @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
      }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
@@ -792,6 +794,21 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:openLinksInApp forKey:@"io.aurora.pinboard.OpenLinksInApp"];
     [defaults synchronize];
+}
+
+- (void)setDoubleTapToEdit:(BOOL)doubleTapToEdit {
+    _doubleTapToEdit = doubleTapToEdit;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(doubleTapToEdit) forKey:@"io.aurora.pinboard.DoubleTapToEdit"];
+    [defaults synchronize];
+}
+
+- (BOOL)doubleTapToEdit {
+    if (!_doubleTapToEdit) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _doubleTapToEdit = [[defaults objectForKey:@"io.aurora.pinboard.DoubleTapToEdit"] boolValue];
+    }
+    return _doubleTapToEdit;
 }
 
 - (void)setReadByDefault:(NSNumber *)readByDefault {
