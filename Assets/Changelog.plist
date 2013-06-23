@@ -11,7 +11,7 @@
       </array>
 			<array>
 				<string>NEW</string>
-        <string>Extend support to iOS 5.1.</string>
+        <string>iOS 5.1 support.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -26,20 +26,24 @@
 				<string>Don't dim read posts by default.</string>
 			</array>
 			<array>
-				<string>Fix</string>
-        <string>Fixed an issue where feeds specifying the "from:" parameter wouldn't load.</string>
+				<string>NEW</string>
+				<string>You can now double-tap a bookmark to edit it. Enable in Advanced Settings.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+        <string>You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. "twitter_favs", "readability", "twitter", "instapaper", "delicious", "email", and "ril" are all valid sources.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed an issue where viewing feeds with unicode data would fail.</string>
+				<string>Viewing feeds with unicode data would fail.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
+				<string>In-app browser was unable to switch out of Instapaper mobilizer view.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed a crash when viewing the tag list after adding a new tag.</string>
+				<string>Viewing the tag list after adding a new tag would cause a crash.</string>
 			</array>
 		</array>
 	</array>
