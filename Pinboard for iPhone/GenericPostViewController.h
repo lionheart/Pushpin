@@ -95,6 +95,8 @@ typedef NSInteger PPPostAction;
 @property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
+
+@property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
@@ -114,10 +116,14 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
+@property (nonatomic, strong) NSTimer *singleTapTimer;
+@property (nonatomic, strong) NSTimer *doubleTapTimer;
+@property (nonatomic) NSUInteger numberOfTapsSinceTapReset;
 @property (nonatomic) CGFloat beginningScale;
 @property (nonatomic) BOOL compressPosts;
 @property (nonatomic) BOOL dimReadPosts;
 
+- (void)handleCellTap;
 - (void)popViewController;
 
 - (void)dismissViewController;
