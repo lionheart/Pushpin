@@ -15,6 +15,10 @@
 			</array>
 			<array>
 				<string>NEW</string>
+        <string>Landscape support.</string>
+			</array>
+			<array>
+				<string>NEW</string>
 				<string>Speed up bookmark updates.</string>
 			</array>
 			<array>
