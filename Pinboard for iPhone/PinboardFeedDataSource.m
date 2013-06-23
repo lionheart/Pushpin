@@ -378,7 +378,7 @@
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *tagName = url.absoluteString;
+        NSString *tagName = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         BOOL shouldPush = NO;
         NSMutableArray *components = [NSMutableArray array];
         if ([tagName hasPrefix:@"via:"]) {
