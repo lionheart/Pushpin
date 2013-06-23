@@ -443,7 +443,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         tagAddCount++;
                     }
                 }
-                
+
                 index++;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     progress(index, total);
