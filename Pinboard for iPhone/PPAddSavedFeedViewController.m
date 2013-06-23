@@ -144,13 +144,24 @@
         [components addObject:[NSString stringWithFormat:@"u:%@", username]];
     }
     
+    NSString *fromSuffix;
+    
     NSString *tags = self.tagsTextField.text;
     if (tags && tags.length > 0) {
         for (NSString *tag in [tags componentsSeparatedByString:@" "]) {
             if (tag.length > 0) {
-                [components addObject:[NSString stringWithFormat:@"t:%@", tag]];
+                if ([tag hasPrefix:@"from:"]) {
+                    fromSuffix = tag;
+                }
+                else {
+                    [components addObject:[NSString stringWithFormat:@"t:%@", tag]];
+                }
             }
         }
+    }
+
+    if (fromSuffix) {
+        [components addObject:fromSuffix];
     }
     
     if (components.count > 0) {
