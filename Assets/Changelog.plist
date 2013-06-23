@@ -26,6 +26,10 @@
 				<string>Don't dim read posts by default.</string>
 			</array>
 			<array>
+				<string>Fix</string>
+        <string>Fixed an issue where feeds specifying the "from:" parameter wouldn't load.</string>
+			</array>
+			<array>
 				<string>FIX</string>
 				<string>Fixed an issue where viewing feeds with unicode data would fail.</string>
 			</array>
