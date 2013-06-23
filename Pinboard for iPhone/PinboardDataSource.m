@@ -302,6 +302,7 @@ static BOOL kPinboardSyncInProgress = NO;
         }
 
         void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
+            NSDate *startDate = [NSDate date];
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
             
@@ -355,7 +356,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
             [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-            
+
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
             DLog(@"%@", [NSDate date]);
@@ -461,7 +462,10 @@ static BOOL kPinboardSyncInProgress = NO;
             
             [db commit];
             [db close];
-            
+
+            NSDate *endDate = [NSDate date];
+
+            DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
             DLog(@"added %d", addCount);
             DLog(@"updated %d", updateCount);
             DLog(@"skipped %d", skipCount);
@@ -478,6 +482,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
             });
 
+            [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
             [self updateStarredPostsWithSuccess:success failure:nil];
         };
         
