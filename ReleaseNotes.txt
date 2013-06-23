@@ -3,6 +3,7 @@
 * iPad support.
 * Extend compatibility to iOS 5.1.
 * Add landscape support.
+* Allow users to specify sources in "Saved Feeds". E.g., to get all posts from Twitter, use the "from:twitter" tag.
 * Speed up bookmark updates.
 * Don't dim read posts by default.
 * Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.
