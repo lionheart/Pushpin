@@ -13,6 +13,7 @@
 
 @property (nonatomic, retain) PPSwitch *dimReadPostsSwitch;
 @property (nonatomic, retain) PPSwitch *compressPostsSwitch;
+@property (nonatomic, retain) PPSwitch *doubleTapToEditSwitch;
 
 - (void)switchChangedValue:(id)sender;
 

@@ -72,6 +72,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;
+@property (nonatomic) BOOL doubleTapToEdit;
 @property (nonatomic) BOOL openLinksWithMobilizer;
 @property (nonatomic, retain) NSString *feedToken;
 @property (nonatomic, weak) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;

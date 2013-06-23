@@ -20,7 +20,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.title = NSLocalizedString(@"Display Settings", nil);
+        self.title = NSLocalizedString(@"Advanced Settings", nil);
     }
     return self;
 }
@@ -30,7 +30,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -44,6 +44,10 @@
                 break;
                 
             case 1:
+                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
+                break;
+                
+            case 2:
                 cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 break;
                 
@@ -72,7 +76,7 @@
             }
             break;
             
-        case 1:
+        case 2:
             if (indexPath.row < 2) {
                 [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
             }
@@ -96,8 +100,20 @@
             [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = self.dimReadPostsSwitch;
             break;
-
+            
         case 1:
+            cell.textLabel.text = NSLocalizedString(@"Double tap to edit?", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            size = cell.frame.size;
+            self.doubleTapToEditSwitch = [[PPSwitch alloc] init];
+            switchSize = self.doubleTapToEditSwitch.frame.size;
+            self.doubleTapToEditSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+            self.doubleTapToEditSwitch.on = [AppDelegate sharedDelegate].doubleTapToEdit;
+            [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = self.doubleTapToEditSwitch;
+            break;
+
+        case 2:
             cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
@@ -123,6 +139,9 @@
 - (void)switchChangedValue:(id)sender {
     if (sender == self.compressPostsSwitch) {
         [[AppDelegate sharedDelegate] setCompressPosts:self.compressPostsSwitch.on];
+    }
+    else if (sender == self.doubleTapToEditSwitch) {
+        [[AppDelegate sharedDelegate] setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
     }
     else {
         [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPostsSwitch.on];
