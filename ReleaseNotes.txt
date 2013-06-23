@@ -1,7 +1,9 @@
 = 2.1 =
 
-* iPad and iOS 5 support.
+* iPad support.
+* Extend compatibility to iOS 5.1.
 * Speed up bookmark updates.
+* Don't dim read posts by default.
 * Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.
 * Fixed a crash when a new tag was added before viewing the tag list.
 
