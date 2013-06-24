@@ -17,7 +17,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SettingsViewController.h"
 #import "TagViewController.h"
-#import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "UIApplication+AppDimensions.h"
@@ -101,15 +100,7 @@
         tagButton.frame = CGRectMake(0, 0, 30, 24);
         UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
-        UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
-        [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-        notesButton.frame = CGRectMake(0, 0, 20, 24);
-        self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
-        self.notesBarButtonItem.enabled = self.connectionAvailable;
-
-        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
+        self.navigationItem.rightBarButtonItem = tagBarButtonItem;
         self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
@@ -160,7 +151,6 @@
 
 // Dispatched on main thread
 - (void)showAllFeeds {
-    self.notesBarButtonItem.enabled = YES;
     [self.tableView beginUpdates];
     [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
@@ -168,7 +158,6 @@
 
 // Dispatched on main thread
 - (void)hideNetworkDependentFeeds {
-    self.notesBarButtonItem.enabled = NO;
     [self.tableView beginUpdates];
     [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
@@ -442,14 +431,6 @@
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
     [[AppDelegate sharedDelegate].navigationController pushViewController:svc animated:YES];
-}
-
-- (void)openNotes {
-    GenericPostViewController *notesViewController = [[GenericPostViewController alloc] init];
-    PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
-    notesViewController.postDataSource = notesDataSource;
-    notesViewController.title = NSLocalizedString(@"Notes", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:notesViewController animated:YES];
 }
 
 - (void)openTags {
