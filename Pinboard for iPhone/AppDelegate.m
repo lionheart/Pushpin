@@ -27,6 +27,7 @@
 #import "PPCoreGraphics.h"
 #import "PinboardFeedDataSource.h"
 #import "PPMultipleEditViewController.h"
+#import "PPNavigationController.h"
 
 @implementation AppDelegate
 
@@ -79,7 +80,7 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
-    UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate delegate:delegate callback:callback];
+    PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate delegate:delegate callback:callback];
     if (self.navigationController.presentedViewController) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
             [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
@@ -1020,7 +1021,7 @@
     if (alertView == self.addBookmarkFromClipboardAlertView) {
         self.addBookmarkAlertViewIsVisible = NO;
         if (buttonIndex == 1) {
-            UINavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
+            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
             [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }

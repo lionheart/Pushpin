@@ -18,6 +18,7 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
+#import "PPNavigationController.h"
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
@@ -201,6 +202,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
+    [self.postDescriptionTextView resignFirstResponder];
+}
+
+- (BOOL)disablesAutomaticKeyboardDismissal {
+    return NO;
 }
 
 #pragma mark - Table view data source
@@ -232,8 +238,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
         [vc.view addSubview:self.postDescriptionTextView];
         self.postDescriptionTextView.text = self.postDescription;
-        [self.postDescriptionTextView becomeFirstResponder];
         [self.navigationController pushViewController:vc animated:YES];
+        [self.postDescriptionTextView becomeFirstResponder];
     }
     else if (indexPath.section == 0 && indexPath.row > 3) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -888,9 +894,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     });
 }
 
-+ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
++ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
     
     if (isUpdate.boolValue) {
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
