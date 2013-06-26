@@ -337,7 +337,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     else {
                         // The post data source will provide a view controller to push.
                         UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
-                        
+
                         if ([self.navigationController topViewController] == self) {
                             [self.navigationController pushViewController:controller animated:YES];
                         }
@@ -353,6 +353,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                         vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
                     }
 
+                    if ([UIApplication isIPad]) {
+                        vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                    }
+                    
                     if ([self.navigationController topViewController] == self) {
                         [self.navigationController presentViewController:vc animated:YES completion:nil];
                     }
@@ -884,6 +888,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
             [self.searchDisplayController setActive:NO];
             UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+            
+            if ([UIApplication isIPad]) {
+                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
+
             [self.navigationController presentViewController:vc animated:YES completion:nil];
         }
         else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {

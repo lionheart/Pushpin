@@ -11,6 +11,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "AppDelegate.h"
 #import "UIApplication+Additions.h"
+#import "UITableView+Additions.h"
 
 @interface PPChangelogViewController ()
 
@@ -21,29 +22,48 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
-        self.data = [NSArray arrayWithContentsOfFile:plistPath];
-        self.title = @"Changelog";
-        self.heights = [NSMutableDictionary dictionary];
-        self.titles = [NSMutableArray array];
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
-        NSInteger index = 0;
-        for (NSArray *list in self.data) {
-            [self.titles addObject:list[0]];
-            for (NSArray *pair in list[1]) {
-                NSString *description = pair[1];
-
-                if ([description isEqualToString:@""]) {
-                    self.heights[description] = @(0);
-                }
-                else {
-                    self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake(255, CGFLOAT_MAX)].height);
-                }
-            }
-            index++;
-        }
     }
     return self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
+    self.data = [NSArray arrayWithContentsOfFile:plistPath];
+    self.title = @"Changelog";
+    self.heights = [NSMutableDictionary dictionary];
+    self.titles = [NSMutableArray array];
+    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
+    NSInteger index = 0;
+    CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 45;
+    CGFloat normalFontHeight = [@" " sizeWithFont:font].height;
+    NSUInteger emptyLines;
+    CGFloat descriptionHeight;
+    NSArray *lines;
+    for (NSArray *list in self.data) {
+        [self.titles addObject:list[0]];
+        for (NSArray *pair in list[1]) {
+            NSString *description = pair[1];
+            
+            if ([description isEqualToString:@""]) {
+                descriptionHeight = 0;
+            }
+            else {
+                emptyLines = 0;
+                lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                for (NSString *line in lines) {
+                    if ([line isEqualToString:@""]) {
+                        emptyLines++;
+                    }
+                }
+                
+                descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                descriptionHeight += emptyLines * normalFontHeight;
+            }
+            
+            self.heights[description] = @(descriptionHeight);
+        }
+        index++;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -58,10 +78,9 @@
     NSString *title = self.titles[section];
     if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
-        
-        BOOL isIPad = [UIApplication isIPad];
+
         NSUInteger fontSize = 17;
-        NSUInteger padding = isIPad ? 45 : 15;
+        NSUInteger padding = tableView.groupedCellMargin;
         UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
@@ -83,7 +102,8 @@
     NSString *title = self.titles[section];
     if (![title isEqual:@""]) {
         UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17];
-        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(300, CGFLOAT_MAX)].height + 20;
+        NSUInteger padding = tableView.groupedCellMargin;
+        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(tableView.frame.size.width - padding * 2, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
     }
     return 0;
 }
@@ -91,7 +111,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *info = self.data[indexPath.section][1];
     NSString *description = info[indexPath.row][1];
-
     CGFloat topHeight = [self.heights[description] floatValue];
     return topHeight + 20;
 }

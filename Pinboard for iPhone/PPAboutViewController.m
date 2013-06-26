@@ -20,6 +20,7 @@
 #import "PPChangelogViewController.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UITableView+Additions.h"
 
 @interface PPAboutViewController ()
 
@@ -32,7 +33,6 @@
     if (self) {
         NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
         self.data = [NSArray arrayWithContentsOfFile:plistPath];
-
         self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
@@ -42,6 +42,12 @@
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
         NSInteger index = 0;
+        CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
+        CGFloat normalFontHeight = [@" " sizeWithFont:font].height;
+        CGFloat fixedWidthFontHeight = [@" " sizeWithFont:fixedWidthFont].height;
+        CGFloat descriptionHeight;
+        NSUInteger emptyLines;
+        NSArray *lines;
         for (NSArray *list in self.data) {
             [self.titles addObject:list[0]];
             for (NSArray *pair in list[1]) {
@@ -52,20 +58,32 @@
                     self.heights[title] = @(0);
                 }
                 else {
-                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height));
+                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
                 }
 
                 if ([description isEqualToString:@""]) {
-                    self.heights[description] = @(0);
+                    descriptionHeight = 0;
                 }
                 else {
+                    emptyLines = 0;
+                    lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                    for (NSString *line in lines) {
+                        if ([line isEqualToString:@""]) {
+                            emptyLines++;
+                        }
+                    }
+
                     if (index == 4) {
-                        self.heights[description] = @([description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height);
+                        descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                        descriptionHeight += emptyLines * fixedWidthFontHeight;
                     }
                     else {
-                        self.heights[description] = @([description sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height);
+                        descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                        descriptionHeight += emptyLines * normalFontHeight;
                     }
                 }
+
+                self.heights[description] = @(descriptionHeight);
             }
             index++;
         }
@@ -87,9 +105,8 @@
     NSString *title = self.titles[section];
     if (![title isEqualToString:@""]) {
         float width = tableView.bounds.size.width;
-        BOOL isIPad = [UIApplication isIPad];
         NSUInteger fontSize = 17;
-        NSUInteger padding = isIPad ? 45 : 15;
+        NSUInteger padding = tableView.groupedCellMargin;
         UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
@@ -145,6 +162,7 @@
         cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     }
     cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
