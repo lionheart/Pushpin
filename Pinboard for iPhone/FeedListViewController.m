@@ -427,10 +427,19 @@
     }
 }
 
+- (void)dismissViewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)openSettings {
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:svc animated:YES];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
+    if ([UIApplication isIPad]) {
+        nc.modalPresentationStyle = UIModalPresentationFormSheet;
+    }
+    svc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(dismissViewController)];
+    [self presentViewController:nc animated:YES completion:nil];
 }
 
 - (void)openTags {

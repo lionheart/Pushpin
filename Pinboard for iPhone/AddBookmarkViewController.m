@@ -17,6 +17,7 @@
 #import "PPCoreGraphics.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UITableView+Additions.h"
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
@@ -78,22 +79,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
-
-        BOOL isIPad = [UIApplication isIPad];
-        CGFloat offset;
-        if (isIPad) {
-            offset = 285;
-        }
-        else {
-            offset = 240;
-        }
-        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height - 44 - offset)];
-        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
-        self.postDescriptionTextView.font = font;
-        self.postDescriptionTextView.text = @"";
-        self.postDescriptionTextView.delegate = self;
-        self.postDescription = @"";
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -146,6 +131,30 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         
     }
     return self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (!self.postDescriptionTextView) {
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        BOOL isIPad = [UIApplication isIPad];
+        CGFloat offset;
+        if (isIPad) {
+            offset = 75;
+        }
+        else {
+            offset = 225;
+        }
+
+        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - offset)];
+        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.postDescriptionTextView.font = font;
+        self.postDescriptionTextView.text = @"";
+        self.postDescriptionTextView.delegate = self;
+        self.postDescription = @"";
+    }
 }
 
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer {
@@ -473,6 +482,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     
+    for (UIView *view in [cell.contentView subviews]) {
+        [view removeFromSuperview];
+    }
+    
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
@@ -481,10 +494,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-
-    for (UIView *view in [cell.contentView subviews]) {
-        [view removeFromSuperview];
-    }
 
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {
@@ -496,16 +505,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     }
 
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    
-    BOOL isIPad = [UIApplication isIPad];
-    CGFloat textFieldWidth;
-    if (isIPad) {
-        textFieldWidth = [UIApplication currentSize].width - 135;
-    }
-    else {
-        textFieldWidth = [UIApplication currentSize].width - 62;
-    }
 
+    CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
 
@@ -570,15 +571,12 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         break;
                         
                     default: {
-                        BOOL isIPad = [UIApplication isIPad];
-                        CGFloat offset = isIPad ? 95 : 25;
-
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
                             UIImage *pillImage = [PPCoreGraphics pillImage:self.tagCounts[tag]];
                             UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-                            pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
+                            pillView.frame = CGRectMake(tableView.frame.size.width - 2*tableView.groupedCellMargin - pillImage.size.width - 5, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
                             [cell.contentView addSubview:pillView];
                         }
                         else {
