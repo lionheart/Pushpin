@@ -75,11 +75,9 @@
 
                     if (index == 4) {
                         descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
-                        descriptionHeight += emptyLines * fixedWidthFontHeight;
                     }
                     else {
                         descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
-                        descriptionHeight += emptyLines * normalFontHeight;
                     }
                 }
 
