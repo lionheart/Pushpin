@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "PPSwitch.h"
 
+@class PPNavigationController;
+
 @interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate> {
     UIEdgeInsets _oldContentInset;
 }
@@ -62,6 +64,6 @@
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)finishEditingDescription;
 
-+ (UINavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
++ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
 @end

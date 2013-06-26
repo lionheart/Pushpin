@@ -43,8 +43,6 @@
         UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
         NSInteger index = 0;
         CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
-        CGFloat normalFontHeight = [@" " sizeWithFont:font].height;
-        CGFloat fixedWidthFontHeight = [@" " sizeWithFont:fixedWidthFont].height;
         CGFloat descriptionHeight;
         NSUInteger emptyLines;
         NSArray *lines;

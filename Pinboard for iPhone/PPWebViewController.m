@@ -21,6 +21,8 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 
+#import "PPNavigationController.h"
+
 static NSInteger kToolbarHeight = 44;
 
 @interface PPWebViewController ()
@@ -265,6 +267,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)loadURL {
     self.stopped = NO;
+    
+    self.title = @"Loading...";
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
@@ -338,6 +342,9 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress--;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
+
+    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    self.title = pageTitle;
 }
 
 - (void)enableOrDisableButtons {
@@ -352,16 +359,13 @@ static NSInteger kToolbarHeight = 44;
         self.backBarButtonItem.enabled = self.webView.canGoBack;
         self.forwardBarButtonItem.enabled = self.webView.canGoForward;
         self.alreadyLoaded = YES;
-        
-        NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-        self.title = pageTitle;
 
-        NSString *theURLString = self.url.absoluteString;
-
+        NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
+        DLog(@"%@", theURLString);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
-            FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[[self urlStringForDemobilizedURL:[NSURL URLWithString:theURLString]]]];
+            FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
             [results next];
             BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
             [db close];
@@ -396,7 +400,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     self.numberOfRequestsInProgress++;
-    self.title = @"Loading...";
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
 }
@@ -704,6 +707,8 @@ static NSInteger kToolbarHeight = 44;
     }
     self.stopped = NO;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    self.title = @"Loading...";
     [self.webView loadRequest:request];
 }
 
@@ -747,7 +752,12 @@ static NSInteger kToolbarHeight = 44;
         @"url": [self urlStringForDemobilizedURL:self.url]
     };
 
-    UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(NO) delegate:self callback:nil];
+    PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(NO) delegate:self callback:nil];
+    
+    if ([UIApplication isIPad]) {
+        vc.modalPresentationStyle = UIModalPresentationFormSheet;
+    }
+
     [self presentViewController:vc animated:YES completion:nil];
 }
 
@@ -773,7 +783,12 @@ static NSInteger kToolbarHeight = 44;
             [db close];
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                UINavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
+                PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) delegate:self callback:nil];
+                
+                if ([UIApplication isIPad]) {
+                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                }
+
                 [self presentViewController:vc animated:YES completion:nil];
             });
         }

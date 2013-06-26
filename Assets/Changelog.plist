@@ -31,19 +31,19 @@
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. "twitter_favs", "readability", "twitter", "instapaper", "delicious", "email", and "ril" are all valid sources.</string>
+        <string>You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. Other valid sources are "twitter_favs", "readability", "twitter", "instapaper", "delicious", and "ril".</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Viewing feeds with unicode data would fail.</string>
+				<string>Fixed issue where viewing feeds with unicode data would fail.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>In-app browser was unable to switch out of Instapaper mobilizer view.</string>
+				<string>Fixed issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Viewing the tag list after adding a new tag would cause a crash.</string>
+				<string>Fixed issue where viewing the tag list after adding a new tag would cause a crash.</string>
 			</array>
 		</array>
 	</array>

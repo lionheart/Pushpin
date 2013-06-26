@@ -36,6 +36,8 @@ enum PPPostActions {
 };
 typedef NSInteger PPPostAction;
 
+@class PPNavigationController;
+
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
@@ -63,7 +65,7 @@ typedef NSInteger PPPostAction;
 - (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
 
-- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
 - (id <GenericPostDataSource>)searchDataSource;
 - (void)filterWithQuery:(NSString *)query;
 - (void)addDataSource:(void (^)())callback;
@@ -74,7 +76,7 @@ typedef NSInteger PPPostAction;
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;
 
-- (UIViewController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
+- (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback;
