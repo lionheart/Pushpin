@@ -113,6 +113,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    self.tableView.opaque = NO;
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
     AppDelegate *delegate = [AppDelegate sharedDelegate];

@@ -7,6 +7,7 @@
 //
 
 #import "PPTableViewController.h"
+#import "UIApplication+Additions.h"
 
 @interface PPTableViewController ()
 
@@ -17,7 +18,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:(CGRect){{0, 0}, [UIApplication currentSize]}];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.tableView.opaque = NO;
     }
