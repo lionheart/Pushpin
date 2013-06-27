@@ -434,6 +434,7 @@
 - (void)openSettings {
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
+    svc.modalDelegate = self;
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
     if ([UIApplication isIPad]) {
         nc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -461,6 +462,14 @@
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
+}
+
+- (void)closeModal:(UIViewController *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+    [self dismissViewControllerAnimated:YES completion:success];
 }
 
 @end

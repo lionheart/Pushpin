@@ -49,6 +49,7 @@ enum bookmarkupdateevents {
 
 @protocol ModalDelegate <NSObject>
 - (void)closeModal:(UIViewController *)sender;
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success;
 @end
 
 @protocol BookmarkUpdatedDelegate <NSObject>
