@@ -347,16 +347,16 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 case 2: {
                     UIViewController *vc;
                     if ([dataSource respondsToSelector:@selector(addViewControllerForPostAtIndex:delegate:)]) {
-                        vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+                        vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
                     }
                     else {
-                        vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+                        vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
                     }
 
                     if ([UIApplication isIPad]) {
                         vc.modalPresentationStyle = UIModalPresentationFormSheet;
                     }
-                    
+
                     if ([self.navigationController topViewController] == self) {
                         [self.navigationController presentViewController:vc animated:YES completion:nil];
                     }
@@ -377,16 +377,15 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer) {
         [self.view endEditing:YES];
-        CGPoint pressPoint;
         
         if (self.searchDisplayController.isActive) {
-            pressPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
-            self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:pressPoint];
+            self.selectedPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
+            self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:self.selectedPoint];
             self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
         }
         else {
-            pressPoint = [recognizer locationInView:self.tableView];
-            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
+            self.selectedPoint = [recognizer locationInView:self.tableView];
+            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
         }
         [self openActionSheetForSelectedPost];
@@ -848,7 +847,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
         self.actionSheetVisible = YES;        
         if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet showFromRect:[self.tableView rectForRowAtIndexPath:self.selectedIndexPath] inView:self.tableView animated:YES];
+            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
         }
         else {
             [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
@@ -887,7 +886,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         }
         else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
             [self.searchDisplayController setActive:NO];
-            UIViewController *vc = [dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+            UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
             
             if ([UIApplication isIPad]) {
                 vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -911,7 +910,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             [self copyURL];
         }
         else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-            UIViewController *vc = [dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+            UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+
+            if ([UIApplication isIPad]) {
+                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
+
             [self.navigationController presentViewController:vc animated:YES completion:nil];
         }
 

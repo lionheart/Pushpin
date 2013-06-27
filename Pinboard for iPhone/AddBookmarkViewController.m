@@ -289,7 +289,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         UIView *view = [[UIView alloc] init];
         view.clipsToBounds = YES;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, 5, [UIApplication currentSize].width - 40, [self tableView:tableView heightForFooterInSection:0]);
+        label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
         label.textColor = HEX(0x4C586AFF);
@@ -305,7 +305,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
-        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 40, CGFLOAT_MAX)].height + 10;
+        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX)].height + 10;
     }
     return 0;
 }
@@ -967,6 +967,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (void)textViewDidChange:(UITextView *)textView {
     self.postDescription = textView.text;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    return YES;
 }
 
 @end

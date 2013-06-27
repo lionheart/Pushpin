@@ -9,6 +9,7 @@
 #import "PrimaryNavigationViewController.h"
 #import "FMDatabase.h"
 #import "AddBookmarkViewController.h"
+#import "UIApplication+Additions.h"
 
 @interface PrimaryNavigationViewController ()
 
@@ -119,6 +120,10 @@
     }
     else {
         addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
+    }
+
+    if ([UIApplication isIPad]) {
+        addBookmarkViewNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     }
 
     [self presentViewController:addBookmarkViewNavigationController animated:YES completion:nil];

@@ -38,9 +38,7 @@
     
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = CGRectMake(0, 0, size.width, size.height);
-    gradient.colors = [NSArray arrayWithObjects:(id)[HEX(0x06C6FFFF) CGColor], (id)[HEX(0x2E63FFFF) CGColor], nil];
-    gradient.startPoint = CGPointMake(0, 0);
-    gradient.endPoint = CGPointMake(size.width, size.height);
+    gradient.colors = @[(id)[HEX(0x06C6FFFF) CGColor], (id)[HEX(0x2E63FFFF) CGColor]];
     [self.view.layer addSublayer:gradient];
 
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pin"]];

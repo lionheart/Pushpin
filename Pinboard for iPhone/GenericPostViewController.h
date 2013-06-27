@@ -124,6 +124,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic) CGFloat beginningScale;
 @property (nonatomic) BOOL compressPosts;
 @property (nonatomic) BOOL dimReadPosts;
+@property (nonatomic) CGPoint selectedPoint;
 
 - (void)handleCellTap;
 - (void)popViewController;
