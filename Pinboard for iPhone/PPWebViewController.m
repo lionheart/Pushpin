@@ -95,13 +95,13 @@ static NSInteger kToolbarHeight = 44;
     
     self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 70, 40, 40);
     [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
     [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
 
     self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 50, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 70, 40, 40);
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     self.exitReaderModeButton.hidden = YES;
@@ -172,7 +172,7 @@ static NSInteger kToolbarHeight = 44;
     CGFloat x;
     CGFloat y;
     if (point.y > self.webView.bounds.size.height / 2) {
-        y = self.webView.bounds.size.height - 50;
+        y = self.webView.bounds.size.height - 70;
     }
     else {
         y = 10;
@@ -203,6 +203,19 @@ static NSInteger kToolbarHeight = 44;
             }];
         }
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    CGRect frame = self.webView.frame;
+    frame.size.width = [UIApplication currentSize].width;
+    frame.size.height = [UIApplication currentSize].height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height;
+    self.webView.frame = frame;
+    
+    CGPoint newPoint = [self adjustedPuckPositionWithPoint:self.webView.frame.origin];
+    self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -361,7 +374,6 @@ static NSInteger kToolbarHeight = 44;
         self.alreadyLoaded = YES;
 
         NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
-        DLog(@"%@", theURLString);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
@@ -380,18 +392,12 @@ static NSInteger kToolbarHeight = 44;
                     self.navigationItem.rightBarButtonItem = addBarButtonItem;
                 }
                 
-                if (self.stopped) {
-                    [self.readerButton addTarget:self action:@selector(loadURL) forControlEvents:UIControlEventTouchUpInside];
-                    [self.readerButton setImage:[UIImage imageNamed:@"reload-dash"] forState:UIControlStateNormal];
+                [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+                if (self.isMobilized) {
+                    [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
                 }
                 else {
-                    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-                    if (self.isMobilized) {
-                        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
-                    }
-                    else {
-                        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-                    }
+                    [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
                 }
             });
         });

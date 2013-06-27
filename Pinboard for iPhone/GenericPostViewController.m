@@ -874,11 +874,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 #pragma mark - RDActionSheet
 
+- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
+    self.tableView.scrollEnabled = YES;
+}
+
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.tableView.scrollEnabled = YES;
     if (buttonIndex >= 0) {
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        self.tableView.scrollEnabled = YES;
-        
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         
         if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
