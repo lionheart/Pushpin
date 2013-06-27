@@ -29,6 +29,8 @@
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
 
+#import "UIApplication+Additions.h"
+
 @implementation AppDelegate
 
 @synthesize window;
@@ -1022,6 +1024,11 @@
         self.addBookmarkAlertViewIsVisible = NO;
         if (buttonIndex == 1) {
             PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
+            
+            if ([UIApplication isIPad]) {
+                addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
+
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
             [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }
