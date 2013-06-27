@@ -286,18 +286,20 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        UIView *view = [[UIView alloc] init];
-        view.clipsToBounds = YES;
-        UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
-        label.textAlignment = NSTextAlignmentCenter;
-        label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
-        label.textColor = HEX(0x4C586AFF);
-        label.numberOfLines = 0;
-        label.backgroundColor = HEX(0xF7F9FDff);
-        label.text = NSLocalizedString(@"Separate tags with spaces", nil);
-        [view addSubview:label];
-        return view;
+        if (!self.footerView) {
+            self.footerView = [[UIView alloc] init];
+            self.footerView.clipsToBounds = YES;
+            UILabel *label = [[UILabel alloc] init];
+            label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
+            label.textAlignment = NSTextAlignmentCenter;
+            label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
+            label.textColor = HEX(0x4C586AFF);
+            label.numberOfLines = 0;
+            label.backgroundColor = HEX(0xF7F9FDff);
+            label.text = NSLocalizedString(@"Separate tags with spaces", nil);
+            [self.footerView addSubview:label];
+        }
+        return self.footerView;
     }
     return nil;
 }

@@ -16,6 +16,7 @@
     UIEdgeInsets _oldContentInset;
 }
 
+@property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) NSString *postDescription;
 @property (nonatomic, strong) UITextView *postDescriptionTextView;
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
