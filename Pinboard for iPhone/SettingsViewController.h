@@ -36,6 +36,7 @@
 @property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
 
+@property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 @property (nonatomic, strong) id actionSheet;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;

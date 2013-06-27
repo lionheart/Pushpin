@@ -379,11 +379,24 @@
             [delegate setLoginViewController:nil];
             [delegate setNavigationController:nil];
             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-            [self presentViewController:delegate.loginViewController
-                               animated:YES
-                             completion:nil];
 
-            [[AppDelegate sharedDelegate] migrateDatabase];
+            if ([UIApplication isIPad]) {
+                [self.modalDelegate closeModal:self success:^{
+                    [(UIViewController *)self.modalDelegate presentViewController:delegate.loginViewController
+                                                                         animated:YES
+                                                   completion:nil];
+                        
+                    [[AppDelegate sharedDelegate] migrateDatabase];
+                }];
+
+            }
+            else {
+                [self presentViewController:delegate.loginViewController
+                                   animated:YES
+                                 completion:nil];
+                
+                [[AppDelegate sharedDelegate] migrateDatabase];
+            }
         }
     }
     else if (alertView == self.instapaperAlertView) {
