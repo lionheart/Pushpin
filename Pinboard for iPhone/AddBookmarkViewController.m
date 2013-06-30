@@ -490,10 +490,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     
-    for (UIView *view in [cell.contentView subviews]) {
-        [view removeFromSuperview];
+    NSArray *subviews = cell.contentView.subviews;
+    for (UIView *subview in subviews) {
+        [subview removeFromSuperview];
     }
-    
+
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
@@ -582,10 +583,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
-                            UIImage *pillImage = [PPCoreGraphics pillImage:self.tagCounts[tag]];
-                            UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-                            pillView.frame = CGRectMake(tableView.frame.size.width - 2*tableView.groupedCellMargin - pillImage.size.width - 5, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
-                            [cell.contentView addSubview:pillView];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:self.tagCounts[tag]]];
                         }
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
