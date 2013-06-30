@@ -240,11 +240,6 @@
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    
-    NSArray *subviews = [cell.contentView subviews];
-    for (id subview in subviews) {
-        [subview removeFromSuperview];
-    }
 
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {
@@ -256,8 +251,6 @@
     }
     
     [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
-    cell.imageView.image = nil;
     cell.detailTextLabel.text = nil;
 
     UIImage *pillImage;
@@ -295,16 +288,13 @@
                     pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedStarredBookmarks]];
                     break;
             }
-            
-            UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-            BOOL isIPad = [UIApplication isIPad];
-            CGFloat offset = isIPad ? 115 : 45;
-            pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
-            
-            [cell.contentView addSubview:pillView];
+
+            cell.accessoryView = [[UIImageView alloc] initWithImage:pillImage];
             break;
         }
         case 1: {
+            cell.imageView.image = nil;
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);

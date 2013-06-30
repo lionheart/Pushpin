@@ -177,6 +177,7 @@
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
+		374562C017809AE200BF7389 /* UITableViewCell+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 374562BF17809AE200BF7389 /* UITableViewCell+Additions.m */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		37561D7216ADC86100D69CDE /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D4A16ADC86100D69CDE /* NSMutableURLRequest+Parameters.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37561D7316ADC86100D69CDE /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D4C16ADC86100D69CDE /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -796,6 +797,8 @@
 		3740A23D16863CF000F95D82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23E16863CF000F95D82 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		374562BE17809AE200BF7389 /* UITableViewCell+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITableViewCell+Additions.h"; path = "Vendor/UITableViewCell+Additions.h"; sourceTree = "<group>"; };
+		374562BF17809AE200BF7389 /* UITableViewCell+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITableViewCell+Additions.m"; path = "Vendor/UITableViewCell+Additions.m"; sourceTree = "<group>"; };
 		374698BE174B33CE00407345 /* PPNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotification.h; sourceTree = "<group>"; };
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotification.m; sourceTree = "<group>"; };
 		37561D4916ADC86100D69CDE /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
@@ -1334,6 +1337,8 @@
 				372F88FA16755A2E0073D0B6 /* Mixpanel */,
 				372F88781673EDEF0073D0B6 /* HTMLParser */,
 				3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */,
+				374562BE17809AE200BF7389 /* UITableViewCell+Additions.h */,
+				374562BF17809AE200BF7389 /* UITableViewCell+Additions.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -2972,6 +2977,7 @@
 				37FCF2B217756F7600093F41 /* UIApplication+Additions.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
+				374562C017809AE200BF7389 /* UITableViewCell+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

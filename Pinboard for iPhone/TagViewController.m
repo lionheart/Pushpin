@@ -15,6 +15,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UITableViewCell+Additions.h"
+#import "UITableView+Additions.h"
 
 @interface TagViewController ()
 
@@ -166,7 +168,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-
         BOOL isIPad = [UIApplication isIPad];
         NSUInteger fontSize = 17;
         NSUInteger padding = isIPad ? 45 : 15;
@@ -199,11 +200,6 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }
-    
-    NSArray *subviews = [cell.contentView subviews];
-    for (id subview in subviews) {
-        [subview removeFromSuperview];
-    }
 
     if (tableView == self.tableView) {
         CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
@@ -220,7 +216,6 @@
         [cell setSelectedBackgroundViewWithLayer:[PPGroupedTableViewCell layerForNonGroupedBackground]];
     }
 
-    
     NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         tag = self.filteredTags[indexPath.row];
@@ -230,21 +225,7 @@
     }
 
     cell.textLabel.text = tag[@"name"];
-    
-    UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
-    UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-    
-    BOOL isIPad = [UIApplication isIPad];
-    CGFloat offset;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        offset = isIPad ? 15 : 5;
-    }
-    else {
-        offset = isIPad ? 100 : 45;
-    }
-
-    pillView.frame = CGRectMake([UIApplication currentSize].width - pillImage.size.width - offset, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
-    [cell.contentView addSubview:pillView];
+    cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:tag[@"count"]]];
     return cell;
 }
 
