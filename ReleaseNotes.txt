@@ -1,6 +1,7 @@
 = 2.1 =
 
-* iPad and iOS 5.1 support.
+* iPad support!
+* iOS 5.1 support.
 * Landscape orientation support.
 * Speed up bookmark updates.
 * Don't dim read posts by default.
