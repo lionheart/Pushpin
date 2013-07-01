@@ -270,21 +270,23 @@
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
                 [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+
                 NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-                if (response[@"errors"]) {
-                    NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
-                    NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (response[@"errors"]) {
+                        NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
+                        NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
                         [[[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
-                        self.actionSheet = nil;
-                    });
-                }
-                else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    }
+                    else {
                         [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                        self.actionSheet = nil;
-                    });
-                }
+                    }
+                });
+
+                self.actionSheet = nil;
+                self.selectedItem = nil;
+                self.selectedPoint = CGPointZero;
+                self.selectedIndexPath = nil;
             }];
         });
     }
@@ -345,16 +347,31 @@
                 [loadingAlertView addSubview:self.loadingIndicator];
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [accountStore requestAccessToAccountsWithType:twitter
-                                                          options:nil
-                                                       completion:^(BOOL granted, NSError *error) {
-                                                           if (granted) {
-                                                               AccessGrantedBlock(loadingAlertView);
-                                                           }
-                                                           else {
-                                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                           }
-                                                       }];
+                    if ([accountStore respondsToSelector:@selector(requestAccessToAccountsWithType:withCompletionHandler:)]) {
+                        [accountStore requestAccessToAccountsWithType:twitter
+                                                withCompletionHandler:^(BOOL granted, NSError *error) {
+                                                               if (granted) {
+                                                                   AccessGrantedBlock(loadingAlertView);
+                                                               }
+                                                               else {
+                                                                   [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                               }
+                                                           }];
+                    }
+                    else {
+                        [accountStore requestAccessToAccountsWithType:twitter
+                                                              options:nil
+                                                           completion:^(BOOL granted, NSError *error) {
+                                                               if (granted) {
+                                                                   AccessGrantedBlock(loadingAlertView);
+                                                               }
+                                                               else {
+                                                                   [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                               }
+                                                           }];
+                    }
                 });
             });
         }
@@ -408,7 +425,7 @@
     self.actionSheet = nil;
 }
 
-- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.actionSheet && buttonIndex >= 0) {
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([buttonTitle isEqualToString:@"Copy Project URL"]) {
@@ -417,10 +434,8 @@
         else if ([buttonTitle hasPrefix:@"Follow"]) {
             [self followScreenName:self.selectedItem[2]];
         }
-        else if ([actionSheet respondsToSelector:@selector(title)]) {
-            if ([[(UIActionSheet *)actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
-                [self followScreenName:self.selectedItem[2] withAccountScreenName:buttonTitle];
-            }
+        else if ([[(UIActionSheet *)actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
+            [self followScreenName:self.selectedItem[2] withAccountScreenName:buttonTitle];
         }
     }
     self.actionSheet = nil;

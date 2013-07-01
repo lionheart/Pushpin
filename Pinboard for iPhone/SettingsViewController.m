@@ -212,6 +212,9 @@
 
     cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.detailTextLabel.text = nil;
+    cell.textLabel.text = nil;
+    cell.accessoryView = nil;
 
     CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
     if (indexPath.row > 0) {
@@ -285,7 +288,6 @@
                     }
 
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
                     break;
                     
                 case 3:
@@ -706,6 +708,10 @@
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self.tableView reloadData];
 }
 
 @end
