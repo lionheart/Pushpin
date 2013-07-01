@@ -10,6 +10,7 @@
 * Fixed issue where viewing feeds with unicode data would fail.
 * Fixed issue where in-app browser was unable to switch out of Instapaper mobilizer view.
 * Fixed issue where viewing the tag list after adding a new tag would cause a crash.
+* Fixed issue where long tag names would cover tag counts.
 
 = Updates from v2.0 =
 
