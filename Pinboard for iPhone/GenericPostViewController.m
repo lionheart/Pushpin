@@ -973,7 +973,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
     notification.userInfo = @{@"success": @YES, @"updated": @NO};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-    [[UIPasteboard generalPasteboard] setString:[self.postDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
+    [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
