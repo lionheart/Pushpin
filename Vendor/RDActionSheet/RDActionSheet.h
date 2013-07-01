@@ -53,6 +53,8 @@ typedef void(^RDActionSheetCallbackBlock)(RDActionSheetCallbackType result, NSIn
 
 - (void)cancelActionSheet;
 
+- (NSString *)title;
+
 @end
 
 @protocol RDActionSheetDelegate
