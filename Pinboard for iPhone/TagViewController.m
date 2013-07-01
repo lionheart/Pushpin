@@ -225,7 +225,16 @@
     }
 
     cell.textLabel.text = tag[@"name"];
-    cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:tag[@"count"]]];
+    UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
+    UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
+    pillView.contentMode = UIViewContentModeScaleAspectFit;
+    cell.accessoryView = pillView;
+    if ([UIApplication isIPad]) {
+        CGRect frame = cell.accessoryView.frame;
+        frame.size.width += 20;
+        cell.accessoryView.frame = frame;
+    }
+    cell.imageView.image = nil;
     return cell;
 }
 
