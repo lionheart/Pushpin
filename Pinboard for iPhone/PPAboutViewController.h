@@ -21,9 +21,12 @@
 @property (nonatomic, retain) PPLoadingView *loadingIndicator;
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic) CGPoint selectedPoint;
+@property (nonatomic) NSArray *selectedItem;
+@property (nonatomic, strong) id actionSheet;
 
+- (void)followScreenName:(NSString *)screenName withAccountScreenName:(NSString *)accountScreenName;
 - (void)followScreenName:(NSString *)screenName;
-- (void)followUserOnTwitter:(id)sender;
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer;
 
 @end
