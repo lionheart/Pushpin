@@ -45,6 +45,10 @@
 				<string>FIX</string>
 				<string>Fixed issue where viewing the tag list after adding a new tag would cause a crash.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed issue where viewing the tag list after adding a new tag would cause a crash.</string>
+      </array>
 		</array>
 	</array>
 	<array>
