@@ -1,7 +1,5 @@
 = 2.1 =
 
-Improvements
-
 * iPad support!
 * iOS 5.1 support.
 * Landscape orientation support.
