@@ -47,7 +47,11 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where viewing the tag list after adding a new tag would cause a crash.</string>
+				<string>Fixed issue where long tag names would cover tag counts.</string>
+      </array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed issue where the wrong URL would get copied to the clipboard when searching for a bookmark.</string>
       </array>
 		</array>
 	</array>
