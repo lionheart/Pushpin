@@ -1,5 +1,7 @@
 = 2.1 =
 
+Improvements
+
 * iPad support!
 * iOS 5.1 support.
 * Landscape orientation support.
@@ -7,10 +9,14 @@
 * Don't dim read posts by default.
 * You can now double-tap a bookmark to edit it. Enable in advanced settings.
 * You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. "twitter_favs", "readability", "twitter", "instapaper", "delicious", "email", and "ril" are all valid sources.
-* Fixed issue where viewing feeds with unicode data would fail.
-* Fixed issue where in-app browser was unable to switch out of Instapaper mobilizer view.
-* Fixed issue where viewing the tag list after adding a new tag would cause a crash.
-* Fixed issue where long tag names would cover tag counts.
+
+Bug Fixes
+
+* Viewing feeds with unicode data would fail.
+* In-app browser was unable to switch out of Instapaper mobilizer view.
+* Viewing the tag list after adding a new tag would cause a crash.
+* Long tag names would cover tag counts.
+* The wrong URL would get copied to the clipboard when searching for a bookmark.
 
 = Updates from v2.0 =
 
