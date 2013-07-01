@@ -20,5 +20,8 @@
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UINavigationController *navigationController;
+@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
+
+- (void)popViewController;
 
 @end

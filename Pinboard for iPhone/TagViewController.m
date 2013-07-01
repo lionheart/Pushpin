@@ -44,7 +44,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
+    self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
+    self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
+    [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
+
     NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
 
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -313,6 +319,10 @@
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
     [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+}
+
+- (void)popViewController {
+    [[AppDelegate sharedDelegate].navigationController popViewControllerAnimated:YES];
 }
 
 @end
