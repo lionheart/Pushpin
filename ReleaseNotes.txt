@@ -1,6 +1,6 @@
 = 2.1 =
 
-* iPad support.
+* iPad support!
 * iOS 5.1 support.
 * Landscape support.
 * Speed up bookmark updates.
