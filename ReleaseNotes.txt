@@ -1,8 +1,7 @@
 = 2.1 =
 
-* iPad support!
-* iOS 5.1 support.
-* Landscape support.
+* iPad and iOS 5.1 support.
+* Landscape orientation support.
 * Speed up bookmark updates.
 * Don't dim read posts by default.
 * You can now double-tap a bookmark to edit it. Enable in advanced settings.
