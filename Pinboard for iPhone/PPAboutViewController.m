@@ -226,8 +226,8 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
     }
     else if ([self.data[indexPath.section][1][indexPath.row] count] > 3) {
-        PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:self.data[indexPath.section][1][indexPath.row][3]];
-        [self.navigationController pushViewController:webViewController animated:YES];
+        NSURL *url = [NSURL URLWithString:self.data[indexPath.section][1][indexPath.row][3]];
+        [[UIApplication sharedApplication] openURL:url];
     }
     else {
         if ([self.expandedIndexPaths containsObject:indexPath]) {
@@ -247,6 +247,49 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)followScreenName:(NSString *)screenName withAccountScreenName:(NSString *)accountScreenName {
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    NSString *identifier;
+    for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
+        if ([account.username isEqualToString:accountScreenName]) {
+            identifier = account.identifier;
+            break;
+        }
+    }
+    
+    if (identifier) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            ACAccount *account = [accountStore accountWithIdentifier:identifier];
+            SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                                    requestMethod:SLRequestMethodPOST
+                                                              URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
+                                                       parameters:@{@"screen_name": screenName, @"follow": @"true"}];
+            [request setAccount:account];
+
+            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
+                if (response[@"errors"]) {
+                    NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
+                    NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
+                        self.actionSheet = nil;
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                        self.actionSheet = nil;
+                    });
+                }
+            }];
+        });
+    }
+}
+
 - (void)followScreenName:(NSString *)screenName {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ACAccountStore *accountStore = [[ACAccountStore alloc] init];
@@ -254,70 +297,45 @@
         
         void (^AccessGrantedBlock)(WCAlertView *) = ^(WCAlertView *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.twitterAccountActionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                if ([UIApplication isIPad]) {
+                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
+                else {
+                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
                 
                 NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
+                NSString *accountScreenName;
                 for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
-                    [self.twitterAccountActionSheet addButtonWithTitle:account.username];
-                    [accounts setObject:account.identifier forKey:account.username];
+                    accountScreenName = account.username;
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:accountScreenName];
+                    [accounts setObject:account.identifier forKey:accountScreenName];
                 }
                 
                 if (loadingAlertView) {
                     [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                 }
-                
-                void (^Tweet)(NSString *) = ^(NSString *username) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        ACAccount *account = [accountStore accountWithIdentifier:accounts[username]];
-                        SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                                                requestMethod:SLRequestMethodPOST
-                                                                          URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
-                                                                   parameters:@{@"screen_name": screenName, @"follow": @"true"}];
-                        [request setAccount:account];
-                        [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                            NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-                            if (response[@"errors"]) {
-                                NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
-                                NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil];
-                                    [alertView show];
-                                });
-                            }
-                            else {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    WCAlertView *alertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-                                    [alertView show];
-                                });
-                            }
-                        }];
+
+                if ([accounts count] > 1) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([self.actionSheet respondsToSelector:@selector(showFromRect:inView:animated:)]) {
+                            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:NO];
+                        }
+                        else {
+                            [self.actionSheet showFrom:self.navigationController.view];
+                        }
                     });
-                };
-                
-                if ([accounts count] == 0) {
                 }
                 else if ([accounts count] == 1) {
-                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-                    ACAccount *account = [accountStore accountsWithAccountType:twitter][0];
-                    Tweet(account.username);
-                }
-                else {
-                    self.twitterAccountActionSheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
-                        if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
-                            Tweet(buttonTitle);
-                        }
-                    };
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-                        [self.twitterAccountActionSheet showFrom:self.navigationController.view];
-                    });
+                    [self followScreenName:screenName withAccountScreenName:accountScreenName];
                 }
             });
         };
         
-        if (!twitter.accessGranted) {
+        if (twitter.accessGranted) {
+            AccessGrantedBlock(nil);
+        }
+        else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                 [loadingAlertView show];
@@ -340,48 +358,72 @@
                 });
             });
         }
-        else {
-            AccessGrantedBlock(nil);
-        }
     });
-}
-
-- (void)followUserOnTwitter:(id)sender {
-    NSString *screenName = self.data[self.selectedIndexPath.section][1][self.selectedIndexPath.row][2];
-    if (![screenName isEqualToString:@""]) {
-        [self followScreenName:screenName];
-    }
 }
 
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {
-        CGPoint pressPoint = [recognizer locationInView:self.tableView];
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:pressPoint];
-        NSArray *info = self.data[indexPath.section][1][indexPath.row];
-        
-        if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
-            RDActionSheet *sheet = [[RDActionSheet alloc] initWithTitle:info[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
-                [sheet addButtonWithTitle:@"Copy Project URL"];
-                sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
-                    if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
-                        [[UIPasteboard generalPasteboard] setString:info[2]];
-                    }
-                };
-            }
-            else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
-                NSString *screenName = info[2];
-                [sheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
-                sheet.callbackBlock = ^(RDActionSheetCallbackType result, NSInteger buttonIndex, NSString *buttonTitle) {
-                    if (result == RDActionSheetCallbackTypeClickedButtonAtIndex && ![buttonTitle isEqualToString:@"Cancel"]) {
-                        [self followScreenName:screenName];
-                    }
-                };
-            }
+        if (!self.actionSheet) {
+            self.selectedPoint = [recognizer locationInView:self.tableView];
+            NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
+            self.selectedItem = self.data[indexPath.section][1][indexPath.row];
 
-            [sheet showFrom:self.navigationController.view];
+            if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
+
+                if ([UIApplication isIPad]) {
+                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
+                else {
+                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedItem[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
+
+                if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:@"Copy Project URL"];
+                }
+                else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
+                    NSString *screenName = self.selectedItem[2];
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
+                }
+
+                if ([UIApplication isIPad]) {
+                    [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
+                }
+                else {
+                    [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+                }
+            }
+        }
+        else {
+            if ([self.actionSheet respondsToSelector:@selector(dismissWithClickedButtonIndex:animated:)]) {
+                [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+                self.actionSheet = nil;
+            }
         }
     }
+}
+
+#pragma mark Action Sheet Delegate
+
+- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
+    self.actionSheet = nil;
+}
+
+- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (actionSheet == self.actionSheet && buttonIndex >= 0) {
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([buttonTitle isEqualToString:@"Copy Project URL"]) {
+            [[UIPasteboard generalPasteboard] setString:self.selectedItem[2]];
+        }
+        else if ([buttonTitle hasPrefix:@"Follow"]) {
+            [self followScreenName:self.selectedItem[2]];
+        }
+        else if ([actionSheet respondsToSelector:@selector(title)]) {
+            if ([[(UIActionSheet *)actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
+                [self followScreenName:self.selectedItem[2] withAccountScreenName:buttonTitle];
+            }
+        }
+    }
+    self.actionSheet = nil;
 }
 
 @end
