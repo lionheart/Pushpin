@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-@interface PPNavigationController : UINavigationController
+@interface PPNavigationController : UINavigationController <ModalDelegate>
+
+@property (nonatomic, strong) PPNavigationController *randomBookmarkNavigationController;
 
 @end
