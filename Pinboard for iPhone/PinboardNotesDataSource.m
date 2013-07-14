@@ -162,6 +162,10 @@
     return @[];
 }
 
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
+    return [self heightForPostAtIndex:index];
+}
+
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
     return [self.heights[index] floatValue];
 }
