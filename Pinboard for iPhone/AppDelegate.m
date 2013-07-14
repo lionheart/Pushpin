@@ -186,56 +186,58 @@
     }
 }
 
-- (void)promptUserToAddBookmark {    
-    self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
-            return;
-        }
-
-        Mixpanel *mixpanel = [Mixpanel sharedInstance];
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-        [results next];
-        BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
-        results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-        [results next];
-        BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
-        if (alreadyExistsInBookmarks) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = [NSString stringWithFormat:@"Not prompting to add as %@ is already in your bookmarks.", self.clipboardBookmarkURL];
-                notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            });
-        }
-        else if (alreadyRejected) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
-                notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            });
-        }
-        else {
-            NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
-            if (candidateURL && candidateURL.scheme && candidateURL.host) {
-                [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
-                                                       callback:^(NSString *title, NSString *description) {
-                                                           self.clipboardBookmarkTitle = title;
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               [self.addBookmarkFromClipboardAlertView show];
-                                                           });
-
-                                                           self.addBookmarkAlertViewIsVisible = YES;
-                                                           [mixpanel track:@"Prompted to add bookmark from clipboard"];
-                                                       }];
-                
+- (void)promptUserToAddBookmark {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (!self.clipboardBookmarkURL || self.addBookmarkAlertViewIsVisible) {
+                return;
             }
-        }
-        [db close];
+            
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+            [results next];
+            BOOL alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
+            results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+            [results next];
+            BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
+            if (alreadyExistsInBookmarks) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UILocalNotification *notification = [[UILocalNotification alloc] init];
+                    notification.alertBody = [NSString stringWithFormat:@"Not prompting to add as %@ is already in your bookmarks.", self.clipboardBookmarkURL];
+                    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                });
+            }
+            else if (alreadyRejected) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UILocalNotification *notification = [[UILocalNotification alloc] init];
+                    notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+                    notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
+                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                });
+            }
+            else {
+                NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
+                if (candidateURL && candidateURL.scheme && candidateURL.host) {
+                    [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
+                                                           callback:^(NSString *title, NSString *description) {
+                                                               self.clipboardBookmarkTitle = title;
+                                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                                   [self.addBookmarkFromClipboardAlertView show];
+                                                               });
+                                                               
+                                                               self.addBookmarkAlertViewIsVisible = YES;
+                                                               [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                                           }];
+                    
+                }
+            }
+            [db close];
+        });
     });
 }
 
