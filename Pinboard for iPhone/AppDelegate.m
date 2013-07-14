@@ -443,7 +443,7 @@
         
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
         feedListViewController.title = @"Browse";
-        _navigationController = [[UINavigationController alloc] initWithRootViewController:feedListViewController];
+        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
     }
@@ -467,6 +467,8 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    application.applicationSupportsShakeToEdit = YES;
+    [self becomeFirstResponder];
     self.bookmarksUpdated = @(NO);
     self.bookmarksUpdatedMessage = nil;
     self.addBookmarkAlertViewIsVisible = NO;
