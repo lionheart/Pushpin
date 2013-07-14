@@ -198,7 +198,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;
 
-    if ([AppDelegate sharedDelegate].doubleTapToEdit) {
+    if ([AppDelegate sharedDelegate].doubleTapToEdit && !tableView.editing) {
         if (!self.singleTapTimer) {
             self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
@@ -681,18 +681,17 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     static NSString *identifier = @"BookmarkCell";
     
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    
     if (!cell) {
         cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.contentView.backgroundColor = [UIColor clearColor];
     }
-    
+
     for (id subview in [cell.contentView subviews]) {
         if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
             [subview removeFromSuperview];
         }
     }
-    
+
     for (id subview in [cell subviews]) {
         if ([subview isKindOfClass:[UIImageView class]]) {
             [subview removeFromSuperview];
@@ -701,7 +700,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
     NSAttributedString *string;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
     }
