@@ -281,7 +281,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)loadURL {
     self.stopped = NO;
     
-    self.title = @"Loading...";
+    self.title = self.urlString;
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
@@ -714,7 +714,7 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    self.title = @"Loading...";
+    self.title = self.urlString;
     [self.webView loadRequest:request];
 }
 
