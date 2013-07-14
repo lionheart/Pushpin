@@ -493,16 +493,21 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)updateSearchResults {
     if (!self.searchLoading) {
         self.searchLoading = YES;
+        __block CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
+        __weak GenericPostViewController *weakself = self;
+        self.latestSearchUpdateTime = time;
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.searchLoading = NO;
-                [self.searchDisplayController.searchResultsTableView beginUpdates];
-                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
-                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                [self.searchDisplayController.searchResultsTableView endUpdates];
-                self.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
-            });
+            if (time == weakself.latestSearchUpdateTime) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    weakself.searchLoading = NO;
+                    [weakself.searchDisplayController.searchResultsTableView beginUpdates];
+                    [weakself.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+                    [weakself.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
+                    [weakself.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+                    [weakself.searchDisplayController.searchResultsTableView endUpdates];
+                    weakself.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
+                });
+            }
         } failure:nil];
     }
 }
@@ -1149,9 +1154,19 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (![searchText isEqualToString:@""]) {
-        [self.searchPostDataSource filterWithQuery:searchText];
-        [self updateSearchResults];
+        if (self.latestSearchTimer) {
+            [self.latestSearchTimer invalidate];
+        }
+
+        self.latestSearchText = searchText;
+        self.latestSearchTimer = [NSTimer timerWithTimeInterval:0.3 target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
     }
+}
+
+- (void)searchTimerFired {
+    [self.searchPostDataSource filterWithQuery:self.latestSearchText];
+    [self updateSearchResults];
 }
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {

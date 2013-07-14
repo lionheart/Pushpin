@@ -103,6 +103,9 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL searchLoading;
+@property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
+@property (nonatomic, strong) NSString *latestSearchText;
+@property (nonatomic, strong) NSTimer *latestSearchTimer;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
@@ -129,6 +132,7 @@ typedef NSInteger PPPostAction;
 - (void)handleCellTap;
 - (void)popViewController;
 
+- (void)searchTimerFired;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
