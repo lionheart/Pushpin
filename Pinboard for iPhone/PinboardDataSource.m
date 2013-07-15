@@ -310,7 +310,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
             
             FMResultSet *results;
-            
+
             NSMutableArray *tags = [NSMutableArray array];
             results = [db executeQuery:@"SELECT name FROM tag"];
             while ([results next]) {
@@ -319,40 +319,53 @@ static BOOL kPinboardSyncInProgress = NO;
             
             NSMutableDictionary *metas = [NSMutableDictionary dictionary];
             NSMutableArray *oldHashes = [NSMutableArray array];
+            NSMutableArray *oldShortHashes = [NSMutableArray array];
+            NSMutableDictionary *oldBookmarks = [NSMutableDictionary dictionary];
 
             // http://hur.st/bloomfilter?n=50000&p=1.0E-7
             BloomFilter *bloom = [[BloomFilter alloc] initWithNumberOfBits:1667386 andWithNumberOfHashes:23];
-
-            results = [db executeQuery:@"SELECT meta, hash FROM bookmark ORDER BY created_at DESC"];
-            while ([results next]) {
-                NSString *hash = [[results stringForColumn:@"hash"] substringToIndex:8];
-                [oldHashes addObject:hash];
-                [bloom addToSet:hash];
-                [metas setObject:[results stringForColumn:@"meta"] forKey:hash];
-            }
-            NSMutableArray *bookmarksToDelete = [NSMutableArray array];
             
+            // If posts were deleted in front, this is the offset where we can find the post present on both the client and the server
+            NSInteger index = 0;
+            NSUInteger offset = 0;
+            NSString *firstHash = posts[0][@"hash"];
+            NSUInteger firstPostIndex = NSNotFound;
+            NSMutableArray *bookmarksToDelete = [NSMutableArray array];
+            results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+            while ([results next]) {
+                NSString *hash = [results stringForColumn:@"hash"];
+                NSString *shortHash = [[results stringForColumn:@"hash"] substringToIndex:8];
+                [oldShortHashes addObject:shortHash];
+                [oldHashes addObject:hash];
+                [bloom addToSet:shortHash];
+                oldBookmarks[shortHash] = [results stringForColumn:@"url"];
+                metas[shortHash] = [results stringForColumn:@"meta"];
+
+                if (firstPostIndex == NSNotFound) {
+                    if ([hash isEqualToString:firstHash]) {
+                        offset = index;
+                        firstPostIndex = index;
+                    }
+                }
+                index++;
+            }
+
+            if (firstPostIndex != NSNotFound) {
+                for (NSUInteger i=0; i<offset; i++) {
+                    [bookmarksToDelete addObject:oldHashes[i]];
+                }
+            }
             NSDictionary *params;
 
-            BOOL updated_or_created = NO;
-            BOOL postFound = NO;
-
-            NSUInteger index = 0;
+            // Reset the index
+            index = 0;
             NSUInteger total = posts.count;
-            NSInteger skipPivot = 0;
-            
+
             NSUInteger updateCount = 0;
             NSUInteger addCount = 0;
             NSUInteger deleteCount = 0;
-            NSUInteger skipCount = 0;
             NSUInteger tagAddCount = 0;
             NSUInteger tagDeleteCount = 0;
-            
-            NSString *hash;
-            NSString *shortHash;
-            NSString *meta;
-            NSString *postTags;
-
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
             [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
@@ -364,37 +377,35 @@ static BOOL kPinboardSyncInProgress = NO;
                 progress(0, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
+
             for (NSDictionary *post in posts) {
-                postFound = NO;
-                updated_or_created = NO;
-                
-                hash = post[@"hash"];
-                shortHash = [hash substringToIndex:8];
-                meta = post[@"meta"];
-                postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                
-                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                    if ([oldHashes[i] isEqualToString:shortHash]) {
-                        // Delete all posts that were skipped
-                        for (NSInteger j=skipPivot; j<i; j++) {
+                BOOL postFound = NO;
+                BOOL updated_or_created = NO;
+
+                NSString *hash = post[@"hash"];
+                NSString *shortHash = [hash substringToIndex:8];
+                NSString *meta = post[@"meta"];
+                NSString *postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+                for (NSUInteger i=offset; i<oldShortHashes.count; i++) {
+                    if ([shortHash isEqualToString:oldShortHashes[i]]) {
+                        for (NSUInteger j=i; j<offset; j++) {
                             [bookmarksToDelete addObject:oldHashes[j]];
                         }
                         
-                        #warning XXX Don't understand why this works, but this prevents Pushpin from deleting bookmarks needlessly.
-                        skipPivot = i - 1;
+                        offset = i + 1;
                         
-                        // Skip doing anything to this bookmark if its meta value has changed.
                         if (![meta isEqualToString:metas[shortHash]]) {
                             params = @{
-                                @"url": post[@"href"],
-                                @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                @"meta": meta,
-                                @"hash": hash,
-                                @"tags": postTags,
-                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                @"private": @([post[@"shared"] isEqualToString:@"no"])
-                            };
+                                       @"url": post[@"href"],
+                                       @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                       @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                       @"meta": meta,
+                                       @"hash": hash,
+                                       @"tags": postTags,
+                                       @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                       @"private": @([post[@"shared"] isEqualToString:@"no"])
+                                       };
                             
                             // Update this bookmark
                             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
@@ -408,7 +419,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 // If the bookmark wasn't found by looping through, it's a new one
-                if (!postFound && ![bloom lookup:shortHash]) {
+                if (!postFound && ![oldShortHashes containsObject:shortHash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
                     if (!date) {
                         #warning XXX See why this is happening.
@@ -455,8 +466,8 @@ static BOOL kPinboardSyncInProgress = NO;
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
-            for (NSString *bookmarkHash in bookmarksToDelete) {
-                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarkHash]];
+            for (NSUInteger i=0; i<bookmarksToDelete.count; i++) {
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[bookmarksToDelete[i]]];
                 deleteCount++;
             }
             
@@ -468,7 +479,7 @@ static BOOL kPinboardSyncInProgress = NO;
             DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
             DLog(@"added %d", addCount);
             DLog(@"updated %d", updateCount);
-            DLog(@"skipped %d", skipCount);
+            DLog(@"skipped %d", offset);
             DLog(@"removed %d", deleteCount);
             DLog(@"tags added %d", tagAddCount);
             
@@ -545,7 +556,7 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *oldURLs = [NSMutableArray array];
             NSUInteger index = 0;
-            NSInteger skipPivot = 0;
+            NSUInteger offset = 0;
             BOOL postFound = NO;
             NSString *url;
             
@@ -563,14 +574,14 @@ static BOOL kPinboardSyncInProgress = NO;
                 postFound = NO;
                 url = post[@"u"];
                 
-                for (NSInteger i=skipPivot; i<oldURLs.count; i++) {
+                for (NSInteger i=offset; i<oldURLs.count - offset; i++) {
                     if ([oldURLs[i] isEqualToString:url]) {
                         // Delete all posts that were skipped
-                        for (NSInteger j=skipPivot; j<i; j++) {
+                        for (NSInteger j=offset; j<i; j++) {
                             [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
                         }
                         
-                        skipPivot = i - 1;
+                        offset = i - 1;
                         postFound = YES;
                         break;
                     }
