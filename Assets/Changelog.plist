@@ -7,11 +7,11 @@
 		<array>
 			<array>
 				<string>NEW</string>
-        <string>iOS 5.1 support.</string>
+				<string>iOS 5.1 support.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>Landscape support.</string>
+				<string>Landscape support.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -19,7 +19,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Don't dim read posts by default.</string>
+				<string>Don&apos;t dim read posts by default.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -31,11 +31,11 @@
 			</array>
 			<array>
 				<string>NEW</string>
-        <string>You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. Other valid sources are "twitter_favs", "readability", "twitter", "instapaper", "delicious", and "ril".</string>
+				<string>You can now specify &quot;from:&quot; sources for feeds. E.g., user: &quot;dlo&quot; and tags: &quot;from:email&quot; will return my bookmarks sent in via email. Other valid sources are &quot;twitter_favs&quot;, &quot;readability&quot;, &quot;twitter&quot;, &quot;instapaper&quot;, &quot;delicious&quot;, and &quot;ril&quot;.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed an issue where remotely deleted bookmarks wouldn't sync.</string>
+				<string>Fixed an issue where remotely deleted bookmarks wouldn&apos;t sync.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -48,14 +48,14 @@
 			<array>
 				<string>FIX</string>
 				<string>Fixed an issue where long tag names would cover tag counts.</string>
-      </array>
+			</array>
 			<array>
 				<string>FIX</string>
 				<string>Fixed an issue where the wrong URL would get copied to the clipboard when searching for a bookmark.</string>
-      </array>
+			</array>
 			<array>
 				<string>FIX</string>
-        <string>Fixed a crash when using the expand/contract gesture on the notes screen.</string>
+				<string>Fixed a crash when using the expand/contract gesture on the notes screen.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -68,7 +68,7 @@
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>Pizzazzified user interface.</string>
+				<string>Updated user interface.</string>
 			</array>
 			<array>
 				<string>NEW</string>
