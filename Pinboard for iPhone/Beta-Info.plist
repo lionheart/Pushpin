@@ -23,10 +23,10 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon~ipad.png</string>
-				<string>Icon@2x~ipad.png</string>
-				<string>Icon~iphone.png</string>
-				<string>Icon@2x~iphone.png</string>
+				<string>Icon-beta~ipad.png</string>
+				<string>Icon-beta@2x~ipad.png</string>
+				<string>Icon-beta~iphone.png</string>
+				<string>Icon-beta@2x~iphone.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>
