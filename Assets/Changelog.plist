@@ -23,6 +23,10 @@
 			</array>
 			<array>
 				<string>NEW</string>
+				<string>Shake to view a random unread bookmark.</string>
+			</array>
+			<array>
+				<string>NEW</string>
 				<string>You can now double-tap a bookmark to edit it. Enable in Advanced Settings.</string>
 			</array>
 			<array>
@@ -31,24 +35,32 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where viewing feeds with unicode data would fail.</string>
+				<string>Fixed an issue where remotely deleted bookmarks wouldn't sync.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
+				<string>Fixed an issue where viewing feeds with unicode data would fail.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where viewing the tag list after adding a new tag would cause a crash.</string>
+				<string>Fixed an issue where in-app browser was unable to switch out of Instapaper mobilizer view.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where long tag names would cover tag counts.</string>
+				<string>Fixed an issue where long tag names would cover tag counts.</string>
       </array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed issue where the wrong URL would get copied to the clipboard when searching for a bookmark.</string>
+				<string>Fixed an issue where the wrong URL would get copied to the clipboard when searching for a bookmark.</string>
       </array>
+			<array>
+				<string>FIX</string>
+        <string>Fixed a crash when using the expand/contract gesture on the notes screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed a crash when viewing the tag list after adding a new tag.</string>
+			</array>
 		</array>
 	</array>
 	<array>

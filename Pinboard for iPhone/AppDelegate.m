@@ -58,8 +58,12 @@
     return @"/tmp/pinboard.db";
 #else
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    return [basePath stringByAppendingPathComponent:@"/pinboard.db"];
+    if (paths.count > 0) {
+        return [paths[0] stringByAppendingPathComponent:@"/pinboard.db"];
+    }
+    else {
+        return @"/pinboard.db";
+    }
 #endif
 }
 
