@@ -4,16 +4,19 @@
 * Landscape orientation support.
 * Speed up bookmark updates.
 * Don't dim read posts by default.
+* Shake to view a random unread bookmark.
 * You can now double-tap a bookmark to edit it. Enable in advanced settings.
-* You can now specify "from:" sources for feeds. E.g., user: "dlo" and tags: "from:email" will return my bookmarks sent in via email. "twitter_favs", "readability", "twitter", "instapaper", "delicious", "email", and "ril" are all valid sources.
+* You can now specify "from:" sources for feeds. E.g., user: "dlo" and tag: "from:email" will return my bookmarks sent in via email. "twitter_favs", "readability", "twitter", "instapaper", "delicious", "email", and "ril" are all valid sources.
 
 Bug Fixes
 
+* Remotely deleted bookmarks wouldn't sync.
 * Viewing feeds with unicode data would fail.
 * In-app browser was unable to switch out of Instapaper mobilizer view.
 * Viewing the tag list after adding a new tag would cause a crash.
 * Long tag names would cover tag counts.
 * The wrong URL would get copied to the clipboard when searching for a bookmark.
+* Expanding or contracting notes would cause a crash.
 
 = Updates from v2.0 =
 
