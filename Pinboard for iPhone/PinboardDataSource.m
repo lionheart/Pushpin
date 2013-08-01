@@ -385,7 +385,30 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *hash = post[@"hash"];
                 NSString *shortHash = [hash substringToIndex:8];
                 NSString *meta = post[@"meta"];
-                NSString *postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+                NSString *postTags;
+                if ([post[@"tags"] isEqual:[NSNull null]]) {
+                    postTags = @"";
+                }
+                else {
+                    postTags = [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                }
+
+                NSString *title;
+                if ([post[@"description"] isEqual:[NSNull null]]) {
+                    title = @"";
+                }
+                else {
+                    title = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                }
+
+                NSString *description;
+                if ([post[@"extended"] isEqual:[NSNull null]]) {
+                    description = @"";
+                }
+                else {
+                    description = [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                }
 
                 for (NSUInteger i=offset; i<oldShortHashes.count; i++) {
                     if ([shortHash isEqualToString:oldShortHashes[i]]) {
@@ -398,8 +421,8 @@ static BOOL kPinboardSyncInProgress = NO;
                         if (![meta isEqualToString:metas[shortHash]]) {
                             params = @{
                                        @"url": post[@"href"],
-                                       @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                                       @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                                       @"title": title,
+                                       @"description": description,
                                        @"meta": meta,
                                        @"hash": hash,
                                        @"tags": postTags,
@@ -428,8 +451,8 @@ static BOOL kPinboardSyncInProgress = NO;
 
                     params = @{
                         @"url": post[@"href"],
-                        @"title": [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
-                        @"description": [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]],
+                        @"title": title,
+                        @"description": description,
                         @"meta": meta,
                         @"hash": hash,
                         @"tags": postTags,
