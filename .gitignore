@@ -23,4 +23,5 @@ DerivedData
 build/
 Pods/
 Podfile.lock
+*.xcworkspace
 
