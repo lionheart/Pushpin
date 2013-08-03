@@ -1,5 +1,7 @@
 platform :ios, '5.1'
 
+pod 'Reachability', '3.0.0'
+pod 'PocketAPI', '1.0.2'
 pod 'HockeySDK', '3.0.0'
 pod 'FMDB', '2.1'
 pod 'WCAlertView', '1.0.1'
