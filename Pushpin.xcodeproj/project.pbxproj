@@ -228,9 +228,6 @@
 		379F452417611D6E002FB55D /* globe-dash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 379F452217611D6E002FB55D /* globe-dash@2x.png */; };
 		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
 		37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		37B348BE175E70C800929E2E /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B348BA175E70C800929E2E /* HockeySDK.framework */; };
-		37B348BF175E70C800929E2E /* HockeySDK.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 37B348BC175E70C800929E2E /* HockeySDK.xcconfig */; };
-		37B348C0175E70C800929E2E /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 37B348BD175E70C800929E2E /* HockeySDKResources.bundle */; };
 		37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
 		37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348CB175FF9D500929E2E /* PPChangelogViewController.m */; };
 		37B348CE175FFDCD00929E2E /* Changelog.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37B348CD175FFDCD00929E2E /* Changelog.plist */; };
@@ -824,9 +821,6 @@
 		37A25A2015FC42B5009716BB /* NoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteViewController.h; sourceTree = "<group>"; };
 		37A25A2115FC42B5009716BB /* NoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteViewController.m; sourceTree = "<group>"; };
 		37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ASPinboard.xcodeproj; path = Vendor/ASPinboard/ASPinboard.xcodeproj; sourceTree = "<group>"; };
-		37B348BA175E70C800929E2E /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
-		37B348BC175E70C800929E2E /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
-		37B348BD175E70C800929E2E /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
@@ -1158,7 +1152,6 @@
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				37A7D61016BA304300B39DD8 /* libASPinboard.a in Frameworks */,
-				37B348BE175E70C800929E2E /* HockeySDK.framework in Frameworks */,
 				CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1169,7 +1162,6 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				37B348B9175E70C800929E2E /* HockeySDK.embeddedframework */,
 				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				37561D4716ADC86100D69CDE /* oauthconsumer */,
 				375A0FF8167D47FD00320495 /* Pocket SDK */,
@@ -1634,25 +1626,6 @@
 				37A7D60B16BA2FD100B39DD8 /* libASPinboard.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		37B348B9175E70C800929E2E /* HockeySDK.embeddedframework */ = {
-			isa = PBXGroup;
-			children = (
-				37B348BA175E70C800929E2E /* HockeySDK.framework */,
-				37B348BB175E70C800929E2E /* Resources */,
-			);
-			name = HockeySDK.embeddedframework;
-			path = "Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework";
-			sourceTree = "<group>";
-		};
-		37B348BB175E70C800929E2E /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				37B348BC175E70C800929E2E /* HockeySDK.xcconfig */,
-				37B348BD175E70C800929E2E /* HockeySDKResources.bundle */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		37FEEB8315745488003F2B77 = {
@@ -2390,8 +2363,6 @@
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
 				376E0A7E175AA245004CCDEE /* About.plist in Resources */,
-				37B348BF175E70C800929E2E /* HockeySDK.xcconfig in Resources */,
-				37B348C0175E70C800929E2E /* HockeySDKResources.bundle in Resources */,
 				37B348CE175FFDCD00929E2E /* Changelog.plist in Resources */,
 				37B348D1176010FE00929E2E /* wrench.png in Resources */,
 				37B348D2176010FE00929E2E /* wrench@2x.png in Resources */,
