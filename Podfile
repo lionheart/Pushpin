@@ -1,5 +1,6 @@
 platform :ios, '5.1'
 
+pod 'oauthconsumer', :podspec => 'oauthconsumer.podspec'
 pod 'Reachability', '3.0.0'
 pod 'PocketAPI', '1.0.2'
 pod 'HockeySDK', '3.0.0'
