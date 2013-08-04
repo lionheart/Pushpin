@@ -22,7 +22,7 @@
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }
@@ -102,7 +102,7 @@
         [delegate setNetworkActivityIndicatorVisible:NO];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
         NSInteger index = 0;
         for (NSDictionary *note in notes) {

@@ -545,7 +545,7 @@
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
