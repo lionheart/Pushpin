@@ -24,7 +24,7 @@
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         self.count = 100;
@@ -38,7 +38,7 @@
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         self.count = 100;

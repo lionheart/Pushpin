@@ -43,7 +43,7 @@ static BOOL kPinboardSyncInProgress = NO;
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }
@@ -65,7 +65,7 @@ static BOOL kPinboardSyncInProgress = NO;
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         [self filterWithParameters:parameters];
@@ -368,7 +368,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger tagDeleteCount = 0;
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+            [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
