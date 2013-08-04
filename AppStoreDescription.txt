@@ -1,4 +1,4 @@
-Pushpin is a beautiful, blazing fast, and feature packed Pinboard client for your iPhone and iPod Touch. Designed for both power users and newbies alike, Pushpin lets you browse, search, add, edit, and delete bookmarks seamlessly with a gorgeous interface. Combined with its flexible URL scheme, full support for Pinboard feeds, and integration with read later support like Instapaper, Pushpin is the best choice for using Pinboard on iOS.
+Pushpin is a beautiful, blazing fast, and feature packed Pinboard client for your iPhone, iPad, and iPod Touch. Designed for both power users and newbies alike, Pushpin lets you browse, search, add, edit, and delete bookmarks seamlessly with a gorgeous interface. Combined with its flexible URL scheme, full support for Pinboard feeds, and integration with read later support like Instapaper, Pushpin is the best choice for using Pinboard on iOS.
 
 # Testimonials #
 
