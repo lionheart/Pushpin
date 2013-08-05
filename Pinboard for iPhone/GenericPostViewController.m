@@ -1235,11 +1235,17 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     return dataSource;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView endUpdates];
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if ([self.postDataSource respondsToSelector:@selector(resetHeightsWithSuccess:)]) {
+        [self.postDataSource resetHeightsWithSuccess:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+            });
+        }];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
