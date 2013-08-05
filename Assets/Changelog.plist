@@ -11,7 +11,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fixed an issue where descriptions were not being displayed when editing existing bookmarks.</string>
+				<string>Fixed an issue where descriptions were not being displayed or saved when editing existing bookmarks.</string>
 			</array>
 			<array>
 				<string>FIX</string>
