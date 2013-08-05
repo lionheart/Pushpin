@@ -20,6 +20,7 @@
 		</array>
 	</array>
 	<array>
+		<string>2.1</string>
 		<array>
 			<array>
 				<string>NEW</string>
@@ -82,7 +83,6 @@
 				<string>Fixed a crash when viewing the tag list after adding a new tag.</string>
 			</array>
 		</array>
-		<string>2.1</string>
 	</array>
 	<array>
 		<string>2.0</string>

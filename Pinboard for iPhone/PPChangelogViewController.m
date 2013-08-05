@@ -32,13 +32,22 @@
     self.title = @"Changelog";
     self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
+
+    [self calculateHeightsForWidth:self.tableView.frame.size.width];
+}
+
+- (void)calculateHeightsForWidth:(CGFloat)w {
+    [self.titles removeAllObjects];
+
     UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
+
     NSInteger index = 0;
-    CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 45;
+    CGFloat width = w - 2 * self.tableView.groupedCellMargin - 45;
     CGFloat normalFontHeight = [@" " sizeWithFont:font].height;
     NSUInteger emptyLines;
     CGFloat descriptionHeight;
     NSArray *lines;
+
     for (NSArray *list in self.data) {
         [self.titles addObject:list[0]];
         for (NSArray *pair in list[1]) {
@@ -148,6 +157,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self calculateHeightsForWidth:[UIApplication currentSize].width];
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 @end
