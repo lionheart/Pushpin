@@ -60,6 +60,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     if (self) {
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        self.postDescription = @"";
 
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
@@ -152,9 +153,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.postDescriptionTextView.font = font;
-        self.postDescriptionTextView.text = @"";
+        self.postDescriptionTextView.text = self.postDescription;
         self.postDescriptionTextView.delegate = self;
-        self.postDescription = @"";
     }
 }
 
