@@ -3,8 +3,28 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>2.1</string>
+		<string>2.1.1</string>
 		<array>
+			<array>
+				<string>NEW</string>
+				<string>Changed default &quot;reading puck&quot; position to lower right corner in in-app browser.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed an issue where descriptions were not being displayed when editing existing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fixed various issues related to app rotation, notably for the in-app browser and notification view.</string>
+			</array>
+		</array>
+	</array>
+	<array>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>iPad support.</string>
+			</array>
 			<array>
 				<string>NEW</string>
 				<string>iOS 5.1 support.</string>
@@ -62,6 +82,7 @@
 				<string>Fixed a crash when viewing the tag list after adding a new tag.</string>
 			</array>
 		</array>
+		<string>2.1</string>
 	</array>
 	<array>
 		<string>2.0</string>

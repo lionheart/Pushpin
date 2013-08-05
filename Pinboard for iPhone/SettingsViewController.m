@@ -147,7 +147,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [[Mixpanel sharedInstance] track:@"Opened about page"];
         PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
-        aboutViewController.title = @"Pushpin 2.1";
+        aboutViewController.title = @"Pushpin 2.1.1";
         [self.navigationController pushViewController:aboutViewController animated:YES];
     });
 }
