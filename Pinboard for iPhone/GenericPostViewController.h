@@ -61,6 +61,7 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 
+- (void)resetHeightsWithSuccess:(void (^)())success;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
 - (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;

@@ -60,6 +60,7 @@ static PPNotification *shared;
         kPPNotificationIsVisible = YES;
 
         self.notificationView = [self notificationViewWithMessage:message];
+        self.notificationView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [view addSubview:self.notificationView];
         [UIView animateWithDuration:0.2
                               delay:0
