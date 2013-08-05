@@ -464,4 +464,32 @@
     });
 }
 
+- (void)resetHeightsWithSuccess:(void (^)())success {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newCompressedHeights = [NSMutableArray array];
+        dispatch_group_t group = dispatch_group_create();
+        for (NSDictionary *post in self.posts) {
+            dispatch_group_enter(group);
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newHeights addObject:height];
+                dispatch_group_leave(group);
+            }];
+            
+            dispatch_group_enter(group);
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                [newCompressedHeights addObject:height];
+                dispatch_group_leave(group);
+            }];
+        }
+        
+        self.heights = newHeights;
+        self.compressedHeights = newCompressedHeights;
+        
+        dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            success();
+        });
+    });
+}
+
 @end

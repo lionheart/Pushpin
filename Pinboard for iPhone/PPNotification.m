@@ -88,6 +88,7 @@ static PPNotification *shared;
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
+        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         imageView.image = [[UIImage imageNamed:@"NotificationBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(4, [UIApplication currentSize].width / 2., 52, [UIApplication currentSize].width / 2.)];
         [_notificationView addSubview:imageView];
 
@@ -104,6 +105,7 @@ static PPNotification *shared;
         label.frame = CGRectMake(17, kPPNotificationPadding, [UIApplication currentSize].width - 60, size.height);
 
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
         button.frame = CGRectMake([UIApplication currentSize].width - 27, (_notificationView.frame.size.height - 17) / 2, 17, 17);
@@ -123,8 +125,6 @@ static PPNotification *shared;
 }
 
 - (void)didRotate:(NSNotification *)notification {
-    self.notificationView.hidden = YES;
-    self.notificationView = nil;
 }
 
 @end

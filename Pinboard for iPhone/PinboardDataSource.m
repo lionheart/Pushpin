@@ -1308,17 +1308,17 @@ static BOOL kPinboardSyncInProgress = NO;
                 [newHeights addObject:height];
                 dispatch_group_leave(group);
             }];
-
+            
             dispatch_group_enter(group);
             [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
                 [newCompressedHeights addObject:height];
                 dispatch_group_leave(group);
             }];
         }
-
+        
         self.heights = newHeights;
         self.compressedHeights = newCompressedHeights;
-
+        
         dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             success();
         });
