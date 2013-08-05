@@ -14,4 +14,6 @@
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, strong) NSMutableDictionary *heights;
 
+- (void)calculateHeightsForWidth:(CGFloat)w;
+
 @end
