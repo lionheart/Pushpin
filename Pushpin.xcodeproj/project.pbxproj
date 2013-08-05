@@ -2259,7 +2259,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BUNDLE_VERSION=`/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Dev-Info.plist\"\n";
+			shellScript = "BUNDLE_VERSION=`/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\"`\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pinboard for iPhone/Dev-Info.plist\"\n";
 		};
 		6733412331344A298389F74A /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
