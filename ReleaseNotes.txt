@@ -1,3 +1,9 @@
+= 2.1.1 =
+
+* Changed default "reading puck" position to lower right corner in in-app browser.
+* Fixed an issue where descriptions were not being displayed when editing existing bookmarks.
+* Fixed various issues related to app rotation, notably for the in-app browser and notification view.
+
 = 2.1 =
 
 * iPad support!
