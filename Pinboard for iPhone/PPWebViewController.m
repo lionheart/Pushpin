@@ -37,9 +37,11 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
+    
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
@@ -96,7 +98,7 @@ static NSInteger kToolbarHeight = 44;
     
     self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.enterReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 70, 40, 40);
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.frame.size.width - 50, self.webView.frame.size.height - 70, 40, 40);
     [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
     [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
 
@@ -173,7 +175,7 @@ static NSInteger kToolbarHeight = 44;
     CGFloat x;
     CGFloat y;
     if (point.y > self.webView.bounds.size.height / 2) {
-        y = self.webView.bounds.size.height - 70;
+        y = self.webView.bounds.size.height - 50;
     }
     else {
         y = 10;
@@ -209,14 +211,21 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    CGRect frame = self.webView.frame;
-    frame.size.width = [UIApplication currentSize].width;
-    frame.size.height = [UIApplication currentSize].height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height;
-    self.webView.frame = frame;
+    CGSize size = self.view.frame.size;
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
     
-    CGPoint newPoint = [self adjustedPuckPositionWithPoint:self.webView.frame.origin];
+    CGSize buttonSize = self.webView.frame.size;
+    CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
     self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
     self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (!self.alreadyLoaded) {
+        [self loadURL];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -245,7 +254,7 @@ static NSInteger kToolbarHeight = 44;
             [self.navigationController setNavigationBarHidden:NO animated:YES];
             CGSize size = self.view.frame.size;
             self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
-            self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight , size.width, kToolbarHeight);
+            self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
 
             CGPoint newPoint = [self adjustedPuckPositionWithPoint:visibleButton.frame.origin];
             self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
@@ -268,14 +277,6 @@ static NSInteger kToolbarHeight = 44;
             self.enterReaderModeButton.hidden = YES;
             self.exitReaderModeButton.hidden = NO;
         }];
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    if (!self.alreadyLoaded) {
-        [self loadURL];
     }
 }
 
@@ -852,13 +853,17 @@ static NSInteger kToolbarHeight = 44;
     return webViewController;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {    
-    CGRect frame = self.webView.frame;
-    frame.size.width = [UIApplication sizeInOrientation:toInterfaceOrientation].width;
-    frame.size.height = [UIApplication sizeInOrientation:toInterfaceOrientation].height - kToolbarHeight - self.navigationController.navigationBar.bounds.size.height;
-    self.webView.frame = frame;
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    CGSize size = [UIApplication currentSize];
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+}
 
-    CGPoint newPoint = [self adjustedPuckPositionWithPoint:self.webView.frame.origin];
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    CGSize size = self.view.frame.size;
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+
+    CGSize buttonSize = self.webView.frame.size;
+    CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
     self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
     self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
 }
