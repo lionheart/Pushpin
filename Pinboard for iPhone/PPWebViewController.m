@@ -376,33 +376,36 @@ static NSInteger kToolbarHeight = 44;
         self.alreadyLoaded = YES;
 
         NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-            [db open];
-            FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
-            [results next];
-            BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
-            [db close];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (bookmarkExists) {
-                    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
-                    self.navigationItem.rightBarButtonItem = editBarButtonItem;
-                }
-                else {
-                    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
-                    self.navigationItem.rightBarButtonItem = addBarButtonItem;
-                }
+
+        if (theURLString) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+                [results next];
+                BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
+                [db close];
                 
-                [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-                if (self.isMobilized) {
-                    [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
-                }
-                else {
-                    [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (bookmarkExists) {
+                        UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
+                        self.navigationItem.rightBarButtonItem = editBarButtonItem;
+                    }
+                    else {
+                        UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
+                        self.navigationItem.rightBarButtonItem = addBarButtonItem;
+                    }
+
+                    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+                    if (self.isMobilized) {
+                        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+                    }
+                    else {
+                        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+                    }
+                });
             });
-        });
+        }
     }
 }
 
