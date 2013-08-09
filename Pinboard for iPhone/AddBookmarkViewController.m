@@ -863,7 +863,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                          if (count > 0) {
                                              [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
 
-                                             if (hash) {
+                                             if (hash && ![hash isEqual:[NSNull null]]) {
                                                  params[@"hash"] = hash;
                                                  [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
                                                  [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
