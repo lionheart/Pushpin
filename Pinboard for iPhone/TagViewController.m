@@ -265,7 +265,6 @@
         __block NSMutableArray *indexPathsToAdd = [NSMutableArray array];
         __block NSMutableArray *indexPathsToReload = [NSMutableArray array];
         __block NSMutableArray *newTags = [[NSMutableArray alloc] init];
-        NSString *tagName;
         NSInteger index = 0;
 
         for (NSDictionary *tag in self.filteredTags) {
@@ -273,14 +272,20 @@
         }
 
         while ([result next]) {
-            tagName = [result stringForColumn:@"name"];
-            [newTags addObject:@{@"name": [result stringForColumn:@"name"], @"count": [result stringForColumn:@"count"]}];
-            [newTagNames addObject:tagName];
+            NSString *tagName = [result stringForColumn:@"name"];
+            NSString *tagCount = [result stringForColumn:@"count"];
 
-            if (![oldTagNames containsObject:tagName]) {
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            if (tagName && tagCount) {
+                [newTags addObject:@{
+                    @"name": tagName,
+                    @"count": tagCount }];
+                [newTagNames addObject:tagName];
+
+                if (![oldTagNames containsObject:tagName]) {
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+                index++;
             }
-            index++;
         }
         [db close];
         
