@@ -349,16 +349,18 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     if ([dataSource respondsToSelector:@selector(addViewControllerForPostAtIndex:delegate:)]) {
                         vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
                     }
-                    else {
+                    else if ([dataSource respondsToSelector:@selector(editViewControllerForPostAtIndex:withDelegate:)]) {
                         vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
                     }
 
-                    if ([UIApplication isIPad]) {
-                        vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                    }
+                    if (vc) {
+                        if ([UIApplication isIPad]) {
+                            vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                        }
 
-                    if ([self.navigationController topViewController] == self) {
-                        [self.navigationController presentViewController:vc animated:YES completion:nil];
+                        if ([self.navigationController topViewController] == self) {
+                            [self.navigationController presentViewController:vc animated:YES completion:nil];
+                        }
                     }
                     break;
                 }
