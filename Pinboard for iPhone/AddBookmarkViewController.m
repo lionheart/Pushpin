@@ -786,8 +786,13 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
-            #warning XXX Should display a message to the user
-            return;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UILocalNotification *notification = [[UILocalNotification alloc] init];
+                notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
+                notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                [self.modalDelegate closeModal:self];
+            });
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
@@ -804,10 +809,21 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         
+        NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
         NSString *url = self.urlTextField.text;
-        NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *description = [self.postDescription stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *tags = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (!url) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UILocalNotification *notification = [[UILocalNotification alloc] init];
+                notification.alertBody = NSLocalizedString(@"Unable to add bookmark without a URL.", nil);
+                notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                [self.modalDelegate closeModal:self];
+            });
+            return;
+        }
+        NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
+        NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
+        NSString *tags = [self.tagTextField.text stringByTrimmingCharactersInSet:characterSet];
         BOOL private = self.privateSwitch.on;
         BOOL unread = !self.readSwitch.on;
 
