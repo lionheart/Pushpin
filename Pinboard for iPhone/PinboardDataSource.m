@@ -330,13 +330,27 @@ static BOOL kPinboardSyncInProgress = NO;
             
             DLog(@"%@ - Getting local data", [NSDate date]);
             
+            NSString *firstHash = ([posts count] > 0) ? posts[0][@"hash"] : @"";
+            NSUInteger firstBookmarkIndex = NSNotFound;
             NSUInteger total = posts.count;
-            results = [db executeQuery:[NSString stringWithFormat:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC LIMIT %d, %d", offset, count]];
+            NSUInteger deleteOffset;
+            results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+            NSUInteger resultIndex = 0;
             while ([results next]) {
-                // Update our NSSets
-                [localHashTable addObject:[results stringForColumn:@"hash"]];
-                [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", [results stringForColumn:@"hash"], [results stringForColumn:@"meta"]]];
+                NSString *hash = [results stringForColumn:@"hash"];
                 
+                // Update our NSSets
+                [localHashTable addObject:hash];
+                [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, [results stringForColumn:@"meta"]]];
+                
+                // If our local first hash doesn't equal the remote first hash, get the offset for deletion
+                if (firstBookmarkIndex == NSNotFound) {
+                    if ([hash isEqualToString:firstHash]) {
+                        deleteOffset = resultIndex;
+                        firstBookmarkIndex = resultIndex;
+                    }
+                }
+                resultIndex++;
             }
             NSUInteger localCount = [localHashTable count];
             
@@ -362,17 +376,24 @@ static BOOL kPinboardSyncInProgress = NO;
             // Find the additions
             NSMutableSet *additionBookmarksSet = [remoteHashSet mutableCopy];
             [additionBookmarksSet minusSet:localHashSet];
-            NSArray *additionBookmarks = [additionBookmarksSet allObjects];
             
             // Find the removals
-            NSMutableSet *deletionBookmarksSet = [localHashSet mutableCopy];
+            NSRange deleteRange;
+            NSUInteger rangeEnd = 0;
+            if (firstBookmarkIndex != NSNotFound) {
+                rangeEnd = (count + deleteOffset) > localCount ? localCount : (count + deleteOffset);
+                deleteRange = NSMakeRange(offset, rangeEnd);
+            } else {
+                rangeEnd = count > localCount ? localCount : count;
+                deleteRange = NSMakeRange(0, count);
+                deleteRange = NSMakeRange(0, 0);
+            }
+            NSMutableSet *deletionBookmarksSet = [[NSSet setWithArray:[localHashTable subarrayWithRange:deleteRange]] mutableCopy];
             [deletionBookmarksSet minusSet:remoteHashSet];
-            NSArray *deletionBookmarks = [deletionBookmarksSet allObjects];
             
             // Find the modifications
             NSMutableSet *updateBookmarksSet = [remoteMetaSet mutableCopy];
             [updateBookmarksSet minusSet:localMetaSet];
-            NSMutableArray *updateBookmarks = [NSMutableArray arrayWithArray:[updateBookmarksSet allObjects]];
             
             NSDictionary *params;
             NSUInteger index = 0;
@@ -481,7 +502,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
             DLog(@"%@ - Deleting bookmarks", [NSDate date]);
-            for (NSString *hash in deletionBookmarks) {
+            for (NSString *hash in deletionBookmarksSet) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
                 deleteCount++;
             }
