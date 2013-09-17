@@ -302,6 +302,7 @@ static BOOL kPinboardSyncInProgress = NO;
         }
 
         void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
+            DLog(@"%@ - Received data", [NSDate date]);
             NSDate *startDate = [NSDate date];
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
@@ -327,6 +328,8 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *localHashTable = [NSMutableArray array];
             NSMutableArray *localMetaTable = [NSMutableArray array];
             
+            DLog(@"%@ - Getting local data", [NSDate date]);
+            
             NSUInteger total = posts.count;
             results = [db executeQuery:[NSString stringWithFormat:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC LIMIT %d, %d", offset, count]];
             while ([results next]) {
@@ -336,6 +339,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 
             }
             NSUInteger localCount = [localHashTable count];
+            
+            DLog(@"%@ - Creating NSSets", [NSDate date]);
             
             // Create NSSets containing hashes and meta data
             NSMutableArray *remoteHashTable = [NSMutableArray array];
@@ -351,6 +356,8 @@ static BOOL kPinboardSyncInProgress = NO;
             
             NSSet *remoteHashSet = [NSSet setWithArray:remoteHashTable];
             NSSet *remoteMetaSet = [NSSet setWithArray:remoteMetaTable];
+            
+            DLog(@"%@ - Calculating changes", [NSDate date]);
             
             // Find the additions
             NSMutableSet *additionBookmarksSet = [remoteHashSet mutableCopy];
@@ -381,7 +388,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
-            DLog(@"%@", [NSDate date]);
+            DLog(@"%@ - Iterating posts", [NSDate date]);
             dispatch_async(dispatch_get_main_queue(), ^{
                 progress(0, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
@@ -398,7 +405,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
                 // Add if necessary
-                if ([additionBookmarks indexOfObject:hash] != NSNotFound) {
+                if ([additionBookmarksSet containsObject:hash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
                     if (!date) {
                         #warning XXX See why this is happening.
@@ -427,7 +434,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 // Update if necessary
-                if ([updateBookmarks indexOfObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]] != NSNotFound) {
+                if ([updateBookmarksSet containsObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]]) {
                     params = @{
                                @"url": post[@"href"],
                                @"title": title,
