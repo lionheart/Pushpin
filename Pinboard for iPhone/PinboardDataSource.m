@@ -395,6 +395,9 @@ static BOOL kPinboardSyncInProgress = NO;
             });
 
             for (NSDictionary *post in posts) {
+                if (index > 0 && (index % 1000) == 0) {
+                    DLog(@"%@ - Index %ld of %ld", [NSDate date], (long)index, (long)total);
+                }
                 BOOL updated_or_created = NO;
 
                 NSString *hash = post[@"hash"];
@@ -427,29 +430,31 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                     
                     // Remove from the updateBookmarks array
-                    [updateBookmarks removeObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
+                    //[updateBookmarks removeObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
                     
                     updated_or_created = YES;
                     addCount++;
                 }
                 
                 // Update if necessary
-                if ([updateBookmarksSet containsObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]]) {
-                    params = @{
-                               @"url": post[@"href"],
-                               @"title": title,
-                               @"description": description,
-                               @"meta": meta,
-                               @"hash": hash,
-                               @"tags": postTags,
-                               @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([post[@"shared"] isEqualToString:@"no"])
-                               };
-                    
-                    // Update this bookmark
-                    [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                    updated_or_created = YES;
-                    updateCount++;
+                if (!updated_or_created) {
+                    if ([updateBookmarksSet containsObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]]) {
+                        params = @{
+                                   @"url": post[@"href"],
+                                   @"title": title,
+                                   @"description": description,
+                                   @"meta": meta,
+                                   @"hash": hash,
+                                   @"tags": postTags,
+                                   @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                   @"private": @([post[@"shared"] isEqualToString:@"no"])
+                                   };
+                        
+                        // Update this bookmark
+                        [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                        updated_or_created = YES;
+                        updateCount++;
+                    }
                 }
                 
                 // Update tags
@@ -471,15 +476,17 @@ static BOOL kPinboardSyncInProgress = NO;
                 });
             }
             
-            DLog(@"%@", [NSDate date]);
+            DLog(@"%@ - Updating tags", [NSDate date]);
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
+            DLog(@"%@ - Deleting bookmarks", [NSDate date]);
             for (NSString *hash in deletionBookmarks) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
                 deleteCount++;
             }
             
+            DLog(@"%@ - Starting DB commit", [NSDate date]);
             [db commit];
             [db close];
 
