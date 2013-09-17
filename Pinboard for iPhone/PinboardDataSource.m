@@ -301,7 +301,7 @@ static BOOL kPinboardSyncInProgress = NO;
             success = ^{};
         }
 
-        void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
+        void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
             NSDate *startDate = [NSDate date];
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
@@ -317,26 +317,40 @@ static BOOL kPinboardSyncInProgress = NO;
                 [tags addObject:[results stringForColumn:@"name"]];
             }
 
+            // Offsets from the full data set
+            NSUInteger offset = 0;
+            NSUInteger count = 0;
+            offset = ([constraints[@"start"] isEqual:[NSNull null]]) ? 0 : [(NSString *)constraints[@"start"] intValue];
+            count = ([constraints[@"results"] isEqual:[NSNull null]]) ? 0 : [(NSString *)constraints[@"results"] intValue];
+            
             // Create an NSSet of the local data for filtering
-            NSMutableSet *localHashSet = [NSMutableSet set];
-            NSMutableSet *localMetaSet = [NSMutableSet set];
+            NSMutableArray *localHashTable = [NSMutableArray array];
+            NSMutableArray *localMetaTable = [NSMutableArray array];
             
             NSUInteger total = posts.count;
-            results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+            results = [db executeQuery:[NSString stringWithFormat:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC LIMIT %d, %d", offset, count]];
             while ([results next]) {
                 // Update our NSSets
-                [localHashSet addObject:[results stringForColumn:@"hash"]];
-                [localMetaSet addObject:@{ @"hash": [results stringForColumn:@"hash"], @"meta": [results stringForColumn:@"meta"] }];
+                [localHashTable addObject:[results stringForColumn:@"hash"]];
+                [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", [results stringForColumn:@"hash"], [results stringForColumn:@"meta"]]];
                 
             }
+            NSUInteger localCount = [localHashTable count];
             
             // Create NSSets containing hashes and meta data
-            NSMutableSet *remoteHashSet = [NSMutableSet set];
-            NSMutableSet *remoteMetaSet = [NSMutableSet set];
+            NSMutableArray *remoteHashTable = [NSMutableArray array];
+            NSMutableArray *remoteMetaTable = [NSMutableArray array];
             for (NSDictionary *post in posts) {
-                [remoteHashSet addObject:post[@"hash"]];
-                [remoteMetaSet addObject:@{ @"hash": post[@"hash"], @"meta": post[@"meta"]}];
+                [remoteHashTable addObject:post[@"hash"]];
+                [remoteMetaTable addObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
             }
+            
+            // We convert to NSSet directly from NSArray to avoid hash lookups on each addObject on NSMutableSet
+            NSSet *localHashSet = [NSSet setWithArray:localHashTable];
+            NSSet *localMetaSet = [NSSet setWithArray:localMetaTable];
+            
+            NSSet *remoteHashSet = [NSSet setWithArray:remoteHashTable];
+            NSSet *remoteMetaSet = [NSSet setWithArray:remoteMetaTable];
             
             // Find the additions
             NSMutableSet *additionBookmarksSet = [remoteHashSet mutableCopy];
@@ -352,10 +366,10 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableSet *updateBookmarksSet = [remoteMetaSet mutableCopy];
             [updateBookmarksSet minusSet:localMetaSet];
             NSMutableArray *updateBookmarks = [NSMutableArray arrayWithArray:[updateBookmarksSet allObjects]];
-
+            
             NSDictionary *params;
-
             NSUInteger index = 0;
+            NSUInteger skipped = 0;
             NSUInteger updateCount = 0;
             NSUInteger addCount = 0;
             NSUInteger deleteCount = 0;
@@ -406,14 +420,14 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                     
                     // Remove from the updateBookmarks array
-                    [updateBookmarks removeObject:@{ @"hash": post[@"hash"], @"meta": post[@"meta"]}];
+                    [updateBookmarks removeObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
                     
                     updated_or_created = YES;
                     addCount++;
                 }
                 
                 // Update if necessary
-                if ([updateBookmarks indexOfObject:@{ @"hash": post[@"hash"], @"meta": post[@"meta"]}] != NSNotFound) {
+                if ([updateBookmarks indexOfObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]] != NSNotFound) {
                     params = @{
                                @"url": post[@"href"],
                                @"title": title,
@@ -463,12 +477,12 @@ static BOOL kPinboardSyncInProgress = NO;
             [db close];
 
             NSDate *endDate = [NSDate date];
-            NSUInteger offset = [posts count] - deleteCount - addCount - updateCount;
+            skipped = total - addCount - updateCount - deleteCount;
 
             DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
             DLog(@"added %d", addCount);
             DLog(@"updated %d", updateCount);
-            DLog(@"skipped %d", offset);
+            DLog(@"skipped %d", skipped);
             DLog(@"removed %d", deleteCount);
             DLog(@"tags added %d", tagAddCount);
             
@@ -501,7 +515,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 // BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
                 NSInteger count;
                 if (options[@"ratio"]) {
-                    count = (NSInteger)(MAX([self totalNumberOfPosts] * [options[@"ratio"] floatValue] - 2000, 0) + 2000);
+                    count = (NSInteger)(MAX([self totalNumberOfPosts] * [options[@"ratio"] floatValue] - 200, 0) + 200);
                 }
                 else {
                     count = [options[@"count"] integerValue];
@@ -514,9 +528,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                        fromDate:nil
                                          toDate:nil
                                     includeMeta:YES
-                                        success:^(NSArray *bookmarks) {
+                                        success:^(NSArray *bookmarks, NSDictionary *parameters) {
                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                BookmarksSuccessBlock(bookmarks);
+                                                BookmarksSuccessBlock(bookmarks, parameters);
                                             });
                                         }
                                         failure:^(NSError *error) {
@@ -541,7 +555,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)updateStarredPostsWithSuccess:(void (^)())success failure:(void (^)())failure {
-    void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
+    void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *oldURLs = [NSMutableArray array];
             NSUInteger index = 0;
@@ -610,7 +624,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                    }
                                    else {
                                        NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       BookmarksSuccessBlock(posts);
+                                       BookmarksSuccessBlock(posts, nil);
                                    }
                                }];
     });
