@@ -482,7 +482,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [self customizeUIElements];
+    //[self customizeUIElements];
 
 #ifndef DEBUG
     [[BITHockeyManager sharedHockeyManager] configureWithBetaIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"
@@ -1050,43 +1050,19 @@
 }
 
 + (NSString *)heavyFontName {
-    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS6) {
-        return @"HelveticaNeue-Bold";
-    }
-    else {
-        return @"Avenir-Heavy";
-    }
+    return @"HelveticaNeue-Bold";
 }
 
 + (NSString *)mediumFontName {
-    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS6) {
-        return @"HelveticaNeue-Medium";
-    }
-    else {
-        return @"Avenir-Medium";
-    }
+    return @"HelveticaNeue-Medium";
 }
 
 + (NSString *)bookFontName {
-    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS6) {
-        return @"HelveticaNeue-Bold";
-    }
-    else {
-        return @"Avenir-Book";
-    }
+    return @"HelveticaNeue-Bold";
 }
 
 + (NSString *)blackFontName {
-    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-    if (!isIOS6) {
-        return @"HelveticaNeue-Bold";
-    }
-    else {
-        return @"Avenir-Black";
-    }
+    return @"HelveticaNeue-Bold";
 }
 
 @end

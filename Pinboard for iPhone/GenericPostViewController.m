@@ -85,6 +85,15 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // Create the top inset on iOS 7
+    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
+    
+    // Set a content inset on iOS 7
+    if (isIOS7) {
+        UINavigationController *primaryNavigationController = [[AppDelegate sharedDelegate] navigationController];
+        [self.tableView setContentInset:UIEdgeInsetsMake(primaryNavigationController.navigationBar.frame.size.height + 20, 0, 0, 0)];
+    }
 
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
@@ -744,6 +753,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
     CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
 
+    // TAG: iOS7
+    /*
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
     gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
@@ -752,18 +763,22 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     cell.backgroundView = backgroundView;
     [cell.backgroundView.layer addSublayer:gradient];
+    */
     
     if (tableView.editing) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.selectedBackgroundView = nil;
     }
     else {
+        // TAG: iOS7
+        /*
         CAGradientLayer *selectedGradient = [CAGradientLayer layer];
         selectedGradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
         selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
         UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
         cell.selectedBackgroundView = selectedBackgroundView;
         [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
+        */
     }
 
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
