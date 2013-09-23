@@ -590,7 +590,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                             cell.detailTextLabel.textColor = HEX(0x96989DFF);
                             cell.detailTextLabel.text = self.tagDescriptions[cell.textLabel.text];
                         }
-                        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                         cell.editing = NO;
                         break;
                     }

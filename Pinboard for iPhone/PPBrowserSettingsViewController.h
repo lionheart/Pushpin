@@ -16,7 +16,7 @@
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) WCAlertView *installChromeAlertView;
 @property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
-@property (nonatomic, retain) PPSwitch *openLinksInAppSwitch;
+@property (nonatomic, retain) UISwitch *openLinksInAppSwitch;
 @property (nonatomic, strong) id actionSheet;
 
 @end

@@ -202,39 +202,6 @@
     return 6;
 }
 
-/*
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    float width = tableView.bounds.size.width;
-    BOOL isIPad = [UIApplication isIPad];
-
-    NSUInteger fontSize = 17;
-    NSUInteger padding = isIPad ? 45 : 15;
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
-    NSString *sectionTitle;
-    switch (section) {
-        case 0:
-            sectionTitle = NSLocalizedString(@"Personal", nil);
-            break;
-        case 1:
-            sectionTitle = NSLocalizedString(@"Community", nil);
-            break;
-    }
-
-    label.text = sectionTitle;
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = HEX(0x4C566CFF);
-    label.shadowColor = [UIColor whiteColor];
-    label.shadowOffset = CGSizeMake(0,1);
-    label.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
-    CGSize textSize = [sectionTitle sizeWithFont:label.font];
-    
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
-    [view addSubview:label];
-    return view;
-}
-*/
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
@@ -251,23 +218,19 @@
     static NSString *CellIdentifier = @"Cell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
+    static NSUInteger badgeTag = 1;
+    UILabel *badgeLabel;
+    
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
-
-    // TAG: iOS7
-    /*
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-
-    if (indexPath.row < 5) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        badgeLabel = [[UILabel alloc] init];
+        [badgeLabel setTag:badgeTag];
+        [cell.contentView addSubview:badgeLabel];
     }
     
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    */
+    // The badge is hidden by default
+    badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
+    [badgeLabel setHidden:YES];
     
     cell.detailTextLabel.text = nil;
 
@@ -314,17 +277,14 @@
                     break;
             }
 
-            //cell.accessoryView = [[UIImageView alloc] initWithImage:pillImage];
-            
             UIFont *badgeFont = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
             CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
-            UILabel *badgeLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
+            [badgeLabel setHidden:NO];
+            [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
             [badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
             [badgeLabel setFont:badgeFont];
             [badgeLabel setText:badgeCount];
             [badgeLabel setTextColor:[UIColor grayColor]];
-
-            [cell addSubview:badgeLabel];
             
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             

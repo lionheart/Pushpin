@@ -27,9 +27,9 @@
 @property (nonatomic, retain) WCAlertView *logOutAlertView;
 
 @property (nonatomic, retain) UIActionSheet *mobilizerActionSheet;
-@property (nonatomic, retain) RDActionSheet *supportActionSheet;
+@property (nonatomic, retain) UIActionSheet *supportActionSheet;
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
-@property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
+@property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
