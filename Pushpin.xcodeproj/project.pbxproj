@@ -488,6 +488,7 @@
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 		CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
+		E80FE03217ECC1A6007E0615 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E80FE03117ECC1A6007E0615 /* MainStoryboard.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1044,6 +1045,7 @@
 		37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigationbar@2x.png"; path = "Assets/navigationbar@2x.png"; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E80FE03117ECC1A6007E0615 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = Interface/MainStoryboard.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1497,6 +1499,7 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				E848DFE217ECB4E100CA22D2 /* Interface */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				37B5F4D1177372EC005687DA /* UIApplication+AppDimensions.h */,
 				37B5F4D2177372EC005687DA /* UIApplication+AppDimensions.m */,
@@ -1744,6 +1747,14 @@
 				376E0A7D175AA245004CCDEE /* About.plist */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		E848DFE217ECB4E100CA22D2 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				E80FE03117ECC1A6007E0615 /* MainStoryboard.storyboard */,
+			);
+			name = Interface;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2100,6 +2111,7 @@
 				37EABA3D173F01DA00B2684B /* loading_61@2x.png in Resources */,
 				37EABA3E173F01DA00B2684B /* loading_62.png in Resources */,
 				37EABA3F173F01DA00B2684B /* loading_62@2x.png in Resources */,
+				E80FE03217ECC1A6007E0615 /* MainStoryboard.storyboard in Resources */,
 				37EABA40173F01DA00B2684B /* loading_63.png in Resources */,
 				37EABA41173F01DA00B2684B /* loading_63@2x.png in Resources */,
 				37EABA42173F01DA00B2684B /* loading_64.png in Resources */,
@@ -2452,7 +2464,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Daniel Loewenherz (Y659LH6YL9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -2483,7 +2495,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BDF3B9B6-E8B7-4B96-B29D-10EE624B2E97";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
@@ -2543,6 +2555,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Dev.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Vendor/HockeySDK-iOS-3.0.0/HockeySDK.embeddedframework\"",
@@ -2553,6 +2566,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
