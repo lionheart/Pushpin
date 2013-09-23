@@ -435,6 +435,7 @@
     }];
 }
 
+/*
 - (UINavigationController *)navigationController {
     if (!_navigationController) {
         PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
@@ -446,6 +447,7 @@
         pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        //FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithNibName:@"FeedListViewController" bundle:[NSBundle mainBundle]];
         feedListViewController.title = @"Browse";
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
@@ -453,6 +455,7 @@
     }
     return _navigationController;
 }
+*/
 
 - (LoginViewController *)loginViewController {
     if (!_loginViewController) {
@@ -531,7 +534,10 @@
         [pinboard setToken:self.token];
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
-        [self.window setRootViewController:self.navigationController];
+        //[self.window setRootViewController:self.navigationController];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        [self.window setRootViewController:[storyboard instantiateViewControllerWithIdentifier:@"MainNavigationController"]];
+        //[self.window.rootViewController performSegueWithIdentifier:@"ShowPosts" sender:self];
     }
     else {
         [self.window setRootViewController:self.loginViewController];

@@ -85,15 +85,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Create the top inset on iOS 7
-    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
-    
-    // Set a content inset on iOS 7
-    if (isIOS7) {
-        UINavigationController *primaryNavigationController = [[AppDelegate sharedDelegate] navigationController];
-        [self.tableView setContentInset:UIEdgeInsetsMake(primaryNavigationController.navigationBar.frame.size.height + 20, 0, 0, 0)];
-    }
 
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
