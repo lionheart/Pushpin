@@ -30,7 +30,7 @@
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
 @synthesize filteredTags;
-@synthesize navigationController;
+//@synthesize navigationController;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -96,6 +96,7 @@
     self.sortedTitles = newSortedTitlesWithSearch;
     self.filteredTags = [NSMutableArray array];
 
+    /*
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
@@ -103,6 +104,7 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
+    */
     [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
 }
 

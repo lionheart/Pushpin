@@ -10,7 +10,6 @@
 #import "AppDelegate.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMessageComposeViewController.h>
-#import "PPSwitch.h"
 #import "RDActionSheet.h"
 #import "WCAlertView.h"
 #import "PPLoadingView.h"
@@ -33,8 +32,8 @@
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
-@property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
-@property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
 
 @property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 @property (nonatomic, strong) id actionSheet;

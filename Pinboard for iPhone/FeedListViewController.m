@@ -30,7 +30,7 @@
 @implementation FeedListViewController
 
 @synthesize connectionAvailable;
-@synthesize navigationController;
+//@synthesize navigationController;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
 
@@ -80,8 +80,23 @@
     });
 }
 
+- (void)viewDidLoad {
+    
+    // Setup the notes and tags buttons - can't do it in Storyboard without a hack
+    UIBarButtonItem *notesButton = self.navigationItem.rightBarButtonItem;
+    UIBarButtonItem *tagButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"TagNavigation"] style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
+    self.navigationItem.rightBarButtonItems = @[notesButton, tagButton];
+    
+    self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
+    self.bookmarkCounts = [NSMutableArray array];
+    [self calculateBookmarkCounts:nil];
+    
+    postViewTitle = NSLocalizedString(@"All", nil);
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
+    //self = [super initWithStyle:style];
+    
     if (self) {
         self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
         self.bookmarkCounts = [NSMutableArray array];
@@ -121,18 +136,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Create the top inset on iOS 7
-    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
-    
-    // Set a content inset on iOS 7
-    if (isIOS7) {
-        UINavigationController *primaryNavigationController = [[AppDelegate sharedDelegate] navigationController];
-        [self.tableView setContentInset:UIEdgeInsetsMake(primaryNavigationController.navigationBar.frame.size.height + 20, 0, 0, 0)];
-    }
-
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    self.tableView.opaque = NO;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
@@ -199,6 +202,7 @@
     return 6;
 }
 
+/*
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     float width = tableView.bounds.size.width;
     BOOL isIPad = [UIApplication isIPad];
@@ -229,6 +233,7 @@
     [view addSubview:label];
     return view;
 }
+*/
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
@@ -366,43 +371,44 @@
         case 0: {
             switch (indexPath.row) {
                 case 0: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"All Bookmarks", nil);
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"Private Bookmarks", nil);
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"Public", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"Public", nil);
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"Unread", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"Unread", nil);
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"Untagged", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewController.title = NSLocalizedString(@"Starred", nil);
+                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewTitle = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
             }
-            [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+
+            [self performSegueWithIdentifier:@"ShowPosts" sender:self];
 
             break;
         }
@@ -470,29 +476,27 @@
 }
 
 - (void)openSettings {
-    SettingsViewController *svc = [[SettingsViewController alloc] init];
-    svc.title = NSLocalizedString(@"Settings", nil);
-    svc.modalDelegate = self;
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    if ([UIApplication isIPad]) {
-        nc.modalPresentationStyle = UIModalPresentationFormSheet;
-    }
-    svc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(dismissViewController)];
-    [self presentViewController:nc animated:YES completion:nil];
+    [self performSegueWithIdentifier:@"ShowSettings" sender:self];
 }
 
 - (void)openNotes {
+    /*
     GenericPostViewController *notesViewController = [[GenericPostViewController alloc] init];
     PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
     notesViewController.postDataSource = notesDataSource;
     notesViewController.title = NSLocalizedString(@"Notes", nil);
     [[AppDelegate sharedDelegate].navigationController pushViewController:notesViewController animated:YES];
+    */
+    [self performSegueWithIdentifier:@"ShowNotes" sender:self];
 }
 
 - (void)openTags {
+    /*
     TagViewController *tagViewController = [[TagViewController alloc] init];
     tagViewController.title = NSLocalizedString(@"Tags", nil);
     [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
+     */
+    [self performSegueWithIdentifier:@"ShowTags" sender:self];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -516,6 +520,23 @@
 
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     [self dismissViewControllerAnimated:YES completion:success];
+}
+
+#pragma mark -
+#pragma mark iOS 7 Updates
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"ShowPosts"]) {
+        GenericPostViewController *vc = [segue destinationViewController];
+        vc.postDataSource = postDataSource;
+        [vc setTitle:postViewTitle];
+    } else if ([[segue identifier] isEqualToString:@"ShowNotes"]) {
+        GenericPostViewController *vc = [segue destinationViewController];
+        PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
+        vc.postDataSource = notesDataSource;
+        [vc setTitle:NSLocalizedString(@"Notes", nil)];
+    } else if ([[segue identifier] isEqualToString:@"ShowTags"]) {
+    }
 }
 
 @end

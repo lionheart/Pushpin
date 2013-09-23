@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "PPTableViewController.h"
 #import "GenericPostViewController.h"
+#import "PinboardDataSource.h"
+#import "PinboardFeedDataSource.h"
 
 enum PINBOARD_FEED_ITEMS {
     PinboardFeedAllBookmarks,
@@ -19,11 +21,14 @@ enum PINBOARD_FEED_ITEMS {
     PinboardFeedStarredBookmarks
 };
 
-@interface FeedListViewController : PPTableViewController <ModalDelegate>
+@interface FeedListViewController : PPTableViewController <ModalDelegate> {
+    NSObject <GenericPostDataSource> *postDataSource;
+    NSString *postViewTitle;
+}
 
 @property (nonatomic) BOOL connectionAvailable;
 @property (nonatomic, strong) UIBarButtonItem *notesBarButtonItem;
-@property (nonatomic, retain) UINavigationController *navigationController;
+//@property (nonatomic, retain) UINavigationController *navigationController;
 @property (nonatomic, retain) NSTimer *updateTimer;
 @property (nonatomic, retain) NSMutableArray *bookmarkCounts;
 
