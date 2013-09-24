@@ -108,7 +108,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) NSString *latestSearchText;
 @property (nonatomic, strong) NSTimer *latestSearchTimer;
 
-@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
 
 // Multiple Deletion

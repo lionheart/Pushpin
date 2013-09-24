@@ -59,7 +59,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
-    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
@@ -100,7 +99,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self.navigationController.view addSubview:self.toolbar];
+    //[self.navigationController.view addSubview:self.toolbar];
 
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
@@ -139,10 +138,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+        //self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 
-        [self.pullToRefreshImageView startAnimating];
-        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
+        //[self.pullToRefreshImageView startAnimating];
+        //self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
@@ -467,7 +466,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
                     self.loading = NO;
                     [UIView animateWithDuration:0.2 animations:^{
-                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
                         CGFloat offset = self.tableView.contentOffset.y;
@@ -476,14 +475,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
-                            self.searchBar.delegate = self;
-                            self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                            self.searchDisplayController.searchResultsDataSource = self;
-                            self.searchDisplayController.searchResultsDelegate = self;
-                            self.searchDisplayController.delegate = self;
-                            self.tableView.tableHeaderView = self.searchBar;
-                            [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
                         }
                     }];
 
@@ -529,10 +520,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
                 [UIView animateWithDuration:0.2 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
                 } completion:^(BOOL finished) {
                     [self.pullToRefreshImageView stopAnimating];
                 }];
@@ -747,33 +737,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 
     CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
-
-    // TAG: iOS7
-    /*
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
-    gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
-    gradient.name = @"Gradient";
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
-    backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    cell.backgroundView = backgroundView;
-    [cell.backgroundView.layer addSublayer:gradient];
-    */
     
     if (tableView.editing) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.selectedBackgroundView = nil;
-    }
-    else {
-        // TAG: iOS7
-        /*
-        CAGradientLayer *selectedGradient = [CAGradientLayer layer];
-        selectedGradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
-        selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
-        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
-        cell.selectedBackgroundView = selectedBackgroundView;
-        [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
-        */
     }
 
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
@@ -819,7 +786,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             urlString = self.selectedPost[@"url"];
         }
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
         
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -1117,14 +1084,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        if (offset < -60) {
+        CGFloat tableOffsetTop = 22 + 44;
+        if (offset < (-60 - tableOffsetTop)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop + 60, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
                         [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
@@ -1139,13 +1106,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         NSInteger index = MAX(1, 32 - MIN((-offset / 60.) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
-        if (offset > -60) {
+        CGFloat tableOffsetTop = 22 + 44;
+        if (offset > (-60 - tableOffsetTop)) {
             imageOffset = UIOffsetMake(0, -(50 + offset));
-        }
-        else {
-            imageOffset = UIOffsetMake(0, 10);
+        } else {
+            imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
         }
         
+        DLog("%f", offset);
         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
