@@ -489,6 +489,10 @@
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 		CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
 		E80FE03217ECC1A6007E0615 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E80FE03117ECC1A6007E0615 /* MainStoryboard.storyboard */; };
+		E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06417F0DE41007E0615 /* icon-web-forward.png */; };
+		E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */; };
+		E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06617F0DE42007E0615 /* icon-web-back.png */; };
+		E80FE06B17F0DE43007E0615 /* icon-web-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1046,6 +1050,10 @@
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E80FE03117ECC1A6007E0615 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = Interface/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		E80FE06417F0DE41007E0615 /* icon-web-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward.png"; path = "Assets/icon-web-forward.png"; sourceTree = "<group>"; };
+		E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward@2x.png"; path = "Assets/icon-web-forward@2x.png"; sourceTree = "<group>"; };
+		E80FE06617F0DE42007E0615 /* icon-web-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back.png"; path = "Assets/icon-web-back.png"; sourceTree = "<group>"; };
+		E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back@2x.png"; path = "Assets/icon-web-back@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1597,6 +1605,10 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				E80FE06417F0DE41007E0615 /* icon-web-forward.png */,
+				E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */,
+				E80FE06617F0DE42007E0615 /* icon-web-back.png */,
+				E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */,
 				37B5F4DC1773816B005687DA /* navigation-back-button-selected-ios5.png */,
 				37B5F4DD1773816B005687DA /* navigation-back-button-selected-ios5@2x.png */,
 				37B5F4DE1773816B005687DA /* navigation-back-button-ios5.png */,
@@ -1857,6 +1869,7 @@
 				37C2BF011673A00A00EC66FF /* iTunesArtwork-dev.png in Resources */,
 				37C2BF021673A00A00EC66FF /* iTunesArtwork-dev@2x.png in Resources */,
 				37C2BF031673A00A00EC66FF /* Icon-dev.png in Resources */,
+				E80FE06B17F0DE43007E0615 /* icon-web-back@2x.png in Resources */,
 				37C2BF041673A00A00EC66FF /* Icon-dev@2x.png in Resources */,
 				37C2BF051673A00A00EC66FF /* Icon-settings-dev.png in Resources */,
 				37C2BF061673A00A00EC66FF /* Icon-settings-dev@2x.png in Resources */,
@@ -1908,6 +1921,7 @@
 				37D59A4416EFFAB5005C9C24 /* star.png in Resources */,
 				37D59A4516EFFAB5005C9C24 /* star@2x.png in Resources */,
 				37D59A4616EFFAB5005C9C24 /* tag.png in Resources */,
+				E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */,
 				37D59A4716EFFAB5005C9C24 /* tag@2x.png in Resources */,
 				3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */,
 				3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */,
@@ -1944,11 +1958,13 @@
 				373C82D916F81C6900A7D7C8 /* ptr_15.png in Resources */,
 				373C82DA16F81C6900A7D7C8 /* ptr_15@2x.png in Resources */,
 				373C82DB16F81C6900A7D7C8 /* ptr_16.png in Resources */,
+				E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */,
 				373C82DC16F81C6900A7D7C8 /* ptr_16@2x.png in Resources */,
 				373C82DD16F81C6900A7D7C8 /* ptr_17.png in Resources */,
 				373C82DE16F81C6900A7D7C8 /* ptr_17@2x.png in Resources */,
 				373C82DF16F81C6900A7D7C8 /* ptr_18.png in Resources */,
 				373C82E016F81C6900A7D7C8 /* ptr_18@2x.png in Resources */,
+				E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */,
 				373C82E116F81C6900A7D7C8 /* ptr_19.png in Resources */,
 				373C82E216F81C6900A7D7C8 /* ptr_19@2x.png in Resources */,
 				373C82E316F81C6900A7D7C8 /* ptr_20.png in Resources */,
@@ -2445,7 +2461,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2563,7 +2579,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2581,7 +2597,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

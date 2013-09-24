@@ -217,24 +217,13 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-
-    static NSUInteger badgeTag = 1;
-    UILabel *badgeLabel;
     
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        badgeLabel = [[UILabel alloc] init];
-        [badgeLabel setTag:badgeTag];
-        [cell.contentView addSubview:badgeLabel];
     }
-    
-    // The badge is hidden by default
-    badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
-    [badgeLabel setHidden:YES];
     
     cell.detailTextLabel.text = nil;
 
-    UIImage *pillImage;
     NSString *badgeCount;
     switch (indexPath.section) {
         case 0: {
@@ -242,45 +231,40 @@
                 case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"cabinet"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedAllBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedAllBookmarks ? self.bookmarkCounts[PinboardFeedAllBookmarks] : @"";
                     break;
                 case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"lock"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPrivateBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedPrivateBookmarks ? self.bookmarkCounts[PinboardFeedPrivateBookmarks] : @"";
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.imageView.image = [UIImage imageNamed:@"globe"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPublicBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedPublicBookmarks ? self.bookmarkCounts[PinboardFeedPublicBookmarks] : @"";
                     break;
                 case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"glasses"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUnreadBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedUnreadBookmarks ? self.bookmarkCounts[PinboardFeedUnreadBookmarks] : @"";
                     break;
                 case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"tag"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUntaggedBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedUntaggedBookmarks ? self.bookmarkCounts[PinboardFeedUntaggedBookmarks] : @"";
                     break;
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"star"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedStarredBookmarks]];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedStarredBookmarks ? self.bookmarkCounts[PinboardFeedStarredBookmarks] : @"";
                     break;
             }
 
             UIFont *badgeFont = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
             CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
+            UILabel *badgeLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
             [badgeLabel setHidden:NO];
-            [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
+            //[badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
             [badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
             [badgeLabel setFont:badgeFont];
             [badgeLabel setText:badgeCount];
@@ -485,6 +469,7 @@
 #pragma mark -
 #pragma mark iOS 7 Updates
 
+// Called prior to Storyboard segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"ShowPosts"]) {
         GenericPostViewController *vc = [segue destinationViewController];
