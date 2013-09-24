@@ -238,6 +238,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                         
                         if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                            
+                            /*
                             if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
                                 self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
                             }
@@ -248,6 +250,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                             if ([self.navigationController topViewController] == self) {
                                 [self.navigationController pushViewController:self.webViewController animated:YES];
                             }
+                            */
+                            [self performSegueWithIdentifier:@"ShowWebView" sender:urlString];
                         }
                         else {
                             switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -815,13 +819,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             urlString = self.selectedPost[@"url"];
         }
 
-        if ([UIApplication isIPad]) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
 
@@ -856,13 +855,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             }
         }
 
-        self.actionSheetVisible = YES;        
-        if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        self.actionSheetVisible = YES;
+        [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
         self.tableView.scrollEnabled = NO;
     }
     else {
@@ -1262,6 +1256,30 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark -
+#pragma mark iOS 7 Updates
+
+// Called prior to Storyboard segues
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"ShowWebView"]) {
+        /*
+        if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
+            self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
+        }
+        else {
+            self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+        }
+        
+        if ([self.navigationController topViewController] == self) {
+            [self.navigationController pushViewController:self.webViewController animated:YES];
+        }
+        */
+        PPWebViewController *vc = (PPWebViewController *)[segue destinationViewController];
+        vc.urlString = sender;
+        vc.shouldMobilize = [AppDelegate sharedDelegate].openLinksWithMobilizer ? YES : NO;
+    }
 }
 
 @end

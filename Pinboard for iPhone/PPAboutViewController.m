@@ -288,12 +288,7 @@
         
         void (^AccessGrantedBlock)(WCAlertView *) = ^(WCAlertView *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([UIApplication isIPad]) {
-                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
-                else {
-                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
+                self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                 
                 NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
                 NSString *accountScreenName;
@@ -376,12 +371,7 @@
 
             if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
 
-                if ([UIApplication isIPad]) {
-                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
-                else {
-                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedItem[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
+                self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
                 if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:@"Copy Project URL"];
@@ -391,12 +381,7 @@
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
                 }
 
-                if ([UIApplication isIPad]) {
-                    [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
-                }
-                else {
-                    [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-                }
+                [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
             }
         }
         else {

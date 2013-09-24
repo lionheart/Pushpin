@@ -31,6 +31,8 @@ static NSInteger kToolbarHeight = 44;
 
 @implementation PPWebViewController
 
+@synthesize shouldMobilize, urlString;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -109,6 +111,7 @@ static NSInteger kToolbarHeight = 44;
     [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     self.exitReaderModeButton.hidden = YES;
 
+    // Panning gesture recognizers
     self.panGestureRecognizerForNormalMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizerForNormalMode.minimumNumberOfTouches = 1;
     self.panGestureRecognizerForNormalMode.maximumNumberOfTouches = 1;
@@ -122,11 +125,16 @@ static NSInteger kToolbarHeight = 44;
     [self.webView addSubview:self.enterReaderModeButton];
     [self.webView addSubview:self.exitReaderModeButton];
     
+    // Tap gesture recognizer
+    //self.tapGestureRecognizerForFullscreen = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleFullScreen:)];
+    //[self.webView addGestureRecognizer:self.tapGestureRecognizerForFullscreen];
+    
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activityIndicator startAnimating];
     self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
+    /*
     self.toolbar = [[PPToolbar alloc] init];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
@@ -169,6 +177,7 @@ static NSInteger kToolbarHeight = 44;
 
     self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.toolbar];
+    */
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -210,7 +219,31 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // Determine if we should mobilize or not
+    NSString *mobilizedUrlString;
+    if (![self isURLStringMobilized:self.urlString] && self.shouldMobilize) {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.urlString];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.urlString];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.urlString];
+                break;
+                
+            default:
+                break;
+        }
+        
+        self.urlString = mobilizedUrlString;
+    }
 
+    // Setup the UIWebView frame size
     CGSize size = self.view.frame.size;
     self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
     
@@ -295,14 +328,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
         
-        BOOL isIPad = [UIApplication isIPad];
-        if (isIPad) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            [(RDActionSheet *)self.actionSheet setDelegate:self];
-        }
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
         BOOL canSendTweet;
@@ -332,12 +358,7 @@ static NSInteger kToolbarHeight = 44;
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
         }
 
-        if (isIPad) {
-            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
     }
     else {
         if ([UIApplication isIPad]) {
@@ -427,14 +448,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
 
-        BOOL isIPad = [UIApplication isIPad];
-        if (isIPad) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            [(RDActionSheet *)self.actionSheet setDelegate:self];
-        }
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -477,12 +491,7 @@ static NSInteger kToolbarHeight = 44;
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
         }
 
-        if (isIPad) {
-            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
     }
     else {
         if ([UIApplication isIPad]) {

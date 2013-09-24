@@ -24,13 +24,7 @@
     if (self) {
         self.title = NSLocalizedString(@"Browser Settings", nil);
 
-        BOOL isIPad = [UIApplication isIPad];
-        if (isIPad) {
-            self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.browserActionSheet = (UIActionSheet *)[[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
+        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
         
@@ -183,15 +177,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            BOOL isIPad = [UIApplication isIPad];
-            if (isIPad) {
-                if (!self.actionSheet) {
-                    CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                    [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
-                }
-            }
-            else {
-                [(RDActionSheet *)self.browserActionSheet showFrom:self.navigationController.view];
+            if (!self.actionSheet) {
+                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+                [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
             }
         }
     }

@@ -29,12 +29,14 @@
 @property (nonatomic, strong) CALayer *fullScreenImageLayer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizerForFullscreen;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL stopped;
+@property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
 @property (nonatomic, strong) id actionSheet;
@@ -42,9 +44,9 @@
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
 - (void)socialActionButtonTouchUp:(id)sender;
-- (void)actionButtonTouchUp:(id)sender;
-- (void)backButtonTouchUp:(id)sender;
-- (void)forwardButtonTouchUp:(id)sender;
+- (IBAction)actionButtonTouchUp:(id)sender;
+- (IBAction)backButtonTouchUp:(id)sender;
+- (IBAction)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)emailURL;
 - (void)showEditViewController;
@@ -56,7 +58,7 @@
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
 - (void)loadURL;
-- (void)stopLoading;
+- (IBAction)stopLoading:(id)sender;
 - (BOOL)isWebViewExpanded;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
 - (void)toggleFullScreen;
