@@ -14,7 +14,7 @@
 
 @interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
 @property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
@@ -29,9 +29,9 @@
 @property (nonatomic, strong) CALayer *fullScreenImageLayer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizerForFullscreen;
+@property (nonatomic, strong) IBOutlet UIView *tapView;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
-@property (nonatomic, strong) PPToolbar *toolbar;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
@@ -40,6 +40,7 @@
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
 @property (nonatomic, strong) id actionSheet;
+@property (nonatomic) CGRect toolbarFrame;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
@@ -62,6 +63,8 @@
 - (BOOL)isWebViewExpanded;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
 - (void)toggleFullScreen;
+- (void)setFullscreen:(BOOL)fullscreen;
+- (void)disableFullscreen:(id)sender;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;

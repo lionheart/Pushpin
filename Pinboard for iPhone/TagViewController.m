@@ -211,7 +211,7 @@
     CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
     [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
-    [badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    //[badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [badgeLabel setFont:badgeFont];
     [badgeLabel setText:badgeCount];
     [badgeLabel setTextColor:[UIColor grayColor]];

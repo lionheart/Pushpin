@@ -108,9 +108,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="xdj-pA-ypx">
+                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="0KJ-Ou-qQo" id="cDZ-yX-dbs"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="DKk-8C-LyQ">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DKk-8C-LyQ" id="VOR-9u-KxY">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -125,10 +133,20 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="All Bookmarks" id="pSy-fF-11q"/>
                     <connections>
+                        <outlet property="searchDisplayController" destination="CUU-76-fAD" id="IMo-hK-Yn0"/>
                         <segue destination="gm1-1W-TLe" kind="push" identifier="ShowWebView" id="l2B-UY-htf"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3xu-Ik-co0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="CUU-76-fAD">
+                    <connections>
+                        <outlet property="delegate" destination="0KJ-Ou-qQo" id="iwQ-Nk-yCE"/>
+                        <outlet property="searchBar" destination="xdj-pA-ypx" id="i7L-63-IKh"/>
+                        <outlet property="searchContentsController" destination="0KJ-Ou-qQo" id="o67-BS-7pz"/>
+                        <outlet property="searchResultsDataSource" destination="0KJ-Ou-qQo" id="i0J-OD-ufi"/>
+                        <outlet property="searchResultsDelegate" destination="0KJ-Ou-qQo" id="9MI-Uy-cH7"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1051" y="88"/>
         </scene>
@@ -308,7 +326,7 @@
             </objects>
             <point key="canvasLocation" x="1827" y="2127"/>
         </scene>
-        <!--Web View Controller-->
+        <!--Web View Controller - Web View-->
         <scene sceneID="K3S-oL-GQ6">
             <objects>
                 <viewController id="gm1-1W-TLe" customClass="PPWebViewController" sceneMemberID="viewController">
@@ -320,12 +338,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfr-YH-BAD">
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfr-YH-BAD">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="gm1-1W-TLe" id="xHn-26-WP3"/>
+                                </connections>
                             </webView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bbg-bb-4ku">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bbg-bb-4ku">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
@@ -354,10 +375,32 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Ht-At-bEX">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bbg-bb-4ku" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="2Cf-0z-j8q"/>
+                            <constraint firstItem="0Mq-Ka-grU" firstAttribute="top" secondItem="8Ht-At-bEX" secondAttribute="bottom" id="GdF-su-dfi"/>
+                            <constraint firstItem="0Mq-Ka-grU" firstAttribute="top" secondItem="bbg-bb-4ku" secondAttribute="bottom" id="KHG-pu-kLg"/>
+                            <constraint firstItem="0Mq-Ka-grU" firstAttribute="top" secondItem="lfr-YH-BAD" secondAttribute="bottom" id="LNG-Z2-dcg"/>
+                            <constraint firstItem="lfr-YH-BAD" firstAttribute="top" secondItem="pVc-pN-XA7" secondAttribute="top" id="Sfx-0p-Zhi"/>
+                            <constraint firstAttribute="trailing" secondItem="lfr-YH-BAD" secondAttribute="trailing" id="Sya-1n-UvQ"/>
+                            <constraint firstItem="8Ht-At-bEX" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="T3E-zL-8TM"/>
+                            <constraint firstItem="lfr-YH-BAD" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="YXR-nv-5oy"/>
+                            <constraint firstAttribute="trailing" secondItem="bbg-bb-4ku" secondAttribute="trailing" id="rFV-X2-p76"/>
+                            <constraint firstAttribute="trailing" secondItem="8Ht-At-bEX" secondAttribute="trailing" id="t4e-c0-13m"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="QrY-e3-ier"/>
+                    <navigationItem key="navigationItem" title="Web View" id="QrY-e3-ier"/>
+                    <connections>
+                        <outlet property="tapView" destination="8Ht-At-bEX" id="Daw-zA-9Fl"/>
+                        <outlet property="toolbar" destination="bbg-bb-4ku" id="Cne-AI-1hG"/>
+                        <outlet property="webView" destination="lfr-YH-BAD" id="GnD-ev-YXg"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FMI-io-SwB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
