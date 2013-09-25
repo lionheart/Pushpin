@@ -301,14 +301,15 @@
                 if (loadingAlertView) {
                     [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                 }
+                
+                // Properly set the cancel button index
+                [self.actionSheet addButtonWithTitle:@"Cancel"];
+                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
                 if ([accounts count] > 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([self.actionSheet respondsToSelector:@selector(showFromRect:inView:animated:)]) {
                             [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:NO];
-                        }
-                        else {
-                            [self.actionSheet showFrom:self.navigationController.view];
                         }
                     });
                 }
@@ -381,6 +382,10 @@
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
                 }
 
+                // Properly set the cancel button index
+                [self.actionSheet addButtonWithTitle:@"Cancel"];
+                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+                
                 [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
             }
         }

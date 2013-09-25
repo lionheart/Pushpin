@@ -279,6 +279,10 @@ static NSInteger kToolbarHeight = 44;
         if ([MFMailComposeViewController canSendMail]) {
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
         }
+        
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
         [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
     }
@@ -412,6 +416,10 @@ static NSInteger kToolbarHeight = 44;
         else if (readlater == READLATER_POCKET) {
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
         }
+        
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
         [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
     }

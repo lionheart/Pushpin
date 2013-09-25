@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
-#import "RDActionSheet.h"
 #import "WCAlertView.h"
 #import "AppDelegate.h"
 #import "PPLoadingView.h"
@@ -85,12 +84,12 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
-@property (nonatomic, strong) id actionSheet;
+@property (nonatomic, strong) UIActionSheet *actionSheet;
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;

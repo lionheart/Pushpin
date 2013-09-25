@@ -179,6 +179,11 @@
         if (indexPath.row == 0) {
             if (!self.actionSheet) {
                 CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+                
+                // Properly set the cancel button index
+                [self.browserActionSheet addButtonWithTitle:@"Cancel"];
+                self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
+                
                 [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
             }
         }

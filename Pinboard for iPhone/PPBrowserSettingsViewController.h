@@ -11,7 +11,7 @@
 #import "PPSwitch.h"
 #import "RDActionSheet.h"
 
-@interface PPBrowserSettingsViewController : PPTableViewController <UIActionSheetDelegate, RDActionSheetDelegate, UIAlertViewDelegate>
+@interface PPBrowserSettingsViewController : PPTableViewController <UIActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
 @property (nonatomic, retain) WCAlertView *installChromeAlertView;
