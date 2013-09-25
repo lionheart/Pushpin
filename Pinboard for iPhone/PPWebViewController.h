@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
-#import "RDActionSheet.h"
 #import "AppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
@@ -40,7 +39,7 @@
 @property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
-@property (nonatomic, strong) id actionSheet;
+@property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic) CGRect toolbarFrame;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;

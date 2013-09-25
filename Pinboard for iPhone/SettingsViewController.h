@@ -16,7 +16,7 @@
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;

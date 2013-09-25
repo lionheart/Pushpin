@@ -786,7 +786,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             urlString = self.selectedPost[@"url"];
         }
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -821,6 +821,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 }
             }
         }
+        
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
         self.actionSheetVisible = YES;
         [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
