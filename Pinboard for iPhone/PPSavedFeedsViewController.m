@@ -48,13 +48,6 @@
         });
     });
     
-    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [addButton setImage:[UIImage imageNamed:@"AddNavigationDimmed"] forState:UIControlStateNormal];
-    [addButton setImage:[UIImage imageNamed:@"AddNavigation"] forState:UIControlStateHighlighted];
-    [addButton addTarget:self action:@selector(addSavedFeedButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    addButton.frame = CGRectMake(0, 0, 45, 24);
-    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:addButton];
-    self.navigationItem.rightBarButtonItem = addBarButtonItem;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -118,10 +111,13 @@
 }
 
 - (void)addSavedFeedButtonTouchUpInside:(id)sender {
+    /*
     PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
     addSavedFeedViewController.modalDelegate = self;
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:addSavedFeedViewController];
     [self presentViewController:navigationController animated:YES completion:nil];
+    */
+    [self performSegueWithIdentifier:@"AddFeed" sender:self];
 }
 
 - (void)closeModal:(UIViewController *)sender {
@@ -161,6 +157,15 @@
             [self.tableView endUpdates];
         });
     }];
+}
+
+#pragma mark -
+#pragma mark iOS 7 updates
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"AddFeed"]) {
+        PPAddSavedFeedViewController *destinationVC = (PPAddSavedFeedViewController *)[segue destinationViewController];
+        destinationVC.modalDelegate = self;
+    }
 }
 
 @end
