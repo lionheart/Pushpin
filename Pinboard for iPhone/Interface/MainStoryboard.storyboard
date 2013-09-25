@@ -45,13 +45,14 @@
                     </navigationItem>
                     <connections>
                         <segue destination="Wvl-yC-dL2" kind="push" identifier="ShowTags" id="IdS-Xf-3rW"/>
+                        <segue destination="HaI-CS-vrV" kind="push" identifier="ShowSavedFeeds" id="wMn-fA-B3W"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="beU-4Y-T86" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="652" y="88"/>
         </scene>
-        <!--Tag View Controller-->
+        <!--Tag View Controller - Tags-->
         <scene sceneID="di9-zf-mgh">
             <objects>
                 <tableViewController id="Wvl-yC-dL2" customClass="TagViewController" sceneMemberID="viewController">
@@ -82,7 +83,7 @@
                             <outlet property="delegate" destination="Wvl-yC-dL2" id="Dmf-B0-MZU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="dK1-xz-4wK"/>
+                    <navigationItem key="navigationItem" title="Tags" id="dK1-xz-4wK"/>
                     <connections>
                         <outlet property="searchDisplayController" destination="Nt7-ry-3KG" id="Z6c-S3-tTG"/>
                     </connections>
@@ -99,6 +100,79 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1051" y="-594"/>
+        </scene>
+        <!--Saved Feeds View Controller - Saved Feeds-->
+        <scene sceneID="1SS-Zt-HeI">
+            <objects>
+                <tableViewController id="HaI-CS-vrV" customClass="PPSavedFeedsViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="0sQ-pR-qdJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Bqm-9j-foQ">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bqm-9j-foQ" id="l4W-hE-1tN">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="HaI-CS-vrV" id="5Ug-Yb-9BL"/>
+                            <outlet property="delegate" destination="HaI-CS-vrV" id="6J6-eY-lBx"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Saved Feeds" id="Uh9-22-pJQ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="SbS-PZ-UfO">
+                            <connections>
+                                <segue destination="OYm-0l-A4m" kind="push" identifier="AddFeed" id="PZV-wT-8vR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="0KJ-Ou-qQo" kind="push" identifier="ShowPosts" id="lFp-Ta-RKs"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jby-gE-SFM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1051" y="-1272"/>
+        </scene>
+        <!--Add Saved Feed View Controller - Add Feed-->
+        <scene sceneID="KaJ-qP-IxK">
+            <objects>
+                <tableViewController id="OYm-0l-A4m" customClass="PPAddSavedFeedViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="cel-Ig-WTr">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="UUg-hL-Grw">
+                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UUg-hL-Grw" id="R6r-kn-btr">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="OYm-0l-A4m" id="SX7-x4-zkE"/>
+                            <outlet property="delegate" destination="OYm-0l-A4m" id="gtL-9c-Fja"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Add Feed" id="dDm-pS-CKH">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="n7c-hE-Gry">
+                            <connections>
+                                <action selector="addButtonTouchUpInside:" destination="OYm-0l-A4m" id="Nzg-Mp-6Uh"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fLk-Bo-l6W" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1435" y="-1272"/>
         </scene>
         <!--Generic Post View Controller - All Bookmarks-->
         <scene sceneID="LXw-uo-CHd">
@@ -475,6 +549,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="dSO-bG-NYa"/>
+        <segue reference="lFp-Ta-RKs"/>
     </inferredMetricsTieBreakers>
 </document>
