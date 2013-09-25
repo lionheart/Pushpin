@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
     <dependencies>
         <deployment defaultVersion="1536" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
@@ -375,7 +375,7 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ht-At-bEX">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ht-At-bEX">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -400,6 +400,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="Web View" id="QrY-e3-ier"/>
                     <connections>
+                        <outlet property="actionBarButtonItem" destination="6Ts-wy-65D" id="CyG-wv-A1b"/>
+                        <outlet property="backBarButtonItem" destination="suz-gl-Dgn" id="mrn-t1-puW"/>
+                        <outlet property="forwardBarButtonItem" destination="A8e-TL-iG7" id="0qP-rz-N1o"/>
+                        <outlet property="readerBarButtonItem" destination="okr-OO-0Ha" id="XUs-Kp-LFN"/>
                         <outlet property="tapView" destination="8Ht-At-bEX" id="Daw-zA-9Fl"/>
                         <outlet property="toolbar" destination="bbg-bb-4ku" id="Cne-AI-1hG"/>
                         <outlet property="webView" destination="lfr-YH-BAD" id="GnD-ev-YXg"/>
