@@ -29,6 +29,10 @@
     return self;
 }
 
+- (void)viewDidLoad {
+    self.feeds = [NSMutableArray array];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
