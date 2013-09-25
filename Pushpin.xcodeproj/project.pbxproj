@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		370859F517F329C700270A9D /* Icon-new~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 370859F217F329C700270A9D /* Icon-new~ipad.png */; };
+		370859F617F329C700270A9D /* Icon-new@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 370859F317F329C700270A9D /* Icon-new@2x~iphone.png */; };
+		370859F717F329C700270A9D /* Icon-new@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 370859F417F329C700270A9D /* Icon-new@2x~ipad.png */; };
+		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097616F157B100E8FE29 /* gray-button-cap.png */; };
 		3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097716F157B100E8FE29 /* gray-button-cap@2x.png */; };
@@ -513,6 +517,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		370859F217F329C700270A9D /* Icon-new~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-new~ipad.png"; path = "Assets/Icon-new~ipad.png"; sourceTree = "<group>"; };
+		370859F317F329C700270A9D /* Icon-new@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-new@2x~iphone.png"; path = "Assets/Icon-new@2x~iphone.png"; sourceTree = "<group>"; };
+		370859F417F329C700270A9D /* Icon-new@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-new@2x~ipad.png"; path = "Assets/Icon-new@2x~ipad.png"; sourceTree = "<group>"; };
+		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
@@ -1289,6 +1297,9 @@
 		371F9D9E17A9B7550055AF56 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
+				370859F217F329C700270A9D /* Icon-new~ipad.png */,
+				370859F317F329C700270A9D /* Icon-new@2x~iphone.png */,
+				370859F417F329C700270A9D /* Icon-new@2x~ipad.png */,
 				37ECBC5A17739DBA005AE740 /* Icon~ipad.png */,
 				37ECBC5B17739DBA005AE740 /* Icon@2x~ipad.png */,
 				37B65FDB1672E0090041DA8C /* iTunesArtwork-beta@2x.png */,
@@ -1459,6 +1470,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				370859F817F329D400270A9D /* Images.xcassets */,
 				37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
@@ -1926,6 +1938,7 @@
 				3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */,
 				3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */,
 				3714097C16F15CE000E8FE29 /* gray-button-highlighted-cap.png in Resources */,
+				370859F917F329D400270A9D /* Images.xcassets in Resources */,
 				3714097D16F15CE000E8FE29 /* gray-button-highlighted-cap@2x.png in Resources */,
 				373C82BD16F81C6900A7D7C8 /* ptr_01.png in Resources */,
 				373C82BE16F81C6900A7D7C8 /* ptr_01@2x.png in Resources */,
@@ -1951,6 +1964,7 @@
 				373C82D216F81C6900A7D7C8 /* ptr_11@2x.png in Resources */,
 				373C82D316F81C6900A7D7C8 /* ptr_12.png in Resources */,
 				373C82D416F81C6900A7D7C8 /* ptr_12@2x.png in Resources */,
+				370859F517F329C700270A9D /* Icon-new~ipad.png in Resources */,
 				373C82D516F81C6900A7D7C8 /* ptr_13.png in Resources */,
 				373C82D616F81C6900A7D7C8 /* ptr_13@2x.png in Resources */,
 				373C82D716F81C6900A7D7C8 /* ptr_14.png in Resources */,
@@ -2136,6 +2150,7 @@
 				37EABA45173F01DA00B2684B /* loading_65@2x.png in Resources */,
 				37EABA46173F01DA00B2684B /* loading_66.png in Resources */,
 				37EABA47173F01DA00B2684B /* loading_66@2x.png in Resources */,
+				370859F617F329C700270A9D /* Icon-new@2x~iphone.png in Resources */,
 				37EABA48173F01DA00B2684B /* loading_67.png in Resources */,
 				37EABA49173F01DA00B2684B /* loading_67@2x.png in Resources */,
 				37EABA4A173F01DA00B2684B /* loading_68.png in Resources */,
@@ -2204,6 +2219,7 @@
 				3732DFA017596D7500978A68 /* apple.png in Resources */,
 				3732DFA117596D7500978A68 /* apple@2x.png in Resources */,
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
+				370859F717F329C700270A9D /* Icon-new@2x~ipad.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
 				376E0A7E175AA245004CCDEE /* About.plist in Resources */,
 				37B348CE175FFDCD00929E2E /* Changelog.plist in Resources */,
@@ -2456,12 +2472,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconBeta;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Beta.entitlements";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2570,6 +2588,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDebug;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Dev.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2579,7 +2599,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2592,12 +2612,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
