@@ -171,7 +171,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self deletePostsAtIndexPaths:@[indexPath]];
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        self.selectedPost = [self.postDataSource postAtIndex:indexPath.row];
+        [self showConfirmDeletionAlert];
+    }
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
