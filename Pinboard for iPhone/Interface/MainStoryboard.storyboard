@@ -305,10 +305,42 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Browser Settings" id="R1y-Uh-n4H"/>
+                    <connections>
+                        <segue destination="0iR-W2-bf9" kind="push" identifier="ShowBrowserInstructions" id="jB1-3e-Bxh"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kIt-eg-nMZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1435" y="769"/>
+        </scene>
+        <!--Bookmarklet Installation View Controller - Browser Integration-->
+        <scene sceneID="iyY-15-Zp3">
+            <objects>
+                <tableViewController id="0iR-W2-bf9" customClass="BookmarkletInstallationViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="SFS-r3-Lmv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ktW-S0-av6">
+                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ktW-S0-av6" id="dG9-eo-U6i">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="0iR-W2-bf9" id="9tq-7g-eiF"/>
+                            <outlet property="delegate" destination="0iR-W2-bf9" id="PKj-lR-mAS"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Browser Integration" id="5rq-z8-W9B"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kCO-JJ-HVI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1815" y="769"/>
         </scene>
         <!--Display Settings View Controller - Display Settings-->
         <scene sceneID="1MU-rE-7nh">

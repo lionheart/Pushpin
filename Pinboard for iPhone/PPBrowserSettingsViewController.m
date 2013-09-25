@@ -184,13 +184,13 @@
         }
     }
     else {
-        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
+        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
     }
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
-        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
+        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
     }
 }
 
