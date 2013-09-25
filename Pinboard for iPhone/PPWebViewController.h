@@ -16,10 +16,10 @@
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
-@property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *backBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *forwardBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *readerBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *socialBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
@@ -29,6 +29,7 @@
 @property (nonatomic, strong) CALayer *fullScreenImageLayer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForFullscreenMode;
 @property (nonatomic, strong) IBOutlet UIView *tapView;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;

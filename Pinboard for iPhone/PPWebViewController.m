@@ -46,10 +46,11 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scrollView.bounces = NO;
     
     // Tap view
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
-    tapGesture.numberOfTapsRequired = 1;
-    tapGesture.numberOfTouchesRequired = 1;
-    [self.tapView addGestureRecognizer:tapGesture];
+    self.tapGestureForFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
+    self.tapGestureForFullscreenMode.numberOfTapsRequired = 1;
+    self.tapGestureForFullscreenMode.numberOfTouchesRequired = 1;
+    self.tapGestureForFullscreenMode.enabled = NO;
+    [self.tapView addGestureRecognizer:self.tapGestureForFullscreenMode];
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activityIndicator startAnimating];
@@ -167,6 +168,7 @@ static NSInteger kToolbarHeight = 44;
         self.toolbarFrame = self.toolbar.frame;
         
         // Show the hidden UIView to get tap notifications
+        self.tapGestureForFullscreenMode.enabled = YES;
         [self.tapView setHidden:NO];
         
         // Hide the navigation and status bars
@@ -179,6 +181,7 @@ static NSInteger kToolbarHeight = 44;
         }];
     } else {
         // Hide the tap view
+        self.tapGestureForFullscreenMode.enabled = NO;
         [self.tapView setHidden:YES];
         
         // Reveal the navigation and status bars
@@ -365,9 +368,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionButtonTouchUp:(id)sender {
     if (!self.actionSheet) {
-        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
+        NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
 
         [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
