@@ -400,11 +400,59 @@
                         <outlet property="tapView" destination="8Ht-At-bEX" id="Daw-zA-9Fl"/>
                         <outlet property="toolbar" destination="bbg-bb-4ku" id="Cne-AI-1hG"/>
                         <outlet property="webView" destination="lfr-YH-BAD" id="GnD-ev-YXg"/>
+                        <segue destination="BYy-SN-T7z" kind="modal" identifier="AddBookmark" modalTransitionStyle="coverVertical" id="cyK-OV-9eg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FMI-io-SwB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1435" y="88"/>
+        </scene>
+        <!--Add Bookmark View Controller - Add Bookmark-->
+        <scene sceneID="AYD-G8-Amj">
+            <objects>
+                <tableViewController id="5hp-4n-4Ac" customClass="AddBookmarkViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="Rry-rk-JK4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="iZr-Rl-iQy">
+                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iZr-Rl-iQy" id="SfO-k0-RXR">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="5hp-4n-4Ac" id="K4O-gw-bR2"/>
+                            <outlet property="delegate" destination="5hp-4n-4Ac" id="gKS-Hr-XLZ"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Add Bookmark" id="cfu-73-04n"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C4v-fi-887" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2198" y="88"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Z1r-2A-11c">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BYy-SN-T7z" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Oi4-jV-M0n">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5hp-4n-4Ac" kind="relationship" relationship="rootViewController" id="Nc8-Zh-46u"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TQ8-LU-871" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1815" y="88"/>
         </scene>
     </scenes>
     <resources>

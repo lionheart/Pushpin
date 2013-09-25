@@ -537,7 +537,6 @@
         //[self.window setRootViewController:self.navigationController];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
         [self.window setRootViewController:[storyboard instantiateViewControllerWithIdentifier:@"MainNavigationController"]];
-        //[self.window.rootViewController performSegueWithIdentifier:@"ShowPosts" sender:self];
     }
     else {
         [self.window setRootViewController:self.loginViewController];

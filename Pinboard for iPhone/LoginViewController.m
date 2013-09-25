@@ -308,10 +308,12 @@
                                                    [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
                                                        dispatch_async(dispatch_get_main_queue(), ^{
                                                            [self.messageUpdateTimer invalidate];
-                                                           delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                                           [self presentViewController:delegate.navigationController
-                                                                              animated:YES
-                                                                            completion:nil];
+                                                           
+                                                           // Show the primary navigation controller
+                                                           UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+                                                           UINavigationController *mainNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"MainNavigationController"];
+                                                           mainNavigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                                           [self presentViewController:mainNavigationController animated:YES completion:nil];
                                                        });
                                                    }
                                                                                                    failure:nil
