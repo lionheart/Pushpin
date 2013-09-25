@@ -1113,7 +1113,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
         }
         
-        DLog("%f", offset);
         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);

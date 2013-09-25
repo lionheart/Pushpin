@@ -800,4 +800,17 @@ static NSInteger kToolbarHeight = 44;
     [self setFullscreen:YES];
 }
 
+#pragma mark -
+#pragma mark iOS 7 updates
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"AddBookmark"]) {
+        NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        NSDictionary *post = @{
+                               @"title": pageTitle,
+                               @"url": [self urlStringForDemobilizedURL:self.url]
+                               };
+        AddBookmarkViewController *destinationVC = (AddBookmarkViewController *)[segue destinationViewController];
+    }
+}
+
 @end
