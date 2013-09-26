@@ -1082,6 +1082,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     });
                 }];
             }
+        } else if ([title isEqualToString:NSLocalizedString(@"No", nil)]) {
+            // Dismiss the edit view
+            [self.tableView setEditing:NO animated:YES];
         }
     }
 }
