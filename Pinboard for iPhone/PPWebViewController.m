@@ -374,7 +374,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {

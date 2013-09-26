@@ -72,6 +72,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
+    
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -1246,6 +1249,15 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         vc.shouldMobilize = [AppDelegate sharedDelegate].openLinksWithMobilizer ? YES : NO;
     } else if ([[segue identifier] isEqualToString:@"EditBookmark"]) {
     }
+}
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
+    [self.postDataSource updatePostsFromDatabase:^(void) {
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                [self.tableView reloadData];
+                [self.view setNeedsLayout];
+        });
+    } failure:nil];
 }
 
 @end
