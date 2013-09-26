@@ -56,83 +56,82 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize recommendedTags;
 
 - (id)init {
-    self = [super init];
+    if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        self.postDescription = @"";
+        
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        self.urlTextField = [[UITextField alloc] init];
+        self.urlTextField.font = font;
+        self.urlTextField.delegate = self;
+        self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.urlTextField.placeholder = @"https://pinboard.in/";
+        self.urlTextField.keyboardType = UIKeyboardTypeURL;
+        self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.urlTextField.text = @"";
+        self.previousURLContents = @"";
+        
+        self.descriptionTextField = [[UITextField alloc] init];
+        self.descriptionTextField.font = font;
+        self.descriptionTextField.delegate = self;
+        self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.descriptionTextField.placeholder = @"";
+        self.descriptionTextField.text = @"";
+        self.descriptionTextField.userInteractionEnabled = NO;
+        
+        self.titleTextField = [[UITextField alloc] init];
+        self.titleTextField.font = font;
+        self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        self.titleTextField.delegate = self;
+        self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
+        self.titleTextField.text = @"";
+        
+        self.tagTextField = [[UITextField alloc] init];
+        self.tagTextField.font = font;
+        self.tagTextField.delegate = self;
+        self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.tagTextField.placeholder = NSLocalizedString(@"pinboard .bookmarking", nil);
+        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.tagTextField.text = @"";
+        
+        self.markAsRead = @(NO);
+        self.loadingTitle = NO;
+        self.loadingTags = NO;
+        self.suggestedTagsVisible = NO;
+        self.autocompleteInProgress = NO;
+        self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        self.popularTagSuggestions = [[NSMutableArray alloc] init];
+        self.previousTagSuggestions = [[NSMutableArray alloc] init];
+        self.suggestedTagsPayload = nil;
+        self.popularTags = @[];
+        self.recommendedTags = @[];
+        self.tagDescriptions = [NSMutableDictionary dictionary];
+        self.tagCounts = [NSMutableDictionary dictionary];
+        
+        self.callback = ^(void) {};
+        self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
+        
+        self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.descriptionTextField addGestureRecognizer:self.descriptionGestureRecognizer];
+        
+        self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
+        
+        self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
+    }
+    
     return self;
-}
-
-- (void)viewDidLoad {
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    self.postDescription = @"";
-    
-    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    self.urlTextField = [[UITextField alloc] init];
-    self.urlTextField.font = font;
-    self.urlTextField.delegate = self;
-    self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.urlTextField.placeholder = @"https://pinboard.in/";
-    self.urlTextField.keyboardType = UIKeyboardTypeURL;
-    self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.urlTextField.text = @"";
-    self.previousURLContents = @"";
-    
-    self.descriptionTextField = [[UITextField alloc] init];
-    self.descriptionTextField.font = font;
-    self.descriptionTextField.delegate = self;
-    self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.descriptionTextField.placeholder = @"";
-    self.descriptionTextField.text = @"";
-    self.descriptionTextField.userInteractionEnabled = NO;
-    
-    self.titleTextField = [[UITextField alloc] init];
-    self.titleTextField.font = font;
-    self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.titleTextField.delegate = self;
-    self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
-    self.titleTextField.text = @"";
-    
-    self.tagTextField = [[UITextField alloc] init];
-    self.tagTextField.font = font;
-    self.tagTextField.delegate = self;
-    self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.tagTextField.placeholder = NSLocalizedString(@"pinboard .bookmarking", nil);
-    self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.tagTextField.text = @"";
-    
-    self.markAsRead = @(NO);
-    self.loadingTitle = NO;
-    self.loadingTags = NO;
-    self.suggestedTagsVisible = NO;
-    self.autocompleteInProgress = NO;
-    self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-    self.popularTagSuggestions = [[NSMutableArray alloc] init];
-    self.previousTagSuggestions = [[NSMutableArray alloc] init];
-    self.suggestedTagsPayload = nil;
-    self.popularTags = @[];
-    self.recommendedTags = @[];
-    self.tagDescriptions = [NSMutableDictionary dictionary];
-    self.tagCounts = [NSMutableDictionary dictionary];
-    
-    self.callback = ^(void) {};
-    self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
-    
-    self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.descriptionTextField addGestureRecognizer:self.descriptionGestureRecognizer];
-    
-    self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
-    
-    self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
