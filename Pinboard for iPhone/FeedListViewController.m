@@ -61,7 +61,7 @@
                 previousCount = @"";
             }
             else {
-                previousCount = [self.bookmarkCounts objectAtIndex:i];
+                previousCount = self.bookmarkCounts[i];
             }
             
             if (previousCount != nil && ![count isEqualToString:previousCount]) {
