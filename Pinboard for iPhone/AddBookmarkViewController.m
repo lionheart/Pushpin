@@ -582,7 +582,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
-                            cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:self.tagCounts[tag]]];
+                            cell.detailTextLabel.text = self.tagCounts[tag];
                         }
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
