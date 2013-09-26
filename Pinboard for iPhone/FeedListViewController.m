@@ -101,6 +101,9 @@
     [self calculateBookmarkCounts:nil];
     
     postViewTitle = NSLocalizedString(@"All", nil);
+    
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -171,6 +174,16 @@
     return 6;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UIFont *textLabelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    CGSize textLabelFontSize = [@"Feed" sizeWithAttributes:[NSDictionary dictionaryWithObject:textLabelFont forKey:NSFontAttributeName]];
+    
+    CGFloat padding = 10;
+    CGFloat totalHeight = padding + textLabelFontSize.height + padding;
+    
+    return totalHeight;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
@@ -191,11 +204,12 @@
     UILabel *badgeLabel;
     
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        badgeLabel = [[UILabel alloc] init];
-        [badgeLabel setTag:badgeTag];
-        [cell.contentView addSubview:badgeLabel];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
+
+    // Dynamic Type
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];;
+    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     
     // The badge is hidden by default
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
@@ -238,14 +252,8 @@
                     badgeCount = self.bookmarkCounts.count > PinboardFeedStarredBookmarks ? self.bookmarkCounts[PinboardFeedStarredBookmarks] : @"";
                     break;
             }
-
-            UIFont *badgeFont = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
-            CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
-            [badgeLabel setHidden:NO];
-            [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
-            [badgeLabel setFont:badgeFont];
-            [badgeLabel setText:badgeCount];
-            [badgeLabel setTextColor:[UIColor grayColor]];
+            
+            cell.detailTextLabel.text = badgeCount;
             
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             
@@ -442,6 +450,11 @@
         [vc setTitle:NSLocalizedString(@"Notes", nil)];
     } else if ([[segue identifier] isEqualToString:@"ShowTags"]) {
     }
+}
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
+    [self.view setNeedsLayout];
+    [self.tableView reloadData];
 }
 
 @end

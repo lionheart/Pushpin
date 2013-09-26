@@ -150,4 +150,6 @@ typedef NSInteger PPPostAction;
 - (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
 - (id<GenericPostDataSource>)currentDataSource;
 
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification;
+
 @end

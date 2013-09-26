@@ -40,6 +40,7 @@
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic, strong) UIActivityViewController *activityView;
 @property (nonatomic) CGRect toolbarFrame;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;

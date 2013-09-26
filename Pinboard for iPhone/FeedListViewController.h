@@ -31,6 +31,10 @@ enum PINBOARD_FEED_ITEMS {
 @property (nonatomic, retain) NSTimer *updateTimer;
 @property (nonatomic, retain) NSMutableArray *bookmarkCounts;
 
+@property (nonatomic) CGFloat textSize;
+@property (nonatomic) CGFloat detailTextSize;
+@property (nonatomic) CGFloat rowHeight;
+
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
 - (void)connectionStatusDidChange:(NSNotification *)notification;
 - (void)openNotes;
@@ -40,5 +44,7 @@ enum PINBOARD_FEED_ITEMS {
 
 - (void)hideNetworkDependentFeeds;
 - (void)showAllFeeds;
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
 @end
