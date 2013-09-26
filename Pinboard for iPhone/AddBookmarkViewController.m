@@ -796,7 +796,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-            WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -909,7 +909,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                      dispatch_async(dispatch_get_main_queue(), ^{
                                          self.navigationItem.leftBarButtonItem.enabled = YES;
                                          self.navigationItem.rightBarButtonItem.enabled = YES;
-                                         WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                          [alert show];
                                      });
                                  }];

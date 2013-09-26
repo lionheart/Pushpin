@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "PPAboutViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "WCAlertView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
@@ -265,10 +264,10 @@
                     if (response[@"errors"]) {
                         NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
                         NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                        [[[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
+                        [[[UIAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
                     }
                     else {
-                        [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                     }
                 });
 
@@ -286,7 +285,7 @@
         ACAccountStore *accountStore = [[ACAccountStore alloc] init];
         ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         
-        void (^AccessGrantedBlock)(WCAlertView *) = ^(WCAlertView *loadingAlertView) {
+        void (^AccessGrantedBlock)(UIAlertView *) = ^(UIAlertView *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                 
@@ -324,7 +323,7 @@
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                 [loadingAlertView show];
 
                 self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
@@ -340,7 +339,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }
@@ -353,7 +352,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }

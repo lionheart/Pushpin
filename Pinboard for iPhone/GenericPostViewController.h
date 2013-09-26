@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
-#import "WCAlertView.h"
 #import "AppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
@@ -100,7 +99,7 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
+@property (nonatomic, retain) UIAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;

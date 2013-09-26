@@ -336,7 +336,7 @@
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                switch (error.code) {
                                                    case PinboardErrorInvalidCredentials: {
-                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                                        [alert show];
                                                        [[Mixpanel sharedInstance] track:@"Failed to log in"];
                                                        [self resetLoginScreen];
@@ -344,7 +344,7 @@
                                                    }
                                                        
                                                    case PinboardErrorTimeout: {
-                                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                                        [alert show];
                                                        [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                                                        [self resetLoginScreen];
