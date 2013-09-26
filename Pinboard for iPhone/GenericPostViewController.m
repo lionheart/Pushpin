@@ -1254,7 +1254,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.postDataSource updatePostsFromDatabase:^(void) {
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                [self.tableView reloadData];
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
                 [self.view setNeedsLayout];
         });
     } failure:nil];
