@@ -81,57 +81,26 @@
 }
 
 - (void)viewDidLoad {
-    
     // Setup the notes and tags buttons - can't do it in Storyboard without a hack
-    UIBarButtonItem *notesButton = self.navigationItem.rightBarButtonItem;
-    UIBarButtonItem *tagButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"TagNavigation"] style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
-    self.navigationItem.rightBarButtonItems = @[notesButton, tagButton];
+    UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateNormal];
+    [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+    tagButton.frame = CGRectMake(0, 0, 25, 25);
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+
+    UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateNormal];
+    [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
+    notesButton.frame = CGRectMake(0, 0, 21, 26);
+    self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
+
+    self.navigationItem.rightBarButtonItem = tagBarButtonItem;
     
     self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
     self.bookmarkCounts = [NSMutableArray array];
     [self calculateBookmarkCounts:nil];
     
     postViewTitle = NSLocalizedString(@"All", nil);
-}
-
-- (id)initWithStyle:(UITableViewStyle)style {
-    //self = [super initWithStyle:style];
-    
-    if (self) {
-        self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
-        self.bookmarkCounts = [NSMutableArray array];
-        [self calculateBookmarkCounts:nil];
-
-        UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
-        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
-        [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-        settingsButton.frame = CGRectMake(0, 0, 30, 24);
-        UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-        
-        UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
-        [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
-        [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-        tagButton.frame = CGRectMake(0, 0, 30, 24);
-        UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
-
-        UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
-        [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-        notesButton.frame = CGRectMake(0, 0, 20, 24);
-        self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
-        self.notesBarButtonItem.enabled = self.connectionAvailable;
-
-        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
-        self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
-
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-        self.tableView.backgroundColor = HEX(0xF7F9FDff);
-        self.tableView.opaque = NO;
-    }
-    return self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -427,22 +396,10 @@
 }
 
 - (void)openNotes {
-    /*
-    GenericPostViewController *notesViewController = [[GenericPostViewController alloc] init];
-    PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
-    notesViewController.postDataSource = notesDataSource;
-    notesViewController.title = NSLocalizedString(@"Notes", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:notesViewController animated:YES];
-    */
     [self performSegueWithIdentifier:@"ShowNotes" sender:self];
 }
 
 - (void)openTags {
-    /*
-    TagViewController *tagViewController = [[TagViewController alloc] init];
-    tagViewController.title = NSLocalizedString(@"Tags", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
-     */
     [self performSegueWithIdentifier:@"ShowTags" sender:self];
 }
 
