@@ -1149,8 +1149,8 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
+    UIFont *titleFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14];
     UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
     UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
 
