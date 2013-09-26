@@ -7,15 +7,14 @@
 //
 
 #import "PPTableViewController.h"
-#import "WCAlertView.h"
 #import "PPSwitch.h"
 #import "RDActionSheet.h"
 
 @interface PPBrowserSettingsViewController : PPTableViewController <UIActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, retain) UIActionSheet *browserActionSheet;
-@property (nonatomic, retain) WCAlertView *installChromeAlertView;
-@property (nonatomic, retain) WCAlertView *installiCabMobileAlertView;
+@property (nonatomic, retain) UIAlertView *installChromeAlertView;
+@property (nonatomic, retain) UIAlertView *installiCabMobileAlertView;
 @property (nonatomic, retain) UISwitch *openLinksInAppSwitch;
 @property (nonatomic, strong) id actionSheet;
 

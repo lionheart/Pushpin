@@ -245,11 +245,11 @@
     });
 }
 
-- (WCAlertView *)addBookmarkFromClipboardAlertView {
+- (UIAlertView *)addBookmarkFromClipboardAlertView {
     static dispatch_once_t onceToken;
-    static WCAlertView *_addBookmarkFromClipboardAlertView;
+    static UIAlertView *_addBookmarkFromClipboardAlertView;
     dispatch_once(&onceToken, ^{
-        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
+        _addBookmarkFromClipboardAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
     });
     return _addBookmarkFromClipboardAlertView;
 }
@@ -410,7 +410,8 @@
     
     [[UISearchBar appearance] setBackgroundImage:background];
 
-    [WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
+    /*
+    [UIAlertView setDefaultCustomiaztonBlock:^(UIAlertView *alertView) {
         alertView.cornerRadius = 8;
         alertView.outerFrameShadowBlur = 0;
         alertView.labelTextColor = [UIColor whiteColor];
@@ -433,6 +434,7 @@
         alertView.buttonShadowColor = [UIColor blackColor];
         alertView.buttonShadowOffset = CGSizeMake(1, 1);
     }];
+    */
 }
 
 /*
