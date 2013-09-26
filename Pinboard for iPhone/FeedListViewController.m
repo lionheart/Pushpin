@@ -323,37 +323,37 @@
         case 0: {
             switch (indexPath.row) {
                 case 0: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"All Bookmarks", nil);
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"Private Bookmarks", nil);
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"Public", nil);
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"Unread", nil);
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    self.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewTitle = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
@@ -408,7 +408,7 @@
                 }
                 
                 if (indexPath.row < 5) {
-                    postDataSource = feedDataSource;
+                    self.postDataSource = feedDataSource;
                     [self performSegueWithIdentifier:@"ShowPosts" sender:self];
                 }
                 
@@ -476,7 +476,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"ShowPosts"]) {
         GenericPostViewController *vc = [segue destinationViewController];
-        vc.postDataSource = postDataSource;
+        vc.postDataSource = self.postDataSource;
         [vc setTitle:postViewTitle];
     } else if ([[segue identifier] isEqualToString:@"ShowNotes"]) {
         GenericPostViewController *vc = [segue destinationViewController];
