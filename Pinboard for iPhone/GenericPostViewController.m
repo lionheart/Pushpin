@@ -1238,21 +1238,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 // Called prior to Storyboard segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"ShowWebView"]) {
-        /*
-        if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
-            self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
-        }
-        else {
-            self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-        }
-        
-        if ([self.navigationController topViewController] == self) {
-            [self.navigationController pushViewController:self.webViewController animated:YES];
-        }
-        */
         PPWebViewController *vc = (PPWebViewController *)[segue destinationViewController];
         vc.urlString = sender;
         vc.shouldMobilize = [AppDelegate sharedDelegate].openLinksWithMobilizer ? YES : NO;
+    } else if ([[segue identifier] isEqualToString:@"EditBookmark"]) {
     }
 }
 

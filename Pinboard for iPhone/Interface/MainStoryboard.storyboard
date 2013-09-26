@@ -206,6 +206,7 @@
                     <connections>
                         <outlet property="searchDisplayController" destination="CUU-76-fAD" id="IMo-hK-Yn0"/>
                         <segue destination="gm1-1W-TLe" kind="push" identifier="ShowWebView" id="l2B-UY-htf"/>
+                        <segue destination="5hp-4n-4Ac" kind="push" identifier="EditBookmark" id="F2A-Cw-u3x"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3xu-Ik-co0" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -520,7 +521,7 @@
         <!--Add Bookmark View Controller - Add Bookmark-->
         <scene sceneID="AYD-G8-Amj">
             <objects>
-                <tableViewController id="5hp-4n-4Ac" customClass="AddBookmarkViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="AddBookmarkViewController" id="5hp-4n-4Ac" customClass="AddBookmarkViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="Rry-rk-JK4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -578,5 +579,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="kxb-dh-Imd"/>
+        <segue reference="Nc8-Zh-46u"/>
     </inferredMetricsTieBreakers>
 </document>
