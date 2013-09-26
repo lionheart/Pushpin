@@ -294,12 +294,16 @@
         tag = self.filteredTags[indexPath.row];
     }
     
-    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    [self performSegueWithIdentifier:@"ShowPosts" sender:tag];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    GenericPostViewController *postViewController = [segue destinationViewController];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+    NSDictionary *tag = (NSDictionary *)sender;
     [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
-    [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 }
 
 - (void)popViewController {

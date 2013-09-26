@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
@@ -32,20 +32,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Browse" id="5qe-Wr-waz">
-                        <barButtonItem key="leftBarButtonItem" image="SettingsNavigation.png" id="FP4-Wf-Tr5">
+                        <barButtonItem key="leftBarButtonItem" image="SettingsNavigation.png" width="30" id="FP4-Wf-Tr5">
                             <connections>
                                 <segue destination="heY-ev-tnO" kind="push" identifier="ShowSettings" id="NY6-FH-LQk"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="NotesNavigation.png" style="plain" id="jhk-on-PpJ">
-                            <connections>
-                                <segue destination="0KJ-Ou-qQo" kind="push" identifier="ShowNotes" id="dSO-bG-NYa"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <segue destination="Wvl-yC-dL2" kind="push" identifier="ShowTags" id="IdS-Xf-3rW"/>
                         <segue destination="HaI-CS-vrV" kind="push" identifier="ShowSavedFeeds" id="wMn-fA-B3W"/>
+                        <segue destination="0KJ-Ou-qQo" kind="push" identifier="ShowNotes" id="VLe-v9-yjw"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="beU-4Y-T86" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -86,6 +82,7 @@
                     <navigationItem key="navigationItem" title="Tags" id="dK1-xz-4wK"/>
                     <connections>
                         <outlet property="searchDisplayController" destination="Nt7-ry-3KG" id="Z6c-S3-tTG"/>
+                        <segue destination="0KJ-Ou-qQo" kind="push" identifier="ShowPosts" id="ujf-LS-Dfc"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zo3-Fe-LE6" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -569,7 +566,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="NotesNavigation.png" width="20" height="24"/>
         <image name="SettingsNavigation.png" width="24" height="24"/>
         <image name="icon-web-back.png" width="20" height="20"/>
         <image name="icon-web-forward.png" width="20" height="20"/>
@@ -581,6 +577,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="lFp-Ta-RKs"/>
+        <segue reference="kxb-dh-Imd"/>
     </inferredMetricsTieBreakers>
 </document>
