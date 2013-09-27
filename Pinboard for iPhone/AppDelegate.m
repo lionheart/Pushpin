@@ -318,8 +318,7 @@
     [[UINavigationBar appearance] setTranslucent:NO];
     [[UINavigationBar appearance] setTitleTextAttributes:@{
                                      NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
-                                     NSForegroundColorAttributeName: HEX(0x4C586Aff),
-                          UITextAttributeTextShadowColor: [UIColor whiteColor] }];
+                                     NSForegroundColorAttributeName: HEX(0xFFFFFFFF) }];
 
     // Customize Status Bar
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
