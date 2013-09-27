@@ -105,6 +105,7 @@
     [self calculateBookmarkCounts:nil];
     
     self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
+    self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
     postViewTitle = NSLocalizedString(@"All", nil);
     
