@@ -100,6 +100,8 @@
     self.bookmarkCounts = [NSMutableArray array];
     [self calculateBookmarkCounts:nil];
     
+    self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
+
     postViewTitle = NSLocalizedString(@"All", nil);
     
     // Register for Dynamic Type notifications

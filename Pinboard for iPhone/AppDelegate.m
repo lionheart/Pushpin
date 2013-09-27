@@ -192,6 +192,7 @@
 
 - (void)promptUserToAddBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
+        // XXX EXC_BAD_ACCESS
         self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -313,16 +314,15 @@
 
     UIImage *background = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 1, 5)];
 
-    [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
-    [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
-
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTranslucent:NO];
     [[UINavigationBar appearance] setTitleTextAttributes:@{
-                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
-                                UITextAttributeTextColor: HEX(0x4C586Aff),
+                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
+                                     NSForegroundColorAttributeName: HEX(0x4C586Aff),
                           UITextAttributeTextShadowColor: [UIColor whiteColor] }];
 
     // Customize Status Bar
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     // Customize UIBarButtonItem
     UIImage *backButtonBackground;
@@ -382,15 +382,15 @@
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsLandscapePhone];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
-                                UITextAttributeTextColor: HEX(0x4A5768FF),
+                                NSForegroundColorAttributeName: HEX(0x4A5768FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
+                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
      }
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{
-                                UITextAttributeTextColor: HEX(0xA5A9B2FF),
+                                NSForegroundColorAttributeName: HEX(0xA5A9B2FF),
                           UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
+                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
      }
                                                 forState:UIControlStateDisabled];
     // Customize Toolbar
@@ -409,55 +409,7 @@
     // Customize UISearchBar
     
     [[UISearchBar appearance] setBackgroundImage:background];
-
-    /*
-    [UIAlertView setDefaultCustomiaztonBlock:^(UIAlertView *alertView) {
-        alertView.cornerRadius = 8;
-        alertView.outerFrameShadowBlur = 0;
-        alertView.labelTextColor = [UIColor whiteColor];
-        alertView.labelShadowColor = [UIColor clearColor];
-        
-        alertView.buttonFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
-        alertView.titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
-        alertView.messageFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:16.f];
-        
-        UIColor *topGradient = [UIColor colorWithRed:0.212 green:0.227 blue:0.275 alpha:1];
-        UIColor *middleGradient = [UIColor colorWithRed:0.173 green:0.184 blue:0.224 alpha:1];
-        UIColor *bottomGradient = [UIColor colorWithRed:0.114 green:0.125 blue:0.161 alpha:1];
-        alertView.gradientColors = @[topGradient, middleGradient, bottomGradient];
-        alertView.outerFrameColor = [UIColor whiteColor];
-        alertView.innerFrameShadowColor = [UIColor clearColor];
-        alertView.innerFrameStrokeColor = [UIColor clearColor];
-        alertView.outerFrameLineWidth = 1;
-        
-        alertView.buttonTextColor = [UIColor whiteColor];
-        alertView.buttonShadowColor = [UIColor blackColor];
-        alertView.buttonShadowOffset = CGSizeMake(1, 1);
-    }];
-    */
 }
-
-/*
-- (UINavigationController *)navigationController {
-    if (!_navigationController) {
-        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-        pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-        pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
-        
-        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
-        pinboardViewController.postDataSource = pinboardDataSource;
-        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-        
-        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        //FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithNibName:@"FeedListViewController" bundle:[NSBundle mainBundle]];
-        feedListViewController.title = @"Browse";
-        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
-        _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
-        [_navigationController popToViewController:pinboardViewController animated:NO];
-    }
-    return _navigationController;
-}
-*/
 
 - (LoginViewController *)loginViewController {
     if (!_loginViewController) {
