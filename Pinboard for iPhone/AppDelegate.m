@@ -280,135 +280,12 @@
 }
 
 - (void)customizeUIElements {
-    // Customize UINavigationBar
-    CGRect rect = CGRectMake(0, 0, 320, 44);
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    [self.window setTintColor:[UIColor whiteColor]];
     
-    CGColorSpaceRef myColorspace = CGColorSpaceCreateDeviceRGB();
-    
-    size_t num_locations = 2;
-    CGFloat locations[2] = { 0.0, 1.0 };
-    CGFloat components[8] =	{
-        0.996, 0.996, 0.996, 1.0,
-        0.804, 0.827, 0.875, 1.0
-    };
-    CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
-    CGPoint startPoint = CGPointMake(0, 0);
-    CGPoint endPoint = CGPointMake(0, 44);
+    // UIToolbar items
+    UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
+    [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setTintColor:barButtonItemColor];
 
-    CGFloat radius = 4;
-    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
-    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);
-    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + radius, radius);
-    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
-    CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
-    CGContextClip(context);
-    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-
-    // Add bottom stroke
-    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
-    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
-    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
-    CGContextStrokePath(context);
-
-    UIImage *background = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 1, 5)];
-
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTranslucent:NO];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{
-                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
-                                     NSForegroundColorAttributeName: HEX(0x4C586Aff),
-                          UITextAttributeTextShadowColor: [UIColor whiteColor] }];
-
-    // Customize Status Bar
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
-    // Customize UIBarButtonItem
-    UIImage *backButtonBackground;
-    UIImage *selectedBackButtonImage;
-    UIImage *backButtonBackgroundLandscape;
-    UIImage *selectedBackButtonImageLandscape;
-
-    NSString *version = [[UIDevice currentDevice] systemVersion];
-    if ([version floatValue] < 6.0) {
-        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
-        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
-        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
-    }
-    else {
-        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
-        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
-        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
-    }
-
-    CGRect buttonRect = CGRectMake(0, 0, 6, 30);
-    CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
-    barButtonItemLayer.frame = buttonRect;
-    barButtonItemLayer.cornerRadius = 3;
-    barButtonItemLayer.masksToBounds = YES;
-    barButtonItemLayer.borderWidth = 0.5;
-    barButtonItemLayer.borderColor = HEX(0x4C586AFF).CGColor;
-    barButtonItemLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
-    barButtonItemLayer.startPoint = CGPointMake(0.5, 0);
-    barButtonItemLayer.endPoint = CGPointMake(0.5, 1.0);
-
-    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    [barButtonItemLayer renderInContext:context];
-    UIImage *barButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-    
-    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    barButtonItemLayer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
-    [barButtonItemLayer renderInContext:context];
-    UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-
-    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackgroundLandscape forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImageLandscape forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
-                                NSForegroundColorAttributeName: HEX(0x4A5768FF),
-                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
-     }
-                                                forState:UIControlStateNormal];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
-                                NSForegroundColorAttributeName: HEX(0xA5A9B2FF),
-                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
-                                     NSFontAttributeName: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
-     }
-                                                forState:UIControlStateDisabled];
-    // Customize Toolbar
-    CAGradientLayer *toolbarLayer = [CAGradientLayer layer];
-    toolbarLayer.frame = rect;
-    toolbarLayer.masksToBounds = YES;
-    toolbarLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    [toolbarLayer renderInContext:context];
-    UIImage *toolbarBackground = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    [[PPToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-
-    // Customize UISearchBar
-    
-    [[UISearchBar appearance] setBackgroundImage:background];
 }
 
 - (LoginViewController *)loginViewController {
@@ -439,7 +316,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    //[self customizeUIElements];
+    [self customizeUIElements];
 
 #ifndef DEBUG
     [[BITHockeyManager sharedHockeyManager] configureWithBetaIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"

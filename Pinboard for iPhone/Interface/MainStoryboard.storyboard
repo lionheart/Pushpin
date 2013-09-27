@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="qeN-4A-BMe">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
@@ -51,6 +51,11 @@
                         <barButtonItem key="leftBarButtonItem" image="SettingsNavigation.png" width="30" id="FP4-Wf-Tr5">
                             <connections>
                                 <segue destination="heY-ev-tnO" kind="push" identifier="ShowSettings" id="NY6-FH-LQk"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="TagNavigation.png" id="sWX-pb-gke">
+                            <connections>
+                                <action selector="openTags:" destination="Sy6-4P-Hca" id="mU2-Km-MBi"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -246,6 +251,9 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="qUL-ng-EUa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -458,8 +466,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfr-YH-BAD">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <webView contentMode="scaleToFill" misplaced="YES" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfr-YH-BAD">
+                                <rect key="frame" x="0.0" y="-1" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
@@ -503,6 +511,14 @@
                                     <constraint firstAttribute="height" constant="44" id="jtX-Y9-wRZ"/>
                                 </constraints>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tpk-kF-mf3">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="cgL-Zv-Ifi"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -514,8 +530,11 @@
                             <constraint firstAttribute="trailing" secondItem="lfr-YH-BAD" secondAttribute="trailing" id="Sya-1n-UvQ"/>
                             <constraint firstItem="8Ht-At-bEX" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="T3E-zL-8TM"/>
                             <constraint firstItem="lfr-YH-BAD" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="YXR-nv-5oy"/>
+                            <constraint firstItem="tpk-kF-mf3" firstAttribute="leading" secondItem="pVc-pN-XA7" secondAttribute="leading" id="m05-Tq-fYH"/>
+                            <constraint firstAttribute="trailing" secondItem="tpk-kF-mf3" secondAttribute="trailing" id="qZ8-Mt-idu"/>
                             <constraint firstAttribute="trailing" secondItem="bbg-bb-4ku" secondAttribute="trailing" id="rFV-X2-p76"/>
                             <constraint firstAttribute="trailing" secondItem="8Ht-At-bEX" secondAttribute="trailing" id="t4e-c0-13m"/>
+                            <constraint firstItem="tpk-kF-mf3" firstAttribute="top" secondItem="pVc-pN-XA7" secondAttribute="top" id="vhp-Aa-CdO"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Web View" id="QrY-e3-ier"/>
@@ -524,7 +543,8 @@
                         <outlet property="backBarButtonItem" destination="suz-gl-Dgn" id="mrn-t1-puW"/>
                         <outlet property="forwardBarButtonItem" destination="A8e-TL-iG7" id="0qP-rz-N1o"/>
                         <outlet property="readerBarButtonItem" destination="okr-OO-0Ha" id="XUs-Kp-LFN"/>
-                        <outlet property="tapView" destination="8Ht-At-bEX" id="Daw-zA-9Fl"/>
+                        <outlet property="tapViewBottom" destination="8Ht-At-bEX" id="6Hx-WP-QUX"/>
+                        <outlet property="tapViewTop" destination="tpk-kF-mf3" id="t6p-Sb-0Xd"/>
                         <outlet property="toolbar" destination="bbg-bb-4ku" id="Cne-AI-1hG"/>
                         <outlet property="webView" destination="lfr-YH-BAD" id="GnD-ev-YXg"/>
                         <segue destination="BYy-SN-T7z" kind="modal" identifier="AddBookmark" modalTransitionStyle="coverVertical" id="cyK-OV-9eg"/>
@@ -584,6 +604,7 @@
     </scenes>
     <resources>
         <image name="SettingsNavigation.png" width="24" height="24"/>
+        <image name="TagNavigation.png" width="25" height="25"/>
         <image name="icon-web-back.png" width="20" height="20"/>
         <image name="icon-web-forward.png" width="20" height="20"/>
         <image name="stop-dash.png" width="20" height="20"/>

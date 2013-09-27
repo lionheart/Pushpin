@@ -32,7 +32,7 @@ static NSInteger kToolbarHeight = 44;
 @implementation PPWebViewController
 
 @synthesize shouldMobilize, urlString;
-@synthesize tapView;
+@synthesize tapViewBottom, tapViewTop;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,12 +45,13 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
     
-    // Tap view
+    // Tap views
     self.tapGestureForFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
     self.tapGestureForFullscreenMode.numberOfTapsRequired = 1;
     self.tapGestureForFullscreenMode.numberOfTouchesRequired = 1;
     self.tapGestureForFullscreenMode.enabled = NO;
-    [self.tapView addGestureRecognizer:self.tapGestureForFullscreenMode];
+    //[self.tapViewTop addGestureRecognizer:self.tapGestureForFullscreenMode];
+    [self.tapViewBottom addGestureRecognizer:self.tapGestureForFullscreenMode];
 
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activityIndicator startAnimating];
@@ -164,12 +165,19 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)setFullscreen:(BOOL)fullscreen {
+    // Just return if we're already in the desired state
+    if (fullscreen == self.isFullscreen)
+        return;
+    
     if (fullscreen) {
         self.toolbarFrame = self.toolbar.frame;
         
         // Show the hidden UIView to get tap notifications
         self.tapGestureForFullscreenMode.enabled = YES;
-        [self.tapView setHidden:NO];
+        
+        if (self.webView.scrollView.contentOffset.y < 10)
+            [self.tapViewTop setHidden:NO];
+        [self.tapViewBottom setHidden:NO];
         
         // Hide the navigation and status bars
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
@@ -182,7 +190,8 @@ static NSInteger kToolbarHeight = 44;
     } else {
         // Hide the tap view
         self.tapGestureForFullscreenMode.enabled = NO;
-        [self.tapView setHidden:YES];
+        [self.tapViewTop setHidden:YES];
+        [self.tapViewBottom setHidden:YES];
         
         // Reveal the navigation and status bars
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
@@ -194,9 +203,12 @@ static NSInteger kToolbarHeight = 44;
             [self.toolbar setFrame:CGRectMake(0, size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
         }];
     }
+    self.isFullscreen = fullscreen;
 }
 
 - (void)disableFullscreen:(id)sender {
+    CGRect frame = self.navigationController.navigationBar.frame;
+    self.webView.scrollView.contentInset = UIEdgeInsetsMake([[UIApplication sharedApplication] statusBarFrame].size.height + frame.origin.y + frame.size.height, 0, 0, 0);
     [self setFullscreen:NO];
 }
 
@@ -807,8 +819,23 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    DLog(@"Scrolling");
-    [self setFullscreen:YES];
+    //[self setFullscreen:YES];
+}
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    [self setFullscreen:NO];
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSLog(@"%f - %f", scrollView.contentInset.top, scrollView.contentOffset.y);
+    if ((scrollView.contentOffset.y + scrollView.contentInset.top) <= 0) {
+        [self setFullscreen:NO];
+    } else {
+        [self setFullscreen:YES];
+    }
 }
 
 #pragma mark -

@@ -97,6 +97,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
     }
+    
+    // Hide the pull to refresh view
+    [self.pullToRefreshView setHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -475,6 +478,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                         //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
+                        [self.pullToRefreshView setHidden:YES];
                         CGFloat offset = self.tableView.contentOffset.y;
                         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
                         
@@ -530,6 +534,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 [UIView animateWithDuration:0.2 animations:^{
                     self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
                 } completion:^(BOOL finished) {
+                    [self.pullToRefreshView setHidden:YES];
                     [self.pullToRefreshImageView stopAnimating];
                 }];
             });
@@ -1126,6 +1131,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
         }
         
+        NSLog(@"%f - %f", offset, scrollView.contentInset.top);
+        if (scrollView.contentInset.top - (-1 * offset) < 0)
+            [self.pullToRefreshView setHidden:NO];
+        else
+            [self.pullToRefreshView setHidden:YES];
         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
