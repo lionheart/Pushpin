@@ -1116,8 +1116,8 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     
     NSString *title = post[@"title"];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
@@ -1149,12 +1149,6 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    /*
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14];
-    UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
-    */
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *tagsFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
