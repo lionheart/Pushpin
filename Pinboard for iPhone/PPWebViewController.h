@@ -29,7 +29,8 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureForFullscreenMode;
-@property (nonatomic, strong) IBOutlet UIView *tapView;
+@property (nonatomic, strong) IBOutlet UIView *tapViewTop;
+@property (nonatomic, strong) IBOutlet UIView *tapViewBottom;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
 @property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
@@ -39,6 +40,7 @@
 @property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
+@property (nonatomic) BOOL isFullscreen;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic, strong) UIActivityViewController *activityView;
 @property (nonatomic) CGRect toolbarFrame;

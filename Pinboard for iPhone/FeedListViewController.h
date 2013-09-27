@@ -39,7 +39,7 @@ enum PINBOARD_FEED_ITEMS {
 - (void)connectionStatusDidChange:(NSNotification *)notification;
 - (void)openNotes;
 - (void)openSettings;
-- (void)openTags;
+- (IBAction)openTags:(id)sender;
 - (void)dismissViewController;
 
 - (void)hideNetworkDependentFeeds;
