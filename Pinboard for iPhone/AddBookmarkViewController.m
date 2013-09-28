@@ -522,7 +522,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             case 0:
                 switch (indexPath.row) {
                     case 0:
-                        cell.imageView.image = [UIImage imageNamed:@"globe"];
+                        cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
                         self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                         [cell.contentView addSubview:self.urlTextField];
                         break;
