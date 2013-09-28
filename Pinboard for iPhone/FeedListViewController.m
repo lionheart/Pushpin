@@ -240,7 +240,7 @@
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"globe"];
+                    cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
                     badgeCount = self.bookmarkCounts.count > PinboardFeedPublicBookmarks ? self.bookmarkCounts[PinboardFeedPublicBookmarks] : @"";
                     break;
                 case PinboardFeedUnreadBookmarks:
