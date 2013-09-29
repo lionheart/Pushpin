@@ -290,7 +290,7 @@
 
 - (LoginViewController *)loginViewController {
     if (!_loginViewController) {
-        _loginViewController = [[LoginViewController alloc] init];
+        _loginViewController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"LoginNavigationController"];
     }
     return _loginViewController;
 }

@@ -473,6 +473,7 @@
 		E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */; };
 		E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06617F0DE42007E0615 /* icon-web-back.png */; };
 		E80FE06B17F0DE43007E0615 /* icon-web-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */; };
+		E84A8D2417F7B5FC003B4F50 /* LoginTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D2317F7B4FF003B4F50 /* LoginTableCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1014,6 +1015,8 @@
 		E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward@2x.png"; path = "Assets/icon-web-forward@2x.png"; sourceTree = "<group>"; };
 		E80FE06617F0DE42007E0615 /* icon-web-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back.png"; path = "Assets/icon-web-back.png"; sourceTree = "<group>"; };
 		E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back@2x.png"; path = "Assets/icon-web-back@2x.png"; sourceTree = "<group>"; };
+		E84A8D2217F7B4FF003B4F50 /* LoginTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginTableCell.h; sourceTree = "<group>"; };
+		E84A8D2317F7B4FF003B4F50 /* LoginTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginTableCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1465,6 +1468,8 @@
 				371BCAFE15772B4400BDA996 /* BookmarkCell.m */,
 				37919F1C16091DF5007708EF /* LoginViewController.h */,
 				37919F1D16091DF5007708EF /* LoginViewController.m */,
+				E84A8D2217F7B4FF003B4F50 /* LoginTableCell.h */,
+				E84A8D2317F7B4FF003B4F50 /* LoginTableCell.m */,
 				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
 				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
@@ -2246,6 +2251,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E84A8D2417F7B5FC003B4F50 /* LoginTableCell.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
