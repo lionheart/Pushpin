@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
+@interface LoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
     BOOL keyboard_shown;
 }
 
 @property (nonatomic, retain) UITextField *usernameTextField;
 @property (nonatomic, retain) UITextField *passwordTextField;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) UITextView *textView;
-@property (nonatomic, retain) UIProgressView *progressView;
+@property (nonatomic, retain) IBOutlet UITextView *textView;
+@property (nonatomic, retain) IBOutlet UIProgressView *progressView;
 @property (nonatomic, retain) UITextField *textField;
 @property (nonatomic) CGRect activityIndicatorFrameTop;
 @property (nonatomic) CGRect activityIndicatorFrameMiddle;
@@ -27,7 +27,7 @@
 
 - (void)keyboardWasShown:(NSNotification *)notification;
 - (void)keyboardWasHidden:(NSNotification *)notification;
-- (void)login;
+- (IBAction)login:(id)sender;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
