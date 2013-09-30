@@ -96,7 +96,7 @@
         }
     }
     else {
-        title = @"You have no saved feeds.";
+        title = NSLocalizedString(@"You have no saved feeds.", nil);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 

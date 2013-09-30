@@ -287,7 +287,7 @@
                     cell.textLabel.text = @"日本語";
                     break;
                 case 5:
-                    cell.textLabel.text = @"Saved Feeds";
+                    cell.textLabel.text = NSLocalizedString(@"Saved Feeds", nil);
                     break;
             }
 
