@@ -45,10 +45,10 @@
     NSUInteger emptyLines;
     NSArray *lines;
     for (NSArray *list in self.data) {
-        [self.titles addObject:list[0]];
+        [self.titles addObject:NSLocalizedString(list[0], nil)];
         for (NSArray *pair in list[1]) {
-            NSString *title = pair[0];
-            NSString *description = pair[1];
+            NSString *title = NSLocalizedString(pair[0], nil);
+            NSString *description = NSLocalizedString(pair[1], nil);
             
             if ([title isEqualToString:@""]) {
                 self.heights[title] = @(0);
@@ -186,11 +186,11 @@
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
         cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-        if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
-            cell.detailTextLabel.text = @"Tap to view license.";
+        if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
+            cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
         }
         else {
-            cell.detailTextLabel.text = @"Tap to expand.";
+            cell.detailTextLabel.text = NSLocalizedString(@"Tap to expand.", nil);
         }
     }
     else {

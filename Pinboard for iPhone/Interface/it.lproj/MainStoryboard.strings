@@ -1,0 +1,57 @@
+
+/* Class = "IBUINavigationItem"; title = "Browse"; ObjectID = "5qe-Wr-waz"; */
+"5qe-Wr-waz.title" = "Preferiti";
+
+/* Class = "IBUINavigationItem"; title = "Browser Integration"; ObjectID = "5rq-z8-W9B"; */
+"5rq-z8-W9B.title" = "Integrazione browser";
+
+/* Class = "IBUITextView"; text = "Enter your Pinboard credentials above to log in."; ObjectID = "66y-jj-s3H"; */
+"66y-jj-s3H.text" = "Inserisci le informazioni di login del tuo account Pinboard.";
+
+/* Class = "IBUIBarButtonItem"; title = "Log In"; ObjectID = "8HE-TK-caj"; */
+"8HE-TK-caj.title" = "Login";
+
+/* Class = "IBUINavigationItem"; title = "Settings"; ObjectID = "M2u-O9-rSF"; */
+"M2u-O9-rSF.title" = "Impostazioni";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "OuO-pd-M5o"; */
+"OuO-pd-M5o.text" = "Detail";
+
+/* Class = "IBUINavigationItem"; title = "Web View"; ObjectID = "QrY-e3-ier"; */
+"QrY-e3-ier.title" = "Web View";
+
+/* Class = "IBUINavigationItem"; title = "Browser Settings"; ObjectID = "R1y-Uh-n4H"; */
+"R1y-Uh-n4H.title" = "Impostazioni browser";
+
+/* Class = "IBUINavigationItem"; title = "Saved Feeds"; ObjectID = "Uh9-22-pJQ"; */
+"Uh9-22-pJQ.title" = "Feed salvati";
+
+/* Class = "IBUINavigationItem"; title = "Welcome to Pinboard"; ObjectID = "Vcq-HM-YeS"; */
+"Vcq-HM-YeS.title" = "Welcome to Pinboard";
+
+/* Class = "IBUINavigationItem"; title = "Display Settings"; ObjectID = "XN8-mL-Eu2"; */
+"XN8-mL-Eu2.title" = "Visualizzaione";
+
+/* Class = "IBUINavigationItem"; title = "About"; ObjectID = "Xpd-C9-StK"; */
+"Xpd-C9-StK.title" = "Info";
+
+/* Class = "IBUINavigationItem"; title = "Add Bookmark"; ObjectID = "cfu-73-04n"; */
+"cfu-73-04n.title" = "Nuovo preferito";
+
+/* Class = "IBUINavigationItem"; title = "Add Feed"; ObjectID = "dDm-pS-CKH"; */
+"dDm-pS-CKH.title" = "Add Feed";
+
+/* Class = "IBUINavigationItem"; title = "Tags"; ObjectID = "dK1-xz-4wK"; */
+"dK1-xz-4wK.title" = "Tags";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "lef-1Y-Kec"; */
+"lef-1Y-Kec.text" = "Titolo";
+
+/* Class = "IBUINavigationItem"; title = "All Bookmarks"; ObjectID = "pSy-fF-11q"; */
+"pSy-fF-11q.title" = "Tutti i preferiti";
+
+/* Class = "IBUIBarButtonItem"; title = "About"; ObjectID = "rV1-jN-QHr"; */
+"rV1-jN-QHr.title" = "Info";
+
+/* Class = "IBUINavigationItem"; title = "Changelog"; ObjectID = "x6f-dd-WgX"; */
+"x6f-dd-WgX.title" = "Changelog";
