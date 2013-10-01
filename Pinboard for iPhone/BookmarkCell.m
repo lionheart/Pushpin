@@ -7,8 +7,8 @@
 //
 
 #import "BookmarkCell.h"
-
 #import <CoreText/CoreText.h>
+#import <QuartzCore/QuartzCore.h>
 
 @implementation BookmarkCell
 
