@@ -14,6 +14,8 @@
 #import "PPToolbar.h"
 #import "PPWebViewController.h"
 
+#import "FluidTableviewFlowLayout.h"
+
 enum PostSources {
     POST_SOURCE_TWITTER,
     POST_SOURCE_TWITTER_FAVORITE,
@@ -83,7 +85,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface GenericPostViewController : UICollectionViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
@@ -98,6 +100,7 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
+@property (nonatomic, strong) UICollectionView *selectedCollectionView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, retain) UIAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
@@ -108,6 +111,10 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
+
+// UIKit Dynamics
+@property (nonatomic, strong) FluidTableviewFlowLayout *collectionViewLayout;
+@property (nonatomic) CGSize itemSize;
 
 // Multiple Deletion
 @property (nonatomic, strong) PPToolbar *toolbar;
@@ -148,6 +155,7 @@ typedef NSInteger PPPostAction;
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
 - (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
+- (id<GenericPostDataSource>)dataSourceForCollectionView:(UICollectionView *)collectionView;
 - (id<GenericPostDataSource>)currentDataSource;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
