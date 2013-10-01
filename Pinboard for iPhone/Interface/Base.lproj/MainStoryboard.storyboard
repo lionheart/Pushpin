@@ -124,7 +124,7 @@
             </objects>
             <point key="canvasLocation" x="1051" y="88"/>
         </scene>
-        <!--Tag View Controller - All Tags-->
+        <!--Tag View Controller - Tags-->
         <scene sceneID="di9-zf-mgh">
             <objects>
                 <tableViewController id="Wvl-yC-dL2" customClass="TagViewController" sceneMemberID="viewController">
@@ -155,7 +155,7 @@
                             <outlet property="delegate" destination="Wvl-yC-dL2" id="Dmf-B0-MZU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="All Tags" id="dK1-xz-4wK"/>
+                    <navigationItem key="navigationItem" title="Tags" id="dK1-xz-4wK"/>
                     <connections>
                         <outlet property="searchDisplayController" destination="Nt7-ry-3KG" id="Z6c-S3-tTG"/>
                     </connections>
