@@ -94,6 +94,20 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aXc-cU-Odz">
+                                            <rect key="frame" x="215" y="0.0" width="85" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="85" id="SFZ-wa-URg"/>
+                                            </constraints>
+                                            <state key="normal" title="Delete">
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="deletePost:" destination="n93-h8-rjb" eventType="touchUpInside" id="3C6-Xx-pOj"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
@@ -101,10 +115,14 @@
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="cOG-or-sX4" secondAttribute="bottom" constant="8" id="9ce-Jz-DGP"/>
                                     <constraint firstAttribute="trailing" secondItem="cOG-or-sX4" secondAttribute="trailing" constant="8" id="EGk-GK-CBU"/>
+                                    <constraint firstAttribute="bottom" secondItem="aXc-cU-Odz" secondAttribute="bottom" id="Frp-K9-YSG"/>
                                     <constraint firstItem="cOG-or-sX4" firstAttribute="top" secondItem="B6Z-sX-wZO" secondAttribute="top" constant="8" id="JlW-So-Z1P"/>
+                                    <constraint firstAttribute="trailing" secondItem="aXc-cU-Odz" secondAttribute="trailing" id="nAG-C1-J1Y"/>
                                     <constraint firstItem="cOG-or-sX4" firstAttribute="leading" secondItem="B6Z-sX-wZO" secondAttribute="leading" constant="8" id="owv-5W-Aj1"/>
+                                    <constraint firstItem="aXc-cU-Odz" firstAttribute="top" secondItem="B6Z-sX-wZO" secondAttribute="top" id="qeJ-z2-fGY"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="deleteButton" destination="aXc-cU-Odz" id="cAB-xY-TtC"/>
                                     <outlet property="textView" destination="cOG-or-sX4" id="Pmr-kX-2Eb"/>
                                 </connections>
                             </collectionViewCell>

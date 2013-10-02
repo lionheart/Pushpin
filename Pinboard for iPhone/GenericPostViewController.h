@@ -123,7 +123,8 @@ typedef NSInteger PPPostAction;
 
 - (void)toggleEditingMode:(id)sender;
 
-// Right swipe
+// Gesture and tap recognizers
+@property (nonatomic, strong) UISwipeGestureRecognizer *deleteGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
@@ -151,6 +152,7 @@ typedef NSInteger PPPostAction;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
+- (IBAction)deletePost:(id)sender;
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;

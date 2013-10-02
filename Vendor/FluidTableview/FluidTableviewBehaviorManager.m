@@ -26,6 +26,7 @@
         _attachmentBehaviors = [NSMutableDictionary dictionary];
         [self createGravityBehavior];
         [self createCollisionBehavior];
+        //
         [self.animator addBehavior:self.gravityBehavior];
         [self.animator addBehavior:self.collisionBehavior];
     }
