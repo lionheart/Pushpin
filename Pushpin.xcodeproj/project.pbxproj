@@ -1016,7 +1016,7 @@
 		E80FE06717F0DE42007E0615 /* icon-web-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back@2x.png"; path = "Assets/icon-web-back@2x.png"; sourceTree = "<group>"; };
 		E84A8D2217F7B4FF003B4F50 /* LoginTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginTableCell.h; sourceTree = "<group>"; };
 		E84A8D2317F7B4FF003B4F50 /* LoginTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginTableCell.m; sourceTree = "<group>"; };
-		E84A8D2B17F9CE91003B4F50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		E84A8D2B17F9CE91003B4F50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		E84A8D2F17F9CEED003B4F50 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
