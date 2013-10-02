@@ -813,26 +813,20 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
     */
 
-    /*
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.frame = CGRectMake([UIApplication currentSize].width - 18, 0, 18.f, 19.f);
-        [cell addSubview:lockImageView];
+        lockImageView.frame = CGRectMake(cell.contentView.frame.size.width - 18, 0, 18, 19);;
+        [cell.contentView addSubview:lockImageView];
     }
     
     BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
-        starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
-        [cell addSubview:starImageView];
+        starImageView.frame = CGRectMake(0, 0, 18, 19);
+        [cell.contentView addSubview:starImageView];
     }
-    */
     
-    //self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 10.0f), 0.0f, 0.0f);
-    //CGRect newFrame = CGRectOffset(CGRectInset(cell.contentView.bounds, 10.0f, 10.0f), 0.0f, 0.0f);
-    //cell.textView.frame = CGRectMake(7, 7, cell.contentView.frame.size.width - 14, cell.contentView.frame.size.height - 14);
-
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
