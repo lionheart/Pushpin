@@ -52,6 +52,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.collectionView addGestureRecognizer:self.rightSwipeGestureRecognizer];
     
+    self.deleteGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.deleteGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    self.deleteGestureRecognizer.numberOfTouchesRequired = 1;
+    self.deleteGestureRecognizer.cancelsTouchesInView = YES;
+    [self.collectionView addGestureRecognizer:self.deleteGestureRecognizer];
+    
     self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.collectionView addGestureRecognizer:self.pinchGestureRecognizer];
 
@@ -91,16 +97,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     [self updateFromLocalDatabaseWithCallback:nil];
 }
 
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        self.tableView.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
-*/
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -109,10 +105,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
-
-    if ([self.postDataSource numberOfPosts] == 0) {
-        //self.tableView.separatorColor = [UIColor clearColor];
-    }
     
     // Hide the pull to refresh view
     [self.pullToRefreshView setHidden:YES];
@@ -120,18 +112,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    //[self.navigationController.view addSubview:self.toolbar];
-
-    //self.tableView.allowsSelectionDuringEditing = YES;
-    //self.tableView.allowsMultipleSelectionDuringEditing = NO;
-    
-    #warning XXX Slows down UI a bit too much. :( #113
-    /*
-    self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-    [self.navigationController.navigationBar addGestureRecognizer:self.doubleTapGestureRecognizer];
-     */
 
     self.actionSheetVisible = NO;
     
@@ -142,11 +122,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             kGenericPostViewControllerResizingPosts = YES;
             NSArray *indexPathsToReload = [self.collectionView indexPathsForVisibleItems];
             // TODO: Add alternate flow layout here
-            /*
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            */
             kGenericPostViewControllerResizingPosts = NO;
         }
     }
@@ -156,18 +131,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     if (oldDimReadPosts != self.dimReadPosts) {
         if (!kGenericPostViewControllerDimmingReadPosts) {
             kGenericPostViewControllerDimmingReadPosts = YES;
-            //[self.tableView beginUpdates];
-            //[self.tableView endUpdates];
             kGenericPostViewControllerDimmingReadPosts = NO;
         }
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        //self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-
-        //[self.pullToRefreshImageView startAnimating];
-        //self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
-
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
@@ -191,12 +159,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-/*
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.tableView == tableView && [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
-}
-*/
-
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         self.selectedPost = [self.postDataSource postAtIndex:indexPath.row];
@@ -210,7 +172,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 //- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    //if (collectionView.isEditing) {
         NSUInteger selectedRowCount = [collectionView.indexPathsForSelectedItems count];
         if (selectedRowCount > 0) {
             self.multipleDeleteButton.enabled = YES;
@@ -220,10 +181,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             self.multipleDeleteButton.enabled = NO;
             [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
         }
-    //}
 }
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.numberOfTapsSinceTapReset++;
     //self.selectedTableView = tableView;
@@ -250,14 +209,13 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     if (self.numberOfTapsSinceTapReset > 0) {
         id <GenericPostDataSource> dataSource = [self dataSourceForCollectionView:self.selectedCollectionView];
 
-        //if (self.selectedCollectionView.editing) {
+        // TODO: Implement multi-delete
         if (0) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
             self.multipleDeleteButton.enabled = YES;
             [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
         }
         else {
-            //[self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
             [self.selectedCollectionView deselectItemAtIndexPath:self.selectedIndexPath animated:NO];
             Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
@@ -489,6 +447,22 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             });
         } failure:nil];
     }
+    else if (recognizer == self.deleteGestureRecognizer) {
+        CGPoint location = [recognizer locationOfTouch:0 inView:self.collectionView];
+        BookmarkCell *cell = (BookmarkCell *)[self.collectionView cellForItemAtIndexPath:[self.collectionView indexPathForItemAtPoint:location]];
+        if (cell) {
+            [UIView animateWithDuration:1.0 animations:^{
+                [cell setIsEditting:YES];
+                CGRect currentFrame = cell.deleteButton.frame;
+                CGRect newFrame = CGRectMake(currentFrame.origin.x + currentFrame.size.width, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
+                [cell.deleteButton setFrame:newFrame];
+                [cell.deleteButton setHidden:NO];
+                [UIView animateWithDuration:0.2f animations:^{
+                    [cell.deleteButton setFrame:currentFrame];
+                }];
+            }];
+        }
+    }
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
@@ -497,14 +471,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    /*
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
-                    */
                     [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
                     [self.collectionView reloadItemsAtIndexPaths:indexPathsToReload];
                     [self.collectionView deleteItemsAtIndexPaths:indexPathsToRemove];
@@ -561,13 +527,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.loading = NO;
-                /*
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                */
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
                 [self.collectionView reloadItemsAtIndexPaths:indexPathsToReload];
                 [self.collectionView deleteItemsAtIndexPaths:indexPathsToRemove];
@@ -584,14 +543,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)toggleEditingMode:(id)sender {
-    //if (self.tableView.editing) {
-    if (0) {
+    if (self.editing) {
+        [self setEditing:NO];
+        
         NSArray *selectedIndexPaths = [self.collectionView.indexPathsForSelectedItems copy];
         for (NSIndexPath *indexPath in selectedIndexPaths) {
             [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
         }
 
-        //self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.editButton setStyle:UIBarButtonItemStylePlain];
         [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
         self.editButton.enabled = NO;
@@ -600,15 +559,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
-            /*
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            */
             [self.collectionView reloadItemsAtIndexPaths:self.collectionView.indexPathsForVisibleItems];
             self.editButton.enabled = YES;
         }];
-        //[self.tableView setEditing:NO animated:YES];
         [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
@@ -620,9 +573,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
             self.toolbar.frame = frame;
         }];
-    }
-    else {
-        //self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    } else {
+        [self setEditing:YES];
+        
+        // We need to show edit buttons on all the visible cells
+        [self.collectionView reloadItemsAtIndexPaths:self.collectionView.indexPathsForVisibleItems];
+        
         [self.editButton setStyle:UIBarButtonItemStyleDone];
         [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         self.editButton.enabled = NO;
@@ -633,15 +589,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
-            /*
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            */
             [self.collectionView reloadItemsAtIndexPaths:self.collectionView.indexPathsForVisibleItems];
             self.editButton.enabled = YES;
         }];
-        //[self.tableView setEditing:YES animated:YES];
         [CATransaction commit];
 
         [UIView animateWithDuration:0.25 animations:^{
@@ -655,29 +605,25 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 }
 
+- (IBAction)deletePost:(id)sender {
+    // Get the index path to delete
+    CGPoint buttonPoint = [sender convertPoint:CGPointZero toView:self.collectionView];
+    NSIndexPath *deleteIndexPath = [self.collectionView indexPathForItemAtPoint:buttonPoint];
+    [self deletePostsAtIndexPaths:@[deleteIndexPath]];
+}
+
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
     [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                //[self.tableView deselectRowAtIndexPath:obj animated:YES];
-            }];
-            
             [self.navigationItem setHidesBackButton:NO animated:YES];
             [self.editButton setStyle:UIBarButtonItemStylePlain];
             [self.editButton setTitle:@"Edit"];
             
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                /*
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView endUpdates];
-                */
                 [self.collectionView deleteItemsAtIndexPaths:indexPathsToRemove];
                 [self.collectionView insertItemsAtIndexPaths:indexPathsToAdd];
             }];
-            //[self.tableView setEditing:NO animated:YES];
             [CATransaction commit];
             
             [UIView animateWithDuration:0.25 animations:^{
@@ -700,33 +646,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 #pragma mark - Table view data source
 
-/*
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-
-    if (!self.loading) {
-        if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
-            [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
-                if (needsUpdate) {
-                    if (self.tableView == tableView) {
-                        [self updateFromLocalDatabaseWithCallback:nil];
-                    }
-                    else {
-                        [self updateSearchResults];
-                    }
-                }
-            }];
-        }
-    }
-}
-*/
-
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
 
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     if (collectionView == self.collectionView) {
         return [self.postDataSource numberOfPosts];
@@ -736,32 +659,27 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForCollectionView:collectionView];
 
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        return CGSizeMake(300, [dataSource compressedHeightForPostAtIndex:indexPath.row]);
+        return CGSizeMake(300, [dataSource compressedHeightForPostAtIndex:indexPath.row] + 10);
     }
     
-    CGSize newSize = CGSizeMake(300, [dataSource heightForPostAtIndex:indexPath.row]);
+    CGSize newSize = CGSizeMake(300, [dataSource heightForPostAtIndex:indexPath.row] + 10);
     
     return newSize;
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"BookmarkCell";
     
     BookmarkCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    
+    // Always hide the delete button when re-drawing
+    [cell.deleteButton setHidden:YES];
 
     for (id subview in [cell.contentView subviews]) {
-        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
-            [subview removeFromSuperview];
-        }
-    }
-
-    for (id subview in [cell subviews]) {
         if ([subview isKindOfClass:[UIImageView class]]) {
             [subview removeFromSuperview];
         }
@@ -776,8 +694,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
     }
 
-    //cell.textLabel.backgroundColor = [UIColor clearColor];
-    //cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
     NSArray *links;
@@ -803,15 +719,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     for (CALayer *layer in sublayers) {
         [layer removeFromSuperlayer];
     }
-
-    //CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
-    
-    /*
-    if (tableView.editing) {
-        cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        cell.selectedBackgroundView = nil;
-    }
-    */
 
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
@@ -922,12 +829,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 
 #pragma mark - RDActionSheet
 
-- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
-    //self.tableView.scrollEnabled = YES;
-}
-
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    //self.tableView.scrollEnabled = YES;
     if (buttonIndex >= 0) {
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -1197,7 +1099,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
         }
         
-        NSLog(@"%f - %f", offset, scrollView.contentInset.top);
         if (scrollView.contentInset.top - (-1 * offset) < 0)
             [self.pullToRefreshView setHidden:NO];
         else
@@ -1312,12 +1213,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     if ([self.postDataSource respondsToSelector:@selector(resetHeightsWithSuccess:)]) {
         [self.postDataSource resetHeightsWithSuccess:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                /*
-                NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                */
                 [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
             });
         }];
@@ -1348,12 +1243,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.postDataSource updatePostsFromDatabase:^(void) {
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                /*
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                [self.view setNeedsLayout];
-                */
                 [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
                 [self.collectionView setNeedsLayout];
         });

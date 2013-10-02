@@ -13,6 +13,7 @@
 @implementation BookmarkCell
 
 @synthesize textView;
+@synthesize isEditting = _isEditting;
 
 - (void)drawRect:(CGRect)rect
 {

@@ -967,6 +967,8 @@ static BOOL kPinboardSyncInProgress = NO;
             [db close];
 
             [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+            
+            [self.posts removeObjectAtIndex:indexPath.row];
 
             [indexPathsToDelete addObject:indexPath];
             numberOfPostsDeleted++;
@@ -990,55 +992,10 @@ static BOOL kPinboardSyncInProgress = NO;
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
         [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
 
-        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-
-        NSMutableArray *newPosts = [NSMutableArray array];
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newLinks = [NSMutableArray array];
-        
-        NSMutableArray *newCompressedStrings = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedLinks = [NSMutableArray array];
-
-        while ([results next]) {
-            NSDictionary *post = [PinboardDataSource postFromResultSet:results];
-
-            [newPosts addObject:post];
-            dispatch_group_enter(inner_group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
-                [newHeights addObject:height];
-                [newStrings addObject:string];
-                [newLinks addObject:links];
-                dispatch_group_leave(inner_group);
-            }];
-            
-            dispatch_group_enter(inner_group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
-                [newCompressedHeights addObject:height];
-                [newCompressedStrings addObject:string];
-                [newCompressedLinks addObject:links];
-                dispatch_group_leave(inner_group);
-            }];
-        }
-        [db close];
-
-        for (int i=previousPostCount - numberOfPostsDeleted; i<newPosts.count; i++) {
-            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-
-        self.posts = newPosts;
-        self.strings = newStrings;
-        self.heights = newHeights;
-        self.links = newLinks;
-
-        self.compressedStrings = newCompressedStrings;
-        self.compressedHeights = newCompressedHeights;
-        self.compressedLinks = newCompressedLinks;
+        // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
 
         if (callback) {
             dispatch_group_notify(inner_group, queue, ^{
-                #warning XXX There is a bug here with consistency
                 callback(indexPathsToDelete, indexPathsToAdd);
             });
         }

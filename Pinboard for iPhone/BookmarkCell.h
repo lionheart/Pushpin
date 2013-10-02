@@ -12,5 +12,8 @@
 @interface BookmarkCell : UICollectionViewCell
 
 @property (nonatomic, retain) IBOutlet TTTAttributedLabel *textView;
+@property (nonatomic, retain) IBOutlet UIButton *deleteButton;
+@property (nonatomic) BOOL isEditting;
+@property (nonatomic, retain) NSIndexPath *currentPath;
 
 @end
