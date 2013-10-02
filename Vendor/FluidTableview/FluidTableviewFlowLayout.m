@@ -57,9 +57,7 @@
 
 - (void)prepareLayout
 {
-    [UIView setAnimationsEnabled:NO];
     // Update the new section inset so all objects appear correctly
-    // TODO: This isn't working right
     self.sectionInset = UIEdgeInsetsMake(-1 * (_itemSize.height / 2), 0, _itemSize.height + 10, 0);
     [super prepareLayout];
     
