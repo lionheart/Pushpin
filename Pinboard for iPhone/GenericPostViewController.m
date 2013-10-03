@@ -22,9 +22,11 @@
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UIView+LHSAdditions.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
+static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 @interface GenericPostViewController ()
 
@@ -51,12 +53,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.collectionView addGestureRecognizer:self.rightSwipeGestureRecognizer];
-    
-    self.deleteGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.deleteGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-    self.deleteGestureRecognizer.numberOfTouchesRequired = 1;
-    self.deleteGestureRecognizer.cancelsTouchesInView = YES;
-    [self.collectionView addGestureRecognizer:self.deleteGestureRecognizer];
     
     self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.collectionView addGestureRecognizer:self.pinchGestureRecognizer];
@@ -85,9 +81,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
     
     // Setup the UIKit Dynamics fluid view
-    _itemSize = CGSizeMake(300, 44);
-    _collectionViewLayout = [[FluidTableviewFlowLayout alloc] initWithItemSize:self.itemSize];
-    self.collectionView.collectionViewLayout = _collectionViewLayout;
+    self.collectionView.collectionViewLayout = [[FluidTableviewFlowLayout alloc] init];
     
     // Make sure the delegate and datasource are configured
     self.collectionView.delegate = self;
@@ -95,6 +89,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     
     // Initial database update
     [self updateFromLocalDatabaseWithCallback:nil];
+    
+    [self.collectionView registerClass:[BookmarkCell class] forCellWithReuseIdentifier:BookmarkCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -438,30 +434,9 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *realIndexPathsToReload = self.collectionView.indexPathsForVisibleItems;
-                /*
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:realIndexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                */
                 [self.collectionView reloadItemsAtIndexPaths:realIndexPathsToReload];
             });
         } failure:nil];
-    }
-    else if (recognizer == self.deleteGestureRecognizer) {
-        CGPoint location = [recognizer locationOfTouch:0 inView:self.collectionView];
-        BookmarkCell *cell = (BookmarkCell *)[self.collectionView cellForItemAtIndexPath:[self.collectionView indexPathForItemAtPoint:location]];
-        if (cell) {
-            [UIView animateWithDuration:1.0 animations:^{
-                [cell setIsEditting:YES];
-                CGRect currentFrame = cell.deleteButton.frame;
-                CGRect newFrame = CGRectMake(currentFrame.origin.x + currentFrame.size.width, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
-                [cell.deleteButton setFrame:newFrame];
-                [cell.deleteButton setHidden:NO];
-                [UIView animateWithDuration:0.2f animations:^{
-                    [cell.deleteButton setFrame:currentFrame];
-                }];
-            }];
-        }
     }
 }
 
@@ -659,25 +634,22 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 }
 
+#pragma mark - UICollectionViewDelegateFlowLayout
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForCollectionView:collectionView];
 
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        return CGSizeMake(300, [dataSource compressedHeightForPostAtIndex:indexPath.row] + 10);
+        return CGSizeMake(screenSize.width, [dataSource compressedHeightForPostAtIndex:indexPath.row]);
     }
     
-    CGSize newSize = CGSizeMake(300, [dataSource heightForPostAtIndex:indexPath.row] + 10);
-    
+    CGSize newSize = CGSizeMake(screenSize.width, [dataSource heightForPostAtIndex:indexPath.row]);
     return newSize;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"BookmarkCell";
-    
-    BookmarkCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    
-    // Always hide the delete button when re-drawing
-    [cell.deleteButton setHidden:YES];
+    BookmarkCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
 
     for (id subview in [cell.contentView subviews]) {
         if ([subview isKindOfClass:[UIImageView class]]) {
@@ -694,6 +666,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
     }
 
+    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor clearColor];
     [cell.textView setText:string];
     
     NSArray *links;
@@ -1062,6 +1036,8 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         }
     }
 }
+
+
 
 #pragma mark - Scroll View delegate
 

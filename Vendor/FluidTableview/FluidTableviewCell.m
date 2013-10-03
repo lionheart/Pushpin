@@ -11,9 +11,4 @@
 
 @implementation FluidTableviewCell
 
-- (void)drawRect:(CGRect)rect
-{
-    self.layer.cornerRadius = 5.0f;
-}
-
 @end

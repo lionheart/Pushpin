@@ -13,14 +13,13 @@
 
 @implementation FluidTableviewFlowLayout
 
-- (id)initWithItemSize:(CGSize)size {
+- (id)init {
     self = [super init];
     if (self) {
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
-        self.minimumLineSpacing = 10;
-        self.minimumInteritemSpacing = 10;
+        self.minimumLineSpacing = 0;
+        self.minimumInteritemSpacing = 0;
 
-        self.itemSize = size;
         self.dynamicAnimator = [[UIDynamicAnimator alloc] initWithCollectionViewLayout:self];
         self.behaviorManager = [[FluidTableviewBehaviorManager alloc] initWithAnimator:self.dynamicAnimator];
         self.visibleIndexPathsSet = [NSMutableSet set];
@@ -98,8 +97,8 @@
         UIAttachmentBehavior *springBehaviour = [[UIAttachmentBehavior alloc] initWithItem:item attachedToAnchor:center];
         
         springBehaviour.length = 0;
-        springBehaviour.damping = 0.5;
-        springBehaviour.frequency = 1;
+        springBehaviour.damping = 2;
+        springBehaviour.frequency = 2;
         
         if (!CGPointEqualToPoint(CGPointZero, touchLocation)) {
             CGFloat distanceFromTouch = fabsf(touchLocation.y - springBehaviour.anchorPoint.y);

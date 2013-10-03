@@ -16,6 +16,4 @@
 @property (nonatomic, strong) NSMutableSet *visibleIndexPathsSet;
 @property (nonatomic, assign) CGFloat latestDelta;
 
-- (id)initWithItemSize:(CGSize)size;
-
 @end

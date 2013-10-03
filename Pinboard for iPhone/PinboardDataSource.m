@@ -1101,7 +1101,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
     callback(attributedString, height, @[]);
 }
 
@@ -1173,7 +1173,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;

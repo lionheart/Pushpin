@@ -85,7 +85,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UICollectionViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface GenericPostViewController : UICollectionViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
@@ -124,7 +124,6 @@ typedef NSInteger PPPostAction;
 - (void)toggleEditingMode:(id)sender;
 
 // Gesture and tap recognizers
-@property (nonatomic, strong) UISwipeGestureRecognizer *deleteGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
