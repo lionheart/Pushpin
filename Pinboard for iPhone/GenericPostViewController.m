@@ -86,6 +86,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     // Make sure the delegate and datasource are configured
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     
     // Initial database update
     [self updateFromLocalDatabaseWithCallback:nil];
