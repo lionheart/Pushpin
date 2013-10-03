@@ -30,7 +30,6 @@
 @implementation FeedListViewController
 
 @synthesize connectionAvailable;
-//@synthesize navigationController;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
 
@@ -81,25 +80,6 @@
 }
 
 - (void)viewDidLoad {
-    // Setup the notes and tags buttons - can't do it in Storyboard without a hack
-    /*
-    UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tagButton setTintColor:[UIColor whiteColor]];
-    [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateNormal];
-    [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-    tagButton.frame = CGRectMake(0, 0, 25, 25);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
-
-    UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notesButton setTintColor:[UIColor whiteColor]];
-    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateNormal];
-    [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-    notesButton.frame = CGRectMake(0, 0, 21, 26);
-    self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
-     
-    self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
-    */
-    
     self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
     self.bookmarkCounts = [NSMutableArray array];
     [self calculateBookmarkCounts:nil];
@@ -269,7 +249,6 @@
         case 1: {
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            //cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);

@@ -53,7 +53,7 @@ static NSInteger kToolbarHeight = 44;
     //[self.tapViewTop addGestureRecognizer:self.tapGestureForFullscreenMode];
     [self.tapViewBottom addGestureRecognizer:self.tapGestureForFullscreenMode];
 
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [self.activityIndicator startAnimating];
     self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
