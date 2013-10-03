@@ -12,10 +12,8 @@
 @interface FluidTableviewBehaviorManager : NSObject
 
 @property (nonatomic, strong) NSMutableDictionary *attachmentBehaviors;
-@property (nonatomic, strong) UIGravityBehavior *gravityBehavior;
 @property (nonatomic, strong) UICollisionBehavior *collisionBehavior;
 @property (nonatomic, strong) UIDynamicAnimator *animator;
-
 
 - (instancetype)initWithAnimator:(UIDynamicAnimator *)animator;
 
