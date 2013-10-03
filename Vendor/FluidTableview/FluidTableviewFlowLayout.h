@@ -11,9 +11,10 @@
 
 @interface FluidTableviewFlowLayout : UICollectionViewFlowLayout
 
-@property (nonatomic) CGSize itemSize;
-@property (nonatomic, retain) UIDynamicAnimator *dynamicAnimator;
-@property (nonatomic, retain) FluidTableviewBehaviorManager *behaviorManager;
+@property (nonatomic, strong) UIDynamicAnimator *dynamicAnimator;
+@property (nonatomic, strong) FluidTableviewBehaviorManager *behaviorManager;
+@property (nonatomic, strong) NSMutableSet *visibleIndexPathsSet;
+@property (nonatomic, assign) CGFloat latestDelta;
 
 - (id)initWithItemSize:(CGSize)size;
 
