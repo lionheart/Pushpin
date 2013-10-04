@@ -81,7 +81,7 @@
 
 - (void)viewDidLoad {
     self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
-    self.bookmarkCounts = [NSMutableArray array];
+    self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
     [self calculateBookmarkCounts:nil];
     
     self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
@@ -211,32 +211,32 @@
                 case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"cabinet"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedAllBookmarks ? self.bookmarkCounts[PinboardFeedAllBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedAllBookmarks];
                     break;
                 case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"lock"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedPrivateBookmarks ? self.bookmarkCounts[PinboardFeedPrivateBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedPrivateBookmarks];
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedPublicBookmarks ? self.bookmarkCounts[PinboardFeedPublicBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedPublicBookmarks];
                     break;
                 case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"glasses"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedUnreadBookmarks ? self.bookmarkCounts[PinboardFeedUnreadBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedUnreadBookmarks];
                     break;
                 case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"tag"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedUntaggedBookmarks ? self.bookmarkCounts[PinboardFeedUntaggedBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedUntaggedBookmarks];
                     break;
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"star"];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedStarredBookmarks ? self.bookmarkCounts[PinboardFeedStarredBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedStarredBookmarks];
                     break;
             }
             
