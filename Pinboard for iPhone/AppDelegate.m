@@ -483,7 +483,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    //[self customizeUIElements];
+    [self customizeUIElements];
 
 #ifndef DEBUG
     [[BITHockeyManager sharedHockeyManager] configureWithBetaIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"
