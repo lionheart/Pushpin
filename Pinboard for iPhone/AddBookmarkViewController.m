@@ -56,11 +56,12 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize recommendedTags;
 
 - (id)init {
-    if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.postDescription = @"";
-        
+
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.font = font;
@@ -112,16 +113,16 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.recommendedTags = @[];
         self.tagDescriptions = [NSMutableDictionary dictionary];
         self.tagCounts = [NSMutableDictionary dictionary];
-        
+
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
-        
+
         self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.descriptionTextField addGestureRecognizer:self.descriptionGestureRecognizer];
-        
+
         self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
@@ -129,8 +130,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
         [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
+        
     }
-    
     return self;
 }
 
@@ -503,6 +504,17 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    }
+
+    if (indexPath.row < 5) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+    }
+
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
@@ -511,7 +523,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             case 0:
                 switch (indexPath.row) {
                     case 0:
-                        cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
+                        cell.imageView.image = [UIImage imageNamed:@"globe"];
                         self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                         [cell.contentView addSubview:self.urlTextField];
                         break;
@@ -571,14 +583,14 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
-                            cell.detailTextLabel.text = self.tagCounts[tag];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:self.tagCounts[tag]]];
                         }
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.detailTextLabel.textColor = HEX(0x96989DFF);
                             cell.detailTextLabel.text = self.tagDescriptions[cell.textLabel.text];
                         }
-                        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+                        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                         cell.editing = NO;
                         break;
                     }
@@ -588,7 +600,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             case 1: {
                 if (indexPath.row == 0) {
                     cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
-                    self.privateSwitch = [[UISwitch alloc] init];
+                    self.privateSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.privateSwitch.frame.size;
                     self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -598,7 +610,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 }
                 else if (indexPath.row == 1) {
                     cell.textLabel.text = NSLocalizedString(@"Mark as read?", nil);
-                    self.readSwitch = [[UISwitch alloc] init];
+                    self.readSwitch = [[PPSwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.readSwitch.frame.size;
                     self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -784,7 +796,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -897,7 +909,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                      dispatch_async(dispatch_get_main_queue(), ^{
                                          self.navigationItem.leftBarButtonItem.enabled = YES;
                                          self.navigationItem.rightBarButtonItem.enabled = YES;
-                                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                         WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                          [alert show];
                                      });
                                  }];

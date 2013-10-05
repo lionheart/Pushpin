@@ -7,38 +7,38 @@
 //
 
 #import "BookmarkCell.h"
+
 #import <CoreText/CoreText.h>
-#import <QuartzCore/QuartzCore.h>
-#import "UIView+LHSAdditions.h"
 
 @implementation BookmarkCell
 
-@synthesize isEditting = _isEditting;
+@synthesize textView;
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textView = [[TTTAttributedLabel alloc] initWithFrame:(CGRect){{0, 0}, frame.size}];
+        self.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         self.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
-        self.textView.translatesAutoresizingMaskIntoConstraints = NO;
         self.textView.numberOfLines = 0;
         self.textView.textColor = [UIColor darkGrayColor];
         self.textView.lineBreakMode = kCTLineBreakByWordWrapping;
         self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
         self.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-        
+
         NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
         [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
         [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
         [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
         self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
         self.textView.backgroundColor = [UIColor clearColor];
-
         [self.contentView addSubview:self.textView];
-        [self.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": self.textView}];
-        [self.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": self.textView}];
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.textView.frame = CGRectOffset(CGRectInset(self.bounds, 10.0f, 10.0f), 0.0f, 0.0f);
 }
 
 @end

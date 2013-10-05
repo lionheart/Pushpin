@@ -24,7 +24,13 @@
     if (self) {
         self.title = NSLocalizedString(@"Browser Settings", nil);
 
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        BOOL isIPad = [UIApplication isIPad];
+        if (isIPad) {
+            self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.browserActionSheet = (UIActionSheet *)[[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
 
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
         
@@ -48,8 +54,8 @@
             [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
         }
         
-        self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
-        self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+        self.installChromeAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+        self.installiCabMobileAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
     }
     return self;
 }
@@ -106,12 +112,15 @@
 
     cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+    
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
                         case BROWSER_WEBVIEW:
                             cell.detailTextLabel.text = @"Webview";
@@ -145,7 +154,7 @@
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     
                     CGSize size = cell.frame.size;
-                    self.openLinksInAppSwitch = [[UISwitch alloc] init];
+                    self.openLinksInAppSwitch = [[PPSwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] openLinksInApp].boolValue;
@@ -161,7 +170,7 @@
             
         case 1: {
             cell.textLabel.text = NSLocalizedString(@"Installation instructions", nil);
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
             break;
         }
@@ -177,25 +186,26 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            if (!self.actionSheet) {
-                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                
-                // Properly set the cancel button index
-                [self.browserActionSheet addButtonWithTitle:@"Cancel"];
-                self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
-                
-                [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
+            BOOL isIPad = [UIApplication isIPad];
+            if (isIPad) {
+                if (!self.actionSheet) {
+                    CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+                    [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
+                }
+            }
+            else {
+                [(RDActionSheet *)self.browserActionSheet showFrom:self.navigationController.view];
             }
         }
     }
     else {
-        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
+        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
     }
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
-        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
+        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
     }
 }
 

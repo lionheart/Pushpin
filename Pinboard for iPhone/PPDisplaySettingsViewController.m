@@ -64,12 +64,36 @@
     cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+    }
+    
+    switch (indexPath.section) {
+        case 0:
+            if (indexPath.row < 4) {
+                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+            }
+            break;
+            
+        case 2:
+            if (indexPath.row < 2) {
+                [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+
     switch (indexPath.row) {
         case 0:
             cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
-            self.dimReadPostsSwitch = [[UISwitch alloc] init];
+            self.dimReadPostsSwitch = [[PPSwitch alloc] init];
             switchSize = self.dimReadPostsSwitch.frame.size;
             self.dimReadPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
             self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
@@ -81,7 +105,7 @@
             cell.textLabel.text = NSLocalizedString(@"Double tap to edit?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
-            self.doubleTapToEditSwitch = [[UISwitch alloc] init];
+            self.doubleTapToEditSwitch = [[PPSwitch alloc] init];
             switchSize = self.doubleTapToEditSwitch.frame.size;
             self.doubleTapToEditSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
             self.doubleTapToEditSwitch.on = [AppDelegate sharedDelegate].doubleTapToEdit;
@@ -93,7 +117,7 @@
             cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
-            self.compressPostsSwitch = [[UISwitch alloc] init];
+            self.compressPostsSwitch = [[PPSwitch alloc] init];
             switchSize = self.compressPostsSwitch.frame.size;
             self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
             self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
@@ -109,7 +133,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    return NSLocalizedString(@"You can also toggle this by pinching in or out when viewing bookmarks.", nil);
+    return @"You can also toggle this by pinching in or out when viewing bookmarks.";
 }
 
 - (void)switchChangedValue:(id)sender {

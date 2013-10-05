@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "PPTableViewController.h"
 #import "GenericPostViewController.h"
-#import "PinboardDataSource.h"
-#import "PinboardFeedDataSource.h"
 
 enum PINBOARD_FEED_ITEMS {
     PinboardFeedAllBookmarks,
@@ -21,30 +19,22 @@ enum PINBOARD_FEED_ITEMS {
     PinboardFeedStarredBookmarks
 };
 
-@interface FeedListViewController : PPTableViewController <ModalDelegate> {
-    NSString *postViewTitle;
-}
+@interface FeedListViewController : PPTableViewController <ModalDelegate>
 
-@property (nonatomic, strong) NSObject <GenericPostDataSource> *postDataSource;
 @property (nonatomic) BOOL connectionAvailable;
 @property (nonatomic, strong) UIBarButtonItem *notesBarButtonItem;
+@property (nonatomic, retain) UINavigationController *navigationController;
 @property (nonatomic, retain) NSTimer *updateTimer;
 @property (nonatomic, retain) NSMutableArray *bookmarkCounts;
-
-@property (nonatomic) CGFloat textSize;
-@property (nonatomic) CGFloat detailTextSize;
-@property (nonatomic) CGFloat rowHeight;
 
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
 - (void)connectionStatusDidChange:(NSNotification *)notification;
 - (void)openNotes;
 - (void)openSettings;
-- (IBAction)openTags:(id)sender;
+- (void)openTags;
 - (void)dismissViewController;
 
 - (void)hideNetworkDependentFeeds;
 - (void)showAllFeeds;
-
-- (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
 @end

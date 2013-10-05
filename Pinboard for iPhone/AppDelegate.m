@@ -192,7 +192,6 @@
 
 - (void)promptUserToAddBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
-        // XXX EXC_BAD_ACCESS
         self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -246,11 +245,11 @@
     });
 }
 
-- (UIAlertView *)addBookmarkFromClipboardAlertView {
+- (WCAlertView *)addBookmarkFromClipboardAlertView {
     static dispatch_once_t onceToken;
-    static UIAlertView *_addBookmarkFromClipboardAlertView;
+    static WCAlertView *_addBookmarkFromClipboardAlertView;
     dispatch_once(&onceToken, ^{
-        _addBookmarkFromClipboardAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
+        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
     });
     return _addBookmarkFromClipboardAlertView;
 }
@@ -280,18 +279,184 @@
 }
 
 - (void)customizeUIElements {
-    //[self.window setTintColor:[UIColor whiteColor]];
-    //[[UIView appearance] setTintColor:[UIColor whiteColor]];
+    // Customize UINavigationBar
+    CGRect rect = CGRectMake(0, 0, 320, 44);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
     
-    // UIToolbar items
-    UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setTintColor:barButtonItemColor];
+    CGColorSpaceRef myColorspace = CGColorSpaceCreateDeviceRGB();
+    
+    size_t num_locations = 2;
+    CGFloat locations[2] = { 0.0, 1.0 };
+    CGFloat components[8] =	{
+        0.996, 0.996, 0.996, 1.0,
+        0.804, 0.827, 0.875, 1.0
+    };
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, num_locations);
+    CGPoint startPoint = CGPointMake(0, 0);
+    CGPoint endPoint = CGPointMake(0, 44);
 
+    CGFloat radius = 4;
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
+    CGContextAddArcToPoint(context, rect.origin.x, rect.origin.y, rect.origin.x + radius, rect.origin.y, radius);
+    CGContextAddArcToPoint(context, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + radius, radius);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+
+    // Add bottom stroke
+    CGContextSetRGBStrokeColor(context, 0.161, 0.176, 0.318, 1);
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+    CGContextStrokePath(context);
+
+    UIImage *background = [UIGraphicsGetImageFromCurrentImageContext() resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 1, 5)];
+
+    [[UINavigationBar appearance] setBackgroundColor:[UIColor blackColor]];
+    [[UINavigationBar appearance] setBackgroundImage:background forBarMetrics:UIBarMetricsDefault];
+
+    [[UINavigationBar appearance] setTitleTextAttributes:@{
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:20],
+                                UITextAttributeTextColor: HEX(0x4C586Aff),
+                          UITextAttributeTextShadowColor: [UIColor whiteColor] }];
+
+    // Customize Status Bar
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    
+    // Customize UIBarButtonItem
+    UIImage *backButtonBackground;
+    UIImage *selectedBackButtonImage;
+    UIImage *backButtonBackgroundLandscape;
+    UIImage *selectedBackButtonImageLandscape;
+
+    NSString *version = [[UIDevice currentDevice] systemVersion];
+    if ([version floatValue] < 6.0) {
+        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
+        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape-ios5"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+    }
+    else {
+        backButtonBackground = [[UIImage imageNamed:@"navigation-back-button"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        selectedBackButtonImage = [[UIImage imageNamed:@"navigation-back-button-selected"] resizableImageWithCapInsets:UIEdgeInsetsMake(44, 0, 44, 0)];
+        backButtonBackgroundLandscape = [[UIImage imageNamed:@"navigation-back-button-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+        selectedBackButtonImageLandscape = [[UIImage imageNamed:@"navigation-back-button-selected-landscape"] resizableImageWithCapInsets:UIEdgeInsetsMake(32, 0, 32, 0)];
+    }
+
+    CGRect buttonRect = CGRectMake(0, 0, 6, 30);
+    CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
+    barButtonItemLayer.frame = buttonRect;
+    barButtonItemLayer.cornerRadius = 3;
+    barButtonItemLayer.masksToBounds = YES;
+    barButtonItemLayer.borderWidth = 0.5;
+    barButtonItemLayer.borderColor = HEX(0x4C586AFF).CGColor;
+    barButtonItemLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    barButtonItemLayer.startPoint = CGPointMake(0.5, 0);
+    barButtonItemLayer.endPoint = CGPointMake(0.5, 1.0);
+
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    barButtonItemLayer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+    [[UIBarButtonItem appearance] setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackground forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:backButtonBackgroundLandscape forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:selectedBackButtonImageLandscape forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -backButtonBackground.size.height*2) forBarMetrics:UIBarMetricsLandscapePhone];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: HEX(0x4A5768FF),
+                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
+     }
+                                                forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: HEX(0xA5A9B2FF),
+                          UITextAttributeTextShadowColor: HEX(0xFFFFFF00),
+                                     UITextAttributeFont: [UIFont fontWithName:[AppDelegate heavyFontName] size:13]
+     }
+                                                forState:UIControlStateDisabled];
+    // Customize Toolbar
+    CAGradientLayer *toolbarLayer = [CAGradientLayer layer];
+    toolbarLayer.frame = rect;
+    toolbarLayer.masksToBounds = YES;
+    toolbarLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    [toolbarLayer renderInContext:context];
+    UIImage *toolbarBackground = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    [[PPToolbar appearance] setBackgroundImage:toolbarBackground forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+
+    // Customize UISearchBar
+    
+    [[UISearchBar appearance] setBackgroundImage:background];
+
+    [WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
+        alertView.cornerRadius = 8;
+        alertView.outerFrameShadowBlur = 0;
+        alertView.labelTextColor = [UIColor whiteColor];
+        alertView.labelShadowColor = [UIColor clearColor];
+        
+        alertView.buttonFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
+        alertView.titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:18.f];
+        alertView.messageFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:16.f];
+        
+        UIColor *topGradient = [UIColor colorWithRed:0.212 green:0.227 blue:0.275 alpha:1];
+        UIColor *middleGradient = [UIColor colorWithRed:0.173 green:0.184 blue:0.224 alpha:1];
+        UIColor *bottomGradient = [UIColor colorWithRed:0.114 green:0.125 blue:0.161 alpha:1];
+        alertView.gradientColors = @[topGradient, middleGradient, bottomGradient];
+        alertView.outerFrameColor = [UIColor whiteColor];
+        alertView.innerFrameShadowColor = [UIColor clearColor];
+        alertView.innerFrameStrokeColor = [UIColor clearColor];
+        alertView.outerFrameLineWidth = 1;
+        
+        alertView.buttonTextColor = [UIColor whiteColor];
+        alertView.buttonShadowColor = [UIColor blackColor];
+        alertView.buttonShadowOffset = CGSizeMake(1, 1);
+    }];
+}
+
+- (UINavigationController *)navigationController {
+    if (!_navigationController) {
+        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+        pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
+        
+        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        pinboardViewController.postDataSource = pinboardDataSource;
+        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+        
+        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        feedListViewController.title = @"Browse";
+        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
+        _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
+        [_navigationController popToViewController:pinboardViewController animated:NO];
+    }
+    return _navigationController;
 }
 
 - (LoginViewController *)loginViewController {
     if (!_loginViewController) {
-        _loginViewController = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"LoginNavigationController"];
+        _loginViewController = [[LoginViewController alloc] init];
     }
     return _loginViewController;
 }
@@ -317,7 +482,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [self customizeUIElements];
+    //[self customizeUIElements];
 
 #ifndef DEBUG
     [[BITHockeyManager sharedHockeyManager] configureWithBetaIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"
@@ -366,9 +531,7 @@
         [pinboard setToken:self.token];
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
-        //[self.window setRootViewController:self.navigationController];
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-        [self.window setRootViewController:[storyboard instantiateViewControllerWithIdentifier:@"MainNavigationController"]];
+        [self.window setRootViewController:self.navigationController];
     }
     else {
         [self.window setRootViewController:self.loginViewController];

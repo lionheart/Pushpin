@@ -30,7 +30,7 @@
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
 @synthesize filteredTags;
-//@synthesize navigationController;
+@synthesize navigationController;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -96,6 +96,14 @@
     self.sortedTitles = newSortedTitlesWithSearch;
     self.filteredTags = [NSMutableArray array];
 
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.searchBar.delegate = self;
+    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+    self.searchDisplayController.searchResultsDataSource = self;
+    self.searchDisplayController.searchResultsDelegate = self;
+    self.searchDisplayController.delegate = self;
+    self.tableView.tableHeaderView = self.searchBar;
+    [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -164,6 +172,25 @@
     return nil;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
+        BOOL isIPad = [UIApplication isIPad];
+        NSUInteger fontSize = 17;
+        NSUInteger padding = isIPad ? 45 : 15;
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
+        view.clipsToBounds = YES;
+        UILabel *label = [[UILabel alloc] init];
+        label.frame = CGRectMake(padding, 0, [UIApplication currentSize].width - padding, 44);
+        label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:fontSize];
+        label.textColor = HEX(0x4C586AFF);
+        label.backgroundColor = HEX(0xF7F9FDff);
+        label.text = self.sortedTitles[section];
+        [view addSubview:label];
+        return view;
+    }
+    return nil;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section > 0) {
         return 44;
@@ -175,14 +202,24 @@
     static NSString *identifier = @"TagCell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
-    static NSUInteger badgeTag = 1;
-    UILabel *badgeLabel;
-    
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-        badgeLabel = [[UILabel alloc] init];
-        [badgeLabel setTag:badgeTag];
-        [cell.contentView addSubview:badgeLabel];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    }
+
+    if (tableView == self.tableView) {
+        CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
+        if (indexPath.row > 0) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
+        }
+
+        if (indexPath.row < 5) {
+            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
+        }
+        [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+    }
+    else {
+        [cell setSelectedBackgroundViewWithLayer:[PPGroupedTableViewCell layerForNonGroupedBackground]];
     }
 
     NSDictionary *tag;
@@ -194,7 +231,6 @@
     }
 
     cell.textLabel.text = tag[@"name"];
-    /*
     UIImage *pillImage = [PPCoreGraphics pillImage:tag[@"count"]];
     UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
     pillView.contentMode = UIViewContentModeScaleAspectFit;
@@ -204,11 +240,6 @@
         frame.size.width += 20;
         cell.accessoryView.frame = frame;
     }
-    */
-    
-    NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
-    cell.detailTextLabel.text = badgeCount;
-    
     cell.imageView.image = nil;
     return cell;
 }
@@ -287,16 +318,12 @@
         tag = self.filteredTags[indexPath.row];
     }
     
-    [self performSegueWithIdentifier:@"ShowPosts" sender:tag];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    GenericPostViewController *postViewController = [segue destinationViewController];
+    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    NSDictionary *tag = (NSDictionary *)sender;
     [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
+    [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 }
 
 - (void)popViewController {

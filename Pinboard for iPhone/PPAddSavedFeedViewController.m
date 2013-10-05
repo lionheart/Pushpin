@@ -21,31 +21,33 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self.modalDelegate action:@selector(closeModal:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(addButtonTouchUpInside:)];
+        
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        self.userTextField = [[UITextField alloc] init];
+        self.userTextField.font = font;
+        self.userTextField.delegate = self;
+        self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.userTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.userTextField.placeholder = NSLocalizedString(@"Username", nil);
+        self.tagsTextField.returnKeyType = UIReturnKeyNext;
+        self.userTextField.text = @"";
+
+        self.tagsTextField = [[UITextField alloc] init];
+        self.tagsTextField.font = font;
+        self.tagsTextField.delegate = self;
+        self.tagsTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.tagsTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagsTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
+        self.tagsTextField.returnKeyType = UIReturnKeyDone;
+        self.tagsTextField.text = @"";
+        
+        self.title = NSLocalizedString(@"Add Feed", nil);
     }
     return self;
-}
-
-- (void)viewDidLoad {
-    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    self.userTextField = [[UITextField alloc] init];
-    self.userTextField.font = font;
-    self.userTextField.delegate = self;
-    self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.userTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.userTextField.placeholder = NSLocalizedString(@"Username", nil);
-    self.tagsTextField.returnKeyType = UIReturnKeyNext;
-    self.userTextField.text = @"";
-    
-    self.tagsTextField = [[UITextField alloc] init];
-    self.tagsTextField.font = font;
-    self.tagsTextField.delegate = self;
-    self.tagsTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.tagsTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.tagsTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
-    self.tagsTextField.returnKeyType = UIReturnKeyDone;
-    self.tagsTextField.text = @"";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -135,7 +137,7 @@
     return YES;
 }
 
-- (IBAction)addButtonTouchUpInside:(id)sender {
+- (void)addButtonTouchUpInside:(id)sender {
     NSMutableArray *components = [NSMutableArray array];
     NSString *username = self.userTextField.text;
     if (username && username.length > 0) {
@@ -170,7 +172,7 @@
         PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
         [dataSource addDataSource:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.navigationController popViewControllerAnimated:YES];
+                [self.modalDelegate closeModal:self];
             });
         }];
     }
