@@ -177,26 +177,25 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            BOOL isIPad = [UIApplication isIPad];
-            if (isIPad) {
-                if (!self.actionSheet) {
-                    CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                    [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
-                }
-            }
-            else {
-                [(RDActionSheet *)self.browserActionSheet showFrom:self.navigationController.view];
+            if (!self.actionSheet) {
+                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+
+                // Properly set the cancel button index
+                [self.browserActionSheet addButtonWithTitle:@"Cancel"];
+                self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
+
+                [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
             }
         }
     }
     else {
-        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
+        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
     }
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
-        [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
+        [self performSegueWithIdentifier:@"ShowBrowserInstructions" sender:self];
     }
 }
 
