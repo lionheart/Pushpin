@@ -129,6 +129,7 @@
                     <navigationItem key="navigationItem" title="Tags" id="dK1-xz-4wK"/>
                     <connections>
                         <outlet property="searchDisplayController" destination="Nt7-ry-3KG" id="Z6c-S3-tTG"/>
+                        <segue destination="n93-h8-rjb" kind="push" identifier="ShowPosts" id="AMH-Nj-kv6"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zo3-Fe-LE6" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -689,6 +690,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="AMH-Nj-kv6"/>
         <segue reference="acg-DZ-f8w"/>
     </inferredMetricsTieBreakers>
 </document>

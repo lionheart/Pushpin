@@ -503,17 +503,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-
-    if (indexPath.row < 5) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
