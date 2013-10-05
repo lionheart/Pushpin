@@ -21,13 +21,14 @@
 @property (nonatomic, strong) UITextView *postDescriptionTextView;
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
 @property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
+@property (nonatomic, strong) NSDictionary *bookmarkData;
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
 @property (nonatomic, retain) UITextField *descriptionTextField;
 @property (nonatomic, retain) UITextField *titleTextField;
-@property (nonatomic, retain) PPSwitch *privateSwitch;
-@property (nonatomic, retain) PPSwitch *readSwitch;
+@property (nonatomic, retain) UISwitch *privateSwitch;
+@property (nonatomic, retain) UISwitch *readSwitch;
 @property (nonatomic, retain) UITextField *tagTextField;
 @property (nonatomic, retain) NSArray *popularTags;
 @property (nonatomic, retain) NSArray *recommendedTags;
@@ -41,6 +42,7 @@
 @property (nonatomic) BOOL loadingTags;
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL suggestedTagsVisible;
+@property (nonatomic) BOOL isUpdate;
 @property (nonatomic, retain) NSString *previousURLContents;
 @property (nonatomic, copy) void (^callback)();
 @property (nonatomic, retain) NSArray *suggestedTagsPayload;

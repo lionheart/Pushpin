@@ -192,6 +192,7 @@
 
 - (void)promptUserToAddBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
+        // XXX EXC_BAD_ACCESS
         self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -245,11 +246,11 @@
     });
 }
 
-- (WCAlertView *)addBookmarkFromClipboardAlertView {
+- (UIAlertView *)addBookmarkFromClipboardAlertView {
     static dispatch_once_t onceToken;
-    static WCAlertView *_addBookmarkFromClipboardAlertView;
+    static UIAlertView *_addBookmarkFromClipboardAlertView;
     dispatch_once(&onceToken, ^{
-        _addBookmarkFromClipboardAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
+        _addBookmarkFromClipboardAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Nope", nil) otherButtonTitles:NSLocalizedString(@"Sure", nil), nil];
     });
     return _addBookmarkFromClipboardAlertView;
 }
