@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "PPTableViewController.h"
 #import "GenericPostViewController.h"
+#import "PinboardDataSource.h"
+#import "PinboardFeedDataSource.h"
 
 enum PINBOARD_FEED_ITEMS {
     PinboardFeedAllBookmarks,

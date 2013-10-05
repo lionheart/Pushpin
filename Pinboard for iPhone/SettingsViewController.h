@@ -33,8 +33,8 @@
 @property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
-@property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
-@property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
 
 @property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 @property (nonatomic, strong) id actionSheet;

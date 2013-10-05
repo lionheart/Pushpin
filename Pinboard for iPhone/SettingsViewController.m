@@ -247,7 +247,7 @@
                     cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.privateByDefaultSwitch = [[PPSwitch alloc] init];
+                    self.privateByDefaultSwitch = [[UISwitch alloc] init];
                     switchSize = self.privateByDefaultSwitch.frame.size;
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
@@ -259,7 +259,7 @@
                     cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.readByDefaultSwitch = [[PPSwitch alloc] init];
+                    self.readByDefaultSwitch = [[UISwitch alloc] init];
                     switchSize = self.readByDefaultSwitch.frame.size;
                     self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.readByDefaultSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
