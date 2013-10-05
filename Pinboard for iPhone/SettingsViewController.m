@@ -51,11 +51,11 @@
 }
 
 - (void)viewDidLoad {
-    self.logOutAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
+    self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
 
     self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
 
-    self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
+    self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
     self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
@@ -67,8 +67,10 @@
     [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
     [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
     [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"None", nil)];
+    [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    self.readLaterActionSheet.cancelButtonIndex = self.readLaterActionSheet.numberOfButtons - 1;
 
-    self.instapaperAlertView = [[WCAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Log In", nil];
+    self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@"Log In", nil];
     self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
     [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
     [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
@@ -77,7 +79,7 @@
     [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
     [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
 
-    self.readabilityAlertView = [[WCAlertView alloc] initWithTitle:@"Readability Login" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Log In", nil];
+    self.readabilityAlertView = [[UIAlertView alloc] initWithTitle:@"Readability Login" message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@"Log In", nil];
     self.readabilityAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
     [[self.readabilityAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
     [[self.readabilityAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
@@ -86,17 +88,17 @@
     [[self.readabilityAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
     [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
 
-    self.instapaperVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
+    self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
                                                                       message:@"Logging into Instapaper."
                                                                      delegate:nil
                                                             cancelButtonTitle:nil
                                                             otherButtonTitles:nil];
-    self.readabilityVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
+    self.readabilityVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
                                                                        message:@"Logging into Readability."
                                                                       delegate:nil
                                                              cancelButtonTitle:nil
                                                              otherButtonTitles:nil];
-    self.pocketVerificationAlertView = [[WCAlertView alloc] initWithTitle:@"Verifying credentials"
+    self.pocketVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
                                                                   message:@"Logging into Pocket."
                                                                  delegate:nil
                                                         cancelButtonTitle:nil
@@ -365,6 +367,10 @@
         }
     }
     else if (alertView == self.instapaperAlertView) {
+        // Check for cancel
+        if (buttonIndex == 0)
+            return;
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.instapaperVerificationAlertView show];
 
@@ -396,7 +402,7 @@
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
-                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                    message:@"We couldn't log you into Instapaper with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
@@ -410,7 +416,7 @@
                                        [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
-                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
                                                                                       delegate:nil
                                                                              cancelButtonTitle:nil
@@ -426,6 +432,10 @@
                                }];
     }
     else if (alertView == self.readabilityAlertView) {
+        // Check for cancel
+        if (buttonIndex == 0)
+            return;
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.readabilityVerificationAlertView show];
 
@@ -464,7 +474,7 @@
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
-                                       WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
                                                                                       delegate:nil
                                                                              cancelButtonTitle:nil
@@ -477,7 +487,7 @@
                                        });
                                    }
                                    else {
-                                       [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                    message:@"We couldn't log you into Readability with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
@@ -616,7 +626,7 @@
                 }
                     
                 case 1: {
-                    WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
                     self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
@@ -633,7 +643,7 @@
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
 
-                        WCAlertView *successAlertView = [[WCAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
