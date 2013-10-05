@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "PPAboutViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "WCAlertView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
@@ -20,7 +21,6 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
-#import <Mixpanel/Mixpanel.h>
 
 @interface PPAboutViewController ()
 
@@ -28,65 +28,65 @@
 
 @implementation PPAboutViewController
 
-- (void)viewDidLoad {
-    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
-    self.data = [NSArray arrayWithContentsOfFile:plistPath];
-    self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-    
-    self.heights = [NSMutableDictionary dictionary];
-    self.titles = [NSMutableArray array];
-    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
-    NSInteger index = 0;
-    CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
-    CGFloat descriptionHeight;
-    NSUInteger emptyLines;
-    NSArray *lines;
-    for (NSArray *list in self.data) {
-        [self.titles addObject:NSLocalizedString(list[0], nil)];
-        for (NSArray *pair in list[1]) {
-            NSString *title = NSLocalizedString(pair[0], nil);
-            NSString *description = NSLocalizedString(pair[1], nil);
-            
-            if ([title isEqualToString:@""]) {
-                self.heights[title] = @(0);
-            }
-            else {
-                self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
-            }
-            
-            if ([description isEqualToString:@""]) {
-                descriptionHeight = 0;
-            }
-            else {
-                emptyLines = 0;
-                lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-                for (NSString *line in lines) {
-                    if ([line isEqualToString:@""]) {
-                        emptyLines++;
-                    }
-                }
-                
-                if (index == 4) {
-                    descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
+        self.data = [NSArray arrayWithContentsOfFile:plistPath];
+        self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
+        
+        self.heights = [NSMutableDictionary dictionary];
+        self.titles = [NSMutableArray array];
+        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
+        NSInteger index = 0;
+        CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
+        CGFloat descriptionHeight;
+        NSUInteger emptyLines;
+        NSArray *lines;
+        for (NSArray *list in self.data) {
+            [self.titles addObject:list[0]];
+            for (NSArray *pair in list[1]) {
+                NSString *title = pair[0];
+                NSString *description = pair[1];
+
+                if ([title isEqualToString:@""]) {
+                    self.heights[title] = @(0);
                 }
                 else {
-                    descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
                 }
-            }
-            
-            self.heights[description] = @(descriptionHeight);
-        }
-        index++;
-    }
-    
-    self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-}
 
-- (void)viewWillAppear:(BOOL)animated {
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
+                if ([description isEqualToString:@""]) {
+                    descriptionHeight = 0;
+                }
+                else {
+                    emptyLines = 0;
+                    lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                    for (NSString *line in lines) {
+                        if ([line isEqualToString:@""]) {
+                            emptyLines++;
+                        }
+                    }
+
+                    if (index == 4) {
+                        descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    }
+                    else {
+                        descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    }
+                }
+
+                self.heights[description] = @(descriptionHeight);
+            }
+            index++;
+        }
+        
+        self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    }
+    return self;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -177,6 +177,17 @@
     NSString *title = info[indexPath.row][0];
     NSString *detail = info[indexPath.row][1];
     
+    CGFloat height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackgroundForHeight:height];
+    if (indexPath.row > 0) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayerForHeight:height]];
+    }
+
+    if (indexPath.row < info.count - 1) {
+        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayerForHeight:height]];
+    }
+    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer forHeight:height];
+
     if ([info[indexPath.row] count] > 3) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
@@ -186,11 +197,11 @@
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
         cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-        if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
-            cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
+        if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
+            cell.detailTextLabel.text = @"Tap to view license.";
         }
         else {
-            cell.detailTextLabel.text = NSLocalizedString(@"Tap to expand.", nil);
+            cell.detailTextLabel.text = @"Tap to expand.";
         }
     }
     else {
@@ -205,7 +216,8 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     if (indexPath.section == 0 && indexPath.row == 1) {
-        [self performSegueWithIdentifier:@"ShowChangelog" sender:self];
+        PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] init];
+        [self.navigationController pushViewController:changelogViewController animated:YES];
     }
     else if (indexPath.section == 0 && indexPath.row == 2) {
         [self followScreenName:@"pushpin_app"];
@@ -264,10 +276,10 @@
                     if (response[@"errors"]) {
                         NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
                         NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                        [[[UIAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
+                        [[[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
                     }
                     else {
-                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                        [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                     }
                 });
 
@@ -285,9 +297,14 @@
         ACAccountStore *accountStore = [[ACAccountStore alloc] init];
         ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         
-        void (^AccessGrantedBlock)(UIAlertView *) = ^(UIAlertView *loadingAlertView) {
+        void (^AccessGrantedBlock)(WCAlertView *) = ^(WCAlertView *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                if ([UIApplication isIPad]) {
+                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
+                else {
+                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
                 
                 NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
                 NSString *accountScreenName;
@@ -300,15 +317,14 @@
                 if (loadingAlertView) {
                     [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                 }
-                
-                // Properly set the cancel button index
-                [self.actionSheet addButtonWithTitle:@"Cancel"];
-                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
                 if ([accounts count] > 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([self.actionSheet respondsToSelector:@selector(showFromRect:inView:animated:)]) {
                             [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:NO];
+                        }
+                        else {
+                            [self.actionSheet showFrom:self.navigationController.view];
                         }
                     });
                 }
@@ -323,7 +339,7 @@
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                 [loadingAlertView show];
 
                 self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
@@ -339,7 +355,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }
@@ -352,7 +368,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }
@@ -371,7 +387,12 @@
 
             if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
 
-                self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                if ([UIApplication isIPad]) {
+                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
+                else {
+                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedItem[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                }
 
                 if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:@"Copy Project URL"];
@@ -381,11 +402,12 @@
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
                 }
 
-                // Properly set the cancel button index
-                [self.actionSheet addButtonWithTitle:@"Cancel"];
-                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-                
-                [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
+                if ([UIApplication isIPad]) {
+                    [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
+                }
+                else {
+                    [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+                }
             }
         }
         else {

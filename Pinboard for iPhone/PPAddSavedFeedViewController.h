@@ -15,6 +15,6 @@
 @property (nonatomic, strong) UITextField *tagsTextField;
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 
-- (IBAction)addButtonTouchUpInside:(id)sender;
+- (void)addButtonTouchUpInside:(id)sender;
 
 @end

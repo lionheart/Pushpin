@@ -8,17 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import "RDActionSheet.h"
 #import "AppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface PPWebViewController : UIViewController <RDActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSString *urlString;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *backBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *forwardBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *readerBarButtonItem;
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *socialBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
@@ -28,29 +29,22 @@
 @property (nonatomic, strong) CALayer *fullScreenImageLayer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForFullscreenMode;
-@property (nonatomic, strong) IBOutlet UIView *tapViewTop;
-@property (nonatomic, strong) IBOutlet UIView *tapViewBottom;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
-@property (nonatomic, strong) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL stopped;
-@property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
-@property (nonatomic) BOOL isFullscreen;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
-@property (nonatomic, strong) UIActivityViewController *activityView;
-@property (nonatomic) CGRect toolbarFrame;
+@property (nonatomic, strong) id actionSheet;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
 - (void)socialActionButtonTouchUp:(id)sender;
-- (IBAction)actionButtonTouchUp:(id)sender;
-- (IBAction)backButtonTouchUp:(id)sender;
-- (IBAction)forwardButtonTouchUp:(id)sender;
+- (void)actionButtonTouchUp:(id)sender;
+- (void)backButtonTouchUp:(id)sender;
+- (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)emailURL;
 - (void)showEditViewController;
@@ -62,12 +56,10 @@
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
 - (void)loadURL;
-- (IBAction)stopLoading:(id)sender;
+- (void)stopLoading;
 - (BOOL)isWebViewExpanded;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
 - (void)toggleFullScreen;
-- (void)setFullscreen:(BOOL)fullscreen;
-- (void)disableFullscreen:(id)sender;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;

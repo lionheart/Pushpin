@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
+#import "RDActionSheet.h"
+#import "WCAlertView.h"
 #import "AppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 #import "PPToolbar.h"
 #import "PPWebViewController.h"
-
-#import "FluidTableviewFlowLayout.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -85,12 +85,12 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UICollectionViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UICollectionViewDelegateFlowLayout>
+@interface GenericPostViewController : PPTableViewController <TTTAttributedLabelDelegate, RDActionSheetDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic, strong) id actionSheet;
 
 @property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
 @property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;
@@ -100,21 +100,16 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
-@property (nonatomic, strong) UICollectionView *selectedCollectionView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, retain) UIAlertView *confirmDeletionAlertView;
+@property (nonatomic, retain) WCAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 @property (nonatomic, strong) NSString *latestSearchText;
 @property (nonatomic, strong) NSTimer *latestSearchTimer;
 
-@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
-
-// UIKit Dynamics
-@property (nonatomic, strong) FluidTableviewFlowLayout *collectionViewLayout;
-@property (nonatomic) CGSize itemSize;
 
 // Multiple Deletion
 @property (nonatomic, strong) PPToolbar *toolbar;
@@ -123,7 +118,7 @@ typedef NSInteger PPPostAction;
 
 - (void)toggleEditingMode:(id)sender;
 
-// Gesture and tap recognizers
+// Right swipe
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
@@ -151,14 +146,10 @@ typedef NSInteger PPPostAction;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
-- (IBAction)deletePost:(id)sender;
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
 - (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
-- (id<GenericPostDataSource>)dataSourceForCollectionView:(UICollectionView *)collectionView;
 - (id<GenericPostDataSource>)currentDataSource;
-
-- (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
 @end

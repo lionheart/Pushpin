@@ -31,33 +31,144 @@ static NSInteger kToolbarHeight = 44;
 
 @implementation PPWebViewController
 
-@synthesize shouldMobilize, urlString;
-@synthesize tapViewBottom, tapViewTop;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
+    
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-    // Setup UIWebView scroll delegate
+    CGSize size = self.view.frame.size;
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+    self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
-    
-    // Tap views
-    self.tapGestureForFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
-    self.tapGestureForFullscreenMode.numberOfTapsRequired = 1;
-    self.tapGestureForFullscreenMode.numberOfTouchesRequired = 1;
-    self.tapGestureForFullscreenMode.enabled = NO;
-    //[self.tapViewTop addGestureRecognizer:self.tapGestureForFullscreenMode];
-    [self.tapViewBottom addGestureRecognizer:self.tapGestureForFullscreenMode];
+    [self.view addSubview:self.webView];
 
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    CAGradientLayer *layer = [CAGradientLayer layer];
+    layer.frame = CGRectMake(0, 0, 40, 40);
+    layer.cornerRadius = 20;
+    layer.masksToBounds = YES;
+    layer.borderWidth = 0.8;
+    layer.borderColor = HEX(0x4C586AFF).CGColor;
+    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+
+    CALayer *enterReaderModeImageLayer = [CALayer layer];
+    enterReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
+    enterReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"expand-dash"].CGImage;
+    
+    CALayer *exitReaderModeImageLayer = [CALayer layer];
+    exitReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
+    exitReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"compress-dash"].CGImage;
+
+    [layer addSublayer:enterReaderModeImageLayer];
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [layer renderInContext:context];
+    UIImage *buttonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    layer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [layer renderInContext:context];
+    UIImage *buttonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    [enterReaderModeImageLayer removeFromSuperlayer];
+    [layer addSublayer:exitReaderModeImageLayer];
+
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    [layer renderInContext:context];
+    UIImage *exitReaderModeButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    [layer renderInContext:context];
+    UIImage *exitReaderModeButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
+    self.enterReaderModeButton.frame = CGRectMake(self.webView.frame.size.width - 50, self.webView.frame.size.height - 70, 40, 40);
+    [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
+    [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
+
+    self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
+    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 70, 40, 40);
+    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
+    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
+    self.exitReaderModeButton.hidden = YES;
+
+    self.panGestureRecognizerForNormalMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.panGestureRecognizerForNormalMode.minimumNumberOfTouches = 1;
+    self.panGestureRecognizerForNormalMode.maximumNumberOfTouches = 1;
+
+    self.panGestureRecognizerForReaderMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.panGestureRecognizerForReaderMode.minimumNumberOfTouches = 1;
+    self.panGestureRecognizerForReaderMode.maximumNumberOfTouches = 1;
+    [self.exitReaderModeButton addGestureRecognizer:self.panGestureRecognizerForReaderMode];
+    [self.enterReaderModeButton addGestureRecognizer:self.panGestureRecognizerForNormalMode];
+
+    [self.webView addSubview:self.enterReaderModeButton];
+    [self.webView addSubview:self.exitReaderModeButton];
+    
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activityIndicator startAnimating];
     self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
+    self.toolbar = [[PPToolbar alloc] init];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.frame = CGRectMake(0, 0, 30, 30);
+    self.backBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    self.backBarButtonItem.enabled = NO;
+
+    UIButton *forwardButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [forwardButton setImage:[UIImage imageNamed:@"forward-dash"] forState:UIControlStateNormal];
+    [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    forwardButton.frame = CGRectMake(0, 0, 30, 30);
+    self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
+    self.forwardBarButtonItem.enabled = NO;
+    
+    self.readerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
+    self.readerButton.frame = CGRectMake(0, 0, 30, 30);
+    self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
+
+    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [actionButton setImage:[UIImage imageNamed:@"action-dash"] forState:UIControlStateNormal];
+    [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    actionButton.frame = CGRectMake(0, 0, 30, 30);
+    self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+
+    UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [socialButton setImage:[UIImage imageNamed:@"share2-dash"] forState:UIControlStateNormal];
+    [socialButton addTarget:self action:@selector(socialActionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    socialButton.frame = CGRectMake(0, 0, 30, 30);
+    self.socialBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:socialButton];
+    
+    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixedSpace.width = 10;
+
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
+    self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
+
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:self.toolbar];
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -99,35 +210,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Determine if we should mobilize or not
-    NSString *mobilizedUrlString;
-    if (![self isURLStringMobilized:self.urlString] && self.shouldMobilize) {
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.urlString];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.urlString];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.urlString];
-                break;
-                
-            default:
-                break;
-        }
-        
-        self.urlString = mobilizedUrlString;
-    }
 
-    // Setup the UIWebView frame size
-    /*
     CGSize size = self.view.frame.size;
     self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
-    */
     
     CGSize buttonSize = self.webView.frame.size;
     CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
@@ -160,59 +245,7 @@ static NSInteger kToolbarHeight = 44;
     [self.webView stopLoading];
 }
 
-- (void)stopLoading:(id)sender {
-    [self stopLoading];
-}
-
-- (void)setFullscreen:(BOOL)fullscreen {
-    // Just return if we're already in the desired state
-    if (fullscreen == self.isFullscreen)
-        return;
-    
-    if (fullscreen) {
-        self.toolbarFrame = self.toolbar.frame;
-        
-        // Show the hidden UIView to get tap notifications
-        self.tapGestureForFullscreenMode.enabled = YES;
-        
-        if (self.webView.scrollView.contentOffset.y < 10)
-            [self.tapViewTop setHidden:NO];
-        [self.tapViewBottom setHidden:NO];
-        
-        // Hide the navigation and status bars
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        
-        [UIView animateWithDuration:0.25 animations:^{
-            // Slide down the bottom toolbar
-            self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.toolbarFrame.origin.y + self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
-        }];
-    } else {
-        // Hide the tap view
-        self.tapGestureForFullscreenMode.enabled = NO;
-        [self.tapViewTop setHidden:YES];
-        [self.tapViewBottom setHidden:YES];
-        
-        // Reveal the navigation and status bars
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
-        
-        [UIView animateWithDuration:0.25 animations:^{
-            // Show the bottom toolbar - base of application size in case we're animating
-            CGSize size = [UIApplication currentSize];
-            [self.toolbar setFrame:CGRectMake(0, size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
-        }];
-    }
-    self.isFullscreen = fullscreen;
-}
-
-- (void)disableFullscreen:(id)sender {
-    CGRect frame = self.navigationController.navigationBar.frame;
-    self.webView.scrollView.contentInset = UIEdgeInsetsMake([[UIApplication sharedApplication] statusBarFrame].size.height + frame.origin.y + frame.size.height, 0, 0, 0);
-    [self setFullscreen:NO];
-}
-
-- (void)toggleFullScreen:(BOOL)force {
+- (void)toggleFullScreen {
     UIButton *visibleButton = self.enterReaderModeButton.hidden ? self.exitReaderModeButton : self.enterReaderModeButton;
 
     if (self.navigationController.navigationBarHidden) {
@@ -262,7 +295,14 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
         
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        BOOL isIPad = [UIApplication isIPad];
+        if (isIPad) {
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            [(RDActionSheet *)self.actionSheet setDelegate:self];
+        }
 
         BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
         BOOL canSendTweet;
@@ -291,12 +331,13 @@ static NSInteger kToolbarHeight = 44;
         if ([MFMailComposeViewController canSendMail]) {
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
         }
-        
-        // Properly set the cancel button index
-        [self.actionSheet addButtonWithTitle:@"Cancel"];
-        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
-        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
+        if (isIPad) {
+            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
+        }
+        else {
+            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+        }
     }
     else {
         if ([UIApplication isIPad]) {
@@ -316,7 +357,7 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequestsInProgress--;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
-    
+
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = pageTitle;
 }
@@ -384,9 +425,16 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionButtonTouchUp:(id)sender {
     if (!self.actionSheet) {
-        NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
+        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        BOOL isIPad = [UIApplication isIPad];
+        if (isIPad) {
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        }
+        else {
+            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            [(RDActionSheet *)self.actionSheet setDelegate:self];
+        }
 
         [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -428,12 +476,13 @@ static NSInteger kToolbarHeight = 44;
         else if (readlater == READLATER_POCKET) {
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
         }
-        
-        // Properly set the cancel button index
-        [self.actionSheet addButtonWithTitle:@"Cancel"];
-        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
 
-        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+        if (isIPad) {
+            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+        }
+        else {
+            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
+        }
     }
     else {
         if ([UIApplication isIPad]) {
@@ -807,48 +856,27 @@ static NSInteger kToolbarHeight = 44;
     return webViewController;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    CGSize size = [UIApplication currentSize];
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    CGSize size = self.view.frame.size;
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+
+    CGSize buttonSize = self.webView.frame.size;
+    CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
+    self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+    self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
-}
-
-#pragma mark -
-#pragma mark UIScrollViewDelegate
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    //[self setFullscreen:YES];
-}
-
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
-    [self setFullscreen:NO];
-}
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"%f - %f", scrollView.contentInset.top, scrollView.contentOffset.y);
-    if ((scrollView.contentOffset.y + scrollView.contentInset.top) <= 0) {
-        [self setFullscreen:NO];
-    } else {
-        [self setFullscreen:YES];
-    }
-}
-
-#pragma mark -
-#pragma mark iOS 7 updates
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"AddBookmark"]) {
-        NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-        NSDictionary *post = @{
-                               @"title": pageTitle,
-                               @"url": [self urlStringForDemobilizedURL:self.url]
-                               };
-        AddBookmarkViewController *destinationVC = (AddBookmarkViewController *)[segue destinationViewController];
-    }
 }
 
 @end

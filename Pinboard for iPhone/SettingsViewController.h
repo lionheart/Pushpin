@@ -10,29 +10,31 @@
 #import "AppDelegate.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMessageComposeViewController.h>
+#import "PPSwitch.h"
 #import "RDActionSheet.h"
+#import "WCAlertView.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, RDActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;
-@property (nonatomic, strong) UIAlertView *pocketVerificationAlertView;
+@property (nonatomic, retain) WCAlertView *instapaperVerificationAlertView;
+@property (nonatomic, retain) WCAlertView *readabilityVerificationAlertView;
+@property (nonatomic, strong) WCAlertView *pocketVerificationAlertView;
 @property (nonatomic, retain) PPLoadingView *loadingIndicator;
-@property (nonatomic, retain) UIAlertView *instapaperAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityAlertView;
-@property (nonatomic, retain) UIAlertView *logOutAlertView;
+@property (nonatomic, retain) WCAlertView *instapaperAlertView;
+@property (nonatomic, retain) WCAlertView *readabilityAlertView;
+@property (nonatomic, retain) WCAlertView *logOutAlertView;
 
 @property (nonatomic, retain) UIActionSheet *mobilizerActionSheet;
-@property (nonatomic, retain) UIActionSheet *supportActionSheet;
+@property (nonatomic, retain) RDActionSheet *supportActionSheet;
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
-@property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;
+@property (nonatomic, strong) RDActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
-@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
-@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
+@property (nonatomic, retain) PPSwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) PPSwitch *readByDefaultSwitch;
 
 @property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 @property (nonatomic, strong) id actionSheet;

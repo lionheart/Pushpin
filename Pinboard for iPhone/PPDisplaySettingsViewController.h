@@ -11,9 +11,9 @@
 
 @interface PPDisplaySettingsViewController : PPTableViewController
 
-@property (nonatomic, retain) UISwitch *dimReadPostsSwitch;
-@property (nonatomic, retain) UISwitch *compressPostsSwitch;
-@property (nonatomic, retain) UISwitch *doubleTapToEditSwitch;
+@property (nonatomic, retain) PPSwitch *dimReadPostsSwitch;
+@property (nonatomic, retain) PPSwitch *compressPostsSwitch;
+@property (nonatomic, retain) PPSwitch *doubleTapToEditSwitch;
 
 - (void)switchChangedValue:(id)sender;
 
