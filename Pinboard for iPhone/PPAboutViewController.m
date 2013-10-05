@@ -21,6 +21,7 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
+#import <Mixpanel/Mixpanel.h>
 
 @interface PPAboutViewController ()
 
@@ -28,65 +29,65 @@
 
 @implementation PPAboutViewController
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
-        self.data = [NSArray arrayWithContentsOfFile:plistPath];
-        self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-        [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-        
-        self.heights = [NSMutableDictionary dictionary];
-        self.titles = [NSMutableArray array];
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-        UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
-        NSInteger index = 0;
-        CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
-        CGFloat descriptionHeight;
-        NSUInteger emptyLines;
-        NSArray *lines;
-        for (NSArray *list in self.data) {
-            [self.titles addObject:list[0]];
-            for (NSArray *pair in list[1]) {
-                NSString *title = pair[0];
-                NSString *description = pair[1];
+- (void)viewDidLoad {
+    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
+    self.data = [NSArray arrayWithContentsOfFile:plistPath];
+    self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-                if ([title isEqualToString:@""]) {
-                    self.heights[title] = @(0);
-                }
-                else {
-                    self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
-                }
+    self.heights = [NSMutableDictionary dictionary];
+    self.titles = [NSMutableArray array];
+    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
+    NSInteger index = 0;
+    CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
+    CGFloat descriptionHeight;
+    NSUInteger emptyLines;
+    NSArray *lines;
+    for (NSArray *list in self.data) {
+        [self.titles addObject:list[0]];
+        for (NSArray *pair in list[1]) {
+            NSString *title = pair[0];
+            NSString *description = pair[1];
 
-                if ([description isEqualToString:@""]) {
-                    descriptionHeight = 0;
-                }
-                else {
-                    emptyLines = 0;
-                    lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-                    for (NSString *line in lines) {
-                        if ([line isEqualToString:@""]) {
-                            emptyLines++;
-                        }
-                    }
-
-                    if (index == 4) {
-                        descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
-                    }
-                    else {
-                        descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
-                    }
-                }
-
-                self.heights[description] = @(descriptionHeight);
+            if ([title isEqualToString:@""]) {
+                self.heights[title] = @(0);
             }
-            index++;
+            else {
+                self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
+            }
+
+            if ([description isEqualToString:@""]) {
+                descriptionHeight = 0;
+            }
+            else {
+                emptyLines = 0;
+                lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                for (NSString *line in lines) {
+                    if ([line isEqualToString:@""]) {
+                        emptyLines++;
+                    }
+                }
+
+                if (index == 4) {
+                    descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                }
+                else {
+                    descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                }
+            }
+
+            self.heights[description] = @(descriptionHeight);
         }
-        
-        self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        index++;
     }
-    return self;
+
+    self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [[Mixpanel sharedInstance] track:@"Opened about page"];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -177,17 +178,6 @@
     NSString *title = info[indexPath.row][0];
     NSString *detail = info[indexPath.row][1];
     
-    CGFloat height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackgroundForHeight:height];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayerForHeight:height]];
-    }
-
-    if (indexPath.row < info.count - 1) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayerForHeight:height]];
-    }
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer forHeight:height];
-
     if ([info[indexPath.row] count] > 3) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }

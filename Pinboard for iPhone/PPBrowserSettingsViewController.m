@@ -112,15 +112,12 @@
 
     cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
                         case BROWSER_WEBVIEW:
                             cell.detailTextLabel.text = @"Webview";
@@ -154,7 +151,7 @@
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     
                     CGSize size = cell.frame.size;
-                    self.openLinksInAppSwitch = [[PPSwitch alloc] init];
+                    self.openLinksInAppSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] openLinksInApp].boolValue;
@@ -170,7 +167,7 @@
             
         case 1: {
             cell.textLabel.text = NSLocalizedString(@"Installation instructions", nil);
-            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
             break;
         }

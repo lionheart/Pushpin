@@ -172,25 +172,6 @@
     return nil;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        BOOL isIPad = [UIApplication isIPad];
-        NSUInteger fontSize = 17;
-        NSUInteger padding = isIPad ? 45 : 15;
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
-        view.clipsToBounds = YES;
-        UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(padding, 0, [UIApplication currentSize].width - padding, 44);
-        label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:fontSize];
-        label.textColor = HEX(0x4C586AFF);
-        label.backgroundColor = HEX(0xF7F9FDff);
-        label.text = self.sortedTitles[section];
-        [view addSubview:label];
-        return view;
-    }
-    return nil;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section > 0) {
         return 44;
@@ -202,24 +183,14 @@
     static NSString *identifier = @"TagCell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
+    static NSUInteger badgeTag = 1;
+    UILabel *badgeLabel;
+
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    }
-
-    if (tableView == self.tableView) {
-        CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-        if (indexPath.row > 0) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-        }
-
-        if (indexPath.row < 5) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-        }
-        [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-    }
-    else {
-        [cell setSelectedBackgroundViewWithLayer:[PPGroupedTableViewCell layerForNonGroupedBackground]];
+        badgeLabel = [[UILabel alloc] init];
+        [badgeLabel setTag:badgeTag];
+        [cell.contentView addSubview:badgeLabel];
     }
 
     NSDictionary *tag;
@@ -240,6 +211,18 @@
         frame.size.width += 20;
         cell.accessoryView.frame = frame;
     }
+    */
+
+    NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
+    UIFont *badgeFont = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
+    CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
+    badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
+    [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
+    [badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [badgeLabel setFont:badgeFont];
+    [badgeLabel setText:badgeCount];
+    [badgeLabel setTextColor:[UIColor grayColor]];
+
     cell.imageView.image = nil;
     return cell;
 }

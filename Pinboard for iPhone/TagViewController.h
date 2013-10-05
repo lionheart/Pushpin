@@ -17,10 +17,11 @@
 @property (nonatomic, retain) NSArray *sortedTitles;
 @property (nonatomic, retain) NSArray *filteredTags;
 @property (nonatomic, retain) NSMutableArray *tagList;
+@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
+
 @property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UINavigationController *navigationController;
-@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 
 - (void)popViewController;
 
