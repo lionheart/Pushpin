@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "PPAboutViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "WCAlertView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
@@ -46,10 +45,10 @@
     NSUInteger emptyLines;
     NSArray *lines;
     for (NSArray *list in self.data) {
-        [self.titles addObject:list[0]];
+        [self.titles addObject:NSLocalizedString(list[0], nil)];
         for (NSArray *pair in list[1]) {
-            NSString *title = pair[0];
-            NSString *description = pair[1];
+            NSString *title = NSLocalizedString(pair[0], nil);
+            NSString *description = NSLocalizedString(pair[1], nil);
 
             if ([title isEqualToString:@""]) {
                 self.heights[title] = @(0);
@@ -187,11 +186,11 @@
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
         cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-        if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
-            cell.detailTextLabel.text = @"Tap to view license.";
+        if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
+            cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
         }
         else {
-            cell.detailTextLabel.text = @"Tap to expand.";
+            cell.detailTextLabel.text = NSLocalizedString(@"Tap to expand.", nil);
         }
     }
     else {
@@ -266,10 +265,10 @@
                     if (response[@"errors"]) {
                         NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
                         NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                        [[[WCAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
+                        [[[UIAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
                     }
                     else {
-                        [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                     }
                 });
 
@@ -287,14 +286,9 @@
         ACAccountStore *accountStore = [[ACAccountStore alloc] init];
         ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         
-        void (^AccessGrantedBlock)(WCAlertView *) = ^(WCAlertView *loadingAlertView) {
+        void (^AccessGrantedBlock)(UIAlertView *) = ^(UIAlertView *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([UIApplication isIPad]) {
-                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
-                else {
-                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
+                self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                 
                 NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
                 NSString *accountScreenName;
@@ -308,13 +302,14 @@
                     [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                 }
 
+                // Properly set the cancel button index
+                [self.actionSheet addButtonWithTitle:@"Cancel"];
+                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+
                 if ([accounts count] > 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([self.actionSheet respondsToSelector:@selector(showFromRect:inView:animated:)]) {
                             [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:NO];
-                        }
-                        else {
-                            [self.actionSheet showFrom:self.navigationController.view];
                         }
                     });
                 }
@@ -329,7 +324,7 @@
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                WCAlertView *loadingAlertView = [[WCAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                 [loadingAlertView show];
 
                 self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
@@ -345,7 +340,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }
@@ -358,7 +353,7 @@
                                                                }
                                                                else {
                                                                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
                                                                }
                                                            }];
                     }
@@ -377,12 +372,7 @@
 
             if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
 
-                if ([UIApplication isIPad]) {
-                    self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
-                else {
-                    self.actionSheet = [[RDActionSheet alloc] initWithTitle:self.selectedItem[0] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                }
+                self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
                 if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:@"Copy Project URL"];
@@ -392,12 +382,11 @@
                     [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
                 }
 
-                if ([UIApplication isIPad]) {
-                    [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
-                }
-                else {
-                    [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-                }
+                // Properly set the cancel button index
+                [self.actionSheet addButtonWithTitle:@"Cancel"];
+                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+
+                [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
             }
         }
         else {
