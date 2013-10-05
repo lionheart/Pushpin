@@ -990,55 +990,10 @@ static BOOL kPinboardSyncInProgress = NO;
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
         [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
 
-        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-
-        NSMutableArray *newPosts = [NSMutableArray array];
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newLinks = [NSMutableArray array];
-        
-        NSMutableArray *newCompressedStrings = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedLinks = [NSMutableArray array];
-
-        while ([results next]) {
-            NSDictionary *post = [PinboardDataSource postFromResultSet:results];
-
-            [newPosts addObject:post];
-            dispatch_group_enter(inner_group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
-                [newHeights addObject:height];
-                [newStrings addObject:string];
-                [newLinks addObject:links];
-                dispatch_group_leave(inner_group);
-            }];
-            
-            dispatch_group_enter(inner_group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
-                [newCompressedHeights addObject:height];
-                [newCompressedStrings addObject:string];
-                [newCompressedLinks addObject:links];
-                dispatch_group_leave(inner_group);
-            }];
-        }
-        [db close];
-
-        for (int i=previousPostCount - numberOfPostsDeleted; i<newPosts.count; i++) {
-            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-
-        self.posts = newPosts;
-        self.strings = newStrings;
-        self.heights = newHeights;
-        self.links = newLinks;
-
-        self.compressedStrings = newCompressedStrings;
-        self.compressedHeights = newCompressedHeights;
-        self.compressedLinks = newCompressedLinks;
+        // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
 
         if (callback) {
             dispatch_group_notify(inner_group, queue, ^{
-                #warning XXX There is a bug here with consistency
                 callback(indexPathsToDelete, indexPathsToAdd);
             });
         }
@@ -1116,8 +1071,8 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     
     NSString *title = post[@"title"];
     NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
@@ -1144,15 +1099,15 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
     callback(attributedString, height, @[]);
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *tagsFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
 
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
@@ -1216,7 +1171,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20);
+    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
 
     NSMutableArray *links = [NSMutableArray array];
     NSInteger location = tagRange.location;
