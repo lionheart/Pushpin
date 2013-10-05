@@ -30,7 +30,6 @@
 @implementation FeedListViewController
 
 @synthesize connectionAvailable;
-@synthesize navigationController;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
 
@@ -61,7 +60,7 @@
                 previousCount = @"";
             }
             else {
-                previousCount = [self.bookmarkCounts objectAtIndex:i];
+                previousCount = self.bookmarkCounts[i];
             }
             
             if (previousCount != nil && ![count isEqualToString:previousCount]) {
@@ -80,59 +79,52 @@
     });
 }
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
-    if (self) {
-        self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
-        self.bookmarkCounts = [NSMutableArray array];
-        [self calculateBookmarkCounts:nil];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
-        UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
-        [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
-        [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-        settingsButton.frame = CGRectMake(0, 0, 30, 24);
-        UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-        
-        UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
-        [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
-        [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-        tagButton.frame = CGRectMake(0, 0, 30, 24);
-        UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+    self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
+    [self calculateBookmarkCounts:nil];
+    self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
 
-        UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
-        [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
-        [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-        notesButton.frame = CGRectMake(0, 0, 20, 24);
-        self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
-        self.notesBarButtonItem.enabled = self.connectionAvailable;
+    self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
+    self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
-        self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
-        self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-        self.tableView.backgroundColor = HEX(0xF7F9FDff);
-        self.tableView.opaque = NO;
-    }
-    return self;
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
+    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
+    [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
+    settingsButton.frame = CGRectMake(0, 0, 30, 24);
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+
+    UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
+    [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
+    [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+    tagButton.frame = CGRectMake(0, 0, 30, 24);
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+
+    UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
+    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
+    [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
+    notesButton.frame = CGRectMake(0, 0, 20, 24);
+    self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
+    self.notesBarButtonItem.enabled = self.connectionAvailable;
+
+    self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
+    self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
+
+    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    self.tableView.opaque = NO;
+
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Create the top inset on iOS 7
-    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
-    
-    // Set a content inset on iOS 7
-    if (isIOS7) {
-        UINavigationController *primaryNavigationController = [[AppDelegate sharedDelegate] navigationController];
-        [self.tableView setContentInset:UIEdgeInsetsMake(primaryNavigationController.navigationBar.frame.size.height + 20, 0, 0, 0)];
-    }
-
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    self.tableView.opaque = NO;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
@@ -199,6 +191,16 @@
     return 6;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UIFont *textLabelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    CGSize textLabelFontSize = [@"Feed" sizeWithAttributes:[NSDictionary dictionaryWithObject:textLabelFont forKey:NSFontAttributeName]];
+
+    CGFloat padding = 10;
+    CGFloat totalHeight = padding + textLabelFontSize.height + padding;
+
+    return totalHeight;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
@@ -219,11 +221,12 @@
     UILabel *badgeLabel;
 
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        badgeLabel = [[UILabel alloc] init];
-        [badgeLabel setTag:badgeTag];
-        [cell.contentView addSubview:badgeLabel];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
+
+    // Dynamic Type
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];;
+    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     
     // The badge is hidden by default
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
@@ -231,7 +234,6 @@
     
     cell.detailTextLabel.text = nil;
 
-    UIImage *pillImage;
     NSString *badgeCount;
     switch (indexPath.section) {
         case 0: {
@@ -239,58 +241,42 @@
                 case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"cabinet"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedAllBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedAllBookmarks ? self.bookmarkCounts[PinboardFeedAllBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedAllBookmarks];
                     break;
                 case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"lock"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPrivateBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedPrivateBookmarks ? self.bookmarkCounts[PinboardFeedPrivateBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedPrivateBookmarks];
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"globe"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedPublicBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedPublicBookmarks ? self.bookmarkCounts[PinboardFeedPublicBookmarks] : @"";
+                    cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
+                    badgeCount = self.bookmarkCounts[PinboardFeedPublicBookmarks];
                     break;
                 case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"glasses"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUnreadBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedUnreadBookmarks ? self.bookmarkCounts[PinboardFeedUnreadBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedUnreadBookmarks];
                     break;
                 case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"tag"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedUntaggedBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedUntaggedBookmarks ? self.bookmarkCounts[PinboardFeedUntaggedBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedUntaggedBookmarks];
                     break;
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"star"];
-                    //pillImage = [PPCoreGraphics pillImage:self.bookmarkCounts[PinboardFeedStarredBookmarks]];
-                    badgeCount = self.bookmarkCounts.count > PinboardFeedStarredBookmarks ? self.bookmarkCounts[PinboardFeedStarredBookmarks] : @"";
+                    badgeCount = self.bookmarkCounts[PinboardFeedStarredBookmarks];
                     break;
             }
-
-            UIFont *badgeFont = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
-            CGSize badgeSize = [badgeCount sizeWithFont:badgeFont];
-            [badgeLabel setHidden:NO];
-            [badgeLabel setFrame:CGRectMake(cell.frame.size.width - 30.0f - badgeSize.width, (cell.frame.size.height / 2) - (badgeSize.height / 2), badgeSize.width, badgeSize.height)];
-            [badgeLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-            [badgeLabel setFont:badgeFont];
-            [badgeLabel setText:badgeCount];
-            [badgeLabel setTextColor:[UIColor grayColor]];
             
+            cell.detailTextLabel.text = badgeCount;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            
             break;
         }
         case 1: {
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            //cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory-caret"]];
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);
@@ -308,7 +294,7 @@
                     cell.textLabel.text = @"日本語";
                     break;
                 case 5:
-                    cell.textLabel.text = @"Saved Feeds";
+                    cell.textLabel.text = NSLocalizedString(@"Saved Feeds", nil);
                     break;
             }
 
@@ -328,50 +314,49 @@
         case 0: {
             switch (indexPath.row) {
                 case 0: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"All Bookmarks", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"Private Bookmarks", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"Public", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"Public", nil);
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"Unread", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"Unread", nil);
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"Untagged", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"Untagged", nil);
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
-                    postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
-                    postViewTitle = NSLocalizedString(@"Starred", nil);
+                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    postViewController.title = NSLocalizedString(@"Starred", nil);
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
             }
 
-            [self performSegueWithIdentifier:@"ShowPosts" sender:self];
+            [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
 
             break;
         }
         case 1: {
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
-            postViewController.postDataSource = feedDataSource;
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
             if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
@@ -383,35 +368,30 @@
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-                        postViewController.title = NSLocalizedString(@"Network", nil);
+                        postViewTitle = NSLocalizedString(@"Network", nil);
                         [mixpanel track:@"Browsed network bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
                     case 1: {
                         feedDataSource.components = @[@"popular?count=100"];
-                        postViewController.title = NSLocalizedString(@"Popular", nil);
+                        postViewTitle = NSLocalizedString(@"Popular", nil);
                         [mixpanel track:@"Browsed popular bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
                     case 2:
                         feedDataSource.components = @[@"popular", @"wikipedia"];
-                        postViewController.title = @"Wikipedia";
+                        postViewTitle = @"Wikipedia";
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 3:
                         feedDataSource.components = @[@"popular", @"fandom"];
-                        postViewController.title = NSLocalizedString(@"Fandom", nil);
+                        postViewTitle = NSLocalizedString(@"Fandom", nil);
                         [mixpanel track:@"Browsed fandom bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 4:
                         feedDataSource.components = @[@"popular", @"japanese"];
-                        postViewController.title = @"日本語";
+                        postViewTitle = @"日本語";
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 5: {
                         PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
@@ -420,7 +400,6 @@
                         break;
                     }
                 }
-
                 
                 break;
             }
@@ -479,6 +458,29 @@
 
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     [self dismissViewControllerAnimated:YES completion:success];
+}
+
+#pragma mark -
+#pragma mark iOS 7 Updates
+
+// Called prior to Storyboard segues
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"ShowPosts"]) {
+        GenericPostViewController *vc = [segue destinationViewController];
+        vc.postDataSource = self.postDataSource;
+        [vc setTitle:postViewTitle];
+    } else if ([[segue identifier] isEqualToString:@"ShowNotes"]) {
+        GenericPostViewController *vc = [segue destinationViewController];
+        PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
+        vc.postDataSource = notesDataSource;
+        [vc setTitle:NSLocalizedString(@"Notes", nil)];
+    } else if ([[segue identifier] isEqualToString:@"ShowTags"]) {
+    }
+}
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
+    [self.view setNeedsLayout];
+    [self.tableView reloadData];
 }
 
 @end
