@@ -745,15 +745,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     CGPoint pointInWindowCoords = [mainWindow convertPoint:cell.contentView.center fromWindow:nil];
     CGPoint pointInViewCoords = [tableView convertPoint:pointInWindowCoords fromView:mainWindow];
 
-    DLog(@"%@", NSStringFromCGRect(cell.textView.frame));
-
-    cell.animator = [[UIDynamicAnimator alloc] initWithReferenceView:tableView];
-    cell.attachment = [[UIAttachmentBehavior alloc] initWithItem:cell.textView attachedToItem:cell.contentView];
-    cell.attachment.frequency = 0.5;
-    cell.attachment.damping = 0.5;
-    cell.attachment.length = 0;
-    [cell.animator addBehavior:cell.attachment];
-
     [cell.textView setText:string];
 
     NSArray *links;
