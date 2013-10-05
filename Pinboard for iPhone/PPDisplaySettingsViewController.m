@@ -109,7 +109,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    return @"You can also toggle this by pinching in or out when viewing bookmarks.";
+    return NSLocalizedString(@"You can also toggle this by pinching in or out when viewing bookmarks.", nil);
 }
 
 - (void)switchChangedValue:(id)sender {

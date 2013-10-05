@@ -295,14 +295,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.actionSheet) {
         NSString *urlString = [self urlStringForDemobilizedURL:self.url];
         
-        BOOL isIPad = [UIApplication isIPad];
-        if (isIPad) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            [(RDActionSheet *)self.actionSheet setDelegate:self];
-        }
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
         BOOL canSendTweet;
@@ -332,12 +325,11 @@ static NSInteger kToolbarHeight = 44;
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
         }
 
-        if (isIPad) {
-            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+
+        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
     }
     else {
         if ([UIApplication isIPad]) {
@@ -425,16 +417,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionButtonTouchUp:(id)sender {
     if (!self.actionSheet) {
-        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
+        NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
 
-        BOOL isIPad = [UIApplication isIPad];
-        if (isIPad) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            [(RDActionSheet *)self.actionSheet setDelegate:self];
-        }
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
@@ -477,12 +462,11 @@ static NSInteger kToolbarHeight = 44;
             [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
         }
 
-        if (isIPad) {
-            [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+
+        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
     }
     else {
         if ([UIApplication isIPad]) {
