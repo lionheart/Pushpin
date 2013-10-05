@@ -43,9 +43,12 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 @synthesize pullToRefreshImageView;
 @synthesize loading;
 @synthesize searchDisplayController = __searchDisplayController;
+@synthesize itemSize = _itemSize;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.tableView];
+
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
@@ -186,37 +189,37 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView.isEditing) {
-        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
-        if (selectedRowCount > 0) {
-            self.multipleDeleteButton.enabled = YES;
-            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
-        }
-        else {
-            self.multipleDeleteButton.enabled = NO;
-            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
-        }
+    NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+    if (selectedRowCount > 0) {
+        self.multipleDeleteButton.enabled = YES;
+        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+    }
+    else {
+        self.multipleDeleteButton.enabled = NO;
+        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.numberOfTapsSinceTapReset++;
-    self.selectedTableView = tableView;
-    self.selectedIndexPath = indexPath;
+    if (!tableView.editing) {
+        self.numberOfTapsSinceTapReset++;
+        self.selectedTableView = tableView;
+        self.selectedIndexPath = indexPath;
 
-    if ([AppDelegate sharedDelegate].doubleTapToEdit && !tableView.editing) {
-        if (!self.singleTapTimer) {
-            self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
+        if ([AppDelegate sharedDelegate].doubleTapToEdit) {
+            if (!self.singleTapTimer) {
+                self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
+                [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
+            }
+            else {
+                [self.singleTapTimer invalidate];
+                self.singleTapTimer = nil;
+                [self handleCellTap];
+            }
         }
         else {
-            [self.singleTapTimer invalidate];
-            self.singleTapTimer = nil;
             [self handleCellTap];
         }
-    }
-    else {
-        [self handleCellTap];
     }
 }
 
@@ -469,23 +472,16 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
                     self.loading = NO;
                     [UIView animateWithDuration:0.2 animations:^{
-                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
+                        [self.pullToRefreshView setHidden:YES];
                         CGFloat offset = self.tableView.contentOffset.y;
                         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
                         
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
-                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
-                            self.searchBar.delegate = self;
-                            self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                            self.searchDisplayController.searchResultsDataSource = self;
-                            self.searchDisplayController.searchResultsDelegate = self;
-                            self.searchDisplayController.delegate = self;
-                            self.tableView.tableHeaderView = self.searchBar;
-                            [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
                         }
                     }];
 
@@ -1258,6 +1254,20 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark -
+#pragma mark iOS 7 Updates
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
+    [self.postDataSource updatePostsFromDatabase:^(void) {
+        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+            [self.view setNeedsLayout];
+        });
+    } failure:nil];
 }
 
 @end
