@@ -967,6 +967,8 @@ static BOOL kPinboardSyncInProgress = NO;
             [db close];
 
             [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+            
+            [self.posts removeObjectAtIndex:indexPath.row];
 
             [indexPathsToDelete addObject:indexPath];
             numberOfPostsDeleted++;
