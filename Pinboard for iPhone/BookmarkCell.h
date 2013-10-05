@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 
-@interface BookmarkCell : UITableViewCell
+@interface BookmarkCell : UICollectionViewCell
 
 @property (nonatomic, retain) TTTAttributedLabel *textView;
+@property (nonatomic) BOOL isEditting;
+@property (nonatomic, retain) NSIndexPath *currentPath;
 
 @end
