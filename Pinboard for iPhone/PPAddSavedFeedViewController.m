@@ -46,6 +46,8 @@
     self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
     self.tagsTextField.returnKeyType = UIReturnKeyDone;
     self.tagsTextField.text = @"";
+
+    self.title = NSLocalizedString(@"Add Feed", nil);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
