@@ -504,17 +504,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-
-    if (indexPath.row < 5) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
         CGRect frame = cell.frame;
@@ -523,7 +512,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             case 0:
                 switch (indexPath.row) {
                     case 0:
-                        cell.imageView.image = [UIImage imageNamed:@"globe"];
+                        cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
                         self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                         [cell.contentView addSubview:self.urlTextField];
                         break;
@@ -583,7 +572,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
                             cell.textLabel.text = tag;
-                            cell.accessoryView = [[UIImageView alloc] initWithImage:[PPCoreGraphics pillImage:self.tagCounts[tag]]];
+                            cell.detailTextLabel.text = self.tagCounts[tag];
                         }
                         else {
                             cell.textLabel.text = self.popularTagSuggestions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
@@ -600,7 +589,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             case 1: {
                 if (indexPath.row == 0) {
                     cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
-                    self.privateSwitch = [[PPSwitch alloc] init];
+                    self.privateSwitch = [[UISwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.privateSwitch.frame.size;
                     self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -610,7 +599,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 }
                 else if (indexPath.row == 1) {
                     cell.textLabel.text = NSLocalizedString(@"Mark as read?", nil);
-                    self.readSwitch = [[PPSwitch alloc] init];
+                    self.readSwitch = [[UISwitch alloc] init];
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.readSwitch.frame.size;
                     self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -796,7 +785,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-            WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -909,7 +898,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                                      dispatch_async(dispatch_get_main_queue(), ^{
                                          self.navigationItem.leftBarButtonItem.enabled = YES;
                                          self.navigationItem.rightBarButtonItem.enabled = YES;
-                                         WCAlertView *alert = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                                          [alert show];
                                      });
                                  }];

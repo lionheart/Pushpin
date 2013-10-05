@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <HockeySDK/HockeySDK.h>
-#import "WCAlertView.h"
 #import "LoginViewController.h"
 
 enum browsers {
