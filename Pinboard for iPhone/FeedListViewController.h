@@ -21,13 +21,19 @@ enum PINBOARD_FEED_ITEMS {
     PinboardFeedStarredBookmarks
 };
 
-@interface FeedListViewController : PPTableViewController <ModalDelegate>
+@interface FeedListViewController : PPTableViewController <ModalDelegate> {
+    NSString *postViewTitle;
+}
 
+@property (nonatomic, strong) NSObject <GenericPostDataSource> *postDataSource;
 @property (nonatomic) BOOL connectionAvailable;
 @property (nonatomic, strong) UIBarButtonItem *notesBarButtonItem;
-@property (nonatomic, retain) UINavigationController *navigationController;
 @property (nonatomic, retain) NSTimer *updateTimer;
 @property (nonatomic, retain) NSMutableArray *bookmarkCounts;
+
+@property (nonatomic) CGFloat textSize;
+@property (nonatomic) CGFloat detailTextSize;
+@property (nonatomic) CGFloat rowHeight;
 
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
 - (void)connectionStatusDidChange:(NSNotification *)notification;
@@ -38,5 +44,7 @@ enum PINBOARD_FEED_ITEMS {
 
 - (void)hideNetworkDependentFeeds;
 - (void)showAllFeeds;
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
 @end
