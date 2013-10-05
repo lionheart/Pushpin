@@ -22,9 +22,11 @@
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UIView+LHSAdditions.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
+static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 @interface GenericPostViewController ()
 
@@ -59,7 +61,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
-    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
@@ -73,6 +74,36 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
+
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+
+    // Make sure the delegate and datasource are configured
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor whiteColor];
+
+    // Initial database update
+    [self updateFromLocalDatabaseWithCallback:nil];
+
+    [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
+        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
+        self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
+        self.navigationItem.rightBarButtonItem = self.editButton;
+    }
+
+    // Hide the pull to refresh view
+    [self.pullToRefreshView setHidden:YES];
+
+    if ([self.postDataSource numberOfPosts] == 0) {
+        self.tableView.separatorColor = [UIColor clearColor];
+    }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -83,43 +114,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // Create the top inset on iOS 7
-    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
-    
-    // Set a content inset on iOS 7
-    if (isIOS7) {
-        UINavigationController *primaryNavigationController = [[AppDelegate sharedDelegate] navigationController];
-        [self.tableView setContentInset:UIEdgeInsetsMake(primaryNavigationController.navigationBar.frame.size.height + 20, 0, 0, 0)];
-    }
-
-    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
-        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
-        self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
-        self.navigationItem.rightBarButtonItem = self.editButton;
-    }
-
-    if ([self.postDataSource numberOfPosts] == 0) {
-        self.tableView.separatorColor = [UIColor clearColor];
-    }
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self.navigationController.view addSubview:self.toolbar];
-
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
-    
-    #warning XXX Slows down UI a bit too much. :( #113
-    /*
-    self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-    [self.navigationController.navigationBar addGestureRecognizer:self.doubleTapGestureRecognizer];
-     */
 
     self.actionSheetVisible = NO;
     
@@ -148,11 +147,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
-
-        [self.pullToRefreshImageView startAnimating];
-        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
-
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
@@ -181,7 +175,10 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self deletePostsAtIndexPaths:@[indexPath]];
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        self.selectedPost = [self.postDataSource postAtIndex:indexPath.row];
+        [self showConfirmDeletionAlert];
+    }
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -534,11 +531,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
                 [UIView animateWithDuration:0.2 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
                 } completion:^(BOOL finished) {
+                    [self.pullToRefreshView setHidden:YES];
                     [self.pullToRefreshImageView stopAnimating];
                 }];
             });
@@ -629,7 +626,6 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                 [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView endUpdates];
             }];
-            [self.tableView setEditing:NO animated:YES];
             [CATransaction commit];
             
             [UIView animateWithDuration:0.25 animations:^{
@@ -650,7 +646,11 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     [self deletePostsAtIndexPaths:selectedIndexPaths];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    BookmarkCell *bookmarkCell = (BookmarkCell *)cell;
+}
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
@@ -684,32 +684,25 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
     }
 }
 
+#pragma mark - UICollectionViewDelegateFlowLayout
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + 10;
     }
-    return [dataSource heightForPostAtIndex:indexPath.row];
+    return [dataSource heightForPostAtIndex:indexPath.row] + 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"BookmarkCell";
-    
-    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell) {
-        cell = [[BookmarkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        cell.contentView.backgroundColor = [UIColor clearColor];
-    }
+    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
 
-    for (id subview in [cell.contentView subviews]) {
-        if (![subview isKindOfClass:[TTTAttributedLabel class]]) {
+    for (UIView *subview in [cell.contentView subviews]) {
+        if ([subview isKindOfClass:[UIImageView class]]) {
             [subview removeFromSuperview];
         }
-    }
-
-    for (id subview in [cell subviews]) {
-        if ([subview isKindOfClass:[UIImageView class]]) {
+        else if ([subview isKindOfClass:[TTTAttributedLabel class]]) {
             [subview removeFromSuperview];
         }
     }
@@ -723,10 +716,46 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
     }
 
-    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
-    [cell.textView setText:string];
     
+    cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    cell.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
+    cell.textView.translatesAutoresizingMaskIntoConstraints = NO;
+    cell.textView.numberOfLines = 0;
+    cell.textView.textColor = [UIColor darkGrayColor];
+    cell.textView.preferredMaxLayoutWidth = 320;
+    cell.textView.lineBreakMode = kCTLineBreakByWordWrapping;
+    cell.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    cell.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
+
+    NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
+    [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
+    [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
+    [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
+    cell.textView.activeLinkAttributes = mutableActiveLinkAttributes;
+    cell.textView.backgroundColor = [UIColor blackColor];
+
+    [cell.contentView addSubview:cell.textView];
+
+    cell.textView.bounds = CGRectInset(cell.contentView.bounds, 10, 5);
+    cell.textView.center = cell.center;
+
+    UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+    CGPoint pointInWindowCoords = [mainWindow convertPoint:cell.contentView.center fromWindow:nil];
+    CGPoint pointInViewCoords = [tableView convertPoint:pointInWindowCoords fromView:mainWindow];
+
+    DLog(@"%@", NSStringFromCGRect(cell.textView.frame));
+
+    cell.animator = [[UIDynamicAnimator alloc] initWithReferenceView:tableView];
+    cell.attachment = [[UIAttachmentBehavior alloc] initWithItem:cell.textView attachedToItem:cell.contentView];
+    cell.attachment.frequency = 0.5;
+    cell.attachment.damping = 0.5;
+    cell.attachment.length = 0;
+    [cell.animator addBehavior:cell.attachment];
+
+    [cell.textView setText:string];
+
     NSArray *links;
     if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && self.compressPosts) {
         links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
@@ -751,50 +780,20 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
         [layer removeFromSuperlayer];
     }
 
-    CGFloat height = [tableView.delegate tableView:tableView heightForRowAtIndexPath:indexPath];
-
-    // TAG: iOS7
-    /*
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
-    gradient.colors = @[(id)[HEX(0xFAFBFEff) CGColor], (id)[HEX(0xF2F6F9ff) CGColor]];
-    gradient.name = @"Gradient";
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
-    backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    cell.backgroundView = backgroundView;
-    [cell.backgroundView.layer addSublayer:gradient];
-    */
-    
-    if (tableView.editing) {
-        cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        cell.selectedBackgroundView = nil;
-    }
-    else {
-        // TAG: iOS7
-        /*
-        CAGradientLayer *selectedGradient = [CAGradientLayer layer];
-        selectedGradient.frame = CGRectMake(0, 0, [UIApplication currentSize].width, height);
-        selectedGradient.colors = @[(id)[HEX(0xE1E4ECff) CGColor], (id)[HEX(0xF3F5F9ff) CGColor]];
-        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, height)];
-        cell.selectedBackgroundView = selectedBackgroundView;
-        [cell.selectedBackgroundView.layer addSublayer:selectedGradient];
-        */
-    }
-
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.frame = CGRectMake([UIApplication currentSize].width - 18, 0, 18.f, 19.f);
-        [cell addSubview:lockImageView];
+        lockImageView.frame = CGRectMake(cell.contentView.frame.size.width - 18, 0, 18, 19);;
+        [cell.contentView addSubview:lockImageView];
     }
     
     BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
-        starImageView.frame = CGRectMake(0, 0, 18.f, 19.f);
-        [cell addSubview:starImageView];
-    }
+        starImageView.frame = CGRectMake(0, 0, 18, 19);
+        [cell.contentView addSubview:starImageView];
 
+    }
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
@@ -824,12 +823,7 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             urlString = self.selectedPost[@"url"];
         }
 
-        if ([UIApplication isIPad]) {
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
-        else {
-            self.actionSheet = [[RDActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        }
+        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -865,13 +859,12 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
             }
         }
 
-        self.actionSheetVisible = YES;        
-        if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
-        }
-        else {
-            [(RDActionSheet *)self.actionSheet showFrom:self.navigationController.view];
-        }
+        // Properly set the cancel button index
+        [self.actionSheet addButtonWithTitle:@"Cancel"];
+        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+
+        self.actionSheetVisible = YES;
+        [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
         self.tableView.scrollEnabled = NO;
     }
     else {
@@ -1094,14 +1087,14 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 }
 
 - (void)showConfirmDeletionAlert {
-    self.confirmDeletionAlertView = [[WCAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
 
     [self.confirmDeletionAlertView show];
 }
 
 #pragma mark - Alert View Delegate
 
-- (void)alertView:(WCAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView == self.confirmDeletionAlertView) {
         NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
@@ -1123,23 +1116,26 @@ static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
                     });
                 }];
             }
+        } else if ([title isEqualToString:NSLocalizedString(@"No", nil)]) {
+            // Dismiss the edit view
+            [self.tableView setEditing:NO animated:YES];
         }
     }
 }
 
 #pragma mark - Scroll View delegate
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        if (offset < -60) {
+        CGFloat tableOffsetTop = 22 + 44;
+        if (offset < (-60 - tableOffsetTop)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop + 60, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
                         [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
