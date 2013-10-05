@@ -352,7 +352,6 @@
             }
 
             [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
-
             break;
         }
         case 1: {
@@ -462,21 +461,6 @@
 
 #pragma mark -
 #pragma mark iOS 7 Updates
-
-// Called prior to Storyboard segues
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"ShowPosts"]) {
-        GenericPostViewController *vc = [segue destinationViewController];
-        vc.postDataSource = self.postDataSource;
-        [vc setTitle:postViewTitle];
-    } else if ([[segue identifier] isEqualToString:@"ShowNotes"]) {
-        GenericPostViewController *vc = [segue destinationViewController];
-        PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
-        vc.postDataSource = notesDataSource;
-        [vc setTitle:NSLocalizedString(@"Notes", nil)];
-    } else if ([[segue identifier] isEqualToString:@"ShowTags"]) {
-    }
-}
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.view setNeedsLayout];

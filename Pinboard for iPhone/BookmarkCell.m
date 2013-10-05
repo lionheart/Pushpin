@@ -33,10 +33,6 @@
         [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
         self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
         self.textView.backgroundColor = [UIColor clearColor];
-
-        [self.contentView addSubview:self.textView];
-        [self.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": self.textView}];
-        [self.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": self.textView}];
     }
     return self;
 }

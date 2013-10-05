@@ -87,8 +87,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.tableView.backgroundColor = [UIColor whiteColor];
 
     // Initial database update
-    [self updateFromLocalDatabaseWithCallback:nil];
-
     [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 }
 
@@ -730,16 +728,11 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
     [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
     cell.textView.activeLinkAttributes = mutableActiveLinkAttributes;
-    cell.textView.backgroundColor = [UIColor blackColor];
+    cell.textView.backgroundColor = [UIColor clearColor];
 
     [cell.contentView addSubview:cell.textView];
-
-    cell.textView.bounds = CGRectInset(cell.contentView.bounds, 10, 5);
-    cell.textView.center = cell.center;
-
-    UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
-    CGPoint pointInWindowCoords = [mainWindow convertPoint:cell.contentView.center fromWindow:nil];
-    CGPoint pointInViewCoords = [tableView convertPoint:pointInWindowCoords fromView:mainWindow];
+    [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": cell.textView}];
+    [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": cell.textView}];
 
     [cell.textView setText:string];
 
