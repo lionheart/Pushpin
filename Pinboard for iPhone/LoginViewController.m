@@ -65,6 +65,7 @@
     self.activityIndicatorFrameBottom = CGRectMake((size.width - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
     self.activityIndicator.frame = self.activityIndicatorFrameTop;
     [self.view addSubview:self.activityIndicator];
+     */
 
     keyboard_shown = false;
     self.loginTimer = nil;

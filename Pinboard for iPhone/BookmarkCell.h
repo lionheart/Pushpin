@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 
-@interface BookmarkCell : UICollectionViewCell
+@interface BookmarkCell : UITableViewCell
 
 @property (nonatomic, retain) TTTAttributedLabel *textView;
 @property (nonatomic) BOOL isEditting;
