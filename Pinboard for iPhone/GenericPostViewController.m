@@ -88,6 +88,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
     // Initial database update
     [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -480,6 +481,16 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                             self.searchPostDataSource = [self.postDataSource searchDataSource];
 
+                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
+                            self.searchBar.delegate = self;
+                            self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+                            self.searchDisplayController.searchResultsDataSource = self;
+                            self.searchDisplayController.searchResultsDelegate = self;
+                            self.searchDisplayController.delegate = self;
+                            self.tableView.tableHeaderView = self.searchBar;
+                            [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+
+                            [self.searchDisplayController.searchResultsTableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
                         }
                     }];
 
