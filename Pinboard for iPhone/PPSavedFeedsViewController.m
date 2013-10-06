@@ -78,17 +78,6 @@
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-
-    if (indexPath.row < self.feeds.count - 1) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
     
     CGFloat fontSize = 17;
     UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];

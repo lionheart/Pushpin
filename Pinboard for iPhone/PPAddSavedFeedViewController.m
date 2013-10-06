@@ -69,17 +69,7 @@
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row == 1) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-    
-    if (indexPath.row == 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-    }
-    
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     CGRect frame = cell.frame;

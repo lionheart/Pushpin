@@ -286,9 +286,10 @@
     // UIToolbar items
     UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
     [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setTintColor:barButtonItemColor];
-
-    [[UINavigationBar appearance] setBarTintColor:[UIColor blueColor]];
+    
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{UITextAttributeTextColor: [UIColor whiteColor]}];
 }
 
 - (UINavigationController *)navigationController {
@@ -304,6 +305,7 @@
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
         feedListViewController.title = @"Browse";
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
+        _navigationController.navigationBar.translucent = NO;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
     }

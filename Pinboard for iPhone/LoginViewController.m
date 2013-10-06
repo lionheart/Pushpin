@@ -24,6 +24,8 @@
 
 @implementation LoginViewController
 
+static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
+
 @synthesize activityIndicator;
 @synthesize textView;
 @synthesize progressView;
@@ -38,6 +40,8 @@
     CGSize size = [UIApplication currentSize];
     
     self.tableView.sectionFooterHeight = 0;
+    
+    [self.tableView registerClass:[LoginTableCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
     
     /*
     self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake((size.width - 180) / 2, 352, 180, 44)];
@@ -341,8 +345,7 @@
 */
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    LoginTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    LoginTableCell *cell = [tableView dequeueReusableCellWithIdentifier:LoginTableCellIdentifier forIndexPath:indexPath];
 
     switch (indexPath.row) {
         case 0:
