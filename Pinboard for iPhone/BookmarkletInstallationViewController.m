@@ -78,20 +78,6 @@
     }
 
     cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.section == 1) {
-        if (indexPath.row == 1) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-        }
-        
-        if (indexPath.row == 0) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-        }
-    }
-
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
-
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }

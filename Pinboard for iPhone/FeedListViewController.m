@@ -90,29 +90,30 @@
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
 
+    UIImage *settingsImage = [[UIImage imageNamed:@"SettingsNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigationDimmed"] forState:UIControlStateNormal];
-    [settingsButton setImage:[UIImage imageNamed:@"SettingsNavigation"] forState:UIControlStateHighlighted];
+    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton setImage:settingsImage forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 30, 24);
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
 
+    UIImage *tagImage = [[UIImage imageNamed:@"TagNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tagButton setImage:[UIImage imageNamed:@"TagNavigationDimmed"] forState:UIControlStateNormal];
-    [tagButton setImage:[UIImage imageNamed:@"TagNavigation"] forState:UIControlStateHighlighted];
+    [tagButton setImage:tagImage forState:UIControlStateNormal];
+    [tagButton setImage:tagImage forState:UIControlStateHighlighted];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 30, 24);
     UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
     UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notesButton setImage:[UIImage imageNamed:@"NotesNavigationDimmed"] forState:UIControlStateNormal];
-    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateHighlighted];
+    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateNormal];
     [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
     notesButton.frame = CGRectMake(0, 0, 20, 24);
     self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
     self.notesBarButtonItem.enabled = self.connectionAvailable;
 
-    self.navigationItem.rightBarButtonItems = @[tagBarButtonItem, self.notesBarButtonItem];
+    self.navigationItem.rightBarButtonItems = @[tagBarButtonItem];
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
     self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];

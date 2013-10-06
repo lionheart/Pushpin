@@ -604,12 +604,10 @@
                 }
             }
             else if (indexPath.row == 4) {
-                //[self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
-                [self performSegueWithIdentifier:@"ShowDisplaySettings" sender:self];
+                [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
             }
             else if (indexPath.row == 5) {
-                //[self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
-                [self performSegueWithIdentifier:@"ShowBrowserSettings" sender:self];
+                [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
             }
             break;
         }

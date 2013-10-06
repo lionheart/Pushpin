@@ -85,18 +85,9 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
     
-    CALayer *selectedBackgroundLayer = [PPGroupedTableViewCell baseLayerForSelectedBackground];
-    if (indexPath.row > 0) {
-        [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell topRectangleLayer]];
-    }
-    
     CGRect frame = cell.frame;
     
     if (indexPath.section == 0) {
-        if (indexPath.row < self.tagsToAddCompletions.count) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-        }
-
         switch (indexPath.row) {
             case 0:
                 cell.imageView.image = [UIImage imageNamed:@"tag-plus-dash"];
@@ -118,10 +109,6 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         }
     }
     else {
-        if (indexPath.row < self.tagsToRemoveCompletions.count) {
-            [selectedBackgroundLayer addSublayer:[PPGroupedTableViewCell bottomRectangleLayer]];
-        }
-
         switch (indexPath.row) {
             case 0:
                 cell.imageView.image = [UIImage imageNamed:@"tag-minus-dash"];
@@ -138,8 +125,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             }
         }
     }
-    
-    [cell setSelectedBackgroundViewWithLayer:selectedBackgroundLayer];
+
     return cell;
 }
 
