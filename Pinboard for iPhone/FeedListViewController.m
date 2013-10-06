@@ -193,11 +193,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     UIFont *textLabelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    CGSize textLabelFontSize = [@"Feed" sizeWithAttributes:[NSDictionary dictionaryWithObject:textLabelFont forKey:NSFontAttributeName]];
-
+    CGSize textLabelFontSize = [@"Feed" sizeWithAttributes:@{NSFontAttributeName: textLabelFont}];
     CGFloat padding = 10;
     CGFloat totalHeight = padding + textLabelFontSize.height + padding;
-
     return totalHeight;
 }
 
