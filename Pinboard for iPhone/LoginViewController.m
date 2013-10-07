@@ -15,6 +15,7 @@
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
 #import "RPSTPasswordManagementAppService.h"
+#import "UserVoice.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIView+LHSAdditions.h"
 
@@ -38,8 +39,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     [super viewDidLoad];
 
     self.title = @"Pushpin";
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStyleDone target:nil action:nil];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStyleDone target:nil action:nil];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStyleDone target:self action:@selector(showContactForm)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStyleDone target:self action:@selector(login)];
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
@@ -374,6 +375,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     else {
         [self.passwordTextField becomeFirstResponder];
     }
+}
+
+- (void)showContactForm {
+    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
+                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+
+    [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
 @end

@@ -32,5 +32,6 @@
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
 - (void)sendToOnePassword;
+- (void)showContactForm;
 
 @end
