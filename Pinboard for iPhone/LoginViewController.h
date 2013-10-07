@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface LoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
-    BOOL keyboard_shown;
 }
 
+@property (nonatomic) BOOL keyboard_shown;
 @property (nonatomic, retain) UITextField *usernameTextField;
 @property (nonatomic, retain) UITextField *passwordTextField;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
