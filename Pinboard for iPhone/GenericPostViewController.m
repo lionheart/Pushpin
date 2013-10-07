@@ -774,16 +774,21 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
     if (isPrivate) {
         UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.frame = CGRectMake(cell.contentView.frame.size.width - 18, 0, 18, 19);;
+        lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        lockImageView.userInteractionEnabled = NO;
         [cell.contentView addSubview:lockImageView];
+        [cell.contentView lhs_addConstraints:@"H:[image(18)]|" views:@{@"image": lockImageView}];
+        [cell.contentView lhs_addConstraints:@"V:|[image(19)]" views:@{@"image": lockImageView}];
     }
     
     BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
     if (isStarred) {
         UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
-        starImageView.frame = CGRectMake(0, 0, 18, 19);
+        starImageView.userInteractionEnabled = NO;
+        starImageView.translatesAutoresizingMaskIntoConstraints = NO;
         [cell.contentView addSubview:starImageView];
-
+        [cell.contentView lhs_addConstraints:@"H:|[image(18)]" views:@{@"image": starImageView}];
+        [cell.contentView lhs_addConstraints:@"V:|[image(19)]" views:@{@"image": starImageView}];
     }
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
