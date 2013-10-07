@@ -303,7 +303,7 @@
         pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
         
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        feedListViewController.title = @"Browse";
+        feedListViewController.title = NSLocalizedString(@"Browse", nil);
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         _navigationController.navigationBar.translucent = NO;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
@@ -312,9 +312,14 @@
     return _navigationController;
 }
 
-- (LoginViewController *)loginViewController {
+- (UINavigationController *)loginViewController {
     if (!_loginViewController) {
-        _loginViewController = [[LoginViewController alloc] init];
+        LoginViewController *loginViewController = [[LoginViewController alloc] init];
+        
+        UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        controller.navigationBar.translucent = NO;
+        
+        _loginViewController = controller;
     }
     return _loginViewController;
 }
