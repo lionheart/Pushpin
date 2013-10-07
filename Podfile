@@ -8,7 +8,7 @@ pod 'WCAlertView', '1.0.1'
 pod 'KeychainItemWrapper', '1.2'
 pod 'TTTAttributedLabel', '1.7.1'
 pod 'Mixpanel', '2.0.0'
-pod 'uservoice-iphone-sdk', '2.0.10'
+pod 'uservoice-iphone-sdk', '2.0.13'
 pod 'LHSCategoryCollection', :git => 'https://github.com/lionheart/LHSCategoryCollection.git'
 
 pod 'oauthconsumer', :podspec => 'Specs/oauthconsumer.podspec'
