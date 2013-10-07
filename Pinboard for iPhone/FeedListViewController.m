@@ -224,32 +224,26 @@
             switch (indexPath.row) {
                 case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"cabinet"];
                     badgeCount = self.bookmarkCounts[PinboardFeedAllBookmarks];
                     break;
                 case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"lock"];
                     badgeCount = self.bookmarkCounts[PinboardFeedPrivateBookmarks];
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
                     badgeCount = self.bookmarkCounts[PinboardFeedPublicBookmarks];
                     break;
                 case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"glasses"];
                     badgeCount = self.bookmarkCounts[PinboardFeedUnreadBookmarks];
                     break;
                 case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"tag"];
                     badgeCount = self.bookmarkCounts[PinboardFeedUntaggedBookmarks];
                     break;
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"star"];
                     badgeCount = self.bookmarkCounts[PinboardFeedStarredBookmarks];
                     break;
             }
