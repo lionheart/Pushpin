@@ -40,6 +40,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.title = @"Pushpin";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStyleDone target:nil action:nil];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStyleDone target:nil action:nil];
+
+    self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
     
@@ -50,12 +52,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.textView = [[UITextView alloc] init];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     self.textView.backgroundColor = [UIColor clearColor];
-    self.textView.textColor = [UIColor whiteColor];
+    self.textView.textColor = [UIColor darkGrayColor];
     self.textView.editable = NO;
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = NSTextAlignmentCenter;
-    self.textView.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:14];
-    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues.", nil);
+    self.textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
 
     /*
     self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake((size.width - 180) / 2, 352, 180, 44)];
@@ -151,7 +153,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 }
 
 - (void)resetLoginScreen {
-    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support support@lionheartsw.com if you have any issues.", nil);
+    self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
     
     self.usernameTextField.enabled = YES;
     self.usernameTextField.textColor = [UIColor blackColor];
@@ -207,8 +209,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
             //self.activityIndicator.frame = self.activityIndicatorFrameTop;
             //[self.activityIndicator startAnimating];
-            [self.navigationItem.rightBarButtonItem setEnabled:NO];
-            [self.navigationItem.rightBarButtonItem setTitle:@"Wait"];
+            self.navigationItem.rightBarButtonItem.enabled = NO;
             self.usernameTextField.enabled = NO;
             self.usernameTextField.textColor = [UIColor grayColor];
             self.passwordTextField.enabled = NO;
@@ -228,6 +229,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                                
                                                self.progressView.hidden = NO;
+                                               
+                                               [self.tableView beginUpdates];
+                                               [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                               [self.tableView endUpdates];
 
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    [delegate setToken:token];
@@ -308,7 +313,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    if (self.progressView.hidden) {
+        return 2;
+    }
+    else {
+        return 0;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -324,8 +334,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     
     NSDictionary *views = @{@"progress": self.progressView,
                             @"text": self.textView };
-    [view lhs_addConstraints:@"V:|-5-[progress]-5-[text]-5-|" views:views];
-    [view lhs_addConstraints:@"H:|-5-[progress]-5-|" views:views];
+    [view lhs_addConstraints:@"V:|[progress]-5-[text]-5-|" views:views];
+    [view lhs_addConstraints:@"H:|[progress]|" views:views];
     [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
     return view;
 }
@@ -341,19 +351,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     UITextField *textField;
     if (indexPath.row == 0) {
-        cell.imageView.image = [UIImage imageNamed:@"user"];
         textField = self.usernameTextField;
     }
     else {
-        cell.imageView.image = [UIImage imageNamed:@"lock"];
         textField = self.passwordTextField;
     }
     
     NSDictionary *views = @{
-                            @"text": textField,
-                            @"image": cell.imageView };
+                            @"text": textField };
     [cell.contentView addSubview:textField];
-    [cell.contentView lhs_addConstraints:@"H:[image]-15-[text]-5-|" views:views];
+    [cell.contentView lhs_addConstraints:@"H:|-15-[text]-5-|" views:views];
     [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:views];
     return cell;
 }
