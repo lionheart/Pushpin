@@ -89,19 +89,18 @@
     self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
-
     UIImage *settingsImage = [[UIImage imageNamed:@"SettingsNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
-    settingsButton.frame = CGRectMake(0, 0, 30, 24);
+    settingsButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
 
     UIImage *tagImage = [[UIImage imageNamed:@"TagNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton setImage:tagImage forState:UIControlStateNormal];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-    tagButton.frame = CGRectMake(0, 0, 30, 24);
+    tagButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
     UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -353,6 +352,7 @@
         }
         case 1: {
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+            postViewController.postDataSource = feedDataSource;
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
             if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
@@ -364,30 +364,35 @@
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-                        postViewTitle = NSLocalizedString(@"Network", nil);
+                        postViewController.title = NSLocalizedString(@"Network", nil);
                         [mixpanel track:@"Browsed network bookmarks"];
+                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
                     case 1: {
                         feedDataSource.components = @[@"popular?count=100"];
-                        postViewTitle = NSLocalizedString(@"Popular", nil);
+                        postViewController.title = NSLocalizedString(@"Popular", nil);
                         [mixpanel track:@"Browsed popular bookmarks"];
+                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
                     case 2:
                         feedDataSource.components = @[@"popular", @"wikipedia"];
-                        postViewTitle = @"Wikipedia";
+                        postViewController.title = @"Wikipedia";
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
+                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 3:
                         feedDataSource.components = @[@"popular", @"fandom"];
-                        postViewTitle = NSLocalizedString(@"Fandom", nil);
+                        postViewController.title = NSLocalizedString(@"Fandom", nil);
                         [mixpanel track:@"Browsed fandom bookmarks"];
+                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 4:
                         feedDataSource.components = @[@"popular", @"japanese"];
-                        postViewTitle = @"日本語";
+                        postViewController.title = @"日本語";
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
+                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 5: {
                         PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
@@ -396,7 +401,7 @@
                         break;
                     }
                 }
-                
+
                 break;
             }
         }
