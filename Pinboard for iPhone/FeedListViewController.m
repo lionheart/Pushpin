@@ -189,14 +189,6 @@
     return 6;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIFont *textLabelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    CGSize textLabelFontSize = [@"Feed" sizeWithAttributes:@{NSFontAttributeName: textLabelFont}];
-    CGFloat padding = 10;
-    CGFloat totalHeight = padding + textLabelFontSize.height + padding;
-    return totalHeight;
-}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
@@ -219,10 +211,6 @@
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
-
-    // Dynamic Type
-    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];;
-    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     
     // The badge is hidden by default
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
@@ -459,14 +447,6 @@
 
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     [self dismissViewControllerAnimated:YES completion:success];
-}
-
-#pragma mark -
-#pragma mark iOS 7 Updates
-
-- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    [self.view setNeedsLayout];
-    [self.tableView reloadData];
 }
 
 @end
