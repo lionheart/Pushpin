@@ -34,6 +34,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 @synthesize passwordTextField;
 @synthesize activityIndicatorFrameBottom;
 @synthesize activityIndicatorFrameTop;
+@synthesize onePasswordButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,8 +61,34 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.textView.text = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
 
-    /*
-    self.onePasswordButton = [[UIButton alloc] initWithFrame:CGRectMake((size.width - 180) / 2, 352, 180, 44)];
+    CGSize size = [UIApplication currentSize];
+    CGFloat radius = 5;
+    CGRect buttonRect = CGRectMake(0, 0, radius * 2, 30);
+    CAGradientLayer *barButtonItemLayer = [CAGradientLayer layer];
+    barButtonItemLayer.frame = buttonRect;
+    barButtonItemLayer.cornerRadius = radius;
+    barButtonItemLayer.masksToBounds = YES;
+    barButtonItemLayer.borderWidth = 0.5;
+    barButtonItemLayer.borderColor = HEX(0x4C586AFF).CGColor;
+    barButtonItemLayer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
+    barButtonItemLayer.startPoint = CGPointMake(0.5, 0);
+    barButtonItemLayer.endPoint = CGPointMake(0.5, 1.0);
+    
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:radius topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContextWithOptions(buttonRect.size, NO, 0);
+    context = UIGraphicsGetCurrentContext();
+    barButtonItemLayer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
+    [barButtonItemLayer renderInContext:context];
+    UIImage *barButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:radius topCapHeight:15];
+    UIGraphicsEndImageContext();
+    
+    self.onePasswordButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.onePasswordButton setFrame:CGRectMake((size.width - 180) / 2, 150, 180, 44)];
     [self.onePasswordButton setTitle:@"Launch 1Password" forState:UIControlStateNormal];
     [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateNormal];
     [self.onePasswordButton setImage:[UIImage imageNamed:@"1P-29"] forState:UIControlStateHighlighted];
@@ -74,19 +101,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.onePasswordButton.titleLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:15];
     [self.onePasswordButton setTitleColor:HEX(0x4A5768FF) forState:UIControlStateNormal];
     [self.onePasswordButton setTitleShadowColor:HEX(0xFFFFFF00) forState:UIControlStateNormal];
-    self.onePasswordButton.hidden = YES;
+    //self.onePasswordButton.hidden = YES;
     [self.view addSubview:self.onePasswordButton];
-    */
-
-    /*
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    CGSize activitySize = self.activityIndicator.frame.size;
-    self.activityIndicatorFrameTop = CGRectMake((size.width - activitySize.width) / 2., 380, activitySize.width, activitySize.height);
-    self.activityIndicatorFrameMiddle = CGRectMake((size.width - activitySize.width) / 2., 400, activitySize.width, activitySize.height);
-    self.activityIndicatorFrameBottom = CGRectMake((size.width - activitySize.width) / 2., 425, activitySize.width, activitySize.height);
-    self.activityIndicator.frame = self.activityIndicatorFrameTop;
-    [self.view addSubview:self.activityIndicator];
-     */
     
     self.usernameTextField = [[UITextField alloc] init];
     self.usernameTextField.translatesAutoresizingMaskIntoConstraints = NO;
