@@ -54,6 +54,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize autocompleteInProgress;
 @synthesize popularTags;
 @synthesize recommendedTags;
+@synthesize keyboardTableInset;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -202,7 +203,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     [self.postDescriptionTextView resignFirstResponder];
@@ -322,13 +322,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     if (self.currentTextField == self.tagTextField) {
-        CGSize kbSize = [[[sender userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-        UIEdgeInsets insets = self.tableView.contentInset;
-        insets.bottom = kbSize.height;
-        self.tableView.contentInset = insets;
-    }
-
-    if (self.currentTextField == self.tagTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.titleTextField) {
@@ -337,10 +330,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     else if (self.currentTextField == self.urlTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-}
-
-- (void)keyboardDidHide:(NSNotification *)sender {
-    self.tableView.contentInset = UIEdgeInsetsZero;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
