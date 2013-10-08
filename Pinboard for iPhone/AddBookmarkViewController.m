@@ -82,9 +82,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
-        self.descriptionTextField.autocorrectionType = UITextAutocorrectionTypeDefault;
-        self.descriptionTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-        self.descriptionTextField.spellCheckingType = UITextSpellCheckingTypeDefault;
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -154,8 +151,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
 
         self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - offset)];
-        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeDefault;
+        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        self.postDescriptionTextView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = self.postDescription;
         self.postDescriptionTextView.delegate = self;
@@ -203,6 +201,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     [self.postDescriptionTextView resignFirstResponder];
@@ -330,6 +329,27 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     else if (self.currentTextField == self.urlTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
+}
+
+- (void)keyboardDidHide:(NSNotification *)sender {
+    // Remove the suggested tags
+    NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+    if ([self.tagCompletions count] > 0) {
+        for (NSInteger i=0; i<self.tagCompletions.count; i++) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+        }
+        
+        [self.tagCompletions removeAllObjects];
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.suggestedTagsVisible = NO;
+        
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+        self.autocompleteInProgress = NO;
+    });
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
