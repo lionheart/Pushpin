@@ -81,6 +81,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.descriptionTextField.placeholder = @"";
         self.descriptionTextField.text = @"";
         self.descriptionTextField.userInteractionEnabled = NO;
+        self.descriptionTextField.autocorrectionType = UITextAutocorrectionTypeDefault;
+        self.descriptionTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        self.descriptionTextField.spellCheckingType = UITextSpellCheckingTypeDefault;
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
