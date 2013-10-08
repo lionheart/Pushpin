@@ -52,6 +52,8 @@
 @property (nonatomic, retain) UISwipeGestureRecognizer *tagGestureRecognizer;
 @property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
 
+@property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
+
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
 
