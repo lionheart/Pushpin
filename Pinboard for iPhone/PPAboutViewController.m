@@ -28,6 +28,11 @@
 
 @implementation PPAboutViewController
 
+- (id)init {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    return self;
+}
+
 - (void)viewDidLoad {
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
     self.data = [NSArray arrayWithContentsOfFile:plistPath];

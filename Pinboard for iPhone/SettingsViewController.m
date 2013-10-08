@@ -45,8 +45,6 @@
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self = [super init]) {
-    }
     return self;
 }
 
