@@ -305,7 +305,7 @@
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
         feedListViewController.title = NSLocalizedString(@"Browse", nil);
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
-        _navigationController.navigationBar.translucent = NO;
+        //_navigationController.navigationBar.translucent = NO;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
     }
