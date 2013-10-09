@@ -897,7 +897,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
             [self showConfirmDeletionAlert];
         }
         else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-            [self.searchDisplayController setActive:NO];
             UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
             
             if ([UIApplication isIPad]) {
