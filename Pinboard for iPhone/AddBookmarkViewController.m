@@ -983,14 +983,13 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 #pragma mark Text View Delegate
 
 - (void)finishEditingDescription {
+    // Update the description text
+    self.postDescription = self.postDescriptionTextView.text;
+    
     [self.navigationController popViewControllerAnimated:YES];
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
-}
-
-- (void)textViewDidChange:(UITextView *)textView {
-    self.postDescription = textView.text;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
