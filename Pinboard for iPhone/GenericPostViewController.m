@@ -75,7 +75,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.multipleDeleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete (0)" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMultipleDeletion:)];
     self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
     self.multipleDeleteButton.enabled = NO;
-    [self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
+    [self.multipleDeleteButton setTintColor:[UIColor blackColor]];
+    //[self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 
     // Register for Dynamic Type notifications
@@ -118,6 +119,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [self.navigationController.view addSubview:self.toolbar];
 
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
@@ -164,6 +167,9 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    // Hide the editing toolbar
+    [self.toolbar removeFromSuperview];
+    
     [super viewWillDisappear:animated];
     [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
@@ -200,25 +206,23 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (!tableView.editing) {
-        self.numberOfTapsSinceTapReset++;
-        self.selectedTableView = tableView;
-        self.selectedIndexPath = indexPath;
-
-        if ([AppDelegate sharedDelegate].doubleTapToEdit) {
-            if (!self.singleTapTimer) {
-                self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
-                [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
-            }
-            else {
-                [self.singleTapTimer invalidate];
-                self.singleTapTimer = nil;
-                [self handleCellTap];
-            }
+    self.numberOfTapsSinceTapReset++;
+    self.selectedTableView = tableView;
+    self.selectedIndexPath = indexPath;
+    
+    if ([AppDelegate sharedDelegate].doubleTapToEdit) {
+        if (!self.singleTapTimer) {
+            self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
         }
         else {
+            [self.singleTapTimer invalidate];
+            self.singleTapTimer = nil;
             [self handleCellTap];
         }
+    }
+    else {
+        [self handleCellTap];
     }
 }
 
