@@ -195,7 +195,7 @@
             cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
         }
     }
-        
+    
     cell.accessoryView = nil;
     
     CGSize size;
