@@ -55,6 +55,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize popularTags;
 @synthesize recommendedTags;
 @synthesize keyboardTableInset;
+@synthesize editTextViewController;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -234,13 +235,13 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row == 2) {
-        UIViewController *vc = [[UIViewController alloc] init];
-        vc.title = NSLocalizedString(@"Description", nil);
-        vc.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
-        vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
-        [vc.view addSubview:self.postDescriptionTextView];
+        self.editTextViewController = [[UIViewController alloc] init];
+        self.editTextViewController.title = NSLocalizedString(@"Description", nil);
+        self.editTextViewController.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
+        self.editTextViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
+        [self.editTextViewController.view addSubview:self.postDescriptionTextView];
         self.postDescriptionTextView.text = self.postDescription;
-        [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:self.editTextViewController animated:YES];
         [self.postDescriptionTextView becomeFirstResponder];
     }
     else if (indexPath.section == 0 && indexPath.row > 3) {
@@ -354,7 +355,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    self.callback();
+    if (self.navigationController.topViewController != self.editTextViewController) {
+        self.callback();
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

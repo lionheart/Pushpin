@@ -54,6 +54,8 @@
 
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
 
+@property (nonatomic, retain) UIViewController *editTextViewController;
+
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
 
