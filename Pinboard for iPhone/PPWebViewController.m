@@ -577,7 +577,6 @@ static NSInteger kToolbarHeight = 44;
         [request setHTTPMethod:@"POST"];
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         [parameters addObject:[OARequestParameter requestParameter:@"url" value:urlString]];
-        [parameters addObject:[OARequestParameter requestParameter:@"description" value:@"Sent from Pushpin"]];
         [request setParameters:parameters];
         [request prepare];
         

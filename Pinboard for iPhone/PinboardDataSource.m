@@ -43,7 +43,8 @@ static BOOL kPinboardSyncInProgress = NO;
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [NSLocale currentLocale];
+        //self.locale = [NSLocale currentLocale];
+        self.locale = [NSLocale localeWithLocaleIdentifier:@"fr_FR"];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }

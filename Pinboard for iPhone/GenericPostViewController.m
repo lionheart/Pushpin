@@ -64,6 +64,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
+    //self.pullToRefreshView.backgroundColor = [UIColor redColor];
+    self.pullToRefreshImageView.backgroundColor = [UIColor greenColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
@@ -76,17 +78,16 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:[UIColor blackColor]];
-    //[self.multipleDeleteButton setTintColor:HEX(0xa4091c00)];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-
+    
     // Make sure the delegate and datasource are configured
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
-
+    
     // Initial database update
     [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
     
@@ -94,7 +95,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
@@ -102,7 +103,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     }
 
     // Hide the pull to refresh view
-    [self.pullToRefreshView setHidden:YES];
+    [self.pullToRefreshImageView setHidden:YES];
 
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
@@ -478,7 +479,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
                         //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
-                        [self.pullToRefreshView setHidden:YES];
+                        [self.pullToRefreshImageView setHidden:YES];
                         CGFloat offset = self.tableView.contentOffset.y;
                         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
                         
@@ -492,7 +493,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
                             self.searchDisplayController.searchResultsDelegate = self;
                             self.searchDisplayController.delegate = self;
                             self.tableView.tableHeaderView = self.searchBar;
-                            [self.tableView setContentOffset:CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height)];
+                            CGFloat offset = -([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height - self.searchDisplayController.searchBar.frame.size.height);
+                            [self.tableView setContentOffset:CGPointMake(0, offset)];
 
                             [self.searchDisplayController.searchResultsTableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
                         }
@@ -541,12 +543,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
 
-                [UIView animateWithDuration:0.2 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
-                } completion:^(BOOL finished) {
-                    [self.pullToRefreshView setHidden:YES];
-                    [self.pullToRefreshImageView stopAnimating];
-                }];
+                [self.pullToRefreshImageView setHidden:YES];
+                [self.pullToRefreshImageView stopAnimating];
             });
         } failure:nil options:@{@"ratio": ratio}];
     }
@@ -1003,7 +1001,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         [request setHTTPMethod:@"POST"];
         NSMutableArray *parameters = [[NSMutableArray alloc] init];
         [parameters addObject:[OARequestParameter requestParameter:@"url" value:urlString]];
-        [parameters addObject:[OARequestParameter requestParameter:@"description" value:@"Sent from Pushpin"]];
         [request setParameters:parameters];
         [request prepare];
         
@@ -1127,11 +1124,11 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat tableOffsetTop = 22 + 44;
-        if (offset < (-60 - tableOffsetTop)) {
+        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+        if (offset < -(tableOffsetTop)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop + 60, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
@@ -1146,14 +1143,15 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
+        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
         NSInteger index = MAX(1, 32 - MIN((-offset / 60.) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
-        UIOffset imageOffset;
-        if (offset > -60) {
-            imageOffset = UIOffsetMake(0, -(50 + offset));
-        }
-        else {
-            imageOffset = UIOffsetMake(0, 10);
+        UIOffset imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
+        
+        if (offset < -(tableOffsetTop + 10)) {
+            [self.pullToRefreshImageView setHidden:NO];
+        } else {
+            [self.pullToRefreshImageView setHidden:YES];
         }
         
         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);

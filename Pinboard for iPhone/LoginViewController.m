@@ -214,7 +214,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             self.progressView.frame = CGRectMake(([UIApplication currentSize].width - 280) / 2, 380, 280, 50);
-            //self.activityIndicator.frame = self.activityIndicatorFrameMiddle;
         });
     });
 }
@@ -224,8 +223,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         dispatch_async(dispatch_get_main_queue(), ^{
             AppDelegate *delegate = [AppDelegate sharedDelegate];
             
-            //self.activityIndicator.frame = self.activityIndicatorFrameTop;
-            //[self.activityIndicator startAnimating];
             self.navigationItem.rightBarButtonItem.enabled = NO;
             self.usernameTextField.enabled = NO;
             self.usernameTextField.textColor = [UIColor grayColor];
@@ -240,7 +237,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                       password:self.passwordTextField.text
                                        success:^(NSString *token) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                               //self.activityIndicator.frame = self.activityIndicatorFrameBottom;
                                                self.textView.text = NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil);
                                                self.messageUpdateTimer = [NSTimer timerWithTimeInterval:6 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
