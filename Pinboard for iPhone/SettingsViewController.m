@@ -182,22 +182,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     static NSString *ChoiceCellIdentifier = @"ChoiceCell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        switch (indexPath.section) {
-            case 0:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
-                break;
-                
-            case 1:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-                break;
-                
-            default:
-                break;
+    PPGroupedTableViewCell *cell;
+    
+    if (indexPath.section == 0) {
+        cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier];
+        if (!cell) {
+            cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
+        }
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (!cell) {
+            cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
         }
     }
-    
+        
     cell.accessoryView = nil;
     
     CGSize size;
@@ -277,6 +275,7 @@
                         default:
                             break;
                     }
+                    
                     break;
 
 
