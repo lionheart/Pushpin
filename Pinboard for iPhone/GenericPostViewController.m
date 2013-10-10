@@ -64,9 +64,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
-    //self.pullToRefreshView.backgroundColor = [UIColor redColor];
-    self.pullToRefreshImageView.backgroundColor = [UIColor greenColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
+    self.pullToRefreshView.backgroundColor = self.tableView.backgroundColor;
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
 
@@ -476,7 +475,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
                     self.loading = NO;
                     [UIView animateWithDuration:0.2 animations:^{
-                        //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+                        self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
                         [self.pullToRefreshImageView setHidden:YES];
@@ -543,8 +543,13 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
 
-                [self.pullToRefreshImageView setHidden:YES];
-                [self.pullToRefreshImageView stopAnimating];
+                [UIView animateWithDuration:0.2 animations:^{
+                    CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
+                } completion:^(BOOL finished) {
+                    [self.pullToRefreshImageView setHidden:YES];
+                    [self.pullToRefreshImageView stopAnimating];
+                }];
             });
         } failure:nil options:@{@"ratio": ratio}];
     }
@@ -1128,10 +1133,11 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         if (offset < -(tableOffsetTop)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop + self.pullToRefreshImageView.frame.size.height + 10, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
+                        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
                         [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
                     }];
                 }];
@@ -1143,18 +1149,19 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+        CGFloat tableOffsetTop = self.navigationController.navigationBar.frame.size.height;
         NSInteger index = MAX(1, 32 - MIN((-offset / 60.) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
-        UIOffset imageOffset = UIOffsetMake(0, 10 + tableOffsetTop);
+        UIOffset imageOffset;
         
-        if (offset < -(tableOffsetTop + 10)) {
-            [self.pullToRefreshImageView setHidden:NO];
+        [self.pullToRefreshImageView setHidden:NO];
+        if (offset > -(tableOffsetTop + 74)) {
+            imageOffset = UIOffsetMake(0, -(tableOffsetTop + offset));
         } else {
-            [self.pullToRefreshImageView setHidden:YES];
+            imageOffset = UIOffsetMake(0, tableOffsetTop + [UIApplication sharedApplication].statusBarFrame.size.height + 10);
         }
         
-        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
+        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset + tableOffsetTop);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
     }

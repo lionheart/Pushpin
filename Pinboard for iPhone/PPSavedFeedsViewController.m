@@ -52,12 +52,7 @@
         });
     });
     
-    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [addButton setImage:[UIImage imageNamed:@"AddNavigationDimmed"] forState:UIControlStateNormal];
-    [addButton setImage:[UIImage imageNamed:@"AddNavigation"] forState:UIControlStateHighlighted];
-    [addButton addTarget:self action:@selector(addSavedFeedButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    addButton.frame = CGRectMake(0, 0, 45, 24);
-    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:addButton];
+    UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addSavedFeedButtonTouchUpInside:)];
     self.navigationItem.rightBarButtonItem = addBarButtonItem;
 }
 

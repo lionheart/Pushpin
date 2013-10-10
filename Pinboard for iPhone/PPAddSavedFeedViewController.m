@@ -46,6 +46,10 @@
     self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
     self.tagsTextField.returnKeyType = UIReturnKeyDone;
     self.tagsTextField.text = @"";
+    
+    // Add a close and save button
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(closeButtonTouchUpInside:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(addButtonTouchUpInside:)];
 
     self.title = NSLocalizedString(@"Add Feed", nil);
 }
@@ -93,7 +97,6 @@
     [textField resignFirstResponder];
     if (textField == self.tagsTextField) {
         self.tagsTextField.text = [self.tagsTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        [self addButtonTouchUpInside:nil];
     }
     else {
         [self.tagsTextField becomeFirstResponder];
@@ -125,6 +128,10 @@
         }
     }
     return YES;
+}
+
+- (void)closeButtonTouchUpInside:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)addButtonTouchUpInside:(id)sender {
