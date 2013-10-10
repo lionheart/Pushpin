@@ -31,6 +31,9 @@ static NSInteger kToolbarHeight = 44;
 
 @implementation PPWebViewController
 
+@synthesize shouldMobilize, urlString;
+@synthesize tapViewBottom, tapViewTop;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -41,93 +44,38 @@ static NSInteger kToolbarHeight = 44;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height - kToolbarHeight - self.navigationController.navigationBar.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
     [self.view addSubview:self.webView];
-
-    CAGradientLayer *layer = [CAGradientLayer layer];
-    layer.frame = CGRectMake(0, 0, 40, 40);
-    layer.cornerRadius = 20;
-    layer.masksToBounds = YES;
-    layer.borderWidth = 0.8;
-    layer.borderColor = HEX(0x4C586AFF).CGColor;
-    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
-
-    CALayer *enterReaderModeImageLayer = [CALayer layer];
-    enterReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
-    enterReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"expand-dash"].CGImage;
     
-    CALayer *exitReaderModeImageLayer = [CALayer layer];
-    exitReaderModeImageLayer.frame = CGRectMake(10, 10, 20, 20);
-    exitReaderModeImageLayer.contents = (id)[UIImage imageNamed:@"compress-dash"].CGImage;
+    // Tap views and gesture recognizers
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    self.tapViewTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.size.width, 20)];
+    [self.view addSubview:self.tapViewTop];
+    self.tapViewBottom = [[UIView alloc] initWithFrame:CGRectMake(0, screen.size.height - 20, screen.size.width, 20)];
+    [self.view addSubview:self.tapViewBottom];
+    self.tapGestureForTopFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
+    self.tapGestureForTopFullscreenMode.numberOfTapsRequired = 1;
+    self.tapGestureForTopFullscreenMode.numberOfTouchesRequired = 1;
+    self.tapGestureForTopFullscreenMode.enabled = NO;
+    [self.tapViewTop addGestureRecognizer:self.tapGestureForTopFullscreenMode];
+    self.tapGestureForBottomFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
+    self.tapGestureForBottomFullscreenMode.numberOfTapsRequired = 1;
+    self.tapGestureForBottomFullscreenMode.numberOfTouchesRequired = 1;
+    self.tapGestureForBottomFullscreenMode.enabled = NO;
+    [self.tapViewBottom addGestureRecognizer:self.tapGestureForBottomFullscreenMode];
 
-    [layer addSublayer:enterReaderModeImageLayer];
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [layer renderInContext:context];
-    UIImage *buttonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    layer.colors = @[(id)HEX(0xCED4E0FF).CGColor, (id)HEX(0xFDFDFDFF).CGColor];
-    [layer renderInContext:context];
-    UIImage *buttonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-    
-    [enterReaderModeImageLayer removeFromSuperlayer];
-    [layer addSublayer:exitReaderModeImageLayer];
-
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    [layer renderInContext:context];
-    UIImage *exitReaderModeButtonBackgroundHighlighted = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-    
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(40, 40), NO, 0);
-    context = UIGraphicsGetCurrentContext();
-    layer.colors = @[(id)HEX(0xFDFDFDFF).CGColor, (id)HEX(0xCED4E0FF).CGColor];
-    [layer renderInContext:context];
-    UIImage *exitReaderModeButtonBackground = [UIGraphicsGetImageFromCurrentImageContext() stretchableImageWithLeftCapWidth:3 topCapHeight:15];
-    UIGraphicsEndImageContext();
-    
-    self.enterReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.enterReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.enterReaderModeButton.frame = CGRectMake(self.webView.frame.size.width - 50, self.webView.frame.size.height - 70, 40, 40);
-    [self.enterReaderModeButton setBackgroundImage:buttonBackground forState:UIControlStateNormal];
-    [self.enterReaderModeButton setBackgroundImage:buttonBackgroundHighlighted forState:UIControlStateHighlighted];
-
-    self.exitReaderModeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.exitReaderModeButton addTarget:self action:@selector(toggleFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    self.exitReaderModeButton.frame = CGRectMake(self.webView.bounds.size.width - 50, self.webView.bounds.size.height - 70, 40, 40);
-    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackground forState:UIControlStateNormal];
-    [self.exitReaderModeButton setBackgroundImage:exitReaderModeButtonBackgroundHighlighted forState:UIControlStateHighlighted];
-    self.exitReaderModeButton.hidden = YES;
-
-    self.panGestureRecognizerForNormalMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.panGestureRecognizerForNormalMode.minimumNumberOfTouches = 1;
-    self.panGestureRecognizerForNormalMode.maximumNumberOfTouches = 1;
-
-    self.panGestureRecognizerForReaderMode = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.panGestureRecognizerForReaderMode.minimumNumberOfTouches = 1;
-    self.panGestureRecognizerForReaderMode.maximumNumberOfTouches = 1;
-    [self.exitReaderModeButton addGestureRecognizer:self.panGestureRecognizerForReaderMode];
-    [self.enterReaderModeButton addGestureRecognizer:self.panGestureRecognizerForNormalMode];
-
-    [self.webView addSubview:self.enterReaderModeButton];
-    [self.webView addSubview:self.exitReaderModeButton];
-    
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [self.activityIndicator startAnimating];
     self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
     self.toolbar = [[PPToolbar alloc] init];
+    self.toolbar.translucent = YES;
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -210,10 +158,30 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    CGSize size = self.view.frame.size;
-    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
     
+    // Determine if we should mobilize or not
+    NSString *mobilizedUrlString;
+    if (![self isURLStringMobilized:self.urlString] && self.shouldMobilize) {
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.urlString];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.urlString];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                mobilizedUrlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.urlString];
+                break;
+                
+            default:
+                break;
+        }
+        
+        self.urlString = mobilizedUrlString;
+    }
+
     CGSize buttonSize = self.webView.frame.size;
     CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
     self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
@@ -243,6 +211,60 @@ static NSInteger kToolbarHeight = 44;
 - (void)stopLoading {
     self.stopped = YES;
     [self.webView stopLoading];
+}
+
+- (void)setFullscreen:(BOOL)fullscreen {
+    // Just return if we're already in the desired state
+    if (fullscreen == self.isFullscreen)
+        return;
+    
+    DLog(@"Set fullscreen called, fullscreen is %d", fullscreen);
+    
+    // Immediately set this so subsequent calls don't start a race
+    self.isFullscreen = fullscreen;
+    
+    if (fullscreen) {
+        self.toolbarFrame = self.toolbar.frame;
+        
+        // Show the hidden UIView to get tap notifications
+        self.tapGestureForTopFullscreenMode.enabled = YES;
+        self.tapGestureForBottomFullscreenMode.enabled = YES;
+        
+        if (self.webView.scrollView.contentOffset.y < 10)
+            [self.tapViewTop setHidden:NO];
+        [self.tapViewBottom setHidden:NO];
+        
+        // Hide the navigation and status bars
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        
+        [UIView animateWithDuration:0.25 animations:^{
+            // Slide down the bottom toolbar
+            self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.toolbarFrame.origin.y + self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
+        }];
+    } else {
+        // Hide the tap view
+        self.tapGestureForTopFullscreenMode.enabled = NO;
+        self.tapGestureForBottomFullscreenMode.enabled = NO;
+        [self.tapViewTop setHidden:YES];
+        [self.tapViewBottom setHidden:YES];
+        
+        // Reveal the navigation and status bars
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        
+        [UIView animateWithDuration:0.25 animations:^{
+            // Show the bottom toolbar - base of application size in case we're animating
+            CGSize size = [UIApplication currentSize];
+            [self.toolbar setFrame:CGRectMake(0, size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
+        }];
+    }
+}
+
+- (void)disableFullscreen:(id)sender {
+    CGRect frame = self.navigationController.navigationBar.frame;
+    self.webView.scrollView.contentInset = UIEdgeInsetsMake([[UIApplication sharedApplication] statusBarFrame].size.height + frame.origin.y + frame.size.height, 0, 0, 0);
+    [self setFullscreen:NO];
 }
 
 - (void)toggleFullScreen {
@@ -860,6 +882,22 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (scrollView.contentOffset.y <= 0) {
+        [self setFullscreen:NO];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //DLog(@"contentOffset is %f, contentInset is %f", scrollView.contentOffset.y, scrollView.contentInset.top);
+    if (scrollView.contentOffset.y > 0) {
+        [self setFullscreen:YES];
+    }
 }
 
 @end
