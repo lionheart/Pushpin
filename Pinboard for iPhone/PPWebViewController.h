@@ -30,8 +30,8 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureForBottomFullscreenMode;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureForTopFullscreenMode;
-@property (nonatomic, strong) IBOutlet UIView *tapViewTop;
-@property (nonatomic, strong) IBOutlet UIView *tapViewBottom;
+@property (nonatomic, strong) UIView *tapViewTop;
+@property (nonatomic, strong) UIView *tapViewBottom;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
