@@ -28,15 +28,23 @@
 @property (nonatomic, strong) CALayer *fullScreenImageLayer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForBottomFullscreenMode;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForTopFullscreenMode;
+@property (nonatomic, strong) IBOutlet UIView *tapViewTop;
+@property (nonatomic, strong) IBOutlet UIView *tapViewBottom;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL stopped;
+@property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic) BOOL isFullscreen;
+@property (nonatomic, strong) UIActivityViewController *activityView;
+@property (nonatomic) CGRect toolbarFrame;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
@@ -59,6 +67,8 @@
 - (BOOL)isWebViewExpanded;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
 - (void)toggleFullScreen;
+- (void)setFullscreen:(BOOL)fullscreen;
+- (void)disableFullscreen:(id)sender;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;
