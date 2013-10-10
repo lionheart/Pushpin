@@ -1161,7 +1161,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
             imageOffset = UIOffsetMake(0, tableOffsetTop + [UIApplication sharedApplication].statusBarFrame.size.height + 10);
         }
         
-        DLog(@"Offset is %f, imageOffset is %f", offset, imageOffset.vertical);
         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset + tableOffsetTop);
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
