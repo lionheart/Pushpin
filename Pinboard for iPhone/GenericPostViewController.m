@@ -64,8 +64,10 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.loading = NO;
     self.searchLoading = NO;
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
+    self.pullToRefreshView.clipsToBounds = YES;
+    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
-    self.pullToRefreshView.backgroundColor = self.tableView.backgroundColor;
+    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
     [self.tableView addSubview:self.pullToRefreshView];
 
@@ -102,7 +104,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     }
 
     // Hide the pull to refresh view
-    [self.pullToRefreshImageView setHidden:YES];
+    //[self.pullToRefreshImageView setHidden:YES];
 
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
@@ -1129,16 +1131,21 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
-        if (offset < -(tableOffsetTop)) {
+        CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+        CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height;
+        CGFloat searchHeight = self.searchBar.frame.size.height;
+        CGFloat minimumOffset = statusBarHeight + navigationHeight;
+        if (offset < -(minimumOffset + self.pullToRefreshImageView.frame.size.height + 20)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop + self.pullToRefreshImageView.frame.size.height + 10, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(minimumOffset + self.pullToRefreshImageView.frame.size.height + 20, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, 10, 40, 40);
-                        [self updateWithRatio:@(MIN((-offset - 60) / 70., 1))];
+                        // Calculate the update ratio
+                        CGFloat updateBasis = (minimumOffset + searchHeight);
+                        NSNumber *updateRatio = @(MIN((-offset - updateBasis) / 80, 1));
+                        [self updateWithRatio:updateRatio];
                     }];
                 }];
             });
@@ -1149,21 +1156,22 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat tableOffsetTop = self.navigationController.navigationBar.frame.size.height;
-        NSInteger index = MAX(1, 32 - MIN((-offset / 60.) * 32, 32));
+        CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+        CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height;
+        CGFloat searchHeight = self.searchBar.frame.size.height;
+        CGFloat minimumOffset = statusBarHeight + navigationHeight;
+        NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + self.pullToRefreshImageView.frame.size.height + 20)) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
         
-        [self.pullToRefreshImageView setHidden:NO];
-        if (offset > -(tableOffsetTop + 74)) {
-            imageOffset = UIOffsetMake(0, -(tableOffsetTop + offset));
-        } else {
-            imageOffset = UIOffsetMake(0, tableOffsetTop + [UIApplication sharedApplication].statusBarFrame.size.height + 10);
-        }
+        // Start showing the view under the navigation bar
+        self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, ABS(offset) - minimumOffset);
         
-        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset + tableOffsetTop);
+        // Make sure the image view is visible, and update with the appropriate photo
+        imageOffset = UIOffsetMake(0, 10.0f);
+        [self.pullToRefreshImageView setHidden:NO];
         self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-        self.pullToRefreshImageView.frame = CGRectMake(([UIApplication currentSize].width - 40) / 2, imageOffset.vertical, 40, 40);
+        self.pullToRefreshImageView.frame = CGRectMake(self.pullToRefreshView.frame.size.width / 2 - 20, imageOffset.vertical, 40, 40);
     }
 }
 
