@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *socialBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *expandBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) UIButton *readerButton;
