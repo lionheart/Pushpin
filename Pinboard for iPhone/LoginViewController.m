@@ -41,7 +41,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     self.title = @"Pushpin";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStyleDone target:self action:@selector(showContactForm)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStyleDone target:self action:@selector(login)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Log In" style:UIBarButtonItemStyleDone target:self action:@selector(login)];
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
@@ -223,7 +223,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         dispatch_async(dispatch_get_main_queue(), ^{
             AppDelegate *delegate = [AppDelegate sharedDelegate];
             
-            self.navigationItem.rightBarButtonItem.enabled = NO;
+            UIActivityIndicatorView *loginActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            [loginActivityView startAnimating];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loginActivityView];
+            
             self.usernameTextField.enabled = NO;
             self.usernameTextField.textColor = [UIColor grayColor];
             self.passwordTextField.enabled = NO;
