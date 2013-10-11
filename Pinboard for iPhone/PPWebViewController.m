@@ -46,6 +46,7 @@ static NSInteger kToolbarHeight = 44;
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+    self.webView.autoresizingMask = UIViewAutoresizingNone;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
@@ -220,9 +221,6 @@ static NSInteger kToolbarHeight = 44;
     
     DLog(@"Set fullscreen called, fullscreen is %d", fullscreen);
     
-    // Immediately set this so subsequent calls don't start a race
-    self.isFullscreen = fullscreen;
-    
     if (fullscreen) {
         self.toolbarFrame = self.toolbar.frame;
         
@@ -230,8 +228,7 @@ static NSInteger kToolbarHeight = 44;
         self.tapGestureForTopFullscreenMode.enabled = YES;
         self.tapGestureForBottomFullscreenMode.enabled = YES;
         
-        if (self.webView.scrollView.contentOffset.y < 10)
-            [self.tapViewTop setHidden:NO];
+        [self.tapViewTop setHidden:NO];
         [self.tapViewBottom setHidden:NO];
         
         // Hide the navigation and status bars
@@ -241,6 +238,8 @@ static NSInteger kToolbarHeight = 44;
         [UIView animateWithDuration:0.25 animations:^{
             // Slide down the bottom toolbar
             self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.toolbarFrame.origin.y + self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
+            
+            self.isFullscreen = YES;
         }];
     } else {
         // Hide the tap view
@@ -248,6 +247,9 @@ static NSInteger kToolbarHeight = 44;
         self.tapGestureForBottomFullscreenMode.enabled = NO;
         [self.tapViewTop setHidden:YES];
         [self.tapViewBottom setHidden:YES];
+        
+        // Reset the content offset
+        self.webView.scrollView.contentOffset = CGPointMake(0, 0);
         
         // Reveal the navigation and status bars
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
@@ -257,6 +259,8 @@ static NSInteger kToolbarHeight = 44;
             // Show the bottom toolbar - base of application size in case we're animating
             CGSize size = [UIApplication currentSize];
             [self.toolbar setFrame:CGRectMake(0, size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
+            
+            self.isFullscreen = NO;
         }];
     }
 }
@@ -863,17 +867,12 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     CGSize size = [UIApplication currentSize];
-    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height);
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     CGSize size = self.view.frame.size;
-    self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
-
-    CGSize buttonSize = self.webView.frame.size;
-    CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
-    self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-    self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
+    self.webView.frame = CGRectMake(0, 0, size.width, size.height);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -894,7 +893,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    //DLog(@"contentOffset is %f, contentInset is %f", scrollView.contentOffset.y, scrollView.contentInset.top);
+    DLog(@"contentOffset is %f, contentInset is %f", scrollView.contentOffset.y, scrollView.contentInset.top);
     if (scrollView.contentOffset.y > 0) {
         [self setFullscreen:YES];
     }
