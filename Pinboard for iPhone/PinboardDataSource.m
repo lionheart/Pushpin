@@ -403,8 +403,10 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger deleteCount = 0;
             NSUInteger tagAddCount = 0;
             NSUInteger tagDeleteCount = 0;
+            NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+            [dateFormatter setLocale:enUSPOSIXLocale];
+            [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
             [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
             [mixpanel.people set:@"Bookmarks" to:@(total)];
@@ -432,8 +434,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 if ([additionBookmarksSet containsObject:hash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
                     if (!date) {
-                        #warning XXX See why this is happening.
-                        continue;
+                        date = [NSDate dateWithTimeIntervalSince1970:0];
+                        [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                     }
                     
                     params = @{
