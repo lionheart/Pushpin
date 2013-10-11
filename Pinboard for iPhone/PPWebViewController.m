@@ -229,8 +229,6 @@ static NSInteger kToolbarHeight = 44;
     if (fullscreen == self.isFullscreen)
         return;
     
-    DLog(@"Set fullscreen called, fullscreen is %d", fullscreen);
-    
     if (fullscreen) {
         self.toolbarFrame = self.toolbar.frame;
         

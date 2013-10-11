@@ -1164,14 +1164,16 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
         
-        // Start showing the view under the navigation bar
-        self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, ABS(offset) - minimumOffset);
-        
-        // Make sure the image view is visible, and update with the appropriate photo
-        imageOffset = UIOffsetMake(0, 10.0f);
-        [self.pullToRefreshImageView setHidden:NO];
-        self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-        self.pullToRefreshImageView.frame = CGRectMake(self.pullToRefreshView.frame.size.width / 2 - 20, imageOffset.vertical, 40, 40);
+        if (offset < 0) {
+            // Start showing the view under the navigation bar
+            self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, ABS(offset) - minimumOffset);
+            
+            // Make sure the image view is visible, and update with the appropriate photo
+            imageOffset = UIOffsetMake(0, 10.0f);
+            [self.pullToRefreshImageView setHidden:NO];
+            self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
+            self.pullToRefreshImageView.frame = CGRectMake(self.pullToRefreshView.frame.size.width / 2 - 20, imageOffset.vertical, 40, 40);
+        }
     }
 }
 
