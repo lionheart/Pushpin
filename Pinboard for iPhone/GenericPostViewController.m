@@ -63,7 +63,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
     self.loading = NO;
     self.searchLoading = NO;
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -30, [UIApplication currentSize].width, 30)];
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
     self.pullToRefreshView.clipsToBounds = YES;
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
@@ -102,9 +102,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
-
-    // Hide the pull to refresh view
-    //[self.pullToRefreshImageView setHidden:YES];
 
     if ([self.postDataSource numberOfPosts] == 0) {
         self.tableView.separatorColor = [UIColor clearColor];
@@ -154,6 +151,10 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
+        self.pullToRefreshView.frame = CGRectMake(0, -60, self.tableView.frame.size.width, 60);
+        self.tableView.contentInset = UIEdgeInsetsMake(124, 0, 0, 0);
+        self.tableView.contentOffset = CGPointMake(0, -124);
+        [self.pullToRefreshImageView startAnimating];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
@@ -1163,6 +1164,8 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + self.pullToRefreshImageView.frame.size.height + 20)) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
+        
+        DLog(@"offset is %f, minimumOffset is %f", offset, minimumOffset);
         
         if (offset < 0) {
             // Start showing the view under the navigation bar
