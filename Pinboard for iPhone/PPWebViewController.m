@@ -102,18 +102,24 @@ static NSInteger kToolbarHeight = 44;
     [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
-
+    
     UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [socialButton setImage:[UIImage imageNamed:@"share2-dash"] forState:UIControlStateNormal];
     [socialButton addTarget:self action:@selector(socialActionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     socialButton.frame = CGRectMake(0, 0, 30, 30);
     self.socialBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:socialButton];
     
+    UIButton *expandButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [expandButton setImage:[UIImage imageNamed:@"expand-dash"] forState:UIControlStateNormal];
+    [expandButton addTarget:self action:@selector(expandWebViewToFullScreen) forControlEvents:UIControlEventTouchUpInside];
+    expandButton.frame = CGRectMake(0, 0, 30, 30);
+    self.expandBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:expandButton];
+    
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixedSpace.width = 10;
 
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.socialBarButtonItem, flexibleSpace, self.actionBarButtonItem];
+    self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.expandBarButtonItem, flexibleSpace, self.actionBarButtonItem];
     self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
 
     self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -212,6 +218,10 @@ static NSInteger kToolbarHeight = 44;
 - (void)stopLoading {
     self.stopped = YES;
     [self.webView stopLoading];
+}
+
+- (void)expandWebViewToFullScreen {
+    [self setFullscreen:YES];
 }
 
 - (void)setFullscreen:(BOOL)fullscreen {
@@ -889,13 +899,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (scrollView.contentOffset.y <= 0) {
         [self setFullscreen:NO];
-    }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    DLog(@"contentOffset is %f, contentInset is %f", scrollView.contentOffset.y, scrollView.contentInset.top);
-    if (scrollView.contentOffset.y > 0) {
-        [self setFullscreen:YES];
     }
 }
 
