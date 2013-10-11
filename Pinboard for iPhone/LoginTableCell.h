@@ -10,6 +10,6 @@
 
 @interface LoginTableCell : UITableViewCell
 
-@property (nonatomic, strong) IBOutlet UITextField *inputField;
+@property (nonatomic, strong) UITextField *inputField;
 
 @end
