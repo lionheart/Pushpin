@@ -101,7 +101,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.onePasswordButton.titleLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:15];
     [self.onePasswordButton setTitleColor:HEX(0x4A5768FF) forState:UIControlStateNormal];
     [self.onePasswordButton setTitleShadowColor:HEX(0xFFFFFF00) forState:UIControlStateNormal];
-    //self.onePasswordButton.hidden = YES;
+    self.onePasswordButton.hidden = YES;
     [self.view addSubview:self.onePasswordButton];
     
     self.usernameTextField = [[UITextField alloc] init];
