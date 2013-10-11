@@ -103,14 +103,9 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
-    CGFloat tableOffset = [AppDelegate sharedDelegate].navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    //[self.tableView setContentInset:UIEdgeInsetsMake(tableOffset, 0, 0, 0)];
-    //[self.tableView setContentOffset:CGPointMake(0, -(tableOffset))];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    if (!self.navigationController)
-        self.navigationController = [AppDelegate sharedDelegate].navigationController;
     [super viewWillAppear:animated];
 }
 

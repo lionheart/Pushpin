@@ -417,6 +417,7 @@
 - (void)openTags {
     TagViewController *tagViewController = [[TagViewController alloc] init];
     tagViewController.title = NSLocalizedString(@"Tags", nil);
+    tagViewController.navigationController = [AppDelegate sharedDelegate].navigationController;
     [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
 }
 
