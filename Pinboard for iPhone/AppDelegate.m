@@ -41,6 +41,7 @@
 @synthesize lastUpdated = _lastUpdated;
 @synthesize privateByDefault = _privateByDefault;
 @synthesize dimReadPosts = _dimReadPosts;
+@synthesize markReadPosts = _markReadPosts;
 @synthesize feedToken = _feedToken;
 @synthesize connectionAvailable;
 @synthesize dateFormatter;
@@ -742,6 +743,21 @@
     _dimReadPosts = dimReadPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(dimReadPosts) forKey:@"io.aurora.pinboard.DimReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)markReadPosts {
+    if (!_markReadPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _markReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.MarkReadPosts"] boolValue];
+    }
+    return _markReadPosts;
+}
+
+- (void)setMarkReadPosts:(BOOL)markReadPosts {
+    _markReadPosts = markReadPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
     [defaults synchronize];
 }
 

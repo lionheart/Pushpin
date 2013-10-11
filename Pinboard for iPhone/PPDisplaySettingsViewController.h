@@ -14,6 +14,7 @@
 @property (nonatomic, retain) UISwitch *dimReadPostsSwitch;
 @property (nonatomic, retain) UISwitch *compressPostsSwitch;
 @property (nonatomic, retain) UISwitch *doubleTapToEditSwitch;
+@property (nonatomic, retain) UISwitch *markReadSwitch;
 
 - (void)switchChangedValue:(id)sender;
 

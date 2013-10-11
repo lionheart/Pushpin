@@ -416,6 +416,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 progress(0, total);
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
             });
+            
+            // Only track one date error per update
+            BOOL dateError = NO;
 
             for (NSDictionary *post in posts) {
                 if (index > 0 && (index % 1000) == 0) {
@@ -433,9 +436,10 @@ static BOOL kPinboardSyncInProgress = NO;
                 // Add if necessary
                 if ([additionBookmarksSet containsObject:hash]) {
                     NSDate *date = [dateFormatter dateFromString:post[@"time"]];
-                    if (!date) {
+                    if (!dateError && !date) {
                         date = [NSDate dateWithTimeIntervalSince1970:0];
                         [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                        dateError = YES;
                     }
                     
                     params = @{
