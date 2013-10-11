@@ -239,6 +239,12 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
             [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
         }
         else {
+            // If configured, always mark the post as read
+            if ([AppDelegate sharedDelegate].markReadPosts) {
+                self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+                [self markPostAsRead];
+            }
+            
             [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
             Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
@@ -1164,8 +1170,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + self.pullToRefreshImageView.frame.size.height + 20)) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
         UIOffset imageOffset;
-        
-        DLog(@"offset is %f, minimumOffset is %f", offset, minimumOffset);
         
         if (offset < 0) {
             // Start showing the view under the navigation bar

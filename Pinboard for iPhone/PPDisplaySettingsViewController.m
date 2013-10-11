@@ -30,7 +30,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -100,6 +100,17 @@
             [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = self.compressPostsSwitch;
             break;
+        case 3:
+            cell.textLabel.text = NSLocalizedString(@"Mark as read after viewing?", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            size = cell.frame.size;
+            self.markReadSwitch = [[UISwitch alloc] init];
+            switchSize = self.markReadSwitch.frame.size;
+            self.markReadSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+            self.markReadSwitch.on = [AppDelegate sharedDelegate].markReadPosts;
+            [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = self.markReadSwitch;
+            break;
             
         default:
             break;
@@ -119,8 +130,11 @@
     else if (sender == self.doubleTapToEditSwitch) {
         [[AppDelegate sharedDelegate] setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
     }
-    else {
+    else if (sender == self.dimReadPostsSwitch) {
         [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPostsSwitch.on];
+    }
+    else if (sender == self.markReadSwitch) {
+        [[AppDelegate sharedDelegate] setMarkReadPosts:self.markReadSwitch.on];
     }
 }
 
