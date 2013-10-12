@@ -22,6 +22,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UIImage+Tint.h"
 
 @interface FeedListViewController ()
 
@@ -92,6 +93,7 @@
     UIImage *settingsImage = [[UIImage imageNamed:@"SettingsNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton setImage:[settingsImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
@@ -99,6 +101,7 @@
     UIImage *tagImage = [[UIImage imageNamed:@"TagNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton setImage:tagImage forState:UIControlStateNormal];
+    [tagButton setImage:[tagImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
