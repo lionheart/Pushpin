@@ -169,6 +169,7 @@
 		3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */; };
 		3780BB5016E9267F006F5435 /* top-left-star.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4E16E9267F006F5435 /* top-left-star.png */; };
 		3780BB5116E9267F006F5435 /* top-left-star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3780BB4F16E9267F006F5435 /* top-left-star@2x.png */; };
+		378599771809FC28008E6EED /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 378599761809FC28008E6EED /* UIImage+Tint.m */; };
 		3787FFEF15B49989008A477A /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFE915B49989008A477A /* iTunesArtwork.png */; };
 		3787FFF015B49989008A477A /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
@@ -693,6 +694,8 @@
 		3780BB4B16E925A2006F5435 /* top-right-lock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-right-lock@2x.png"; path = "Assets/top-right-lock@2x.png"; sourceTree = "<group>"; };
 		3780BB4E16E9267F006F5435 /* top-left-star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star.png"; path = "Assets/top-left-star.png"; sourceTree = "<group>"; };
 		3780BB4F16E9267F006F5435 /* top-left-star@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "top-left-star@2x.png"; path = "Assets/top-left-star@2x.png"; sourceTree = "<group>"; };
+		378599751809FC28008E6EED /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Tint.h"; path = "Vendor/UIImage+Tint.h"; sourceTree = "<group>"; };
+		378599761809FC28008E6EED /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Tint.m"; path = "Vendor/UIImage+Tint.m"; sourceTree = "<group>"; };
 		3787FFE915B49989008A477A /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Assets/iTunesArtwork.png; sourceTree = "<group>"; };
 		3787FFEA15B49989008A477A /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Assets/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
@@ -1069,6 +1072,8 @@
 				374562BE17809AE200BF7389 /* UITableViewCell+Additions.h */,
 				374562BF17809AE200BF7389 /* UITableViewCell+Additions.m */,
 				3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */,
+				378599751809FC28008E6EED /* UIImage+Tint.h */,
+				378599761809FC28008E6EED /* UIImage+Tint.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -2273,6 +2278,7 @@
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
+				378599771809FC28008E6EED /* UIImage+Tint.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
 				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
