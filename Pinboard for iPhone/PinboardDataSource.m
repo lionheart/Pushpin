@@ -378,15 +378,17 @@ static BOOL kPinboardSyncInProgress = NO;
             [additionBookmarksSet minusSet:localHashSet];
             
             // Find the removals
-            NSRange deleteRange;
             NSUInteger rangeEnd = 0;
-            if (firstBookmarkIndex != NSNotFound) {
-                rangeEnd = (count + deleteOffset) > localCount ? localCount - 1 : (count + deleteOffset);
-                deleteRange = NSMakeRange(offset, rangeEnd);
-            } else {
+            if (firstBookmarkIndex == NSNotFound) {
                 rangeEnd = count > localCount ? localCount - 1 : count;
-                deleteRange = NSMakeRange(offset, rangeEnd);
             }
+            else {
+                rangeEnd = (count + deleteOffset) > localCount ? localCount - 1 : (count + deleteOffset);
+            }
+
+            // MIN is needed as localCount - 1 => very large number when localCount is 0
+            rangeEnd = MIN(0, rangeEnd);
+            NSRange deleteRange = NSMakeRange(offset, rangeEnd);
             
             NSMutableSet *deletionBookmarksSet = [[NSSet setWithArray:[localHashTable subarrayWithRange:deleteRange]] mutableCopy];
             [deletionBookmarksSet minusSet:remoteHashSet];
