@@ -102,36 +102,8 @@
     return [self.data[section][1] count];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    NSString *title = self.titles[section];
-    if (![title isEqualToString:@""]) {
-        float width = tableView.bounds.size.width;
-        NSUInteger fontSize = 17;
-        NSUInteger padding = tableView.groupedCellMargin;
-        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
-        label.text = title;
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = HEX(0x4C566CFF);
-        label.shadowColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0,1);
-        label.font = font;
-        CGSize textSize = [title sizeWithFont:label.font];
-        
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
-        [view addSubview:label];
-        return view;
-    }
-    return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    NSString *title = self.titles[section];
-    if (![title isEqual:@""]) {
-        UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17];
-        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height + 20;
-    }
-    return 0;
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return self.titles[section];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -145,23 +117,16 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    static NSString *ChoiceCellIdentifier = @"ChoiceCell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChoiceCellIdentifier];
+        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    
     cell.accessoryView = nil;
-    
-    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
 
     if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
         cell.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:12];
     }
-    else {
-        cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    }
+
     cell.detailTextLabel.numberOfLines = 0;
     cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
     cell.textLabel.text = nil;
