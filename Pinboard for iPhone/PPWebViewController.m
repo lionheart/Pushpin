@@ -56,6 +56,7 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
+    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.webView];
     
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
@@ -91,6 +92,7 @@ static NSInteger kToolbarHeight = 44;
     
     self.toolbar = [[PPToolbar alloc] init];
     self.toolbar.translucent = YES;
+    self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -136,8 +138,13 @@ static NSInteger kToolbarHeight = 44;
     self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.expandBarButtonItem, flexibleSpace, self.actionBarButtonItem];
     self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
 
-    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.toolbar];
+    
+    // Setup auto-layout constraints
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[toolbar]|" options:0 metrics:nil views:@{ @"toolbar": self.toolbar }]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[toolbar]|" options:0 metrics:@{ @"toolbarHeight": @(kToolbarHeight) } views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[webView]|" options:0 metrics:nil views:@{ @"webView": self.webView }]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[webView]|" options:0 metrics:nil views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -202,6 +209,9 @@ static NSInteger kToolbarHeight = 44;
         
         self.urlString = mobilizedUrlString;
     }
+    
+    // Setup a content inset on the webview under the toolbar
+    self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, self.toolbar.frame.size.height, 0);
 
     CGSize buttonSize = self.webView.frame.size;
     CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
@@ -245,7 +255,6 @@ static NSInteger kToolbarHeight = 44;
     
     if (fullscreen) {
         self.toolbarFrame = self.toolbar.frame;
-        
         // Show the hidden UIView to get tap notifications
         self.tapGestureForTopFullscreenMode.enabled = YES;
         self.tapGestureForBottomFullscreenMode.enabled = YES;
@@ -259,7 +268,8 @@ static NSInteger kToolbarHeight = 44;
         
         [UIView animateWithDuration:0.25 animations:^{
             // Slide down the bottom toolbar
-            self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.toolbarFrame.origin.y + self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
+            self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.view.frame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
+            self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
             
             self.isFullscreen = YES;
         }];
@@ -278,9 +288,9 @@ static NSInteger kToolbarHeight = 44;
         [self.navigationController setNavigationBarHidden:NO animated:YES];
         
         [UIView animateWithDuration:0.25 animations:^{
-            // Show the bottom toolbar - base of application size in case we're animating
-            CGSize size = [UIApplication currentSize];
-            [self.toolbar setFrame:CGRectMake(0, size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
+            // Show the bottom toolbar
+            [self.toolbar setFrame:CGRectMake(self.toolbarFrame.origin.x, self.view.frame.size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
+            self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
             
             self.isFullscreen = NO;
         }];
@@ -291,41 +301,6 @@ static NSInteger kToolbarHeight = 44;
     CGRect frame = self.navigationController.navigationBar.frame;
     self.webView.scrollView.contentInset = UIEdgeInsetsMake([[UIApplication sharedApplication] statusBarFrame].size.height + frame.origin.y + frame.size.height, 0, 0, 0);
     [self setFullscreen:NO];
-}
-
-- (void)toggleFullScreen {
-    UIButton *visibleButton = self.enterReaderModeButton.hidden ? self.exitReaderModeButton : self.enterReaderModeButton;
-
-    if (self.navigationController.navigationBarHidden) {
-        [UIView animateWithDuration:0.25 animations:^{
-            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-            [self.navigationController setNavigationBarHidden:NO animated:YES];
-            CGSize size = self.view.frame.size;
-            self.webView.frame = CGRectMake(0, 0, size.width, size.height - kToolbarHeight);
-            self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
-
-            CGPoint newPoint = [self adjustedPuckPositionWithPoint:visibleButton.frame.origin];
-            self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-            self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-            self.enterReaderModeButton.hidden = NO;
-            self.exitReaderModeButton.hidden = YES;
-        }];
-    }
-    else {
-        [UIView animateWithDuration:0.25 animations:^{
-            CGSize size = [UIApplication currentSize];
-            self.webView.frame = CGRectMake(0, 0, size.width, size.height);
-            self.toolbar.frame = CGRectMake(0, size.height, size.width, kToolbarHeight);
-            [self.navigationController setNavigationBarHidden:YES animated:YES];
-            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-
-            CGPoint newPoint = [self adjustedPuckPositionWithPoint:visibleButton.frame.origin];
-            self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-            self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-            self.enterReaderModeButton.hidden = YES;
-            self.exitReaderModeButton.hidden = NO;
-        }];
-    }
 }
 
 - (void)loadURL {
