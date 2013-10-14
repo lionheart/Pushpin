@@ -22,6 +22,8 @@
 #import "UITableView+Additions.h"
 #import <Mixpanel/Mixpanel.h>
 
+static NSString *CellIdentifier = @"CellIdentifier";
+
 @interface PPAboutViewController ()
 
 @end
