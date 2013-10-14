@@ -20,6 +20,7 @@
 #import "PocketAPI.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import <UIView+LHSAdditions.h>
 
 #import "PPNavigationController.h"
 
@@ -37,6 +38,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
@@ -45,7 +47,6 @@ static NSInteger kToolbarHeight = 44;
 
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.webView.autoresizingMask = UIViewAutoresizingNone;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
@@ -53,6 +54,15 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scrollView.bounces = NO;
     [self.view addSubview:self.webView];
     
+    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.progressView.progress = 0.5;
+    self.progressView.tintColor = [UIColor redColor];
+    self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.progressView];
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.progressView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view lhs_addConstraints:@"H:|[view]|" views:@{@"view": self.progressView}];
+
     // Tap views and gesture recognizers
     CGRect screen = [[UIScreen mainScreen] bounds];
     self.tapViewTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.size.width, 20)];
