@@ -20,6 +20,8 @@
 #import "UITableView+Additions.h"
 #import "PPNavigationController.h"
 
+
+
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 @interface AddBookmarkViewController ()
@@ -56,6 +58,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize recommendedTags;
 @synthesize keyboardTableInset;
 @synthesize editTextViewController;
+@synthesize textExpander, textExpanderSnippetExpanded;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -132,7 +135,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
         [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
-        
     }
     return self;
 }
@@ -157,7 +159,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.postDescriptionTextView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = self.postDescription;
-        self.postDescriptionTextView.delegate = self;
+        
+        // TextExpander SDK
+        self.textExpander = [[SMTEDelegateController alloc] init];
+        [self.postDescriptionTextView setDelegate:textExpander];
+        [self.textExpander setNextDelegate:self];
     }
 }
 
@@ -984,6 +990,27 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 }
 
 #pragma mark Text View Delegate
+
+- (void)fixTextView:(UITextView *)textView {
+    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f) {
+        [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
+    }
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    if (self.textExpanderSnippetExpanded) {
+        [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
+        self.textExpanderSnippetExpanded = NO;
+    }
+}
+
+- (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (self.textExpander.isAttemptingToExpandText) {
+        self.textExpanderSnippetExpanded = YES;
+    }
+    
+    return YES;
+}
 
 - (void)finishEditingDescription {
     // Update the description text

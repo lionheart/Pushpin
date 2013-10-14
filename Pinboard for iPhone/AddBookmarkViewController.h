@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "PPSwitch.h"
+#import <TextExpander/SMTEDelegateController.h>
 
 @class PPNavigationController;
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate> {
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate> {
     UIEdgeInsets _oldContentInset;
 }
 
@@ -55,6 +56,9 @@
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
 
 @property (nonatomic, retain) UIViewController *editTextViewController;
+
+@property (nonatomic, retain) SMTEDelegateController *textExpander;
+@property (nonatomic) BOOL textExpanderSnippetExpanded;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;

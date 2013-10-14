@@ -31,6 +31,7 @@
 
 #import "UIApplication+Additions.h"
 
+
 @implementation AppDelegate
 
 @synthesize window;
