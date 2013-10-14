@@ -49,6 +49,8 @@
     CGFloat descriptionHeight;
     NSUInteger emptyLines;
     NSArray *lines;
+
+    UITableViewCell *testCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@""];
     for (NSArray *list in self.data) {
         [self.titles addObject:NSLocalizedString(list[0], nil)];
         for (NSArray *pair in list[1]) {
@@ -59,7 +61,7 @@
                 self.heights[title] = @(0);
             }
             else {
-                self.heights[title] = @(MIN(22, [title sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
+                self.heights[title] = @(MIN(22, [title sizeWithFont:testCell.textLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
             }
 
             if ([description isEqualToString:@""]) {
@@ -75,10 +77,10 @@
                 }
 
                 if (index == 4) {
-                    descriptionHeight = [description sizeWithFont:fixedWidthFont constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    descriptionHeight = [description sizeWithFont:testCell.detailTextLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
                 }
                 else {
-                    descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    descriptionHeight = [description sizeWithFont:testCell.detailTextLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
                 }
             }
 
