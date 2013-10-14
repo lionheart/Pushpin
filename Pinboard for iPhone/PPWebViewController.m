@@ -35,9 +35,13 @@ static NSInteger kToolbarHeight = 44;
 @synthesize shouldMobilize, urlString;
 @synthesize tapViewBottom, tapViewTop;
 
+- (void)viewDidLayoutSubviews {
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
@@ -62,7 +66,7 @@ static NSInteger kToolbarHeight = 44;
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.progressView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
     [self.view lhs_addConstraints:@"H:|[view]|" views:@{@"view": self.progressView}];
-
+    
     // Tap views and gesture recognizers
     CGRect screen = [[UIScreen mainScreen] bounds];
     self.tapViewTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.size.width, 20)];
@@ -886,10 +890,6 @@ static NSInteger kToolbarHeight = 44;
     return self.numberOfRequests - self.numberOfRequestsCompleted;
 }
 
-- (void)updateWebAssetProgressBar {
-    [self.progressView setProgress:((CGFloat)self.numberOfRequestsCompleted / self.numberOfRequestsInProgress) animated:YES];
-}
-
 #pragma mark -
 #pragma mark UIScrollViewDelegate
 
@@ -912,8 +912,6 @@ static NSInteger kToolbarHeight = 44;
 
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
-
-    [self updateWebAssetProgressBar];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -924,16 +922,12 @@ static NSInteger kToolbarHeight = 44;
 
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = pageTitle;
-
-    [self updateWebAssetProgressBar];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     self.numberOfRequests++;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
-
-    [self updateWebAssetProgressBar];
 }
 
 #pragma mark - NSURLConnectionDataDelegate
