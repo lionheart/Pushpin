@@ -55,8 +55,8 @@ static NSInteger kToolbarHeight = 44;
     [self.view addSubview:self.webView];
     
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.progress = 0.5;
-    self.progressView.tintColor = [UIColor redColor];
+    self.progressView.progress = 0;
+    self.progressView.tintColor = [UIColor lightGrayColor];
     self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.progressView];
 
@@ -328,7 +328,9 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
     
     self.title = self.urlString;
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    [connection start];
 }
 
 - (void)popViewController {
@@ -383,21 +385,6 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    self.numberOfRequestsInProgress--;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    [self enableOrDisableButtons];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    self.numberOfRequestsInProgress--;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-    [self enableOrDisableButtons];
-
-    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.title = pageTitle;
-}
-
 - (void)enableOrDisableButtons {
     if (self.numberOfRequestsInProgress > 0) {
         self.backBarButtonItem.enabled = NO;
@@ -443,12 +430,6 @@ static NSInteger kToolbarHeight = 44;
             });
         }
     }
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    self.numberOfRequestsInProgress++;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-    [self enableOrDisableButtons];
 }
 
 - (void)backButtonTouchUp:(id)sender {
@@ -901,6 +882,14 @@ static NSInteger kToolbarHeight = 44;
     return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
 }
 
+- (NSInteger)numberOfRequestsInProgress {
+    return self.numberOfRequests - self.numberOfRequestsCompleted;
+}
+
+- (void)updateWebAssetProgressBar {
+    [self.progressView setProgress:((CGFloat)self.numberOfRequestsCompleted / self.numberOfRequestsInProgress) animated:YES];
+}
+
 #pragma mark -
 #pragma mark UIScrollViewDelegate
 
@@ -908,6 +897,60 @@ static NSInteger kToolbarHeight = 44;
     if (scrollView.contentOffset.y <= 0) {
         [self setFullscreen:NO];
     }
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    self.numberOfRequestsCompleted = 0;
+    self.numberOfRequests = 0;
+    return YES;
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    self.numberOfRequestsCompleted++;
+
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [self enableOrDisableButtons];
+
+    [self updateWebAssetProgressBar];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    self.numberOfRequestsCompleted++;
+
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [self enableOrDisableButtons];
+
+    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    self.title = pageTitle;
+
+    [self updateWebAssetProgressBar];
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    self.numberOfRequests++;
+    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    [self enableOrDisableButtons];
+
+    [self updateWebAssetProgressBar];
+}
+
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    self.response = (NSHTTPURLResponse *)response;
+    self.data = [NSMutableData data];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.data appendData:data];
+
+    [self.progressView setProgress:((CGFloat)self.data.length / self.response.expectedContentLength) animated:YES];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [self.webView loadData:self.data MIMEType:self.response.MIMEType textEncodingName:self.response.textEncodingName baseURL:self.response.URL];
 }
 
 @end
