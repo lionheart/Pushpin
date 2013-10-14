@@ -108,7 +108,19 @@
             [escapedComponents addObject:component];
         }
     }
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%d", [escapedComponents componentsJoinedByString:@"/"], self.count]];
+    
+    NSString *urlString;
+    
+    // If it's our username, we need to use the feed token to get any private tags
+    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+    if ([[escapedComponents objectAtIndex:0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
+        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%d", feedToken, [escapedComponents componentsJoinedByString:@"/"], self.count];
+    } else {
+        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%d", [escapedComponents componentsJoinedByString:@"/"], self.count];
+    }
+    
+    return [NSURL URLWithString:urlString];
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
