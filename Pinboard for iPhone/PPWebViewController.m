@@ -128,12 +128,6 @@ static NSInteger kToolbarHeight = 44;
     actionButton.frame = CGRectMake(0, 0, 30, 30);
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     
-    UIButton *socialButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [socialButton setImage:[UIImage imageNamed:@"share2-dash"] forState:UIControlStateNormal];
-    [socialButton addTarget:self action:@selector(socialActionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-    socialButton.frame = CGRectMake(0, 0, 30, 30);
-    self.socialBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:socialButton];
-    
     UIButton *expandButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [expandButton setImage:[UIImage imageNamed:@"expand-dash"] forState:UIControlStateNormal];
     [expandButton addTarget:self action:@selector(expandWebViewToFullScreen) forControlEvents:UIControlEventTouchUpInside];
@@ -354,54 +348,6 @@ static NSInteger kToolbarHeight = 44;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)socialActionButtonTouchUp:(id)sender {
-    if (!self.actionSheet) {
-        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
-        
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-        BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-        BOOL canSendTweet;
-        BOOL canPostToFacebook;
-        if (isIOS6) {
-            canSendTweet = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
-            canPostToFacebook = [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
-        }
-        else {
-            canSendTweet = [TWTweetComposeViewController canSendTweet];
-            canPostToFacebook = NO;
-        }
-
-        if (canSendTweet) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Twitter", nil)];
-        }
-
-        if (canPostToFacebook) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Facebook", nil)];
-        }
-
-        if ([MFMessageComposeViewController canSendText]) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Share on Messages", nil)];
-        }
-        
-        if ([MFMailComposeViewController canSendMail]) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Email URL", nil)];
-        }
-
-        // Properly set the cancel button index
-        [self.actionSheet addButtonWithTitle:@"Cancel"];
-        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-
-        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.socialBarButtonItem animated:YES];
-    }
-    else {
-        if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-            self.actionSheet = nil;
-        }
-    }
-}
-
 - (void)enableOrDisableButtons {
     if (self.numberOfRequestsInProgress > 0) {
         self.backBarButtonItem.enabled = NO;
@@ -458,67 +404,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
-    /*
-    if (!self.actionSheet) {
-        NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
-
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:alertTitle delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-        [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-        switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-            case BROWSER_SAFARI:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Safari", nil)];
-                break;
-                
-            case BROWSER_OPERA:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Opera", nil)];
-                break;
-                
-            case BROWSER_ICAB_MOBILE:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in iCab Mobile", nil)];
-                break;
-                
-            case BROWSER_DOLPHIN:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Dolphin", nil)];
-                break;
-                
-            case BROWSER_CYBERSPACE:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Cyberspace", nil)];
-                break;
-                
-            case BROWSER_CHROME:
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Open in Chrome", nil)];
-                break;
-                
-            default:
-                break;
-        }
-        
-        NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
-        if (readlater == READLATER_INSTAPAPER) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
-        }
-        else if (readlater == READLATER_READABILITY) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
-        }
-        else if (readlater == READLATER_POCKET) {
-            [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
-        }
-
-        // Properly set the cancel button index
-        [self.actionSheet addButtonWithTitle:@"Cancel"];
-        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-
-        [(UIActionSheet *)self.actionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-    }
-    else {
-        if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-            self.actionSheet = nil;
-        }
-    }
-    */
-    
     // Browsers
     NSMutableArray *browserActivites = [NSMutableArray array];
     PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
