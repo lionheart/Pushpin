@@ -21,6 +21,8 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import <UIView+LHSAdditions.h>
+#import "PPBrowserActivity.h"
+#import "PPReadLaterActivity.h"
 
 #import "PPNavigationController.h"
 
@@ -456,6 +458,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
+    /*
     if (!self.actionSheet) {
         NSString *alertTitle = [self urlStringForDemobilizedURL:self.url];
 
@@ -514,6 +517,58 @@ static NSInteger kToolbarHeight = 44;
             self.actionSheet = nil;
         }
     }
+    */
+    
+    // Browsers
+    NSMutableArray *browserActivites = [NSMutableArray array];
+    PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
+    [browserActivity setUrlString:[self urlStringForDemobilizedURL:self.url]];
+    [browserActivites addObject:browserActivity];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"icabmobile" browser:@"iCab Mobile"];
+        [browserActivites addObject:browserActivity];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"googlechrome" browser:@"Chrome"];
+        [browserActivites addObject:browserActivity];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"ohttp" browser:@"Opera"];
+        [browserActivites addObject:browserActivity];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"dolphin" browser:@"Dolphin"];
+        [browserActivites addObject:browserActivity];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"cyber" browser:@"Cyberspace"];
+        [browserActivites addObject:browserActivity];
+    }
+
+    
+    // Read later
+    NSMutableArray *readLaterActivities = [NSMutableArray array];
+    NSInteger readLaterSetting = [[[AppDelegate sharedDelegate] readlater] integerValue];
+    PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
+    readLaterActivity.delegate = self;
+    [readLaterActivities addObject:readLaterActivity];
+    
+    NSString *title = NSLocalizedString(@"\r\nShared via Pinboard", nil);
+    NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
+    NSURL *url = [NSURL URLWithString:tempUrl];
+    
+    NSMutableArray *allActivities = [NSMutableArray arrayWithArray:browserActivites];
+    [allActivities addObjectsFromArray:readLaterActivities];
+    
+    NSArray *activityItems = [NSArray arrayWithObjects:url, title, nil];
+    self.activityView = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:allActivities];
+    self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo];
+    
+    [self presentViewController:self.activityView animated:YES completion:nil];
 }
 
 - (void)actionSheetCancel:(UIActionSheet *)actionSheet {
@@ -615,9 +670,16 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)sendToReadLater {
-    NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
+    // Send to the default read later service
+    [self sendToReadLater:[[AppDelegate sharedDelegate] readlater]];
+}
+
+- (void)sendToReadLater:(NSNumber *)service {
+    if (self.activityView) {
+        [self.activityView dismissViewControllerAnimated:YES completion:nil];
+    }
     NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
-    if (readLater.integerValue == READLATER_INSTAPAPER) {
+    if (service.integerValue == READLATER_INSTAPAPER) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -656,7 +718,7 @@ static NSInteger kToolbarHeight = 44;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (readLater.integerValue == READLATER_READABILITY) {
+    else if (service.integerValue == READLATER_READABILITY) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -693,7 +755,7 @@ static NSInteger kToolbarHeight = 44;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (readLater.integerValue == READLATER_POCKET) {
+    else if (service.integerValue == READLATER_POCKET) {
         [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:urlString]
                              withTitle:self.title
                                handler:^(PocketAPI *api, NSURL *url, NSError *error) {
