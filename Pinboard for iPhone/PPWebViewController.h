@@ -56,7 +56,6 @@
 @property (nonatomic, strong) NSDictionary *selectedLink;
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
-@property (nonatomic, strong) UIActivityViewController *activityView;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
@@ -76,6 +75,7 @@
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
+- (void)sendToReadLater:(NSNumber *)service;
 - (void)loadURL;
 - (void)stopLoading;
 - (BOOL)isWebViewExpanded;
