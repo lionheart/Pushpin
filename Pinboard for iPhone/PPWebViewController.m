@@ -212,7 +212,6 @@ static NSInteger kToolbarHeight = 44;
         locatorString = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).href", webViewCoordinates.x, webViewCoordinates.y];
         NSString *url = [self.webView stringByEvaluatingJavaScriptFromString:locatorString];
         self.selectedLink = @{ @"url": url, @"title": title };
-        NSLog(@"Element Found: %@", self.selectedLink);
         
         // Show the context menu
         self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
@@ -274,10 +273,6 @@ static NSInteger kToolbarHeight = 44;
     if ([UIApplication sharedApplication].statusBarHidden) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     }
-}
-
-- (void)addBookmarkFromWebView:(id)sender {
-    DLog(@"Adding booking");
 }
 
 - (void)stopLoading {
