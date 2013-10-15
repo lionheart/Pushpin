@@ -43,6 +43,8 @@
 @synthesize privateByDefault = _privateByDefault;
 @synthesize dimReadPosts = _dimReadPosts;
 @synthesize markReadPosts = _markReadPosts;
+@synthesize enableAutoCorrect = _enableAutoCorrect;
+@synthesize enableAutoCapitalize = _enableAutoCapitalize;
 @synthesize feedToken = _feedToken;
 @synthesize connectionAvailable;
 @synthesize dateFormatter;
@@ -759,6 +761,36 @@
     _markReadPosts = markReadPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)enableAutoCorrect {
+    if (!_enableAutoCorrect) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
+    }
+    return _enableAutoCorrect;
+}
+
+- (void)setEnableAutoCorrect:(BOOL)enableAutoCorrect {
+    _enableAutoCorrect = enableAutoCorrect;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
+    [defaults synchronize];
+}
+
+- (BOOL)enableAutoCapitalize {
+    if (!_enableAutoCapitalize) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
+    }
+    return _enableAutoCapitalize;
+}
+
+- (void)setEnableAutoCapitalize:(BOOL)enableAutoCapitalize {
+    _enableAutoCapitalize = enableAutoCapitalize;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(enableAutoCapitalize) forKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
     [defaults synchronize];
 }
 

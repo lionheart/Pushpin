@@ -30,7 +30,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 6;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -88,19 +88,7 @@
             [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = self.doubleTapToEditSwitch;
             break;
-
         case 2:
-            cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            size = cell.frame.size;
-            self.compressPostsSwitch = [[UISwitch alloc] init];
-            switchSize = self.compressPostsSwitch.frame.size;
-            self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-            self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
-            [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-            cell.accessoryView = self.compressPostsSwitch;
-            break;
-        case 3:
             cell.textLabel.text = NSLocalizedString(@"Mark as read after viewing?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
@@ -111,6 +99,40 @@
             [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = self.markReadSwitch;
             break;
+        case 3:
+            cell.textLabel.text = NSLocalizedString(@"Auto correct text?", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            size = cell.frame.size;
+            self.autoCorrectionSwitch = [[UISwitch alloc] init];
+            switchSize = self.autoCorrectionSwitch.frame.size;
+            self.autoCorrectionSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+            self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
+            [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = self.autoCorrectionSwitch;
+            break;
+        case 4:
+            cell.textLabel.text = NSLocalizedString(@"Auto capitalize text?", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            size = cell.frame.size;
+            self.autoCapitalizationSwitch = [[UISwitch alloc] init];
+            switchSize = self.autoCapitalizationSwitch.frame.size;
+            self.autoCapitalizationSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+            self.autoCapitalizationSwitch.on = [AppDelegate sharedDelegate].enableAutoCapitalize;
+            [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = self.autoCapitalizationSwitch;
+            break;
+        case 5:
+            cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            size = cell.frame.size;
+            self.compressPostsSwitch = [[UISwitch alloc] init];
+            switchSize = self.compressPostsSwitch.frame.size;
+            self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+            self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
+            [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = self.compressPostsSwitch;
+            break;
+
             
         default:
             break;
@@ -135,6 +157,12 @@
     }
     else if (sender == self.markReadSwitch) {
         [[AppDelegate sharedDelegate] setMarkReadPosts:self.markReadSwitch.on];
+    }
+    else if (sender == self.autoCorrectionSwitch) {
+        [[AppDelegate sharedDelegate] setEnableAutoCorrect:self.autoCorrectionSwitch.on];
+    }
+    else if (sender == self.autoCapitalizationSwitch) {
+        [[AppDelegate sharedDelegate] setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
     }
 }
 
