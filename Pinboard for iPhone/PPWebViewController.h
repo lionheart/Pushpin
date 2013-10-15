@@ -34,6 +34,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureForBottomFullscreenMode;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureForTopFullscreenMode;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIView *tapViewTop;
 @property (nonatomic, strong) UIView *tapViewBottom;
 @property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
@@ -52,6 +53,9 @@
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequests;
 @property (nonatomic, strong) NSTimer *progressBarTimer;
+@property (nonatomic, strong) NSDictionary *selectedLink;
+@property (nonatomic) BOOL selectedActionSheetIsVisible;
+@property (nonatomic, strong) UIActionSheet *selectedActionSheet;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
@@ -60,9 +64,11 @@
 - (void)backButtonTouchUp:(id)sender;
 - (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
+- (void)copyURL:(NSURL *)url;
 - (void)emailURL;
 - (void)showEditViewController;
 - (void)showAddViewController;
+- (void)showAddViewController:(NSDictionary *)data;
 - (void)popViewController;
 - (BOOL)isMobilized;
 - (BOOL)isURLStringMobilized:(NSString *)url;
