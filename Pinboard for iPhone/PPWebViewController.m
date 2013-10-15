@@ -144,6 +144,10 @@ static NSInteger kToolbarHeight = 44;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[toolbar]|" options:0 metrics:nil views:@{ @"toolbar": self.toolbar }]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[toolbar]|" options:0 metrics:@{ @"toolbarHeight": @(kToolbarHeight) } views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
     [self.webView lhs_expandToFillSuperview];
+    
+    // Setup custom menu options for links
+    UIMenuItem *addBookmarkMenuItem = [[UIMenuItem alloc] initWithTitle:@"Add to Pinboard" action:@selector(addBookmarkFromWebView:)];
+    [[UIMenuController sharedMenuController] setMenuItems:[NSArray arrayWithObjects:addBookmarkMenuItem, nil]];
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -236,6 +240,10 @@ static NSInteger kToolbarHeight = 44;
     if ([UIApplication sharedApplication].statusBarHidden) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     }
+}
+
+- (void)addBookmarkFromWebView:(id)sender {
+    DLog(@"Adding booking");
 }
 
 - (void)stopLoading {

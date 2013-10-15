@@ -154,8 +154,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         }
 
         self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - offset)];
-        self.postDescriptionTextView.autocorrectionType = UITextAutocorrectionTypeDefault;
-        self.postDescriptionTextView.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        self.postDescriptionTextView.autocorrectionType = [AppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+        self.postDescriptionTextView.autocapitalizationType =  [AppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
         self.postDescriptionTextView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.postDescriptionTextView.font = font;
         self.postDescriptionTextView.text = self.postDescription;
