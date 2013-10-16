@@ -438,9 +438,11 @@ static NSInteger kToolbarHeight = 44;
     // Read later
     NSMutableArray *readLaterActivities = [NSMutableArray array];
     NSInteger readLaterSetting = [[[AppDelegate sharedDelegate] readlater] integerValue];
-    PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
-    readLaterActivity.delegate = self;
-    [readLaterActivities addObject:readLaterActivity];
+    if (readLaterSetting > READLATER_NONE) {
+        PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
+        readLaterActivity.delegate = self;
+        [readLaterActivities addObject:readLaterActivity];
+    }
     
     NSString *title = NSLocalizedString(@"\r\nShared via Pinboard", nil);
     NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
@@ -461,88 +463,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.actionSheet) {
-        if (buttonIndex >= 0) {
-            NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-            self.actionSheet = nil;
-            NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
-            NSURL *url = [NSURL URLWithString:tempUrl];
-            if (url.scheme) {
-                NSRange range = [tempUrl rangeOfString:url.scheme];
-                
-                if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-                    [self copyURL];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Email URL", nil)]) {
-                    [self emailURL];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
-                    return;
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Share on Twitter", nil)]) {
-                    BOOL isIOS6 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0;
-                    if (isIOS6) {
-                        SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-                        [socialComposeViewController setInitialText:self.title];
-                        [socialComposeViewController addURL:url];
-                        [self presentViewController:socialComposeViewController animated:YES completion:nil];
-                    }
-                    else {
-                        TWTweetComposeViewController *tweetComposeViewController = [[TWTweetComposeViewController alloc] init];
-                        [tweetComposeViewController setInitialText:self.title];
-                        [tweetComposeViewController addURL:url];
-                        [self presentViewController:tweetComposeViewController animated:YES completion:nil];
-                    }
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Share on Facebook", nil)]) {
-                    SLComposeViewController *socialComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-                    [socialComposeViewController setInitialText:self.title];
-                    [socialComposeViewController addURL:url];
-                    [self presentViewController:socialComposeViewController animated:YES completion:nil];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Share on Messages", nil)]) {
-                    MFMessageComposeViewController *composeViewController = [[MFMessageComposeViewController alloc] init];
-                    composeViewController.messageComposeDelegate = self;
-                    [composeViewController setBody:[NSString stringWithFormat:@"%@ %@", self.title, tempUrl]];
-                    [self presentViewController:composeViewController animated:YES completion:nil];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-                    [self sendToReadLater];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-                    [self sendToReadLater];
-                }
-                else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-                    [self sendToReadLater];
-                }
-                else {
-                    if ([title isEqualToString:NSLocalizedString(@"Open in Chrome", nil)]) {
-                        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
-                        
-                        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                            url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [tempUrl urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                        }
-                        else {
-                            url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
-                        }
-                    }
-                    else if ([title isEqualToString:NSLocalizedString(@"Open in Opera", nil)]) {
-                        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"ohttp"]];
-                    }
-                    else if ([title isEqualToString:NSLocalizedString(@"Open in Dolphin", nil)]) {
-                        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"dolphin"]];
-                    }
-                    else if ([title isEqualToString:NSLocalizedString(@"Open in Cyberspace", nil)]) {
-                        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"cyber"]];
-                    }
-                    else if ([title isEqualToString:NSLocalizedString(@"Open in iCab Mobile", nil)]) {
-                        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
-                    }
-                    [[UIApplication sharedApplication] openURL:url];
-                }
-            }
-        }
-    } else if (actionSheet == self.selectedActionSheet) {
+    if (actionSheet == self.selectedActionSheet) {
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
             // Copy URL to clipboard
