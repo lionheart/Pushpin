@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		37018CE7180E3C0B00226408 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
-		37018CE8180E3C0B00226408 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097616F157B100E8FE29 /* gray-button-cap.png */; };
@@ -471,6 +469,8 @@
 		37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD815748BA2003F2B77 /* navigationbar.png */; };
 		37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */; };
 		CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
+		E804950D180EF20800C5CA8B /* webview-helpers.js in Sources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
+		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06417F0DE41007E0615 /* icon-web-forward.png */; };
 		E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */; };
 		E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06617F0DE42007E0615 /* icon-web-back.png */; };
@@ -1034,6 +1034,7 @@
 		37FEEBD915748BA2003F2B77 /* navigationbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigationbar@2x.png"; path = "Assets/navigationbar@2x.png"; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E80FE06417F0DE41007E0615 /* icon-web-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward.png"; path = "Assets/icon-web-forward.png"; sourceTree = "<group>"; };
 		E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward@2x.png"; path = "Assets/icon-web-forward@2x.png"; sourceTree = "<group>"; };
 		E80FE06617F0DE42007E0615 /* icon-web-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back.png"; path = "Assets/icon-web-back.png"; sourceTree = "<group>"; };
@@ -1756,6 +1757,7 @@
 				3714DB7E175673E200B23F4F /* safari-instructions.html */,
 				37D0D0C016B8E2310062C27E /* about.html */,
 				376E0A7D175AA245004CCDEE /* About.plist */,
+				E804950C180EF20800C5CA8B /* webview-helpers.js */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -1868,6 +1870,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */,
 				37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */,
 				3715EEC715787CAA00FD21EE /* main.css in Resources */,
@@ -2349,6 +2352,7 @@
 				378599771809FC28008E6EED /* UIImage+Tint.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
+				E804950D180EF20800C5CA8B /* webview-helpers.js in Sources */,
 				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
 				37370713165CA552001BEDD8 /* NSData+Additions.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
@@ -2476,6 +2480,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Beta.entitlements";
@@ -2487,6 +2492,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -2592,6 +2598,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard for iPhone/Dev.entitlements";
@@ -2608,6 +2615,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2616,6 +2624,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
@@ -2627,6 +2636,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
