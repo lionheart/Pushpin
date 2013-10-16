@@ -480,6 +480,18 @@
 		E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */; };
 		E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */; };
 		E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */; };
+		E8734227180DA20300CF9E5F /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E8734226180DA20300CF9E5F /* PPBrowserActivity.m */; };
+		E873422B180DAA5B00CF9E5F /* activity-browser-safari.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734229180DAA5B00CF9E5F /* activity-browser-safari.png */; };
+		E873422C180DAA5B00CF9E5F /* activity-browser-safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873422A180DAA5B00CF9E5F /* activity-browser-safari@2x.png */; };
+		E8734233180DAC3400CF9E5F /* activity-instapaper.png in Resources */ = {isa = PBXBuildFile; fileRef = E873422D180DAC3300CF9E5F /* activity-instapaper.png */; };
+		E8734234180DAC3400CF9E5F /* activity-instapaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873422E180DAC3300CF9E5F /* activity-instapaper@2x.png */; };
+		E8734235180DAC3400CF9E5F /* activity-readability.png in Resources */ = {isa = PBXBuildFile; fileRef = E873422F180DAC3400CF9E5F /* activity-readability.png */; };
+		E8734236180DAC3400CF9E5F /* activity-readability@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734230180DAC3400CF9E5F /* activity-readability@2x.png */; };
+		E8734237180DAC3400CF9E5F /* activity-pocket.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734231180DAC3400CF9E5F /* activity-pocket.png */; };
+		E8734238180DAC3400CF9E5F /* activity-pocket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734232180DAC3400CF9E5F /* activity-pocket@2x.png */; };
+		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
+		E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */; };
+		E8734242180DB18500CF9E5F /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1034,6 +1046,20 @@
 		E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FluidTableviewCell.m; sourceTree = "<group>"; };
 		E84A8D9717FB1BCB003B4F50 /* FluidTableviewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluidTableviewFlowLayout.h; sourceTree = "<group>"; };
 		E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FluidTableviewFlowLayout.m; sourceTree = "<group>"; };
+		E8734225180DA20300CF9E5F /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
+		E8734226180DA20300CF9E5F /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
+		E8734229180DAA5B00CF9E5F /* activity-browser-safari.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-safari.png"; path = "Assets/activity-browser-safari.png"; sourceTree = "<group>"; };
+		E873422A180DAA5B00CF9E5F /* activity-browser-safari@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-safari@2x.png"; path = "Assets/activity-browser-safari@2x.png"; sourceTree = "<group>"; };
+		E873422D180DAC3300CF9E5F /* activity-instapaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-instapaper.png"; path = "Assets/activity-instapaper.png"; sourceTree = "<group>"; };
+		E873422E180DAC3300CF9E5F /* activity-instapaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-instapaper@2x.png"; path = "Assets/activity-instapaper@2x.png"; sourceTree = "<group>"; };
+		E873422F180DAC3400CF9E5F /* activity-readability.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readability.png"; path = "Assets/activity-readability.png"; sourceTree = "<group>"; };
+		E8734230180DAC3400CF9E5F /* activity-readability@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readability@2x.png"; path = "Assets/activity-readability@2x.png"; sourceTree = "<group>"; };
+		E8734231180DAC3400CF9E5F /* activity-pocket.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-pocket.png"; path = "Assets/activity-pocket.png"; sourceTree = "<group>"; };
+		E8734232180DAC3400CF9E5F /* activity-pocket@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-pocket@2x.png"; path = "Assets/activity-pocket@2x.png"; sourceTree = "<group>"; };
+		E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome.png"; path = "Assets/activity-browser-chrome.png"; sourceTree = "<group>"; };
+		E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome@2x.png"; path = "Assets/activity-browser-chrome@2x.png"; sourceTree = "<group>"; };
+		E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReadLaterActivity.h; sourceTree = "<group>"; };
+		E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReadLaterActivity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1545,6 +1571,10 @@
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
 				37FCF2B017756F7600093F41 /* UIApplication+Additions.h */,
 				37FCF2B117756F7600093F41 /* UIApplication+Additions.m */,
+				E8734225180DA20300CF9E5F /* PPBrowserActivity.h */,
+				E8734226180DA20300CF9E5F /* PPBrowserActivity.m */,
+				E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */,
+				E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				37F91F36177A91A500683D46 /* UITableView+Additions.h */,
 				37F91F37177A91A500683D46 /* UITableView+Additions.m */,
@@ -1573,6 +1603,7 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				E8734228180DAA4B00CF9E5F /* Activities */,
 				E80FE06417F0DE41007E0615 /* icon-web-forward.png */,
 				E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */,
 				E80FE06617F0DE42007E0615 /* icon-web-back.png */,
@@ -1743,6 +1774,23 @@
 			path = Vendor/FluidTableview;
 			sourceTree = "<group>";
 		};
+		E8734228180DAA4B00CF9E5F /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */,
+				E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */,
+				E873422D180DAC3300CF9E5F /* activity-instapaper.png */,
+				E873422E180DAC3300CF9E5F /* activity-instapaper@2x.png */,
+				E873422F180DAC3400CF9E5F /* activity-readability.png */,
+				E8734230180DAC3400CF9E5F /* activity-readability@2x.png */,
+				E8734231180DAC3400CF9E5F /* activity-pocket.png */,
+				E8734232180DAC3400CF9E5F /* activity-pocket@2x.png */,
+				E8734229180DAA5B00CF9E5F /* activity-browser-safari.png */,
+				E873422A180DAA5B00CF9E5F /* activity-browser-safari@2x.png */,
+			);
+			name = Activities;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1843,6 +1891,7 @@
 				37D2351516B8DBD4007541DC /* cog.png in Resources */,
 				37D2351616B8DBD4007541DC /* cog@2x.png in Resources */,
 				37D2351816B8DBE0007541DC /* icon_bookmark.png in Resources */,
+				E8734236180DAC3400CF9E5F /* activity-readability@2x.png in Resources */,
 				3780BB4C16E925A2006F5435 /* top-right-lock.png in Resources */,
 				3780BB4D16E925A2006F5435 /* top-right-lock@2x.png in Resources */,
 				3780BB5016E9267F006F5435 /* top-left-star.png in Resources */,
@@ -1933,6 +1982,7 @@
 				373C82E216F81C6900A7D7C8 /* ptr_19@2x.png in Resources */,
 				373C82E316F81C6900A7D7C8 /* ptr_20.png in Resources */,
 				373C82E416F81C6900A7D7C8 /* ptr_20@2x.png in Resources */,
+				E8734238180DAC3400CF9E5F /* activity-pocket@2x.png in Resources */,
 				373C82E516F81C6900A7D7C8 /* ptr_21.png in Resources */,
 				373C82E616F81C6900A7D7C8 /* ptr_21@2x.png in Resources */,
 				373C82E716F81C6900A7D7C8 /* ptr_22.png in Resources */,
@@ -1955,6 +2005,7 @@
 				373C82F816F81C6900A7D7C8 /* ptr_30@2x.png in Resources */,
 				373C82F916F81C6900A7D7C8 /* ptr_31.png in Resources */,
 				373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */,
+				E873422C180DAA5B00CF9E5F /* activity-browser-safari@2x.png in Resources */,
 				373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */,
 				373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */,
 				372D432E1723A7AC00E802C0 /* SwitchOff.png in Resources */,
@@ -1965,6 +2016,7 @@
 				372D43381723A87E00E802C0 /* SettingsNavigation@2x.png in Resources */,
 				372D43391723A87E00E802C0 /* SettingsNavigationDimmed.png in Resources */,
 				372D433A1723A87E00E802C0 /* SettingsNavigationDimmed@2x.png in Resources */,
+				E873422B180DAA5B00CF9E5F /* activity-browser-safari.png in Resources */,
 				372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */,
 				372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */,
 				37EAB9C4173F01DA00B2684B /* loading_01.png in Resources */,
@@ -2025,6 +2077,7 @@
 				37EAB9FB173F01DA00B2684B /* loading_28@2x.png in Resources */,
 				37EAB9FC173F01DA00B2684B /* loading_29.png in Resources */,
 				37EAB9FD173F01DA00B2684B /* loading_29@2x.png in Resources */,
+				E8734235180DAC3400CF9E5F /* activity-readability.png in Resources */,
 				37EAB9FE173F01DA00B2684B /* loading_30.png in Resources */,
 				37EAB9FF173F01DA00B2684B /* loading_30@2x.png in Resources */,
 				37EABA00173F01DA00B2684B /* loading_31.png in Resources */,
@@ -2046,6 +2099,7 @@
 				37EABA10173F01DA00B2684B /* loading_39.png in Resources */,
 				37EABA11173F01DA00B2684B /* loading_39@2x.png in Resources */,
 				37EABA12173F01DA00B2684B /* loading_40.png in Resources */,
+				E8734237180DAC3400CF9E5F /* activity-pocket.png in Resources */,
 				37EABA13173F01DA00B2684B /* loading_40@2x.png in Resources */,
 				37EABA14173F01DA00B2684B /* loading_41.png in Resources */,
 				37EABA15173F01DA00B2684B /* loading_41@2x.png in Resources */,
@@ -2070,6 +2124,7 @@
 				37EABA28173F01DA00B2684B /* loading_51.png in Resources */,
 				37EABA29173F01DA00B2684B /* loading_51@2x.png in Resources */,
 				37EABA2A173F01DA00B2684B /* loading_52.png in Resources */,
+				E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */,
 				37EABA2B173F01DA00B2684B /* loading_52@2x.png in Resources */,
 				37EABA2C173F01DA00B2684B /* loading_53.png in Resources */,
 				37EABA2D173F01DA00B2684B /* loading_53@2x.png in Resources */,
@@ -2091,6 +2146,7 @@
 				37EABA3D173F01DA00B2684B /* loading_61@2x.png in Resources */,
 				37EABA3E173F01DA00B2684B /* loading_62.png in Resources */,
 				37EABA3F173F01DA00B2684B /* loading_62@2x.png in Resources */,
+				E8734234180DAC3400CF9E5F /* activity-instapaper@2x.png in Resources */,
 				E84A8D2717F9CE0A003B4F50 /* (null) in Resources */,
 				37EABA40173F01DA00B2684B /* loading_63.png in Resources */,
 				37EABA41173F01DA00B2684B /* loading_63@2x.png in Resources */,
@@ -2109,6 +2165,7 @@
 				37EABA4E173F01DA00B2684B /* loading_70.png in Resources */,
 				37EABA4F173F01DA00B2684B /* loading_70@2x.png in Resources */,
 				37EABA50173F01DA00B2684B /* loading_71.png in Resources */,
+				E8734233180DAC3400CF9E5F /* activity-instapaper.png in Resources */,
 				37EABA51173F01DA00B2684B /* loading_71@2x.png in Resources */,
 				37EABA52173F01DA00B2684B /* loading_72.png in Resources */,
 				37EABA53173F01DA00B2684B /* loading_72@2x.png in Resources */,
@@ -2167,6 +2224,7 @@
 				3714DB931757DFFD00B23F4F /* user@2x.png in Resources */,
 				3732DFA017596D7500978A68 /* apple.png in Resources */,
 				3732DFA117596D7500978A68 /* apple@2x.png in Resources */,
+				E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */,
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
 				376E0A7E175AA245004CCDEE /* About.plist in Resources */,
@@ -2296,7 +2354,7 @@
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
-				37018CE7180E3C0B00226408 /* PPBrowserActivity.m in Sources */,
+				E8734227180DA20300CF9E5F /* PPBrowserActivity.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
@@ -2315,7 +2373,7 @@
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
-				37018CE8180E3C0B00226408 /* PPReadLaterActivity.m in Sources */,
+				E8734242180DB18500CF9E5F /* PPReadLaterActivity.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
