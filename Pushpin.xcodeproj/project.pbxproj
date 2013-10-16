@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37018CE7180E3C0B00226408 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
+		37018CE8180E3C0B00226408 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097616F157B100E8FE29 /* gray-button-cap.png */; };
@@ -498,6 +500,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
+		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
+		37018CE5180E3C0B00226408 /* PPReadLaterActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReadLaterActivity.h; sourceTree = "<group>"; };
+		37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReadLaterActivity.m; sourceTree = "<group>"; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
@@ -1464,6 +1470,10 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				37018CE3180E3C0B00226408 /* PPBrowserActivity.h */,
+				37018CE4180E3C0B00226408 /* PPBrowserActivity.m */,
+				37018CE5180E3C0B00226408 /* PPReadLaterActivity.h */,
+				37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				37B5F4D1177372EC005687DA /* UIApplication+AppDimensions.h */,
 				37B5F4D2177372EC005687DA /* UIApplication+AppDimensions.m */,
@@ -2286,6 +2296,7 @@
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
+				37018CE7180E3C0B00226408 /* PPBrowserActivity.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
@@ -2304,6 +2315,7 @@
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
+				37018CE8180E3C0B00226408 /* PPReadLaterActivity.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
