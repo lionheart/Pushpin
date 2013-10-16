@@ -61,6 +61,7 @@ static NSInteger kToolbarHeight = 44;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
     
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
@@ -196,16 +197,20 @@ static NSInteger kToolbarHeight = 44;
             return;
         }
         
+        // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
+        [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
+        NSString *locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
+        
         // Only process link elements any further
-        NSString *locatorString = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).nodeName", webViewCoordinates.x, webViewCoordinates.y];
+        locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
         if (![[self.webView stringByEvaluatingJavaScriptFromString:locatorString] isEqualToString:@"A"]) {
             return;
         }
         
         // Parse the link and title into an NSDictionary
-        locatorString = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).innerText", webViewCoordinates.x, webViewCoordinates.y];
+        locatorString = @"PINBOARD_ACTIVE_ELEMENT.innerText";
         NSString *title = [self.webView stringByEvaluatingJavaScriptFromString:locatorString];
-        locatorString = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).href", webViewCoordinates.x, webViewCoordinates.y];
+        locatorString = @"PINBOARD_ACTIVE_ELEMENT.href";
         NSString *url = [self.webView stringByEvaluatingJavaScriptFromString:locatorString];
         self.selectedLink = @{ @"url": url, @"title": title };
         
@@ -824,6 +829,7 @@ static NSInteger kToolbarHeight = 44;
     // Disable the default action sheet
     [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
