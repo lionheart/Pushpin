@@ -197,7 +197,7 @@ static NSInteger kToolbarHeight = 44;
         webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
         webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
         
-        // We may get multiple gesture notifications, so make sure we only process one
+        // We were getting multiple gesture notifications, so make sure we only process one
         if (self.selectedActionSheetIsVisible) {
             return;
         }
