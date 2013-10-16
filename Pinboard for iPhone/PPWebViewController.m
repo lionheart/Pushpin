@@ -464,6 +464,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.selectedActionSheet) {
+        [self setSelectedActionSheetIsVisible:NO];
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
             // Copy URL to clipboard
