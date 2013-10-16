@@ -191,8 +191,13 @@ static NSInteger kToolbarHeight = 44;
     } else if (recognizer == self.longPressGestureRecognizer) {
         // Get the coordinates of the selected element
         CGPoint webViewCoordinates = [recognizer locationInView:self.webView];
+        CGSize viewSize = self.webView.frame.size;
+        CGFloat webViewContentWidth = [[self.webView stringByEvaluatingJavaScriptFromString:@"window.innerWidth"] integerValue];
+        CGFloat scaleRatio = webViewContentWidth / viewSize.width;
+        webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
+        webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
         
-        // We were getting two gesture notifications, so make sure we only process one
+        // We may get multiple gesture notifications, so make sure we only process one
         if (self.selectedActionSheetIsVisible) {
             return;
         }
