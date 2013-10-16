@@ -64,15 +64,6 @@ static NSInteger kToolbarHeight = 44;
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
     
-    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.progress = 0;
-    self.progressView.tintColor = [UIColor lightGrayColor];
-    self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.progressView];
-
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.progressView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-    [self.view lhs_addConstraints:@"H:|[view]|" views:@{@"view": self.progressView}];
-    
     // Tap views and gesture recognizers
     CGRect screen = [[UIScreen mainScreen] bounds];
     self.tapViewTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.size.width, 20)];
@@ -349,9 +340,9 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
     
     self.title = self.urlString;
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
-    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-    [connection start];
+    [self.webView loadRequest:request];
 }
 
 - (void)popViewController {
@@ -841,23 +832,6 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequests++;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
-}
-
-#pragma mark - NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    self.response = (NSHTTPURLResponse *)response;
-    self.data = [NSMutableData data];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.data appendData:data];
-
-    [self.progressView setProgress:((CGFloat)self.data.length / self.response.expectedContentLength) animated:YES];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [self.webView loadData:self.data MIMEType:self.response.MIMEType textEncodingName:self.response.textEncodingName baseURL:self.response.URL];
 }
 
 @end

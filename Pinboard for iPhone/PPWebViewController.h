@@ -14,7 +14,6 @@
 @interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;
@@ -52,10 +51,10 @@
 @property (nonatomic) CGRect toolbarFrame;
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequests;
-@property (nonatomic, strong) NSTimer *progressBarTimer;
 @property (nonatomic, strong) NSDictionary *selectedLink;
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
+@property (nonatomic, retain) NSMutableArray *navigationHistory;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)singleTapInWebview;
@@ -87,8 +86,6 @@
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;
 - (NSInteger)numberOfRequestsInProgress;
-
-- (void)updateWebAssetProgressBar;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
