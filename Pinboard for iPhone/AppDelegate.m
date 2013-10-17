@@ -52,6 +52,7 @@
 @synthesize bookmarksUpdatedMessage;
 @synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
+@synthesize defaultFeed = _defaultFeed;
 @synthesize openLinksInApp = _openLinksInApp;
 @synthesize compressPosts = _compressPosts;
 @synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
@@ -302,11 +303,66 @@
         pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
         pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
         
-        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
-        pinboardViewController.postDataSource = pinboardDataSource;
-        pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-        
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        
+        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        
+        // Determine our default feed
+        NSString *feedDetails;
+        if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+            feedDetails = [self.defaultFeed substringFromIndex:9];
+            if ([feedDetails isEqualToString:@"all"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+            } else if ([feedDetails isEqualToString:@"private"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+            } else if ([feedDetails isEqualToString:@"public"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"Public", nil);
+            } else if ([feedDetails isEqualToString:@"unread"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"Unread", nil);
+            } else if ([feedDetails isEqualToString:@"untagged"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"Untagged", nil);
+            } else if ([feedDetails isEqualToString:@"starred"]) {
+                pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                pinboardViewController.title = NSLocalizedString(@"Starred", nil);
+            }
+            
+            pinboardViewController.postDataSource = pinboardDataSource;
+        } else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+            feedDetails = [self.defaultFeed substringFromIndex:10];
+            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+            pinboardViewController.postDataSource = feedDataSource;
+            
+            if ([feedDetails isEqualToString:@"network"]) {
+                NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
+                pinboardViewController.title = NSLocalizedString(@"Network", nil);
+            } else if ([feedDetails isEqualToString:@"popular"]) {
+                feedDataSource.components = @[@"popular?count=100"];
+                pinboardViewController.title = NSLocalizedString(@"Popular", nil);
+            } else if ([feedDetails isEqualToString:@"wikipedia"]) {
+                feedDataSource.components = @[@"popular", @"wikipedia"];
+                pinboardViewController.title = @"Wikipedia";
+            } else if ([feedDetails isEqualToString:@"fandom"]) {
+                feedDataSource.components = @[@"popular", @"fandom"];
+                pinboardViewController.title = NSLocalizedString(@"Fandom", nil);
+            } else if ([feedDetails isEqualToString:@"japanese"]) {
+                feedDataSource.components = @[@"popular", @"japanese"];
+                pinboardViewController.title = @"日本語";
+            }
+        } else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+            feedDetails = [self.defaultFeed substringFromIndex:6];
+            NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
+            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+            pinboardViewController.postDataSource = feedDataSource;
+            pinboardViewController.title = feedDetails;
+        }
+        
         feedListViewController.title = NSLocalizedString(@"Browse", nil);
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         //_navigationController.navigationBar.translucent = NO;
@@ -702,6 +758,39 @@
         _readByDefault = [defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"];
     }
     return _readByDefault;
+}
+
+- (void)setDefaultFeed:(NSString *)defaultFeed {
+    _defaultFeed = defaultFeed;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:_defaultFeed forKey:@"io.aurora.pinboard.DefaultFeed"];
+}
+
+- (NSString *)defaultFeed {
+    if (!_defaultFeed) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
+    }
+    return _defaultFeed;
+}
+
+- (NSString *)defaultFeedDescription {
+    // Build a descriptive string for the default feed
+    NSString *feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), @"All"];
+    if (self.defaultFeed) {
+        if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
+        } else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+            NSString *communityDescription = [self.defaultFeed substringFromIndex:10];
+            if ([communityDescription isEqualToString:@"japanese"]) {
+                communityDescription = @"日本語";
+            }
+            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
+        } else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
+        }
+    }
+    return feedDescription;
 }
 
 - (BOOL)compressPosts {

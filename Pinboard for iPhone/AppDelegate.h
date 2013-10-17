@@ -76,6 +76,7 @@ enum bookmarkupdateevents {
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, retain) NSNumber *privateByDefault;
 @property (nonatomic, retain) NSNumber *readByDefault;
+@property (nonatomic, retain) NSString *defaultFeed;
 @property (nonatomic) BOOL doubleTapToEdit;
 @property (nonatomic) BOOL openLinksWithMobilizer;
 @property (nonatomic, retain) NSString *feedToken;
@@ -95,6 +96,7 @@ enum bookmarkupdateevents {
 @property (nonatomic) BOOL bookmarksLoading;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
 
+
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
@@ -107,6 +109,8 @@ enum bookmarkupdateevents {
 - (void)customizeUIElements;
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 - (void)promptUserToAddBookmark;
+
+- (NSString *)defaultFeedDescription;
 
 + (NSString *)heavyFontName;
 + (NSString *)mediumFontName;
