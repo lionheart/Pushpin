@@ -474,6 +474,7 @@
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80495131810419500C5CA8B /* activity-readinglist.png in Resources */ = {isa = PBXBuildFile; fileRef = E80495111810419500C5CA8B /* activity-readinglist.png */; };
 		E80495141810419500C5CA8B /* activity-readinglist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80495121810419500C5CA8B /* activity-readinglist@2x.png */; };
+		E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */; };
 		E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06417F0DE41007E0615 /* icon-web-forward.png */; };
 		E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */; };
 		E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06617F0DE42007E0615 /* icon-web-back.png */; };
@@ -1041,6 +1042,8 @@
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		E80495111810419500C5CA8B /* activity-readinglist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist.png"; path = "Assets/activity-readinglist.png"; sourceTree = "<group>"; };
 		E80495121810419500C5CA8B /* activity-readinglist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist@2x.png"; path = "Assets/activity-readinglist@2x.png"; sourceTree = "<group>"; };
+		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
+		E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPDefaultFeedViewController.m; path = ../PPDefaultFeedViewController.m; sourceTree = "<group>"; };
 		E80FE06417F0DE41007E0615 /* icon-web-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward.png"; path = "Assets/icon-web-forward.png"; sourceTree = "<group>"; };
 		E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward@2x.png"; path = "Assets/icon-web-forward@2x.png"; sourceTree = "<group>"; };
 		E80FE06617F0DE42007E0615 /* icon-web-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back.png"; path = "Assets/icon-web-back.png"; sourceTree = "<group>"; };
@@ -1574,6 +1577,8 @@
 				3732DF9C175957F000978A68 /* PPAboutViewController.m */,
 				37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */,
 				37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */,
+				E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */,
+				E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */,
 				37B348CA175FF9D400929E2E /* PPChangelogViewController.h */,
 				37B348CB175FF9D500929E2E /* PPChangelogViewController.m */,
 				37C012B71765423900938D81 /* PPMultipleEditViewController.h */,
@@ -2360,6 +2365,7 @@
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
+				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
 				378599771809FC28008E6EED /* UIImage+Tint.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
@@ -2504,7 +2510,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -2627,7 +2633,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2648,7 +2654,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

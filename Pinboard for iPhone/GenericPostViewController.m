@@ -972,28 +972,30 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     else {
         id <GenericPostDataSource> dataSource = [self currentDataSource];
 
-        [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UILocalNotification *notification = [[UILocalNotification alloc] init];
-                if (error == nil) {
-                    notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
-                    notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                    [self updateFromLocalDatabaseWithCallback:nil];
-                }
-                else {
-                    notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                    if (error.code == PinboardErrorBookmarkNotFound) {
-                        notification.alertBody = @"Error marking as read.";
+        if ([dataSource respondsToSelector:@selector(markPostAsRead:)]) {
+            [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UILocalNotification *notification = [[UILocalNotification alloc] init];
+                    if (error == nil) {
+                        notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
+                        notification.userInfo = @{@"success": @YES, @"updated": @YES};
+                        [self updateFromLocalDatabaseWithCallback:nil];
                     }
                     else {
-                        notification.alertBody = NSLocalizedString(@"There was an error updating your bookmark.", nil);
+                        notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                        if (error.code == PinboardErrorBookmarkNotFound) {
+                            notification.alertBody = @"Error marking as read.";
+                        }
+                        else {
+                            notification.alertBody = NSLocalizedString(@"There was an error updating your bookmark.", nil);
+                        }
                     }
-                }
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            });
-            
-            [self updateFromLocalDatabaseWithCallback:nil];
-        }];
+                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                });
+                
+                [self updateFromLocalDatabaseWithCallback:nil];
+            }];
+        }
     }
 }
 

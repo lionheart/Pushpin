@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "PPDisplaySettingsViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPDefaultFeedViewController.h"
 
 @interface PPDisplaySettingsViewController ()
 
@@ -25,12 +26,16 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self.tableView reloadData];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return 7;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -122,6 +127,11 @@
             cell.accessoryView = self.autoCapitalizationSwitch;
             break;
         case 5:
+            cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
+            cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+        case 6:
             cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             size = cell.frame.size;
@@ -139,6 +149,16 @@
     }
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        if (indexPath.row == 5) {
+            // Show the default feed selection
+            PPDefaultFeedViewController *vc = [[PPDefaultFeedViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
