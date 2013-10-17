@@ -471,6 +471,9 @@
 		CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
 		E804950D180EF20800C5CA8B /* webview-helpers.js in Sources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
+		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
+		E80495131810419500C5CA8B /* activity-readinglist.png in Resources */ = {isa = PBXBuildFile; fileRef = E80495111810419500C5CA8B /* activity-readinglist.png */; };
+		E80495141810419500C5CA8B /* activity-readinglist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80495121810419500C5CA8B /* activity-readinglist@2x.png */; };
 		E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06417F0DE41007E0615 /* icon-web-forward.png */; };
 		E80FE06917F0DE42007E0615 /* icon-web-forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */; };
 		E80FE06A17F0DE43007E0615 /* icon-web-back.png in Resources */ = {isa = PBXBuildFile; fileRef = E80FE06617F0DE42007E0615 /* icon-web-back.png */; };
@@ -1035,6 +1038,9 @@
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
+		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		E80495111810419500C5CA8B /* activity-readinglist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist.png"; path = "Assets/activity-readinglist.png"; sourceTree = "<group>"; };
+		E80495121810419500C5CA8B /* activity-readinglist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist@2x.png"; path = "Assets/activity-readinglist@2x.png"; sourceTree = "<group>"; };
 		E80FE06417F0DE41007E0615 /* icon-web-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward.png"; path = "Assets/icon-web-forward.png"; sourceTree = "<group>"; };
 		E80FE06517F0DE42007E0615 /* icon-web-forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-forward@2x.png"; path = "Assets/icon-web-forward@2x.png"; sourceTree = "<group>"; };
 		E80FE06617F0DE42007E0615 /* icon-web-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-web-back.png"; path = "Assets/icon-web-back.png"; sourceTree = "<group>"; };
@@ -1068,6 +1074,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
@@ -1471,6 +1478,7 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				376E0A7F175AA9EC004CCDEE /* StoreKit.framework */,
 				37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */,
@@ -1779,6 +1787,8 @@
 		E8734228180DAA4B00CF9E5F /* Activities */ = {
 			isa = PBXGroup;
 			children = (
+				E80495111810419500C5CA8B /* activity-readinglist.png */,
+				E80495121810419500C5CA8B /* activity-readinglist@2x.png */,
 				E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */,
 				E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */,
 				E873422D180DAC3300CF9E5F /* activity-instapaper.png */,
@@ -1906,6 +1916,7 @@
 				3738A57F16EA671800316ED8 /* SheetButtonDestroy.png in Resources */,
 				3738A58016EA671800316ED8 /* SheetButtonPrimary.png in Resources */,
 				3738A58116EA671800316ED8 /* SheetButtonDestroy@2x.png in Resources */,
+				E80495141810419500C5CA8B /* activity-readinglist@2x.png in Resources */,
 				3738A58216EA671800316ED8 /* SheetButtonPrimary@2x.png in Resources */,
 				3738A58516EA673F00316ED8 /* SheetButtonDismiss.png in Resources */,
 				3738A58616EA673F00316ED8 /* SheetButtonDismiss@2x.png in Resources */,
@@ -1976,6 +1987,7 @@
 				373C82DB16F81C6900A7D7C8 /* ptr_16.png in Resources */,
 				E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */,
 				373C82DC16F81C6900A7D7C8 /* ptr_16@2x.png in Resources */,
+				E80495131810419500C5CA8B /* activity-readinglist.png in Resources */,
 				373C82DD16F81C6900A7D7C8 /* ptr_17.png in Resources */,
 				373C82DE16F81C6900A7D7C8 /* ptr_17@2x.png in Resources */,
 				373C82DF16F81C6900A7D7C8 /* ptr_18.png in Resources */,

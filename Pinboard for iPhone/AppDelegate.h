@@ -24,7 +24,8 @@ enum readlaterservices {
     READLATER_NONE,
     READLATER_INSTAPAPER,
     READLATER_READABILITY,
-    READLATER_POCKET
+    READLATER_POCKET,
+    READLATER_NATIVE
 };
 
 enum mobilizers {
