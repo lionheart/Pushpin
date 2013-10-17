@@ -23,6 +23,8 @@
             self.serviceName = NSLocalizedString(@"Pocket", nil);
         } else if (type == READLATER_READABILITY) {
             self.serviceName = NSLocalizedString(@"Readability", nil);
+        } else if (type == READLATER_NATIVE) {
+            self.serviceName = @"readinglist";
         }
     }
     
@@ -30,6 +32,9 @@
 }
 
 - (NSString *)activityTitle {
+    if (self.service == READLATER_NATIVE) {
+        return NSLocalizedString(@"Add to Reading List", nil);
+    }
     return [NSString stringWithFormat:@"Save to %@", self.serviceName];
 }
 

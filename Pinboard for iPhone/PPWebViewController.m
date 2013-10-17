@@ -23,7 +23,7 @@
 #import <UIView+LHSAdditions.h>
 #import "PPBrowserActivity.h"
 #import "PPReadLaterActivity.h"
-
+#import <SafariServices/SafariServices.h>
 #import "PPNavigationController.h"
 
 static NSInteger kToolbarHeight = 44;
@@ -439,6 +439,13 @@ static NSInteger kToolbarHeight = 44;
     // Read later
     NSMutableArray *readLaterActivities = [NSMutableArray array];
     NSInteger readLaterSetting = [[[AppDelegate sharedDelegate] readlater] integerValue];
+    
+    // Always include the native Reading List
+    PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:READLATER_NATIVE];
+    nativeReadLaterActivity.delegate = self;
+    [readLaterActivities addObject:nativeReadLaterActivity];
+    
+    // If they have a third-party read later service configured, add it too
     if (readLaterSetting > READLATER_NONE) {
         PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
         readLaterActivity.delegate = self;
@@ -449,12 +456,12 @@ static NSInteger kToolbarHeight = 44;
     NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
     NSURL *url = [NSURL URLWithString:tempUrl];
     
-    NSMutableArray *allActivities = [NSMutableArray arrayWithArray:browserActivites];
-    [allActivities addObjectsFromArray:readLaterActivities];
+    NSMutableArray *allActivities = [NSMutableArray arrayWithArray:readLaterActivities];
+    [allActivities addObjectsFromArray:browserActivites];
     
     NSArray *activityItems = [NSArray arrayWithObjects:url, title, nil];
     self.activityView = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:allActivities];
-    self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo];
+    self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo, UIActivityTypeAddToReadingList];
     
     [self presentViewController:self.activityView animated:YES completion:nil];
 }
@@ -576,6 +583,23 @@ static NSInteger kToolbarHeight = 44;
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                    }
                                }];
+    }
+    else if (service.integerValue == READLATER_NATIVE) {
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertAction = @"Open Pushpin";
+        
+        // Add to the native Reading List
+        NSError *error;
+        [[SSReadingList defaultReadingList] addReadingListItemWithURL:self.url title:[self.webView stringByEvaluatingJavaScriptFromString:@"document.title"] previewText:nil error:&error];
+        if (error) {
+            notification.alertBody = @"Error adding to Reading List";
+            notification.userInfo = @{@"success": @NO, @"updated": @NO};
+        } else {
+            notification.alertBody = @"Added to Reading List";
+            notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        }
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
     }
 }
 
