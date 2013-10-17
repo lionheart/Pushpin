@@ -103,7 +103,11 @@
 
 #pragma mark - UITableView data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    if (self.savedFeeds.count > 0) {
+        return 3;
+    }
+    
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -258,11 +262,10 @@
         defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
     }
     
-    NSLog(@"%@", defaultFeed);
-    
     // Update the default feed and pop the view
     [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    self.defaultIndexPath = indexPath;
 }
 
 @end
