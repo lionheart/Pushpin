@@ -30,7 +30,7 @@
 #import "PPNavigationController.h"
 
 #import "UIApplication+Additions.h"
-
+#import "TestFlight.h"
 
 @implementation AppDelegate
 
@@ -384,15 +384,6 @@
     return _loginViewController;
 }
 
-- (NSString *)customDeviceIdentifierForUpdateManager:(BITUpdateManager *)updateManager {
-#ifdef TESTING
-    if ([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)]) {
-        return [[UIDevice currentDevice] performSelector:@selector(uniqueIdentifier)];
-    }
-#endif
-    return nil;
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     application.applicationSupportsShakeToEdit = YES;
     [self becomeFirstResponder];
@@ -408,11 +399,9 @@
     [self customizeUIElements];
 
 #ifndef DEBUG
-    [[BITHockeyManager sharedHockeyManager] configureWithBetaIdentifier:@"4df5e76c1514a52d8e6b88dce28ba615"
-                                                         liveIdentifier:@"e300e45278fb4ce1d9fc6fe9efb5c8c6"
-                                                               delegate:self];
-    [[BITHockeyManager sharedHockeyManager] startManager];
+    [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 #endif
+    [TestFlight takeOff:@"Insert your Application Token here"];
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
