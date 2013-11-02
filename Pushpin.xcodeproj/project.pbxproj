@@ -2485,11 +2485,10 @@
 					"-ObjC",
 					"-all_load",
 				);
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C1448EB4-BD7E-4E60-B0CB-E2DAF6A5452F";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "930E0754-DCD1-4807-A61F-3BA8979F7A11";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7s;
 				VERSIONING_SYSTEM = "";
 			};
 			name = "Beta Release";
@@ -2510,7 +2509,6 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -2561,7 +2559,6 @@
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7s;
 				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
@@ -2607,7 +2604,6 @@
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7s;
 				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
@@ -2633,7 +2629,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "69B045EB-18B5-4E34-85B6-2935700CF1D9";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7s;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2654,7 +2649,6 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7s;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
