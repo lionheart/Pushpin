@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <HockeySDK/HockeySDK.h>
 #import "LoginViewController.h"
 
 enum browsers {
@@ -56,7 +55,7 @@ enum bookmarkupdateevents {
 - (void)bookmarkUpdateEvent:(int)type;
 @end
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, ModalDelegate, BITHockeyManagerDelegate, BITUpdateManagerDelegate, BITCrashManagerDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, ModalDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
