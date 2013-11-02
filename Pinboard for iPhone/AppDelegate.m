@@ -398,10 +398,7 @@
 
     [self customizeUIElements];
 
-#ifndef DEBUG
-    [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
-#endif
-    [TestFlight takeOff:@"Insert your Application Token here"];
+    [TestFlight takeOff:@"575d650a-43d5-4e99-a3bb-2b7bbae29a6c"];
     
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
     [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
