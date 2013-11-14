@@ -10,6 +10,7 @@
 #import <Social/Social.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Twitter/Twitter.h>
+#import <SafariServices/SafariServices.h>
 
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"
@@ -20,11 +21,11 @@
 #import "PocketAPI.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
-#import <UIView+LHSAdditions.h>
 #import "PPBrowserActivity.h"
 #import "PPReadLaterActivity.h"
-#import <SafariServices/SafariServices.h>
 #import "PPNavigationController.h"
+
+#import <UIView+LHSAdditions.h>
 
 static NSInteger kToolbarHeight = 44;
 
@@ -35,7 +36,6 @@ static NSInteger kToolbarHeight = 44;
 @implementation PPWebViewController
 
 @synthesize shouldMobilize, urlString;
-@synthesize tapViewBottom, tapViewTop;
 @synthesize longPressGestureRecognizer;
 @synthesize selectedLink, selectedActionSheet;
 
@@ -64,23 +64,6 @@ static NSInteger kToolbarHeight = 44;
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
     
-    // Tap views and gesture recognizers
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    self.tapViewTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.size.width, 20)];
-    [self.view addSubview:self.tapViewTop];
-    self.tapViewBottom = [[UIView alloc] initWithFrame:CGRectMake(0, screen.size.height - 20, screen.size.width, 20)];
-    [self.view addSubview:self.tapViewBottom];
-    self.tapGestureForTopFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
-    self.tapGestureForTopFullscreenMode.numberOfTapsRequired = 1;
-    self.tapGestureForTopFullscreenMode.numberOfTouchesRequired = 1;
-    self.tapGestureForTopFullscreenMode.enabled = NO;
-    [self.tapViewTop addGestureRecognizer:self.tapGestureForTopFullscreenMode];
-    self.tapGestureForBottomFullscreenMode = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(disableFullscreen:)];
-    self.tapGestureForBottomFullscreenMode.numberOfTapsRequired = 1;
-    self.tapGestureForBottomFullscreenMode.numberOfTouchesRequired = 1;
-    self.tapGestureForBottomFullscreenMode.enabled = NO;
-    [self.tapViewBottom addGestureRecognizer:self.tapGestureForBottomFullscreenMode];
-    
     // Long press gesture for custom menu
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.longPressGestureRecognizer.delegate = self;
@@ -91,53 +74,109 @@ static NSInteger kToolbarHeight = 44;
     self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
-    self.toolbar = [[PPToolbar alloc] init];
-    self.toolbar.translucent = YES;
+    self.toolbar = [[UIView alloc] init];
+    self.toolbar.backgroundColor = HEX(0xEBF2F6FF);
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setImage:[UIImage imageNamed:@"back-dash"] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-    backButton.frame = CGRectMake(0, 0, 30, 30);
-    self.backBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-    self.backBarButtonItem.enabled = NO;
-
-    UIButton *forwardButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [forwardButton setImage:[UIImage imageNamed:@"forward-dash"] forState:UIControlStateNormal];
-    [forwardButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-    forwardButton.frame = CGRectMake(0, 0, 30, 30);
-    self.forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardButton];
-    self.forwardBarButtonItem.enabled = NO;
     
-    self.readerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-    [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
-    self.readerButton.frame = CGRectMake(0, 0, 30, 30);
-    self.readerBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.readerButton];
+    self.bottomActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.bottomActivityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+    self.bottomActivityIndicator.hidesWhenStopped = YES;
+    [self.bottomActivityIndicator startAnimating];
+    [self.toolbar addSubview:self.bottomActivityIndicator];
 
-    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [actionButton setImage:[UIImage imageNamed:@"action-dash"] forState:UIControlStateNormal];
-    [actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-    actionButton.frame = CGRectMake(0, 0, 30, 30);
-    self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
-    
-    UIButton *expandButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [expandButton setImage:[UIImage imageNamed:@"expand-dash"] forState:UIControlStateNormal];
-    [expandButton addTarget:self action:@selector(expandWebViewToFullScreen) forControlEvents:UIControlEventTouchUpInside];
-    expandButton.frame = CGRectMake(0, 0, 30, 30);
-    self.expandBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:expandButton];
-    
-    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixedSpace.width = 10;
+    self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
+    [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.backButton];
 
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbar.items = @[self.backBarButtonItem, flexibleSpace, self.forwardBarButtonItem, flexibleSpace, self.readerBarButtonItem, flexibleSpace, self.expandBarButtonItem, flexibleSpace, self.actionBarButtonItem];
-    self.toolbar.frame = CGRectMake(0, size.height - kToolbarHeight, size.width, kToolbarHeight);
+    self.markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.markAsReadButton setImage:[UIImage imageNamed:@"mark-as-read"] forState:UIControlStateNormal];
+    [self.markAsReadButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    self.markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.markAsReadButton];
+    
+    self.stopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.stopButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    [self.stopButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+    self.stopButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.stopButton.hidden = YES;
+    [self.toolbar addSubview:self.stopButton];
+    
+    self.viewMobilizeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.viewMobilizeButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewMobilizeButton setImage:[UIImage imageNamed:@"mobilize"] forState:UIControlStateNormal];
+    [self.viewMobilizeButton setImage:[UIImage imageNamed:@"mobilize-active"] forState:UIControlStateHighlighted];
+    self.viewMobilizeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.viewMobilizeButton.hidden = YES;
+    [self.toolbar addSubview:self.viewMobilizeButton];
+    
+    self.viewRawButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.viewRawButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewRawButton setImage:[UIImage imageNamed:@"mobilized"] forState:UIControlStateNormal];
+    [self.viewRawButton setImage:[UIImage imageNamed:@"mobilized-active"] forState:UIControlStateHighlighted];
+    self.viewRawButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.viewRawButton.hidden = YES;
+    [self.toolbar addSubview:self.viewRawButton];
+
+    self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.actionButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+    [self.actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.actionButton];
+    
+    self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.editButton setImage:[UIImage imageNamed:@"edit"] forState:UIControlStateNormal];
+    [self.editButton addTarget:self action:@selector(showEditViewController) forControlEvents:UIControlEventTouchUpInside];
+    self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.editButton];
+    
+    self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    [self.addButton addTarget:self action:@selector(showAddViewController) forControlEvents:UIControlEventTouchUpInside];
+    self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.addButton.hidden = YES;
+    [self.toolbar addSubview:self.addButton];
+    
+    NSDictionary *toolbarViews = @{@"back": self.backButton,
+                                   @"indicator": self.bottomActivityIndicator,
+                                   @"read": self.markAsReadButton,
+                                   @"raw": self.viewRawButton,
+                                   @"mobilize": self.viewMobilizeButton,
+                                   @"action": self.actionButton,
+                                   @"edit": self.editButton,
+                                   @"stop": self.stopButton,
+                                   @"add": self.addButton };
+
+    [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[back]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[raw]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[mobilize]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[action]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[stop]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[add]|" views:toolbarViews];
+    
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.stopButton attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.viewRawButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.viewMobilizeButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.viewRawButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.viewMobilizeButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
 
     [self.view addSubview:self.toolbar];
     
     // Setup auto-layout constraints
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[toolbar]|" options:0 metrics:nil views:@{ @"toolbar": self.toolbar }]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[toolbar]|" options:0 metrics:@{ @"toolbarHeight": @(kToolbarHeight) } views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[toolbar(height)]|" options:0 metrics:@{ @"height": @(kToolbarHeight) } views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
     [self.webView lhs_expandToFillSuperview];
 }
 
@@ -165,21 +204,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if (recognizer == self.panGestureRecognizerForReaderMode || recognizer == self.panGestureRecognizerForNormalMode) {
-        CGPoint point = [recognizer locationInView:self.webView];
-        if (recognizer.state == UIGestureRecognizerStateChanged) {
-            self.exitReaderModeButton.center = point;
-            self.enterReaderModeButton.center = point;
-        }
-        else if (recognizer.state == UIGestureRecognizerStateEnded) {
-            CGPoint newPoint = [self adjustedPuckPositionWithPoint:point];
-            
-            [UIView animateWithDuration:0.25 animations:^{
-                self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-                self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-            }];
-        }
-    } else if (recognizer == self.longPressGestureRecognizer) {
+    if (recognizer == self.longPressGestureRecognizer) {
         // Get the coordinates of the selected element
         CGPoint webViewCoordinates = [recognizer locationInView:self.webView];
         CGSize viewSize = self.webView.frame.size;
@@ -213,7 +238,7 @@ static NSInteger kToolbarHeight = 44;
         // Show the context menu
         self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
         [self setSelectedActionSheetIsVisible:YES];
-        [(UIActionSheet *)self.selectedActionSheet showFromToolbar:self.toolbar];
+        [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
     }
 }
 
@@ -242,14 +267,6 @@ static NSInteger kToolbarHeight = 44;
         
         self.urlString = mobilizedUrlString;
     }
-    
-    // Setup a content inset on the webview under the toolbar
-    self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, self.toolbar.frame.size.height, 0);
-
-    CGSize buttonSize = self.webView.frame.size;
-    CGPoint newPoint = [self adjustedPuckPositionWithPoint:CGPointMake(buttonSize.width, buttonSize.height)];
-    self.enterReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
-    self.exitReaderModeButton.frame = CGRectMake(newPoint.x, newPoint.y, 40, 40);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -288,12 +305,6 @@ static NSInteger kToolbarHeight = 44;
     
     if (fullscreen) {
         self.toolbarFrame = self.toolbar.frame;
-        // Show the hidden UIView to get tap notifications
-        self.tapGestureForTopFullscreenMode.enabled = YES;
-        self.tapGestureForBottomFullscreenMode.enabled = YES;
-        
-        [self.tapViewTop setHidden:NO];
-        [self.tapViewBottom setHidden:NO];
         
         // Hide the navigation and status bars
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
@@ -307,12 +318,6 @@ static NSInteger kToolbarHeight = 44;
             self.isFullscreen = YES;
         }];
     } else {
-        // Hide the tap view
-        self.tapGestureForTopFullscreenMode.enabled = NO;
-        self.tapGestureForBottomFullscreenMode.enabled = NO;
-        [self.tapViewTop setHidden:YES];
-        [self.tapViewBottom setHidden:YES];
-        
         // Reset the content offset
         self.webView.scrollView.contentOffset = CGPointMake(0, 0);
         
@@ -350,17 +355,18 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)enableOrDisableButtons {
+    self.stopButton.hidden = YES;
+    self.viewMobilizeButton.hidden = YES;
+    self.viewRawButton.hidden = YES;
+
     if (self.numberOfRequestsInProgress > 0) {
-        self.backBarButtonItem.enabled = NO;
-        self.forwardBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem = self.activityIndicatorBarButtonItem;
-        [self.readerButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-        [self.readerButton setImage:[UIImage imageNamed:@"stop-dash"] forState:UIControlStateNormal];
+//        self.stopButton.hidden = NO;
+        [self.bottomActivityIndicator startAnimating];
     }
     else {
-        self.backBarButtonItem.enabled = self.webView.canGoBack;
-        self.forwardBarButtonItem.enabled = self.webView.canGoForward;
         self.alreadyLoaded = YES;
+        [self.bottomActivityIndicator stopAnimating];
 
         NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
 
@@ -374,21 +380,22 @@ static NSInteger kToolbarHeight = 44;
                 [db close];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    self.navigationItem.rightBarButtonItem = nil;
+
                     if (bookmarkExists) {
-                        UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(showEditViewController)];
-                        self.navigationItem.rightBarButtonItem = editBarButtonItem;
+                        self.editButton.hidden = NO;
+                        self.addButton.hidden = YES;
                     }
                     else {
-                        UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(showAddViewController)];
-                        self.navigationItem.rightBarButtonItem = addBarButtonItem;
+                        self.editButton.hidden = YES;
+                        self.addButton.hidden = NO;
                     }
 
-                    [self.readerButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
                     if (self.isMobilized) {
-                        [self.readerButton setImage:[UIImage imageNamed:@"globe-dash"] forState:UIControlStateNormal];
+                        self.viewRawButton.hidden = NO;
                     }
                     else {
-                        [self.readerButton setImage:[UIImage imageNamed:@"paper-dash"] forState:UIControlStateNormal];
+                        self.viewMobilizeButton.hidden = NO;
                     }
                 });
             });
@@ -397,7 +404,12 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)backButtonTouchUp:(id)sender {
-    [self.webView goBack];
+    if ([self.webView canGoBack]) {
+        [self.webView goBack];
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)forwardButtonTouchUp:(id)sender {
