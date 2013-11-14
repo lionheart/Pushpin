@@ -17,27 +17,23 @@
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;
-@property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *readerBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *socialBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *expandBarButtonItem;
+
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
+
+@property (nonatomic, strong) UIButton *actionButton;
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *markAsReadButton;
+@property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) UIButton *addButton;
+@property (nonatomic, strong) UIButton *stopButton;
+@property (nonatomic, strong) UIButton *viewMobilizeButton;
+@property (nonatomic, strong) UIButton *viewRawButton;
+@property (nonatomic, strong) UIActivityIndicatorView *bottomActivityIndicator;
+
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, strong) UIButton *readerButton;
-@property (nonatomic, strong) UIButton *enterReaderModeButton;
-@property (nonatomic, strong) UIButton *exitReaderModeButton;
-@property (nonatomic, strong) CALayer *fullScreenImageLayer;
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForReaderMode;
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizerForNormalMode;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForBottomFullscreenMode;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureForTopFullscreenMode;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
-@property (nonatomic, strong) UIView *tapViewTop;
-@property (nonatomic, strong) UIView *tapViewBottom;
-@property (nonatomic, strong) NSTimer *stoppedScrollingTimer;
-@property (nonatomic, strong) PPToolbar *toolbar;
+
+@property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 @property (nonatomic) BOOL alreadyLoaded;
