@@ -87,7 +87,6 @@
     [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
 
-    self.navigationController.navigationBar.barTintColor = HEX(0x007AFFFF);
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
     UIImage *settingsImage = [[UIImage imageNamed:@"SettingsNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -126,6 +125,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
 
@@ -227,26 +228,32 @@
             switch (indexPath.row) {
                 case PinboardFeedAllBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-all"];
                     badgeCount = self.bookmarkCounts[PinboardFeedAllBookmarks];
                     break;
                 case PinboardFeedPrivateBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-private"];
                     badgeCount = self.bookmarkCounts[PinboardFeedPrivateBookmarks];
                     break;
                 case PinboardFeedPublicBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-public"];
                     badgeCount = self.bookmarkCounts[PinboardFeedPublicBookmarks];
                     break;
                 case PinboardFeedUnreadBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-unread"];
                     badgeCount = self.bookmarkCounts[PinboardFeedUnreadBookmarks];
                     break;
                 case PinboardFeedUntaggedBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-untagged"];
                     badgeCount = self.bookmarkCounts[PinboardFeedUntaggedBookmarks];
                     break;
                 case PinboardFeedStarredBookmarks:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-starred"];
                     badgeCount = self.bookmarkCounts[PinboardFeedStarredBookmarks];
                     break;
             }
@@ -261,21 +268,27 @@
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-network"];
                     break;
                 case 1:
                     cell.textLabel.text = NSLocalizedString(@"Popular", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
                     break;
                 case 2:
                     cell.textLabel.text = @"Wikipedia";
+                    cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
                     break;
                 case 3:
                     cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
                     break;
                 case 4:
                     cell.textLabel.text = @"日本語";
+                    cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
                     break;
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Saved Feeds", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
                     break;
             }
 
