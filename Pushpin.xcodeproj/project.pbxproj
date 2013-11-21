@@ -512,6 +512,12 @@
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
 		E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */; };
 		E8734242180DB18500CF9E5F /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */; };
+		E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
+		E89001F9183EA5B500C1F969 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
+		E89001FE183EB90100C1F969 /* bookmark-favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FA183EB90100C1F969 /* bookmark-favorite.png */; };
+		E89001FF183EB90100C1F969 /* bookmark-favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */; };
+		E8900200183EB90100C1F969 /* bookmark-private.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FC183EB90100C1F969 /* bookmark-private.png */; };
+		E8900201183EB90100C1F969 /* bookmark-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FD183EB90100C1F969 /* bookmark-private@2x.png */; };
 		E8DA7967183D2415002B1D0B /* browse-saved@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA795B183D2415002B1D0B /* browse-saved@2x.png */; };
 		E8DA7968183D2415002B1D0B /* browse-japanese@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA795C183D2415002B1D0B /* browse-japanese@2x.png */; };
 		E8DA7969183D2415002B1D0B /* browse-starred@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA795D183D2415002B1D0B /* browse-starred@2x.png */; };
@@ -1131,6 +1137,14 @@
 		E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome@2x.png"; path = "Assets/activity-browser-chrome@2x.png"; sourceTree = "<group>"; };
 		E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReadLaterActivity.h; sourceTree = "<group>"; };
 		E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReadLaterActivity.m; sourceTree = "<group>"; };
+		E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeWrapperView.h; sourceTree = "<group>"; };
+		E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBadgeWrapperView.m; sourceTree = "<group>"; };
+		E89001F7183EA5B500C1F969 /* PPBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeView.h; sourceTree = "<group>"; };
+		E89001F8183EA5B500C1F969 /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBadgeView.m; sourceTree = "<group>"; };
+		E89001FA183EB90100C1F969 /* bookmark-favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite.png"; path = "Assets/bookmark-favorite.png"; sourceTree = "<group>"; };
+		E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite@2x.png"; path = "Assets/bookmark-favorite@2x.png"; sourceTree = "<group>"; };
+		E89001FC183EB90100C1F969 /* bookmark-private.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-private.png"; path = "Assets/bookmark-private.png"; sourceTree = "<group>"; };
+		E89001FD183EB90100C1F969 /* bookmark-private@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-private@2x.png"; path = "Assets/bookmark-private@2x.png"; sourceTree = "<group>"; };
 		E8DA795B183D2415002B1D0B /* browse-saved@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-saved@2x.png"; path = "Assets/browse-saved@2x.png"; sourceTree = "<group>"; };
 		E8DA795C183D2415002B1D0B /* browse-japanese@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-japanese@2x.png"; path = "Assets/browse-japanese@2x.png"; sourceTree = "<group>"; };
 		E8DA795D183D2415002B1D0B /* browse-starred@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-starred@2x.png"; path = "Assets/browse-starred@2x.png"; sourceTree = "<group>"; };
@@ -1664,6 +1678,10 @@
 				37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
+				E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */,
+				E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */,
+				E89001F7183EA5B500C1F969 /* PPBadgeView.h */,
+				E89001F8183EA5B500C1F969 /* PPBadgeView.m */,
 				372D43471724492E00E802C0 /* PPSwitch.h */,
 				372D43481724492E00E802C0 /* PPSwitch.m */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
@@ -1973,6 +1991,10 @@
 		E8F987EC183E7BF800EF976D /* Bookmarks */ = {
 			isa = PBXGroup;
 			children = (
+				E89001FA183EB90100C1F969 /* bookmark-favorite.png */,
+				E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */,
+				E89001FC183EB90100C1F969 /* bookmark-private.png */,
+				E89001FD183EB90100C1F969 /* bookmark-private@2x.png */,
 			);
 			name = Bookmarks;
 			sourceTree = "<group>";
@@ -2054,6 +2076,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8900200183EB90100C1F969 /* bookmark-private.png in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				37FEEBDA15748BA2003F2B77 /* navigationbar.png in Resources */,
 				37FEEBDB15748BA2003F2B77 /* navigationbar@2x.png in Resources */,
@@ -2167,6 +2190,7 @@
 				373C82DB16F81C6900A7D7C8 /* ptr_16.png in Resources */,
 				E80FE06817F0DE42007E0615 /* icon-web-forward.png in Resources */,
 				373C82DC16F81C6900A7D7C8 /* ptr_16@2x.png in Resources */,
+				E8900201183EB90100C1F969 /* bookmark-private@2x.png in Resources */,
 				E80495131810419500C5CA8B /* activity-readinglist.png in Resources */,
 				373C82DD16F81C6900A7D7C8 /* ptr_17.png in Resources */,
 				373C82DE16F81C6900A7D7C8 /* ptr_17@2x.png in Resources */,
@@ -2286,6 +2310,7 @@
 				37EAB9FB173F01DA00B2684B /* loading_28@2x.png in Resources */,
 				37EAB9FC173F01DA00B2684B /* loading_29.png in Resources */,
 				37EAB9FD173F01DA00B2684B /* loading_29@2x.png in Resources */,
+				E89001FF183EB90100C1F969 /* bookmark-favorite@2x.png in Resources */,
 				E8734235180DAC3400CF9E5F /* activity-readability.png in Resources */,
 				E8DA796C183D2415002B1D0B /* browse-wikipedia@2x.png in Resources */,
 				37EAB9FE173F01DA00B2684B /* loading_30.png in Resources */,
@@ -2342,6 +2367,7 @@
 				37EABA2C173F01DA00B2684B /* loading_53.png in Resources */,
 				37EABA2D173F01DA00B2684B /* loading_53@2x.png in Resources */,
 				37EABA2E173F01DA00B2684B /* loading_54.png in Resources */,
+				E89001FE183EB90100C1F969 /* bookmark-favorite.png in Resources */,
 				E8F987E8183E796900EF976D /* browse-starred.png in Resources */,
 				37EABA2F173F01DA00B2684B /* loading_54@2x.png in Resources */,
 				37EABA30173F01DA00B2684B /* loading_55.png in Resources */,
@@ -2574,6 +2600,7 @@
 			files = (
 				E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */,
 				E84A8D2417F7B5FC003B4F50 /* LoginTableCell.m in Sources */,
+				E89001F9183EA5B500C1F969 /* PPBadgeView.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
 				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
@@ -2604,6 +2631,7 @@
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
 				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
+				E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */,
 				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,

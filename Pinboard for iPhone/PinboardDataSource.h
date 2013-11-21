@@ -24,9 +24,11 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic, retain) NSMutableArray *heights;
 @property (nonatomic, retain) NSMutableArray *strings;
 @property (nonatomic, retain) NSMutableArray *links;
+@property (nonatomic, retain) NSMutableArray *badges;
 @property (nonatomic, strong) NSArray *compressedStrings;
 @property (nonatomic, strong) NSArray *compressedHeights;
 @property (nonatomic, strong) NSArray *compressedLinks;
+@property (nonatomic, strong) NSArray *compressedBadges;
 @property (nonatomic, retain) NSArray *urls;
 @property (nonatomic) NSInteger maxResults;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
@@ -46,8 +48,8 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links))callback;
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback;
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges))callback;
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *badges))callback;
 
 - (id)initWithParameters:(NSDictionary *)parameters;
 

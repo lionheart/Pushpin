@@ -12,6 +12,7 @@
 @interface BookmarkCell : UITableViewCell
 
 @property (nonatomic, retain) TTTAttributedLabel *textView;
+@property (nonatomic, retain) UIView *badgeView;
 @property (nonatomic) BOOL isEditting;
 @property (nonatomic, retain) NSIndexPath *currentPath;
 

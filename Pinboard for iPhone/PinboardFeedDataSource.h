@@ -16,9 +16,11 @@
 @property (nonatomic, strong) NSArray *heights;
 @property (nonatomic, strong) NSArray *strings;
 @property (nonatomic, strong) NSArray *links;
+@property (nonatomic, strong) NSArray *badges;
 @property (nonatomic, strong) NSArray *compressedStrings;
 @property (nonatomic, strong) NSArray *compressedHeights;
 @property (nonatomic, strong) NSArray *compressedLinks;
+@property (nonatomic, strong) NSArray *compressedBadges;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
 @property (nonatomic, strong) NSMutableArray *expandedIndices;
@@ -28,7 +30,7 @@
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback;
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback;
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
 
 @end

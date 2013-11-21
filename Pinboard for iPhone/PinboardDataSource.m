@@ -24,6 +24,7 @@ static BOOL kPinboardSyncInProgress = NO;
 @synthesize posts = _posts;
 @synthesize heights = _heights;
 @synthesize strings = _strings;
+@synthesize badges = _badges;
 @synthesize totalNumberOfPosts = _totalNumberOfPosts;
 @synthesize urls;
 @synthesize maxResults;
@@ -731,25 +732,29 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
+        NSMutableArray *newBadges = [NSMutableArray array];
 
         NSMutableArray *newCompressedStrings = [NSMutableArray array];
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
         NSMutableArray *newCompressedLinks = [NSMutableArray array];
+        NSMutableArray *newCompressedBadges = [NSMutableArray array];
         dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in newPosts) {
             dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newHeights addObject:height];
                 [newStrings addObject:string];
                 [newLinks addObject:links];
+                [newBadges addObject:badges];
                 dispatch_group_leave(group);
             }];
 
             dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newCompressedHeights addObject:height];
                 [newCompressedStrings addObject:string];
                 [newCompressedLinks addObject:links];
+                [newCompressedBadges addObject:badges];
                 dispatch_group_leave(group);
             }];
         }
@@ -758,10 +763,12 @@ static BOOL kPinboardSyncInProgress = NO;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
+        self.badges = newBadges;
         
         self.compressedStrings = newCompressedStrings;
         self.compressedHeights = newCompressedHeights;
         self.compressedLinks = newCompressedLinks;
+        self.compressedBadges = newCompressedBadges;
         
         if (success) {
             dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -846,25 +853,29 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newStrings = [NSMutableArray array];
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newLinks = [NSMutableArray array];
+        NSMutableArray *newBadges = [NSMutableArray array];
         
         NSMutableArray *newCompressedStrings = [NSMutableArray array];
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
         NSMutableArray *newCompressedLinks = [NSMutableArray array];
+        NSMutableArray *newCompressedBadges = [NSMutableArray array];
         dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in newPosts) {
             dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newHeights addObject:height];
                 [newStrings addObject:string];
                 [newLinks addObject:links];
+                [newBadges addObject:badges];
                 dispatch_group_leave(group);
             }];
             
             dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newCompressedHeights addObject:height];
                 [newCompressedStrings addObject:string];
                 [newCompressedLinks addObject:links];
+                [newCompressedBadges addObject:badges];
                 dispatch_group_leave(group);
             }];
         }
@@ -873,10 +884,12 @@ static BOOL kPinboardSyncInProgress = NO;
         self.strings = newStrings;
         self.heights = newHeights;
         self.links = newLinks;
+        self.badges = newBadges;
 
         self.compressedStrings = newCompressedStrings;
         self.compressedHeights = newCompressedHeights;
         self.compressedLinks = newCompressedLinks;
+        self.compressedBadges = newBadges;
         
         if (success) {
             dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1081,7 +1094,7 @@ static BOOL kPinboardSyncInProgress = NO;
     return actions;
 }
 
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     
@@ -1110,11 +1123,24 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
+    NSMutableArray *badges = [NSMutableArray array];
+    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
+    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
+    if (post[@"tags"] && ![post[@"tags"] isEqualToString:@""]) {
+        NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
+        [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if (![obj hasPrefix:@"via:"]) {
+                [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+            }
+        }];
+    }
+    
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
-    callback(attributedString, height, @[]);
+    
+    callback(attributedString, height, @[], badges);
 }
 
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *tagsFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
@@ -1151,10 +1177,6 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     BOOL hasTags = tagRange.location != NSNotFound;
-    
-    if (hasTags) {
-        [content appendFormat:@"\n%@", tags];
-    }
 
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
@@ -1173,11 +1195,6 @@ static BOOL kPinboardSyncInProgress = NO;
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
     }
     
-    if (hasTags) {
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-        [attributedString setFont:tagsFont range:tagRange];
-    }
-    
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
@@ -1190,8 +1207,20 @@ static BOOL kPinboardSyncInProgress = NO;
         NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
-
-    callback(attributedString, height, links);
+    
+    NSMutableArray *badges = [NSMutableArray array];
+    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
+    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
+    if (post[@"tags"] && ![post[@"tags"] isEqualToString:@""]) {
+        NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
+        [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if (![obj hasPrefix:@"via:"]) {
+                [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+            }
+        }];
+    }
+    
+    callback(attributedString, height, links, badges);
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
@@ -1239,6 +1268,10 @@ static BOOL kPinboardSyncInProgress = NO;
     return self.compressedStrings[index];
 }
 
+- (NSArray *)badgesForPostAtIndex:(NSInteger)index {
+    return self.badges[index];
+}
+
 - (BOOL)supportsTagDrilldown {
     return YES;
 }
@@ -1284,13 +1317,13 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in self.posts) {
             dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newHeights addObject:height];
                 dispatch_group_leave(group);
             }];
             
             dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newCompressedHeights addObject:height];
                 dispatch_group_leave(group);
             }];

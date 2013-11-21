@@ -33,6 +33,8 @@
         [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
         self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
         self.textView.backgroundColor = [UIColor clearColor];
+        
+        self.badgeView = [[UIView alloc] init];
     }
     return self;
 }

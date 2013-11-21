@@ -19,6 +19,7 @@
 #import "PPCoreGraphics.h"
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
+#import "PPBadgeWrapperView.h"
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
@@ -720,9 +721,9 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + 10;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + 30;
     }
-    return [dataSource heightForPostAtIndex:indexPath.row] + 10;
+    return [dataSource heightForPostAtIndex:indexPath.row] + 30;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -741,9 +742,11 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row]];
     }
     else {
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row]];
     }
 
     cell.backgroundColor = [UIColor whiteColor];
@@ -765,10 +768,14 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
     cell.textView.activeLinkAttributes = mutableActiveLinkAttributes;
     cell.textView.backgroundColor = [UIColor clearColor];
-
     [cell.contentView addSubview:cell.textView];
+    
+    cell.badgeView.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:cell.badgeView];
+    
     [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": cell.textView}];
-    [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": cell.textView}];
+    [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
+    [cell.contentView lhs_addConstraints:@"V:|-5-[text][badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
 
     [cell.textView setText:string];
 

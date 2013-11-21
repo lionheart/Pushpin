@@ -213,31 +213,37 @@
                                        NSMutableArray *newStrings = [NSMutableArray array];
                                        NSMutableArray *newHeights = [NSMutableArray array];
                                        NSMutableArray *newLinks = [NSMutableArray array];
+                                       NSMutableArray *newBadges = [NSMutableArray array];
 
                                        NSMutableArray *newCompressedStrings = [NSMutableArray array];
                                        NSMutableArray *newCompressedHeights = [NSMutableArray array];
                                        NSMutableArray *newCompressedLinks = [NSMutableArray array];
+                                       NSMutableArray *newCompressedBadges = [NSMutableArray array];
                                        for (NSDictionary *post in newPosts) {
-                                           [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                                           [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                                                [newHeights addObject:height];
                                                [newStrings addObject:string];
                                                [newLinks addObject:links];
+                                               [newBadges addObject:badges];
                                            }];
                                            
-                                           [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+                                           [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                                                [newCompressedHeights addObject:height];
                                                [newCompressedStrings addObject:string];
                                                [newCompressedLinks addObject:links];
+                                               [newCompressedBadges addObject:badges];
                                            }];
                                        }
                                        
                                        self.strings = newStrings;
                                        self.heights = newHeights;
                                        self.links = newLinks;
+                                       self.badges = newBadges;
 
                                        self.compressedStrings = newCompressedStrings;
                                        self.compressedHeights = newCompressedHeights;
                                        self.compressedLinks = newCompressedLinks;
+                                       self.compressedBadges = newCompressedBadges;
                                        
                                        if (success != nil) {
                                            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
@@ -248,7 +254,7 @@
 }
 
 #warning XXX Code smell, repeats metadataForPost
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
     UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
     
@@ -269,11 +275,21 @@
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
+    NSMutableArray *badges = [NSMutableArray array];
+    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
+    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
+    NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
+    [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (![obj hasPrefix:@"via:"]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+        }
+    }];
+    
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height);
-    callback(attributedString, height, @[]);
+    callback(attributedString, height, @[], badges);
 }
 
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *))callback {
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
     UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
@@ -311,10 +327,6 @@
 
     BOOL hasTags = tagRange.location != NSNotFound;
     
-    if (hasTags) {
-        [content appendFormat:@"\n%@", tags];
-    }
-    
     [content appendFormat:@"\n%@", dateString];
     NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
@@ -332,15 +344,20 @@
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
     }
     
-    if (hasTags) {
-        [attributedString setTextColor:HEX(0xA5A9B2ff) range:tagRange];
-        [attributedString setFont:tagsFont range:tagRange];
-    }
-    
     [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
     [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
+    NSMutableArray *badges = [NSMutableArray array];
+    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
+    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
+    NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
+    [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (![obj hasPrefix:@"via:"]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+        }
+    }];
+    
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height);
 
     NSMutableArray *links = [NSMutableArray array];
@@ -349,7 +366,7 @@
         NSRange range = [tags rangeOfString:tag];
         [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
     }
-    callback(attributedString, height, links);
+    callback(attributedString, height, links, badges);
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
@@ -374,6 +391,10 @@
 
 - (NSArray *)linksForPostAtIndex:(NSInteger)index {
     return self.links[index];
+}
+
+- (NSArray *)badgesForPostAtIndex:(NSInteger)index {
+    return self.badges[index];
 }
 
 - (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate {
@@ -483,13 +504,13 @@
         dispatch_group_t group = dispatch_group_create();
         for (NSDictionary *post in self.posts) {
             dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newHeights addObject:height];
                 dispatch_group_leave(group);
             }];
             
             dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links) {
+            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
                 [newCompressedHeights addObject:height];
                 dispatch_group_leave(group);
             }];
