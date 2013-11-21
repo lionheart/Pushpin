@@ -7,10 +7,24 @@
 //
 
 #import "PPNavigationController.h"
+#import "PPNavigationBar.h"
 #import "PPWebViewController.h"
 #import "FMDatabase.h"
 
 @implementation PPNavigationController
+
+- (id)init {
+    self = [super initWithNavigationBarClass:[UINavigationBar class] toolbarClass:nil];
+    return self;
+}
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController {
+    self = [super initWithNavigationBarClass:[UINavigationBar class] toolbarClass:nil];
+    if (self) {
+        self.viewControllers = @[rootViewController];
+    }
+    return self;
+}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
