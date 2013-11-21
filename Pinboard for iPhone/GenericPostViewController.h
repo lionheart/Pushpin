@@ -65,6 +65,7 @@ typedef NSInteger PPPostAction;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
 - (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
+- (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
 - (id <GenericPostDataSource>)searchDataSource;
