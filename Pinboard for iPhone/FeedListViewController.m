@@ -89,7 +89,7 @@
 
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
-    UIImage *settingsImage = [[UIImage imageNamed:@"SettingsNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *settingsImage = [[UIImage imageNamed:@"ui-settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton setImage:[settingsImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
@@ -97,7 +97,7 @@
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
 
-    UIImage *tagImage = [[UIImage imageNamed:@"TagNavigation"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *tagImage = [[UIImage imageNamed:@"ui-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton setImage:tagImage forState:UIControlStateNormal];
     [tagButton setImage:[tagImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
@@ -105,14 +105,7 @@
     tagButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
 
-    UIButton *notesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [notesButton setImage:[UIImage imageNamed:@"NotesNavigation"] forState:UIControlStateNormal];
-    [notesButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
-    notesButton.frame = CGRectMake(0, 0, 20, 24);
-    self.notesBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:notesButton];
-    self.notesBarButtonItem.enabled = self.connectionAvailable;
-
-    self.navigationItem.rightBarButtonItems = @[tagBarButtonItem];
+    self.navigationItem.rightBarButtonItem = tagBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
     self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
