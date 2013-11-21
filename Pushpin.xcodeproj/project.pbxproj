@@ -525,6 +525,8 @@
 		E8DA7971183D2416002B1D0B /* browse-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA7965183D2415002B1D0B /* browse-private@2x.png */; };
 		E8DA7972183D2416002B1D0B /* browse-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA7966183D2415002B1D0B /* browse-all@2x.png */; };
 		E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
+		E8F987CE183E765D00EF976D /* ui-tags@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987CC183E765D00EF976D /* ui-tags@2x.png */; };
+		E8F987CF183E765D00EF976D /* ui-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987CD183E765D00EF976D /* ui-settings@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1129,6 +1131,8 @@
 		E8DA7966183D2415002B1D0B /* browse-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-all@2x.png"; path = "Assets/browse-all@2x.png"; sourceTree = "<group>"; };
 		E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationBar.h; sourceTree = "<group>"; };
 		E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNavigationBar.m; sourceTree = "<group>"; };
+		E8F987CC183E765D00EF976D /* ui-tags@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ui-tags@2x.png"; path = "Assets/ui-tags@2x.png"; sourceTree = "<group>"; };
+		E8F987CD183E765D00EF976D /* ui-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ui-settings@2x.png"; path = "Assets/ui-settings@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1704,6 +1708,7 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				E8F987CB183E764A00EF976D /* General UI */,
 				E8DA795A183D23F9002B1D0B /* Browse */,
 				373C823C16F8043100A7D7C8 /* PullToRefresh */,
 				371B27FE16F8FE0400E74D65 /* PullToRefreshAnimating */,
@@ -1911,6 +1916,15 @@
 				E8DA7966183D2415002B1D0B /* browse-all@2x.png */,
 			);
 			name = Browse;
+			sourceTree = "<group>";
+		};
+		E8F987CB183E764A00EF976D /* General UI */ = {
+			isa = PBXGroup;
+			children = (
+				E8F987CC183E765D00EF976D /* ui-tags@2x.png */,
+				E8F987CD183E765D00EF976D /* ui-settings@2x.png */,
+			);
+			name = "General UI";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2366,6 +2380,7 @@
 				3714DB7217556E6F00B23F4F /* NotesNavigationDimmed@2x.png in Resources */,
 				3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */,
 				3714DB821756EC1F00B23F4F /* pencil.png in Resources */,
+				E8F987CE183E765D00EF976D /* ui-tags@2x.png in Resources */,
 				37A7B5CC18345DAE0038677E /* share@2x.png in Resources */,
 				3714DB831756EC1F00B23F4F /* pencil@2x.png in Resources */,
 				3714DB861756EF9E00B23F4F /* picture.png in Resources */,
@@ -2416,6 +2431,7 @@
 				37C012BE1765452200938D81 /* minus-dash.png in Resources */,
 				37C012BF1765452200938D81 /* minus-dash@2x.png in Resources */,
 				37C012C01765452200938D81 /* plus-dash.png in Resources */,
+				E8F987CF183E765D00EF976D /* ui-settings@2x.png in Resources */,
 				37C012C11765452200938D81 /* plus-dash@2x.png in Resources */,
 				37C012C41765478400938D81 /* tag-minus-dash.png in Resources */,
 				37C012C51765478400938D81 /* tag-minus-dash@2x.png in Resources */,

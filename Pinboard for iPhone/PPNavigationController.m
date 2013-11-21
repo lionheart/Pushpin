@@ -14,12 +14,12 @@
 @implementation PPNavigationController
 
 - (id)init {
-    self = [super initWithNavigationBarClass:[UINavigationBar class] toolbarClass:nil];
+    self = [super initWithNavigationBarClass:[PPNavigationBar class] toolbarClass:nil];
     return self;
 }
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
-    self = [super initWithNavigationBarClass:[UINavigationBar class] toolbarClass:nil];
+    self = [super initWithNavigationBarClass:[PPNavigationBar class] toolbarClass:nil];
     if (self) {
         self.viewControllers = @[rootViewController];
     }
