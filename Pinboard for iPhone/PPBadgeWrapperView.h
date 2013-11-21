@@ -13,5 +13,6 @@
 @property (nonatomic, retain) NSMutableArray *badges;
 
 - (id)initWithBadges:(NSArray *)badges;
+- (CGFloat)calculateHeight;
 
 @end

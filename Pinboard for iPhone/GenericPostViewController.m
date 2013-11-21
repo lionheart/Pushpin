@@ -720,20 +720,26 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
+    PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row]];
+    
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + 30;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
     }
-    return [dataSource heightForPostAtIndex:indexPath.row] + 30;
+    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
 
+    // TODO: This is a bit of a hack, and could be updated to reuse the views
     for (UIView *subview in [cell.contentView subviews]) {
         if ([subview isKindOfClass:[UIImageView class]]) {
             [subview removeFromSuperview];
         }
         else if ([subview isKindOfClass:[TTTAttributedLabel class]]) {
+            [subview removeFromSuperview];
+        }
+        else if ([subview isKindOfClass:[PPBadgeWrapperView class]]) {
             [subview removeFromSuperview];
         }
     }
@@ -775,7 +781,7 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     
     [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": cell.textView}];
     [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
-    [cell.contentView lhs_addConstraints:@"V:|-5-[text][badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
+    [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
 
     [cell.textView setText:string];
 
@@ -803,25 +809,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         [layer removeFromSuperlayer];
     }
 
-    BOOL isPrivate = [dataSource isPostAtIndexPrivate:indexPath.row];
-    if (isPrivate) {
-        UIImageView *lockImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-right-lock"]];
-        lockImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        lockImageView.userInteractionEnabled = NO;
-        [cell.contentView addSubview:lockImageView];
-        [cell.contentView lhs_addConstraints:@"H:[image(18)]|" views:@{@"image": lockImageView}];
-        [cell.contentView lhs_addConstraints:@"V:|[image(19)]" views:@{@"image": lockImageView}];
-    }
-    
-    BOOL isStarred = [dataSource isPostAtIndexStarred:indexPath.row];
-    if (isStarred) {
-        UIImageView *starImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"top-left-star"]];
-        starImageView.userInteractionEnabled = NO;
-        starImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [cell.contentView addSubview:starImageView];
-        [cell.contentView lhs_addConstraints:@"H:|[image(18)]" views:@{@"image": starImageView}];
-        [cell.contentView lhs_addConstraints:@"V:|[image(19)]" views:@{@"image": starImageView}];
-    }
     cell.textView.delegate = self;
     cell.textView.userInteractionEnabled = YES;
     return cell;
