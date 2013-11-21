@@ -24,6 +24,7 @@
 #import "PPBrowserActivity.h"
 #import "PPReadLaterActivity.h"
 #import "PPNavigationController.h"
+#import "GenericPostViewController.h"
 
 #import <UIView+LHSAdditions.h>
 
@@ -245,6 +246,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
     // Determine if we should mobilize or not
     NSString *mobilizedUrlString;
     if (![self isURLStringMobilized:self.urlString] && self.shouldMobilize) {
@@ -278,9 +281,12 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 1] : nil;
+    
     [super viewWillDisappear:animated];
     [self.webView stopLoading];
-    if (self.navigationController.navigationBarHidden) {
+    
+    if (self.navigationController.navigationBarHidden && ![backViewController isKindOfClass:[GenericPostViewController class]]) {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
@@ -408,7 +414,7 @@ static NSInteger kToolbarHeight = 44;
         [self.webView goBack];
     }
     else {
-        [self.navigationController popViewControllerAnimated:YES];
+        [self popViewController];
     }
 }
 
