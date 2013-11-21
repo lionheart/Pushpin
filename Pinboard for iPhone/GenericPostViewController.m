@@ -102,6 +102,10 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    if (self.navigationController.navigationBarHidden) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+    
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
