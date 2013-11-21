@@ -88,6 +88,9 @@ static NSInteger kToolbarHeight = 44;
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
     [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    UILongPressGestureRecognizer *backButtonLongPressGesture = [[UILongPressGestureRecognizer alloc] init];
+    [backButtonLongPressGesture addTarget:self action:@selector(backButtonLongPress:)];
+    [self.backButton addGestureRecognizer:backButtonLongPressGesture];
     self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.backButton];
 
@@ -416,6 +419,10 @@ static NSInteger kToolbarHeight = 44;
     else {
         [self popViewController];
     }
+}
+
+- (void)backButtonLongPress:(id)sender {
+    [self popViewController];
 }
 
 - (void)forwardButtonTouchUp:(id)sender {

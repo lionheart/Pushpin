@@ -57,6 +57,7 @@
 - (void)socialActionButtonTouchUp:(id)sender;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
+- (void)backButtonLongPress:(id)sender;
 - (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)copyURL:(NSURL *)url;
