@@ -303,36 +303,42 @@
                 case 0: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0x0096ffff)];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0xffae46ff)];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Public", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0x7bb839ff)];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Unread", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0xef6034ff)];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Untagged", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0xacb3bbff)];
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
                     postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"Starred", nil);
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0x8361f4ff)];
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
@@ -356,6 +362,7 @@
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
                         postViewController.title = NSLocalizedString(@"Network", nil);
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0x30a1c1ff)];
                         [mixpanel track:@"Browsed network bookmarks"];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
@@ -363,6 +370,7 @@
                     case 1: {
                         feedDataSource.components = @[@"popular?count=100"];
                         postViewController.title = NSLocalizedString(@"Popular", nil);
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0xff9409ff)];
                         [mixpanel track:@"Browsed popular bookmarks"];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
@@ -370,24 +378,28 @@
                     case 2:
                         feedDataSource.components = @[@"popular", @"wikipedia"];
                         postViewController.title = @"Wikipedia";
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0x2ca881ff)];
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 3:
                         feedDataSource.components = @[@"popular", @"fandom"];
                         postViewController.title = NSLocalizedString(@"Fandom", nil);
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0xe062d6ff)];
                         [mixpanel track:@"Browsed fandom bookmarks"];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 4:
                         feedDataSource.components = @[@"popular", @"japanese"];
                         postViewController.title = @"日本語";
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0xff5353ff)];
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     case 5: {
                         PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
                         controller.title = @"Saved Feeds";
+                        [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
                         [[AppDelegate sharedDelegate].navigationController pushViewController:controller animated:YES];
                         break;
                     }
