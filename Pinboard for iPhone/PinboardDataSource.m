@@ -1096,15 +1096,24 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    
     NSString *title = post[@"title"];
     BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
     
+    NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
+    NSString *linkHost = [linkUrl host];
+    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
+    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
+    
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
+    [attributedString setFont:urlFont range:linkRange];
+    [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     
     if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
         [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
@@ -1135,6 +1144,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
@@ -1144,12 +1154,17 @@ static BOOL kPinboardSyncInProgress = NO;
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
     
+    NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
+    NSString *linkHost = [linkUrl host];
+    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
+    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
+    
     NSRange descriptionRange;
     if ([description isEqualToString:@""]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
     }
     else {
-        descriptionRange = NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
+        descriptionRange = NSMakeRange((linkRange.location + linkRange.length) + 1, [description length]);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
     
@@ -1168,15 +1183,18 @@ static BOOL kPinboardSyncInProgress = NO;
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setFont:urlFont range:linkRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
 
     if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
         [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     }
     else {
         [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
