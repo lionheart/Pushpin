@@ -256,16 +256,24 @@
 #warning XXX Code smell, repeats metadataForPost
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
+    UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
     
+    NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
+    NSString *linkHost = [linkUrl host];
+    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
+    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
+    
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+    [attributedString setFont:urlFont range:linkRange];
+    [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
     NSMutableArray *badges = [NSMutableArray array];
@@ -285,6 +293,7 @@
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
+    UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -293,6 +302,11 @@
 
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
+    
+    NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
+    NSString *linkHost = [linkUrl host];
+    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
+    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
 
     NSRange descriptionRange;
     if ([description isEqualToString:@""]) {
@@ -318,15 +332,18 @@
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setFont:descriptionFont range:descriptionRange];
+    [attributedString setFont:urlFont range:linkRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     
     if (isRead) {
         [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     }
     else {
         [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
