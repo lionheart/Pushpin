@@ -256,23 +256,16 @@
 #warning XXX Code smell, repeats metadataForPost
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
-    
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
     NSMutableArray *badges = [NSMutableArray array];
@@ -292,13 +285,10 @@
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
-    UIFont *tagsFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:12];
-    UIFont *dateFont = [UIFont fontWithName:[AppDelegate mediumFontName] size:10];
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
-    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = NO;
 
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -324,11 +314,6 @@
         }
         tagRange = NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, tags.length);
     }
-
-    BOOL hasTags = tagRange.location != NSNotFound;
-    
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
@@ -344,8 +329,6 @@
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
     }
     
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
     NSMutableArray *badges = [NSMutableArray array];
@@ -360,13 +343,7 @@
     
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height);
 
-    NSMutableArray *links = [NSMutableArray array];
-    NSInteger location = tagRange.location;
-    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
-        NSRange range = [tags rangeOfString:tag];
-        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-    }
-    callback(attributedString, height, links, badges);
+    callback(attributedString, height, @[], badges);
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
