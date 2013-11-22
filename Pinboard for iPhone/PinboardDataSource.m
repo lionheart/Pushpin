@@ -1096,17 +1096,11 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
-    
     NSString *title = post[@"title"];
-    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
-    
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
     
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
@@ -1119,8 +1113,6 @@ static BOOL kPinboardSyncInProgress = NO;
         [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
     }
     
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
     
     NSMutableArray *badges = [NSMutableArray array];
@@ -1143,13 +1135,10 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    UIFont *tagsFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    UIFont *dateFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
-
+    
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
     NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
-    NSString *dateString = [self.dateFormatter stringFromDate:post[@"created_at"]];
     BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -1176,11 +1165,6 @@ static BOOL kPinboardSyncInProgress = NO;
         tagRange = NSMakeRange(titleRange.location + titleRange.length + descriptionRange.length + offset, [tags length]);
     }
 
-    BOOL hasTags = tagRange.location != NSNotFound;
-
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
-
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setFont:descriptionFont range:descriptionRange];
@@ -1195,19 +1179,10 @@ static BOOL kPinboardSyncInProgress = NO;
         [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
     }
     
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
 
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
 
-    NSMutableArray *links = [NSMutableArray array];
-    NSInteger location = tagRange.location;
-    for (NSString *tag in [tags componentsSeparatedByString:@" · "]) {
-        NSRange range = [tags rangeOfString:tag];
-        [links addObject:@{@"url": [NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]], @"location": @(location+range.location), @"length": @(range.length)}];
-    }
-    
     NSMutableArray *badges = [NSMutableArray array];
     if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
     if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
@@ -1220,7 +1195,7 @@ static BOOL kPinboardSyncInProgress = NO;
         }];
     }
     
-    callback(attributedString, height, links, badges);
+    callback(attributedString, height, @[], badges);
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
