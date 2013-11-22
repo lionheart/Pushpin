@@ -89,7 +89,7 @@
 
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
-    UIImage *settingsImage = [[UIImage imageNamed:@"ui-settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *settingsImage = [[UIImage imageNamed:@"navigation-settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton setImage:[settingsImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
@@ -97,7 +97,7 @@
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
 
-    UIImage *tagImage = [[UIImage imageNamed:@"ui-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *tagImage = [[UIImage imageNamed:@"navigation-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton setImage:tagImage forState:UIControlStateNormal];
     [tagButton setImage:[tagImage imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];

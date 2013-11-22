@@ -103,13 +103,14 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+    
     if (self.navigationController.navigationBarHidden) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
     
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
-        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
-        self.editButton.possibleTitles = [NSSet setWithArray:@[@"Edit", @"Cancel"]];
+        self.editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-edit"] landscapeImagePhone:[UIImage imageNamed:@"navigation-edit"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
 
@@ -582,8 +583,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
         }
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
-        [self.editButton setStyle:UIBarButtonItemStylePlain];
-        [self.editButton setTitle:NSLocalizedString(@"Edit", nil)];
         self.editButton.enabled = NO;
         
         [self.navigationItem setHidesBackButton:NO animated:YES];
@@ -610,8 +609,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
-        [self.editButton setStyle:UIBarButtonItemStyleDone];
-        [self.editButton setTitle:NSLocalizedString(@"Cancel", nil)];
         self.editButton.enabled = NO;
         [self.navigationItem setHidesBackButton:YES animated:YES];
 
