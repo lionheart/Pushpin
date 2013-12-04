@@ -148,6 +148,7 @@ typedef NSInteger PPPostAction;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
+- (void)markPostsAsRead:(NSArray *)posts;
 - (void)copyURL;
 - (void)sendToReadLater;
 - (void)updateWithRatio:(NSNumber *)ratio;
@@ -158,6 +159,10 @@ typedef NSInteger PPPostAction;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 - (IBAction)deletePost:(id)sender;
+
+- (void)multiMarkAsRead:(id)sender;
+- (void)multiEdit:(id)sender;
+- (void)multiDelete:(id)sender;
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
