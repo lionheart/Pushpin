@@ -304,8 +304,18 @@
         pinboardDataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"limit": @(100), @"offset": @(0)}];
         
         FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        
         GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        
+        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
+        
+        UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        titleButton.frame = CGRectMake(0, 0, 200, 24);
+        titleButton.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        titleButton.titleLabel.textColor = [UIColor whiteColor];
+        titleButton.backgroundColor = [UIColor clearColor];
+        titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+        titleButton.adjustsImageWhenHighlighted = NO;
+        pinboardViewController.navigationItem.titleView = titleButton;
         
         // Determine our default feed
         NSString *feedDetails;
@@ -314,21 +324,39 @@
             if ([feedDetails isEqualToString:@"all"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"All Bookmarks", nil);
+                [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-all"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0x0096ffff)];
             } else if ([feedDetails isEqualToString:@"private"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
+                [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-private"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xffae46ff)];
             } else if ([feedDetails isEqualToString:@"public"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"Public", nil);
+                [titleButton setTitle:NSLocalizedString(@"Public", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-public"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0x7bb839ff)];
             } else if ([feedDetails isEqualToString:@"unread"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"Unread", nil);
+                [titleButton setTitle:NSLocalizedString(@"Unread", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-unread"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xef6034ff)];
             } else if ([feedDetails isEqualToString:@"untagged"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"Untagged", nil);
+                [titleButton setTitle:NSLocalizedString(@"Untagged", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-untagged"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xacb3bbff)];
             } else if ([feedDetails isEqualToString:@"starred"]) {
                 pinboardDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
                 pinboardViewController.title = NSLocalizedString(@"Starred", nil);
+                [titleButton setTitle:NSLocalizedString(@"Starred", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-starred"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0x8361f4ff)];
             }
             
             pinboardViewController.postDataSource = pinboardDataSource;
@@ -342,18 +370,33 @@
                 NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                 feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
                 pinboardViewController.title = NSLocalizedString(@"Network", nil);
+                [titleButton setTitle:NSLocalizedString(@"Network", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-network"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0x30a1c1ff)];
             } else if ([feedDetails isEqualToString:@"popular"]) {
                 feedDataSource.components = @[@"popular?count=100"];
                 pinboardViewController.title = NSLocalizedString(@"Popular", nil);
+                [titleButton setTitle:NSLocalizedString(@"Popular", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-popular"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xff9409ff)];
             } else if ([feedDetails isEqualToString:@"wikipedia"]) {
                 feedDataSource.components = @[@"popular", @"wikipedia"];
                 pinboardViewController.title = @"Wikipedia";
+                [titleButton setTitle:@"Wikipedia" forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-wikipedia"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0x2ca881ff)];
             } else if ([feedDetails isEqualToString:@"fandom"]) {
                 feedDataSource.components = @[@"popular", @"fandom"];
                 pinboardViewController.title = NSLocalizedString(@"Fandom", nil);
+                [titleButton setTitle:NSLocalizedString(@"Fandom", nil) forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-fandom"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xe062d6ff)];
             } else if ([feedDetails isEqualToString:@"japanese"]) {
                 feedDataSource.components = @[@"popular", @"japanese"];
                 pinboardViewController.title = @"日本語";
+                [titleButton setTitle:@"日本語" forState:UIControlStateNormal];
+                [titleButton setImage:[UIImage imageNamed:@"navigation-japanese"] forState:UIControlStateNormal];
+                [self.navigationController.navigationBar setBarTintColor:HEX(0xff5353ff)];
             }
         } else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
             feedDetails = [self.defaultFeed substringFromIndex:6];
@@ -364,7 +407,6 @@
         }
         
         feedListViewController.title = NSLocalizedString(@"Browse", nil);
-        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         //_navigationController.navigationBar.translucent = NO;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];

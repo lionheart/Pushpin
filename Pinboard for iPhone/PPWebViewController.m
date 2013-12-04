@@ -142,6 +142,11 @@ static NSInteger kToolbarHeight = 44;
     self.addButton.hidden = YES;
     [self.toolbar addSubview:self.addButton];
     
+    UIView *toolbarBorderView = [[UIView alloc] init];
+    toolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
+    toolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:toolbarBorderView];
+    
     NSDictionary *toolbarViews = @{@"back": self.backButton,
                                    @"indicator": self.bottomActivityIndicator,
                                    @"read": self.markAsReadButton,
@@ -150,9 +155,12 @@ static NSInteger kToolbarHeight = 44;
                                    @"action": self.actionButton,
                                    @"edit": self.editButton,
                                    @"stop": self.stopButton,
-                                   @"add": self.addButton };
+                                   @"add": self.addButton,
+                                   @"border": toolbarBorderView };
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[back]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[raw]|" views:toolbarViews];
