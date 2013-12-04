@@ -118,16 +118,19 @@ static NSInteger kToolbarHeight = 44;
     UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
     markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
     [markAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [markAsReadButton addTarget:self action:@selector(multiMarkAsRead:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:markAsReadButton];
     
     UIButton *editTagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     editTagsButton.translatesAutoresizingMaskIntoConstraints = NO;
     [editTagsButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [editTagsButton addTarget:self action:@selector(multiEdit:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:editTagsButton];
     
     UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [deleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [deleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:deleteButton];
     
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView, @"read": markAsReadButton, @"edit": editTagsButton, @"delete": deleteButton };
@@ -279,12 +282,10 @@ static NSInteger kToolbarHeight = 44;
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
     if (selectedRowCount > 0) {
-        self.multipleDeleteButton.enabled = YES;
-        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+        self.multiStatusLabel.text = [NSString stringWithFormat:@"%d %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
     }
     else {
-        self.multipleDeleteButton.enabled = NO;
-        [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (0)"]];
+        self.multiStatusLabel.text = NSLocalizedString(@"No bookmarks selected", nil);
     }
 }
 
@@ -315,8 +316,7 @@ static NSInteger kToolbarHeight = 44;
 
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
-            self.multipleDeleteButton.enabled = YES;
-            [self.multipleDeleteButton setTitle:[NSString stringWithFormat:@"Delete (%d)", selectedRowCount]];
+            self.multiStatusLabel.text = [NSString stringWithFormat:@"%d %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
         }
         else {
             // If configured, always mark the post as read
@@ -737,6 +737,25 @@ static NSInteger kToolbarHeight = 44;
     [self deletePostsAtIndexPaths:selectedIndexPaths];
 }
 
+- (void)multiMarkAsRead:(id)sender {
+    NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
+    [[self.tableView indexPathsForSelectedRows] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSIndexPath *indexPath = (NSIndexPath *)obj;
+        NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
+        [bookmarksToUpdate addObject:bookmark];
+    }];
+    
+    [self markPostsAsRead:bookmarksToUpdate];
+}
+
+- (void)multiEdit:(id)sender {
+    
+}
+
+- (void)multiDelete:(id)sender {
+    
+}
+
 #pragma mark - UITableViewDataSource
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1020,6 +1039,10 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Post Action Methods
 
 - (void)markPostAsRead {
+    [self markPostsAsRead:@[ self.selectedPost ]];
+}
+
+- (void)markPostsAsRead:(NSArray *)posts {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (![[delegate connectionAvailable] boolValue]) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1031,28 +1054,43 @@ static NSInteger kToolbarHeight = 44;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
 
         if ([dataSource respondsToSelector:@selector(markPostAsRead:)]) {
-            [dataSource markPostAsRead:self.selectedPost[@"url"] callback:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    UILocalNotification *notification = [[UILocalNotification alloc] init];
-                    if (error == nil) {
-                        notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
-                        notification.userInfo = @{@"success": @YES, @"updated": @YES};
-                        [self updateFromLocalDatabaseWithCallback:nil];
-                    }
-                    else {
+            BOOL __block hasError = NO;
+            
+            dispatch_group_t group = dispatch_group_create();
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            
+
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            notification.userInfo = @{@"success": @YES, @"updated": @YES};
+            notification.alertBody = NSLocalizedString(@"Your bookmarks were updated.", nil);
+            
+            // Enumerate all posts
+            [posts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                dispatch_group_enter(group);
+                [dataSource markPostAsRead:obj[@"url"] callback:^(NSError *error) {
+                    if (error) {
                         notification.userInfo = @{@"success": @NO, @"updated": @NO};
-                        if (error.code == PinboardErrorBookmarkNotFound) {
-                            notification.alertBody = @"Error marking as read.";
-                        }
-                        else {
-                            notification.alertBody = NSLocalizedString(@"There was an error updating your bookmark.", nil);
-                        }
+                        hasError = YES;
                     }
+                    dispatch_group_leave(group);
+                }];
+            }];
+            
+            // If we have any errors, update the local notification
+            if (hasError) {
+                notification.alertBody = NSLocalizedString(@"There was an error updating your bookmarks.", nil);
+                notification.userInfo = @{@"success": @NO, @"updated": @NO};
+            }
+            
+            // Once all async tasks are done, present the notification and update the local database
+            dispatch_group_notify(group, queue, ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 });
                 
                 [self updateFromLocalDatabaseWithCallback:nil];
-            }];
+            });
+            
         }
     }
 }

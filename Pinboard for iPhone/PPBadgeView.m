@@ -58,6 +58,12 @@ static const CGFloat PADDING_Y = 2.0f;
     return self;
 }
 
-
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    if (!self.imageView.image) {
+        [super setBackgroundColor:HEX(0x73c5ffff)];
+    } else {
+        [super setBackgroundColor:backgroundColor];
+    }
+}
 
 @end
