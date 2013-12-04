@@ -24,10 +24,12 @@
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import "UIView+LHSAdditions.h"
+#import "UIImage+Tint.h"
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCell";
+static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
@@ -81,7 +83,61 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
     self.multipleDeleteButton.enabled = NO;
     [self.multipleDeleteButton setTintColor:[UIColor blackColor]];
     [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
-
+    
+    // Setup the multi-edit status view
+    self.multiStatusView = [[UIView alloc] init];
+    self.multiStatusView.backgroundColor = HEX(0xFFFFFFFF);
+    self.multiStatusView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.multiStatusLabel = [[UILabel alloc] init];
+    self.multiStatusLabel.textColor = [UIColor grayColor];
+    self.multiStatusLabel.text = @"No bookmarks selected";
+    self.multiStatusLabel.textAlignment = NSTextAlignmentCenter;
+    self.multiStatusLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multiStatusView addSubview:self.multiStatusLabel];
+    UIView *multiStatusBorderView = [[UIView alloc] init];
+    multiStatusBorderView.backgroundColor = HEX(0xb2b2b2ff);
+    multiStatusBorderView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multiStatusView addSubview:multiStatusBorderView];
+    NSDictionary *statusViews = @{ @"label": self.multiStatusLabel, @"border": multiStatusBorderView };
+    [self.multiStatusView lhs_addConstraints:@"H:|-[label]-|" views:statusViews];
+    [self.multiStatusView lhs_addConstraints:@"H:|[border]|" views:statusViews];
+    [self.multiStatusView lhs_addConstraints:@"V:|-4-[label]-4-[border(0.5)]|" views:statusViews];
+    self.multiStatusView.hidden = YES;
+    
+    // Setup the multi-edit toolbar
+    self.multiToolbarView = [[UIView alloc] init];
+    self.multiToolbarView.backgroundColor = HEX(0xEBF2F6FF);
+    self.multiToolbarView.translatesAutoresizingMaskIntoConstraints = NO;
+    UIView *multiToolbarBorderView = [[UIView alloc] init];
+    multiToolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
+    multiToolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multiToolbarView addSubview:multiToolbarBorderView];
+    self.multiToolbarView.hidden = YES;
+    
+    // Buttons
+    UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [markAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multiToolbarView addSubview:markAsReadButton];
+    
+    UIButton *editTagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    editTagsButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [editTagsButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multiToolbarView addSubview:editTagsButton];
+    
+    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [deleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multiToolbarView addSubview:deleteButton];
+    
+    NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView, @"read": markAsReadButton, @"edit": editTagsButton, @"delete": deleteButton };
+    [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"V:|[delete]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
+    
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
     
@@ -129,6 +185,15 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    // Multi edit status and toolbar
+    CGFloat topOffset = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+    [self.navigationController.view addSubview:self.multiStatusView];
+    [self.navigationController.view lhs_addConstraints:@"H:|[statusView]|" views:@{ @"statusView": self.multiStatusView }];
+    [self.navigationController.view lhs_addConstraints:@"V:|-offset-[statusView(height)]" metrics:@{ @"offset": @(topOffset), @"height": @(kToolbarHeight) } views:@{ @"statusView": self.multiStatusView }];
+    [self.navigationController.view addSubview:self.multiToolbarView];
+    [self.navigationController.view lhs_addConstraints:@"H:|[toolbarView]|" views:@{ @"toolbarView": self.multiToolbarView }];
+    [self.navigationController.view lhs_addConstraints:@"V:[toolbarView(height)]|" metrics:@{ @"height": @(kToolbarHeight) } views:@{ @"toolbarView": self.multiToolbarView }];
     
     [self.navigationController.view addSubview:self.toolbar];
 
@@ -181,6 +246,10 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    // Remove the multi editting views
+    [self.multiStatusView removeFromSuperview];
+    [self.multiToolbarView removeFromSuperview];
+    
     // Hide the editing toolbar
     [self.toolbar removeFromSuperview];
     
@@ -584,8 +653,6 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         self.editButton.enabled = NO;
-        
-        [self.navigationItem setHidesBackButton:NO animated:YES];
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
@@ -602,18 +669,14 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
-            CGRect bounds = [[UIScreen mainScreen] bounds];
-            CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
-            self.toolbar.frame = frame;
+            // TODO: Animate auto layout
+            self.multiStatusView.hidden = YES;
+            self.multiToolbarView.hidden = YES;
         }];
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         self.editButton.enabled = NO;
-        [self.navigationItem setHidesBackButton:YES animated:YES];
-
-        [self.multipleDeleteButton setTitle:@"Delete (0)"];
-        self.multipleDeleteButton.enabled = NO;
 
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
@@ -629,9 +692,9 @@ static NSString *BookmarkCellIdentifier = @"BookmarkCell";
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
 
-            CGRect bounds = [[UIScreen mainScreen] bounds];
-            CGRect frame = CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44);
-            self.toolbar.frame = frame;
+            // TODO: Animate auto layout
+            self.multiStatusView.hidden = NO;
+            self.multiToolbarView.hidden = NO;
         }];
     }
 }

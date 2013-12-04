@@ -123,6 +123,10 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UIBarButtonItem *multipleDeleteButton;
 @property (nonatomic, strong) UIBarButtonItem *editButton;
 
+@property (nonatomic, strong) UIView *multiStatusView;
+@property (nonatomic, strong) UILabel *multiStatusLabel;
+@property (nonatomic, retain) UIView *multiToolbarView;
+
 - (void)toggleEditingMode:(id)sender;
 
 // Gesture and tap recognizers
