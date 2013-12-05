@@ -78,9 +78,21 @@ static const CGFloat PADDING_Y = 3.0f;
         if ([obj[@"type"] isEqualToString:@"image"]) {
             badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:obj[@"image"]]];
         } else if ([obj[@"type"] isEqualToString:@"tag"]) {
-            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] options:self.badgeOptions];
+            NSMutableDictionary *mergedOptions = [self.badgeOptions mutableCopy];
+            if (obj[@"options"]) {
+                [mergedOptions addEntriesFromDictionary:obj[@"options"]];
+            }
+            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] options:mergedOptions];
         }
         [self addSubview:badgeView];
+    }];
+}
+
+- (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
+    [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([obj isKindOfClass:[PPBadgeView class]]) {
+            [(PPBadgeView *)obj addTarget:target action:action forControlEvents:controlEvents];
+        }
     }];
 }
 

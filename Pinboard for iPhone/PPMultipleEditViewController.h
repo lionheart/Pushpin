@@ -14,10 +14,14 @@
 
 @property (nonatomic, strong) NSMutableArray *tagsToAddCompletions;
 @property (nonatomic, strong) NSMutableArray *existingTags;
+@property (nonatomic, strong) NSMutableArray *tagsToRemove;
+@property (nonatomic, strong) NSMutableArray *tagsToAdd;
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
 @property (nonatomic) BOOL autocompleteInProgress;
 
 - (id)initWithTags:(NSArray *)tags;
 - (void)tagsToAddTextFieldUpdatedWithRange:(NSRange)range andString:(NSString *)string;
+
+- (void)tagSelected:(id)sender;
 
 @end

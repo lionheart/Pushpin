@@ -18,4 +18,6 @@
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options;
 - (CGFloat)calculateHeight;
 
+- (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
+
 @end

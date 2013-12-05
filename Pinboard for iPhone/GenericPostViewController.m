@@ -756,7 +756,9 @@ static NSInteger kToolbarHeight = 44;
         NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
         NSArray *tags = [bookmark[@"tags"] componentsSeparatedByString:@" "];
         [tags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [bookmarksToUpdate addObject:obj];
+            if (![bookmarksToUpdate containsObject:obj] && ![obj isEqualToString:@""]) {
+                [bookmarksToUpdate addObject:obj];
+            }
         }];
     }];
     

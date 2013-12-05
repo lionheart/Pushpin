@@ -27,6 +27,9 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.tagsToAdd = [NSMutableArray array];
+        self.tagsToRemove = [NSMutableArray array];
+        
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
         self.tagsToAddTextField = [[UITextField alloc] init];
         self.tagsToAddTextField.font = font;
@@ -55,7 +58,13 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 2 + self.tagsToAddCompletions.count;
+        if (self.existingTags.count > 0 || self.tagsToAdd.count > 0) {
+            return 2 + self.tagsToAddCompletions.count;
+        } else {
+            return 1 + self.tagsToAddCompletions.count;
+        }
+    } else if (section == 1) {
+        return 1;
     }
     
     return 0;
@@ -101,24 +110,44 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             // Bottom badge view
             NSMutableArray *badges = [NSMutableArray array];
             [self.existingTags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+                if ([self.tagsToRemove containsObject:obj]) {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xCCCCCCFF) } }];
+                } else {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+                }
             }];
             
-            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeBackgroundColor: HEX(0xCCCCCCFF) }];
+            [self.tagsToAdd enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                if ([self.tagsToRemove containsObject:obj]) {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xCCCCCCFF) } }];
+                } else {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xa8db4cff) } }];
+                }
+            }];
+            
+            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
             badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
             [cell.contentView addSubview:badgeWrapperView];
             [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
             [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
+            [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
         } else {
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             NSString *tag = self.tagsToAddCompletions[indexPath.row - kMultipleEditViewControllerTagIndexOffset];
             cell.textLabel.text = tag;
-            UIImage *pillImage = [PPCoreGraphics pillImage:self.tagCounts[tag]];
-            UIImageView *pillView = [[UIImageView alloc] initWithImage:pillImage];
-            pillView.frame = CGRectMake(320 - pillImage.size.width - 30, (cell.contentView.frame.size.height - pillImage.size.height) / 2, pillImage.size.width, pillImage.size.height);
-            [cell.contentView addSubview:pillView];
+            cell.detailTextLabel.text = self.tagCounts[tag];
         }
-        
+    } else if (indexPath.section == 1) {
+        NSMutableArray *badges = [NSMutableArray array];
+        [self.tagsToRemove enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+        }];
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeNormalBackgroundColor: HEX(0xfc5579ff) }];
+        badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
+        [cell.contentView addSubview:badgeWrapperView];
+        [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
+        [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
+        [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return cell;
@@ -131,8 +160,10 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             [badges addObject:@{ @"type": @"tag", @"tag": obj }];
         }];
         
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeBackgroundColor: HEX(0xccccccff) }];
-        return [badgeWrapperView calculateHeight] + 20.0f;
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
+        CGFloat totalHeight = [badgeWrapperView calculateHeight] + 20.0f;
+        NSLog(@"Total height is %f", totalHeight);
+        return totalHeight;
     }
     
     return 44.0f;
@@ -140,6 +171,10 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.row == 0 || indexPath.row == (1 + self.tagsToAddCompletions.count)) {
+        return;
+    }
     
     UITextField *textField;
     NSMutableArray *tagCompletions;
@@ -170,11 +205,45 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             
+            /*
             NSString *stringToReplace = [[tagText componentsSeparatedByString:@" "] lastObject];
             NSRange range = NSMakeRange(tagText.length - stringToReplace.length, stringToReplace.length);
             textField.text = [tagText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
+            */
+            [self.tagsToAdd addObject:completion];
+            textField.text = @"";
+            [self.tableView reloadData];
         });
     });
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        if (self.tagsToRemove.count > 0 || self.tagsToAdd.count > 0) {
+            NSMutableString *footerString = [NSMutableString string];
+            if (self.tagsToRemove.count == 1) {
+                [footerString appendString:NSLocalizedString(@"1 tag will be deleted", nil)];
+            } else if (self.tagsToRemove.count >= 2) {
+                [footerString appendString:[NSString stringWithFormat:@"%d %@", self.tagsToRemove.count, NSLocalizedString(@"tags will be deleted", nil)]];
+            }
+            
+            if (self.tagsToRemove.count > 0 && self.tagsToAdd.count > 0) {
+                [footerString appendString:@", "];
+            }
+            
+            if (self.tagsToAdd.count == 1) {
+                [footerString appendString:NSLocalizedString(@"1 tag will be added", nil)];
+            } else if (self.tagsToAdd.count >= 2) {
+                [footerString appendString:[NSString stringWithFormat:@"%d %@", self.tagsToAdd.count, NSLocalizedString(@"tags will be added", nil)]];
+            }
+            
+            return footerString;
+        } else if (self.existingTags.count > 0 || self.tagsToAdd.count > 0) {
+            return @"Tap an existing tag to remove it";
+        }
+    }
+    
+    return @"";
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -294,6 +363,25 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                 }
             });
         }
+    }
+}
+
+- (void)tagSelected:(id)sender {
+    PPBadgeView *badgeView = (PPBadgeView *)sender;
+    if (![badgeView.textLabel.text isEqualToString:@""]) {
+        NSString *tag = badgeView.textLabel.text;
+        NSLog(@"%@ selected", tag);
+        
+        if ([self.tagsToRemove containsObject:tag]) {
+            [badgeView setNormalColor:HEX(0x73c5ffff)];
+            [self.tagsToRemove removeObject:tag];
+        } else {
+            [badgeView setNormalColor:HEX(0xccccccff)];
+            [self.tagsToRemove addObject:tag];
+        }
+        
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+
     }
 }
 
