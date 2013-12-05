@@ -20,6 +20,7 @@
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
 #import "PPBadgeWrapperView.h"
+#import "PPMultipleEditViewController.h"
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
@@ -749,7 +750,18 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)multiEdit:(id)sender {
+    NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
+    [[self.tableView indexPathsForSelectedRows] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSIndexPath *indexPath = (NSIndexPath *)obj;
+        NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
+        NSArray *tags = [bookmark[@"tags"] componentsSeparatedByString:@" "];
+        [tags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [bookmarksToUpdate addObject:obj];
+        }];
+    }];
     
+    PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithTags:bookmarksToUpdate];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)multiDelete:(id)sender {
@@ -1043,6 +1055,9 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)markPostsAsRead:(NSArray *)posts {
+}
+
+- (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (![[delegate connectionAvailable] boolValue]) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1053,7 +1068,7 @@ static NSInteger kToolbarHeight = 44;
     else {
         id <GenericPostDataSource> dataSource = [self currentDataSource];
 
-        if ([dataSource respondsToSelector:@selector(markPostAsRead:)]) {
+        if ([dataSource respondsToSelector:@selector(markPostAsRead:callback:)]) {
             BOOL __block hasError = NO;
             
             dispatch_group_t group = dispatch_group_create();
