@@ -28,8 +28,22 @@ static const CGFloat PADDING_Y = 3.0f;
 
 - (id)initWithBadges:(NSArray *)badges
 {
+    return [self initWithBadges:badges options:nil];
+}
+
+- (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options
+{
     self = [super init];
     if (self) {
+        // Defaults
+        self.badgeFontSize = 10.0f;
+        
+        if (options) {
+            if (options[PPBadgeFontSize]) {
+                self.badgeFontSize = ((NSNumber *)options[PPBadgeFontSize]).floatValue;
+            }
+        }
+        
         self.badges = [badges mutableCopy];
     }
     return self;
@@ -73,7 +87,7 @@ static const CGFloat PADDING_Y = 3.0f;
         if ([obj[@"type"] isEqualToString:@"image"]) {
             badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:obj[@"image"]]];
         } else if ([obj[@"type"] isEqualToString:@"tag"]) {
-            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"]];
+            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] fontSize:self.badgeFontSize];
         }
         [self addSubview:badgeView];
     }];

@@ -39,6 +39,10 @@ static const CGFloat PADDING_Y = 2.0f;
 }
 
 - (id)initWithText:(NSString *)text {
+    return [self initWithText:text fontSize:10.0f];
+}
+
+- (id)initWithText:(NSString *)text fontSize:(CGFloat)size {
     self = [super init];
     if (self) {
         self.layer.cornerRadius = 1.0f;
@@ -46,7 +50,7 @@ static const CGFloat PADDING_Y = 2.0f;
         
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = [text lowercaseString];
-        self.textLabel.font = [UIFont systemFontOfSize:10.0f];
+        self.textLabel.font = [UIFont systemFontOfSize:size];
         self.textLabel.textColor = [UIColor whiteColor];
         
         // Calculate our frame
