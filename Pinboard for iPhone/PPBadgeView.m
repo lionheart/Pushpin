@@ -39,18 +39,25 @@ static const CGFloat PADDING_Y = 2.0f;
 }
 
 - (id)initWithText:(NSString *)text {
-    return [self initWithText:text fontSize:10.0f];
+    return [self initWithText:text options:nil];
 }
 
-- (id)initWithText:(NSString *)text fontSize:(CGFloat)size {
+- (id)initWithText:(NSString *)text options:(NSDictionary *)options {
     self = [super init];
     if (self) {
+        // Defaults
+        NSMutableDictionary *badgeOptions = [@{
+                                         PPBadgeFontSize: @(10.0f),
+                                         PPBadgeBackgroundColor: HEX(0x73c5ffff)
+                                         } mutableCopy];
+        [badgeOptions addEntriesFromDictionary:options];
+        
         self.layer.cornerRadius = 1.0f;
-        self.layer.backgroundColor = HEX(0x73c5ffff).CGColor;
+        self.layer.backgroundColor = ((UIColor *)badgeOptions[PPBadgeBackgroundColor]).CGColor;
         
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = [text lowercaseString];
-        self.textLabel.font = [UIFont systemFontOfSize:size];
+        self.textLabel.font = [UIFont systemFontOfSize:((NSNumber *)badgeOptions[PPBadgeFontSize]).floatValue];
         self.textLabel.textColor = [UIColor whiteColor];
         
         // Calculate our frame
@@ -64,7 +71,7 @@ static const CGFloat PADDING_Y = 2.0f;
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
     if (!self.imageView.image) {
-        [super setBackgroundColor:HEX(0x73c5ffff)];
+        [super setBackgroundColor:[UIColor colorWithCGColor:self.layer.backgroundColor]];
     } else {
         [super setBackgroundColor:backgroundColor];
     }

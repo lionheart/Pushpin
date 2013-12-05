@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+static const NSString *PPBadgeFontSize = @"fontSize";
+static const NSString *PPBadgeBackgroundColor = @"backgrounColor";
+
 @interface PPBadgeView : UIView
 
 @property (nonatomic, retain) UIImageView *imageView;
@@ -15,6 +18,6 @@
 
 - (id)initWithImage:(UIImage *)image;
 - (id)initWithText:(NSString *)text;
-- (id)initWithText:(NSString *)text fontSize:(CGFloat)size;
+- (id)initWithText:(NSString *)text options:(NSDictionary *)options;
 
 @end

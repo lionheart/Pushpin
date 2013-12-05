@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
-static const NSString *PPBadgeFontSize = @"fontSize";
+#import "PPBadgeView.h"
 
 @interface PPBadgeWrapperView : UIView
 
 @property (nonatomic, retain) NSMutableArray *badges;
-@property (nonatomic) CGFloat badgeFontSize;
+@property (nonatomic, retain) NSDictionary *badgeOptions;
 
 - (id)initWithBadges:(NSArray *)badges;
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options;

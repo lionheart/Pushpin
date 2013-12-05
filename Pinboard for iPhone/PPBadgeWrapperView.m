@@ -7,7 +7,6 @@
 //
 
 #import "PPBadgeWrapperView.h"
-#import "PPBadgeView.h"
 #import "UIApplication+AppDimensions.h"
 
 @implementation PPBadgeWrapperView
@@ -35,15 +34,7 @@ static const CGFloat PADDING_Y = 3.0f;
 {
     self = [super init];
     if (self) {
-        // Defaults
-        self.badgeFontSize = 10.0f;
-        
-        if (options) {
-            if (options[PPBadgeFontSize]) {
-                self.badgeFontSize = ((NSNumber *)options[PPBadgeFontSize]).floatValue;
-            }
-        }
-        
+        self.badgeOptions = options;
         self.badges = [badges mutableCopy];
     }
     return self;
@@ -87,7 +78,7 @@ static const CGFloat PADDING_Y = 3.0f;
         if ([obj[@"type"] isEqualToString:@"image"]) {
             badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:obj[@"image"]]];
         } else if ([obj[@"type"] isEqualToString:@"tag"]) {
-            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] fontSize:self.badgeFontSize];
+            badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] options:self.badgeOptions];
         }
         [self addSubview:badgeView];
     }];
