@@ -48,12 +48,18 @@ static const CGFloat PADDING_Y = 2.0f;
         // Defaults
         NSMutableDictionary *badgeOptions = [@{
                                          PPBadgeFontSize: @(10.0f),
-                                         PPBadgeBackgroundColor: HEX(0x73c5ffff)
+                                         PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
+                                         PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
+                                         PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
                                          } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
         
+        self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
+        self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
+        self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
+        
         self.layer.cornerRadius = 1.0f;
-        self.layer.backgroundColor = ((UIColor *)badgeOptions[PPBadgeBackgroundColor]).CGColor;
+        self.layer.backgroundColor = self.normalColor.CGColor;
         
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = [text lowercaseString];
@@ -65,16 +71,100 @@ static const CGFloat PADDING_Y = 2.0f;
         self.frame = CGRectMake(0, 0, size.width + (PADDING_X * 2), size.height + (PADDING_Y * 2));
         self.textLabel.frame = CGRectMake(PADDING_X, PADDING_Y, size.width, size.height);
         [self addSubview:self.textLabel];
+        
+        self.enabled = YES;
+        self.userInteractionEnabled = YES;
     }
     return self;
 }
 
+- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
+    if (controlEvents & UIControlEventTouchUpInside) {
+        _targetTouchUpInside = target;
+        _actionTouchUpInside = action;
+    }
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.enabled) {
+        [self setSelected:YES];
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self.superview];
+    
+    if (CGRectContainsPoint(self.frame, touchPoint)) {
+        [self setSelected:YES];
+    } else {
+        [self setSelected:NO];
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self.superview];
+    
+    if (self.enabled && CGRectContainsPoint(self.frame, touchPoint)) {
+        // Send touch up inside action
+        if ([_targetTouchUpInside respondsToSelector:_actionTouchUpInside]) {
+            [_targetTouchUpInside performSelector:_actionTouchUpInside withObject:self];
+        }
+    }
+    
+    [self setSelected:NO];
+}
+
+#pragma mark Setters
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
     if (!self.imageView.image) {
         [super setBackgroundColor:[UIColor colorWithCGColor:self.layer.backgroundColor]];
     } else {
         [super setBackgroundColor:backgroundColor];
     }
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    _enabled = enabled;
+    if (enabled) {
+        self.layer.backgroundColor = self.normalColor.CGColor;
+    } else {
+        self.layer.backgroundColor = self.disabledColor.CGColor;
+    }
+}
+
+- (void)setSelected:(BOOL)selected {
+    _selected = selected;
+    if (selected) {
+        self.layer.backgroundColor = self.selectedColor.CGColor;
+    } else {
+        if (self.enabled) {
+            self.layer.backgroundColor = self.normalColor.CGColor;
+        } else {
+            self.layer.backgroundColor = self.disabledColor.CGColor;
+        }
+    }
+}
+
+- (void)setNormalColor:(UIColor *)normalColor {
+    _normalColor = normalColor;
+    [self setEnabled:_enabled];
+}
+
+#pragma mark - Helpers
+- (UIColor *)lightenColor:(UIColor *)color amount:(CGFloat)amount {
+    CGFloat h, s, b, a;
+    if ([color getHue:&h saturation:&s brightness:&b alpha:&a]) {
+        h = (b == 1) ? h * 0.98 : h;
+        return [UIColor colorWithHue:h saturation:s brightness:(b + b * (amount / 100)) alpha:a];
+    }
+    
+    return nil;
+}
+
+- (UIColor *)darkenColor:(UIColor *)color amount:(CGFloat)amount {
+    return [self lightenColor:color amount:-(amount)];
 }
 
 @end
