@@ -104,7 +104,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                 [badges addObject:@{ @"type": @"tag", @"tag": obj }];
             }];
             
-            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
+            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeBackgroundColor: HEX(0xCCCCCCFF) }];
             badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
             [cell.contentView addSubview:badgeWrapperView];
             [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
@@ -131,7 +131,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             [badges addObject:@{ @"type": @"tag", @"tag": obj }];
         }];
         
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeBackgroundColor: HEX(0xccccccff) }];
         return [badgeWrapperView calculateHeight] + 20.0f;
     }
     
