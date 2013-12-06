@@ -323,7 +323,7 @@ static NSInteger kToolbarHeight = 44;
             // If configured, always mark the post as read
             if ([AppDelegate sharedDelegate].markReadPosts) {
                 self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
-                [self markPostAsRead];
+                [self markPostsAsRead:@[self.selectedPost] notify:NO];
             }
             
             [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
@@ -1053,10 +1053,11 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Post Action Methods
 
 - (void)markPostAsRead {
-    [self markPostsAsRead:@[ self.selectedPost ]];
+    [self markPostsAsRead:@[ self.selectedPost ] notify:YES];
 }
 
 - (void)markPostsAsRead:(NSArray *)posts {
+    [self markPostsAsRead:posts notify:YES];
 }
 
 - (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
@@ -1101,9 +1102,11 @@ static NSInteger kToolbarHeight = 44;
             
             // Once all async tasks are done, present the notification and update the local database
             dispatch_group_notify(group, queue, ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                });
+                if (notify) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                    });
+                }
                 
                 [self updateFromLocalDatabaseWithCallback:nil];
             });

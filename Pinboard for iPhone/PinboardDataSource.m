@@ -14,6 +14,7 @@
 #import "AddBookmarkViewController.h"
 #import "BloomFilter.h"
 #import "UIApplication+AppDimensions.h"
+#import "PPBadgeView.h"
 
 static BOOL kPinboardSyncInProgress = NO;
 
@@ -1099,6 +1100,7 @@ static BOOL kPinboardSyncInProgress = NO;
     UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
     NSString *title = post[@"title"];
+    NSString *description = post[@"description"];
     BOOL isRead = ![post[@"unread"] boolValue];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -1113,13 +1115,13 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setFont:titleFont range:titleRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     [attributedString setFont:urlFont range:linkRange];
-    [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
     
     if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
-        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0xb3b3b3ff) range:titleRange];
+        [attributedString setTextColor:HEX(0xcdcdcdff) range:linkRange];
     }
     else {
-        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x000000ff) range:titleRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
@@ -1130,7 +1132,9 @@ static BOOL kPinboardSyncInProgress = NO;
     if (post[@"tags"] && ![post[@"tags"] isEqualToString:@""]) {
         NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
         [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if (![obj hasPrefix:@"via:"]) {
+            if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
+                [badges addObject:@{ @"type": @"tag", @"tag": obj, PPBadgeNormalBackgroundColor: HEX(0xf0f0f0ff) }];
+            } else {
                 [badges addObject:@{ @"type": @"tag", @"tag": obj }];
             }
         }];
@@ -1187,14 +1191,14 @@ static BOOL kPinboardSyncInProgress = NO;
     [attributedString setTextColor:HEX(0x33353Bff)];
 
     if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
-        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+        [attributedString setTextColor:HEX(0xb3b3b3ff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
+        [attributedString setTextColor:HEX(0xcdcdcdff) range:linkRange];
     }
     else {
-        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
+        [attributedString setTextColor:HEX(0x000000ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x585858ff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0xb4b6b9ff) range:linkRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
@@ -1208,7 +1212,11 @@ static BOOL kPinboardSyncInProgress = NO;
         NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
         [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if (![obj hasPrefix:@"via:"]) {
-                [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+                if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj, PPBadgeNormalBackgroundColor: HEX(0xf0f0f0ff) }];
+                } else {
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+                }
             }
         }];
     }
