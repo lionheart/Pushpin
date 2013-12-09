@@ -253,44 +253,15 @@
                            }];
 }
 
-#warning XXX Code smell, repeats metadataForPost
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    
-    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = NSMakeRange(0, title.length);
-    
-    NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
-    NSString *linkHost = [linkUrl host];
-    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
-    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
-    
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:titleFont range:titleRange];
-    [attributedString setTextColor:HEX(0x33353Bff)];
-    [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-    [attributedString setFont:urlFont range:linkRange];
-    [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-
-    NSMutableArray *badges = [NSMutableArray array];
-    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
-    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
-    NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
-    [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if (![obj hasPrefix:@"via:"]) {
-            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
-        }
-    }];
-    
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height);
-    callback(attributedString, height, @[], badges);
+    [self metadataForPost:post compressed:YES callback:callback];
 }
 
 - (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
+    [self metadataForPost:post compressed:NO callback:callback];
+}
+
+- (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
     UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
     UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
     UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -307,7 +278,7 @@
     NSString *linkHost = [linkUrl host];
     NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
     [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
-
+    
     NSRange descriptionRange;
     if ([description isEqualToString:@""]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
@@ -335,18 +306,37 @@
     [attributedString setFont:urlFont range:linkRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     
-    if (isRead) {
-        [attributedString setTextColor:HEX(0x96989Dff) range:titleRange];
+    if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
+        [attributedString setTextColor:HEX(0xb3b3b3ff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
+        [attributedString setTextColor:HEX(0xcdcdcdff) range:linkRange];
     }
     else {
-        [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x696F78ff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0x8b8b8bff) range:linkRange];
+        [attributedString setTextColor:HEX(0x000000ff) range:titleRange];
+        [attributedString setTextColor:HEX(0x585858ff) range:descriptionRange];
+        [attributedString setTextColor:HEX(0xb4b6b9ff) range:linkRange];
     }
     
     [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    
+    // Calculate our shorter strings if we're compressed
+    if (compressed || 1) {
+        CGSize textSize = CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX);
+        NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@"Test"];
+        NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+        [layoutManager addTextContainer:textContainer];
+        [textStorage addLayoutManager:layoutManager];
+        [layoutManager setHyphenationFactor:0.0];
+        [layoutManager glyphRangeForTextContainer:textContainer];
+        
+        NSRange titleLineRange, descriptionLineRange, linkLineRage;
+        
+        // Get the compressed title
+        NSAttributedString *titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
+        [textStorage setAttributedString:titleAttributedString];
+        (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
+    }
 
     NSMutableArray *badges = [NSMutableArray array];
     if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
