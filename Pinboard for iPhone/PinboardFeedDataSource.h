@@ -30,7 +30,8 @@
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
 - (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
+- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
+- (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
 
 @end
