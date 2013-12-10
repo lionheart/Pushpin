@@ -359,11 +359,14 @@
         NSUInteger extraCharacterCount = 0;
         NSUInteger trimmedCharacterCount = 0;
         if (titleAttributedString) {
-            tempString = [self trimTrailingPunctuationFromAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange] trimmedLength:&trimmedCharacterCount];
-            attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
+            tempString = [titleAttributedString attributedSubstringFromRange:titleLineRange];
             if (titleLineRange.length < titleRange.length) {
+                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
+            } else {
+                attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
             }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
             extraCharacterCount++;
@@ -372,25 +375,34 @@
         
         if (linkAttributedString) {
             extraCharacterCount = 0;
-            tempString = [self trimTrailingPunctuationFromAttributedString:[linkAttributedString attributedSubstringFromRange:linkLineRange] trimmedLength:&trimmedCharacterCount];
-            [attributedString appendAttributedString:tempString];
+            trimmedCharacterCount = 0;
+            tempString = [linkAttributedString attributedSubstringFromRange:linkLineRange];
             if (linkLineRange.length < linkRange.length) {
+                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                [attributedString appendAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
+            } else {
+                [attributedString appendAttributedString:tempString];
             }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
-            linkRange = NSMakeRange(titleRange.location + titleRange.length + extraCharacterCount - trimmedCharacterCount, linkLineRange.length);
+            extraCharacterCount++;
+            linkRange = NSMakeRange(titleRange.location + titleRange.length, linkLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
         
         if (descriptionAttributedString) {
             extraCharacterCount = 0;
-            tempString = [self trimTrailingPunctuationFromAttributedString:[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange] trimmedLength:&trimmedCharacterCount];
-            [attributedString appendAttributedString:tempString];
+            trimmedCharacterCount = 0;
+            tempString = [descriptionAttributedString attributedSubstringFromRange:descriptionLineRange];
             if (descriptionLineRange.length < descriptionRange.length) {
+                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                [attributedString appendAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
+            } else {
+                [attributedString appendAttributedString:tempString];
             }
-            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + extraCharacterCount - trimmedCharacterCount, descriptionLineRange.length);
+            descriptionRange = NSMakeRange(linkRange.location + linkRange.length, descriptionLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
     }
     
