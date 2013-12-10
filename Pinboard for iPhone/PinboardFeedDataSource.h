@@ -35,4 +35,6 @@
 - (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
 - (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string;
 
+- (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;
+
 @end
