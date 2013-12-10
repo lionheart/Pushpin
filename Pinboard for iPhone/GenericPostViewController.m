@@ -762,6 +762,8 @@ static NSInteger kToolbarHeight = 44;
         }];
     }];
     
+    [self.tableView setEditing:NO animated:NO];
+    
     PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithTags:bookmarksToUpdate];
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -850,6 +852,8 @@ static NSInteger kToolbarHeight = 44;
 
     cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
+    
+    
     
     cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     cell.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
