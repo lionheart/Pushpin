@@ -13,9 +13,11 @@
 
 @property (nonatomic, retain) NSMutableArray *badges;
 @property (nonatomic, retain) NSDictionary *badgeOptions;
+@property (nonatomic) BOOL compressed;
 
 - (id)initWithBadges:(NSArray *)badges;
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options;
+- (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options compressed:(BOOL)compressed;
 - (CGFloat)calculateHeight;
 
 - (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
