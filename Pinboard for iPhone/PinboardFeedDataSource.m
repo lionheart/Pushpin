@@ -334,7 +334,18 @@
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
             [textStorage setAttributedString:descriptionAttributedString];
-            (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&descriptionLineRange];
+
+            descriptionLineRange = NSMakeRange(0, 0);
+            unsigned index, numberOfLines, numberOfGlyphs = [layoutManager numberOfGlyphs];
+            NSRange tempLineRange;
+            for (numberOfLines = 0, index = 0; index < numberOfGlyphs; numberOfLines++){
+                (void)[layoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
+                descriptionLineRange.length += tempLineRange.length;
+                if (numberOfLines >= 2) {
+                    break;
+                }
+                index = NSMaxRange(tempLineRange);
+            }
         }
         
         if (linkRange.location != NSNotFound) {
