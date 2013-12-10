@@ -356,20 +356,37 @@
         
         // Re-create the main string
         NSMutableString *tempString;
-        attributedString = [NSMutableAttributedString attributedStringWithAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange]];
-        [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
-        titleRange = NSMakeRange(0, titleLineRange.length);
+        NSUInteger extraCharacterCount = 0;
+        if (titleAttributedString) {
+            attributedString = [NSMutableAttributedString attributedStringWithAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange]];
+            if (titleLineRange.length < titleRange.length) {
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                extraCharacterCount++;
+            }
+            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+            extraCharacterCount++;
+            titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount);
+        }
         
         if (linkAttributedString) {
+            extraCharacterCount = 0;
             [attributedString appendAttributedString:[linkAttributedString attributedSubstringFromRange:linkLineRange]];
+            if (linkLineRange.length < linkRange.length) {
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                extraCharacterCount++;
+            }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
-            linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkLineRange.length);
+            linkRange = NSMakeRange(titleRange.location + titleRange.length + extraCharacterCount, linkLineRange.length);
         }
         
         if (descriptionAttributedString) {
+            extraCharacterCount = 0;
             [attributedString appendAttributedString:[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange]];
-            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
-            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, descriptionLineRange.length);
+            if (descriptionLineRange.length < descriptionRange.length) {
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                extraCharacterCount++;
+            }
+            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + extraCharacterCount, descriptionLineRange.length);
         }
     }
     
