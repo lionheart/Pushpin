@@ -14,6 +14,7 @@
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
 #import "UIApplication+AppDimensions.h"
+#import "PPBadgeView.h"
 
 @implementation PinboardFeedDataSource
 
@@ -284,7 +285,7 @@
         descriptionRange = NSMakeRange(NSNotFound, 0);
     }
     else {
-        descriptionRange = NSMakeRange(titleRange.location + titleRange.length + 1, [description length]);
+        descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, [description length]);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
 
@@ -306,6 +307,61 @@
     [attributedString setFont:urlFont range:linkRange];
     [attributedString setTextColor:HEX(0x33353Bff)];
     
+    /*
+    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
+    */
+    
+    // Calculate our shorter strings if we're compressed
+    if (compressed) {
+        CGSize textSize = CGSizeMake([UIApplication currentSize].width - 30.0f, CGFLOAT_MAX);
+        NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@"Test"];
+        NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+        [layoutManager addTextContainer:textContainer];
+        [textStorage addLayoutManager:layoutManager];
+        [layoutManager setHyphenationFactor:0.0];
+        [layoutManager glyphRangeForTextContainer:textContainer];
+        
+        NSRange titleLineRange, descriptionLineRange, linkLineRange;
+        
+        // Get the compressed substrings
+        NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
+        
+        titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
+        [textStorage setAttributedString:titleAttributedString];
+        (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
+        
+        if (descriptionRange.location != NSNotFound) {
+            descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
+            [textStorage setAttributedString:descriptionAttributedString];
+            (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&descriptionLineRange];
+        }
+        
+        if (linkRange.location != NSNotFound) {
+            linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
+            [textStorage setAttributedString:linkAttributedString];
+            (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
+        }
+        
+        // Re-create the main string
+        NSMutableString *tempString;
+        attributedString = [NSMutableAttributedString attributedStringWithAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange]];
+        [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+        titleRange = NSMakeRange(0, titleLineRange.length);
+        
+        if (linkAttributedString) {
+            [attributedString appendAttributedString:[linkAttributedString attributedSubstringFromRange:linkLineRange]];
+            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+            linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkLineRange.length);
+        }
+        
+        if (descriptionAttributedString) {
+            [attributedString appendAttributedString:[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange]];
+            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, descriptionLineRange.length);
+        }
+    }
+    
     if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
         [attributedString setTextColor:HEX(0xb3b3b3ff) range:titleRange];
         [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
@@ -316,27 +372,6 @@
         [attributedString setTextColor:HEX(0x585858ff) range:descriptionRange];
         [attributedString setTextColor:HEX(0xb4b6b9ff) range:linkRange];
     }
-    
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    
-    // Calculate our shorter strings if we're compressed
-    if (compressed || 1) {
-        CGSize textSize = CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX);
-        NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
-        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@"Test"];
-        NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-        [layoutManager addTextContainer:textContainer];
-        [textStorage addLayoutManager:layoutManager];
-        [layoutManager setHyphenationFactor:0.0];
-        [layoutManager glyphRangeForTextContainer:textContainer];
-        
-        NSRange titleLineRange, descriptionLineRange, linkLineRage;
-        
-        // Get the compressed title
-        NSAttributedString *titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
-        [textStorage setAttributedString:titleAttributedString];
-        (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
-    }
 
     NSMutableArray *badges = [NSMutableArray array];
     if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
@@ -344,7 +379,11 @@
     NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
     [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if (![obj hasPrefix:@"via:"]) {
-            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+            if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
+                [badges addObject:@{ @"type": @"tag", @"tag": obj, PPBadgeNormalBackgroundColor: HEX(0xf0f0f0ff) }];
+            } else {
+                [badges addObject:@{ @"type": @"tag", @"tag": obj }];
+            }
         }
     }];
     
