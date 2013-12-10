@@ -355,38 +355,45 @@
         }
         
         // Re-create the main string
-        NSMutableString *tempString;
+        NSAttributedString *tempString;
         NSUInteger extraCharacterCount = 0;
+        NSUInteger trimmedCharacterCount = 0;
         if (titleAttributedString) {
-            attributedString = [NSMutableAttributedString attributedStringWithAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange]];
+            tempString = [self trimTrailingPunctuationFromAttributedString:[titleAttributedString attributedSubstringFromRange:titleLineRange] trimmedLength:&trimmedCharacterCount];
+            attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
             if (titleLineRange.length < titleRange.length) {
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
             }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
             extraCharacterCount++;
-            titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount);
+            titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
         
         if (linkAttributedString) {
             extraCharacterCount = 0;
-            [attributedString appendAttributedString:[linkAttributedString attributedSubstringFromRange:linkLineRange]];
+            tempString = [self trimTrailingPunctuationFromAttributedString:[linkAttributedString attributedSubstringFromRange:linkLineRange] trimmedLength:&trimmedCharacterCount];
+            [attributedString appendAttributedString:tempString];
             if (linkLineRange.length < linkRange.length) {
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
             }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
-            linkRange = NSMakeRange(titleRange.location + titleRange.length + extraCharacterCount, linkLineRange.length);
+            linkRange = NSMakeRange(titleRange.location + titleRange.length + extraCharacterCount - trimmedCharacterCount, linkLineRange.length);
         }
         
         if (descriptionAttributedString) {
             extraCharacterCount = 0;
-            [attributedString appendAttributedString:[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange]];
+            tempString = [self trimTrailingPunctuationFromAttributedString:[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange] trimmedLength:&trimmedCharacterCount];
+            [attributedString appendAttributedString:tempString];
             if (descriptionLineRange.length < descriptionRange.length) {
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
             }
-            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + extraCharacterCount, descriptionLineRange.length);
+            if (trimmedCharacterCount > 0) {
+                NSLog(@"Here");
+            }
+            descriptionRange = NSMakeRange(linkRange.location + linkRange.length + extraCharacterCount - trimmedCharacterCount, descriptionLineRange.length);
         }
     }
     
@@ -574,6 +581,17 @@
             success();
         });
     });
+}
+
+- (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed {
+    NSRange punctuationRange = [string.string rangeOfCharacterFromSet:[NSCharacterSet punctuationCharacterSet] options:NSBackwardsSearch];
+    if (punctuationRange.location != NSNotFound && (punctuationRange.location + punctuationRange.length) >= string.length) {
+        *trimmed = string.length - punctuationRange.location;
+        return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
+    }
+    
+    *trimmed = 0;
+    return string;
 }
 
 @end
