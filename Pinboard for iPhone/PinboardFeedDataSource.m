@@ -390,9 +390,6 @@
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
             }
-            if (trimmedCharacterCount > 0) {
-                NSLog(@"Here");
-            }
             descriptionRange = NSMakeRange(linkRange.location + linkRange.length + extraCharacterCount - trimmedCharacterCount, descriptionLineRange.length);
         }
     }

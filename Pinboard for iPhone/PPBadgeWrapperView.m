@@ -32,8 +32,14 @@ static const CGFloat PADDING_Y = 3.0f;
 
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options
 {
+    return [self initWithBadges:badges options:options compressed:NO];
+}
+
+- (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options compressed:(BOOL)compressed
+{
     self = [super init];
     if (self) {
+        _compressed = compressed;
         self.badgeOptions = options;
         self.badges = [badges mutableCopy];
     }
@@ -42,6 +48,11 @@ static const CGFloat PADDING_Y = 3.0f;
 
 - (CGFloat)calculateHeight
 {
+    if (self.compressed) {
+        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
+        return (lastBadgeView.frame.size.height  + PADDING_Y);
+    }
+    
     CGFloat __block offsetX = 0;
     CGFloat __block offsetY = 0;
     
@@ -88,6 +99,11 @@ static const CGFloat PADDING_Y = 3.0f;
     }];
 }
 
+- (void)setCompressed:(BOOL)compressed {
+    _compressed = compressed;
+    [self layoutSubviews];
+}
+
 - (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([obj isKindOfClass:[PPBadgeView class]]) {
@@ -100,20 +116,45 @@ static const CGFloat PADDING_Y = 3.0f;
     CGFloat __block offsetX = 0;
     CGFloat __block offsetY = 0;
     
+    BOOL __block hide = NO;
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([obj isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)obj;
             CGRect frame = badgeView.frame;
-            frame.origin.x = offsetX;
-            offsetX += (frame.size.width + PADDING_X);
-            frame.origin.y = offsetY;
+            
+            if (hide) {
+                badgeView.hidden = YES;
+            } else {
+                badgeView.hidden = NO;
+                frame.origin.x = offsetX;
+                offsetX += (frame.size.width + PADDING_X);
+                frame.origin.y = offsetY;
+            }
             
             if (offsetX > self.frame.size.width) {
-                // Wrap to the next line
-                offsetX = frame.size.width + PADDING_X;
-                frame.origin.x = 0;
-                offsetY += frame.size.height + PADDING_Y;
-                frame.origin.y = offsetY;
+                if (self.compressed) {
+                    PPBadgeView *moreBadgeView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
+                    CGRect moreFrame = moreBadgeView.frame;
+                    moreFrame.origin.y = offsetY;
+                    if ((offsetX + moreFrame.size.width + PADDING_X) > self.frame.size.width) {
+                        // We don't have room for the more button, remove the last badge first
+                        moreFrame.origin.x = offsetX - frame.size.width - PADDING_X;
+                        badgeView.hidden = YES;
+                        [self addSubview:moreBadgeView];
+                    } else {
+                        moreFrame.origin.x = offsetX;
+                        [self addSubview:moreBadgeView];
+                    }
+                    moreBadgeView.frame = moreFrame;
+                    offsetX = 0;
+                    hide = YES;
+                } else {
+                    // Wrap to the next line
+                    offsetX = frame.size.width + PADDING_X;
+                    frame.origin.x = 0;
+                    offsetY += frame.size.height + PADDING_Y;
+                    frame.origin.y = offsetY;
+                }
             }
             
             badgeView.frame = frame;
