@@ -21,6 +21,7 @@
 #import "FMDatabase.h"
 #import "PPBadgeWrapperView.h"
 #import "PPMultipleEditViewController.h"
+#import "FeedListViewController.h"
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
@@ -163,7 +164,10 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+    UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
+    if ([backViewController isKindOfClass:[FeedListViewController class]]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+    }
     
     if (self.navigationController.navigationBarHidden) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -772,6 +776,29 @@ static NSInteger kToolbarHeight = 44;
     
 }
 
+- (void)tagSelected:(id)sender {
+    PPBadgeView *badgeView = (PPBadgeView *)sender;
+    NSString *tag = badgeView.textLabel.text;
+    if (![tag isEqualToString:@"…"]) {
+        if ([tag isEqualToString:@".."]) {
+            // Show more tag options
+        } else {
+            // Go to the tag link
+            id <GenericPostDataSource> dataSource = [self currentDataSource];
+            if (!self.tableView.editing) {
+                if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+                    [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:tag]
+                                              callback:^(UIViewController *controller) {
+                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                      [self.navigationController pushViewController:controller animated:YES];
+                                                  });
+                                              }];
+                }
+            }
+        }
+    }
+}
+
 #pragma mark - UITableViewDataSource
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -851,6 +878,7 @@ static NSInteger kToolbarHeight = 44;
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
         cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges];
     }
+    [cell.badgeView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 
     cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
