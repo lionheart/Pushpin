@@ -263,8 +263,8 @@
 }
 
 - (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[AppDelegate heavyFontName] size:16.f];
-    UIFont *descriptionFont = [UIFont fontWithName:[AppDelegate bookFontName] size:14.f];
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
