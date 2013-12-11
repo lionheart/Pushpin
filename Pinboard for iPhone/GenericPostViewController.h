@@ -164,6 +164,8 @@ typedef NSInteger PPPostAction;
 - (void)multiEdit:(id)sender;
 - (void)multiDelete:(id)sender;
 
+- (void)tagSelected:(id)sender;
+
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
 - (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;

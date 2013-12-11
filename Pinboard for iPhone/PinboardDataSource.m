@@ -1195,7 +1195,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSAttributedString *tempString;
         NSUInteger extraCharacterCount = 0;
         NSUInteger trimmedCharacterCount = 0;
-        if (titleAttributedString) {
+        if (titleAttributedString && titleLineRange.location != NSNotFound) {
             tempString = [titleAttributedString attributedSubstringFromRange:titleLineRange];
             if (titleLineRange.length < titleRange.length) {
                 tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
@@ -1210,7 +1210,7 @@ static BOOL kPinboardSyncInProgress = NO;
             titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
         
-        if (linkAttributedString) {
+        if (linkAttributedString && linkLineRange.location != NSNotFound) {
             extraCharacterCount = 0;
             trimmedCharacterCount = 0;
             tempString = [linkAttributedString attributedSubstringFromRange:linkLineRange];
@@ -1227,7 +1227,7 @@ static BOOL kPinboardSyncInProgress = NO;
             linkRange = NSMakeRange(titleRange.location + titleRange.length, linkLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
         
-        if (descriptionAttributedString) {
+        if (descriptionAttributedString && descriptionLineRange.location != NSNotFound) {
             extraCharacterCount = 0;
             trimmedCharacterCount = 0;
             tempString = [descriptionAttributedString attributedSubstringFromRange:descriptionLineRange];

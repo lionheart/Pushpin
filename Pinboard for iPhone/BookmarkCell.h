@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
+#import "PPBadgeWrapperView.h"
 
 @interface BookmarkCell : UITableViewCell
 
 @property (nonatomic, retain) TTTAttributedLabel *textView;
-@property (nonatomic, retain) UIView *badgeView;
+@property (nonatomic, retain) PPBadgeWrapperView *badgeView;
 @property (nonatomic) BOOL isEditting;
 @property (nonatomic, retain) NSIndexPath *currentPath;
 
