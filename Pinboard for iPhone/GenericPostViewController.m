@@ -842,18 +842,18 @@ static NSInteger kToolbarHeight = 44;
 
     NSAttributedString *string;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
+    NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:nil compressed:YES];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:nil compressed:YES];
     }
     else {
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row]];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges];
     }
 
     cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
-    
     
     
     cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
@@ -878,8 +878,12 @@ static NSInteger kToolbarHeight = 44;
     [cell.contentView addSubview:cell.badgeView];
     
     [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": cell.textView}];
-    [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
-    [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
+    if (badges.count > 0) {
+        [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
+    } else {
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": cell.textView }];
+    }
 
     [cell.textView setText:string];
 
