@@ -515,15 +515,9 @@ static NSInteger kToolbarHeight = 44;
                 
                 if (needsReload) {
                     self.compressPosts = !self.compressPosts;
-                    NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                    for (NSIndexPath *indexPath in visibleIndexPaths) {
-                        if ([self.postDataSource heightForPostAtIndex:indexPath.row] != [self.postDataSource compressedHeightForPostAtIndex:indexPath.row]) {
-                            [indexPathsToReload addObject:indexPath];
-                        }
-                    }
-                    
+                                       
                     [self.tableView beginUpdates];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                     
                     double delayInSeconds = 0.25;
