@@ -778,10 +778,51 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)tagSelected:(id)sender {
     PPBadgeView *badgeView = (PPBadgeView *)sender;
+    
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
+    PPBadgeWrapperView *wrapperView = (PPBadgeWrapperView *)badgeView.superview;
+    NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
+    BookmarkCell __block *cell;
+    NSMutableArray __block *badges;
+    [indexPathsForVisibleRows enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        cell = (BookmarkCell *)[self.tableView cellForRowAtIndexPath:indexPathsForVisibleRows[idx]];
+        if ([cell.contentView.subviews containsObject:wrapperView]) {
+            badges = [[dataSource badgesForPostAtIndex:[self.tableView indexPathForCell:cell].row] mutableCopy];
+            *stop = YES;
+        }
+    }];
+    
+    NSUInteger __block visibleBadgeCount = 0;
+    [wrapperView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        PPBadgeView *badgeView = (PPBadgeView *)obj;
+        if (badgeView.hidden == NO) {
+            visibleBadgeCount++;
+        }
+    }];
+    [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
+    if (badges.count > 5) {
+        [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
+    }
+    
     NSString *tag = badgeView.textLabel.text;
-    if (![tag isEqualToString:@"…"]) {
-        if ([tag isEqualToString:@".."]) {
+    if (![tag isEqualToString:@""]) {
+        if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
             // Show more tag options
+            self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            
+            [badges enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                if ([obj[@"type"] isEqualToString:@"tag"]) {
+                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:obj[@"tag"]];
+                }
+            }];
+            
+            // Properly set the cancel button index
+            [self.actionSheet addButtonWithTitle:@"Cancel"];
+            self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+            
+            self.actionSheetVisible = YES;
+            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+            self.tableView.scrollEnabled = NO;
         } else {
             // Go to the tag link
             id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -1038,48 +1079,65 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     self.tableView.scrollEnabled = YES;
-    if (buttonIndex >= 0) {
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+    
+    if (!actionSheet.title) {
+        NSString *tag = [actionSheet buttonTitleAtIndex:buttonIndex];
         id <GenericPostDataSource> dataSource = [self currentDataSource];
-        
-        if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
-            [self showConfirmDeletionAlert];
+        if (!self.tableView.editing) {
+            if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+                [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:tag]
+                                          callback:^(UIViewController *controller) {
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  [self.navigationController pushViewController:controller animated:YES];
+                                              });
+                                          }];
+            }
         }
-        else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-            UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+
+    } else {
+        if (buttonIndex >= 0) {
+            NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+            id <GenericPostDataSource> dataSource = [self currentDataSource];
             
-            if ([UIApplication isIPad]) {
-                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
+                [self showConfirmDeletionAlert];
             }
-
-            [self.navigationController presentViewController:vc animated:YES completion:nil];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
-            [self markPostAsRead];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-            [self sendToReadLater];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-            [self sendToReadLater];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-            [self sendToReadLater];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-            [self copyURL];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-            UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
-
-            if ([UIApplication isIPad]) {
-                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
+                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+                
+                if ([UIApplication isIPad]) {
+                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                }
+                
+                [self.navigationController presentViewController:vc animated:YES completion:nil];
             }
-
-            [self.navigationController presentViewController:vc animated:YES completion:nil];
+            else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
+                [self markPostAsRead];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+                [self sendToReadLater];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+                [self sendToReadLater];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+                [self sendToReadLater];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
+                [self copyURL];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
+                UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+                
+                if ([UIApplication isIPad]) {
+                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                }
+                
+                [self.navigationController presentViewController:vc animated:YES completion:nil];
+            }
+            
+            self.actionSheet = nil;
         }
-
-        self.actionSheet = nil;
     }
 }
 

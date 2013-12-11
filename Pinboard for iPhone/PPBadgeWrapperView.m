@@ -145,6 +145,7 @@ static const CGFloat PADDING_Y = 3.0f;
                         moreFrame.origin.x = offsetX;
                         [self addSubview:moreBadgeView];
                     }
+                    [moreBadgeView addTarget:badgeView.targetTouchUpInside action:badgeView.actionTouchUpInside forControlEvents:UIControlEventTouchUpInside];
                     moreBadgeView.frame = moreFrame;
                     offsetX = 0;
                     hide = YES;
