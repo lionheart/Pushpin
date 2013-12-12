@@ -881,10 +881,10 @@ static NSInteger kToolbarHeight = 44;
 
     PPBadgeWrapperView *badgeWrapperView;
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:nil compressed:YES];
+        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(12.0f) } compressed:YES];
         return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
     }
-    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row]];
+    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(12.0f) }];
     return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
 }
 
@@ -909,11 +909,11 @@ static NSInteger kToolbarHeight = 44;
     NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:nil compressed:YES];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(12.0f) } compressed:YES];
     }
     else {
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(12.0f) }];
     }
     [cell.badgeView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 

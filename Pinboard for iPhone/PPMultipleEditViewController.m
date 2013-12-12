@@ -205,11 +205,6 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             
-            /*
-            NSString *stringToReplace = [[tagText componentsSeparatedByString:@" "] lastObject];
-            NSRange range = NSMakeRange(tagText.length - stringToReplace.length, stringToReplace.length);
-            textField.text = [tagText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@ ", completion]];
-            */
             [self.tagsToAdd addObject:completion];
             textField.text = @"";
             [self.tableView reloadData];
