@@ -760,7 +760,9 @@ static NSInteger kToolbarHeight = 44;
         }];
     }];
     
-    [self.tableView setEditing:NO animated:NO];
+    if (self.tableView.editing) {
+        [self toggleEditingMode:nil];
+    }
     
     PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithTags:bookmarksToUpdate];
     [self.navigationController pushViewController:vc animated:YES];
