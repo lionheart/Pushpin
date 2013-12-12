@@ -214,7 +214,9 @@
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
     [badgeLabel setHidden:YES];
     
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     cell.detailTextLabel.text = nil;
+    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 
     NSString *badgeCount;
     switch (indexPath.section) {
@@ -499,6 +501,10 @@
 
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     [self dismissViewControllerAnimated:YES completion:success];
+}
+
+- (void)preferredContentSizeChanged:(NSNotification *)aNotification {
+    [self.tableView reloadData];
 }
 
 @end
