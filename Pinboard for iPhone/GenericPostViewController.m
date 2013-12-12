@@ -515,7 +515,7 @@ static NSInteger kToolbarHeight = 44;
                 
                 if (needsReload) {
                     self.compressPosts = !self.compressPosts;
-                                       
+                    
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
@@ -1075,6 +1075,11 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.scrollEnabled = YES;
     
     if (!actionSheet.title) {
+        if (buttonIndex >= (actionSheet.buttons.count - 1)) {
+            self.actionSheet = nil;
+            return;
+        }
+        
         NSString *tag = [actionSheet buttonTitleAtIndex:buttonIndex];
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         if (!self.tableView.editing) {
