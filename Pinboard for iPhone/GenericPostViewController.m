@@ -116,6 +116,9 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView addSubview:multiToolbarBorderView];
     self.multiToolbarView.hidden = YES;
     
+    // Badge settings
+    self.badgeFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
+    
     // Buttons
     UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
     markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -881,10 +884,10 @@ static NSInteger kToolbarHeight = 44;
 
     PPBadgeWrapperView *badgeWrapperView;
     if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
-        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(12.0f) } compressed:YES];
+        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
         return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
     }
-    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(12.0f) }];
+    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
     return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
 }
 
@@ -909,11 +912,11 @@ static NSInteger kToolbarHeight = 44;
     NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
     if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(12.0f) } compressed:YES];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
     }
     else {
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(12.0f) }];
+        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
     }
     [cell.badgeView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -1513,7 +1516,9 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark iOS 7 Updates
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    [self.postDataSource updatePostsFromDatabase:^(void) {
+    self.badgeFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
+    
+    [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_sync(dispatch_get_main_queue(), ^(void) {
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
