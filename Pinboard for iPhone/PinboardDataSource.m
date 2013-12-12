@@ -1150,13 +1150,19 @@ static BOOL kPinboardSyncInProgress = NO;
 
     // Calculate our shorter strings if we're compressed
     if (compressed) {
-        CGSize textSize = CGSizeMake([UIApplication currentSize].width - 30.0f, CGFLOAT_MAX);
+        // Calculate elippsis size for each element
+        NSString *ellipsis = @"…";
+        CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: titleFont }];
+        CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: urlFont }];
+        CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: descriptionFont }];
+        
+        CGSize textSize = CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX);
         NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
-        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@"Test"];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@""];
         NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
         [layoutManager addTextContainer:textContainer];
         [textStorage addLayoutManager:layoutManager];
-        [layoutManager setHyphenationFactor:0.0];
+        [layoutManager setHyphenationFactor:1.0];
         [layoutManager glyphRangeForTextContainer:textContainer];
         
         NSRange titleLineRange, descriptionLineRange, linkLineRange;
@@ -1165,11 +1171,13 @@ static BOOL kPinboardSyncInProgress = NO;
         NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
         
         titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
+        [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeTitle.width - 10.0f, CGFLOAT_MAX)];
         [textStorage setAttributedString:titleAttributedString];
         (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
         
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
+            [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeDescription.width - 10.0f, CGFLOAT_MAX)];
             [textStorage setAttributedString:descriptionAttributedString];
             
             descriptionLineRange = NSMakeRange(0, 0);
@@ -1183,10 +1191,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 index = NSMaxRange(tempLineRange);
             }
+            descriptionLineRange.length = (descriptionLineRange.length > descriptionAttributedString.length) ? descriptionAttributedString.length : descriptionLineRange.length;
         }
         
         if (linkRange.location != NSNotFound) {
             linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
+            [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeLink.width - 10.0f, CGFLOAT_MAX)];
             [textStorage setAttributedString:linkAttributedString];
             (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
         }
