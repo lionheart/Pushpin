@@ -26,7 +26,7 @@
 }
 
 - (void)viewDidLoad {
-    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     self.userTextField = [[UITextField alloc] init];
     self.userTextField.font = font;
     self.userTextField.delegate = self;

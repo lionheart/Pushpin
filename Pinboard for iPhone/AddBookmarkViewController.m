@@ -67,7 +67,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.postDescription = @"";
 
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.font = font;
         self.urlTextField.delegate = self;
@@ -143,7 +143,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     [super viewWillAppear:animated];
     
     if (!self.postDescriptionTextView) {
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
         BOOL isIPad = [UIApplication isIPad];
         CGFloat offset;
         if (isIPad) {
@@ -301,7 +301,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             UILabel *label = [[UILabel alloc] init];
             label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
             label.textAlignment = NSTextAlignmentCenter;
-            label.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
+            label.font = [UIFont fontWithName:[PPTheme mediumFontName] size:13];
             label.textColor = HEX(0x4C586AFF);
             label.numberOfLines = 0;
             label.backgroundColor = HEX(0xF7F9FDff);
@@ -315,7 +315,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
+        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:13];
         NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
         CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:0 attributes:@{NSFontAttributeName: font} context:nil];
         return rect.size.height;
@@ -522,10 +522,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
-    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
 
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {

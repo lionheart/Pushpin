@@ -44,7 +44,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
-    UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
     NSInteger index = 0;
     CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
@@ -159,7 +159,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.textLabel.text = title;
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
         if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
             cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
         }

@@ -1077,20 +1077,4 @@
     }
 }
 
-+ (NSString *)heavyFontName {
-    return @"HelveticaNeue-Bold";
-}
-
-+ (NSString *)mediumFontName {
-    return @"HelveticaNeue-Medium";
-}
-
-+ (NSString *)bookFontName {
-    return @"HelveticaNeue-Bold";
-}
-
-+ (NSString *)blackFontName {
-    return @"HelveticaNeue-Bold";
-}
-
 @end

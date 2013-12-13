@@ -14,6 +14,7 @@
 #import "PinboardFeedDataSource.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPAddSavedFeedViewController.h"
+#import "PPTheme.h"
 
 @interface PPSavedFeedsViewController ()
 
@@ -75,7 +76,7 @@
     }
     
     CGFloat fontSize = 17;
-    UIFont *font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
+    UIFont *font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
 
     NSString *title;
     if (self.feeds.count > 0) {
@@ -83,7 +84,7 @@
         title = self.feeds[indexPath.row][@"title"];
         while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
             fontSize -= 0.2;
-            font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
+            font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
         }
     }
     else {

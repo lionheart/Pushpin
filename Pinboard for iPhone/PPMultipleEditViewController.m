@@ -30,7 +30,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         self.tagsToAdd = [NSMutableArray array];
         self.tagsToRemove = [NSMutableArray array];
         
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
         self.tagsToAddTextField = [[UITextField alloc] init];
         self.tagsToAddTextField.font = font;
         self.tagsToAddTextField.delegate = self;
@@ -86,10 +86,10 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
-    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     
     CGRect frame = cell.frame;
     

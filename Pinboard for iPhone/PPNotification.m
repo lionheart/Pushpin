@@ -82,7 +82,7 @@ static PPNotification *shared;
 
 - (UIView *)notificationViewWithMessage:(NSString *)message {
     if (!_notificationView) {
-        UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:15];
+        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:15];
         CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 60, CGFLOAT_MAX)];
 
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
