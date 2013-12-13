@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PinboardFeedDataSource.h"
 #import "NSString+URLEncoding2.h"
+#import "PPTheme.h"
 
 @interface PPAddSavedFeedViewController ()
 

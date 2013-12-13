@@ -11,6 +11,7 @@
 #import "PPDisplaySettingsViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPDefaultFeedViewController.h"
+#import "PPTheme.h"
 
 @interface PPDisplaySettingsViewController ()
 
