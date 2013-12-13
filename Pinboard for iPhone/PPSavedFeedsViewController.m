@@ -82,7 +82,11 @@
     if (self.feeds.count > 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         title = self.feeds[indexPath.row][@"title"];
-        while ([title sizeWithFont:font constrainedToSize:CGSizeMake(320, CGFLOAT_MAX)].width > 280 || fontSize < 5) {
+        
+        NSDictionary *attributes = @{NSFontAttributeName: font};
+        CGSize maxSize = CGSizeMake(320, CGFLOAT_MAX);
+        CGRect titleRect = [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+        while (titleRect.size.width > 280 || fontSize < 5) {
             fontSize -= 0.2;
             font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
         }

@@ -21,6 +21,7 @@
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
 #import <Mixpanel/Mixpanel.h>
+#import "PPTheme.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -44,15 +45,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
-    UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
-    UIFont *fixedWidthFont = [UIFont fontWithName:@"Courier" size:12];
     NSInteger index = 0;
     CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
     CGFloat descriptionHeight;
     NSUInteger emptyLines;
     NSArray *lines;
+    CGSize maxSize = CGSizeMake(width, CGFLOAT_MAX);
 
     UITableViewCell *testCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@""];
+    NSDictionary *titleAttributes = @{NSFontAttributeName: testCell.textLabel.font};
+    NSDictionary *detailAttributes = @{NSFontAttributeName: testCell.detailTextLabel.font};
     for (NSArray *list in self.data) {
         [self.titles addObject:NSLocalizedString(list[0], nil)];
         for (NSArray *pair in list[1]) {
@@ -63,7 +65,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 self.heights[title] = @(0);
             }
             else {
-                self.heights[title] = @(MIN(22, [title sizeWithFont:testCell.textLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height));
+                self.heights[title] = @(MIN(22, [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:titleAttributes context:nil].size.height));
             }
 
             if ([description isEqualToString:@""]) {
@@ -79,10 +81,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
 
                 if (index == 4) {
-                    descriptionHeight = [description sizeWithFont:testCell.detailTextLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    descriptionHeight = [description boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:detailAttributes context:nil].size.height;
                 }
                 else {
-                    descriptionHeight = [description sizeWithFont:testCell.detailTextLabel.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                    descriptionHeight = [description boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:detailAttributes context:nil].size.height;
                 }
             }
 

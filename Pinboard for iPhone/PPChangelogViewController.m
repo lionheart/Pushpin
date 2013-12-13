@@ -44,7 +44,8 @@
 
     NSInteger index = 0;
     CGFloat width = w - 2 * self.tableView.groupedCellMargin - 45;
-    CGFloat normalFontHeight = [@" " sizeWithFont:font].height;
+    NSDictionary *attributes = @{NSFontAttributeName: font};
+    CGFloat normalFontHeight = [@" " boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size.height;
     NSUInteger emptyLines;
     CGFloat descriptionHeight;
     NSArray *lines;
@@ -66,7 +67,9 @@
                     }
                 }
                 
-                descriptionHeight = [description sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+                NSDictionary *attributes = @{NSFontAttributeName: font};
+                CGSize maxSize = CGSizeMake(width, CGFLOAT_MAX);
+                descriptionHeight = [description boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size.height;
                 descriptionHeight += emptyLines * normalFontHeight;
             }
             
@@ -99,8 +102,9 @@
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = CGSizeMake(0,1);
         label.font = font;
-        CGSize textSize = [title sizeWithFont:label.font];
-        
+        NSDictionary *attributes = @{NSFontAttributeName: label.font};
+        CGSize maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+        CGSize textSize = [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
         [view addSubview:label];
         return view;
