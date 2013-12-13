@@ -11,7 +11,6 @@
 #import "UIApplication+AppDimensions.h"
 #import "PPTheme.h"
 
-static NSInteger kPPNotificationHeight = 56;
 static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;
 static PPNotification *shared;

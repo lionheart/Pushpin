@@ -1007,7 +1007,6 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     dispatch_group_notify(group, queue, ^{
-        NSInteger previousPostCount = [self numberOfPosts];
         dispatch_group_t inner_group = dispatch_group_create();
 
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];

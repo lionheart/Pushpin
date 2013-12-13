@@ -742,12 +742,11 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)showEditViewController {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *urlString = [self urlStringForDemobilizedURL:self.url];
-        if (urlString) {
-            #warning XXX - make generic
+        NSString *editUrlString = [self urlStringForDemobilizedURL:self.url];
+        if (editUrlString) {
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
-            FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
+            FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
             [results next];
             NSDictionary *post = @{
                 @"title": [results stringForColumn:@"title"],

@@ -53,8 +53,6 @@
 @property (nonatomic, retain) NSMutableArray *navigationHistory;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
-- (void)singleTapInWebview;
-- (void)socialActionButtonTouchUp:(id)sender;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
 - (void)backButtonLongPress:(id)sender;
@@ -74,9 +72,7 @@
 - (void)sendToReadLater:(NSNumber *)service;
 - (void)loadURL;
 - (void)stopLoading;
-- (BOOL)isWebViewExpanded;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
-- (void)toggleFullScreen;
 - (void)setFullscreen:(BOOL)fullscreen;
 - (void)disableFullscreen:(id)sender;
 - (NSURL *)url;
