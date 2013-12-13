@@ -24,7 +24,9 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
 + (UIImage *)pillImage:(NSString *)text {
     UIImage *countBackground = [[UIImage imageNamed:@"count-background"] resizableImageWithCapInsets:UIEdgeInsetsMake(14, 15, 14, 15)];
     UIFont *font = [UIFont fontWithName:[PPTheme blackFontName] size:14];
-    CGSize textSize = [text sizeWithFont:font];
+    NSDictionary *attributes = @{NSFontAttributeName: font};
+    CGRect textRect = [text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:0 attributes:attributes context:nil];
+    CGSize textSize = textRect.size;
     CGSize size = textSize;
     size.height = 27;
     size.width = size.width + 20;
@@ -41,7 +43,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
     CGContextSetRGBFillColor(context, 1, 1, 1, 1);
     CGContextSetShadowWithColor(context, CGSizeMake(1, 1), 1, HEX(0x00000044).CGColor);
 
-    [text drawInRect:CGRectInset(CGRectMake(0, 1, size.width, size.height), (size.width - textSize.width) / 2, (size.height - textSize.height) / 2) withFont:font];
+    [text drawInRect:CGRectInset(CGRectMake(0, 1, size.width, size.height), (size.width - textSize.width) / 2, (size.height - textSize.height) / 2) withAttributes:attributes];
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

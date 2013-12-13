@@ -9,6 +9,7 @@
 #import "PPNotification.h"
 #import "AppDelegate.h"
 #import "UIApplication+AppDimensions.h"
+#import "PPTheme.h"
 
 static NSInteger kPPNotificationHeight = 56;
 static NSInteger kPPNotificationPadding = 16;
@@ -83,7 +84,8 @@ static PPNotification *shared;
 - (UIView *)notificationViewWithMessage:(NSString *)message {
     if (!_notificationView) {
         UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:15];
-        CGSize size = [message sizeWithFont:font constrainedToSize:CGSizeMake([UIApplication currentSize].width - 60, CGFLOAT_MAX)];
+        CGRect rect = [message boundingRectWithSize:CGSizeMake([UIApplication currentSize].width - 60, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: font} context:nil];
+        CGSize size = rect.size;
 
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
         

@@ -332,10 +332,10 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - Button builders
 
 - (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
-    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:[PPTheme heavyFontName] size:13.0]
-                            constrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, NSIntegerMax)
-                                lineBreakMode:NSLineBreakByWordWrapping];
-    
+    NSDictionary *attributes = @{NSFontAttributeName: [PPTheme heavyFontName]};
+    CGRect newRect = [title boundingRectWithSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    CGSize newSize = newRect.size;
+
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, [UIApplication currentSize].width - 20, newSize.height + 5.0)];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:13.0];
