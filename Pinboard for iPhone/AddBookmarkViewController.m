@@ -82,9 +82,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         
         self.descriptionTextLabel = [[UILabel alloc] init];
         self.descriptionTextLabel.font = font;
-        self.descriptionTextLabel.text = @"";
+        self.descriptionTextLabel.text = NSLocalizedString(@"Tap here to add description", nil);
         self.descriptionTextLabel.numberOfLines = 3;
         self.descriptionTextLabel.userInteractionEnabled = NO;
+        self.descriptionTextLabel.textColor = HEX(0xc7c7cdff);
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -241,7 +242,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            return 58.0f;
+            if (self.isUpdate) {
+                return 58.0f;
+            } else {
+                return 62.0f;
+            }
         } else if (indexPath.row == 1) {
             return 80.0f;
         }
@@ -566,17 +571,17 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                             cell.textLabel.enabled = NO;
                         }
                         else {
-                            self.titleTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                            self.titleTextField.frame = CGRectMake(40, 8, textFieldWidth, 24);
                             [cell.contentView addSubview:self.titleTextField];
                         }
                         
                         if (self.isUpdate) {
-                            self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 26.0f, textFieldWidth, 18);
+                            self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 24.0f, textFieldWidth, 18);
                             self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:14];
                             self.urlTextField.textColor = [UIColor grayColor];
                             
                         } else {
-                            self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                            self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 24.0f, textFieldWidth, 20);
                             self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
                             self.urlTextField.textColor = [UIColor blackColor];
                         }
@@ -598,7 +603,13 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                         else {
                             cell.selectionStyle = UITableViewCellSelectionStyleGray;
                             self.descriptionTextLabel.frame = CGRectMake(40, 10, textFieldWidth, 64);
-                            self.descriptionTextLabel.text = self.postDescription;
+                            if (![self.postDescription isEqualToString:@""]) {
+                                self.descriptionTextLabel.text = self.postDescription;
+                                self.descriptionTextLabel.textColor = [UIColor blackColor];
+                            } else {
+                                self.descriptionTextLabel.text = NSLocalizedString(@"Tap here to add description", nil);
+                                self.descriptionTextLabel.textColor = HEX(0xc7c7cdff);
+                            }
                             [self.descriptionTextLabel sizeToFit];
 
                             cell.accessoryView = nil;
@@ -1023,7 +1034,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
         addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
-        addBookmarkViewController.descriptionTextLabel.text = bookmark[@"description"];
+        if (![bookmark[@"description"] isEqualToString:@""]) {
+            addBookmarkViewController.descriptionTextLabel.text = bookmark[@"description"];
+            addBookmarkViewController.descriptionTextLabel.textColor = [UIColor blackColor];
+        }
     }
     
     if (delegate) {
