@@ -26,10 +26,12 @@
 
 @property (nonatomic, retain) id<ModalDelegate> modalDelegate;
 @property (nonatomic, retain) UITextField *urlTextField;
-@property (nonatomic, retain) UITextField *descriptionTextField;
+@property (nonatomic, retain) UILabel *descriptionTextLabel;
 @property (nonatomic, retain) UITextField *titleTextField;
 @property (nonatomic, retain) UISwitch *privateSwitch;
 @property (nonatomic, retain) UISwitch *readSwitch;
+@property (nonatomic, retain) UIButton *privateButton;
+@property (nonatomic, retain) UIButton *readButton;
 @property (nonatomic, retain) UITextField *tagTextField;
 @property (nonatomic, retain) NSArray *popularTags;
 @property (nonatomic, retain) NSArray *recommendedTags;
@@ -70,6 +72,8 @@
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)privateSwitchChanged:(id)sender;
 - (void)readSwitchChanged:(id)sender;
+- (void)togglePrivate:(id)sender;
+- (void)toggleRead:(id)sender;
 - (void)addBookmark;
 - (void)close;
 - (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer;

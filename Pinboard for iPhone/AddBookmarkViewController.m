@@ -20,8 +20,9 @@
 #import "UITableView+Additions.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
+#import "UIImage+Tint.h"
 
-static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
+static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 
 @interface AddBookmarkViewController ()
 
@@ -31,7 +32,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 @synthesize modalDelegate;
 @synthesize urlTextField;
-@synthesize descriptionTextField;
+@synthesize descriptionTextLabel;
 @synthesize titleTextField;
 @synthesize tagTextField;
 @synthesize privateSwitch;
@@ -58,6 +59,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 @synthesize keyboardTableInset;
 @synthesize editTextViewController;
 @synthesize textExpander, textExpanderSnippetExpanded;
+@synthesize isUpdate =_isUpdate;
 
 - (id)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -78,13 +80,11 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.urlTextField.text = @"";
         self.previousURLContents = @"";
         
-        self.descriptionTextField = [[UITextField alloc] init];
-        self.descriptionTextField.font = font;
-        self.descriptionTextField.delegate = self;
-        self.descriptionTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.descriptionTextField.placeholder = @"";
-        self.descriptionTextField.text = @"";
-        self.descriptionTextField.userInteractionEnabled = NO;
+        self.descriptionTextLabel = [[UILabel alloc] init];
+        self.descriptionTextLabel.font = font;
+        self.descriptionTextLabel.text = @"";
+        self.descriptionTextLabel.numberOfLines = 3;
+        self.descriptionTextLabel.userInteractionEnabled = NO;
         
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.font = font;
@@ -99,7 +99,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         self.tagTextField.delegate = self;
         self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagTextField.placeholder = NSLocalizedString(@"pinboard .bookmarking", nil);
+        self.tagTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagTextField.text = @"";
@@ -125,7 +125,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
         self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-        [self.descriptionTextField addGestureRecognizer:self.descriptionGestureRecognizer];
+        [self.descriptionTextLabel addGestureRecognizer:self.descriptionGestureRecognizer];
 
         self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -238,8 +238,20 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     return 1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            return 58.0f;
+        } else if (indexPath.row == 1) {
+            return 80.0f;
+        }
+    }
+    
+    return 44.0f;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 2) {
+    if (indexPath.section == 0 && indexPath.row == 1) {
         self.editTextViewController = [[UIViewController alloc] init];
         self.editTextViewController.title = NSLocalizedString(@"Description", nil);
         self.editTextViewController.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
@@ -249,7 +261,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         [self.navigationController pushViewController:self.editTextViewController animated:YES];
         [self.postDescriptionTextView becomeFirstResponder];
     }
-    else if (indexPath.section == 0 && indexPath.row > 3) {
+    else if (indexPath.section == 0 && indexPath.row > 2) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         NSString *tagText = self.tagTextField.text;
         NSInteger row = indexPath.row;
@@ -290,13 +302,21 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
             });
         });
     }
+    else if (indexPath.section == 1 && indexPath.row == 0) {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self togglePrivate:nil];
+    }
+    else if (indexPath.section == 1 && indexPath.row == 1) {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self toggleRead:nil];
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == 0) {
         if (!self.footerView) {
             self.footerView = [[UIView alloc] init];
-            self.footerView.clipsToBounds = YES;
+            self.footerView.clipsToBounds = NO;
             UILabel *label = [[UILabel alloc] init];
             label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
             label.textAlignment = NSTextAlignmentCenter;
@@ -316,7 +336,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     if (section == 0) {
         UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:13];
         NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
-        CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:0 attributes:@{NSFontAttributeName: font} context:nil];
+        CGFloat maxWidth = self.tableView.frame.size.width - 40;
+        CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
         return rect.size.height;
     }
     return 0;
@@ -329,12 +350,12 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     if (self.currentTextField == self.tagTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-    else if (self.currentTextField == self.titleTextField) {
+    else if (self.currentTextField == self.descriptionTextLabel) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-    else if (self.currentTextField == self.urlTextField) {
+    else if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
 }
@@ -533,14 +554,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
         switch (indexPath.section) {
             case 0:
                 switch (indexPath.row) {
-                    case 0:
-                        cell.imageView.image = [UIImage imageNamed:@"globe-dash"];
-                        self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
-                        [cell.contentView addSubview:self.urlTextField];
-                        break;
-                        
-                    case 1:
-                        cell.imageView.image = [UIImage imageNamed:@"pencil"];
+                    case 0: {
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] imageWithColor:HEX(0x0096ffff)]];
+                        topImageView.frame = CGRectMake(14, 12, 20, 20);
+                        [cell.contentView addSubview:topImageView];
                         if (self.loadingTitle) {
                             UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                             [activity startAnimating];
@@ -552,10 +569,25 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                             self.titleTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
                             [cell.contentView addSubview:self.titleTextField];
                         }
-                        break;
                         
-                    case 2:
-                        cell.imageView.image = [UIImage imageNamed:@"picture"];
+                        if (self.isUpdate) {
+                            self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 26.0f, textFieldWidth, 18);
+                            self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:14];
+                            self.urlTextField.textColor = [UIColor grayColor];
+                            
+                        } else {
+                            self.urlTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                            self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+                            self.urlTextField.textColor = [UIColor blackColor];
+                        }
+                        [cell.contentView addSubview:self.urlTextField];
+                        
+                        break;
+                    }
+                    case 1: {
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0x0096ffff)]];
+                        topImageView.frame = CGRectMake(14, 12, 20, 20);
+                        [cell.contentView addSubview:topImageView];
                         if (self.loadingTitle) {
                             UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                             [activity startAnimating];
@@ -565,17 +597,19 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                         }
                         else {
                             cell.selectionStyle = UITableViewCellSelectionStyleGray;
-                            self.descriptionTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
-                            self.descriptionTextField.placeholder = @"Click to edit description.";
-                            self.descriptionTextField.text = self.postDescription;
+                            self.descriptionTextLabel.frame = CGRectMake(40, 10, textFieldWidth, 64);
+                            self.descriptionTextLabel.text = self.postDescription;
+                            [self.descriptionTextLabel sizeToFit];
 
                             cell.accessoryView = nil;
-                            [cell.contentView addSubview:self.descriptionTextField];
+                            [cell.contentView addSubview:self.descriptionTextLabel];
                         }
                         break;
-                        
-                    case 3:
-                        cell.imageView.image = [UIImage imageNamed:@"tag"];
+                    }
+                    case 2: {
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0x0096ffff)]];
+                        topImageView.frame = CGRectMake(14, 12, 20, 20);
+                        [cell.contentView addSubview:topImageView];
                         if (self.loadingTags) {
                             UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                             [activity startAnimating];
@@ -589,7 +623,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                             [cell.contentView addSubview:self.tagTextField];
                         }
                         break;
-                        
+                    }
                     default: {
                         if (self.tagCompletions.count > 0) {
                             NSString *tag = self.tagCompletions[indexPath.row - kAddBookmarkViewControllerTagCompletionOffset];
@@ -609,25 +643,28 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
                 break;
 
             case 1: {
+                cell.selectionStyle = UITableViewCellSelectionStyleGray;
                 if (indexPath.row == 0) {
-                    cell.textLabel.text = NSLocalizedString(@"Set as private?", nil);
-                    self.privateSwitch = [[UISwitch alloc] init];
+                    cell.textLabel.text = NSLocalizedString(@"Make private", nil);
+        
                     CGSize size = cell.frame.size;
-                    CGSize switchSize = self.privateSwitch.frame.size;
-                    self.privateSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.privateSwitch.on = self.setAsPrivate.boolValue;
-                    [self.privateSwitch addTarget:self action:@selector(privateSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-                    cell.accessoryView = self.privateSwitch;
+                    self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    self.privateButton.frame = CGRectMake(size.width - 20 - 60, (size.height - 20) / 2.0, 20.0f, 20.0f);
+                    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+                    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+                    [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
+                    cell.accessoryView = self.privateButton;
                 }
                 else if (indexPath.row == 1) {
-                    cell.textLabel.text = NSLocalizedString(@"Mark as read?", nil);
-                    self.readSwitch = [[UISwitch alloc] init];
+                    cell.textLabel.text = NSLocalizedString(@"Mark as read", nil);
+                    
                     CGSize size = cell.frame.size;
-                    CGSize switchSize = self.readSwitch.frame.size;
-                    self.readSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.readSwitch.on = self.markAsRead.boolValue;
-                    [self.readSwitch addTarget:self action:@selector(readSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-                    cell.accessoryView = self.readSwitch;
+                    self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
+                    self.readButton.frame = CGRectMake(size.width - 20 - 60, (size.height - 20) / 2.0, 20.0f, 20.0f);
+                    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+                    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+                    [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
+                    cell.accessoryView = self.readButton;
                 }
                 break;
             }
@@ -640,12 +677,34 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     return cell;
 }
 
+- (void)setIsUpdate:(BOOL)isUpdate {
+    _isUpdate = isUpdate;
+}
+
 - (void)privateSwitchChanged:(id)sender {
     self.setAsPrivate = @(self.privateSwitch.on);
 }
 
 - (void)readSwitchChanged:(id)sender {
     self.markAsRead = @(self.readSwitch.on);
+}
+
+- (void)togglePrivate:(id)sender {
+    self.setAsPrivate = @(!self.setAsPrivate.boolValue);
+    if (self.setAsPrivate.boolValue) {
+        [self.privateButton setSelected:YES];
+    } else {
+        [self.privateButton setSelected:NO];
+    }
+}
+
+- (void)toggleRead:(id)sender {
+    self.markAsRead = @(!self.markAsRead.boolValue);
+    if (self.markAsRead.boolValue) {
+        [self.readButton setSelected:YES];
+    } else {
+        [self.readButton setSelected:NO];
+    }
 }
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification {
@@ -932,6 +991,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
     
+    [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
+    
     if (isUpdate.boolValue) {
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
         addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
@@ -962,7 +1023,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
         addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
-        addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+        addBookmarkViewController.descriptionTextLabel.text = bookmark[@"description"];
     }
     
     if (delegate) {
@@ -1016,6 +1077,8 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 - (void)finishEditingDescription {
     // Update the description text
     self.postDescription = self.postDescriptionTextView.text;
+    self.descriptionTextLabel.text = self.postDescriptionTextView.text;
+    [self.descriptionTextLabel sizeToFit];
     
     [self.navigationController popViewControllerAnimated:YES];
     [self.tableView beginUpdates];

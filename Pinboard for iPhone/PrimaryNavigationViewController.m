@@ -101,7 +101,7 @@
     }
 
     if (bookmark[@"description"]) {
-        addBookmarkViewController.descriptionTextField.text = bookmark[@"description"];
+        addBookmarkViewController.descriptionTextLabel.text = bookmark[@"description"];
     }
 
     if (callback) {
