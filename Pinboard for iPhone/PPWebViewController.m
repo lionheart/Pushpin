@@ -98,6 +98,7 @@ static NSInteger kToolbarHeight = 44;
     [self.markAsReadButton setImage:[UIImage imageNamed:@"mark-as-read"] forState:UIControlStateNormal];
     [self.markAsReadButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.markAsReadButton.enabled = NO;
     [self.toolbar addSubview:self.markAsReadButton];
     
     self.stopButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -391,9 +392,10 @@ static NSInteger kToolbarHeight = 44;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                 [db open];
-                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
                 [results next];
                 BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
+                BOOL isRead = ![results boolForColumnIndex:1];
                 [db close];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -413,6 +415,12 @@ static NSInteger kToolbarHeight = 44;
                     }
                     else {
                         self.viewMobilizeButton.hidden = NO;
+                    }
+                    
+                    if (isRead) {
+                        self.markAsReadButton.enabled = NO;
+                    } else {
+                        self.markAsReadButton.enabled = YES;
                     }
                 });
             });
