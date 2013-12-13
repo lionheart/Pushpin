@@ -114,6 +114,7 @@ static NSInteger kToolbarHeight = 44;
     [self.viewMobilizeButton setImage:[UIImage imageNamed:@"mobilize-active"] forState:UIControlStateHighlighted];
     self.viewMobilizeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.viewMobilizeButton.hidden = YES;
+    self.viewMobilizeButton.enabled = NO;
     [self.toolbar addSubview:self.viewMobilizeButton];
     
     self.viewRawButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -122,18 +123,21 @@ static NSInteger kToolbarHeight = 44;
     [self.viewRawButton setImage:[UIImage imageNamed:@"mobilized-active"] forState:UIControlStateHighlighted];
     self.viewRawButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.viewRawButton.hidden = YES;
+    self.viewRawButton.enabled = NO;
     [self.toolbar addSubview:self.viewRawButton];
 
     self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.actionButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
     [self.actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.actionButton.enabled = NO;
     [self.toolbar addSubview:self.actionButton];
     
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.editButton setImage:[UIImage imageNamed:@"edit"] forState:UIControlStateNormal];
     [self.editButton addTarget:self action:@selector(showEditViewController) forControlEvents:UIControlEventTouchUpInside];
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.editButton.enabled = NO;
     [self.toolbar addSubview:self.editButton];
     
     self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -141,6 +145,7 @@ static NSInteger kToolbarHeight = 44;
     [self.addButton addTarget:self action:@selector(showAddViewController) forControlEvents:UIControlEventTouchUpInside];
     self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.addButton.hidden = YES;
+    self.addButton.enabled = NO;
     [self.toolbar addSubview:self.addButton];
     
     UIView *toolbarBorderView = [[UIView alloc] init];
@@ -385,6 +390,12 @@ static NSInteger kToolbarHeight = 44;
     else {
         self.alreadyLoaded = YES;
         [self.bottomActivityIndicator stopAnimating];
+        
+        self.addButton.enabled = YES;
+        self.editButton.enabled = YES;
+        self.actionButton.enabled = YES;
+        self.viewMobilizeButton.enabled = YES;
+        self.viewRawButton.enabled = YES;
 
         NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
 
@@ -867,6 +878,14 @@ static NSInteger kToolbarHeight = 44;
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     self.numberOfRequestsCompleted = 0;
     self.numberOfRequests = 0;
+    
+    self.markAsReadButton.enabled = NO;
+    self.addButton.enabled = NO;
+    self.editButton.enabled = NO;
+    self.actionButton.enabled = NO;
+    self.viewMobilizeButton.enabled = NO;
+    self.viewRawButton.enabled = NO;
+    
     return YES;
 }
 
