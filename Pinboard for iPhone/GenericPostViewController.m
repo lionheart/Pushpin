@@ -842,7 +842,6 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UITableViewDataSource
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    BookmarkCell *bookmarkCell = (BookmarkCell *)cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {

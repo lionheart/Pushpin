@@ -22,7 +22,8 @@
 
 - (void)drawRect:(CGRect)rect {
     if (self.badgeText) {
-        [self.badgeText drawInRect:CGRectMake(0, 0, 40, 40) withFont:[UIFont boldSystemFontOfSize:13.]];
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:13]};
+        [self.badgeText drawInRect:CGRectMake(0, 0, 40, 40) withAttributes:attributes];
     }
 }
 

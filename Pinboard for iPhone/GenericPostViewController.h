@@ -156,11 +156,9 @@ typedef NSInteger PPPostAction;
 - (void)updateWithRatio:(NSNumber *)ratio;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)updateSearchResults;
-- (void)longPressGestureDetected:(UILongPressGestureRecognizer *)recognizer;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
-- (IBAction)deletePost:(id)sender;
 
 - (void)multiMarkAsRead:(id)sender;
 - (void)multiEdit:(id)sender;
@@ -171,7 +169,6 @@ typedef NSInteger PPPostAction;
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
 - (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
-- (id<GenericPostDataSource>)dataSourceForCollectionView:(UICollectionView *)collectionView;
 - (id<GenericPostDataSource>)currentDataSource;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
