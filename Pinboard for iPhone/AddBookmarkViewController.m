@@ -19,8 +19,7 @@
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
 #import "PPNavigationController.h"
-
-
+#import "PPTheme.h"
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 

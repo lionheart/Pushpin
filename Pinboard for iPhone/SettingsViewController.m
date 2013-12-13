@@ -24,6 +24,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
 #import "UIApplication+Additions.h"
+#import "PPTheme.h"
 
 @interface SettingsViewController ()
 
