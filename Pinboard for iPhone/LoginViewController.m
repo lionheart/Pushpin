@@ -139,6 +139,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(progressNotificationReceived:) name:kPinboardDataSourceProgressNotification object:nil];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)progressNotificationReceived:(NSNotification *)notification {
     NSInteger current = [notification.userInfo[@"current"] integerValue];
     NSInteger total = [notification.userInfo[@"total"] integerValue];
