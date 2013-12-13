@@ -689,7 +689,6 @@
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
 
-                #warning XXX Causes EXC_BAD_ACCESS on iOS 5.1 Device
                 [db commit];
                 [db beginTransaction];
                 // Repopulate bookmarks

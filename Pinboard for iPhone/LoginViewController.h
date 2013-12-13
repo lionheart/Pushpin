@@ -25,8 +25,6 @@
 @property (nonatomic, strong) NSTimer *messageUpdateTimer;
 @property (nonatomic, strong) UIButton *onePasswordButton;
 
-- (void)keyboardWasShown:(NSNotification *)notification;
-- (void)keyboardWasHidden:(NSNotification *)notification;
 - (void)login;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
