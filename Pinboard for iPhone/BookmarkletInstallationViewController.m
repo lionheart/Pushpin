@@ -55,8 +55,9 @@
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = CGSizeMake(0,1);
         label.font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
-        CGSize textSize = [sectionTitle sizeWithFont:label.font];
-
+        
+        CGRect textRect = [sectionTitle boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: label.font} context:nil];
+        CGSize textSize = textRect.size;
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
         [view addSubview:label];
         return view;
