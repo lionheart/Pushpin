@@ -15,6 +15,7 @@
 #import "UIImage+Tint.h"
 #import "PPBadgeWrapperView.h"
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import "PPTheme.h"
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 
