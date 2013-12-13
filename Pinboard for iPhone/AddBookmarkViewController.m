@@ -316,7 +316,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 4;
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
         UIFont *font = [UIFont fontWithName:[AppDelegate mediumFontName] size:13];
-        return [NSLocalizedString(@"Separate tags with spaces", nil) sizeWithFont:font constrainedToSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX)].height + 10;
+        NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
+        CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:0 attributes:@{NSFontAttributeName: font} context:nil];
+        return rect.size.height;
     }
     return 0;
 }
