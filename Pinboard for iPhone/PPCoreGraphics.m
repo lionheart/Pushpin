@@ -8,6 +8,7 @@
 
 #import "PPCoreGraphics.h"
 #import "AppDelegate.h"
+#import "PPTheme.h"
 
 void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) {
     CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
@@ -22,7 +23,7 @@ void CGContextAddRoundedRect(CGContextRef context, CGRect rect, CGFloat radius) 
 
 + (UIImage *)pillImage:(NSString *)text {
     UIImage *countBackground = [[UIImage imageNamed:@"count-background"] resizableImageWithCapInsets:UIEdgeInsetsMake(14, 15, 14, 15)];
-    UIFont *font = [UIFont fontWithName:[AppDelegate blackFontName] size:14];
+    UIFont *font = [UIFont fontWithName:[PPTheme blackFontName] size:14];
     CGSize textSize = [text sizeWithFont:font];
     CGSize size = textSize;
     size.height = 27;

@@ -31,6 +31,7 @@
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
+		371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
@@ -636,6 +637,8 @@
 		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
 		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		371EE5C6185B49FE005DB908 /* PPTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTheme.h; sourceTree = "<group>"; };
+		371EE5C7185B49FE005DB908 /* PPTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTheme.m; sourceTree = "<group>"; };
 		3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardFeedDataSource.h; sourceTree = "<group>"; };
 		3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardFeedDataSource.m; sourceTree = "<group>"; };
 		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -1799,6 +1802,8 @@
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
 				E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */,
+				371EE5C6185B49FE005DB908 /* PPTheme.h */,
+				371EE5C7185B49FE005DB908 /* PPTheme.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2768,6 +2773,7 @@
 				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */,
+				371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */,
 				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,

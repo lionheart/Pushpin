@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "UIApplication+Additions.h"
+#import "PPTheme.h"
 
 @interface BookmarkletInstallationViewController ()
 
@@ -53,7 +54,7 @@
         label.textColor = HEX(0x4C566CFF);
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = CGSizeMake(0,1);
-        label.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:fontSize];
+        label.font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
         CGSize textSize = [sectionTitle sizeWithFont:label.font];
 
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
@@ -77,7 +78,7 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
 
-    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }

@@ -20,7 +20,7 @@
         self.imageView.image = nil;
         self.textLabel.highlightedTextColor = HEX(0x33353BFF);
         self.textLabel.textColor = HEX(0x33353BFF);
-        self.textLabel.font = [UIFont fontWithName:[AppDelegate heavyFontName] size:17];
+        self.textLabel.font = [UIFont fontWithName:[PPTheme heavyFontName] size:17];
         self.backgroundColor = [UIColor whiteColor];
     }
     return self;

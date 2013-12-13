@@ -111,9 +111,4 @@ enum bookmarkupdateevents {
 
 - (NSString *)defaultFeedDescription;
 
-+ (NSString *)heavyFontName;
-+ (NSString *)mediumFontName;
-+ (NSString *)bookFontName;
-+ (NSString *)blackFontName;
-
 @end

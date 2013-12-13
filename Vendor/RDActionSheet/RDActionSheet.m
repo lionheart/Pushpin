@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "PPTheme.h"
 
 @interface RDActionSheet ()
 
@@ -331,7 +332,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - Button builders
 
 - (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
-    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:[AppDelegate heavyFontName] size:13.0]
+    CGSize newSize = [title sizeWithFont:[UIFont fontWithName:[PPTheme heavyFontName] size:13.0]
                             constrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, NSIntegerMax)
                                 lineBreakMode:NSLineBreakByWordWrapping];
     

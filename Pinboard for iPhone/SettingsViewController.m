@@ -201,8 +201,8 @@
     CGSize size;
     CGSize switchSize;
 
-    cell.textLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
-    cell.detailTextLabel.font = [UIFont fontWithName:[AppDelegate mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     cell.detailTextLabel.text = nil;
     cell.textLabel.text = nil;
     cell.accessoryView = nil;
