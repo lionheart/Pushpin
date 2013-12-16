@@ -27,13 +27,31 @@ static const CGFloat PADDING_Y = 2.0f;
 }
 
 - (id)initWithImage:(UIImage *)image {
+    return [self initWithImage:image options:nil];
+}
+
+- (id)initWithImage:(UIImage *)image options:(NSDictionary *)options {
     self = [super init];
     if (self) {
+        // Defaults
+        NSMutableDictionary *badgeOptions = [@{
+                                               PPBadgeFontSize: @(10.0f),
+                                               PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
+                                               PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
+                                               PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
+                                               } mutableCopy];
+        [badgeOptions addEntriesFromDictionary:options];
+        
+        self.layer.cornerRadius = 1.0f;
+        self.layer.backgroundColor = ((UIColor *)badgeOptions[PPBadgeNormalBackgroundColor]).CGColor;
+        
         self.imageView = [[UIImageView alloc] initWithImage:image];
+        [self addSubview:self.imageView];
         
         // Calculate our frame
-        [self addSubview:self.imageView];
-        self.frame = CGRectMake(0, 0, self.imageView.frame.size.width, self.imageView.frame.size.height);
+        CGSize size = [@"badge" sizeWithAttributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:((NSNumber *)badgeOptions[PPBadgeFontSize]).floatValue] }];
+        self.frame = CGRectMake(0, 0, size.height + (PADDING_X * 2), size.height + (PADDING_Y * 2));
+        self.imageView.frame = CGRectMake(PADDING_X, PADDING_Y, size.height, size.height);
     }
     return self;
 }

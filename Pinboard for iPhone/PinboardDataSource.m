@@ -1268,14 +1268,16 @@ static BOOL kPinboardSyncInProgress = NO;
     NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
 
     NSMutableArray *badges = [NSMutableArray array];
-    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-private" }];
-    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"bookmark-favorite" }];
+    UIColor *privateColor = (isRead && [AppDelegate sharedDelegate].dimReadPosts) ? HEX(0xddddddff) : HEX(0xfdbb6dff);
+    UIColor *starredColor = (isRead && [AppDelegate sharedDelegate].dimReadPosts) ? HEX(0xddddddff) : HEX(0xf0b2f7ff);
+    if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"badge-private", @"options": @{ PPBadgeNormalBackgroundColor: privateColor } }];
+    if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"badge-favorite", @"options": @{ PPBadgeNormalBackgroundColor: starredColor } }];
     if (post[@"tags"] && ![post[@"tags"] isEqualToString:@""]) {
         NSArray *tagsArray = [post[@"tags"] componentsSeparatedByString:@" "];
         [tagsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if (![obj hasPrefix:@"via:"]) {
                 if (isRead && [AppDelegate sharedDelegate].dimReadPosts) {
-                    [badges addObject:@{ @"type": @"tag", @"tag": obj, PPBadgeNormalBackgroundColor: HEX(0xf0f0f0ff) }];
+                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xddddddff) } }];
                 } else {
                     [badges addObject:@{ @"type": @"tag", @"tag": obj }];
                 }

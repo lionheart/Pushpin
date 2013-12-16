@@ -29,6 +29,7 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 @property (nonatomic) BOOL selected;
 
 - (id)initWithImage:(UIImage *)image;
+- (id)initWithImage:(UIImage *)image options:(NSDictionary *)options;
 - (id)initWithText:(NSString *)text;
 - (id)initWithText:(NSString *)text options:(NSDictionary *)options;
 
