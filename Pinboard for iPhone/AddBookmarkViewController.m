@@ -21,6 +21,7 @@
 #import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "UIImage+Tint.h"
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 
@@ -135,6 +136,18 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
         [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
         [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
+
+        self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.privateButton.frame = CGRectMake(0, 0, 23, 23);
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.readButton.frame = CGRectMake(0, 0, 23, 23);
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
@@ -532,25 +545,22 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     
-    NSArray *subviews = cell.contentView.subviews;
-    for (UIView *subview in subviews) {
-        [subview removeFromSuperview];
-    }
+    [cell.contentView lhs_removeSubviews];
 
     cell.accessoryView = nil;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
     cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
@@ -601,7 +611,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                             cell.textLabel.enabled = NO;
                         }
                         else {
-                            cell.selectionStyle = UITableViewCellSelectionStyleGray;
                             self.descriptionTextLabel.frame = CGRectMake(40, 10, textFieldWidth, 64);
                             if (![self.postDescription isEqualToString:@""]) {
                                 self.descriptionTextLabel.text = self.postDescription;
@@ -646,7 +655,6 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                             cell.detailTextLabel.textColor = HEX(0x96989DFF);
                             cell.detailTextLabel.text = self.tagDescriptions[cell.textLabel.text];
                         }
-                        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                         cell.editing = NO;
                         break;
                     }
@@ -654,27 +662,12 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                 break;
 
             case 1: {
-                cell.selectionStyle = UITableViewCellSelectionStyleGray;
                 if (indexPath.row == 0) {
-                    cell.textLabel.text = NSLocalizedString(@"Make private", nil);
-        
-                    CGSize size = cell.frame.size;
-                    self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    self.privateButton.frame = CGRectMake(size.width - 20 - 60, (size.height - 20) / 2.0, 20.0f, 20.0f);
-                    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-                    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
-                    [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
+                    cell.textLabel.text = NSLocalizedString(@"Make Private", nil);
                     cell.accessoryView = self.privateButton;
                 }
                 else if (indexPath.row == 1) {
                     cell.textLabel.text = NSLocalizedString(@"Mark as read", nil);
-                    
-                    CGSize size = cell.frame.size;
-                    self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
-                    self.readButton.frame = CGRectMake(size.width - 20 - 60, (size.height - 20) / 2.0, 20.0f, 20.0f);
-                    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-                    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
-                    [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
                     cell.accessoryView = self.readButton;
                 }
                 break;
@@ -688,34 +681,14 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
     return cell;
 }
 
-- (void)setIsUpdate:(BOOL)isUpdate {
-    _isUpdate = isUpdate;
-}
-
-- (void)privateSwitchChanged:(id)sender {
-    self.setAsPrivate = @(self.privateSwitch.on);
-}
-
-- (void)readSwitchChanged:(id)sender {
-    self.markAsRead = @(self.readSwitch.on);
-}
-
 - (void)togglePrivate:(id)sender {
     self.setAsPrivate = @(!self.setAsPrivate.boolValue);
-    if (self.setAsPrivate.boolValue) {
-        [self.privateButton setSelected:YES];
-    } else {
-        [self.privateButton setSelected:NO];
-    }
+    self.privateButton.selected = self.setAsPrivate.boolValue;
 }
 
 - (void)toggleRead:(id)sender {
     self.markAsRead = @(!self.markAsRead.boolValue);
-    if (self.markAsRead.boolValue) {
-        [self.readButton setSelected:YES];
-    } else {
-        [self.readButton setSelected:NO];
-    }
+    self.readButton.selected = self.markAsRead.boolValue;
 }
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification {
@@ -1056,12 +1029,15 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
     }
     
     if (bookmark[@"unread"]) {
-        addBookmarkViewController.markAsRead = @(!([bookmark[@"unread"] boolValue]));
+        BOOL isRead = !([bookmark[@"unread"] boolValue]);
+        addBookmarkViewController.markAsRead = @(isRead);
     }
     else {
         addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
     }
-    
+
+    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate.boolValue;
+    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead.boolValue;
     return addBookmarkViewNavigationController;
 }
 
