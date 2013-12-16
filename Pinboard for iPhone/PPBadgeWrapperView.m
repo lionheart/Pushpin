@@ -86,13 +86,13 @@ static const CGFloat PADDING_Y = 3.0f;
     
     [badges enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         PPBadgeView *badgeView;
+        NSMutableDictionary *mergedOptions = [self.badgeOptions mutableCopy];
+        if (obj[@"options"]) {
+            [mergedOptions addEntriesFromDictionary:obj[@"options"]];
+        }
         if ([obj[@"type"] isEqualToString:@"image"]) {
-            badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:obj[@"image"]]];
+            badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:obj[@"image"]] options:mergedOptions];
         } else if ([obj[@"type"] isEqualToString:@"tag"]) {
-            NSMutableDictionary *mergedOptions = [self.badgeOptions mutableCopy];
-            if (obj[@"options"]) {
-                [mergedOptions addEntriesFromDictionary:obj[@"options"]];
-            }
             badgeView = [[PPBadgeView alloc] initWithText:obj[@"tag"] options:mergedOptions];
         }
         [self addSubview:badgeView];

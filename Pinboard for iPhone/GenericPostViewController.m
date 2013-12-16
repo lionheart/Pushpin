@@ -345,6 +345,8 @@ static NSInteger kToolbarHeight = 44;
                             httpRange = [urlString rangeOfString:@"http"];
                         }
                         
+                        // Check for App Store link
+                        
                         if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
                             if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
