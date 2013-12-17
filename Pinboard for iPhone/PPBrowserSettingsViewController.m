@@ -81,7 +81,7 @@
         label.textColor = HEX(0x4C566CFF);
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = CGSizeMake(0,1);
-        label.font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
+        label.font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
         
         CGRect textRect = [sectionTitle boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: label.font} context:nil];
         CGSize textSize = textRect.size;
@@ -106,7 +106,7 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
 
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
     
     switch (indexPath.section) {
         case 0: {

@@ -14,7 +14,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
-#import "PPCoreGraphics.h"
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
@@ -69,7 +68,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.postDescription = @"";
 
-        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.font = font;
         self.urlTextField.delegate = self;
@@ -156,7 +155,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
     [super viewWillAppear:animated];
     
     if (!self.postDescriptionTextView) {
-        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
         BOOL isIPad = [UIApplication isIPad];
         CGFloat offset;
         if (isIPad) {
@@ -338,7 +337,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
             UILabel *label = [[UILabel alloc] init];
             label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
             label.textAlignment = NSTextAlignmentCenter;
-            label.font = [UIFont fontWithName:[PPTheme mediumFontName] size:13];
+            label.font = [UIFont fontWithName:[PPTheme fontName] size:13];
             label.textColor = HEX(0x4C586AFF);
             label.numberOfLines = 0;
             label.backgroundColor = HEX(0xF7F9FDff);
@@ -352,7 +351,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:13];
+        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
         NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
         CGFloat maxWidth = self.tableView.frame.size.width - 40;
         CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
@@ -556,10 +555,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
     cell.accessoryView = nil;
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
@@ -587,12 +586,12 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                         
                         if (self.isUpdate) {
                             self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 24.0f, textFieldWidth, 18);
-                            self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:14];
+                            self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:14];
                             self.urlTextField.textColor = [UIColor grayColor];
                             
                         } else {
                             self.urlTextField.frame = CGRectMake(40, self.titleTextField.frame.origin.y + 24.0f, textFieldWidth, 20);
-                            self.urlTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+                            self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:16];
                             self.urlTextField.textColor = [UIColor blackColor];
                         }
                         [cell.contentView addSubview:self.urlTextField];

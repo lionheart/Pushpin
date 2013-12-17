@@ -161,7 +161,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.textLabel.text = title;
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
         if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
             cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
         }

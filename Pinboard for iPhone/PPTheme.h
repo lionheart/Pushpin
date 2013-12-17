@@ -12,9 +12,12 @@
 
 + (instancetype)defaultTheme;
 
-+ (NSString *)heavyFontName;
-+ (NSString *)mediumFontName;
-+ (NSString *)bookFontName;
-+ (NSString *)blackFontName;
++ (UIFont *)titleFont;
++ (UIFont *)descriptionFont;
++ (UIFont *)urlFont;
+
++ (NSString *)fontName;
++ (NSString *)boldFontName;
++ (CGFloat)fontSize;
 
 @end

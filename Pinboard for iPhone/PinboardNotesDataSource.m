@@ -180,8 +180,8 @@
 }
 
 - (void)metadataForNote:(NSDictionary *)note callback:(void (^)(NSAttributedString *, NSNumber *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[PPTheme heavyFontName] size:16.f];
-    UIFont *dateFont = [UIFont fontWithName:[PPTheme mediumFontName] size:10];
+    UIFont *titleFont = [UIFont fontWithName:[PPTheme boldFontName] size:16.f];
+    UIFont *dateFont = [UIFont fontWithName:[PPTheme fontName] size:10];
     
     NSString *title = [note[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSString *dateString = [self.dateFormatter stringFromDate:note[@"updated_at"]];

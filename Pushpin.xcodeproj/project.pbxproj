@@ -275,7 +275,6 @@
 		37D2351616B8DBD4007541DC /* cog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351216B8DBD4007541DC /* cog@2x.png */; };
 		37D2351816B8DBE0007541DC /* icon_bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D2351716B8DBE0007541DC /* icon_bookmark.png */; };
 		37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1316EEDC91005C9C24 /* PPButton.m */; };
-		37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */; };
 		37D59A1F16EFA19B005C9C24 /* navigation-back-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */; };
 		37D59A2016EFA19B005C9C24 /* navigation-back-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A1E16EFA19B005C9C24 /* navigation-back-button@2x.png */; };
 		37D59A2316EFDA76005C9C24 /* navigation-back-button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D59A2116EFDA76005C9C24 /* navigation-back-button-selected.png */; };
@@ -935,8 +934,6 @@
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
 		37D59A1216EEDC91005C9C24 /* PPButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPButton.h; sourceTree = "<group>"; };
 		37D59A1316EEDC91005C9C24 /* PPButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPButton.m; sourceTree = "<group>"; };
-		37D59A1A16EEE2EB005C9C24 /* PPCoreGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPCoreGraphics.h; sourceTree = "<group>"; };
-		37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPCoreGraphics.m; sourceTree = "<group>"; };
 		37D59A1D16EFA19B005C9C24 /* navigation-back-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button.png"; path = "Assets/navigation-back-button.png"; sourceTree = "<group>"; };
 		37D59A1E16EFA19B005C9C24 /* navigation-back-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button@2x.png"; path = "Assets/navigation-back-button@2x.png"; sourceTree = "<group>"; };
 		37D59A2116EFDA76005C9C24 /* navigation-back-button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected.png"; path = "Assets/navigation-back-button-selected.png"; sourceTree = "<group>"; };
@@ -1789,8 +1786,6 @@
 				372D43481724492E00E802C0 /* PPSwitch.m */,
 				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
 				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
-				37D59A1A16EEE2EB005C9C24 /* PPCoreGraphics.h */,
-				37D59A1B16EEE2EB005C9C24 /* PPCoreGraphics.m */,
 				376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */,
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
 				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
@@ -2831,7 +2826,6 @@
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
 				3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */,
 				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
-				37D59A1C16EEE2EC005C9C24 /* PPCoreGraphics.m in Sources */,
 				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
 				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
