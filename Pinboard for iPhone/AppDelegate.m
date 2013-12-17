@@ -797,7 +797,11 @@
     if (!_defaultFeed) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
+        if (!_defaultFeed) {
+            _defaultFeed = @"personal:all";
+        }
     }
+    
     return _defaultFeed;
 }
 
