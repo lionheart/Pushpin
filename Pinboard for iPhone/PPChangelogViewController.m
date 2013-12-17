@@ -40,7 +40,7 @@
 - (void)calculateHeightsForWidth:(CGFloat)w {
     [self.titles removeAllObjects];
 
-    UIFont *font = [UIFont fontWithName:[PPTheme mediumFontName] size:15];
+    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:15];
 
     NSInteger index = 0;
     CGFloat width = w - 2 * self.tableView.groupedCellMargin - 45;
@@ -94,7 +94,7 @@
 
         NSUInteger fontSize = 17;
         NSUInteger padding = tableView.groupedCellMargin;
-        UIFont *font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
+        UIFont *font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 16, width - padding, fontSize)];
         label.text = title;
         label.backgroundColor = [UIColor clearColor];
@@ -115,7 +115,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
     if (![title isEqual:@""]) {
-        UIFont *font = [UIFont fontWithName:[PPTheme heavyFontName] size:17];
+        UIFont *font = [UIFont fontWithName:[PPTheme boldFontName] size:17];
         NSUInteger padding = tableView.groupedCellMargin;
         return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(tableView.frame.size.width - padding * 2, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
     }
@@ -138,7 +138,7 @@
     }
 
     cell.accessoryView = nil;
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:15];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:15];
     cell.textLabel.text = nil;
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.text = nil;

@@ -76,7 +76,7 @@
     }
     
     CGFloat fontSize = 17;
-    UIFont *font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
+    UIFont *font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
 
     NSString *title;
     if (self.feeds.count > 0) {
@@ -88,7 +88,7 @@
         CGRect titleRect = [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
         while (titleRect.size.width > 280 || fontSize < 5) {
             fontSize -= 0.2;
-            font = [UIFont fontWithName:[PPTheme heavyFontName] size:fontSize];
+            font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
         }
     }
     else {

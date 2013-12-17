@@ -10,7 +10,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import "AppDelegate.h"
 #import "PPBrowseCell.h"
-#import "PPCoreGraphics.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
@@ -24,6 +23,7 @@
 #import "UIApplication+Additions.h"
 #import "UIImage+Tint.h"
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import "PPTheme.h"
 
 @interface FeedListViewController ()
 
@@ -214,9 +214,9 @@
     badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
     [badgeLabel setHidden:YES];
     
-    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    cell.textLabel.font = [PPTheme descriptionFont];
     cell.detailTextLabel.text = nil;
-    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    cell.detailTextLabel.font = [PPTheme descriptionFont];
 
     NSString *badgeCount;
     switch (indexPath.section) {

@@ -99,7 +99,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     [self.onePasswordButton setBackgroundImage:barButtonBackgroundHighlighted forState:UIControlStateHighlighted];
     [self.onePasswordButton addTarget:self action:@selector(sendToOnePassword) forControlEvents:UIControlEventTouchUpInside];
 
-    self.onePasswordButton.titleLabel.font = [UIFont fontWithName:[PPTheme heavyFontName] size:15];
+    self.onePasswordButton.titleLabel.font = [UIFont fontWithName:[PPTheme boldFontName] size:15];
     [self.onePasswordButton setTitleColor:HEX(0x4A5768FF) forState:UIControlStateNormal];
     [self.onePasswordButton setTitleShadowColor:HEX(0xFFFFFF00) forState:UIControlStateNormal];
     self.onePasswordButton.hidden = YES;
@@ -107,7 +107,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     
     self.usernameTextField = [[UITextField alloc] init];
     self.usernameTextField.translatesAutoresizingMaskIntoConstraints = NO;
-    self.usernameTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:18];
+    self.usernameTextField.font = [UIFont fontWithName:[PPTheme fontName] size:18];
     self.usernameTextField.textAlignment = NSTextAlignmentLeft;
     self.usernameTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.usernameTextField.backgroundColor = [UIColor whiteColor];
@@ -121,7 +121,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     
     self.passwordTextField = [[UITextField alloc] init];
     self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
-    self.passwordTextField.font = [UIFont fontWithName:[PPTheme mediumFontName] size:18];
+    self.passwordTextField.font = [UIFont fontWithName:[PPTheme fontName] size:18];
     self.passwordTextField.textAlignment = NSTextAlignmentLeft;
     self.passwordTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.passwordTextField.backgroundColor = [UIColor whiteColor];

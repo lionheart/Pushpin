@@ -75,8 +75,8 @@
     CGSize size;
     CGSize switchSize;
     
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme mediumFontName] size:16];
+    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
     
     if (indexPath.section == 0) {
         switch (indexPath.row) {

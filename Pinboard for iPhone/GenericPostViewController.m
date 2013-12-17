@@ -16,7 +16,6 @@
 #import "KeychainItemWrapper.h"
 #import "PocketAPI.h"
 #import "ASPinboard/ASPinboard.h"
-#import "PPCoreGraphics.h"
 #import "PinboardDataSource.h"
 #import "FMDatabase.h"
 #import "PPBadgeWrapperView.h"

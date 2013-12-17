@@ -7,7 +7,6 @@
 //
 
 #import "PPSwitch.h"
-#import "PPCoreGraphics.h"
 
 @implementation PPSwitch
 
@@ -30,9 +29,9 @@
         CGContextAddRect(context, self.frame);
         CGContextClosePath(context);
 
-        CGContextAddRoundedRect(context, CGRectMake(0, 8, 60, 23), 11.5);
         CGContextSetFillColorWithColor(context, HEX(0xFFFFFFFF).CGColor);
-        CGContextEOFillPath(context);
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 8, 60, 23) cornerRadius:11.5f];
+        [path fill];
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         [self addSubview:[[UIImageView alloc] initWithImage:image]];
         

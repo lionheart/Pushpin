@@ -24,7 +24,6 @@
 #import "AddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
-#import "PPCoreGraphics.h"
 #import "PinboardFeedDataSource.h"
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
@@ -455,6 +454,8 @@
         @"io.aurora.pinboard.DimReadPosts": @(NO),
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
         @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
+        @"io.aurora.pinboard.FontName": @"HelveticaNeue-Medium",
+        @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold"
      }];
 
     Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];

@@ -8,7 +8,6 @@
 
 #import "TagViewController.h"
 #import "FMDatabase.h"
-#import "PPCoreGraphics.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"

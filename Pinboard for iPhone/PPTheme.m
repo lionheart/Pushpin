@@ -19,20 +19,28 @@
     return theme;
 }
 
-+ (NSString *)heavyFontName {
-    return @"HelveticaNeue-Bold";
++ (UIFont *)titleFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
 }
 
-+ (NSString *)mediumFontName {
-    return @"HelveticaNeue-Medium";
++ (UIFont *)descriptionFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize]];
 }
 
-+ (NSString *)bookFontName {
-    return @"HelveticaNeue-Bold";
++ (UIFont *)urlFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 1];
 }
 
-+ (NSString *)blackFontName {
-    return @"HelveticaNeue-Bold";
++ (CGFloat)fontSize {
+    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+}
+
++ (NSString *)fontName {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.FontName"];
+}
+
++ (NSString *)boldFontName {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 
 @end
