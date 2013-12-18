@@ -56,6 +56,6 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 - (id)initWithParameters:(NSDictionary *)parameters;
 
-- (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;
+- (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
 
 @end
