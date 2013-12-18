@@ -1759,6 +1759,7 @@
 			children = (
 				37405C18186152F70052213A /* View Controllers */,
 				37405C1418614FF50052213A /* Categories */,
+				37FEEB9915745488003F2B77 /* Supporting Files */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37018CE3180E3C0B00226408 /* PPBrowserActivity.h */,
@@ -1802,7 +1803,6 @@
 				E8734226180DA20300CF9E5F /* PPBrowserActivity.m */,
 				E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */,
 				E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */,
-				37FEEB9915745488003F2B77 /* Supporting Files */,
 				37F91F3C177AB1D500683D46 /* PPNavigationController.h */,
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
