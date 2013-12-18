@@ -8,7 +8,7 @@
 
 #import "PPTableViewController.h"
 
-#import "UIApplication+Additions.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPTableViewController ()
 

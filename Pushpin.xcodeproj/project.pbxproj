@@ -227,7 +227,6 @@
 		37B348F017601BEA00929E2E /* back-dash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348E817601BEA00929E2E /* back-dash@2x.png */; };
 		37B348F117601BEA00929E2E /* forward-dash.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348E917601BEA00929E2E /* forward-dash.png */; };
 		37B348F217601BEA00929E2E /* forward-dash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348EA17601BEA00929E2E /* forward-dash@2x.png */; };
-		37B5F4D3177372ED005687DA /* UIApplication+AppDimensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B5F4D2177372EC005687DA /* UIApplication+AppDimensions.m */; };
 		37B5F4D817737DC0005687DA /* navigation-back-button-selected-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D417737DC0005687DA /* navigation-back-button-selected-landscape.png */; };
 		37B5F4D917737DC0005687DA /* navigation-back-button-selected-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D517737DC0005687DA /* navigation-back-button-selected-landscape@2x.png */; };
 		37B5F4DA17737DC0005687DA /* navigation-back-button-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B5F4D617737DC0005687DA /* navigation-back-button-landscape.png */; };
@@ -472,7 +471,6 @@
 		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
-		37FCF2B217756F7600093F41 /* UIApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FCF2B117756F7600093F41 /* UIApplication+Additions.m */; };
 		37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
@@ -874,8 +872,6 @@
 		37B348E817601BEA00929E2E /* back-dash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-dash@2x.png"; path = "Assets/back-dash@2x.png"; sourceTree = "<group>"; };
 		37B348E917601BEA00929E2E /* forward-dash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forward-dash.png"; path = "Assets/forward-dash.png"; sourceTree = "<group>"; };
 		37B348EA17601BEA00929E2E /* forward-dash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forward-dash@2x.png"; path = "Assets/forward-dash@2x.png"; sourceTree = "<group>"; };
-		37B5F4D1177372EC005687DA /* UIApplication+AppDimensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIApplication+AppDimensions.h"; path = "../UIApplication+AppDimensions.h"; sourceTree = "<group>"; };
-		37B5F4D2177372EC005687DA /* UIApplication+AppDimensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+AppDimensions.m"; path = "../UIApplication+AppDimensions.m"; sourceTree = "<group>"; };
 		37B5F4D417737DC0005687DA /* navigation-back-button-selected-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected-landscape.png"; path = "Assets/navigation-back-button-selected-landscape.png"; sourceTree = "<group>"; };
 		37B5F4D517737DC0005687DA /* navigation-back-button-selected-landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-selected-landscape@2x.png"; path = "Assets/navigation-back-button-selected-landscape@2x.png"; sourceTree = "<group>"; };
 		37B5F4D617737DC0005687DA /* navigation-back-button-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-back-button-landscape.png"; path = "Assets/navigation-back-button-landscape.png"; sourceTree = "<group>"; };
@@ -1128,8 +1124,6 @@
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
 		37F91F3C177AB1D500683D46 /* PPNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationController.h; sourceTree = "<group>"; };
 		37F91F3D177AB1D500683D46 /* PPNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNavigationController.m; sourceTree = "<group>"; };
-		37FCF2B017756F7600093F41 /* UIApplication+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+Additions.h"; sourceTree = "<group>"; };
-		37FCF2B117756F7600093F41 /* UIApplication+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+Additions.m"; sourceTree = "<group>"; };
 		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1616,6 +1610,16 @@
 			path = Assets/PullToRefresh;
 			sourceTree = "<group>";
 		};
+		37405C1418614FF50052213A /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				37F91F36177A91A500683D46 /* UITableView+Additions.h */,
+				37F91F37177A91A500683D46 /* UITableView+Additions.m */,
+			);
+			name = Categories;
+			path = "Pinboard for iPhone";
+			sourceTree = "<group>";
+		};
 		3740A23616863CF000F95D82 /* Localizations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1665,6 +1669,7 @@
 				37A7D60516BA2FD000B39DD8 /* ASPinboard.xcodeproj */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
+				37405C1418614FF50052213A /* Categories */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
@@ -1716,8 +1721,6 @@
 				37018CE5180E3C0B00226408 /* PPReadLaterActivity.h */,
 				37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
-				37B5F4D1177372EC005687DA /* UIApplication+AppDimensions.h */,
-				37B5F4D2177372EC005687DA /* UIApplication+AppDimensions.m */,
 				378A24F3167D28AA00FB07EF /* ASStyleSheet.h */,
 				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
@@ -1788,15 +1791,11 @@
 				37B348CB175FF9D500929E2E /* PPChangelogViewController.m */,
 				37C012B71765423900938D81 /* PPMultipleEditViewController.h */,
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
-				37FCF2B017756F7600093F41 /* UIApplication+Additions.h */,
-				37FCF2B117756F7600093F41 /* UIApplication+Additions.m */,
 				E8734225180DA20300CF9E5F /* PPBrowserActivity.h */,
 				E8734226180DA20300CF9E5F /* PPBrowserActivity.m */,
 				E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */,
 				E8734241180DB18500CF9E5F /* PPReadLaterActivity.m */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
-				37F91F36177A91A500683D46 /* UITableView+Additions.h */,
-				37F91F37177A91A500683D46 /* UITableView+Additions.m */,
 				37F91F3C177AB1D500683D46 /* PPNavigationController.h */,
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
@@ -2816,8 +2815,6 @@
 				37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */,
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,
-				37B5F4D3177372ED005687DA /* UIApplication+AppDimensions.m in Sources */,
-				37FCF2B217756F7600093F41 /* UIApplication+Additions.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
 			);

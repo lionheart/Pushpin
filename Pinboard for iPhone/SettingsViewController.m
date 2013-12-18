@@ -9,8 +9,8 @@
 #import <ASPinboard/ASPinboard.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "SettingsViewController.h"
 #import "AppDelegate.h"
+#import "SettingsViewController.h"
 #import "LoginViewController.h"
 #import "ASStyleSheet.h"
 #import "NSString+URLEncoding.h"
@@ -18,7 +18,6 @@
 #import "PPDisplaySettingsViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
-#import "UIApplication+Additions.h"
 #import "PPTheme.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -26,6 +25,7 @@
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface SettingsViewController ()
 

@@ -13,7 +13,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
 
-#import "UIApplication+Additions.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import "UITableView+Additions.h"
 
 @interface PPChangelogViewController ()

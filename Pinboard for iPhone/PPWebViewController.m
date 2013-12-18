@@ -20,8 +20,7 @@
 #import "GenericPostViewController.h"
 
 #import "NSString+URLEncoding2.h"
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <oauthconsumer/OAuthConsumer.h>
 #import <UIView+LHSAdditions.h>
 #import <FMDB/FMDatabase.h>

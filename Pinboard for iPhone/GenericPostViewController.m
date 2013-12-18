@@ -18,9 +18,6 @@
 #import "PPMultipleEditViewController.h"
 #import "FeedListViewController.h"
 
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
-
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
 #import <ASPinboard/ASPinboard.h>
@@ -28,6 +25,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+Tint.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;

@@ -13,10 +13,10 @@
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
-#import "UIApplication+AppDimensions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @implementation PinboardFeedDataSource
 

@@ -12,7 +12,6 @@
 #import "PrimaryNavigationViewController.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
-#import "UIApplication+AppDimensions.h"
 #import "PPTheme.h"
 
 #import <ASPinboard/ASPinboard.h>
@@ -20,6 +19,7 @@
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface LoginViewController ()
 

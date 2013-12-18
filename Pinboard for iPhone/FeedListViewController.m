@@ -21,10 +21,8 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
 
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
-
 #import <ASPinboard/ASPinboard.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+Tint.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 

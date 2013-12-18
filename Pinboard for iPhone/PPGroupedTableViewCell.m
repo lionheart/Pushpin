@@ -8,11 +8,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "PPGroupedTableViewCell.h"
 #import "AppDelegate.h"
+#import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
 
-#import "UIApplication+AppDimensions.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @implementation PPGroupedTableViewCell
 
