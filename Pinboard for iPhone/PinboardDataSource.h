@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
 #import "FMDatabase.h"
+#import "PostMetadata.h"
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
@@ -48,9 +49,10 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *badges))callback;
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges))callback;
-- (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
+
+- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post;
+- (PostMetadata *)metadataForPost:(NSDictionary *)post;
+- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
 
 - (id)initWithParameters:(NSDictionary *)parameters;
 

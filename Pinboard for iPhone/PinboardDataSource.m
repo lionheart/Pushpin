@@ -743,25 +743,19 @@ static NSString *newLine = @"\n";
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
         NSMutableArray *newCompressedLinks = [NSMutableArray array];
         NSMutableArray *newCompressedBadges = [NSMutableArray array];
-        dispatch_group_t group = dispatch_group_create();
-        for (NSDictionary *post in newPosts) {
-            dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newHeights addObject:height];
-                [newStrings addObject:string];
-                [newLinks addObject:links];
-                [newBadges addObject:badges];
-                dispatch_group_leave(group);
-            }];
 
-            dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newCompressedHeights addObject:height];
-                [newCompressedStrings addObject:string];
-                [newCompressedLinks addObject:links];
-                [newCompressedBadges addObject:badges];
-                dispatch_group_leave(group);
-            }];
+        for (NSDictionary *post in newPosts) {
+            PostMetadata *metadata = [self metadataForPost:post];
+            [newHeights addObject:metadata.height];
+            [newStrings addObject:metadata.string];
+            [newLinks addObject:metadata.links];
+            [newBadges addObject:metadata.badges];
+            
+            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            [newCompressedHeights addObject:compressedMetadata.height];
+            [newCompressedStrings addObject:compressedMetadata.string];
+            [newCompressedLinks addObject:compressedMetadata.links];
+            [newCompressedBadges addObject:compressedMetadata.badges];
         }
         
         self.posts = newPosts;
@@ -774,11 +768,9 @@ static NSString *newLine = @"\n";
         self.compressedHeights = newCompressedHeights;
         self.compressedLinks = newCompressedLinks;
         self.compressedBadges = newCompressedBadges;
-        
+
         if (success) {
-            dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                success();
-            });
+            success();
         }
     });
 }
@@ -864,25 +856,19 @@ static NSString *newLine = @"\n";
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
         NSMutableArray *newCompressedLinks = [NSMutableArray array];
         NSMutableArray *newCompressedBadges = [NSMutableArray array];
-        dispatch_group_t group = dispatch_group_create();
+
         for (NSDictionary *post in newPosts) {
-            dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newHeights addObject:height];
-                [newStrings addObject:string];
-                [newLinks addObject:links];
-                [newBadges addObject:badges];
-                dispatch_group_leave(group);
-            }];
+            PostMetadata *metadata = [self metadataForPost:post];
+            [newHeights addObject:metadata.height];
+            [newStrings addObject:metadata.string];
+            [newLinks addObject:metadata.links];
+            [newBadges addObject:metadata.badges];
             
-            dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newCompressedHeights addObject:height];
-                [newCompressedStrings addObject:string];
-                [newCompressedLinks addObject:links];
-                [newCompressedBadges addObject:badges];
-                dispatch_group_leave(group);
-            }];
+            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            [newCompressedHeights addObject:compressedMetadata.height];
+            [newCompressedStrings addObject:compressedMetadata.string];
+            [newCompressedLinks addObject:compressedMetadata.links];
+            [newCompressedBadges addObject:compressedMetadata.badges];
         }
 
         self.posts = newPosts;
@@ -897,9 +883,7 @@ static NSString *newLine = @"\n";
         self.compressedBadges = newBadges;
         
         if (success) {
-            dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
-            });
+            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
         }
     });
 }
@@ -1098,15 +1082,15 @@ static NSString *newLine = @"\n";
     return actions;
 }
 
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
-    [self metadataForPost:post compressed:YES callback:callback];
+- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post {
+    return [self metadataForPost:post compressed:YES];
 }
 
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
-    [self metadataForPost:post compressed:NO callback:callback];
+- (PostMetadata *)metadataForPost:(NSDictionary *)post {
+    return [self metadataForPost:post compressed:NO];
 }
 
-- (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback {
+- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed {
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -1297,7 +1281,12 @@ static NSString *newLine = @"\n";
         }
     }
     
-    callback(attributedString, height, @[], badges);
+    PostMetadata *metadata = [[PostMetadata alloc] init];
+    metadata.height = height;
+    metadata.links = @[];
+    metadata.string = attributedString;
+    metadata.badges = badges;
+    return metadata;
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
@@ -1391,27 +1380,21 @@ static NSString *newLine = @"\n";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *newHeights = [NSMutableArray array];
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        dispatch_group_t group = dispatch_group_create();
+
         for (NSDictionary *post in self.posts) {
-            dispatch_group_enter(group);
-            [self metadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newHeights addObject:height];
-                dispatch_group_leave(group);
-            }];
-            
-            dispatch_group_enter(group);
-            [self compressedMetadataForPost:post callback:^(NSAttributedString *string, NSNumber *height, NSArray *links, NSArray *badges) {
-                [newCompressedHeights addObject:height];
-                dispatch_group_leave(group);
-            }];
+            PostMetadata *metadata = [self metadataForPost:post];
+            [newHeights addObject:metadata.height];
+
+            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            [newCompressedHeights addObject:compressedMetadata.height];
         }
         
         self.heights = newHeights;
         self.compressedHeights = newCompressedHeights;
         
-        dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (success) {
             success();
-        });
+        }
     });
 }
 

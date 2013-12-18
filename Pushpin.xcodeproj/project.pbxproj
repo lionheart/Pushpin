@@ -137,6 +137,7 @@
 		373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */; };
 		373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BB16F81C6900A7D7C8 /* ptr_32.png */; };
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
+		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
@@ -761,6 +762,8 @@
 		373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_31@2x.png"; sourceTree = "<group>"; };
 		373C82BB16F81C6900A7D7C8 /* ptr_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_32.png; sourceTree = "<group>"; };
 		373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_32@2x.png"; sourceTree = "<group>"; };
+		37405C6518620BCB0052213A /* PostMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostMetadata.h; sourceTree = "<group>"; };
+		37405C6618620BCB0052213A /* PostMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostMetadata.m; sourceTree = "<group>"; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3740A23A16863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23B16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1760,6 +1763,8 @@
 				37405C18186152F70052213A /* View Controllers */,
 				37405C1418614FF50052213A /* Categories */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
+				37405C6518620BCB0052213A /* PostMetadata.h */,
+				37405C6618620BCB0052213A /* PostMetadata.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				37018CE3180E3C0B00226408 /* PPBrowserActivity.h */,
@@ -2794,6 +2799,7 @@
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
 				E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */,
 				E8734227180DA20300CF9E5F /* PPBrowserActivity.m in Sources */,
+				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
