@@ -85,6 +85,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.title = NSLocalizedString(@"Browse", nil);
     self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
     [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
