@@ -12,9 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
-#import "RDActionSheet.h"
 #import <StoreKit/StoreKit.h>
-#import "RDActionSheet.h"
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"
 #import "UIApplication+AppDimensions.h"
