@@ -1169,6 +1169,8 @@ static NSString *ellipsis = @"…";
         [textStorage setAttributedString:titleAttributedString];
         [layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
         
+//        DLog(@"%@", NSStringFromCGRect([layoutManager boundingRectForGlyphRange:titleRange inTextContainer:textContainer]));
+        
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
             [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeDescription.width - 10.0f, CGFLOAT_MAX)];

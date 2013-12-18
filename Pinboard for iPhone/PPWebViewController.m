@@ -40,7 +40,16 @@ static NSInteger kToolbarHeight = 44;
 @synthesize selectedLink, selectedActionSheet;
 
 - (void)viewDidLayoutSubviews {
-    
+    NSDictionary *views = @{@"top": self.topLayoutGuide,
+                            @"toolbar": self.toolbar,
+                            @"background": self.statusBarBackgroundView,
+                            @"webview": self.webView };
+
+    NSDictionary *metrics = @{@"height": @(kToolbarHeight),
+                              @"topHeight": @([self.topLayoutGuide length]) };
+
+    [self.view lhs_addConstraints:@"V:|[background(topHeight)][webview][toolbar(height)]|" metrics:metrics views:views];
+    [self.view layoutIfNeeded];
 }
 
 - (void)viewDidLoad {
@@ -52,6 +61,11 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
     
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.statusBarBackgroundView = [[UIView alloc] init];
+    self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.statusBarBackgroundView.backgroundColor = HEX(0x0096FFFF);
+    [self.view addSubview:self.statusBarBackgroundView];
 
     CGSize size = self.view.frame.size;
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
@@ -87,9 +101,10 @@ static NSInteger kToolbarHeight = 44;
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
     [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-    UILongPressGestureRecognizer *backButtonLongPressGesture = [[UILongPressGestureRecognizer alloc] init];
-    [backButtonLongPressGesture addTarget:self action:@selector(backButtonLongPress:)];
-    [self.backButton addGestureRecognizer:backButtonLongPressGesture];
+
+    self.backButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] init];
+    [self.backButtonLongPressGestureRecognizer addTarget:self action:@selector(gestureDetected:)];
+    [self.backButton addGestureRecognizer:self.backButtonLongPressGestureRecognizer];
     self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.backButton];
 
@@ -191,10 +206,13 @@ static NSInteger kToolbarHeight = 44;
 
     [self.view addSubview:self.toolbar];
     
+    NSDictionary *views = @{@"toolbar": self.toolbar,
+                            @"background": self.statusBarBackgroundView,
+                            @"webview": self.webView };
     // Setup auto-layout constraints
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[toolbar]|" options:0 metrics:nil views:@{ @"toolbar": self.toolbar }]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[toolbar(height)]|" options:0 metrics:@{ @"height": @(kToolbarHeight) } views:@{ @"webView": self.webView, @"toolbar": self.toolbar }]];
-    [self.webView lhs_expandToFillSuperview];
+    [self.view lhs_addConstraints:@"H:|[background]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -257,16 +275,22 @@ static NSInteger kToolbarHeight = 44;
         [self setSelectedActionSheetIsVisible:YES];
         [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
     }
+    else if (recognizer == self.backButtonLongPressGestureRecognizer) {
+        if (recognizer.state == UIGestureRecognizerStateEnded) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     // Determine if we should mobilize or not
-    NSString *mobilizedUrlString;
-    if (![self isURLStringMobilized:self.urlString] && self.shouldMobilize) {
+    if (self.shouldMobilize && ![self isURLStringMobilized:self.urlString]) {
+        NSString *mobilizedUrlString;
+
         switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
             case MOBILIZER_GOOGLE:
                 mobilizedUrlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.urlString];
@@ -311,53 +335,6 @@ static NSInteger kToolbarHeight = 44;
     [self.webView stopLoading];
 }
 
-- (void)expandWebViewToFullScreen {
-    [self setFullscreen:YES];
-}
-
-- (void)setFullscreen:(BOOL)fullscreen {
-    // Just return if we're already in the desired state
-    if (fullscreen == self.isFullscreen)
-        return;
-    
-    if (fullscreen) {
-        self.toolbarFrame = self.toolbar.frame;
-        
-        // Hide the navigation and status bars
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        
-        [UIView animateWithDuration:0.25 animations:^{
-            // Slide down the bottom toolbar
-            self.toolbar.frame = CGRectMake(self.toolbarFrame.origin.x, self.view.frame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height);
-            self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-            
-            self.isFullscreen = YES;
-        }];
-    } else {
-        // Reset the content offset
-        self.webView.scrollView.contentOffset = CGPointMake(0, 0);
-        
-        // Reveal the navigation and status bars
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
-        
-        [UIView animateWithDuration:0.25 animations:^{
-            // Show the bottom toolbar
-            [self.toolbar setFrame:CGRectMake(self.toolbarFrame.origin.x, self.view.frame.size.height - self.toolbarFrame.size.height, self.toolbarFrame.size.width, self.toolbarFrame.size.height)];
-            self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
-            
-            self.isFullscreen = NO;
-        }];
-    }
-}
-
-- (void)disableFullscreen:(id)sender {
-    CGRect frame = self.navigationController.navigationBar.frame;
-    self.webView.scrollView.contentInset = UIEdgeInsetsMake([[UIApplication sharedApplication] statusBarFrame].size.height + frame.origin.y + frame.size.height, 0, 0, 0);
-    [self setFullscreen:NO];
-}
-
 - (void)loadURL {
     self.stopped = NO;
     
@@ -367,10 +344,6 @@ static NSInteger kToolbarHeight = 44;
     [self.webView loadRequest:request];
 }
 
-- (void)popViewController {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)enableOrDisableButtons {
     self.stopButton.hidden = YES;
     self.viewMobilizeButton.hidden = YES;
@@ -378,7 +351,6 @@ static NSInteger kToolbarHeight = 44;
 
     if (self.numberOfRequestsInProgress > 0) {
         self.navigationItem.rightBarButtonItem = self.activityIndicatorBarButtonItem;
-//        self.stopButton.hidden = NO;
         [self.bottomActivityIndicator startAnimating];
     }
     else {
@@ -420,13 +392,13 @@ static NSInteger kToolbarHeight = 44;
                     }
                     else {
                         self.viewMobilizeButton.hidden = NO;
+
+                        if (![self canMobilizeCurrentURL]) {
+                            self.viewMobilizeButton.enabled = NO;
+                        }
                     }
-                    
-                    if (isRead) {
-                        self.markAsReadButton.enabled = NO;
-                    } else {
-                        self.markAsReadButton.enabled = YES;
-                    }
+
+                    self.markAsReadButton.enabled = !isRead;
                 });
             });
         }
@@ -438,12 +410,8 @@ static NSInteger kToolbarHeight = 44;
         [self.webView goBack];
     }
     else {
-        [self popViewController];
+        [self.navigationController popViewControllerAnimated:YES];
     }
-}
-
-- (void)backButtonLongPress:(id)sender {
-    [self popViewController];
 }
 
 - (void)forwardButtonTouchUp:(id)sender {
@@ -728,7 +696,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSURL *)url {
     NSURL *url = [self.webView.request URL];
-    if (!url || [url class] != [NSURL class] || [url.absoluteString isEqualToString:@""]) {
+    if (!url || ![url isKindOfClass:[NSURL class]] || [url.absoluteString isEqualToString:@""]) {
         return [NSURL URLWithString:self.urlString];
     }
     return url;
@@ -810,7 +778,7 @@ static NSInteger kToolbarHeight = 44;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url {
     PPWebViewController *webViewController = [[PPWebViewController alloc] init];
     NSString *urlString;
-    if (![webViewController isURLStringMobilized:url]) {
+    if (![webViewController isURLStringMobilized:url] && [webViewController canMobilizeURL:[NSURL URLWithString:url]]) {
         switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
             case MOBILIZER_GOOGLE:
                 urlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", url];
@@ -858,15 +826,6 @@ static NSInteger kToolbarHeight = 44;
     return self.numberOfRequests - self.numberOfRequestsCompleted;
 }
 
-#pragma mark -
-#pragma mark UIScrollViewDelegate
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (scrollView.contentOffset.y <= 0) {
-        [self setFullscreen:NO];
-    }
-}
-
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -898,7 +857,7 @@ static NSInteger kToolbarHeight = 44;
 
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = pageTitle;
-    
+
     // Disable the default action sheet
     [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
@@ -909,6 +868,20 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfRequests++;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
+}
+
+- (BOOL)canMobilizeCurrentURL {
+    return [self canMobilizeURL:self.url];
+}
+
+- (BOOL)canMobilizeURL:(NSURL *)url {
+    NSArray *hosts = @[@"twitter.com", @"mobile.twitter.com"];
+    for (NSString *host in hosts) {
+        if ([url.host isEqualToString:host]) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 @end
