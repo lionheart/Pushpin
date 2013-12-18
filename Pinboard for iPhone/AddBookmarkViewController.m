@@ -7,19 +7,21 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
-#import <ASPinboard/ASPinboard.h>
 #import "PPGroupedTableViewCell.h"
-#import <QuartzCore/QuartzCore.h>
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
-#import "UITableView+Additions.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
-#import "UIImage+Tint.h"
+
+#import "UIApplication+AppDimensions.h"
+#import "UIApplication+Additions.h"
+
+#import <ASPinboard/ASPinboard.h>
+#import <LHSCategoryCollection/UIImage+Tint.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;

@@ -7,9 +7,11 @@
 //
 
 #import "PrimaryNavigationViewController.h"
-#import "FMDatabase.h"
 #import "AddBookmarkViewController.h"
+
 #import "UIApplication+Additions.h"
+
+#import <FMDB/FMDatabase.h>
 
 @interface PrimaryNavigationViewController ()
 

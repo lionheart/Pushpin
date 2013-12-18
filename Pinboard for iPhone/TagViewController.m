@@ -6,16 +6,17 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "TagViewController.h"
 #import "FMDatabase.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"
-#import <QuartzCore/QuartzCore.h>
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
-#import "UITableViewCell+Additions.h"
-#import "UITableView+Additions.h"
+
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @interface TagViewController ()
 
@@ -227,7 +228,7 @@
         __block NSMutableArray *indexPathsToRemove = [NSMutableArray array];
         __block NSMutableArray *indexPathsToAdd = [NSMutableArray array];
         __block NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        __block NSMutableArray *newTags = [[NSMutableArray alloc] init];
+        __block NSMutableArray *newTags = [NSMutableArray array];
         NSInteger index = 0;
 
         for (NSDictionary *tag in self.filteredTags) {

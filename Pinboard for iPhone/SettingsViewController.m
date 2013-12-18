@@ -12,19 +12,20 @@
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
-#import "UserVoice.h"
-#import "UVStyleSheet.h"
 #import "ASStyleSheet.h"
 #import "NSString+URLEncoding.h"
-#import "KeychainItemWrapper.h"
-#import "OAuthConsumer.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"
-#import "FMDatabase.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
 #import "UIApplication+Additions.h"
 #import "PPTheme.h"
+
+#import <uservoice-iphone-sdk/UserVoice.h>
+#import <uservoice-iphone-sdk/UVStyleSheet.h>
+#import <FMDB/FMDatabase.h>
+#import <oauthconsumer/OAuthConsumer.h>
+#import <KeychainItemWrapper/KeychainItemWrapper.h>
 
 @interface SettingsViewController ()
 

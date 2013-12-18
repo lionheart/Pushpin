@@ -5,11 +5,12 @@
 //  Created by Dan Loewenherz on 5/30/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
-
-#import "BookmarkCell.h"
 #import <CoreText/CoreText.h>
 #import <QuartzCore/QuartzCore.h>
-#import "UIView+LHSAdditions.h"
+
+#import "BookmarkCell.h"
+
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @implementation BookmarkCell
 

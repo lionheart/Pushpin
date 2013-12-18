@@ -8,8 +8,9 @@
 
 #import "PPNotification.h"
 #import "AppDelegate.h"
-#import "UIApplication+AppDimensions.h"
 #import "PPTheme.h"
+
+#import "UIApplication+AppDimensions.h"
 
 static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;
