@@ -297,9 +297,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 1] : nil;
-    
     [super viewWillDisappear:animated];
+
     [self.webView stopLoading];
     
     if ([UIApplication sharedApplication].statusBarHidden) {

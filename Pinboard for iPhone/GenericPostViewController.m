@@ -655,17 +655,8 @@ static NSInteger kToolbarHeight = 44;
         }
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
-        self.editButton.enabled = NO;
-
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            self.editButton.enabled = YES;
-        }];
         [self.tableView setEditing:NO animated:YES];
-        [CATransaction commit];
+        self.editButton.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -679,17 +670,8 @@ static NSInteger kToolbarHeight = 44;
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
-        self.editButton.enabled = NO;
-
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            self.editButton.enabled = YES;
-        }];
         [self.tableView setEditing:YES animated:YES];
-        [CATransaction commit];
+        self.editButton.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
