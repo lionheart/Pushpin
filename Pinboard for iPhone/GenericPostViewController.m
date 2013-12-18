@@ -10,7 +10,6 @@
 #import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
-#import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
 #import "OAuthConsumer.h"
 #import "KeychainItemWrapper.h"
@@ -1076,11 +1075,11 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.scrollEnabled = YES;
 }
 
-- (void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     self.tableView.scrollEnabled = YES;
     
     if (!actionSheet.title) {
-        if (buttonIndex >= (actionSheet.buttons.count - 1)) {
+        if (buttonIndex >= (actionSheet.numberOfButtons - 1)) {
             self.actionSheet = nil;
             return;
         }

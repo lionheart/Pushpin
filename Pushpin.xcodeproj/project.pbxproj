@@ -74,7 +74,6 @@
 		3738A59216EA679800316ED8 /* SheetButtonDestroyTouch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59016EA679800316ED8 /* SheetButtonDestroyTouch@2x.png */; };
 		3738A59516EA683200316ED8 /* SheetBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59316EA683200316ED8 /* SheetBackground.png */; };
 		3738A59616EA683200316ED8 /* SheetBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3738A59416EA683200316ED8 /* SheetBackground@2x.png */; };
-		3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3738A59816EA685600316ED8 /* RDActionSheet.m */; };
 		373C82BD16F81C6900A7D7C8 /* ptr_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827D16F81C6800A7D7C8 /* ptr_01.png */; };
 		373C82BE16F81C6900A7D7C8 /* ptr_01@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */; };
 		373C82BF16F81C6900A7D7C8 /* ptr_02.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827F16F81C6800A7D7C8 /* ptr_02.png */; };
@@ -705,8 +704,6 @@
 		3738A59016EA679800316ED8 /* SheetButtonDestroyTouch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetButtonDestroyTouch@2x.png"; path = "Assets/SheetButtonDestroyTouch@2x.png"; sourceTree = "<group>"; };
 		3738A59316EA683200316ED8 /* SheetBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SheetBackground.png; path = Assets/SheetBackground.png; sourceTree = "<group>"; };
 		3738A59416EA683200316ED8 /* SheetBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "SheetBackground@2x.png"; path = "Assets/SheetBackground@2x.png"; sourceTree = "<group>"; };
-		3738A59716EA685600316ED8 /* RDActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RDActionSheet.h; path = Vendor/RDActionSheet/RDActionSheet.h; sourceTree = "<group>"; };
-		3738A59816EA685600316ED8 /* RDActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RDActionSheet.m; path = Vendor/RDActionSheet/RDActionSheet.m; sourceTree = "<group>"; };
 		373C827D16F81C6800A7D7C8 /* ptr_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_01.png; sourceTree = "<group>"; };
 		373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_01@2x.png"; sourceTree = "<group>"; };
 		373C827F16F81C6800A7D7C8 /* ptr_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_02.png; sourceTree = "<group>"; };
@@ -1312,7 +1309,6 @@
 			isa = PBXGroup;
 			children = (
 				E84A8D9217FB1BCB003B4F50 /* FluidTableview */,
-				3738A57216EA65AC00316ED8 /* RDActionSheet */,
 				3737070F165CA4E0001BEDD8 /* NSData+Additions.h */,
 				37370710165CA4E0001BEDD8 /* NSData+Additions.m */,
 				37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */,
@@ -1561,15 +1557,6 @@
 			);
 			name = "Navigation Bar";
 			path = "Assets/Navigation Bar";
-			sourceTree = "<group>";
-		};
-		3738A57216EA65AC00316ED8 /* RDActionSheet */ = {
-			isa = PBXGroup;
-			children = (
-				3738A59716EA685600316ED8 /* RDActionSheet.h */,
-				3738A59816EA685600316ED8 /* RDActionSheet.m */,
-			);
-			name = RDActionSheet;
 			sourceTree = "<group>";
 		};
 		373C823C16F8043100A7D7C8 /* PullToRefresh */ = {
@@ -2824,7 +2811,6 @@
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
-				3738A59916EA685600316ED8 /* RDActionSheet.m in Sources */,
 				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
 				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,

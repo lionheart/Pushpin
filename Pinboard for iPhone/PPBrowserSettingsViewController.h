@@ -8,7 +8,6 @@
 
 #import "PPTableViewController.h"
 #import "PPSwitch.h"
-#import "RDActionSheet.h"
 
 @interface PPBrowserSettingsViewController : PPTableViewController <UIActionSheetDelegate, UIAlertViewDelegate>
 
