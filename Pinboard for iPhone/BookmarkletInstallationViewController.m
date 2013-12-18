@@ -6,9 +6,10 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "BookmarkletInstallationViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
 #import "UIApplication+Additions.h"
 #import "PPTheme.h"

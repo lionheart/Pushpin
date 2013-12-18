@@ -6,13 +6,15 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "PPBrowserSettingsViewController.h"
 #import "BookmarkletInstallationViewController.h"
 #import "AppDelegate.h"
 #import "PPGroupedTableViewCell.h"
-#import <QuartzCore/QuartzCore.h>
-#import "UIApplication+Additions.h"
 #import "PPTheme.h"
+
+#import "UIApplication+Additions.h"
 
 @interface PPBrowserSettingsViewController ()
 

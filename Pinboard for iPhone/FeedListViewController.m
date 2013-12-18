@@ -6,24 +6,27 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "FeedListViewController.h"
-#import <ASPinboard/ASPinboard.h>
 #import "AppDelegate.h"
 #import "PPBrowseCell.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
-#import <QuartzCore/QuartzCore.h>
 #import "SettingsViewController.h"
 #import "TagViewController.h"
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPTheme.h"
+
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
-#import "UIImage+Tint.h"
+
+#import <ASPinboard/ASPinboard.h>
+#import <LHSCategoryCollection/UIImage+Tint.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import "PPTheme.h"
 
 @interface FeedListViewController ()
 

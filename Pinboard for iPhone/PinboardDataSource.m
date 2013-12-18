@@ -7,14 +7,16 @@
 //
 
 #import "PinboardDataSource.h"
-#import "FMDatabase.h"
 #import "AppDelegate.h"
-#import "NSAttributedString+Attributes.h"
-#import "ASPinboard/ASPinboard.h"
 #import "AddBookmarkViewController.h"
-#import "BloomFilter.h"
-#import "UIApplication+AppDimensions.h"
 #import "PPBadgeView.h"
+
+#import "NSAttributedString+Attributes.h"
+#import "UIApplication+AppDimensions.h"
+
+#import <BloomFilter/BloomFilter.h>
+#import <FMDB/FMDatabase.h>
+#import <ASPinboard/ASPinboard.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 

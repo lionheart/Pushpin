@@ -9,16 +9,17 @@
 #import "LoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
-#import "NSData+Additions.h"
-#import <ASPinboard/ASPinboard.h>
 #import "PrimaryNavigationViewController.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
-#import "RPSTPasswordManagementAppService.h"
-#import "UserVoice.h"
 #import "UIApplication+AppDimensions.h"
-#import "UIView+LHSAdditions.h"
 #import "PPTheme.h"
+
+#import <ASPinboard/ASPinboard.h>
+#import <uservoice-iphone-sdk/UserVoice.h>
+#import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/NSData+Base64.h>
 
 @interface LoginViewController ()
 
