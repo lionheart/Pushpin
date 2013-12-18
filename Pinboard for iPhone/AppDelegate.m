@@ -405,8 +405,7 @@
             pinboardViewController.postDataSource = feedDataSource;
             pinboardViewController.title = feedDetails;
         }
-        
-        feedListViewController.title = NSLocalizedString(@"Browse", nil);
+
         //_navigationController.navigationBar.translucent = NO;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
