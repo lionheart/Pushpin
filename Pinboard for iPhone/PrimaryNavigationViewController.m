@@ -9,8 +9,7 @@
 #import "PrimaryNavigationViewController.h"
 #import "AddBookmarkViewController.h"
 
-#import "UIApplication+Additions.h"
-
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <FMDB/FMDatabase.h>
 
 @interface PrimaryNavigationViewController ()

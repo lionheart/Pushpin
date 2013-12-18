@@ -6,11 +6,11 @@
 //
 //
 
-#import "PPNotification.h"
 #import "AppDelegate.h"
+#import "PPNotification.h"
 #import "PPTheme.h"
 
-#import "UIApplication+AppDimensions.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;

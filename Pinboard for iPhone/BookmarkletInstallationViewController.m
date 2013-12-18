@@ -8,11 +8,12 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#import "AppDelegate.h"
 #import "BookmarkletInstallationViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "AppDelegate.h"
-#import "UIApplication+Additions.h"
 #import "PPTheme.h"
+
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface BookmarkletInstallationViewController ()
 

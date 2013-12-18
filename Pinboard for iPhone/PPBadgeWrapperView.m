@@ -7,7 +7,8 @@
 //
 
 #import "PPBadgeWrapperView.h"
-#import "UIApplication+AppDimensions.h"
+
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @implementation PPBadgeWrapperView
 

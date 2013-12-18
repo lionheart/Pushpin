@@ -13,9 +13,8 @@
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
 
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @interface TagViewController ()

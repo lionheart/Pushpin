@@ -12,11 +12,6 @@
 #import "AppDelegate.h"
 #import "NoteViewController.h"
 #import "LoginViewController.h"
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
-#import "Reachability.h"
-#import "PocketAPI.h"
-#import "HTMLParser.h"
 #import "SettingsViewController.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
@@ -29,8 +24,13 @@
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
 
-#import "UIApplication+Additions.h"
-#import "TestFlight.h"
+#import <FMDB/FMDatabase.h>
+#import <FMDB/FMDatabaseQueue.h>
+#import <Reachability/Reachability.h>
+#import <HTMLParser/HTMLParser.h>
+#import <PocketAPI/PocketAPI.h>
+#import <TestFlightSDK/TestFlight.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @implementation AppDelegate
 

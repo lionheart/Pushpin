@@ -10,7 +10,8 @@
 #import "PPTheme.h"
 
 #import "NSAttributedString+Attributes.h"
-#import "UIApplication+AppDimensions.h"
+
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 
 @implementation PinboardNotesDataSource

@@ -18,10 +18,10 @@
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 
-#import "UIApplication+AppDimensions.h"
-#import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
+
 #import <Mixpanel/Mixpanel.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

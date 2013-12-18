@@ -12,11 +12,11 @@
 #import "PPBadgeView.h"
 
 #import "NSAttributedString+Attributes.h"
-#import "UIApplication+AppDimensions.h"
 
 #import <BloomFilter/BloomFilter.h>
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 
