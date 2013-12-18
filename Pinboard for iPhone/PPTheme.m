@@ -20,15 +20,15 @@
 }
 
 + (UIFont *)titleFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
+    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
 }
 
 + (UIFont *)descriptionFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize]];
+    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }
 
 + (UIFont *)urlFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 1];
+    return [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 + (CGFloat)fontSize {
