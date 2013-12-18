@@ -1111,7 +1111,7 @@ static BOOL kPinboardSyncInProgress = NO;
     
     NSString *title = post[@"title"];
     NSString *description = post[@"description"];
-    NSString *tags = [post[@"tags"] stringByReplacingOccurrencesOfString:@" " withString:@" · "];
+    NSString *tags = post[@"tags"];
     BOOL isRead = ![post[@"unread"] boolValue];
     BOOL dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
     
@@ -1145,15 +1145,16 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:titleFont range:titleRange];
-    [attributedString setFont:descriptionFont range:descriptionRange];
-    [attributedString setFont:urlFont range:linkRange];
-    [attributedString setTextColor:HEX(0x33353Bff)];
+    [attributedString addAttribute:NSFontAttributeName value:titleFont range:titleRange];
+    [attributedString addAttribute:NSFontAttributeName value:descriptionFont range:descriptionRange];
+    [attributedString addAttribute:NSFontAttributeName value:urlFont range:linkRange];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x33353Bff) range:attributedString.fullRange];
 
     // Calculate our shorter strings if we're compressed
     if (compressed) {
         // Calculate elippsis size for each element
         NSString *ellipsis = @"…";
+
         CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: titleFont }];
         CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: urlFont }];
         CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: descriptionFont }];
@@ -1168,25 +1169,25 @@ static BOOL kPinboardSyncInProgress = NO;
         [layoutManager glyphRangeForTextContainer:textContainer];
         
         NSRange titleLineRange, descriptionLineRange, linkLineRange;
-        
+
         // Get the compressed substrings
         NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
-        
+
         titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
-        [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeTitle.width - 10.0f, CGFLOAT_MAX)];
+        [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeTitle.width - 10.0f, CGFLOAT_MAX)];
         [textStorage setAttributedString:titleAttributedString];
-        (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
+        [layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
         
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
-            [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeDescription.width - 10.0f, CGFLOAT_MAX)];
+            [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeDescription.width - 10.0f, CGFLOAT_MAX)];
             [textStorage setAttributedString:descriptionAttributedString];
-            
+
             descriptionLineRange = NSMakeRange(0, 0);
-            unsigned index, numberOfLines, numberOfGlyphs = [layoutManager numberOfGlyphs];
+            NSUInteger index, numberOfLines, numberOfGlyphs = [layoutManager numberOfGlyphs];
             NSRange tempLineRange;
-            for (numberOfLines = 0, index = 0; index < numberOfGlyphs; numberOfLines++){
-                (void)[layoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
+            for (numberOfLines=0, index=0; index < numberOfGlyphs; numberOfLines++){
+                [layoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
                 descriptionLineRange.length += tempLineRange.length;
                 if (numberOfLines >= 2) {
                     break;
@@ -1198,9 +1199,9 @@ static BOOL kPinboardSyncInProgress = NO;
         
         if (linkRange.location != NSNotFound) {
             linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
-            [textContainer setSize:CGSizeMake([UIApplication currentSize].width - ellipsisSizeLink.width - 10.0f, CGFLOAT_MAX)];
+            [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeLink.width - 10.0f, CGFLOAT_MAX)];
             [textStorage setAttributedString:linkAttributedString];
-            (void)[layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
+            [layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
         }
         
         // Re-create the main string
@@ -1210,13 +1211,15 @@ static BOOL kPinboardSyncInProgress = NO;
         if (titleAttributedString && titleLineRange.location != NSNotFound) {
             tempString = [titleAttributedString attributedSubstringFromRange:titleLineRange];
             if (titleLineRange.length < titleRange.length) {
-                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
-            } else {
+            }
+            else {
                 attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
             }
+
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
             extraCharacterCount++;
             titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount - trimmedCharacterCount);
@@ -1227,11 +1230,12 @@ static BOOL kPinboardSyncInProgress = NO;
             trimmedCharacterCount = 0;
             tempString = [linkAttributedString attributedSubstringFromRange:linkLineRange];
             if (linkLineRange.length < linkRange.length) {
-                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 [attributedString appendAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
-            } else {
+            }
+            else {
                 [attributedString appendAttributedString:tempString];
             }
             [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
@@ -1244,11 +1248,12 @@ static BOOL kPinboardSyncInProgress = NO;
             trimmedCharacterCount = 0;
             tempString = [descriptionAttributedString attributedSubstringFromRange:descriptionLineRange];
             if (descriptionLineRange.length < descriptionRange.length) {
-                tempString = [self trimTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 [attributedString appendAttributedString:tempString];
                 [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
                 extraCharacterCount++;
-            } else {
+            }
+            else {
                 [attributedString appendAttributedString:tempString];
             }
             descriptionRange = NSMakeRange(linkRange.location + linkRange.length, descriptionLineRange.length + extraCharacterCount - trimmedCharacterCount);
@@ -1256,14 +1261,14 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     
     if (isRead && dimReadPosts) {
-        [attributedString setTextColor:HEX(0xb3b3b3ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x96989Dff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0xcdcdcdff) range:linkRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xb3b3b3ff) range:titleRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x96989Dff) range:descriptionRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xcdcdcdff) range:linkRange];
     }
     else {
-        [attributedString setTextColor:HEX(0x000000ff) range:titleRange];
-        [attributedString setTextColor:HEX(0x585858ff) range:descriptionRange];
-        [attributedString setTextColor:HEX(0xb4b6b9ff) range:linkRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x000000ff) range:titleRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x585858ff) range:descriptionRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xb4b6b9ff) range:linkRange];
     }
     
     //[attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
@@ -1407,15 +1412,15 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed {
-    NSRange punctuationRange = [string.string rangeOfCharacterFromSet:[NSCharacterSet punctuationCharacterSet] options:NSBackwardsSearch];
-    if (punctuationRange.location != NSNotFound && (punctuationRange.location + punctuationRange.length) >= string.length) {
-        *trimmed = string.length - punctuationRange.location;
-        return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
-    }
-    
-    *trimmed = 0;
-    return string;
+- (NSAttributedString *)trimTrailingPunctuationAndWhitespaceFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed {
+    NSCharacterSet *punctuation = [NSCharacterSet punctuationCharacterSet];
+    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+
+    NSString *originalString = string.string;
+    NSString *trimmedString = [[originalString stringByTrimmingCharactersInSet:punctuation] stringByTrimmingCharactersInSet:whitespace];
+
+    *trimmed = originalString.length - trimmedString.length;
+    return [NSAttributedString attributedStringWithString:trimmedString];
 }
 
 @end
