@@ -262,7 +262,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     // Determine if we should mobilize or not
     NSString *mobilizedUrlString;
@@ -301,10 +301,6 @@ static NSInteger kToolbarHeight = 44;
     
     [super viewWillDisappear:animated];
     [self.webView stopLoading];
-    
-    if (self.navigationController.navigationBarHidden && ![backViewController isKindOfClass:[GenericPostViewController class]]) {
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
-    }
     
     if ([UIApplication sharedApplication].statusBarHidden) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
