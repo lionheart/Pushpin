@@ -1281,7 +1281,8 @@ static BOOL kPinboardSyncInProgress = NO;
             if (![tag hasPrefix:@"via:"]) {
                 if (isRead && dimReadPosts) {
                     [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xddddddff) } }];
-                } else {
+                }
+                else {
                     [badges addObject:@{ @"type": @"tag", @"tag": tag }];
                 }
             }

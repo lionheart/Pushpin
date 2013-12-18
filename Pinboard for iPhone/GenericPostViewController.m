@@ -763,23 +763,25 @@ static NSInteger kToolbarHeight = 44;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
     PPBadgeWrapperView *wrapperView = (PPBadgeWrapperView *)badgeView.superview;
     NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
-    BookmarkCell __block *cell;
-    NSMutableArray __block *badges;
-    [indexPathsForVisibleRows enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        cell = (BookmarkCell *)[self.tableView cellForRowAtIndexPath:indexPathsForVisibleRows[idx]];
+
+    BookmarkCell *cell;
+    NSMutableArray *badges;
+    
+    for (NSIndexPath *indexPath in indexPathsForVisibleRows) {
+        cell = (BookmarkCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         if ([cell.contentView.subviews containsObject:wrapperView]) {
-            badges = [[dataSource badgesForPostAtIndex:[self.tableView indexPathForCell:cell].row] mutableCopy];
-            *stop = YES;
+            badges = [[dataSource badgesForPostAtIndex:indexPath.row] mutableCopy];
+            break;
         }
-    }];
+    }
     
     NSUInteger __block visibleBadgeCount = 0;
-    [wrapperView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        PPBadgeView *badgeView = (PPBadgeView *)obj;
+    for (PPBadgeView *badgeView in wrapperView.subviews) {
         if (badgeView.hidden == NO) {
             visibleBadgeCount++;
         }
-    }];
+    }
+
     [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
     if (badges.count > 5) {
         [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
@@ -790,19 +792,19 @@ static NSInteger kToolbarHeight = 44;
         if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
             // Show more tag options
             self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            
-            [badges enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                if ([obj[@"type"] isEqualToString:@"tag"]) {
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:obj[@"tag"]];
+
+            for (NSDictionary *badge in badges) {
+                if ([badge[@"type"] isEqualToString:@"tag"]) {
+                    [self.actionSheet addButtonWithTitle:badge[@"tag"]];
                 }
-            }];
+            }
             
             // Properly set the cancel button index
             [self.actionSheet addButtonWithTitle:@"Cancel"];
             self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-            
             self.actionSheetVisible = YES;
-            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+
+            [self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
             self.tableView.scrollEnabled = NO;
         } else {
             // Go to the tag link
