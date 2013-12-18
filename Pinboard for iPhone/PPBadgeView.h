@@ -34,5 +34,6 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 - (id)initWithText:(NSString *)text options:(NSDictionary *)options;
 
 - (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
+- (void)updateBackgroundColor;
 
 @end
