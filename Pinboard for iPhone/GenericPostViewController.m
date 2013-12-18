@@ -893,7 +893,7 @@ static NSInteger kToolbarHeight = 44;
     NSAttributedString *string;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
     NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
-    if ([dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)] && self.compressPosts) {
+    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
         cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
     }
