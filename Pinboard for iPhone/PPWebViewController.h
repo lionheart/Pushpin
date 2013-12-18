@@ -13,6 +13,7 @@
 
 @interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
+@property (nonatomic, strong) UIView *statusBarBackgroundView;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
@@ -32,25 +33,26 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
 
-@property (nonatomic, strong) UIView *toolbar;
-@property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
-@property (nonatomic) NSInteger numberOfRequestsInProgress;
-@property (nonatomic) BOOL alreadyLoaded;
-@property (nonatomic) BOOL stopped;
-@property (nonatomic) BOOL shouldMobilize;
-@property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) BOOL actionSheetIsVisible;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL isFullscreen;
-@property (nonatomic, strong) UIActivityViewController *activityView;
-@property (nonatomic) CGRect toolbarFrame;
-@property (nonatomic) NSInteger numberOfRequestsCompleted;
-@property (nonatomic) NSInteger numberOfRequests;
-@property (nonatomic, strong) NSDictionary *selectedLink;
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
+@property (nonatomic) BOOL shouldMobilize;
+@property (nonatomic) BOOL stopped;
+@property (nonatomic) CGFloat lastContentOffset;
+@property (nonatomic) CGRect toolbarFrame;
+@property (nonatomic) NSInteger numberOfRequests;
+@property (nonatomic) NSInteger numberOfRequestsCompleted;
+@property (nonatomic) NSInteger numberOfRequestsInProgress;
+@property (nonatomic, strong) NSMutableArray *navigationHistory;
+@property (nonatomic, strong) NSDictionary *selectedLink;
+@property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
-@property (nonatomic, retain) NSMutableArray *navigationHistory;
+@property (nonatomic, strong) UIActivityViewController *activityView;
+@property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
+@property (nonatomic, strong) UIView *toolbar;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
@@ -63,7 +65,6 @@
 - (void)showEditViewController;
 - (void)showAddViewController;
 - (void)showAddViewController:(NSDictionary *)data;
-- (void)popViewController;
 - (BOOL)isMobilized;
 - (BOOL)isURLStringMobilized:(NSString *)url;
 - (void)toggleMobilizer;
@@ -79,6 +80,9 @@
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;
 - (NSInteger)numberOfRequestsInProgress;
+
+- (BOOL)canMobilizeURL:(NSURL *)url;
+- (BOOL)canMobilizeCurrentURL;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
