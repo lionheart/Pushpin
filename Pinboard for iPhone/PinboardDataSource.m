@@ -19,6 +19,8 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
+static NSString *emptyString = @"";
+static NSString *newLine = @"\n";
 
 @implementation PinboardDataSource
 
@@ -1108,9 +1110,10 @@ static BOOL kPinboardSyncInProgress = NO;
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     UIFont *descriptionFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *urlFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    
-    NSString *title = post[@"title"];
-    NSString *description = post[@"description"];
+
+    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
+    NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
     NSString *tags = post[@"tags"];
     BOOL isRead = ![post[@"unread"] boolValue];
     BOOL dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
@@ -1124,7 +1127,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
     
     NSRange descriptionRange;
-    if ([description isEqualToString:@""]) {
+    if ([description isEqualToString:emptyString]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
     }
     else {
@@ -1133,7 +1136,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     
     NSRange tagRange;
-    if ([tags isEqualToString:@""]) {
+    if ([tags isEqualToString:emptyString]) {
         tagRange = NSMakeRange(NSNotFound, 0);
     }
     else {
@@ -1153,7 +1156,7 @@ static BOOL kPinboardSyncInProgress = NO;
     // Calculate our shorter strings if we're compressed
     if (compressed) {
         // Calculate elippsis size for each element
-        NSString *ellipsis = @"…";
+        static NSString *ellipsis = @"…";
 
         CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: titleFont }];
         CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes: @{ NSFontAttributeName: urlFont }];
@@ -1161,7 +1164,7 @@ static BOOL kPinboardSyncInProgress = NO;
         
         CGSize textSize = CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX);
         NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
-        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:@""];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:emptyString];
         NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
         [layoutManager addTextContainer:textContainer];
         [textStorage addLayoutManager:layoutManager];
@@ -1211,16 +1214,16 @@ static BOOL kPinboardSyncInProgress = NO;
         if (titleAttributedString && titleLineRange.location != NSNotFound) {
             tempString = [titleAttributedString attributedSubstringFromRange:titleLineRange];
             if (titleLineRange.length < titleRange.length) {
-                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
                 extraCharacterCount++;
             }
             else {
                 attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempString];
             }
 
-            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:newLine]];
             extraCharacterCount++;
             titleRange = NSMakeRange(0, titleLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
@@ -1230,15 +1233,15 @@ static BOOL kPinboardSyncInProgress = NO;
             trimmedCharacterCount = 0;
             tempString = [linkAttributedString attributedSubstringFromRange:linkLineRange];
             if (linkLineRange.length < linkRange.length) {
-                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 [attributedString appendAttributedString:tempString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
                 extraCharacterCount++;
             }
             else {
                 [attributedString appendAttributedString:tempString];
             }
-            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"\n"]];
+            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:newLine]];
             extraCharacterCount++;
             linkRange = NSMakeRange(titleRange.location + titleRange.length, linkLineRange.length + extraCharacterCount - trimmedCharacterCount);
         }
@@ -1248,9 +1251,9 @@ static BOOL kPinboardSyncInProgress = NO;
             trimmedCharacterCount = 0;
             tempString = [descriptionAttributedString attributedSubstringFromRange:descriptionLineRange];
             if (descriptionLineRange.length < descriptionRange.length) {
-                tempString = [self trimTrailingPunctuationAndWhitespaceFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
+                tempString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempString trimmedLength:&trimmedCharacterCount];
                 [attributedString appendAttributedString:tempString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:@"…"]];
+                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
                 extraCharacterCount++;
             }
             else {
@@ -1280,7 +1283,7 @@ static BOOL kPinboardSyncInProgress = NO;
     UIColor *starredColor = (isRead && dimReadPosts) ? HEX(0xddddddff) : HEX(0xf0b2f7ff);
     if ([post[@"private"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"badge-private", @"options": @{ PPBadgeNormalBackgroundColor: privateColor } }];
     if ([post[@"starred"] boolValue]) [badges addObject:@{ @"type": @"image", @"image": @"badge-favorite", @"options": @{ PPBadgeNormalBackgroundColor: starredColor } }];
-    if (post[@"tags"] && ![post[@"tags"] isEqualToString:@""]) {
+    if (post[@"tags"] && ![post[@"tags"] isEqualToString:emptyString]) {
         NSArray *tags = [post[@"tags"] componentsSeparatedByString:@" "];
         for (NSString *tag in tags) {
             if (![tag hasPrefix:@"via:"]) {
@@ -1412,15 +1415,15 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (NSAttributedString *)trimTrailingPunctuationAndWhitespaceFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed {
-    NSCharacterSet *punctuation = [NSCharacterSet punctuationCharacterSet];
-    NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+- (NSAttributedString *)stringByTrimmingTrailingPunctuationAndWhitespaceFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed {
+    NSRange punctuationRange = [string.string rangeOfCharacterFromSet:[NSCharacterSet punctuationCharacterSet] options:NSBackwardsSearch];
+    if (punctuationRange.location != NSNotFound && (punctuationRange.location + punctuationRange.length) >= string.length) {
+        *trimmed = string.length - punctuationRange.location;
+        return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
+    }
 
-    NSString *originalString = string.string;
-    NSString *trimmedString = [[originalString stringByTrimmingCharactersInSet:punctuation] stringByTrimmingCharactersInSet:whitespace];
-
-    *trimmed = originalString.length - trimmedString.length;
-    return [NSAttributedString attributedStringWithString:trimmedString];
+    *trimmed = 0;
+    return string;
 }
 
 @end
