@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-
 #import "UIApplication+Additions.h"
 
 @implementation UIApplication (Additions)

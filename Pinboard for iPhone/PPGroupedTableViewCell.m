@@ -6,11 +6,13 @@
 //
 //
 
-#import "PPGroupedTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
+
+#import "PPGroupedTableViewCell.h"
 #import "AppDelegate.h"
-#import "UIApplication+AppDimensions.h"
 #import "PPTheme.h"
+
+#import "UIApplication+AppDimensions.h"
 
 @implementation PPGroupedTableViewCell
 

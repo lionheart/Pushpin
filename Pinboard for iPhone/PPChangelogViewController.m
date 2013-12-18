@@ -7,12 +7,14 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+
+#import "AppDelegate.h"
 #import "PPChangelogViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "AppDelegate.h"
+#import "PPTheme.h"
+
 #import "UIApplication+Additions.h"
 #import "UITableView+Additions.h"
-#import "PPTheme.h"
 
 @interface PPChangelogViewController ()
 
