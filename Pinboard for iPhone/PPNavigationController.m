@@ -9,7 +9,8 @@
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 #import "PPWebViewController.h"
-#import "FMDatabase.h"
+
+#import <FMDB/FMDatabase.h>
 
 @implementation PPNavigationController
 

@@ -8,13 +8,15 @@
 
 #import "PinboardFeedDataSource.h"
 #import "AppDelegate.h"
-#import "ASPinboard/ASPinboard.h"
+#import "AddBookmarkViewController.h"
+#import "PPBadgeView.h"
+
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
-#import "AddBookmarkViewController.h"
-#import "FMDatabase.h"
 #import "UIApplication+AppDimensions.h"
-#import "PPBadgeView.h"
+
+#import <ASPinboard/ASPinboard.h>
+#import <FMDB/FMDatabase.h>
 
 @implementation PinboardFeedDataSource
 

@@ -19,6 +19,7 @@
 
 #import "UIApplication+AppDimensions.h"
 #import "UIApplication+Additions.h"
+#import "UITableView+Additions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIImage+Tint.h>

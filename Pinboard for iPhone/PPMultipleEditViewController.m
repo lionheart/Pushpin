@@ -6,15 +6,17 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
+
+#import "AppDelegate.h"
 #import "PPMultipleEditViewController.h"
 #import "PPGroupedTableViewCell.h"
-#import "FMDatabase.h"
-#import "AppDelegate.h"
-#import <QuartzCore/QuartzCore.h>
-#import "UIImage+Tint.h"
 #import "PPBadgeWrapperView.h"
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import "PPTheme.h"
+
+#import <FMDB/FMDatabase.h>
+#import <LHSCategoryCollection/UIImage+Tint.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 

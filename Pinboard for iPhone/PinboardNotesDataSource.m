@@ -7,10 +7,11 @@
 //
 
 #import "PinboardNotesDataSource.h"
-#import "ASPinboard/ASPinboard.h"
+#import "PPTheme.h"
+
 #import "NSAttributedString+Attributes.h"
 #import "UIApplication+AppDimensions.h"
-#import "PPTheme.h"
+#import <ASPinboard/ASPinboard.h>
 
 @implementation PinboardNotesDataSource
 
