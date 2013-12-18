@@ -21,7 +21,6 @@ static const CGFloat PADDING_Y = 3.0f;
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
     }
     return self;
 }

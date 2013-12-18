@@ -106,19 +106,14 @@ static const CGFloat PADDING_Y = 2.0f;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.enabled) {
-        [self setSelected:YES];
+        self.selected = YES;
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self.superview];
-    
-    if (CGRectContainsPoint(self.frame, touchPoint)) {
-        [self setSelected:YES];
-    } else {
-        [self setSelected:NO];
-    }
+    self.selected = CGRectContainsPoint(self.frame, touchPoint);
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -132,46 +127,52 @@ static const CGFloat PADDING_Y = 2.0f;
         }
     }
     
-    [self setSelected:NO];
+    if (self.enabled) {
+        self.selected = NO;
+    }
 }
 
 #pragma mark Setters
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
     if (!self.imageView.image) {
         [super setBackgroundColor:[UIColor colorWithCGColor:self.layer.backgroundColor]];
-    } else {
+    }
+    else {
         [super setBackgroundColor:backgroundColor];
     }
 }
 
 - (void)setEnabled:(BOOL)enabled {
     _enabled = enabled;
-    if (enabled) {
-        self.layer.backgroundColor = self.normalColor.CGColor;
-    } else {
-        self.layer.backgroundColor = self.disabledColor.CGColor;
-    }
+    [self updateBackgroundColor];
 }
 
 - (void)setSelected:(BOOL)selected {
     _selected = selected;
     if (selected) {
         self.layer.backgroundColor = self.selectedColor.CGColor;
-    } else {
-        if (self.enabled) {
-            self.layer.backgroundColor = self.normalColor.CGColor;
-        } else {
-            self.layer.backgroundColor = self.disabledColor.CGColor;
-        }
+    }
+    else {
+        [self updateBackgroundColor];
     }
 }
 
 - (void)setNormalColor:(UIColor *)normalColor {
     _normalColor = normalColor;
-    [self setEnabled:_enabled];
+    self.enabled = _enabled;
 }
 
 #pragma mark - Helpers
+
+- (void)updateBackgroundColor {
+    if (self.enabled) {
+        self.layer.backgroundColor = self.normalColor.CGColor;
+    }
+    else {
+        self.layer.backgroundColor = self.disabledColor.CGColor;
+    }
+}
+
 - (UIColor *)lightenColor:(UIColor *)color amount:(CGFloat)amount {
     CGFloat h, s, b, a;
     if ([color getHue:&h saturation:&s brightness:&b alpha:&a]) {

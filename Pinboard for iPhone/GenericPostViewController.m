@@ -905,8 +905,7 @@ static NSInteger kToolbarHeight = 44;
 
     cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
-    
-    
+
     cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     cell.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
     cell.textView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -932,7 +931,8 @@ static NSInteger kToolbarHeight = 44;
     if (badges.count > 0) {
         [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
         [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
-    } else {
+    }
+    else {
         [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": cell.textView }];
     }
 
@@ -1053,7 +1053,7 @@ static NSInteger kToolbarHeight = 44;
     });
 }
 
-#pragma mark - RDActionSheet
+#pragma mark - UIActionSheetDelegate
 
 - (void)actionSheetCancel:(UIActionSheet *)actionSheet {
     self.tableView.scrollEnabled = YES;
@@ -1081,7 +1081,8 @@ static NSInteger kToolbarHeight = 44;
             }
         }
 
-    } else {
+    }
+    else {
         if (buttonIndex >= 0) {
             NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
             id <GenericPostDataSource> dataSource = [self currentDataSource];
