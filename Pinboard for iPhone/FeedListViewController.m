@@ -371,6 +371,7 @@
                 }
             }
 
+            // Can we just use self.navigationController instead?
             [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
             break;
         }
