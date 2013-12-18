@@ -656,7 +656,6 @@ static NSInteger kToolbarHeight = 44;
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
-        self.editButton.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -671,7 +670,6 @@ static NSInteger kToolbarHeight = 44;
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
-        self.editButton.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -729,8 +727,9 @@ static NSInteger kToolbarHeight = 44;
         NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
         [bookmarksToUpdate addObject:bookmark];
     }];
-    
+
     [self markPostsAsRead:bookmarksToUpdate];
+    [self toggleEditingMode:nil];
 }
 
 - (void)multiEdit:(id)sender {
@@ -751,7 +750,7 @@ static NSInteger kToolbarHeight = 44;
     }
     
     PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithTags:bookmarksToUpdate];
-    [self.navigationController pushViewController:vc animated:YES];
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)multiDelete:(id)sender {
@@ -1134,7 +1133,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Post Action Methods
 
 - (void)markPostAsRead {
-    [self markPostsAsRead:@[ self.selectedPost ] notify:YES];
+    [self markPostsAsRead:@[self.selectedPost] notify:YES];
 }
 
 - (void)markPostsAsRead:(NSArray *)posts {
