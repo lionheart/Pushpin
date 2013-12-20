@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "PPBadgeView.h"
+#import "PPTheme.h"
 
 @implementation PPBadgeView
 
@@ -50,7 +51,7 @@ static const CGFloat PADDING_Y = 2.0f;
         [self addSubview:self.imageView];
         
         // Calculate our frame
-        CGSize size = [@"badge" sizeWithAttributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:((NSNumber *)badgeOptions[PPBadgeFontSize]).floatValue] }];
+        CGSize size = [@"badge" sizeWithAttributes:@{ NSFontAttributeName: [PPTheme tagFont] }];
         self.frame = CGRectMake(0, 0, size.height + (PADDING_X * 2), size.height + (PADDING_Y * 2));
         self.imageView.frame = CGRectMake(PADDING_X, PADDING_Y, size.height, size.height);
     }
@@ -82,7 +83,7 @@ static const CGFloat PADDING_Y = 2.0f;
         
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = [text lowercaseString];
-        self.textLabel.font = [UIFont systemFontOfSize:((NSNumber *)badgeOptions[PPBadgeFontSize]).floatValue];
+        self.textLabel.font = [PPTheme tagFont];
         self.textLabel.textColor = [UIColor whiteColor];
         
         // Calculate our frame

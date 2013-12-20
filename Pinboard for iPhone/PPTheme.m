@@ -19,16 +19,24 @@
     return theme;
 }
 
++ (UIFont *)extraLargeFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
+}
+
 + (UIFont *)titleFont {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
 }
 
 + (UIFont *)descriptionFont {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize]];
 }
 
 + (UIFont *)urlFont {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 2];
+}
+
++ (UIFont *)tagFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 4];
 }
 
 + (CGFloat)fontSize {
@@ -36,6 +44,7 @@
 }
 
 + (NSString *)fontName {
+    return @"Avenir";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.FontName"];
 }
 
