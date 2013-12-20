@@ -23,6 +23,7 @@
 #import "PinboardFeedDataSource.h"
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
+#import "PPTheme.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -314,7 +315,7 @@
         titleButton.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
         titleButton.titleLabel.textColor = [UIColor whiteColor];
         titleButton.backgroundColor = [UIColor clearColor];
-        titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+        titleButton.titleLabel.font = [PPTheme extraLargeFont];
         titleButton.adjustsImageWhenHighlighted = NO;
         pinboardViewController.navigationItem.titleView = titleButton;
         

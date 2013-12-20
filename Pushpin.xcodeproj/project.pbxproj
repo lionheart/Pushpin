@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
+		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714097816F157B100E8FE29 /* gray-button-cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097616F157B100E8FE29 /* gray-button-cap.png */; };
 		3714097916F157B100E8FE29 /* gray-button-cap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714097716F157B100E8FE29 /* gray-button-cap@2x.png */; };
@@ -617,6 +618,8 @@
 		37018CE5180E3C0B00226408 /* PPReadLaterActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReadLaterActivity.h; sourceTree = "<group>"; };
 		37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReadLaterActivity.m; sourceTree = "<group>"; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
+		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
+		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
@@ -1763,6 +1766,8 @@
 				37405C18186152F70052213A /* View Controllers */,
 				37405C1418614FF50052213A /* Categories */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
+				370B1B771864FADC00319A20 /* PPTitleButton.h */,
+				370B1B781864FADC00319A20 /* PPTitleButton.m */,
 				37405C6518620BCB0052213A /* PostMetadata.h */,
 				37405C6618620BCB0052213A /* PostMetadata.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
@@ -2821,6 +2826,7 @@
 				E8734242180DB18500CF9E5F /* PPReadLaterActivity.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
+				370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */,
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
 				3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */,

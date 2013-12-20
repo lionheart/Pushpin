@@ -12,9 +12,11 @@
 
 + (instancetype)defaultTheme;
 
++ (UIFont *)extraLargeFont;
 + (UIFont *)titleFont;
 + (UIFont *)descriptionFont;
 + (UIFont *)urlFont;
++ (UIFont *)tagFont;
 
 + (NSString *)fontName;
 + (NSString *)boldFontName;
