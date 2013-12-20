@@ -20,6 +20,10 @@
 
 @implementation PPDisplaySettingsViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
@@ -82,7 +86,7 @@
     if (indexPath.section == 0) {
         switch (indexPath.row) {
             case 0:
-                cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.dimReadPostsSwitch = [[UISwitch alloc] init];
@@ -94,7 +98,7 @@
                 break;
                 
             case 1:
-                cell.textLabel.text = NSLocalizedString(@"Double tap to edit?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Double tap to edit", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.doubleTapToEditSwitch = [[UISwitch alloc] init];
@@ -105,7 +109,7 @@
                 cell.accessoryView = self.doubleTapToEditSwitch;
                 break;
             case 2:
-                cell.textLabel.text = NSLocalizedString(@"Mark as read after viewing?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Mark bookmarks as read after viewing", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.markReadSwitch = [[UISwitch alloc] init];
@@ -116,7 +120,7 @@
                 cell.accessoryView = self.markReadSwitch;
                 break;
             case 3:
-                cell.textLabel.text = NSLocalizedString(@"Auto correct text?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Auto correct text", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.autoCorrectionSwitch = [[UISwitch alloc] init];
@@ -127,7 +131,7 @@
                 cell.accessoryView = self.autoCorrectionSwitch;
                 break;
             case 4:
-                cell.textLabel.text = NSLocalizedString(@"Auto capitalize text?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Auto capitalize text", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.autoCapitalizationSwitch = [[UISwitch alloc] init];
@@ -138,7 +142,7 @@
                 cell.accessoryView = self.autoCapitalizationSwitch;
                 break;
             case 5:
-                cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions?", nil);
+                cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.compressPostsSwitch = [[UISwitch alloc] init];
@@ -153,7 +157,8 @@
             default:
                 break;
         }
-    } else if (indexPath.section == 1) {
+    }
+    else if (indexPath.section == 1) {
         cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
         cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

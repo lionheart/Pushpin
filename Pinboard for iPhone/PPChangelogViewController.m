@@ -23,13 +23,16 @@
 @implementation PPChangelogViewController
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.title = @"Changelog";
@@ -79,6 +82,8 @@
         }
         index++;
     }
+    
+    [self.tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

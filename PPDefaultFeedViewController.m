@@ -217,10 +217,18 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
+    NSIndexPath *previousDefaultIndexPath = self.defaultIndexPath;
+    self.defaultIndexPath = indexPath;
+
+    [CATransaction begin];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [tableView cellForRowAtIndexPath:self.defaultIndexPath].accessoryType = UITableViewCellAccessoryNone;
-    [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
+    [CATransaction setCompletionBlock:^{
+        [tableView beginUpdates];
+        [tableView reloadRowsAtIndexPaths:@[indexPath, previousDefaultIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
+    }];
+    [CATransaction commit];
 
     // Build our new default view string
     NSString *defaultFeed = @"personal-all";
@@ -271,8 +279,6 @@
     
     // Update the default feed and pop the view
     [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
-    
-    self.defaultIndexPath = indexPath;
 }
 
 @end
