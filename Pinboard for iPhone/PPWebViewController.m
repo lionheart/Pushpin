@@ -916,30 +916,27 @@ static CGFloat timeInterval = 3;
     }
 
     // This is the scrollView's content offset PLUS the amount that the title bar has been shrunk
-    CGFloat effectiveOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
+    CGFloat effectiveOffset = scrollView.contentOffset.y + kTitleHeight - self.titleHeightConstraint.constant;
     
     // Scroll Distance from Y Threshold. Greater than zero -> increase title view size.
     CGFloat distanceFromYThreshold = effectiveOffset - self.yOffsetToStartShowingTitleView;
 
-    if (distanceFromYThreshold >= 0) {
+    // This value is negative if the scroll view is above the threshold to show the view.
+    BOOL shouldUpdateViewConstants = distanceFromYThreshold >= 0;
+    if (shouldUpdateViewConstants) {
         self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
         self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold);
         [self.view layoutIfNeeded];
     }
     
-    BOOL titleViewIsExpanded = distanceFromYThreshold < 22;
+    BOOL titleViewIsExpanded = self.titleHeightConstraint.constant > 22;
     if (titleViewIsExpanded) {
         // If the title view isn't the minimum size, don't actually scroll the webview.
         // We do this by resetting the offset.
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, self.yOffsetToStartShowingTitleView);
     }
-
-    if (self.titleHeightConstraint.constant > 22) {
-        // If the title is taller than 22 pixels, we're changing it
-        
-    }
     else if (scrollView.contentOffset.y < 0) {
-        // When the user scrolls up and the title height is equal to 22px, we just need to give it a little push
+        // If the title view is minimized, and the user is scrolling up at the top of the view, we just need to give it a little push
         self.titleHeightConstraint.constant = MAX(22, MIN(kTitleHeight, self.titleHeightConstraint.constant - scrollView.contentOffset.y));
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
         [self.view layoutIfNeeded];
