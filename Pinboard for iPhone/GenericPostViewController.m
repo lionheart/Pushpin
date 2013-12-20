@@ -180,7 +180,7 @@ static NSInteger kToolbarHeight = 44;
     }
     
     if (self.navigationController.navigationBarHidden) {
-        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
@@ -364,7 +364,6 @@ static NSInteger kToolbarHeight = 44;
                             }
                             
                             if ([self.navigationController topViewController] == self) {
-                                [self.navigationController setNavigationBarHidden:YES animated:YES];
                                 [self.navigationController pushViewController:self.webViewController animated:YES];
                             }
                         }
