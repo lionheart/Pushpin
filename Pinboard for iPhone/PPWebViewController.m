@@ -350,8 +350,7 @@ static CGFloat timeInterval = 3;
         }
     }
     else if (recognizer == self.tapGestureRecognizer || recognizer == self.bottomTapGestureRecognizer) {
-        self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y;
-        [self showToolbar];
+        [self showToolbarAnimated:YES];
     }
 }
 
@@ -960,15 +959,8 @@ static CGFloat timeInterval = 3;
     if (self.titleHeightConstraint.constant == kTitleHeight) {
         return YES;
     }
-    
-    [self showToolbar];
-    // Show the title and toolbar if the user taps the toolbar and it's not already showing
-//    [UIView animateWithDuration:0.3
-//                     animations:^{
-//                         self.toolbarConstraint.constant = kToolbarHeight;
-//                         self.titleHeightConstraint.constant = kTitleHeight;
-//                         [self.view layoutIfNeeded];
-//                     }];
+
+    [self showToolbarAnimated:YES];
     return NO;
 }
 
@@ -988,6 +980,7 @@ static CGFloat timeInterval = 3;
     self.actionButton.enabled = NO;
     self.viewMobilizeButton.enabled = NO;
     self.viewRawButton.enabled = NO;
+    [self showToolbarAnimated:NO];
 
     switch (navigationType) {
         case UIWebViewNavigationTypeBackForward:
@@ -1044,6 +1037,15 @@ static CGFloat timeInterval = 3;
     [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+
+    if (self.webView.scrollView.contentSize.height - kTitleHeight <= self.webView.frame.size.height) {
+        self.webView.scrollView.scrollEnabled = NO;
+        self.webView.scrollView.scrollsToTop = NO;
+    }
+    else {
+        self.webView.scrollView.scrollEnabled = YES;
+        self.webView.scrollView.scrollsToTop = YES;
+    }
     
     if (self.numberOfRequestsInProgress == 0) {
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
@@ -1083,7 +1085,7 @@ static CGFloat timeInterval = 3;
                     
                     self.prefersStatusBarHidden = NO;
                     if (isDark) {
-                        self.titleLabel.textColor = [UIColor lightTextColor];
+                        self.titleLabel.textColor = [UIColor whiteColor];
                         self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
                     }
                     else {
@@ -1122,18 +1124,32 @@ static CGFloat timeInterval = 3;
 
 #pragma mark Utils
 
-- (void)showToolbar {
-    [UIView animateWithDuration:0.3
-                          delay:0
-         usingSpringWithDamping:0.5
-          initialSpringVelocity:0
-                        options:0
-                     animations:^{
-                         self.toolbarConstraint.constant = kToolbarHeight;
-                         self.titleHeightConstraint.constant = kTitleHeight;
-                         [self.view layoutIfNeeded];
-                     }
-                     completion:nil];
+- (void)showToolbarAnimated:(BOOL)animated {
+    void (^ShowToolbarBlock)() = ^{
+        self.toolbarConstraint.constant = kToolbarHeight;
+        self.titleHeightConstraint.constant = kTitleHeight;
+        [self.view layoutIfNeeded];
+    };
+
+    if (animated) {
+        if (self.webView.scrollView.contentOffset.y + self.webView.frame.size.height > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+            [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - kToolbarHeight - self.webView.frame.size.height) animated:NO];
+        }
+        self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y + kTitleHeight;
+
+        [UIView animateWithDuration:0.3
+                              delay:0
+             usingSpringWithDamping:0.5
+              initialSpringVelocity:0
+                            options:0
+                         animations:^{
+                             ShowToolbarBlock();
+                         }
+                         completion:nil];
+    }
+    else {
+        ShowToolbarBlock();
+    }
 }
 
 @end

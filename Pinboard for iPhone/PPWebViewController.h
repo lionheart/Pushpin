@@ -14,7 +14,6 @@
 @interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
-@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *webViewContainer;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSMutableData *data;
@@ -71,7 +70,7 @@
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *toolbarHideTimer;
 
-- (void)showToolbar;
+- (void)showToolbarAnimated:(BOOL)animated;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
