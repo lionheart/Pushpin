@@ -209,8 +209,8 @@ static CGFloat timeInterval = 3;
     self.titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
     [self.titleView addSubview:self.titleLabel];
     [self.titleView lhs_centerHorizontallyForView:self.titleLabel];
-    [self.titleView lhs_centerVerticallyForView:self.titleLabel];
-    [self.titleView lhs_addConstraints:@"H:|-15-[label]-15-|" views:@{@"label": self.titleLabel}];
+    [self.titleView lhs_addConstraints:@"H:|-(>=15)-[label]-(>=15)-|" views:@{@"label": self.titleLabel}];
+    [self.titleView lhs_addConstraints:@"V:|-(<=3)-[label]-(<=3)-|" views:@{@"label": self.titleLabel}];
     
     NSDictionary *toolbarViews = @{@"back": self.backButton,
                                    @"indicator": self.bottomActivityIndicator,
@@ -565,6 +565,11 @@ static CGFloat timeInterval = 3;
     NSArray *activityItems = [NSArray arrayWithObjects:url, title, nil];
     self.activityView = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:allActivities];
     self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo, UIActivityTypeAddToReadingList];
+    
+    __weak id weakself = self;
+    self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
+        [weakself setNeedsStatusBarAppearanceUpdate];
+    };
     
     [self presentViewController:self.activityView animated:YES completion:nil];
 }
@@ -1014,7 +1019,7 @@ static CGFloat timeInterval = 3;
     switch (navigationType) {
         case UIWebViewNavigationTypeOther:
             break;
-            
+
         case UIWebViewNavigationTypeReload:
             break;
 
