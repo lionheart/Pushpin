@@ -19,6 +19,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
 #import "PPTheme.h"
+#import "PPNavigationController.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>

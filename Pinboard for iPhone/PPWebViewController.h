@@ -14,10 +14,14 @@
 @interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *webViewContainer;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;
+@property (nonatomic, strong) UIView *titleView;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 
@@ -32,6 +36,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *bottomActivityIndicator;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
 
@@ -41,19 +47,35 @@
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
 @property (nonatomic) BOOL shouldMobilize;
 @property (nonatomic) BOOL stopped;
+@property (nonatomic) BOOL prefersStatusBarHidden;
+@property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
+
+@property (nonatomic) CGFloat calculatedContentYOffset;
+@property (nonatomic) CGFloat previousContentYOffset;
+@property (nonatomic) CGPoint contentOffsetForTitleView;
+@property (nonatomic) CGPoint contentOffsetWhenDraggingStarted;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) CGRect toolbarFrame;
 @property (nonatomic) NSInteger numberOfRequests;
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
+
+@property (nonatomic, strong) NSMutableArray *history;
+@property (nonatomic, strong) NSLayoutConstraint *topLayoutConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *titleHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *toolbarConstraint;
 @property (nonatomic, strong) NSMutableArray *navigationHistory;
 @property (nonatomic, strong) NSDictionary *selectedLink;
+@property (nonatomic, strong) UIActionSheet *backActionSheet;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
 @property (nonatomic, strong) UIActivityViewController *activityView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UIView *toolbar;
+@property (nonatomic, strong) NSTimer *toolbarHideTimer;
 
+- (void)hideToolbar;
+- (void)showToolbar;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;

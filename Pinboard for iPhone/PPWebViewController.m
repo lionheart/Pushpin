@@ -28,6 +28,7 @@
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 
 static NSInteger kToolbarHeight = 44;
+static NSInteger kTitleHeight = 40;
 
 @interface PPWebViewController ()
 
@@ -40,43 +41,52 @@ static NSInteger kToolbarHeight = 44;
 @synthesize selectedLink, selectedActionSheet;
 
 - (void)viewDidLayoutSubviews {
-    NSDictionary *views = @{@"top": self.topLayoutGuide,
-                            @"toolbar": self.toolbar,
-                            @"background": self.statusBarBackgroundView,
-                            @"webview": self.webView };
-
-    NSDictionary *metrics = @{@"height": @(kToolbarHeight),
-                              @"topHeight": @([self.topLayoutGuide length]) };
-
-    [self.view lhs_addConstraints:@"V:|[background(topHeight)][webview][toolbar(height)]|" metrics:metrics views:views];
+    self.topLayoutConstraint.constant = [self.topLayoutGuide length];
     [self.view layoutIfNeeded];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    self.contentOffsetForTitleView = CGPointMake(0, 0);
+    self.prefersStatusBarHidden = YES;
+    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
+    self.history = [NSMutableArray array];
     
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.tapGestureRecognizer.numberOfTapsRequired = 1;
     
     self.statusBarBackgroundView = [[UIView alloc] init];
+    self.statusBarBackgroundView.userInteractionEnabled = YES;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     self.statusBarBackgroundView.backgroundColor = HEX(0x0096FFFF);
     [self.view addSubview:self.statusBarBackgroundView];
+    
+    self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.backgroundColor = [UIColor redColor];
+    self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.scrollView];
+    
+    self.webViewContainer = [[UIView alloc] init];
+    self.webViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.webViewContainer.backgroundColor = [UIColor yellowColor];
+    [self.scrollView addSubview:self.webViewContainer];
 
-    CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
-    self.webView.autoresizingMask = UIViewAutoresizingNone;
+    self.webView = [[UIWebView alloc] init];
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.userInteractionEnabled = YES;
-    [self.view addSubview:self.webView];
+    self.webView.backgroundColor = [UIColor greenColor];
+    [self.webViewContainer addSubview:self.webView];
     
     // Long press gesture for custom menu
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
@@ -91,6 +101,11 @@ static NSInteger kToolbarHeight = 44;
     self.toolbar = [[UIView alloc] init];
     self.toolbar.backgroundColor = HEX(0xEBF2F6FF);
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    UIView *toolbarBackground = [[UIView alloc] init];
+    toolbarBackground.backgroundColor = HEX(0xEBF2F6FF);
+    toolbarBackground.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:toolbarBackground];
     
     self.bottomActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.bottomActivityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
@@ -167,6 +182,22 @@ static NSInteger kToolbarHeight = 44;
     toolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:toolbarBorderView];
     
+    self.titleView = [[UIView alloc] init];
+    self.titleView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.titleView addGestureRecognizer:self.tapGestureRecognizer];
+    [self.scrollView addSubview:self.titleView];
+    
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.titleLabel.minimumScaleFactor = 0.5;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
+    [self.titleView addSubview:self.titleLabel];
+    [self.titleView lhs_centerHorizontallyForView:self.titleLabel];
+    [self.titleView lhs_centerVerticallyForView:self.titleLabel];
+    [self.titleView lhs_addConstraints:@"H:|-15-[label]-15-|" views:@{@"label": self.titleLabel}];
+    
     NSDictionary *toolbarViews = @{@"back": self.backButton,
                                    @"indicator": self.bottomActivityIndicator,
                                    @"read": self.markAsReadButton,
@@ -176,10 +207,13 @@ static NSInteger kToolbarHeight = 44;
                                    @"edit": self.editButton,
                                    @"stop": self.stopButton,
                                    @"add": self.addButton,
+                                   @"background": toolbarBackground,
                                    @"border": toolbarBorderView };
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"H:|[background]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"V:|[background(height)]" metrics:@{@"height": @(kToolbarHeight + 60)} views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[back]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
@@ -207,12 +241,36 @@ static NSInteger kToolbarHeight = 44;
     [self.view addSubview:self.toolbar];
     
     NSDictionary *views = @{@"toolbar": self.toolbar,
-                            @"background": self.statusBarBackgroundView,
-                            @"webview": self.webView };
+                            @"scroll": self.scrollView,
+                            @"background": self.statusBarBackgroundView };
+
     // Setup auto-layout constraints
+    [self.view lhs_addConstraints:@"H:|[scroll]|" views:views];
     [self.view lhs_addConstraints:@"H:|[background]|" views:views];
     [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
+    
+    NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
+    [self.view lhs_addConstraints:@"V:|[background][scroll][toolbar(>=height)]|" metrics:metrics views:views];
+    
+    [self.webView lhs_expandToFillSuperview];
+    
+    NSDictionary *scrollViews = @{@"webview": self.webViewContainer,
+                                  @"title": self.titleView};
+
+    [self.scrollView lhs_addConstraints:@"H:|[webview]|" views:scrollViews];
+    [self.scrollView lhs_addConstraints:@"H:|[title]|" views:scrollViews];
+    [self.scrollView lhs_addConstraints:@"V:|[title][webview]|" views:scrollViews];
+    
+    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:self.toolbarConstraint];
+    
+    self.titleHeightConstraint = [NSLayoutConstraint constraintWithItem:self.titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:kToolbarHeight];
+    [self.scrollView addConstraint:self.titleHeightConstraint];
+    
+    self.topLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.statusBarBackgroundView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
+    [self.view addConstraint:self.topLayoutConstraint];
 }
 
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
@@ -276,15 +334,39 @@ static NSInteger kToolbarHeight = 44;
         [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
     }
     else if (recognizer == self.backButtonLongPressGestureRecognizer) {
-        if (recognizer.state == UIGestureRecognizerStateEnded) {
-            [self.navigationController popViewControllerAnimated:YES];
+        if (recognizer.state == UIGestureRecognizerStateBegan) {
+            self.backActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
+            NSRange range = NSMakeRange(MAX(0, (NSInteger)self.history.count - 5), MIN(5, self.history.count));
+            NSArray *lastFiveHistoryItems = [self.history subarrayWithRange:range];
+            [lastFiveHistoryItems enumerateObjectsUsingBlock:^(NSDictionary *item, NSUInteger idx, BOOL *stop) {
+                [self.backActionSheet addButtonWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]];
+            }];
+
+            [self.backActionSheet addButtonWithTitle:@"Bookmarks"];
+            [self.backActionSheet addButtonWithTitle:@"Cancel"];
+            self.backActionSheet.cancelButtonIndex = self.backActionSheet.numberOfButtons - 1;
+            [self.backActionSheet showInView:self.toolbar];
         }
+    }
+    else if (recognizer == self.tapGestureRecognizer) {
+        self.contentOffsetForTitleView = self.webView.scrollView.contentOffset;
+        [UIView animateWithDuration:0.2
+                         animations:^{
+                             self.titleHeightConstraint.constant = kTitleHeight;
+                             self.toolbarConstraint.constant = kToolbarHeight;
+                             [self.view layoutIfNeeded];
+                         }];
     }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [UIView animateWithDuration:0.3 animations:^{
+        [self setNeedsStatusBarAppearanceUpdate];
+    }];
+
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     // Determine if we should mobilize or not
@@ -314,7 +396,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
     if (!self.alreadyLoaded) {
         [self loadURL];
     }
@@ -339,7 +421,7 @@ static NSInteger kToolbarHeight = 44;
     self.stopped = NO;
     
     self.title = self.urlString;
-    
+
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     [self.webView loadRequest:request];
 }
@@ -458,7 +540,7 @@ static NSInteger kToolbarHeight = 44;
     PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:READLATER_NATIVE];
     nativeReadLaterActivity.delegate = self;
     [readLaterActivities addObject:nativeReadLaterActivity];
-    
+
     // If they have a third-party read later service configured, add it too
     if (readLaterSetting > READLATER_NONE) {
         PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
@@ -491,7 +573,8 @@ static NSInteger kToolbarHeight = 44;
         if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
             // Copy URL to clipboard
             [self copyURL:[NSURL URLWithString:[self.selectedLink valueForKey:@"url"]]];
-        } else if ([title isEqualToString:NSLocalizedString(@"Add to Pinboard", nil)]) {
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Add to Pinboard", nil)]) {
             // Add to bookmarks
             [self showAddViewController:self.selectedLink];
         }
@@ -507,6 +590,7 @@ static NSInteger kToolbarHeight = 44;
     if (self.activityView) {
         [self.activityView dismissViewControllerAnimated:YES completion:nil];
     }
+
     NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
     if (service.integerValue == READLATER_INSTAPAPER) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
@@ -826,6 +910,25 @@ static NSInteger kToolbarHeight = 44;
     return self.numberOfRequests - self.numberOfRequestsCompleted;
 }
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == self.webView.scrollView) {
+        if (self.titleHeightConstraint.constant > 22) {
+            // If the title is taller than 22 pixels, we're changing it
+            CGFloat calculatedYContentOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
+            self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
+
+            // Don't actually scroll
+            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+            [self.view layoutIfNeeded];
+        }
+    }
+    else if (scrollView == self.scrollView) {
+        
+    }
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -838,6 +941,16 @@ static NSInteger kToolbarHeight = 44;
     self.actionButton.enabled = NO;
     self.viewMobilizeButton.enabled = NO;
     self.viewRawButton.enabled = NO;
+
+    switch (navigationType) {
+        case UIWebViewNavigationTypeBackForward:
+            // We've disabled forward in the UI, so it must be a pop of the stack.
+            [self.history removeLastObject];
+            break;
+
+        default:
+            break;
+    }
     
     return YES;
 }
@@ -851,20 +964,99 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsCompleted++;
+    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    
+    if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+        self.titleLabel.text = self.url.host;
+    }
+    else {
+        self.titleLabel.text = self.title;
+    }
+
+    if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
+        NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
+        NSMutableArray *finalTitleComponents = [NSMutableArray array];
+        for (NSString *component in titleComponents) {
+            if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
+                [finalTitleComponents addObject:component];
+            }
+            else {
+                break;
+            }
+        }
+
+        [self.history addObject:@{@"url": self.url.absoluteString,
+                                  @"host": self.url.host,
+                                  @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+    }
 
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
-
-    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.title = pageTitle;
 
     // Disable the default action sheet
     [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+    
+    if (self.numberOfRequestsInProgress == 0) {
+        self.toolbarHideTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
+        
+        NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
+
+        NSError *error;
+        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
+        if (match) {
+            NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
+            NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
+            NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
+            CGFloat R = [redString floatValue] / 255;
+            CGFloat G = [greenString floatValue] / 255;
+            CGFloat B = [blueString floatValue] / 255;
+            CGFloat alpha = 1;
+
+            NSRange alphaRange = [match rangeAtIndex:5];
+            if (alphaRange.location != NSNotFound) {
+                NSString *alphaString = [response substringWithRange:alphaRange];
+                alpha = [alphaString floatValue];
+            }
+
+            // Formula derived from here:
+            // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+            
+            // Alpha blending:
+            // http://stackoverflow.com/a/746937/39155
+            CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
+            CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
+            CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
+            BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 125;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.3 animations:^{
+                    self.statusBarBackgroundView.backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
+                    self.titleView.backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
+                    
+                    self.prefersStatusBarHidden = NO;
+                    if (isDark) {
+                        self.titleLabel.textColor = [UIColor lightTextColor];
+                        self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+                    }
+                    else {
+                        self.titleLabel.textColor = [UIColor darkTextColor];
+                        self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+                    }
+
+                    [self setNeedsStatusBarAppearanceUpdate];
+                }];
+            });
+        }
+    }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
+    [self.toolbarHideTimer invalidate];
+
     self.numberOfRequests++;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
@@ -882,6 +1074,39 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     return YES;
+}
+
+#pragma mark - Utils
+
+- (void)hideToolbar {
+    if ([UIApplication currentSize].height < self.webView.scrollView.contentSize.height) {
+        [UIView animateKeyframesWithDuration:0.5
+                                       delay:0
+                                     options:UIViewKeyframeAnimationOptionCalculationModeCubic
+                                  animations:^{
+                                      [UIView addKeyframeWithRelativeStartTime:0
+                                                              relativeDuration:0.8
+                                                                    animations:^{
+                                                                        self.toolbarConstraint.constant = kToolbarHeight + 10;
+                                                                        [self.view layoutIfNeeded];
+                                                                    }];
+                                      
+                                      [UIView addKeyframeWithRelativeStartTime:0.8
+                                                              relativeDuration:0.2
+                                                                    animations:^{
+                                                                        self.toolbarConstraint.constant = 0;
+                                                                        [self.view layoutIfNeeded];
+                                                                    }];
+                                  }
+                                  completion:nil];
+    }
+}
+
+- (void)showToolbar {
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         
+                     }];
 }
 
 @end

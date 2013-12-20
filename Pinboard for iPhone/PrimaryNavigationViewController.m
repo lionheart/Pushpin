@@ -8,6 +8,7 @@
 
 #import "PrimaryNavigationViewController.h"
 #import "AddBookmarkViewController.h"
+#import "PPNavigationController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <FMDB/FMDatabase.h>
@@ -70,7 +71,7 @@
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    UINavigationController *addBookmarkViewNavigationController = [[UINavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
     if (isUpdate.boolValue) {
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];

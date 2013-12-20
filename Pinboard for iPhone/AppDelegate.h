@@ -41,6 +41,7 @@ enum bookmarkupdateevents {
 
 @class PrimaryNavigationViewController;
 @class FMDatabaseQueue;
+@class PPNavigationController;
 
 @protocol BookmarkUpdateProgressDelegate <NSObject>
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
@@ -82,8 +83,8 @@ enum bookmarkupdateevents {
 @property (nonatomic, weak) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) UINavigationController *navigationController;
-@property (nonatomic, strong) UINavigationController *loginViewController;
+@property (nonatomic, strong) PPNavigationController *navigationController;
+@property (nonatomic, strong) PPNavigationController *loginViewController;
 @property (nonatomic) BOOL addBookmarkAlertViewIsVisible;
 
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
@@ -94,7 +95,6 @@ enum bookmarkupdateevents {
 @property (nonatomic, retain) NSTimer *refreshTimer;
 @property (nonatomic) BOOL bookmarksLoading;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
-
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;

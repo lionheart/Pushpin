@@ -127,7 +127,7 @@
 
         GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
         postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:postViewController];
+        PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
         if (self.navigationController.presentedViewController) {
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
@@ -172,7 +172,7 @@
         }
 
         webViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+        PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:webViewController];
         
         if (self.navigationController.presentedViewController) {
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
@@ -298,7 +298,7 @@
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 }
 
-- (UINavigationController *)navigationController {
+- (PPNavigationController *)navigationController {
     if (!_navigationController) {
         PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
         pinboardDataSource.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
@@ -414,11 +414,11 @@
     return _navigationController;
 }
 
-- (UINavigationController *)loginViewController {
+- (PPNavigationController *)loginViewController {
     if (!_loginViewController) {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
         
-        UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        PPNavigationController *controller = [[PPNavigationController alloc] initWithRootViewController:loginViewController];
         controller.navigationBar.translucent = NO;
         
         _loginViewController = controller;

@@ -13,6 +13,7 @@
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
 #import "PPTheme.h"
+#import "PPNavigationController.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -170,7 +171,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         [self.progressView setProgress:updated.floatValue / total.floatValue];
         
         if (updated.integerValue == total.integerValue) {
-            UINavigationController *controller = [AppDelegate sharedDelegate].navigationController;
+            PPNavigationController *controller = [AppDelegate sharedDelegate].navigationController;
             controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
             [self presentViewController:controller animated:YES completion:nil];
         }
