@@ -25,6 +25,7 @@
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 
 @property (nonatomic, strong) UIView *showToolbarAndTitleBarHiddenView;
+@property (nonatomic, strong) UIView *toolbarBackgroundView;
 @property (nonatomic, strong) UIButton *actionButton;
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *markAsReadButton;
@@ -68,7 +69,7 @@
 @property (nonatomic, strong) UIActivityViewController *activityView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UIView *toolbar;
-@property (nonatomic, strong) NSTimer *toolbarHideTimer;
+@property (nonatomic, strong) NSTimer *webViewTimeoutTimer;
 
 - (void)showToolbarAnimated:(BOOL)animated;
 - (void)hideToolbarAnimated:(BOOL)animated;
@@ -98,6 +99,8 @@
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (void)expandWebViewToFullScreen;
 - (NSInteger)numberOfRequestsInProgress;
+- (void)webViewLoadTimedOut;
+- (void)updateInterfaceWithComputedWebPageBackgroundColor;
 
 - (BOOL)canMobilizeURL:(NSURL *)url;
 - (BOOL)canMobilizeCurrentURL;

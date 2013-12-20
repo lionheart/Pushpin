@@ -67,6 +67,8 @@ static CGFloat timeInterval = 3;
     self.bottomTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.bottomTapGestureRecognizer.numberOfTapsRequired = 1;
     
+    self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self.webView selector:@selector(stopLoading) userInfo:nil repeats:NO];
+    
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.userInteractionEnabled = YES;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -102,11 +104,11 @@ static CGFloat timeInterval = 3;
     self.toolbar = [[UIView alloc] init];
     self.toolbar.backgroundColor = HEX(0xEBF2F6FF);
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    UIView *toolbarBackground = [[UIView alloc] init];
-    toolbarBackground.backgroundColor = HEX(0xEBF2F6FF);
-    toolbarBackground.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.toolbar addSubview:toolbarBackground];
+
+    self.toolbarBackgroundView = [[UIView alloc] init];
+    self.toolbarBackgroundView.backgroundColor = HEX(0xEBF2F6FF);
+    self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.toolbarBackgroundView];
     
     self.bottomActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.bottomActivityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
@@ -114,8 +116,9 @@ static CGFloat timeInterval = 3;
     [self.bottomActivityIndicator startAnimating];
     [self.toolbar addSubview:self.bottomActivityIndicator];
 
+    UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.backButton setImage:[UIImage imageNamed:@"back_icon"] forState:UIControlStateNormal];
+    [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
 
     self.backButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] init];
@@ -124,54 +127,64 @@ static CGFloat timeInterval = 3;
     self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.backButton];
 
+    UIImage *markAsReadImage = [[UIImage imageNamed:@"mark-as-read"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
     self.markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.markAsReadButton setImage:[UIImage imageNamed:@"mark-as-read"] forState:UIControlStateNormal];
+    [self.markAsReadButton setImage:markAsReadImage forState:UIControlStateNormal];
     [self.markAsReadButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.markAsReadButton.enabled = NO;
     [self.toolbar addSubview:self.markAsReadButton];
-    
+
+    UIImage *stopButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.stopButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.stopButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-    [self.stopButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+    [self.stopButton setImage:stopButtonImage forState:UIControlStateNormal];
     self.stopButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.stopButton.hidden = YES;
     [self.toolbar addSubview:self.stopButton];
-    
+
+    UIImage *viewMobilizeButtonImage = [[UIImage imageNamed:@"mobilize"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *viewMobilizeButtonHighlightedImage = [[UIImage imageNamed:@"mobilize-active"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.viewMobilizeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.viewMobilizeButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-    [self.viewMobilizeButton setImage:[UIImage imageNamed:@"mobilize"] forState:UIControlStateNormal];
-    [self.viewMobilizeButton setImage:[UIImage imageNamed:@"mobilize-active"] forState:UIControlStateHighlighted];
+    [self.viewMobilizeButton setImage:viewMobilizeButtonImage forState:UIControlStateNormal];
+    [self.viewMobilizeButton setImage:viewMobilizeButtonHighlightedImage forState:UIControlStateHighlighted];
     self.viewMobilizeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.viewMobilizeButton.hidden = YES;
     self.viewMobilizeButton.enabled = NO;
     [self.toolbar addSubview:self.viewMobilizeButton];
     
+    UIImage *viewRawButtonImage = [[UIImage imageNamed:@"mobilized"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *viewRawButtonHighlightedImage = [[UIImage imageNamed:@"mobilized-active"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.viewRawButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.viewRawButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-    [self.viewRawButton setImage:[UIImage imageNamed:@"mobilized"] forState:UIControlStateNormal];
-    [self.viewRawButton setImage:[UIImage imageNamed:@"mobilized-active"] forState:UIControlStateHighlighted];
+    [self.viewRawButton setImage:viewRawButtonImage forState:UIControlStateNormal];
+    [self.viewRawButton setImage:viewRawButtonHighlightedImage forState:UIControlStateHighlighted];
     self.viewRawButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.viewRawButton.hidden = YES;
     self.viewRawButton.enabled = NO;
     [self.toolbar addSubview:self.viewRawButton];
 
+    UIImage *actionButtonImage = [[UIImage imageNamed:@"share"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.actionButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+    [self.actionButton setImage:actionButtonImage forState:UIControlStateNormal];
     [self.actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.actionButton.enabled = NO;
     [self.toolbar addSubview:self.actionButton];
     
+    UIImage *editButtonImage = [[UIImage imageNamed:@"edit"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.editButton setImage:[UIImage imageNamed:@"edit"] forState:UIControlStateNormal];
+    [self.editButton setImage:editButtonImage forState:UIControlStateNormal];
     [self.editButton addTarget:self action:@selector(showEditViewController) forControlEvents:UIControlEventTouchUpInside];
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.editButton.enabled = NO;
     [self.toolbar addSubview:self.editButton];
     
+    UIImage *addButtonImage = [[UIImage imageNamed:@"add"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    [self.addButton setImage:addButtonImage forState:UIControlStateNormal];
     [self.addButton addTarget:self action:@selector(showAddViewController) forControlEvents:UIControlEventTouchUpInside];
     self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.addButton.hidden = YES;
@@ -208,7 +221,7 @@ static CGFloat timeInterval = 3;
                                    @"edit": self.editButton,
                                    @"stop": self.stopButton,
                                    @"add": self.addButton,
-                                   @"background": toolbarBackground,
+                                   @"background": self.toolbarBackgroundView,
                                    @"border": toolbarBorderView };
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
@@ -260,12 +273,12 @@ static CGFloat timeInterval = 3;
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
     [self.view lhs_addConstraints:@"V:|[background][title][webview][toolbar(>=height)]" metrics:metrics views:views];
     
-    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
-    
+    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:self.toolbarConstraint];
     
-    self.titleHeightConstraint = [NSLayoutConstraint constraintWithItem:self.titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:kToolbarHeight];
+    self.titleHeightConstraint = [NSLayoutConstraint constraintWithItem:self.titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
     [self.view addConstraint:self.titleHeightConstraint];
     
     self.topLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.statusBarBackgroundView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
@@ -985,10 +998,6 @@ static CGFloat timeInterval = 3;
     return NO;
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    [self.toolbarHideTimer invalidate];
-}
-
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -1016,7 +1025,7 @@ static CGFloat timeInterval = 3;
         default:
             webView.scrollView.scrollEnabled = NO;
             webView.scrollView.scrollsToTop = NO;
-            [self showToolbarAnimated:NO];
+            [self showToolbarAnimated:YES];
             break;
     }
     
@@ -1026,6 +1035,7 @@ static CGFloat timeInterval = 3;
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     self.numberOfRequestsCompleted++;
 
+    DLog(@"E %@", webView.request.URL);
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
 }
@@ -1066,74 +1076,108 @@ static CGFloat timeInterval = 3;
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 
-    if (self.webView.scrollView.contentSize.height <= self.webView.frame.size.height) {
-        self.webView.scrollView.scrollEnabled = NO;
-        self.webView.scrollView.scrollsToTop = NO;
-    }
-    else {
+    if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
         self.webView.scrollView.scrollEnabled = YES;
         self.webView.scrollView.scrollsToTop = YES;
     }
 
     if (self.numberOfRequestsInProgress == 0) {
-        NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
-
-        NSError *error;
-        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
-        NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
-        if (match) {
-            NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
-            NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
-            NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
-            CGFloat R = [redString floatValue] / 255;
-            CGFloat G = [greenString floatValue] / 255;
-            CGFloat B = [blueString floatValue] / 255;
-            CGFloat alpha = 1;
-
-            NSRange alphaRange = [match rangeAtIndex:5];
-            if (alphaRange.location != NSNotFound) {
-                NSString *alphaString = [response substringWithRange:alphaRange];
-                alpha = [alphaString floatValue];
-            }
-
-            // Formula derived from here:
-            // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-            
-            // Alpha blending:
-            // http://stackoverflow.com/a/746937/39155
-            CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
-            CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
-            CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-            BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 125;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView animateWithDuration:0.3 animations:^{
-                    self.statusBarBackgroundView.backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
-                    self.titleView.backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
-                    
-                    self.prefersStatusBarHidden = NO;
-                    if (isDark) {
-                        self.titleLabel.textColor = [UIColor whiteColor];
-                        self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
-                    }
-                    else {
-                        self.titleLabel.textColor = [UIColor darkTextColor];
-                        self.preferredStatusBarStyle = UIStatusBarStyleDefault;
-                    }
-
-                    [self setNeedsStatusBarAppearanceUpdate];
-                }];
-            });
-        }
+        [self updateInterfaceWithComputedWebPageBackgroundColor];
     }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    [self.toolbarHideTimer invalidate];
+    [self.webViewTimeoutTimer invalidate];
+    self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self selector:@selector(webViewLoadTimedOut) userInfo:nil repeats:NO];
+    [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
     self.numberOfRequests++;
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
+}
+
+- (void)webViewLoadTimedOut {
+    [self updateInterfaceWithComputedWebPageBackgroundColor];
+}
+
+- (void)updateInterfaceWithComputedWebPageBackgroundColor {
+    [self showToolbarAnimated:NO];
+    self.prefersStatusBarHidden = NO;
+
+    if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
+        self.webView.scrollView.scrollEnabled = YES;
+        self.webView.scrollView.scrollsToTop = YES;
+    }
+
+    NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
+    
+    NSError *error;
+    NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
+    if (match) {
+        NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
+        NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
+        NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
+        CGFloat R = [redString floatValue] / 255;
+        CGFloat G = [greenString floatValue] / 255;
+        CGFloat B = [blueString floatValue] / 255;
+        CGFloat alpha = 1;
+        
+        NSRange alphaRange = [match rangeAtIndex:5];
+        if (alphaRange.location != NSNotFound) {
+            NSString *alphaString = [response substringWithRange:alphaRange];
+            alpha = [alphaString floatValue];
+        }
+        
+        // Formula derived from here:
+        // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+        
+        // Alpha blending:
+        // http://stackoverflow.com/a/746937/39155
+        CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
+        CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
+        CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
+        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 125;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 animations:^{
+                UIColor *backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
+                self.statusBarBackgroundView.backgroundColor = backgroundColor;
+                self.titleView.backgroundColor = backgroundColor;
+                self.titleView.tintColor = [UIColor whiteColor];
+                self.toolbarBackgroundView.backgroundColor = backgroundColor;
+                
+                if (isDark) {
+                    self.actionButton.tintColor = [UIColor whiteColor];
+                    self.backButton.tintColor = [UIColor whiteColor];
+                    self.editButton.tintColor = [UIColor whiteColor];
+                    self.addButton.tintColor = [UIColor whiteColor];
+                    self.stopButton.tintColor = [UIColor whiteColor];
+                    self.viewMobilizeButton.tintColor = [UIColor whiteColor];
+                    self.viewRawButton.tintColor = [UIColor whiteColor];
+                    self.markAsReadButton.tintColor = [UIColor whiteColor];
+                    
+                    self.titleLabel.textColor = [UIColor whiteColor];
+                    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+                }
+                else {
+                    self.actionButton.tintColor = HEX(0x808D96FF);
+                    self.backButton.tintColor = HEX(0x808D96FF);
+                    self.editButton.tintColor = HEX(0x808D96FF);
+                    self.addButton.tintColor = HEX(0x808D96FF);
+                    self.stopButton.tintColor = HEX(0x808D96FF);
+                    self.viewMobilizeButton.tintColor = HEX(0x808D96FF);
+                    self.viewRawButton.tintColor = HEX(0x808D96FF);
+                    self.markAsReadButton.tintColor = HEX(0x808D96FF);
+                    
+                    self.titleLabel.textColor = [UIColor darkTextColor];
+                    self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+                }
+                
+                [self setNeedsStatusBarAppearanceUpdate];
+            }];
+        });
+    }
 }
 
 - (BOOL)canMobilizeCurrentURL {
