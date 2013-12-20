@@ -51,8 +51,6 @@
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
 @property (nonatomic) CGFloat calculatedContentYOffset;
-@property (nonatomic) CGPoint contentOffsetForTitleView;
-@property (nonatomic) CGPoint contentOffsetWhenDraggingStarted;
 @property (nonatomic) CGFloat lastContentOffset;
 @property (nonatomic) CGRect toolbarFrame;
 @property (nonatomic) NSInteger numberOfRequests;
