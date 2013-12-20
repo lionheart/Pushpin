@@ -350,7 +350,9 @@ static CGFloat timeInterval = 3;
         }
     }
     else if (recognizer == self.tapGestureRecognizer || recognizer == self.bottomTapGestureRecognizer) {
-        [self showToolbarAnimated:YES];
+        if (self.webView.scrollView.scrollsToTop && self.webView.scrollView.scrollEnabled) {
+            [self showToolbarAnimated:YES];
+        }
     }
 }
 
@@ -929,6 +931,13 @@ static CGFloat timeInterval = 3;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.webView.scrollView.contentOffset.y + self.webView.frame.size.height > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+        self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
+    }
+    else {
+        self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = YES;
+    }
+
     if (scrollView.contentOffset.y < self.yOffsetToStartShowingTitleView) {
         self.yOffsetToStartShowingTitleView = MAX(0, scrollView.contentOffset.y);
     }
@@ -992,15 +1001,22 @@ static CGFloat timeInterval = 3;
     self.actionButton.enabled = NO;
     self.viewMobilizeButton.enabled = NO;
     self.viewRawButton.enabled = NO;
-    [self showToolbarAnimated:NO];
 
     switch (navigationType) {
+        case UIWebViewNavigationTypeOther:
+            break;
+            
+        case UIWebViewNavigationTypeReload:
+            break;
+
         case UIWebViewNavigationTypeBackForward:
             // We've disabled forward in the UI, so it must be a pop of the stack.
             [self.history removeLastObject];
-            break;
 
         default:
+            webView.scrollView.scrollEnabled = NO;
+            webView.scrollView.scrollsToTop = NO;
+            [self showToolbarAnimated:NO];
             break;
     }
     
@@ -1058,7 +1074,7 @@ static CGFloat timeInterval = 3;
         self.webView.scrollView.scrollEnabled = YES;
         self.webView.scrollView.scrollsToTop = YES;
     }
-    
+
     if (self.numberOfRequestsInProgress == 0) {
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
 
