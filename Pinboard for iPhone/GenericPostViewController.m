@@ -364,6 +364,7 @@ static NSInteger kToolbarHeight = 44;
                             }
                             
                             if ([self.navigationController topViewController] == self) {
+                                [self.navigationController setNavigationBarHidden:YES animated:YES];
                                 [self.navigationController pushViewController:self.webViewController animated:YES];
                             }
                         }

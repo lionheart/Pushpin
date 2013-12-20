@@ -43,6 +43,7 @@ static CGFloat timeInterval = 3;
 
 - (void)viewDidLayoutSubviews {
     self.topLayoutConstraint.constant = [self.topLayoutGuide length];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [self.view layoutIfNeeded];
 }
 
@@ -51,8 +52,7 @@ static CGFloat timeInterval = 3;
 
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    
-    self.contentOffsetForTitleView = CGPointMake(0, 0);
+
     self.prefersStatusBarHidden = YES;
     self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
     self.numberOfRequestsInProgress = 0;
@@ -324,18 +324,18 @@ static CGFloat timeInterval = 3;
 
             NSRange range = NSMakeRange(MAX(0, (NSInteger)self.history.count - 5), MIN(5, self.history.count));
             NSArray *lastFiveHistoryItems = [self.history subarrayWithRange:range];
-            [lastFiveHistoryItems enumerateObjectsUsingBlock:^(NSDictionary *item, NSUInteger idx, BOOL *stop) {
+            for (NSInteger i=lastFiveHistoryItems.count - 1; i>0; i--) {
+                NSDictionary *item = lastFiveHistoryItems[i];
                 [self.backActionSheet addButtonWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]];
-            }];
+            }
 
-            [self.backActionSheet addButtonWithTitle:@"Bookmarks"];
+            [self.backActionSheet addButtonWithTitle:@"← Back"];
             [self.backActionSheet addButtonWithTitle:@"Cancel"];
             self.backActionSheet.cancelButtonIndex = self.backActionSheet.numberOfButtons - 1;
             [self.backActionSheet showInView:self.toolbar];
         }
     }
     else if (recognizer == self.tapGestureRecognizer) {
-        self.contentOffsetForTitleView = self.webView.scrollView.contentOffset;
         [UIView animateWithDuration:0.2
                          animations:^{
                              self.titleHeightConstraint.constant = kTitleHeight;
@@ -351,8 +351,6 @@ static CGFloat timeInterval = 3;
     [UIView animateWithDuration:0.3 animations:^{
         [self setNeedsStatusBarAppearanceUpdate];
     }];
-
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     // Determine if we should mobilize or not
     if (self.shouldMobilize && ![self isURLStringMobilized:self.urlString]) {
@@ -562,6 +560,18 @@ static CGFloat timeInterval = 3;
         else if ([title isEqualToString:NSLocalizedString(@"Add to Pinboard", nil)]) {
             // Add to bookmarks
             [self showAddViewController:self.selectedLink];
+        }
+    }
+    else if (actionSheet == self.backActionSheet) {
+        if (buttonIndex < actionSheet.numberOfButtons - 2) {
+            NSInteger i=0;
+            while (i<buttonIndex+1) {
+                [self.webView goBack];
+                i++;
+            }
+        }
+        else if (buttonIndex == actionSheet.numberOfButtons - 2) {
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }
 }
@@ -909,19 +919,7 @@ static CGFloat timeInterval = 3;
     }
 }
 
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
-    self.contentOffsetForTitleView = CGPointMake(0, 0);
-}
-
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    CGPoint translation = [scrollView.panGestureRecognizer translationInView:self.webView];
-    if (scrollView.contentOffset.y - translation.y < 0) {
-        if (translation.y > 0) {
-            scrollView.contentOffset = CGPointMake(0, 1);
-        }
-    }
-
-    self.contentOffsetWhenDraggingStarted = scrollView.contentOffset;
     [self.toolbarHideTimer invalidate];
 }
 
