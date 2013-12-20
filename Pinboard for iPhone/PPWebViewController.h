@@ -51,7 +51,6 @@
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
 @property (nonatomic) CGFloat calculatedContentYOffset;
-@property (nonatomic) CGFloat previousContentYOffset;
 @property (nonatomic) CGPoint contentOffsetForTitleView;
 @property (nonatomic) CGPoint contentOffsetWhenDraggingStarted;
 @property (nonatomic) CGFloat lastContentOffset;
