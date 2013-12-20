@@ -75,7 +75,7 @@ static CGFloat timeInterval = 3;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
-    self.webView.scrollView.bounces = NO;
+    self.webView.scrollView.bounces = YES;
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
@@ -911,11 +911,18 @@ static CGFloat timeInterval = 3;
     if (self.titleHeightConstraint.constant > 22) {
         // If the title is taller than 22 pixels, we're changing it
         CGFloat calculatedYContentOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
-        self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
         
-        // Don't actually scroll
+        if (calculatedYContentOffset >= 0) {
+            self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
+            
+            // Don't actually scroll
+            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+            [self.view layoutIfNeeded];
+        }
+    }
+    else if (scrollView.contentOffset.y < 0) {
+        self.titleHeightConstraint.constant -= scrollView.contentOffset.y;
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
-        [self.view layoutIfNeeded];
     }
 }
 
