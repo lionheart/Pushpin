@@ -1023,9 +1023,10 @@ static CGFloat timeInterval = 3;
             [self.history removeLastObject];
 
         default:
+            self.yOffsetToStartShowingTitleView = 0;
+            webView.scrollView.contentOffset = CGPointMake(0, 0);
             webView.scrollView.scrollEnabled = NO;
             webView.scrollView.scrollsToTop = NO;
-            [self showToolbarAnimated:YES];
             break;
     }
     
@@ -1034,8 +1035,6 @@ static CGFloat timeInterval = 3;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     self.numberOfRequestsCompleted++;
-
-    DLog(@"E %@", webView.request.URL);
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
 }
@@ -1101,7 +1100,10 @@ static CGFloat timeInterval = 3;
 }
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor {
-    [self showToolbarAnimated:NO];
+    if (self.webView.scrollView.contentOffset.y == 0) {
+        [self showToolbarAnimated:NO];
+    }
+
     self.prefersStatusBarHidden = NO;
 
     if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
@@ -1141,10 +1143,9 @@ static CGFloat timeInterval = 3;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3 animations:^{
-                UIColor *backgroundColor = [UIColor colorWithRed:R green:G blue:B alpha:alpha];
+                UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
                 self.statusBarBackgroundView.backgroundColor = backgroundColor;
                 self.titleView.backgroundColor = backgroundColor;
-                self.titleView.tintColor = [UIColor whiteColor];
                 self.toolbarBackgroundView.backgroundColor = backgroundColor;
                 
                 if (isDark) {
