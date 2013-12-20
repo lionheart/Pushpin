@@ -49,6 +49,10 @@ static NSInteger kToolbarHeight = 44;
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize itemSize = _itemSize;
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.tableView];
@@ -160,11 +164,15 @@ static NSInteger kToolbarHeight = 44;
 
     // Initial database update
     [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [UIView animateWithDuration:0.2
+                     animations:^{
+                         [self setNeedsStatusBarAppearanceUpdate];
+                     }];
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
     if ([backViewController isKindOfClass:[FeedListViewController class]]) {

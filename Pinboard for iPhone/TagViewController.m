@@ -13,6 +13,7 @@
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPNavigationController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -29,7 +30,6 @@
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
 @synthesize filteredTags;
-@synthesize navigationController;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];

@@ -11,6 +11,4 @@
 
 @interface PPNavigationController : UINavigationController <ModalDelegate>
 
-@property (nonatomic, strong) PPNavigationController *randomBookmarkNavigationController;
-
 @end

@@ -20,6 +20,7 @@
 #import "PPSavedFeedsViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
+#import "PPNavigationController.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -460,7 +461,7 @@
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
     svc.modalDelegate = self;
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
+    PPNavigationController *nc = [[PPNavigationController alloc] initWithRootViewController:svc];
     if ([UIApplication isIPad]) {
         nc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
@@ -479,7 +480,6 @@
 - (void)openTags {
     TagViewController *tagViewController = [[TagViewController alloc] init];
     tagViewController.title = NSLocalizedString(@"Tags", nil);
-    tagViewController.navigationController = [AppDelegate sharedDelegate].navigationController;
     [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
 }
 

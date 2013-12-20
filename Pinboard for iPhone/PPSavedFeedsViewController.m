@@ -15,6 +15,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPTheme.h"
+#import "PPNavigationController.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -115,7 +116,7 @@
 - (void)addSavedFeedButtonTouchUpInside:(id)sender {
     PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
     addSavedFeedViewController.modalDelegate = self;
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
