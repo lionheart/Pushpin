@@ -50,8 +50,7 @@
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
-@property (nonatomic) CGFloat calculatedContentYOffset;
-@property (nonatomic) CGFloat lastContentOffset;
+@property (nonatomic) CGFloat yOffsetToStartShowingTitleView;
 @property (nonatomic) CGRect toolbarFrame;
 @property (nonatomic) NSInteger numberOfRequests;
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
