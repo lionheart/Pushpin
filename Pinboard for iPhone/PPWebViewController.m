@@ -53,6 +53,7 @@ static CGFloat timeInterval = 3;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
+    self.yOffsetToStartShowingTitleView = 0;
     self.prefersStatusBarHidden = YES;
     self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
     self.numberOfRequestsInProgress = 0;
@@ -336,6 +337,8 @@ static CGFloat timeInterval = 3;
         }
     }
     else if (recognizer == self.tapGestureRecognizer) {
+        self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y;
+
         [UIView animateWithDuration:0.2
                          animations:^{
                              self.titleHeightConstraint.constant = kTitleHeight;
@@ -908,22 +911,57 @@ static CGFloat timeInterval = 3;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.y < self.yOffsetToStartShowingTitleView) {
+        self.yOffsetToStartShowingTitleView = 0;
+    }
+
+    // This is the scrollView's content offset PLUS the amount that the title bar has been shrunk
+    CGFloat effectiveOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
+    
+    // Scroll Distance from Y Threshold. Greater than zero -> increase title view size.
+    CGFloat distanceFromYThreshold = effectiveOffset - self.yOffsetToStartShowingTitleView;
+
+    if (distanceFromYThreshold >= 0) {
+        self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
+        self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold);
+        [self.view layoutIfNeeded];
+    }
+    
+    BOOL titleViewIsExpanded = distanceFromYThreshold < 22;
+    if (titleViewIsExpanded) {
+        // If the title view isn't the minimum size, don't actually scroll the webview.
+        // We do this by resetting the offset.
+        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, self.yOffsetToStartShowingTitleView);
+    }
+
     if (self.titleHeightConstraint.constant > 22) {
         // If the title is taller than 22 pixels, we're changing it
-        CGFloat calculatedYContentOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
         
-        if (calculatedYContentOffset >= 0) {
-            self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
-            
-            // Don't actually scroll
-            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
-            [self.view layoutIfNeeded];
-        }
     }
     else if (scrollView.contentOffset.y < 0) {
-        self.titleHeightConstraint.constant -= scrollView.contentOffset.y;
+        // When the user scrolls up and the title height is equal to 22px, we just need to give it a little push
+        self.titleHeightConstraint.constant = MAX(22, MIN(kTitleHeight, self.titleHeightConstraint.constant - scrollView.contentOffset.y));
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+        [self.view layoutIfNeeded];
     }
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
+    if (self.titleHeightConstraint.constant == kTitleHeight) {
+        self.yOffsetToStartShowingTitleView = 0;
+        return YES;
+    }
+
+    self.yOffsetToStartShowingTitleView = scrollView.contentOffset.y;
+    
+    // Show the title and toolbar if the user taps the toolbar and it's not already showing
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.toolbarConstraint.constant = kToolbarHeight;
+                         self.titleHeightConstraint.constant = kTitleHeight;
+                         [self.view layoutIfNeeded];
+                     }];
+    return NO;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -933,7 +971,7 @@ static CGFloat timeInterval = 3;
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     [self.toolbarHideTimer invalidate];
     self.toolbarHideTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
-    [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
+//    [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
 }
 
 #pragma mark - UIWebViewDelegate
