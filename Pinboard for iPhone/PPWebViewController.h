@@ -71,6 +71,7 @@
 @property (nonatomic, strong) NSTimer *toolbarHideTimer;
 
 - (void)showToolbarAnimated:(BOOL)animated;
+- (void)hideToolbarAnimated:(BOOL)animated;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
