@@ -37,6 +37,10 @@
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
