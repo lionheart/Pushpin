@@ -1320,20 +1320,24 @@ static NSString *ellipsis = @"…";
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    if (url) {
+        // Checking that URL is not nil. Got a crash one time when in "aéroport" and then tapping on "langage_définition"
 
-        if (![self.tags containsObject:tag]) {
-            PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                postViewController.postDataSource = pinboardDataSource;
-                postViewController.title = [pinboardDataSource.tags componentsJoinedByString:@"+"];
-                callback(postViewController);
-            });
-        }
-    });
+            if (![self.tags containsObject:tag]) {
+                PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                    postViewController.postDataSource = pinboardDataSource;
+                    postViewController.title = [pinboardDataSource.tags componentsJoinedByString:@"+"];
+                    callback(postViewController);
+                });
+            }
+        });
+    }
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
