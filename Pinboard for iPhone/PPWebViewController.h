@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;
 
+@property (nonatomic, strong) UIView *showToolbarAndTitleBarHiddenView;
 @property (nonatomic, strong) UIButton *actionButton;
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *markAsReadButton;
@@ -38,6 +39,7 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *bottomTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
 
@@ -51,7 +53,6 @@
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
 @property (nonatomic) CGFloat yOffsetToStartShowingTitleView;
-@property (nonatomic) CGRect toolbarFrame;
 @property (nonatomic) NSInteger numberOfRequests;
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
@@ -70,7 +71,6 @@
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *toolbarHideTimer;
 
-- (void)hideToolbar;
 - (void)showToolbar;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;

@@ -64,6 +64,9 @@ static CGFloat timeInterval = 3;
     self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.tapGestureRecognizer.numberOfTapsRequired = 1;
     
+    self.bottomTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.bottomTapGestureRecognizer.numberOfTapsRequired = 1;
+    
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.userInteractionEnabled = YES;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -80,6 +83,11 @@ static CGFloat timeInterval = 3;
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
+    
+    self.showToolbarAndTitleBarHiddenView = [[UIView alloc] init];
+    self.showToolbarAndTitleBarHiddenView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.showToolbarAndTitleBarHiddenView addGestureRecognizer:self.bottomTapGestureRecognizer];
+    [self.view addSubview:self.showToolbarAndTitleBarHiddenView];
     
     // Long press gesture for custom menu
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
@@ -236,6 +244,7 @@ static CGFloat timeInterval = 3;
     NSDictionary *views = @{@"toolbar": self.toolbar,
                             @"title": self.titleView,
                             @"background": self.statusBarBackgroundView,
+                            @"show": self.showToolbarAndTitleBarHiddenView,
                             @"webview": self.webView };
 
     // Setup auto-layout constraints
@@ -243,6 +252,10 @@ static CGFloat timeInterval = 3;
     [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
     [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
     [self.view lhs_addConstraints:@"H:|[title]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[show]|" views:views];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view lhs_addConstraints:@"V:[show(20)]" views:views];
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
     [self.view lhs_addConstraints:@"V:|[background][title][webview][toolbar(>=height)]" metrics:metrics views:views];
@@ -336,15 +349,9 @@ static CGFloat timeInterval = 3;
             [self.backActionSheet showInView:self.toolbar];
         }
     }
-    else if (recognizer == self.tapGestureRecognizer) {
+    else if (recognizer == self.tapGestureRecognizer || recognizer == self.bottomTapGestureRecognizer) {
         self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y;
-
-        [UIView animateWithDuration:0.2
-                         animations:^{
-                             self.titleHeightConstraint.constant = kTitleHeight;
-                             self.toolbarConstraint.constant = kToolbarHeight;
-                             [self.view layoutIfNeeded];
-                         }];
+        [self showToolbar];
     }
 }
 
@@ -912,7 +919,7 @@ static CGFloat timeInterval = 3;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y < self.yOffsetToStartShowingTitleView) {
-        self.yOffsetToStartShowingTitleView = 0;
+        self.yOffsetToStartShowingTitleView = MAX(0, scrollView.contentOffset.y);
     }
 
     // This is the scrollView's content offset PLUS the amount that the title bar has been shrunk
@@ -926,6 +933,10 @@ static CGFloat timeInterval = 3;
     if (shouldUpdateViewConstants) {
         self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
         self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold);
+        
+        if (self.titleHeightConstraint.constant == 22 && self.toolbarConstraint.constant == 0) {
+            self.yOffsetToStartShowingTitleView = 0;
+        }
         [self.view layoutIfNeeded];
     }
     
@@ -950,24 +961,19 @@ static CGFloat timeInterval = 3;
         return YES;
     }
     
+    [self showToolbar];
     // Show the title and toolbar if the user taps the toolbar and it's not already showing
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         self.toolbarConstraint.constant = kToolbarHeight;
-                         self.titleHeightConstraint.constant = kTitleHeight;
-                         [self.view layoutIfNeeded];
-                     }];
+//    [UIView animateWithDuration:0.3
+//                     animations:^{
+//                         self.toolbarConstraint.constant = kToolbarHeight;
+//                         self.titleHeightConstraint.constant = kTitleHeight;
+//                         [self.view layoutIfNeeded];
+//                     }];
     return NO;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self.toolbarHideTimer invalidate];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    [self.toolbarHideTimer invalidate];
-    self.toolbarHideTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
-//    [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
 }
 
 #pragma mark - UIWebViewDelegate
@@ -1040,9 +1046,6 @@ static CGFloat timeInterval = 3;
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
     
     if (self.numberOfRequestsInProgress == 0) {
-        self.toolbarHideTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
-        
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
 
         NSError *error;
@@ -1117,37 +1120,20 @@ static CGFloat timeInterval = 3;
     return YES;
 }
 
-#pragma mark - Utils
-
-- (void)hideToolbar {
-    if ([UIApplication currentSize].height < self.webView.scrollView.contentSize.height) {
-        [UIView animateKeyframesWithDuration:0.5
-                                       delay:0
-                                     options:UIViewKeyframeAnimationOptionCalculationModeCubic
-                                  animations:^{
-                                      [UIView addKeyframeWithRelativeStartTime:0
-                                                              relativeDuration:0.8
-                                                                    animations:^{
-                                                                        self.toolbarConstraint.constant = kToolbarHeight + 10;
-                                                                        [self.view layoutIfNeeded];
-                                                                    }];
-                                      
-                                      [UIView addKeyframeWithRelativeStartTime:0.8
-                                                              relativeDuration:0.2
-                                                                    animations:^{
-                                                                        self.toolbarConstraint.constant = 0;
-                                                                        [self.view layoutIfNeeded];
-                                                                    }];
-                                  }
-                                  completion:nil];
-    }
-}
+#pragma mark Utils
 
 - (void)showToolbar {
     [UIView animateWithDuration:0.3
+                          delay:0
+         usingSpringWithDamping:0.5
+          initialSpringVelocity:0
+                        options:0
                      animations:^{
-                         
-                     }];
+                         self.toolbarConstraint.constant = kToolbarHeight;
+                         self.titleHeightConstraint.constant = kTitleHeight;
+                         [self.view layoutIfNeeded];
+                     }
+                     completion:nil];
 }
 
 @end
