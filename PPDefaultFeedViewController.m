@@ -26,9 +26,11 @@
     return self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.savedFeeds = [NSMutableArray array];
@@ -205,9 +207,10 @@
         }
     }
     
-    if (indexPath.section == self.defaultIndexPath.section && indexPath.row == self.defaultIndexPath.row) {
+    if ([indexPath isEqual:self.defaultIndexPath]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
+    }
+    else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
@@ -215,8 +218,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.tableView cellForRowAtIndexPath:self.defaultIndexPath].accessoryType = UITableViewCellAccessoryNone;
-    [self.tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView cellForRowAtIndexPath:self.defaultIndexPath].accessoryType = UITableViewCellAccessoryNone;
+    [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
 
     // Build our new default view string
     NSString *defaultFeed = @"personal-all";
@@ -241,7 +245,8 @@
                 defaultFeed = @"personal-starred";
                 break;
         }
-    } else if (indexPath.section == 1) {
+    }
+    else if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 0:
                 defaultFeed = @"community-network";
@@ -259,7 +264,8 @@
                 defaultFeed = @"community-japanese";
                 break;
         }
-    } else if (indexPath.section == 2) {
+    }
+    else if (indexPath.section == 2) {
         defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
     }
     
