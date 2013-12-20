@@ -36,7 +36,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];

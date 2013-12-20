@@ -21,6 +21,10 @@
 
 @implementation BookmarkletInstallationViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Browser Integration", nil);
