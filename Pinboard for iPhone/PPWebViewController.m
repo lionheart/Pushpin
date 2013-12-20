@@ -922,7 +922,7 @@ static CGFloat timeInterval = 3;
     CGFloat distanceFromYThreshold = effectiveOffset - self.yOffsetToStartShowingTitleView;
 
     // This value is negative if the scroll view is above the threshold to show the view.
-    BOOL shouldUpdateViewConstants = distanceFromYThreshold >= 0;
+    BOOL shouldUpdateViewConstants = distanceFromYThreshold >= 0 && scrollView.dragging && scrollView.tracking;
     if (shouldUpdateViewConstants) {
         self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
         self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold);
@@ -933,11 +933,13 @@ static CGFloat timeInterval = 3;
     if (titleViewIsExpanded) {
         // If the title view isn't the minimum size, don't actually scroll the webview.
         // We do this by resetting the offset.
-        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, self.yOffsetToStartShowingTitleView);
+        if (scrollView.dragging && scrollView.tracking) {
+            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, self.yOffsetToStartShowingTitleView);
+        }
     }
     else if (scrollView.contentOffset.y < 0) {
-        // If the title view is minimized, and the user is scrolling up at the top of the view, we just need to give it a little push
-        self.titleHeightConstraint.constant = MAX(22, MIN(kTitleHeight, self.titleHeightConstraint.constant - scrollView.contentOffset.y));
+        // The title view isn't currently its full height and the user is scrolling up. We just need to give it a little push.
+        self.titleHeightConstraint.constant--;
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
         [self.view layoutIfNeeded];
     }
@@ -945,11 +947,8 @@ static CGFloat timeInterval = 3;
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
     if (self.titleHeightConstraint.constant == kTitleHeight) {
-        self.yOffsetToStartShowingTitleView = 0;
         return YES;
     }
-
-    self.yOffsetToStartShowingTitleView = scrollView.contentOffset.y;
     
     // Show the title and toolbar if the user taps the toolbar and it's not already showing
     [UIView animateWithDuration:0.3
