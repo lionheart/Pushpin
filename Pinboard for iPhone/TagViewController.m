@@ -228,10 +228,10 @@
         NSMutableArray *newTagNames = [NSMutableArray array];
         NSMutableArray *oldTagNames = [NSMutableArray array];
         
-        __block NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-        __block NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-        __block NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        __block NSMutableArray *newTags = [NSMutableArray array];
+        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        NSMutableArray *newTags = [NSMutableArray array];
         NSInteger index = 0;
 
         for (NSDictionary *tag in self.filteredTags) {
@@ -290,11 +290,11 @@
     [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
     postViewController.title = tag[@"name"];
-    [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+    [self.navigationController pushViewController:postViewController animated:YES];
 }
 
 - (void)popViewController {
-    [[AppDelegate sharedDelegate].navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
