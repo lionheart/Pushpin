@@ -29,6 +29,7 @@
 
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
+static CGFloat timeInterval = 3;
 
 @interface PPWebViewController ()
 
@@ -67,26 +68,17 @@ static NSInteger kTitleHeight = 40;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     self.statusBarBackgroundView.backgroundColor = HEX(0x0096FFFF);
     [self.view addSubview:self.statusBarBackgroundView];
-    
-    self.scrollView = [[UIScrollView alloc] init];
-    self.scrollView.backgroundColor = [UIColor redColor];
-    self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.scrollView];
-    
-    self.webViewContainer = [[UIView alloc] init];
-    self.webViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    self.webViewContainer.backgroundColor = [UIColor yellowColor];
-    [self.scrollView addSubview:self.webViewContainer];
 
-    self.webView = [[UIWebView alloc] init];
+    CGSize size = self.view.frame.size;
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+    self.webView.autoresizingMask = UIViewAutoresizingNone;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = NO;
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.userInteractionEnabled = YES;
-    self.webView.backgroundColor = [UIColor greenColor];
-    [self.webViewContainer addSubview:self.webView];
+    [self.view addSubview:self.webView];
     
     // Long press gesture for custom menu
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
@@ -185,7 +177,7 @@ static NSInteger kTitleHeight = 40;
     self.titleView = [[UIView alloc] init];
     self.titleView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.titleView addGestureRecognizer:self.tapGestureRecognizer];
-    [self.scrollView addSubview:self.titleView];
+    [self.view addSubview:self.titleView];
     
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -241,25 +233,18 @@ static NSInteger kTitleHeight = 40;
     [self.view addSubview:self.toolbar];
     
     NSDictionary *views = @{@"toolbar": self.toolbar,
-                            @"scroll": self.scrollView,
-                            @"background": self.statusBarBackgroundView };
+                            @"title": self.titleView,
+                            @"background": self.statusBarBackgroundView,
+                            @"webview": self.webView };
 
     // Setup auto-layout constraints
-    [self.view lhs_addConstraints:@"H:|[scroll]|" views:views];
     [self.view lhs_addConstraints:@"H:|[background]|" views:views];
     [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[title]|" views:views];
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
-    [self.view lhs_addConstraints:@"V:|[background][scroll][toolbar(>=height)]|" metrics:metrics views:views];
-    
-    [self.webView lhs_expandToFillSuperview];
-    
-    NSDictionary *scrollViews = @{@"webview": self.webViewContainer,
-                                  @"title": self.titleView};
-
-    [self.scrollView lhs_addConstraints:@"H:|[webview]|" views:scrollViews];
-    [self.scrollView lhs_addConstraints:@"H:|[title]|" views:scrollViews];
-    [self.scrollView lhs_addConstraints:@"V:|[title][webview]|" views:scrollViews];
+    [self.view lhs_addConstraints:@"V:|[background][title][webview][toolbar(>=height)]" metrics:metrics views:views];
     
     self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
     
@@ -267,7 +252,7 @@ static NSInteger kTitleHeight = 40;
     [self.view addConstraint:self.toolbarConstraint];
     
     self.titleHeightConstraint = [NSLayoutConstraint constraintWithItem:self.titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:kToolbarHeight];
-    [self.scrollView addConstraint:self.titleHeightConstraint];
+    [self.view addConstraint:self.titleHeightConstraint];
     
     self.topLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.statusBarBackgroundView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
     [self.view addConstraint:self.topLayoutConstraint];
@@ -913,20 +898,37 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView == self.webView.scrollView) {
-        if (self.titleHeightConstraint.constant > 22) {
-            // If the title is taller than 22 pixels, we're changing it
-            CGFloat calculatedYContentOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
-            self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
+    if (self.titleHeightConstraint.constant > 22) {
+        // If the title is taller than 22 pixels, we're changing it
+        CGFloat calculatedYContentOffset = scrollView.contentOffset.y + (kTitleHeight - self.titleHeightConstraint.constant);
+        self.titleHeightConstraint.constant = MAX(22, kTitleHeight - calculatedYContentOffset);
+        
+        // Don't actually scroll
+        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+        [self.view layoutIfNeeded];
+    }
+}
 
-            // Don't actually scroll
-            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
-            [self.view layoutIfNeeded];
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
+    self.contentOffsetForTitleView = CGPointMake(0, 0);
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    CGPoint translation = [scrollView.panGestureRecognizer translationInView:self.webView];
+    if (scrollView.contentOffset.y - translation.y < 0) {
+        if (translation.y > 0) {
+            scrollView.contentOffset = CGPointMake(0, 1);
         }
     }
-    else if (scrollView == self.scrollView) {
-        
-    }
+
+    self.contentOffsetWhenDraggingStarted = scrollView.contentOffset;
+    [self.toolbarHideTimer invalidate];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    [self.toolbarHideTimer invalidate];
+    self.toolbarHideTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
+    [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
 }
 
 #pragma mark - UIWebViewDelegate
@@ -999,7 +1001,7 @@ static NSInteger kTitleHeight = 40;
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
     
     if (self.numberOfRequestsInProgress == 0) {
-        self.toolbarHideTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
+        self.toolbarHideTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(hideToolbar) userInfo:nil repeats:NO];
         [[NSRunLoop mainRunLoop] addTimer:self.toolbarHideTimer forMode:NSRunLoopCommonModes];
         
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
