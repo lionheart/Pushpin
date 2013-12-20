@@ -916,6 +916,18 @@ static CGFloat timeInterval = 3;
 
 #pragma mark - UIScrollViewDelegate
 
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (self.toolbarConstraint.constant > kToolbarHeight / 2.) {
+        [self showToolbarAnimated:YES];
+    }
+    else {
+        [self hideToolbarAnimated:YES];
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y < self.yOffsetToStartShowingTitleView) {
         self.yOffsetToStartShowingTitleView = MAX(0, scrollView.contentOffset.y);
@@ -923,7 +935,7 @@ static CGFloat timeInterval = 3;
 
     // This is the scrollView's content offset PLUS the amount that the title bar has been shrunk
     CGFloat effectiveOffset = scrollView.contentOffset.y + kTitleHeight - self.titleHeightConstraint.constant;
-    
+
     // Scroll Distance from Y Threshold. Greater than zero -> increase title view size.
     CGFloat distanceFromYThreshold = effectiveOffset - self.yOffsetToStartShowingTitleView;
 
@@ -931,7 +943,7 @@ static CGFloat timeInterval = 3;
     BOOL shouldUpdateViewConstants = distanceFromYThreshold >= 0 && scrollView.dragging && scrollView.tracking;
     if (shouldUpdateViewConstants) {
         self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
-        self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold);
+        self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold * 2);
         
         if (self.titleHeightConstraint.constant == 22 && self.toolbarConstraint.constant == 0) {
             self.yOffsetToStartShowingTitleView = 0;
@@ -1038,7 +1050,7 @@ static CGFloat timeInterval = 3;
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 
-    if (self.webView.scrollView.contentSize.height - kTitleHeight <= self.webView.frame.size.height) {
+    if (self.webView.scrollView.contentSize.height <= self.webView.frame.size.height) {
         self.webView.scrollView.scrollEnabled = NO;
         self.webView.scrollView.scrollsToTop = NO;
     }
@@ -1149,6 +1161,31 @@ static CGFloat timeInterval = 3;
     }
     else {
         ShowToolbarBlock();
+    }
+}
+
+- (void)hideToolbarAnimated:(BOOL)animated {
+    void (^HideToolbarBlock)() = ^{
+        self.toolbarConstraint.constant = 0;
+        self.titleHeightConstraint.constant = 22;
+        [self.view layoutIfNeeded];
+    };
+
+    self.yOffsetToStartShowingTitleView = 0;
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0
+             usingSpringWithDamping:0.5
+              initialSpringVelocity:0
+                            options:0
+                         animations:^{
+                             HideToolbarBlock();
+                         }
+                         completion:nil];
+    }
+    else {
+        HideToolbarBlock();
     }
 }
 
