@@ -43,7 +43,6 @@
                             @"image": titleButton.imageView};
     [titleButton.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title]|" views:views];
     [titleButton.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleButton.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:titleButton.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
-//    [titleButton.containerView lhs_centerVerticallyForView:titleButton.titleLabel];
     [titleButton.containerView lhs_centerVerticallyForView:titleButton.imageView height:20];
     
     [titleButton addSubview:titleButton.containerView];
