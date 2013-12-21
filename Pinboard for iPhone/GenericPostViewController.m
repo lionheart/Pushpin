@@ -917,12 +917,9 @@ static NSInteger kToolbarHeight = 44;
     cell.contentView.backgroundColor = [UIColor clearColor];
 
     cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-    cell.textView.font = [UIFont systemFontOfSize:kLargeFontSize];
     cell.textView.translatesAutoresizingMaskIntoConstraints = NO;
     cell.textView.numberOfLines = 0;
-    cell.textView.textColor = [UIColor darkGrayColor];
     cell.textView.preferredMaxLayoutWidth = 320;
-    cell.textView.lineBreakMode = kCTLineBreakByWordWrapping;
     cell.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
     cell.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
 

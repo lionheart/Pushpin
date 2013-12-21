@@ -32,7 +32,7 @@
 }
 
 + (UIFont *)urlFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 2];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 1];
 }
 
 + (UIFont *)tagFont {
