@@ -310,6 +310,7 @@
         
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         
+        // TODO
         UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
         titleButton.frame = CGRectMake(0, 0, 200, 24);
         titleButton.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
