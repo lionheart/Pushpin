@@ -1134,8 +1134,15 @@ static NSString *ellipsis = @"…";
     NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
 
     NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
-    NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
-    NSDictionary *linkAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
+    NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme descriptionFont]};
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.paragraphSpacingBefore = 3;
+    paragraphStyle.paragraphSpacing = 0;
+    paragraphStyle.lineHeightMultiple = 0.7;
+    NSDictionary *linkAttributes = @{NSFontAttributeName: [PPTheme urlFont],
+                                     NSParagraphStyleAttributeName: paragraphStyle
+                                     };
 
     [attributedString addAttributes:titleAttributes range:titleRange];
     [attributedString addAttributes:descriptionAttributes range:descriptionRange];
