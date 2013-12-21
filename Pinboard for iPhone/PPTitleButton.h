@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PPTitleButton : UIButton
+@interface PPTitleButton : UIView
 
 + (instancetype)button;
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName;
