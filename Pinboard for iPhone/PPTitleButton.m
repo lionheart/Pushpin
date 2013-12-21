@@ -42,7 +42,8 @@
     NSDictionary *views = @{@"title": titleButton.titleLabel,
                             @"image": titleButton.imageView};
     [titleButton.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title]|" views:views];
-    [titleButton.containerView lhs_centerVerticallyForView:titleButton.titleLabel];
+    [titleButton.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleButton.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:titleButton.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+//    [titleButton.containerView lhs_centerVerticallyForView:titleButton.titleLabel];
     [titleButton.containerView lhs_centerVerticallyForView:titleButton.imageView height:20];
     
     [titleButton addSubview:titleButton.containerView];
@@ -54,9 +55,6 @@
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
     self.titleLabel.text = title;
     self.imageView.image = [UIImage imageNamed:imageName];
-    
-//    self.frame = CGRectMake(0, 0, 30 + [self.titleLabel sizeThatFits:CGSizeMake(270, 24)].width, 24);
-    DLog(@"%@", NSStringFromCGRect(self.frame));
     [self layoutIfNeeded];
 }
 
