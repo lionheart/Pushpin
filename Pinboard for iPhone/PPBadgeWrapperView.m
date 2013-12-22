@@ -115,53 +115,50 @@ static const CGFloat PADDING_Y = 6;
 - (void)layoutSubviews {
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
-    BOOL hide = NO;
 
+    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
+    CGRect ellipsisFrame = ellipsisView.frame;
+
+    // Hide all the subviews initially.
+    for (UIView *subview in self.subviews) {
+        subview.hidden = YES;
+    }
+    
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            CGRect frame = badgeView.frame;
+            CGRect badgeFrame = badgeView.frame;
 
-            if (hide) {
-                badgeView.hidden = YES;
+            badgeView.hidden = NO;
+            badgeFrame.origin = CGPointMake(offsetX, offsetY);
+            offsetX += badgeFrame.size.width + PADDING_X;
+
+            if (self.compressed) {
+                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > self.frame.size.width;
+                if (hitsBoundaryWithEllipsis) {
+                    // Hide the current badge and put the ellipsis in its place
+                    badgeView.hidden = YES;
+                    
+                    [self addSubview:ellipsisView];
+                    [ellipsisView addTarget:badgeView.targetTouchUpInside action:badgeView.actionTouchUpInside forControlEvents:UIControlEventTouchUpInside];
+                    ellipsisView.frame = (CGRect){badgeFrame.origin, ellipsisFrame.size};
+                    break;
+                }
             }
             else {
-                badgeView.hidden = NO;
-                frame.origin.x = offsetX;
-                offsetX += (frame.size.width + PADDING_X);
-                frame.origin.y = offsetY;
-            }
-            
-            if (offsetX > self.frame.size.width) {
-                if (self.compressed) {
-                    PPBadgeView *moreBadgeView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
-                    CGRect moreFrame = moreBadgeView.frame;
-                    moreFrame.origin.y = offsetY;
-                    if ((offsetX + moreFrame.size.width + PADDING_X) > self.frame.size.width) {
-                        // We don't have room for the more button, remove the last badge first
-                        moreFrame.origin.x = offsetX - frame.size.width - PADDING_X;
-                        badgeView.hidden = YES;
-                        [self addSubview:moreBadgeView];
-                    }
-                    else {
-                        moreFrame.origin.x = offsetX;
-                        [self addSubview:moreBadgeView];
-                    }
-                    [moreBadgeView addTarget:badgeView.targetTouchUpInside action:badgeView.actionTouchUpInside forControlEvents:UIControlEventTouchUpInside];
-                    moreBadgeView.frame = moreFrame;
-                    offsetX = 0;
-                    hide = YES;
-                }
-                else {
+                BOOL hitsBoundary = offsetX > self.frame.size.width;
+                if (hitsBoundary) {
                     // Wrap to the next line
-                    offsetX = frame.size.width + PADDING_X;
-                    frame.origin.x = 0;
-                    offsetY += frame.size.height + PADDING_Y;
-                    frame.origin.y = offsetY;
+                    offsetX = badgeFrame.size.width + PADDING_X;
+                    offsetY += badgeFrame.size.height + PADDING_Y;
+                    
+                    badgeFrame.origin = CGPointMake(0, offsetY);
                 }
             }
-            
-            badgeView.frame = frame;
+
+            // Show the badge if everything has fit.
+            badgeView.hidden = NO;
+            badgeView.frame = badgeFrame;
         }
     }
     
