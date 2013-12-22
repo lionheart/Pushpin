@@ -1341,7 +1341,6 @@ static NSString *ellipsis = @"…";
                 [button setTitle:[pinboardDataSource.tags componentsJoinedByString:@"+"] imageName:nil];
 
                 postViewController.navigationItem.titleView = button;
-                postViewController.title = @"";
                 callback(postViewController);
             });
         }

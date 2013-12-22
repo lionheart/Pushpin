@@ -17,6 +17,7 @@
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
+#import "PPTitleButton.h"
 
 #import "UITableView+Additions.h"
 
@@ -32,8 +33,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @implementation PPAboutViewController
 
 - (id)init {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -42,6 +42,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Pushpin 2.1.1", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
 
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
     self.data = [NSArray arrayWithContentsOfFile:plistPath];

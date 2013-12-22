@@ -282,7 +282,6 @@
 
 - (void)openSettings {
     SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
-    settingsViewController.title = NSLocalizedString(@"Settings", nil);
     [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 

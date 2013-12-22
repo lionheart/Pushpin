@@ -34,20 +34,7 @@
 @synthesize filteredTags;
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        PPTitleButton *titleView = [PPTitleButton button];
-        [titleView setTitle:NSLocalizedString(@"Tags", nil) imageName:nil];
-        
-        // TODO Trying to get this to @"" but back button still displays "Back"
-        self.title = @"";
-        self.navigationItem.titleView = titleView;
-
-        self.tableView.opaque = NO;
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-        self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -56,6 +43,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Tags", nil) imageName:nil];
+    
+    // TODO Trying to get this to @"" but back button still displays "Back"
+    self.navigationItem.titleView = titleView;
+    
+    self.tableView.opaque = NO;
+    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
