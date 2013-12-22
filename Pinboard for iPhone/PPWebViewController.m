@@ -285,25 +285,6 @@ static CGFloat timeInterval = 3;
     [self.view addConstraint:self.topLayoutConstraint];
 }
 
-- (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point {
-    CGFloat x;
-    CGFloat y;
-    if (point.y > self.webView.bounds.size.height / 2) {
-        y = self.webView.bounds.size.height - 50;
-    }
-    else {
-        y = 10;
-    }
-    
-    if (point.x > self.webView.bounds.size.width / 2) {
-        x = self.webView.bounds.size.width - 50;
-    }
-    else {
-        x = 10;
-    }
-    return CGPointMake(x, y);
-}
-
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
 }

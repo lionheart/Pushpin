@@ -76,7 +76,6 @@
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
-- (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)copyURL:(NSURL *)url;
 - (void)emailURL;
@@ -91,7 +90,6 @@
 - (void)sendToReadLater:(NSNumber *)service;
 - (void)loadURL;
 - (void)stopLoading;
-- (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (NSInteger)numberOfRequestsInProgress;
