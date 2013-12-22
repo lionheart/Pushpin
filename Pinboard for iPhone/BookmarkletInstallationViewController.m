@@ -12,6 +12,7 @@
 #import "BookmarkletInstallationViewController.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
+#import "PPTitleButton.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -27,7 +28,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Browser Integration", nil);
+    
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Browser Integration", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
 }
 
 #pragma mark - Table view data source
@@ -45,28 +49,9 @@
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        float width = tableView.bounds.size.width;        
-        BOOL isIPad = [UIApplication isIPad];
-
-        NSUInteger fontSize = 17;
-        NSUInteger padding = isIPad ? 45 : 15;
-
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
-        NSString *sectionTitle = NSLocalizedString(@"Watch a video", nil);
-        label.text = sectionTitle;
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = HEX(0x4C566CFF);
-        label.shadowColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0,1);
-        label.font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
-        
-        CGRect textRect = [sectionTitle boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: label.font} context:nil];
-        CGSize textSize = textRect.size;
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
-        [view addSubview:label];
-        return view;
+        return NSLocalizedString(@"Watch a video", nil);
     }
     return nil;
 }
@@ -85,7 +70,7 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
 
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [PPTheme titleFont];
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }

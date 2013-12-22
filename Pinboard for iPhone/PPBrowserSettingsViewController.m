@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
+#import "PPTitleButton.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -27,38 +28,42 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.title = NSLocalizedString(@"Browser Settings", nil);
+    return [super initWithStyle:UITableViewStyleGrouped];
+}
 
-        self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
-        }
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-            [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
-        }
-        
-        self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
-        self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
+    
+    self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    
+    [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
     }
-    return self;
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
+    }
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
+        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
+    }
+    
+    self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+    self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -72,28 +77,9 @@
     return 1;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        BOOL isIPad = [UIApplication isIPad];
-        
-        float width = tableView.bounds.size.width;
-        int fontSize = 17;
-        int padding = isIPad ? 45 : 15;
-
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(padding, 8, width - padding, fontSize)];
-        NSString *sectionTitle = NSLocalizedString(@"Browser Bookmarklet", nil);
-        label.text = sectionTitle;
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = HEX(0x4C566CFF);
-        label.shadowColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0,1);
-        label.font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
-        
-        CGRect textRect = [sectionTitle boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: label.font} context:nil];
-        CGSize textSize = textRect.size;
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, textSize.height)];
-        [view addSubview:label];
-        return view;
+        return NSLocalizedString(@"Browser Bookmarklet", nil);
     }
     return nil;
 }
@@ -112,7 +98,7 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
 
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [PPTheme titleFont];
     
     switch (indexPath.section) {
         case 0: {
