@@ -313,7 +313,6 @@
         
         // TODO
         PPTitleButton *titleButton = [PPTitleButton button];
-        pinboardViewController.navigationItem.titleView = titleButton;
         
         // Determine our default feed
         NSString *feedDetails;
@@ -390,10 +389,10 @@
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
-            pinboardViewController.title = feedDetails;
         }
 
         //_navigationController.navigationBar.translucent = NO;
+        pinboardViewController.navigationItem.titleView = titleButton;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
     }

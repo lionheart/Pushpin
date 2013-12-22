@@ -310,7 +310,6 @@
     
     // UINavigationItem doesn't like auto layout, so trick it with a button
     PPTitleButton *titleButton = [PPTitleButton button];
-    postViewController.navigationItem.titleView = titleButton;
     
     switch (indexPath.section) {
         case 0: {
@@ -366,7 +365,8 @@
             }
 
             // Can we just use self.navigationController instead?
-            [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+            postViewController.navigationItem.titleView = titleButton;
+            [self.navigationController pushViewController:postViewController animated:YES];
             break;
         }
         case 1: {
@@ -383,63 +383,60 @@
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-                        postViewController.title = NSLocalizedString(@"Network", nil);
-                        
                         [titleButton setTitle:NSLocalizedString(@"Network", nil) imageName:@"navigation-network"];
                         [self.navigationController.navigationBar setBarTintColor:HEX(0x30a1c1ff)];
                         [mixpanel track:@"Browsed network bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
+
                     case 1: {
                         feedDataSource.components = @[@"popular?count=100"];
-                        postViewController.title = NSLocalizedString(@"Popular", nil);
-                        
                         [titleButton setTitle:NSLocalizedString(@"Popular", nil) imageName:@"navigation-popular"];
                         [self.navigationController.navigationBar setBarTintColor:HEX(0xff9409ff)];
                         [mixpanel track:@"Browsed popular bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
                     }
-                    case 2:
+
+                    case 2: {
                         feedDataSource.components = @[@"popular", @"wikipedia"];
-                        postViewController.title = @"Wikipedia";
-                        
                         [titleButton setTitle:NSLocalizedString(@"Wikipedia", nil) imageName:@"navigation-wikipedia"];
                         [self.navigationController.navigationBar setBarTintColor:HEX(0x2ca881ff)];
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
-                    case 3:
+                    }
+
+                    case 3: {
                         feedDataSource.components = @[@"popular", @"fandom"];
-                        postViewController.title = NSLocalizedString(@"Fandom", nil);
-                        
                         [titleButton setTitle:NSLocalizedString(@"Fandom", nil) imageName:@"navigation-fandom"];
                         [self.navigationController.navigationBar setBarTintColor:HEX(0xe062d6ff)];
                         [mixpanel track:@"Browsed fandom bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
                         break;
-                    case 4:
+                    }
+
+                    case 4: {
                         feedDataSource.components = @[@"popular", @"japanese"];
-                        postViewController.title = @"日本語";
-                        
                         [titleButton setTitle:NSLocalizedString(@"日本語", nil) imageName:@"navigation-japanese"];
                         [self.navigationController.navigationBar setBarTintColor:HEX(0xff5353ff)];
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
-                        break;
-                    case 5: {
-                        PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
-                        controller.title = @"Saved Feeds";
-                        controller.navigationItem.titleView = titleButton;
-                        
-                        [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
-                        [[AppDelegate sharedDelegate].navigationController pushViewController:controller animated:YES];
                         break;
                     }
                 }
-
+                
+                if (indexPath.row == 5) {
+                    PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
+                    controller.navigationItem.titleView = titleButton;
+                    
+                    [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
+                    [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
+                    
+                    postViewController.navigationItem.titleView = titleButton;
+                    [self.navigationController pushViewController:controller animated:YES];
+                }
+                else {
+                    postViewController.navigationItem.titleView = titleButton;
+                    [self.navigationController pushViewController:postViewController animated:YES];
+                }
+                
                 break;
             }
         }

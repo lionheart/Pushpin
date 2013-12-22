@@ -15,8 +15,8 @@
 
 @synthesize badges = _badges;
 
-static const CGFloat PADDING_X = 6.0f;
-static const CGFloat PADDING_Y = 3.0f;
+static const CGFloat PADDING_X = 6;
+static const CGFloat PADDING_Y = 6;
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -44,9 +44,13 @@ static const CGFloat PADDING_Y = 3.0f;
 }
 
 - (CGFloat)calculateHeight {
+    if (self.badges.count == 0) {
+        return 0;
+    }
+
     if (self.compressed) {
         PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        return (lastBadgeView.frame.size.height  + PADDING_Y);
+        return lastBadgeView.frame.size.height + PADDING_Y;
     }
 
     CGFloat offsetX = 0;

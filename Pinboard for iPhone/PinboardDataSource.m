@@ -11,6 +11,7 @@
 #import "AddBookmarkViewController.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
+#import "PPTitleButton.h"
 
 #import "NSAttributedString+Attributes.h"
 
@@ -1094,6 +1095,7 @@ static NSString *ellipsis = @"…";
 
 - (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed {
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
     NSString *tags = post[@"tags"];
@@ -1175,8 +1177,6 @@ static NSString *ellipsis = @"…";
         [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeTitle.width - 10.0f, CGFLOAT_MAX)];
         [textStorage setAttributedString:titleAttributedString];
         [layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
-        
-//        DLog(@"%@", NSStringFromCGRect([layoutManager boundingRectForGlyphRange:titleRange inTextContainer:textContainer]));
         
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
@@ -1327,24 +1327,24 @@ static NSString *ellipsis = @"…";
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
-    if (url) {
-        // Checking that URL is not nil. Got a crash one time when in "aéroport" and then tapping on "langage_définition"
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // All tags should be UTF8 encoded before getting passed into the NSURL, so we decode them here
+        NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        if (![self.tags containsObject:tag]) {
+            PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
 
-            if (![self.tags containsObject:tag]) {
-                PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                postViewController.postDataSource = pinboardDataSource;
+                PPTitleButton *button = [PPTitleButton button];
+                [button setTitle:[pinboardDataSource.tags componentsJoinedByString:@"+"] imageName:nil];
 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-                    postViewController.postDataSource = pinboardDataSource;
-                    postViewController.title = [pinboardDataSource.tags componentsJoinedByString:@"+"];
-                    callback(postViewController);
-                });
-            }
-        });
-    }
+                postViewController.navigationItem.titleView = button;
+                callback(postViewController);
+            });
+        }
+    });
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {

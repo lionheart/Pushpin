@@ -870,18 +870,19 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout
+#pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     PPBadgeWrapperView *badgeWrapperView;
-    if ([dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)] && self.compressPosts) {
+    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
     }
+
     badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
-    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13.0f;
+    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -911,6 +912,8 @@ static NSInteger kToolbarHeight = 44;
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
         cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
     }
+    
+    // TODO Let's switch to delegation instead of settings selectors / targets.
     [cell.badgeView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 
     cell.backgroundColor = [UIColor whiteColor];
