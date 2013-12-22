@@ -273,6 +273,10 @@ static NSString *ellipsis = @"…";
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
+    if ([title isEqualToString:@""]) {
+        title = @"Untitled";
+    }
+
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
     NSString *tags = post[@"tags"];
     
@@ -337,21 +341,26 @@ static NSString *ellipsis = @"…";
         
         CGSize textSize = CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX);
         NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:textSize];
-        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:emptyString];
+
         NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
         [layoutManager addTextContainer:textContainer];
+
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:emptyString];
         [textStorage addLayoutManager:layoutManager];
+
         [layoutManager setHyphenationFactor:1.0];
         [layoutManager glyphRangeForTextContainer:textContainer];
-        
+
         NSRange titleLineRange, descriptionLineRange, linkLineRange;
         
         // Get the compressed substrings
         NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
         
         titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
-        [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeTitle.width - 10.0f, CGFLOAT_MAX)];
+        [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
         [textStorage setAttributedString:titleAttributedString];
+
+        // Throws _NSLayoutTreeLineFragmentRectForGlyphAtIndex invalid glyph index 0 when title is of length 0
         [layoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
         
         if (descriptionRange.location != NSNotFound) {
