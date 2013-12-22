@@ -76,7 +76,6 @@
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
-- (void)backButtonLongPress:(id)sender;
 - (void)forwardButtonTouchUp:(id)sender;
 - (void)copyURL;
 - (void)copyURL:(NSURL *)url;
@@ -93,11 +92,8 @@
 - (void)loadURL;
 - (void)stopLoading;
 - (CGPoint)adjustedPuckPositionWithPoint:(CGPoint)point;
-- (void)setFullscreen:(BOOL)fullscreen;
-- (void)disableFullscreen:(id)sender;
 - (NSURL *)url;
 - (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
-- (void)expandWebViewToFullScreen;
 - (NSInteger)numberOfRequestsInProgress;
 - (void)webViewLoadTimedOut;
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
