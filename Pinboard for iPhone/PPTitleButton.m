@@ -32,12 +32,13 @@
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
 
     titleButton.titleLabel = [[UILabel alloc] init];
+    titleButton.titleLabel.clipsToBounds = YES;
     titleButton.titleLabel.textColor = [UIColor whiteColor];
-    titleButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    titleButton.titleLabel.adjustsFontSizeToFitWidth = NO;
     titleButton.titleLabel.font = [PPTheme extraLargeFont];
     titleButton.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.titleLabel];
-    
+
     titleButton.imageView = [[UIImageView alloc] init];
     titleButton.imageView.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.imageView];
@@ -70,7 +71,7 @@
                             @"image": self.imageView};
 
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title]|" views:views];
+    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=215)]|" views:views];
     [self.containerView lhs_centerVerticallyForView:self.imageView height:20];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
@@ -79,7 +80,7 @@
     NSDictionary *views = @{@"title": self.titleLabel};
 
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[title]|" views:views];
+    [self.containerView lhs_addConstraints:@"H:|[title(<=240)]|" views:views];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 

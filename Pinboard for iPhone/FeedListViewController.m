@@ -464,13 +464,13 @@
     PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
     notesViewController.postDataSource = notesDataSource;
     notesViewController.title = NSLocalizedString(@"Notes", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:notesViewController animated:YES];
+    [self.navigationController pushViewController:notesViewController animated:YES];
 }
 
 - (void)openTags {
     TagViewController *tagViewController = [[TagViewController alloc] init];
-    tagViewController.title = NSLocalizedString(@"Tags", nil);
-    [[AppDelegate sharedDelegate].navigationController pushViewController:tagViewController animated:YES];
+    tagViewController.title = @"";
+    [self.navigationController pushViewController:tagViewController animated:YES];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {

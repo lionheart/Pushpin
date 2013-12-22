@@ -799,20 +799,20 @@ static NSInteger kToolbarHeight = 44;
     if (![tag isEqualToString:@""]) {
         if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
             // Show more tag options
-            self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
             for (NSDictionary *badge in badges) {
                 if ([badge[@"type"] isEqualToString:@"tag"]) {
-                    [self.actionSheet addButtonWithTitle:badge[@"tag"]];
+                    [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
                 }
             }
             
             // Properly set the cancel button index
-            [self.actionSheet addButtonWithTitle:@"Cancel"];
-            self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+            [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
+            self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
             self.actionSheetVisible = YES;
 
-            [self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+            [self.additionalTagsActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
             self.tableView.scrollEnabled = NO;
         }
         else {
@@ -992,7 +992,13 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)openActionSheetForSelectedPost {
-    if (!self.actionSheet) {
+    if (self.longPressActionSheet) {
+        if ([UIApplication isIPad]) {
+            [(UIActionSheet *)self.longPressActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            self.longPressActionSheet = nil;
+        }
+    }
+    else {
         NSString *urlString;
         if ([self.selectedPost[@"url"] length] > 67) {
             urlString = [NSString stringWithFormat:@"%@...", [self.selectedPost[@"url"] substringToIndex:67]];
@@ -1001,7 +1007,7 @@ static NSInteger kToolbarHeight = 44;
             urlString = self.selectedPost[@"url"];
         }
 
-        self.actionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
@@ -1009,47 +1015,41 @@ static NSInteger kToolbarHeight = 44;
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
             if (action == PPPostActionCopyToMine) {
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
             }
             else if (action == PPPostActionCopyURL) {
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
             }
             else if (action == PPPostActionDelete) {
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
             }
             else if (action == PPPostActionEdit) {
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
             }
             else if (action == PPPostActionMarkAsRead) {
-                [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
             }
             else if (action == PPPostActionReadLater) {
                 NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
                 if (readlater == READLATER_INSTAPAPER) {
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
                 }
                 else if (readlater == READLATER_READABILITY) {
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
                 }
                 else if (readlater == READLATER_POCKET) {
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
                 }
             }
         }
 
         // Properly set the cancel button index
-        [self.actionSheet addButtonWithTitle:@"Cancel"];
-        self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+        [self.longPressActionSheet addButtonWithTitle:@"Cancel"];
+        self.longPressActionSheet.cancelButtonIndex = self.longPressActionSheet.numberOfButtons - 1;
 
         self.actionSheetVisible = YES;
-        [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+        [self.longPressActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
         self.tableView.scrollEnabled = NO;
-    }
-    else {
-        if ([UIApplication isIPad]) {
-            [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-            self.actionSheet = nil;
-        }
     }
 }
 
@@ -1072,17 +1072,17 @@ static NSInteger kToolbarHeight = 44;
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     self.tableView.scrollEnabled = YES;
     
-    if (!actionSheet.title) {
-        if (buttonIndex >= (actionSheet.numberOfButtons - 1)) {
-            self.actionSheet = nil;
+    if (actionSheet == self.additionalTagsActionSheet) {
+        if (buttonIndex >= self.additionalTagsActionSheet.numberOfButtons - 1) {
+            self.additionalTagsActionSheet = nil;
             return;
         }
-        
-        NSString *tag = [actionSheet buttonTitleAtIndex:buttonIndex];
+
+        NSString *tag = [self.additionalTagsActionSheet buttonTitleAtIndex:buttonIndex];
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         if (!self.tableView.editing) {
             if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-                [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:tag]
+                [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
                                           callback:^(UIViewController *controller) {
                                               dispatch_async(dispatch_get_main_queue(), ^{
                                                   [self.navigationController pushViewController:controller animated:YES];
@@ -1092,9 +1092,9 @@ static NSInteger kToolbarHeight = 44;
         }
 
     }
-    else {
+    else if (actionSheet == self.longPressActionSheet) {
         if (buttonIndex >= 0) {
-            NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+            NSString *title = [self.longPressActionSheet buttonTitleAtIndex:buttonIndex];
             id <GenericPostDataSource> dataSource = [self currentDataSource];
             
             if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
@@ -1130,11 +1130,11 @@ static NSInteger kToolbarHeight = 44;
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;
                 }
-                
+
                 [self.navigationController presentViewController:vc animated:YES completion:nil];
             }
             
-            self.actionSheet = nil;
+            self.longPressActionSheet = nil;
         }
     }
 }

@@ -14,6 +14,8 @@
 #import "PinboardDataSource.h"
 #import "PPGroupedTableViewCell.h"
 #import "PPNavigationController.h"
+#import "PPTitleButton.h"
+#import "PPTheme.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -34,6 +36,13 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        PPTitleButton *titleView = [PPTitleButton button];
+        [titleView setTitle:NSLocalizedString(@"Tags", nil) imageName:nil];
+        
+        // TODO Trying to get this to @"" but back button still displays "Back"
+        self.title = @"";
+        self.navigationItem.titleView = titleView;
+
         self.tableView.opaque = NO;
         self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
@@ -184,15 +193,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"TagCell";
     PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    
-    static NSUInteger badgeTag = 1;
-    UILabel *badgeLabel;
 
     if (!cell) {
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-        badgeLabel = [[UILabel alloc] init];
-        [badgeLabel setTag:badgeTag];
-        [cell.contentView addSubview:badgeLabel];
     }
 
     NSDictionary *tag;
@@ -204,10 +207,11 @@
     }
 
     cell.textLabel.text = tag[@"name"];
+    cell.textLabel.font = [PPTheme titleFont];
+
     NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
     cell.detailTextLabel.text = badgeCount;
-
-    cell.imageView.image = nil;
+    cell.detailTextLabel.font = [PPTheme titleFont];
     return cell;
 }
 
@@ -289,7 +293,11 @@
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
     [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
     postViewController.postDataSource = pinboardDataSource;
-    postViewController.title = tag[@"name"];
+    
+    PPTitleButton *button = [PPTitleButton button];
+    [button setTitle:tag[@"name"] imageName:nil];
+    postViewController.title = @"";
+    postViewController.navigationItem.titleView = button;
     [self.navigationController pushViewController:postViewController animated:YES];
 }
 
