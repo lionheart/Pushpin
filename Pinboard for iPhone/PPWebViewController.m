@@ -71,7 +71,7 @@ static CGFloat timeInterval = 3;
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.userInteractionEnabled = YES;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.statusBarBackgroundView.backgroundColor = HEX(0x0096FFFF);
+    self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.statusBarBackgroundView];
 
     CGSize size = self.view.frame.size;
@@ -101,11 +101,11 @@ static CGFloat timeInterval = 3;
     self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
     self.toolbar = [[UIView alloc] init];
-    self.toolbar.backgroundColor = HEX(0xEBF2F6FF);
+    self.toolbar.backgroundColor = [UIColor whiteColor];
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.toolbarBackgroundView = [[UIView alloc] init];
-    self.toolbarBackgroundView.backgroundColor = HEX(0xEBF2F6FF);
+    self.toolbarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.toolbarBackgroundView];
     
@@ -410,6 +410,7 @@ static CGFloat timeInterval = 3;
     self.stopped = NO;
     
     self.title = self.urlString;
+    self.titleLabel.text = self.url.host;
 
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     [self.webView loadRequest:request];
