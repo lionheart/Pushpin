@@ -16,6 +16,11 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 
+@property (nonatomic, strong) NSMutableArray *existingConstraints;
+
+- (void)addConstraintsForImageAndTitle;
+- (void)addConstraintsForTitleOnly;
+
 @end
 
 @implementation PPTitleButton
@@ -23,8 +28,6 @@
 + (instancetype)button {
     PPTitleButton *titleButton = [[PPTitleButton alloc] init];
     titleButton.frame = CGRectMake(0, 0, 300, 24);
-    titleButton.backgroundColor = [UIColor clearColor];
-    
     titleButton.containerView = [[UIView alloc] init];
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -38,23 +41,46 @@
     titleButton.imageView = [[UIImageView alloc] init];
     titleButton.imageView.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.imageView];
-    
-    NSDictionary *views = @{@"title": titleButton.titleLabel,
-                            @"image": titleButton.imageView};
-    [titleButton.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title]|" views:views];
-    [titleButton.containerView addConstraint:[NSLayoutConstraint constraintWithItem:titleButton.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:titleButton.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
-    [titleButton.containerView lhs_centerVerticallyForView:titleButton.imageView height:20];
-    
+
     [titleButton addSubview:titleButton.containerView];
     [titleButton lhs_centerVerticallyForView:titleButton.containerView];
     [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
+    [titleButton addConstraintsForImageAndTitle];
     return titleButton;
 }
 
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
     self.titleLabel.text = title;
-    self.imageView.image = [UIImage imageNamed:imageName];
+
+    if (imageName) {
+        self.imageView.image = [UIImage imageNamed:imageName];
+        [self addConstraintsForImageAndTitle];
+    }
+    else {
+        self.imageView.image = nil;
+        [self addConstraintsForTitleOnly];
+    }
+
     [self layoutIfNeeded];
+    self.frame = (CGRect){{0, 0}, self.containerView.frame.size};
+}
+
+- (void)addConstraintsForImageAndTitle {
+    NSDictionary *views = @{@"title": self.titleLabel,
+                            @"image": self.imageView};
+
+    [self.containerView removeConstraints:self.containerView.constraints];
+    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title]|" views:views];
+    [self.containerView lhs_centerVerticallyForView:self.imageView height:20];
+    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+}
+
+- (void)addConstraintsForTitleOnly {
+    NSDictionary *views = @{@"title": self.titleLabel};
+
+    [self.containerView removeConstraints:self.containerView.constraints];
+    [self.containerView lhs_addConstraints:@"H:|[title]|" views:views];
+    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 
 @end
