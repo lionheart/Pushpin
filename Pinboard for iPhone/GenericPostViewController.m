@@ -588,6 +588,7 @@ static NSInteger kToolbarHeight = 44;
 
                             self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
                             self.searchBar.delegate = self;
+                            self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
                             self.searchDisplayController.searchResultsDelegate = self;
