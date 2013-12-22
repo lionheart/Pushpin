@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
 
+@class PostMetadata;
+
 @interface PinboardFeedDataSource : NSObject <GenericPostDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
@@ -30,9 +32,13 @@
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
-- (void)compressedMetadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
-- (void)metadataForPost:(NSDictionary *)post callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
-- (void)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed callback:(void (^)(NSAttributedString *, NSNumber *, NSArray *, NSArray *))callback;
+
+- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post;
+- (PostMetadata *)metadataForPost:(NSDictionary *)post;
+- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
+
 - (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;
+
+- (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
 
 @end
