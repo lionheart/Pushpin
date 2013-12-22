@@ -1328,7 +1328,7 @@ static NSString *ellipsis = @"…";
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // All tags should be UTF8 encoded before getting passed into the NSURL, so we decode them here
+        // All tags should be UTF8 encoded (stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding) before getting passed into the NSURL, so we decode them here
         NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
         if (![self.tags containsObject:tag]) {
@@ -1341,6 +1341,7 @@ static NSString *ellipsis = @"…";
                 [button setTitle:[pinboardDataSource.tags componentsJoinedByString:@"+"] imageName:nil];
 
                 postViewController.navigationItem.titleView = button;
+                postViewController.title = @"";
                 callback(postViewController);
             });
         }
