@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPGroupedTableViewCell.h"
+#import "PPTitleButton.h"
+#import "PPTheme.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -19,11 +21,7 @@
 @implementation PPDefaultFeedViewController
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.title = NSLocalizedString(@"Default Feed", nil);
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -33,6 +31,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Default Feed", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
+
     self.savedFeeds = [NSMutableArray array];
     
     // Setup the currently selected index path
@@ -153,6 +155,8 @@
         cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    cell.textLabel.font = [PPTheme titleFont];
+
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {

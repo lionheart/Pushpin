@@ -13,6 +13,7 @@
 #import "PPGroupedTableViewCell.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
+#import "PPTitleButton.h"
 
 @interface PPDisplaySettingsViewController ()
 
@@ -25,14 +26,19 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.title = NSLocalizedString(@"Advanced Settings", nil);
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
 }
 
@@ -44,10 +50,9 @@
     switch (section) {
         case 0:
             return 6;
-            break;
+
         case 1:
             return 1;
-            break;
     }
     return 0;
 }
@@ -109,7 +114,7 @@
                 cell.accessoryView = self.doubleTapToEditSwitch;
                 break;
             case 2:
-                cell.textLabel.text = NSLocalizedString(@"Mark bookmarks as read after viewing", nil);
+                cell.textLabel.text = NSLocalizedString(@"Auto mark as read", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.markReadSwitch = [[UISwitch alloc] init];
@@ -142,7 +147,7 @@
                 cell.accessoryView = self.autoCapitalizationSwitch;
                 break;
             case 5:
-                cell.textLabel.text = NSLocalizedString(@"Hide tags & descriptions", nil);
+                cell.textLabel.text = NSLocalizedString(@"Compress bookmark list", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.compressPostsSwitch = [[UISwitch alloc] init];
