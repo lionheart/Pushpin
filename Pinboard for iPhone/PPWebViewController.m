@@ -43,7 +43,6 @@ static CGFloat timeInterval = 3;
 
 - (void)viewDidLayoutSubviews {
     self.topLayoutConstraint.constant = [self.topLayoutGuide length];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [self.view layoutIfNeeded];
 }
 
@@ -352,6 +351,8 @@ static CGFloat timeInterval = 3;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     [UIView animateWithDuration:0.3 animations:^{
         [self setNeedsStatusBarAppearanceUpdate];
