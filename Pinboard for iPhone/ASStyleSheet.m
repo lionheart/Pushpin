@@ -11,12 +11,15 @@
 @implementation ASStyleSheet
 
 - (UIColor *)backgroundColor {
-    return [UIColor colorWithRed:0.000 green:0.039 blue:0.216 alpha:1];
+    return [UIColor whiteColor];
+}
+
+- (UIColor *)navigationBarTextColor {
+    return [UIColor whiteColor];
 }
 
 - (UIColor *)navigationBarTintColor {
-    return [UIColor colorWithRed:0.000 green:0.039 blue:0.216 alpha:1];
+    return [UIColor whiteColor];
 }
 
 @end
-

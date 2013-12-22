@@ -55,7 +55,7 @@ static CGFloat timeInterval = 3;
 
     self.yOffsetToStartShowingTitleView = 0;
     self.prefersStatusBarHidden = NO;
-    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+    self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;

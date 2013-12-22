@@ -91,7 +91,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = NSLocalizedString(@"Browse", nil);
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Browse", nil) imageName:nil];
+    self.title = @"";
+    self.navigationItem.titleView = titleView;
+
     self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
     [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
@@ -469,7 +473,6 @@
 
 - (void)openTags {
     TagViewController *tagViewController = [[TagViewController alloc] init];
-    tagViewController.title = @"";
     [self.navigationController pushViewController:tagViewController animated:YES];
 }
 

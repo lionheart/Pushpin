@@ -20,6 +20,7 @@
 #import "PPAboutViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
+#import "PPTitleButton.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
@@ -47,8 +48,7 @@
 @synthesize readabilityVerificationAlertView;
 
 - (id)init {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -56,6 +56,12 @@
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Settings", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
+
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About Navigation Bar", nil)
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self
@@ -135,6 +141,10 @@
     [[Mixpanel sharedInstance] track:@"Opened settings"];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         [[UIApplication sharedApplication] openURL:[request URL]];
@@ -144,10 +154,9 @@
 }
 
 - (void)showAboutPage {
+    [[Mixpanel sharedInstance] track:@"Opened about page"];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[Mixpanel sharedInstance] track:@"Opened about page"];
         PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
-        aboutViewController.title = @"Pushpin 2.1.1";
         [self.navigationController pushViewController:aboutViewController animated:YES];
     });
 }
