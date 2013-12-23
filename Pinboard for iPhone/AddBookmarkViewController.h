@@ -44,6 +44,9 @@ typedef enum BookmarkSections {
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)();
 
+@property (nonatomic) BOOL popularAndRecommendedTagsVisible;
+@property (nonatomic, strong) NSMutableArray *unfilteredPopularTags;
+@property (nonatomic, strong) NSMutableArray *unfilteredRecommendedTags;
 @property (nonatomic, strong) NSMutableArray *popularTags;
 @property (nonatomic, strong) NSMutableArray *recommendedTags;
 
@@ -87,8 +90,7 @@ typedef enum BookmarkSections {
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)finishEditingDescription;
 - (void)setEditingTags:(BOOL)editingTags;
-- (NSArray *)pinboardTags;
-- (BOOL)pinboardTagsVisible;
+- (NSArray *)filteredPopularAndRecommendedTags;
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
