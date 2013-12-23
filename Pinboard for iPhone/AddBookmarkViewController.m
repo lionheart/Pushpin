@@ -25,9 +25,11 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
-static NSString *CellIdentifier;
+static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface AddBookmarkViewController ()
+
+@property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 
 @end
 
@@ -36,105 +38,132 @@ static NSString *CellIdentifier;
 @synthesize textExpander, textExpanderSnippetExpanded;
 @synthesize isUpdate = _isUpdate;
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (id)init {
-    return [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        
+        self.postDescription = @"";
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+
+        self.descriptionAttributes = [@{NSFontAttributeName: [UIFont fontWithName:[PPTheme fontName] size:16],
+                                        NSForegroundColorAttributeName: HEX(0xc7c7cdff),
+                                        NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
+        
+        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        self.urlTextField = [[UITextField alloc] init];
+        self.urlTextField.font = font;
+        self.urlTextField.delegate = self;
+        self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.urlTextField.placeholder = @"https://pinboard.in/";
+        self.urlTextField.keyboardType = UIKeyboardTypeURL;
+        
+        // TODO Pull from settings
+        self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.urlTextField.text = @"";
+        self.previousURLContents = @"";
+
+        self.descriptionTextLabel = [[UILabel alloc] init];
+        self.descriptionTextLabel.numberOfLines = 0;
+        self.descriptionTextLabel.preferredMaxLayoutWidth = 270;
+        self.descriptionTextLabel.userInteractionEnabled = NO;
+
+        self.titleTextField = [[UITextField alloc] init];
+        self.titleTextField.font = font;
+        self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        self.titleTextField.delegate = self;
+        self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
+        self.titleTextField.text = @"";
+        
+        self.tagTextField = [[UITextField alloc] init];
+        self.tagTextField.font = font;
+        self.tagTextField.delegate = self;
+        self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.tagTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
+        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.tagTextField.text = @"";
+        
+        self.markAsRead = @(NO);
+        self.loadingTitle = NO;
+        self.loadingTags = NO;
+        self.suggestedTagsVisible = NO;
+        self.autocompleteInProgress = NO;
+        self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        self.popularTagSuggestions = [[NSMutableArray alloc] init];
+        self.previousTagSuggestions = [[NSMutableArray alloc] init];
+        self.suggestedTagsPayload = nil;
+        self.popularTags = @[];
+        self.recommendedTags = @[];
+        self.tagDescriptions = [NSMutableDictionary dictionary];
+        self.tagCounts = [NSMutableDictionary dictionary];
+        
+        self.callback = ^(void) {};
+        self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
+        
+        self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.descriptionTextLabel addGestureRecognizer:self.descriptionGestureRecognizer];
+        
+        self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
+        
+        self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
+        
+        self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.privateButton.frame = CGRectMake(0, 0, 23, 23);
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.readButton.frame = CGRectMake(0, 0, 23, 23);
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, [UIApplication currentSize].height)];
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+}
 
-    self.postDescription = @"";
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.tagCompletions = [NSMutableArray array];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
     
-    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
-    self.urlTextField = [[UITextField alloc] init];
-    self.urlTextField.font = font;
-    self.urlTextField.delegate = self;
-    self.urlTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.urlTextField.placeholder = @"https://pinboard.in/";
-    self.urlTextField.keyboardType = UIKeyboardTypeURL;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    // TODO Pull from settings
-    self.urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.urlTextField.text = @"";
-    self.previousURLContents = @"";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
+    [self.postDescriptionTextView resignFirstResponder];
     
-    self.descriptionTextLabel = [[UILabel alloc] init];
-    self.descriptionTextLabel.font = font;
-    self.descriptionTextLabel.text = NSLocalizedString(@"Tap here to add description", nil);
-    self.descriptionTextLabel.numberOfLines = 0;
-    self.descriptionTextLabel.userInteractionEnabled = NO;
-    self.descriptionTextLabel.textColor = HEX(0xc7c7cdff);
-    
-    self.titleTextField = [[UITextField alloc] init];
-    self.titleTextField.font = font;
-    self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.titleTextField.delegate = self;
-    self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
-    self.titleTextField.text = @"";
-    
-    self.tagTextField = [[UITextField alloc] init];
-    self.tagTextField.font = font;
-    self.tagTextField.delegate = self;
-    self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.tagTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
-    self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.tagTextField.text = @"";
-    
-    self.markAsRead = @(NO);
-    self.loadingTitle = NO;
-    self.loadingTags = NO;
-    self.suggestedTagsVisible = NO;
-    self.autocompleteInProgress = NO;
-    self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-    self.popularTagSuggestions = [[NSMutableArray alloc] init];
-    self.previousTagSuggestions = [[NSMutableArray alloc] init];
-    self.suggestedTagsPayload = nil;
-    self.popularTags = @[];
-    self.recommendedTags = @[];
-    self.tagDescriptions = [NSMutableDictionary dictionary];
-    self.tagCounts = [NSMutableDictionary dictionary];
-    
-    self.callback = ^(void) {};
-    self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
-    
-    self.descriptionGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.descriptionTextLabel addGestureRecognizer:self.descriptionGestureRecognizer];
-    
-    self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
-    
-    self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
-    
-    self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.privateButton.frame = CGRectMake(0, 0, 23, 23);
-    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-    [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
-    [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.readButton.frame = CGRectMake(0, 0, 23, 23);
-    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-    [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
-    [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
+    [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self setNeedsStatusBarAppearanceUpdate];
+
     if (!self.postDescriptionTextView) {
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
         BOOL isIPad = [UIApplication isIPad];
@@ -160,7 +189,7 @@ static NSString *CellIdentifier;
     }
 }
 
-- (void)handleGesture:(UISwipeGestureRecognizer *)gestureRecognizer {
+- (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer == self.tagGestureRecognizer) {
         [self prefillPopularTags];
         [self.tagTextField resignFirstResponder];
@@ -195,18 +224,6 @@ static NSString *CellIdentifier;
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    self.tagCompletions = [NSMutableArray array];
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
-    [self.postDescriptionTextView resignFirstResponder];
-}
-
 - (BOOL)disablesAutomaticKeyboardDismissal {
     return NO;
 }
@@ -218,39 +235,48 @@ static NSString *CellIdentifier;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == kBookmarkBottomSection) {
-        return 2;
+    switch (section) {
+        case kBookmarkTopSection:
+            if (self.suggestedTagsVisible) {
+                return kBookmarkTagRow + self.popularTagSuggestions.count + 1;
+            }
+            else {
+                return kBookmarkTagRow + self.tagCompletions.count + 1;
+            }
+            
+        case kBookmarkBottomSection:
+            return 2;
+            
+        default:
+            return 0;
     }
-    else if (section == kBookmarkTopSection) {
-        if (self.suggestedTagsVisible) {
-            return kAddBookmarkViewControllerTagCompletionOffset + self.popularTagSuggestions.count;
-        }
-        else {
-            return kAddBookmarkViewControllerTagCompletionOffset + self.tagCompletions.count;
-        }
-    }
-    return 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kBookmarkTopSection) {
-        if (indexPath.row == kBookmarkTitleRow) {
-            if (self.isUpdate) {
-                return 58;
+    switch (indexPath.section) {
+        case kBookmarkTopSection:
+            switch (indexPath.row) {
+                case kBookmarkTitleRow:
+                    if (self.isUpdate) {
+                        return 58;
+                    }
+                    else {
+                        return 62;
+                    }
+                    
+                case kBookmarkDescriptionRow: {
+                    CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
+                    return descriptionRect.size.height + 20;
+                }
             }
-            else {
-                return 62;
-            }
-        }
-        else if (indexPath.row == kBookmarkDescriptionRow) {
-            return 80;
-        }
     }
-    
+
     return 44;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     if (indexPath.section == kBookmarkTopSection && indexPath.row == kBookmarkDescriptionRow) {
         self.editTextViewController = [[UIViewController alloc] init];
         self.editTextViewController.title = NSLocalizedString(@"Description", nil);
@@ -536,7 +562,6 @@ static NSString *CellIdentifier;
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
@@ -572,13 +597,17 @@ static NSString *CellIdentifier;
                             self.urlTextField.textColor = [UIColor blackColor];
                         }
                         [cell.contentView addSubview:self.urlTextField];
-                        
+
                         break;
                     }
                     case kBookmarkDescriptionRow: {
+                        CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
+                        self.descriptionTextLabel.frame = (CGRect){{40, 10}, descriptionRect.size};
+
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0x0096ffff)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
+
                         if (self.loadingTitle) {
                             UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                             [activity startAnimating];
@@ -587,15 +616,14 @@ static NSString *CellIdentifier;
                             cell.textLabel.enabled = NO;
                         }
                         else {
-                            self.descriptionTextLabel.frame = CGRectMake(40, 10, textFieldWidth, 64);
                             if (![self.postDescription isEqualToString:@""]) {
-                                self.descriptionTextLabel.text = self.postDescription;
-                                self.descriptionTextLabel.textColor = [UIColor blackColor];
-                            } else {
-                                self.descriptionTextLabel.text = NSLocalizedString(@"Tap here to add description", nil);
-                                self.descriptionTextLabel.textColor = HEX(0xc7c7cdff);
+                                self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
+                                self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
                             }
-                            [self.descriptionTextLabel sizeToFit];
+                            else {
+                                self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
+                                self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tap here to add description", nil) attributes:self.descriptionAttributes];
+                            }
 
                             cell.accessoryView = nil;
                             [cell.contentView addSubview:self.descriptionTextLabel];
@@ -986,9 +1014,9 @@ static NSString *CellIdentifier;
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
         addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
+
         if (![bookmark[@"description"] isEqualToString:@""]) {
-            addBookmarkViewController.descriptionTextLabel.text = bookmark[@"description"];
-            addBookmarkViewController.descriptionTextLabel.textColor = [UIColor blackColor];
+            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:bookmark[@"description"] attributes:addBookmarkViewController.descriptionAttributes];
         }
     }
     
@@ -1046,12 +1074,11 @@ static NSString *CellIdentifier;
 - (void)finishEditingDescription {
     // Update the description text
     self.postDescription = self.postDescriptionTextView.text;
-    self.descriptionTextLabel.text = self.postDescriptionTextView.text;
-    [self.descriptionTextLabel sizeToFit];
+    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescriptionTextView.text attributes:self.descriptionAttributes];
     
     [self.navigationController popViewControllerAnimated:YES];
     [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
 }
 
