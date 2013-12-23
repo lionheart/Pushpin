@@ -146,7 +146,6 @@ typedef NSInteger PPPostAction;
 
 - (void)handleCellTap;
 - (void)popViewController;
-
 - (void)searchTimerFired;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
