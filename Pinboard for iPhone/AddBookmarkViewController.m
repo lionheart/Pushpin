@@ -125,15 +125,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
         
         self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.privateButton.frame = CGRectMake(0, 0, 23, 23);
+        self.privateButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xFFAE44FF)] forState:UIControlStateSelected];
         [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
         
         self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.readButton.frame = CGRectMake(0, 0, 23, 23);
+        self.readButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xffae44ff)] forState:UIControlStateSelected];
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xEF6034FF)] forState:UIControlStateSelected];
         [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
@@ -288,7 +288,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.postDescriptionTextView becomeFirstResponder];
     }
     else if (indexPath.section == kBookmarkTopSection && indexPath.row > kBookmarkTagRow) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         NSString *tagText = self.tagTextField.text;
         NSInteger row = indexPath.row;
 
@@ -329,11 +328,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
         });
     }
     else if (indexPath.section == kBookmarkBottomSection && indexPath.row == kBookmarkPrivateRow) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self togglePrivate:nil];
     }
     else if (indexPath.section == kBookmarkBottomSection && indexPath.row == kBookmarkReadRow) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self toggleRead:nil];
     }
 }
@@ -552,16 +549,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    [cell.contentView lhs_removeSubviews];
 
-    cell.accessoryView = nil;
+    [cell.contentView lhs_removeSubviews];
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
     cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
     if (indexPath.section < 5) {
@@ -569,9 +565,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         switch (indexPath.section) {
             case kBookmarkTopSection:
+                cell.accessoryView = nil;
+
                 switch (indexPath.row) {
                     case kBookmarkTitleRow: {
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] imageWithColor:HEX(0x0096ffff)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
                         if (self.loadingTitle) {
@@ -601,10 +599,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         break;
                     }
                     case kBookmarkDescriptionRow: {
+                        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+
                         CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
                         self.descriptionTextLabel.frame = (CGRect){{40, 10}, descriptionRect.size};
 
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0x0096ffff)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
 
@@ -625,13 +625,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                 self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tap here to add description", nil) attributes:self.descriptionAttributes];
                             }
 
-                            cell.accessoryView = nil;
                             [cell.contentView addSubview:self.descriptionTextLabel];
                         }
                         break;
                     }
                     case kBookmarkTagRow: {
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0x0096ffff)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
                         if (self.loadingTags) {
@@ -643,7 +642,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         }
                         else {
                             self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
-                            cell.accessoryView = nil;
                             [cell.contentView addSubview:self.tagTextField];
                         }
                         break;
@@ -667,21 +665,41 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             case kBookmarkBottomSection: {
                 switch (indexPath.row) {
-                    case kBookmarkPrivateRow:
-                        cell.textLabel.text = NSLocalizedString(@"Make Private", nil);
-                        cell.accessoryView = self.privateButton;
+                    case kBookmarkPrivateRow: {
+                        self.privateButton.selected = self.setAsPrivate.boolValue;
+
+                        if (self.setAsPrivate.boolValue) {
+                            cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                        }
+                        else {
+                            cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                        }
+
+                        [cell.contentView addSubview:self.privateButton];
+                        NSDictionary *views = @{@"view": self.privateButton};
+                        [cell.contentView lhs_addConstraints:@"H:[view(23)]-10-|" views:views];
+                        [cell.contentView lhs_centerVerticallyForView:self.privateButton height:23];
                         break;
+                    }
 
                     case kBookmarkReadRow:
-                        cell.textLabel.text = NSLocalizedString(@"Mark as read", nil);
-                        cell.accessoryView = self.readButton;
+                        self.readButton.selected = self.markAsRead.boolValue;
+
+                        if (self.markAsRead.boolValue) {
+                            cell.textLabel.text = NSLocalizedString(@"Read", nil);
+                        }
+                        else {
+                            cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                        }
+
+                        [cell.contentView addSubview:self.readButton];
+                        NSDictionary *views = @{@"view": self.readButton};
+                        [cell.contentView lhs_addConstraints:@"H:[view(23)]-10-|" views:views];
+                        [cell.contentView lhs_centerVerticallyForView:self.readButton height:23];
                         break;
                 }
                 break;
             }
-
-            default:
-                break;
         }
     }
 
@@ -690,12 +708,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)togglePrivate:(id)sender {
     self.setAsPrivate = @(!self.setAsPrivate.boolValue);
-    self.privateButton.selected = self.setAsPrivate.boolValue;
+    
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkPrivateRow inSection:kBookmarkBottomSection]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 - (void)toggleRead:(id)sender {
     self.markAsRead = @(!self.markAsRead.boolValue);
-    self.readButton.selected = self.markAsRead.boolValue;
+
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkReadRow inSection:kBookmarkBottomSection]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
 - (void)urlTextFieldDidChange:(NSNotification *)notification {
