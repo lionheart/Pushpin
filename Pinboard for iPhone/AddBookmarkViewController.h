@@ -13,6 +13,19 @@
 
 @class PPNavigationController;
 
+typedef enum BookmarkRows {
+    kBookmarkTitleRow,
+    kBookmarkDescriptionRow,
+    kBookmarkTagRow,
+    kBookmarkPrivateRow = 0,
+    kBookmarkReadRow = 1
+} BookmarkRowType;
+
+typedef enum BookmarkSections {
+    kBookmarkTopSection,
+    kBookmarkBottomSection,
+} BookmarkSectionType;
+
 @interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate> {
     UIEdgeInsets _oldContentInset;
 }
