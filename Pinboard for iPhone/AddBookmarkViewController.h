@@ -37,43 +37,40 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
-@property (nonatomic, retain) id<ModalDelegate> modalDelegate;
-@property (nonatomic, retain) UITextField *urlTextField;
-@property (nonatomic, retain) UILabel *descriptionTextLabel;
-@property (nonatomic, retain) UITextField *titleTextField;
-@property (nonatomic, retain) UISwitch *privateSwitch;
-@property (nonatomic, retain) UISwitch *readSwitch;
-@property (nonatomic, retain) UIButton *privateButton;
-@property (nonatomic, retain) UIButton *readButton;
-@property (nonatomic, retain) UITextField *tagTextField;
-@property (nonatomic, retain) NSArray *popularTags;
-@property (nonatomic, retain) NSArray *recommendedTags;
-@property (nonatomic, retain) NSMutableArray *tagCompletions;
-@property (nonatomic, retain) NSMutableArray *popularTagSuggestions;
-@property (nonatomic, retain) NSMutableArray *previousTagSuggestions;
-@property (nonatomic, retain) NSNumber *setAsPrivate;
-@property (nonatomic, retain) NSNumber *markAsRead;
-@property (nonatomic, retain) UITextField *currentTextField;
-@property (nonatomic) BOOL loadingTitle;
-@property (nonatomic) BOOL loadingTags;
 @property (nonatomic) BOOL autocompleteInProgress;
-@property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic) BOOL isUpdate;
-@property (nonatomic, retain) NSString *previousURLContents;
+@property (nonatomic) BOOL loadingTags;
+@property (nonatomic) BOOL loadingTitle;
+@property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic, copy) void (^callback)();
-@property (nonatomic, retain) NSArray *suggestedTagsPayload;
+@property (nonatomic, strong) NSArray *popularTags;
+@property (nonatomic, strong) NSArray *recommendedTags;
+@property (nonatomic, strong) NSArray *suggestedTagsPayload;
+@property (nonatomic, strong) NSMutableArray *popularTagSuggestions;
+@property (nonatomic, strong) NSMutableArray *previousTagSuggestions;
+@property (nonatomic, strong) NSMutableArray *tagCompletions;
+@property (nonatomic, strong) NSNumber *markAsRead;
+@property (nonatomic, strong) NSNumber *setAsPrivate;
+@property (nonatomic, strong) NSString *previousURLContents;
+@property (nonatomic, strong) UIButton *privateButton;
+@property (nonatomic, strong) UIButton *readButton;
+@property (nonatomic, strong) UILabel *descriptionTextLabel;
+@property (nonatomic, strong) UISwitch *privateSwitch;
+@property (nonatomic, strong) UISwitch *readSwitch;
+@property (nonatomic, strong) UITextField *currentTextField;
+@property (nonatomic, strong) UITextField *tagTextField;
+@property (nonatomic, strong) UITextField *titleTextField;
+@property (nonatomic, strong) UITextField *urlTextField;
+@property (nonatomic, strong) id<ModalDelegate> modalDelegate;
 
-@property (nonatomic, retain) UISwipeGestureRecognizer *titleGestureRecognizer;
-@property (nonatomic, retain) UISwipeGestureRecognizer *descriptionGestureRecognizer;
-@property (nonatomic, retain) UISwipeGestureRecognizer *tagGestureRecognizer;
-@property (nonatomic, retain) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
-
-@property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
-
-@property (nonatomic, retain) UIViewController *editTextViewController;
-
-@property (nonatomic, retain) SMTEDelegateController *textExpander;
 @property (nonatomic) BOOL textExpanderSnippetExpanded;
+@property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
+@property (nonatomic, strong) SMTEDelegateController *textExpander;
+@property (nonatomic, strong) UISwipeGestureRecognizer *descriptionGestureRecognizer;
+@property (nonatomic, strong) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
+@property (nonatomic, strong) UISwipeGestureRecognizer *tagGestureRecognizer;
+@property (nonatomic, strong) UISwipeGestureRecognizer *titleGestureRecognizer;
+@property (nonatomic, strong) UIViewController *editTextViewController;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
