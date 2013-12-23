@@ -491,7 +491,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
                         
                         [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.badgeWrapperView attribute:NSLayoutAttributeCenterY multiplier:1 constant:-2]];
-//                        [cell.contentView lhs_centerVerticallyForView:self.badgeWrapperView height:[self.badgeWrapperView calculateHeight]];
                         break;
                     }
                 }
