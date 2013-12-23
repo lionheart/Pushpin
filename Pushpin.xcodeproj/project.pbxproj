@@ -305,6 +305,8 @@
 		37DE5AB2174EF8AF0073A2F4 /* UIButtonBarAction.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA8174EF8AF0073A2F4 /* UIButtonBarAction.png */; };
 		37DE5AB3174EF8AF0073A2F4 /* UIButtonBarAction@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA9174EF8AF0073A2F4 /* UIButtonBarAction@2x.png */; };
 		37DE5AB9174F2A2F0073A2F4 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */; };
+		37E312E51868CCD600B944F1 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
+		37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
 		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		37EAB9C4173F01DA00B2684B /* loading_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 37EAB924173F01D900B2684B /* loading_01.png */; };
 		37EAB9C5173F01DA00B2684B /* loading_01@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37EAB925173F01D900B2684B /* loading_01@2x.png */; };
@@ -962,6 +964,8 @@
 		37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Beta.entitlements; sourceTree = "<group>"; };
 		37DF2CC116C4B80600CFCA81 /* Dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dev.entitlements; sourceTree = "<group>"; };
+		37E312E31868CCD600B944F1 /* 56_Key-alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt.png"; path = "Assets/56_Key-alt.png"; sourceTree = "<group>"; };
+		37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt@2x.png"; path = "Assets/56_Key-alt@2x.png"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		37EAB924173F01D900B2684B /* loading_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_01.png; sourceTree = "<group>"; };
 		37EAB925173F01D900B2684B /* loading_01@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_01@2x.png"; sourceTree = "<group>"; };
@@ -1858,6 +1862,8 @@
 				371F9D9E17A9B7550055AF56 /* App Icons */,
 				372D43291723A7AC00E802C0 /* Appearance */,
 				37D0D0C016B8E2310062C27E /* about.html */,
+				37E312E31868CCD600B944F1 /* 56_Key-alt.png */,
+				37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */,
 				37D59A2816EFDEAE005C9C24 /* accessory-caret.png */,
 				37D59A2916EFDEAE005C9C24 /* accessory-caret@2x.png */,
 				37B348E517601BEA00929E2E /* action-dash.png */,
@@ -2507,6 +2513,7 @@
 				37EABA0F173F01DA00B2684B /* loading_38@2x.png in Resources */,
 				37EABA10173F01DA00B2684B /* loading_39.png in Resources */,
 				37EABA11173F01DA00B2684B /* loading_39@2x.png in Resources */,
+				37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */,
 				37EABA12173F01DA00B2684B /* loading_40.png in Resources */,
 				E8734237180DAC3400CF9E5F /* activity-pocket.png in Resources */,
 				E8F987E0183E796900EF976D /* browse-all.png in Resources */,
@@ -2732,6 +2739,7 @@
 				37B5F4D917737DC0005687DA /* navigation-back-button-selected-landscape@2x.png in Resources */,
 				37B5F4DA17737DC0005687DA /* navigation-back-button-landscape.png in Resources */,
 				37B5F4DB17737DC0005687DA /* navigation-back-button-landscape@2x.png in Resources */,
+				37E312E51868CCD600B944F1 /* 56_Key-alt.png in Resources */,
 				37B5F4E01773816B005687DA /* navigation-back-button-selected-ios5.png in Resources */,
 				37B5F4E11773816B005687DA /* navigation-back-button-selected-ios5@2x.png in Resources */,
 				37B5F4E21773816B005687DA /* navigation-back-button-ios5.png in Resources */,
