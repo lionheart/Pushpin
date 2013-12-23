@@ -473,6 +473,11 @@
     else {
         [self.window setRootViewController:self.loginViewController];
     }
+    
+    UIViewController *vc = [[UIViewController alloc] init];
+    UINavigationController *nv = [[UINavigationController alloc] initWithRootViewController:vc];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.window.rootViewController = nv;
 
      /*
     PPMultipleEditViewController *mevc = [[PPMultipleEditViewController alloc] initWithStyle:UITableViewStyleGrouped];
