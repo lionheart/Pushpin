@@ -34,6 +34,8 @@ static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
+@property (nonatomic, strong) NSArray *indexPathsToDelete;
+
 @end
 
 @implementation GenericPostViewController
@@ -82,12 +84,6 @@ static NSInteger kToolbarHeight = 44;
     CGRect bounds = [[UIScreen mainScreen] bounds];
     CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
     self.toolbar = [[PPToolbar alloc] initWithFrame:frame];
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.multipleDeleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete (0)" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMultipleDeletion:)];
-    self.multipleDeleteButton.width = CGRectInset(self.toolbar.frame, 10, 0).size.width;
-    self.multipleDeleteButton.enabled = NO;
-    [self.multipleDeleteButton setTintColor:[UIColor blackColor]];
-    [self.toolbar setItems:@[flexibleSpace, self.multipleDeleteButton, flexibleSpace]];
     
     // Setup the multi-edit status view
     self.multiStatusView = [[UIView alloc] init];
@@ -296,7 +292,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
     if (selectedRowCount > 0) {
-        self.multiStatusLabel.text = [NSString stringWithFormat:@"%d %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+        self.multiStatusLabel.text = [NSString stringWithFormat:@"%lu %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
     }
     else {
         self.multiStatusLabel.text = NSLocalizedString(@"No bookmarks selected", nil);
@@ -691,24 +687,20 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
-    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
+    void (^DeletePostCallback)(NSArray *, NSArray *) = ^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [self.tableView deselectRowAtIndexPath:obj animated:YES];
-            }];
+            for (NSIndexPath *indexPath in indexPaths) {
+                [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            }
             
             [self.navigationItem setHidesBackButton:NO animated:YES];
             [self.editButton setStyle:UIBarButtonItemStylePlain];
             [self.editButton setTitle:@"Edit"];
-            
-            [CATransaction begin];
-            [CATransaction setCompletionBlock:^{
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView endUpdates];
-            }];
-            [CATransaction commit];
+        
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
             
             [UIView animateWithDuration:0.25 animations:^{
                 UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
@@ -717,15 +709,18 @@ static NSInteger kToolbarHeight = 44;
                 CGRect bounds = [[UIScreen mainScreen] bounds];
                 CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
                 self.toolbar.frame = frame;
+            } completion:^(BOOL finished) {
+                self.indexPathsToDelete = nil;
             }];
         });
-    }];
-}
+    };
 
-- (void)toggleMultipleDeletion:(id)sender {
-    self.multipleDeleteButton.enabled = NO;
-    NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
-    [self deletePostsAtIndexPaths:selectedIndexPaths];
+    if (self.searchDisplayController.isActive) {
+        [self.searchPostDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
+    }
+    else {
+        [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
+    }
 }
 
 - (void)multiMarkAsRead:(id)sender {
@@ -741,6 +736,9 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)multiEdit:(id)sender {
+    [[[UIAlertView alloc] initWithTitle:nil message:@"Almost ready to go, but not quite functional yet." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+    return;
+
     NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
     [[self.tableView indexPathsForSelectedRows] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSIndexPath *indexPath = (NSIndexPath *)obj;
@@ -762,7 +760,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)multiDelete:(id)sender {
-    
+    self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
+
+    self.confirmMultipleDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    [self.confirmMultipleDeletionAlertView show];
 }
 
 - (void)tagSelected:(id)sender {
@@ -1321,9 +1322,10 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Alert View Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
     if (alertView == self.confirmDeletionAlertView) {
-        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
+            // We're only deleting one bookmark in this case.
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1342,10 +1344,18 @@ static NSInteger kToolbarHeight = 44;
                     });
                 }];
             }
-        } else if ([title isEqualToString:NSLocalizedString(@"No", nil)]) {
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"No", nil)]) {
             // Dismiss the edit view
             [self.tableView setEditing:NO animated:YES];
         }
+    }
+    else if (alertView == self.confirmMultipleDeletionAlertView) {
+        if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
+            [self deletePostsAtIndexPaths:self.indexPathsToDelete];
+        }
+        
+        [self toggleEditingMode:nil];
     }
 }
 

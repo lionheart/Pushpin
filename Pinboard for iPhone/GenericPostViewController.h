@@ -103,7 +103,8 @@ typedef NSInteger PPPostAction;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, retain) UIAlertView *confirmDeletionAlertView;
+@property (nonatomic, strong) UIAlertView *confirmMultipleDeletionAlertView;
+@property (nonatomic, strong) UIAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
@@ -121,7 +122,6 @@ typedef NSInteger PPPostAction;
 
 // Multiple Deletion
 @property (nonatomic, strong) PPToolbar *toolbar;
-@property (nonatomic, strong) UIBarButtonItem *multipleDeleteButton;
 @property (nonatomic, strong) UIBarButtonItem *editButton;
 
 @property (nonatomic, strong) UIView *multiStatusView;
