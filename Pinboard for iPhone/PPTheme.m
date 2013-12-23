@@ -36,11 +36,15 @@
 }
 
 + (UIFont *)tagFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 4];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme tagFontSize]];
 }
 
 + (CGFloat)fontSize {
     return [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+}
+
++ (CGFloat)tagFontSize {
+    return [PPTheme fontSize] - 4;
 }
 
 + (NSString *)fontName {

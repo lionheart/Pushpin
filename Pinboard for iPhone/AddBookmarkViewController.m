@@ -16,7 +16,8 @@
 #import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "UITableViewCellValue1.h"
-
+#import "PPBadgeWrapperView.h"
+#import "PPBadgeView.h"
 #import "UITableView+Additions.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -172,6 +173,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
     }
     
+    addBookmarkViewController.badgeWrapperView = [addBookmarkViewController badgeWrapperViewForCurrentTags];
+    
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
         addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
@@ -324,6 +327,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     case kBookmarkDescriptionRow: {
                         CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
                         return descriptionRect.size.height + 20;
+                    }
+
+                    case kBookmarkTagRow: {
+                        return [self.badgeWrapperView calculateHeight] + 20;
                     }
                 }
         }
@@ -480,8 +487,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
-                        self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
-                        [cell.contentView addSubview:self.tagTextField];
+                        [cell.contentView addSubview:self.badgeWrapperView];
+                        [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
+                        
+                        [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.badgeWrapperView attribute:NSLayoutAttributeCenterY multiplier:1 constant:-2]];
+//                        [cell.contentView lhs_centerVerticallyForView:self.badgeWrapperView height:[self.badgeWrapperView calculateHeight]];
                         break;
                     }
                 }
@@ -1127,7 +1137,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.tableView endUpdates];
 }
 
-- (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer {
+- (void)gestureDetected:(UIGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer == self.tagGestureRecognizer) {
         [self prefillPopularTags];
         [self.tagTextField resignFirstResponder];
@@ -1162,6 +1172,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
     }
+    else if (gestureRecognizer == self.badgeTapGestureRecognizer) {
+        self.editingTags = YES;
+    }
 }
 
 - (void)setEditingTags:(BOOL)editingTags {
@@ -1176,10 +1189,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSArray *indexPathsToDelete = @[[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]];
         
+        NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
+        
         [CATransaction begin];
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:kBookmarkBottomSection] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
         [self.tableView endUpdates];
         [CATransaction setCompletionBlock:^{
             [self.tagTextField becomeFirstResponder];
@@ -1187,6 +1203,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [CATransaction commit];
     }
     else {
+        self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
         self.tagTextField.userInteractionEnabled = NO;
         [self.tagTextField resignFirstResponder];
         
@@ -1197,6 +1214,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                         [NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]];
         
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+        NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
+
         if (self.popularAndRecommendedTagsVisible) {
             for (NSInteger i=1; i<self.filteredPopularAndRecommendedTags.count+1; i++) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:kBookmarkTopSection]];
@@ -1216,14 +1235,33 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationTop];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:kBookmarkBottomSection] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
-
     }
 }
 
 - (NSArray *)filteredPopularAndRecommendedTags {
     return [self.popularTags arrayByAddingObjectsFromArray:self.recommendedTags];
+}
+
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags {
+    NSMutableArray *badges = [NSMutableArray array];
+
+    NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+    for (NSString *tag in existingTags) {
+        [badges addObject:@{ @"type": @"tag", @"tag": tag }];
+    }
+    
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
+    wrapper.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    self.badgeTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.badgeTapGestureRecognizer.numberOfTapsRequired = 1;
+
+    [wrapper addGestureRecognizer:self.badgeTapGestureRecognizer];
+    return wrapper;
 }
 
 @end

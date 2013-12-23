@@ -12,6 +12,7 @@
 #import <TextExpander/SMTEDelegateController.h>
 
 @class PPNavigationController;
+@class PPBadgeWrapperView;
 
 typedef enum BookmarkRows {
     kBookmarkTitleRow,
@@ -50,6 +51,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSMutableArray *popularTags;
 @property (nonatomic, strong) NSMutableArray *recommendedTags;
 
+@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 @property (nonatomic, strong) NSMutableArray *previousTagSuggestions;
 @property (nonatomic, strong) NSMutableArray *tagCompletions;
 @property (nonatomic, strong) NSNumber *markAsRead;
@@ -74,6 +76,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UISwipeGestureRecognizer *tagGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *titleGestureRecognizer;
 @property (nonatomic, strong) UIViewController *editTextViewController;
+@property (nonatomic, strong) UITapGestureRecognizer *badgeTapGestureRecognizer;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
 - (void)keyboardDidHide:(NSNotification *)sender;
@@ -91,6 +94,7 @@ typedef enum BookmarkSections {
 - (void)finishEditingDescription;
 - (void)setEditingTags:(BOOL)editingTags;
 - (NSArray *)filteredPopularAndRecommendedTags;
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
