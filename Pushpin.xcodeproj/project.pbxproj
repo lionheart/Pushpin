@@ -142,6 +142,7 @@
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
+		374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */ = {isa = PBXBuildFile; fileRef = 374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */; };
 		3751D18218346C0200E0A42A /* mobilize.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17E18346C0200E0A42A /* mobilize.png */; };
 		3751D18318346C0200E0A42A /* mobilize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17F18346C0200E0A42A /* mobilize@2x.png */; };
 		3751D18418346C0200E0A42A /* mobilized.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18018346C0200E0A42A /* mobilized.png */; };
@@ -776,6 +777,8 @@
 		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		374698BE174B33CE00407345 /* PPNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotification.h; sourceTree = "<group>"; };
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotification.m; sourceTree = "<group>"; };
+		374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellValue1.h; sourceTree = "<group>"; };
+		374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellValue1.m; sourceTree = "<group>"; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
 		3751D17F18346C0200E0A42A /* mobilize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize@2x.png"; path = "Assets/mobilize@2x.png"; sourceTree = "<group>"; };
 		3751D18018346C0200E0A42A /* mobilized.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilized.png; path = Assets/mobilized.png; sourceTree = "<group>"; };
@@ -1819,6 +1822,8 @@
 				E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
+				374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */,
+				374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2830,6 +2835,7 @@
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
 				3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */,
+				374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */,
 				37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */,
 				37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */,
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
