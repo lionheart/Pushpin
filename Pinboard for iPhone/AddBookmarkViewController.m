@@ -330,7 +330,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
 
                     case kBookmarkTagRow: {
-                        return [self.badgeWrapperView calculateHeight] + 20;
+                        return MAX(44, [self.badgeWrapperView calculateHeight] + 20);
                     }
                 }
         }
@@ -1250,7 +1250,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
     for (NSString *tag in existingTags) {
-        [badges addObject:@{ @"type": @"tag", @"tag": tag }];
+        if (![tag isEqualToString:@""]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": tag }];
+        }
     }
     
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
