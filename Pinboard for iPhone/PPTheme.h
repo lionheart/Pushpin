@@ -17,9 +17,9 @@
 + (UIFont *)descriptionFont;
 + (UIFont *)urlFont;
 + (UIFont *)tagFont;
-
 + (NSString *)fontName;
 + (NSString *)boldFontName;
 + (CGFloat)fontSize;
++ (CGFloat)tagFontSize;
 
 @end

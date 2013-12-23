@@ -44,41 +44,36 @@ static const CGFloat PADDING_Y = 6;
 }
 
 - (CGFloat)calculateHeight {
+    if (self.badges.count == 0) {
+        return 0;
+    }
+
+    if (self.compressed) {
+        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
+        return lastBadgeView.frame.size.height + PADDING_Y;
+    }
+
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
-    
-    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
-    CGRect ellipsisFrame = ellipsisView.frame;
     
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            CGRect badgeFrame = badgeView.frame;
-            badgeFrame.origin = CGPointMake(offsetX, offsetY);
+            CGRect frame = badgeView.frame;
+            offsetX += (frame.size.width + PADDING_X);
             
-            if (self.compressed) {
-                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > self.frame.size.width;
-                if (hitsBoundaryWithEllipsis) {
-                    break;
-                }
-            }
-            else {
-                BOOL hitsBoundary = offsetX > self.frame.size.width;
-                if (hitsBoundary) {
-                    // Wrap to the next line
-                    offsetX = badgeFrame.size.width + PADDING_X;
-                    offsetY += badgeFrame.size.height + PADDING_Y;
-                    
-                    badgeFrame.origin = CGPointMake(0, offsetY);
-                }
+            if (offsetX > ([UIApplication currentSize].width - 20)) {
+                offsetX = frame.size.width + PADDING_X;
+                offsetY += frame.size.height + PADDING_Y;
             }
         }
     }
-    
+
     if (self.subviews.count > 0) {
         PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        offsetY += lastBadgeView.frame.size.height;
+        offsetY += lastBadgeView.frame.size.height + PADDING_Y;
     }
+    
     return offsetY;
 }
 
