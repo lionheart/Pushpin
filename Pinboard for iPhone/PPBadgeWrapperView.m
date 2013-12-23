@@ -15,6 +15,7 @@
 
 @synthesize badges = _badges;
 
+static NSString *ellipsis = @"…";
 static const CGFloat PADDING_X = 6;
 static const CGFloat PADDING_Y = 6;
 
@@ -43,38 +44,36 @@ static const CGFloat PADDING_Y = 6;
     return self;
 }
 
-- (CGFloat)calculateHeight {
-    if (self.badges.count == 0) {
-        return 0;
-    }
-
-    if (self.compressed) {
-        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        return lastBadgeView.frame.size.height + PADDING_Y;
-    }
-
+- (CGFloat)calculateHeightForWidth:(CGFloat)width {
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
     
+    CGRect badgeFrame;
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            CGRect frame = badgeView.frame;
-            offsetX += (frame.size.width + PADDING_X);
+            badgeFrame = badgeView.frame;
+            offsetX += badgeFrame.size.width + PADDING_X;
             
-            if (offsetX > ([UIApplication currentSize].width - 20)) {
-                offsetX = frame.size.width + PADDING_X;
-                offsetY += frame.size.height + PADDING_Y;
+            BOOL hitsBoundary = offsetX > width;
+            if (hitsBoundary) {
+                DLog(@"hit a new line");
+                // Wrap to the next line
+                offsetX = badgeFrame.size.width + PADDING_X;
+                offsetY += badgeFrame.size.height + PADDING_Y;
             }
         }
     }
-
+    
     if (self.subviews.count > 0) {
-        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        offsetY += lastBadgeView.frame.size.height + PADDING_Y;
+        offsetY += badgeFrame.size.height;
     }
     
     return offsetY;
+}
+
+- (CGFloat)calculateHeight {
+    return [self calculateHeightForWidth:[UIApplication currentSize].width - 20];
 }
 
 - (void)setBadges:(NSMutableArray *)badges {
@@ -116,7 +115,7 @@ static const CGFloat PADDING_Y = 6;
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
 
-    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
+    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
     CGRect ellipsisFrame = ellipsisView.frame;
 
     // Hide all the subviews initially.
@@ -128,8 +127,6 @@ static const CGFloat PADDING_Y = 6;
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
             CGRect badgeFrame = badgeView.frame;
-
-            badgeView.hidden = NO;
             badgeFrame.origin = CGPointMake(offsetX, offsetY);
             offsetX += badgeFrame.size.width + PADDING_X;
 
