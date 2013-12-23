@@ -19,6 +19,7 @@
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options;
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options compressed:(BOOL)compressed;
 - (CGFloat)calculateHeight;
+- (CGFloat)calculateHeightForWidth:(CGFloat)width;
 
 - (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
 
