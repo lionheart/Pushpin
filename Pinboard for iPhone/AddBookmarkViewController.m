@@ -85,7 +85,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         self.descriptionTextLabel = [[UILabel alloc] init];
         self.descriptionTextLabel.font = font;
         self.descriptionTextLabel.text = NSLocalizedString(@"Tap here to add description", nil);
-        self.descriptionTextLabel.numberOfLines = 3;
+        self.descriptionTextLabel.numberOfLines = 0;
         self.descriptionTextLabel.userInteractionEnabled = NO;
         self.descriptionTextLabel.textColor = HEX(0xc7c7cdff);
         
@@ -239,10 +239,10 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 1) {
+    if (section == kBookmarkBottomSection) {
         return 2;
     }
-    else if (section == 0) {
+    else if (section == kBookmarkTopSection) {
         if (self.suggestedTagsVisible) {
             return kAddBookmarkViewControllerTagCompletionOffset + self.popularTagSuggestions.count;
         }
@@ -254,23 +254,25 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
+    if (indexPath.section == kBookmarkTopSection) {
+        if (indexPath.row == kBookmarkTitleRow) {
             if (self.isUpdate) {
-                return 58.0f;
-            } else {
-                return 62.0f;
+                return 58;
             }
-        } else if (indexPath.row == 1) {
-            return 80.0f;
+            else {
+                return 62;
+            }
+        }
+        else if (indexPath.row == kBookmarkDescriptionRow) {
+            return 80;
         }
     }
     
-    return 44.0f;
+    return 44;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 1) {
+    if (indexPath.section == kBookmarkTopSection && indexPath.row == kBookmarkDescriptionRow) {
         self.editTextViewController = [[UIViewController alloc] init];
         self.editTextViewController.title = NSLocalizedString(@"Description", nil);
         self.editTextViewController.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
@@ -280,7 +282,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         [self.navigationController pushViewController:self.editTextViewController animated:YES];
         [self.postDescriptionTextView becomeFirstResponder];
     }
-    else if (indexPath.section == 0 && indexPath.row > 2) {
+    else if (indexPath.section == kBookmarkTopSection && indexPath.row > kBookmarkTagRow) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         NSString *tagText = self.tagTextField.text;
         NSInteger row = indexPath.row;
@@ -293,7 +295,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                 completion = self.tagCompletions[row - kAddBookmarkViewControllerTagCompletionOffset];
 
                 for (NSInteger i=0; i<self.tagCompletions.count; i++) {
-                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:kBookmarkTopSection]];
                 }
 
                 [self.tagCompletions removeAllObjects];
@@ -321,18 +323,18 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
             });
         });
     }
-    else if (indexPath.section == 1 && indexPath.row == 0) {
+    else if (indexPath.section == kBookmarkBottomSection && indexPath.row == kBookmarkPrivateRow) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self togglePrivate:nil];
     }
-    else if (indexPath.section == 1 && indexPath.row == 1) {
+    else if (indexPath.section == kBookmarkBottomSection && indexPath.row == kBookmarkReadRow) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self toggleRead:nil];
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == kBookmarkTopSection) {
         if (!self.footerView) {
             self.footerView = [[UIView alloc] init];
             self.footerView.clipsToBounds = NO;
@@ -352,10 +354,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == kBookmarkTopSection) {
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
         NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
-        CGFloat maxWidth = self.tableView.frame.size.width - 40;
         CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
         return rect.size.height;
     }
@@ -369,22 +370,22 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     if (self.currentTextField == self.tagTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.descriptionTextLabel) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
 }
 
 - (void)keyboardDidHide:(NSNotification *)sender {
     // Remove the suggested tags
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-    if ([self.tagCompletions count] > 0) {
+    if (self.tagCompletions.count > 0) {
         for (NSInteger i=0; i<self.tagCompletions.count; i++) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:0]];
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i + kAddBookmarkViewControllerTagCompletionOffset) inSection:kBookmarkTopSection]];
         }
         
         [self.tagCompletions removeAllObjects];
@@ -568,9 +569,9 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
         CGRect frame = cell.frame;
 
         switch (indexPath.section) {
-            case 0:
+            case kBookmarkTopSection:
                 switch (indexPath.row) {
-                    case 0: {
+                    case kBookmarkTitleRow: {
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] imageWithColor:HEX(0x0096ffff)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
@@ -600,7 +601,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                         
                         break;
                     }
-                    case 1: {
+                    case kBookmarkDescriptionRow: {
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0x0096ffff)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
@@ -627,7 +628,7 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                         }
                         break;
                     }
-                    case 2: {
+                    case kBookmarkTagRow: {
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0x0096ffff)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
@@ -662,14 +663,17 @@ static NSInteger kAddBookmarkViewControllerTagCompletionOffset = 3;
                 }
                 break;
 
-            case 1: {
-                if (indexPath.row == 0) {
-                    cell.textLabel.text = NSLocalizedString(@"Make Private", nil);
-                    cell.accessoryView = self.privateButton;
-                }
-                else if (indexPath.row == 1) {
-                    cell.textLabel.text = NSLocalizedString(@"Mark as read", nil);
-                    cell.accessoryView = self.readButton;
+            case kBookmarkBottomSection: {
+                switch (indexPath.row) {
+                    case kBookmarkPrivateRow:
+                        cell.textLabel.text = NSLocalizedString(@"Make Private", nil);
+                        cell.accessoryView = self.privateButton;
+                        break;
+
+                    case kBookmarkReadRow:
+                        cell.textLabel.text = NSLocalizedString(@"Mark as read", nil);
+                        cell.accessoryView = self.readButton;
+                        break;
                 }
                 break;
             }
