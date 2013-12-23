@@ -547,12 +547,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 
                 if (self.tagCompletions.count > 0) {
                     completion = self.tagCompletions[row - 1];
-
-                    for (NSInteger i=0; i<self.tagCompletions.count; i++) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + 1) inSection:kBookmarkTopSection]];
-                    }
-
-                    [self.tagCompletions removeAllObjects];
+                    [self.tagCompletions removeObjectAtIndex:row-1];
+                    [indexPathsToDelete addObject:indexPath];
                 }
                 else if (self.filteredPopularAndRecommendedTags.count > 0) {
                     completion = self.filteredPopularAndRecommendedTags[row - 1];
@@ -569,7 +565,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         self.tagTextField.text = [NSString stringWithFormat:@"%@ ", tagText];
                     }
                     
-                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:kBookmarkTopSection]];
+                    [indexPathsToDelete addObject:indexPath];
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
