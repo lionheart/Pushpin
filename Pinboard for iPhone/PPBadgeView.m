@@ -19,15 +19,6 @@ static const CGFloat PADDING_Y = 2.0f;
 @synthesize imageView = _imageView;
 @synthesize textLabel = _textLabel;
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
-
 - (id)initWithImage:(UIImage *)image {
     return [self initWithImage:image options:nil];
 }

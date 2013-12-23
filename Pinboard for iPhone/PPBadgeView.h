@@ -19,11 +19,12 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 @property (nonatomic, readonly) SEL actionTouchUpInside;
 @property (nonatomic, readonly, weak) id targetTouchUpInside;
 
-@property (nonatomic, retain) UIImageView *imageView;
-@property (nonatomic, retain) UILabel *textLabel;
-@property (nonatomic, retain) UIColor *normalColor;
-@property (nonatomic, retain) UIColor *selectedColor;
-@property (nonatomic, retain) UIColor *disabledColor;
+@property (nonatomic, strong) UIView *badgeView;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *textLabel;
+@property (nonatomic, strong) UIColor *normalColor;
+@property (nonatomic, strong) UIColor *selectedColor;
+@property (nonatomic, strong) UIColor *disabledColor;
 
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL selected;

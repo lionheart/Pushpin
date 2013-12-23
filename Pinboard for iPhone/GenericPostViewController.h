@@ -86,7 +86,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
