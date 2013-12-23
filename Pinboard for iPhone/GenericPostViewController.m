@@ -172,7 +172,7 @@ static NSInteger kToolbarHeight = 44;
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
 
     if ([backViewController isKindOfClass:[FeedListViewController class]]) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:nil action:nil];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
 
         __weak id weakself = self;
         self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
@@ -330,7 +330,7 @@ static NSInteger kToolbarHeight = 44;
 
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
-            self.multiStatusLabel.text = [NSString stringWithFormat:@"%d %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+            self.multiStatusLabel.text = [NSString stringWithFormat:@"%ld %@", (long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
         }
         else {
             // If configured, always mark the post as read
