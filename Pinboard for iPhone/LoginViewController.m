@@ -14,6 +14,7 @@
 #import "FeedListViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
+#import "ASStyleSheet.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -111,7 +112,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         if (total == current) {
             [self.messageUpdateTimer invalidate];
             self.activityIndicator.frame = self.activityIndicatorFrameTop;
-            self.progressView.hidden = YES;
             self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
         }
         else {
@@ -230,7 +230,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                self.progressView.hidden = NO;
                                                
                                                [self.tableView beginUpdates];
-                                               [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0], [NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0]]
+                                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
+                                               [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]]
+                                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
                                                [self.tableView endUpdates];
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -340,11 +343,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if ([self is1PasswordAvailable] && !self.loginInProgress) {
-        return 2;
+    if (!self.progressView.hidden || self.loginInProgress) {
+        return 1;
     }
     else {
-        return 1;
+        if ([self is1PasswordAvailable]) {
+            return 2;
+        }
+        else {
+            return 1;
+        }
     }
 }
 
@@ -359,7 +367,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         }
     }
 
-    return 0;
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.progressView.hidden) {
+        return 44;
+    }
+    return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -388,21 +403,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         else {
             UIView *view = [[UIView alloc] init];
             view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            
-            [view addSubview:self.progressView];
             [view addSubview:self.textView];
             
-            NSDictionary *views = @{@"progress": self.progressView,
-                                    @"text": self.textView };
-            
-            
-            CGFloat height = 3;
-            if (self.progressView.hidden) {
-                height = 0;
-            }
-            NSDictionary *metrics = @{@"height": @(height)};
-            [view lhs_addConstraints:@"V:|[progress(height)]-5-[text]-5-|" metrics:metrics views:views];
-            [view lhs_addConstraints:@"H:|[progress]|" views:views];
+            NSDictionary *views = @{@"text": self.textView };
+
+            [view lhs_addConstraints:@"V:|-5-[text]-5-|" views:views];
             [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
             return view;
         }
@@ -415,6 +420,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     [cell.contentView lhs_removeSubviews];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.textLabel.text = nil;
+    cell.accessoryView = nil;
 
     switch (indexPath.section) {
         case 0:
@@ -422,10 +429,18 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             switch (indexPath.row) {
                 case kLoginUsernameRow: {
-                    NSDictionary *views = @{@"view": self.usernameTextField };
-                    [cell.contentView addSubview:self.usernameTextField];
-                    [cell.contentView lhs_addConstraints:@"H:|-15-[view]-5-|" views:views];
-                    [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
+                    if (self.progressView.hidden) {
+                        NSDictionary *views = @{@"view": self.usernameTextField };
+                        [cell.contentView addSubview:self.usernameTextField];
+                        [cell.contentView lhs_addConstraints:@"H:|-15-[view]-5-|" views:views];
+                        [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
+                    }
+                    else {
+                        [cell.contentView addSubview:self.progressView];
+                        NSDictionary *views = @{@"progress": self.progressView};
+                        [cell.contentView lhs_addConstraints:@"V:|[progress]|" views:views];
+                        [cell.contentView lhs_addConstraints:@"H:|[progress]|" views:views];
+                    }
                     break;
                 }
                     
@@ -453,6 +468,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     return cell;
 }
 
+#pragma mark - UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
@@ -460,7 +477,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case 0:
             switch (indexPath.row) {
                 case kLoginUsernameRow:
-                    [self.usernameTextField becomeFirstResponder];
+                    if (self.progressView.hidden) {
+                        [self.usernameTextField becomeFirstResponder];
+                    }
                     break;
                     
                 case kLoginPasswordRow:
@@ -477,11 +496,15 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     
 }
 
+#pragma mark - Utils
+
 - (void)showContactForm {
     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-
+    
+    ASStyleSheet *styleSheet = [[ASStyleSheet alloc] init];
+    [UVStyleSheet setStyleSheet:styleSheet];
     [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
