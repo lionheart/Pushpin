@@ -8,28 +8,32 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum kLoginRows {
+    kLoginUsernameRow,
+    kLoginPasswordRow,
+    kLogin1PasswordRow = 0
+} kLoginRowType;
+
 @interface LoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
 }
 
 @property (nonatomic) BOOL keyboard_shown;
-@property (nonatomic, retain) UITextField *usernameTextField;
-@property (nonatomic, retain) UITextField *passwordTextField;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) UITextView *textView;
-@property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UITextField *textField;
-@property (nonatomic) CGRect activityIndicatorFrameTop;
-@property (nonatomic) CGRect activityIndicatorFrameMiddle;
 @property (nonatomic) CGRect activityIndicatorFrameBottom;
-@property (nonatomic, retain) NSTimer *loginTimer;
+@property (nonatomic) CGRect activityIndicatorFrameMiddle;
+@property (nonatomic) CGRect activityIndicatorFrameTop;
+@property (nonatomic, strong) NSTimer *loginTimer;
 @property (nonatomic, strong) NSTimer *messageUpdateTimer;
-@property (nonatomic, strong) UIButton *onePasswordButton;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) UIProgressView *progressView;
+@property (nonatomic, strong) UITextField *passwordTextField;
+@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) UITextField *usernameTextField;
+@property (nonatomic, strong) UITextView *textView;
 
 - (void)login;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
-- (void)sendToOnePassword;
 - (void)showContactForm;
 
 @end
