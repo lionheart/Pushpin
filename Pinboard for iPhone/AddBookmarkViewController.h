@@ -37,16 +37,16 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
+@property (nonatomic) BOOL editingTags;
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL isUpdate;
 @property (nonatomic) BOOL loadingTags;
 @property (nonatomic) BOOL loadingTitle;
-@property (nonatomic) BOOL suggestedTagsVisible;
 @property (nonatomic, copy) void (^callback)();
-@property (nonatomic, strong) NSArray *popularTags;
-@property (nonatomic, strong) NSArray *recommendedTags;
-@property (nonatomic, strong) NSArray *suggestedTagsPayload;
-@property (nonatomic, strong) NSMutableArray *popularTagSuggestions;
+
+@property (nonatomic, strong) NSMutableArray *popularTags;
+@property (nonatomic, strong) NSMutableArray *recommendedTags;
+
 @property (nonatomic, strong) NSMutableArray *previousTagSuggestions;
 @property (nonatomic, strong) NSMutableArray *tagCompletions;
 @property (nonatomic, strong) NSNumber *markAsRead;
@@ -86,6 +86,9 @@ typedef enum BookmarkSections {
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)finishEditingDescription;
+- (void)setEditingTags:(BOOL)editingTags;
+- (NSArray *)pinboardTags;
+- (BOOL)pinboardTagsVisible;
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
