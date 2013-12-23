@@ -83,8 +83,6 @@ typedef enum BookmarkSections {
 - (void)handleTagSuggestions;
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
-- (void)privateSwitchChanged:(id)sender;
-- (void)readSwitchChanged:(id)sender;
 - (void)togglePrivate:(id)sender;
 - (void)toggleRead:(id)sender;
 - (void)addBookmark;
