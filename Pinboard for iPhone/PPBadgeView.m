@@ -73,7 +73,7 @@ static const CGFloat PADDING_Y = 2.0f;
         self.layer.backgroundColor = self.normalColor.CGColor;
         
         self.textLabel = [[UILabel alloc] init];
-        self.textLabel.text = [text lowercaseString];
+        self.textLabel.text = text;
         self.textLabel.font = [PPTheme tagFont];
         self.textLabel.textColor = [UIColor whiteColor];
         
