@@ -173,11 +173,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             @"Reversing Feed Originators",
         ];
         self.textView.attributedText = [[NSAttributedString alloc] initWithString:[messages objectAtIndex:arc4random_uniform(messages.count)] attributes:self.textViewAttributes];
-        
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            self.progressView.frame = CGRectMake(([UIApplication currentSize].width - 280) / 2, 380, 280, 50);
-        });
     });
 }
 
@@ -224,7 +219,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
                                                self.textView.hidden = NO;
                                                
-                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:6 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                                
                                                self.progressView.hidden = NO;
