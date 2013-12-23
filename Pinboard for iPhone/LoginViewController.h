@@ -29,11 +29,13 @@ typedef enum kLoginRows {
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UITextField *usernameTextField;
 @property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) NSDictionary *textViewAttributes;
 
 - (void)login;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
 - (void)progressNotificationReceived:(NSNotification *)notification;
 - (void)showContactForm;
+- (BOOL)is1PasswordAvailable;
 
 @end
