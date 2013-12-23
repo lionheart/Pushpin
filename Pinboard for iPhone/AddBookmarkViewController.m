@@ -137,6 +137,76 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return self;
 }
 
++ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
+    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
+    
+    [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
+    
+    if (isUpdate.boolValue) {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
+        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
+    }
+    else {
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
+    }
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
+    
+    if (bookmark[@"title"]) {
+        addBookmarkViewController.titleTextField.text = bookmark[@"title"];
+    }
+    
+    if (bookmark[@"url"]) {
+        addBookmarkViewController.urlTextField.text = bookmark[@"url"];
+        
+        if (isUpdate.boolValue) {
+            addBookmarkViewController.urlTextField.enabled = NO;
+        }
+    }
+    
+    if (bookmark[@"tags"]) {
+        addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
+    }
+    
+    if (bookmark[@"description"]) {
+        addBookmarkViewController.postDescription = bookmark[@"description"];
+        addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
+        
+        if (![bookmark[@"description"] isEqualToString:@""]) {
+            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:bookmark[@"description"] attributes:addBookmarkViewController.descriptionAttributes];
+        }
+    }
+    
+    if (delegate) {
+        addBookmarkViewController.modalDelegate = delegate;
+    }
+    
+    if (callback) {
+        addBookmarkViewController.callback = callback;
+    }
+    
+    if (bookmark[@"private"]) {
+        addBookmarkViewController.setAsPrivate = bookmark[@"private"];
+    }
+    else {
+        addBookmarkViewController.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+    }
+    
+    if (bookmark[@"unread"]) {
+        BOOL isRead = !([bookmark[@"unread"] boolValue]);
+        addBookmarkViewController.markAsRead = @(isRead);
+    }
+    else {
+        addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
+    }
+    
+    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate.boolValue;
+    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead.boolValue;
+    return addBookmarkViewNavigationController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -185,6 +255,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.postDescriptionTextView setDelegate:textExpander];
         [self.textExpander setNextDelegate:self];
     }
+}
+
+#pragma mark - UIViewController
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    return YES;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
+- (BOOL)disablesAutomaticKeyboardDismissal {
+    return NO;
 }
 
 #pragma mark - UITableViewDataSource
@@ -504,20 +588,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     return YES;
-}
-
-#pragma mark - UIViewController
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    return YES;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
-
-- (BOOL)disablesAutomaticKeyboardDismissal {
-    return NO;
 }
 
 #pragma mark - Everything Else
@@ -1000,76 +1070,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                  }];
         });
     });
-}
-
-+ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
-    PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
-    [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
-    
-    if (isUpdate.boolValue) {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
-        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
-        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
-    }
-    else {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
-        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
-    }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
-    
-    if (bookmark[@"title"]) {
-        addBookmarkViewController.titleTextField.text = bookmark[@"title"];
-    }
-    
-    if (bookmark[@"url"]) {
-        addBookmarkViewController.urlTextField.text = bookmark[@"url"];
-        
-        if (isUpdate.boolValue) {
-            addBookmarkViewController.urlTextField.enabled = NO;
-        }
-    }
-    
-    if (bookmark[@"tags"]) {
-        addBookmarkViewController.tagTextField.text = bookmark[@"tags"];
-    }
-    
-    if (bookmark[@"description"]) {
-        addBookmarkViewController.postDescription = bookmark[@"description"];
-        addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
-        
-        if (![bookmark[@"description"] isEqualToString:@""]) {
-            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:bookmark[@"description"] attributes:addBookmarkViewController.descriptionAttributes];
-        }
-    }
-    
-    if (delegate) {
-        addBookmarkViewController.modalDelegate = delegate;
-    }
-    
-    if (callback) {
-        addBookmarkViewController.callback = callback;
-    }
-    
-    if (bookmark[@"private"]) {
-        addBookmarkViewController.setAsPrivate = bookmark[@"private"];
-    }
-    else {
-        addBookmarkViewController.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
-    }
-    
-    if (bookmark[@"unread"]) {
-        BOOL isRead = !([bookmark[@"unread"] boolValue]);
-        addBookmarkViewController.markAsRead = @(isRead);
-    }
-    else {
-        addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
-    }
-    
-    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate.boolValue;
-    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead.boolValue;
-    return addBookmarkViewNavigationController;
 }
 
 - (void)fixTextView:(UITextView *)textView {
