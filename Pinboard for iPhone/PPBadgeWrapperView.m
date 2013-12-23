@@ -44,36 +44,41 @@ static const CGFloat PADDING_Y = 6;
 }
 
 - (CGFloat)calculateHeight {
-    if (self.badges.count == 0) {
-        return 0;
-    }
-
-    if (self.compressed) {
-        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        return lastBadgeView.frame.size.height + PADDING_Y;
-    }
-
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
+    
+    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:@"…" options:self.badgeOptions];
+    CGRect ellipsisFrame = ellipsisView.frame;
     
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            CGRect frame = badgeView.frame;
-            offsetX += (frame.size.width + PADDING_X);
+            CGRect badgeFrame = badgeView.frame;
+            badgeFrame.origin = CGPointMake(offsetX, offsetY);
             
-            if (offsetX > ([UIApplication currentSize].width - 20)) {
-                offsetX = frame.size.width + PADDING_X;
-                offsetY += frame.size.height + PADDING_Y;
+            if (self.compressed) {
+                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > self.frame.size.width;
+                if (hitsBoundaryWithEllipsis) {
+                    break;
+                }
+            }
+            else {
+                BOOL hitsBoundary = offsetX > self.frame.size.width;
+                if (hitsBoundary) {
+                    // Wrap to the next line
+                    offsetX = badgeFrame.size.width + PADDING_X;
+                    offsetY += badgeFrame.size.height + PADDING_Y;
+                    
+                    badgeFrame.origin = CGPointMake(0, offsetY);
+                }
             }
         }
     }
-
+    
     if (self.subviews.count > 0) {
         PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        offsetY += lastBadgeView.frame.size.height + PADDING_Y;
+        offsetY += lastBadgeView.frame.size.height;
     }
-    
     return offsetY;
 }
 
@@ -164,12 +169,16 @@ static const CGFloat PADDING_Y = 6;
     
     if (self.subviews.count > 0) {
         PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        offsetY += lastBadgeView.frame.size.height + PADDING_Y;
+        offsetY += lastBadgeView.frame.size.height;
     }
     
     CGRect frame = self.frame;
     frame.size.height = offsetY;
     self.frame = frame;
+}
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(self.frame.size.width, [self calculateHeight]);
 }
 
 @end
