@@ -175,8 +175,12 @@ static NSInteger kToolbarHeight = 44;
                      }];
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
+
     if ([backViewController isKindOfClass:[FeedListViewController class]]) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:nil action:nil];
+
+        __weak id weakself = self;
+        self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
     }
     
     if (self.navigationController.navigationBarHidden) {
@@ -1522,5 +1526,6 @@ static NSInteger kToolbarHeight = 44;
         });
     } failure:nil];
 }
+
 
 @end
