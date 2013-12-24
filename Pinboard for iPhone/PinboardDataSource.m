@@ -1286,7 +1286,10 @@ static NSString *ellipsis = @"…";
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x585858ff) range:descriptionRange];
     }
 
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
+    CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
+                                                   withConstraints:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)
+                                            limitedToNumberOfLines:0];
+    NSNumber *height = @(size.height);
 
     NSMutableArray *badges = [NSMutableArray array];
     UIColor *privateColor = (isRead && dimReadPosts) ? HEX(0xddddddff) : HEX(0xfdbb6dff);

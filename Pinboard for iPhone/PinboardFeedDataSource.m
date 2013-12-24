@@ -490,7 +490,10 @@ static NSString *ellipsis = @"…";
         }
     }
     
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width, CGFLOAT_MAX)].height);
+    CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
+                                                   withConstraints:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)
+                                            limitedToNumberOfLines:0];
+    NSNumber *height = @(size.height);
 
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = height;
