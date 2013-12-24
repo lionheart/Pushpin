@@ -34,7 +34,6 @@
 
 @implementation FeedListViewController
 
-@synthesize connectionAvailable;
 @synthesize updateTimer;
 @synthesize bookmarkCounts;
 
@@ -96,7 +95,6 @@
     self.title = @"";
     self.navigationItem.titleView = titleView;
 
-    self.connectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
     [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [NSMutableArray arrayWithObjects:@"", @"", @"", @"", @"", @"", nil];
 
@@ -134,8 +132,6 @@
     
     self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:@"ConnectionStatusDidChangeNotification" object:nil];
-
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (![delegate feedToken]) {
         [delegate setNetworkActivityIndicatorVisible:YES];
@@ -154,45 +150,10 @@
     }];
 }
 
-- (void)connectionStatusDidChange:(NSNotification *)notification {
-    BOOL newConnectionAvailable = [[AppDelegate sharedDelegate].connectionAvailable boolValue];
-    if (self.connectionAvailable != newConnectionAvailable) {
-        self.connectionAvailable = newConnectionAvailable;
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.connectionAvailable) {
-                [self showAllFeeds];
-            }
-            else {
-                [self hideNetworkDependentFeeds];
-            }
-        });
-    }
-}
-
-// Dispatched on main thread
-- (void)showAllFeeds {
-    self.notesBarButtonItem.enabled = YES;
-    [self.tableView beginUpdates];
-    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.tableView endUpdates];
-}
-
-// Dispatched on main thread
-- (void)hideNetworkDependentFeeds {
-    self.notesBarButtonItem.enabled = NO;
-    [self.tableView beginUpdates];
-    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.tableView endUpdates];
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.connectionAvailable) {
-        return 2;
-    }
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
