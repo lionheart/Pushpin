@@ -1663,6 +1663,7 @@
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
 			buildPhases = (
 				6733412331344A298389F74A /* Check Pods Manifest.lock */,
+				37B65FDA1672D0270041DA8C /* ShellScript */,
 				37FEEB8A15745488003F2B77 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
@@ -2109,6 +2110,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		37B65FDA1672D0270041DA8C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUNDLE_VERSION=`/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\"`\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pinboard for iPhone/Pushpin for Pinboard-Info.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pinboard for iPhone/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pinboard for iPhone/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pinboard for iPhone/Dev-Info.plist\"\n";
+		};
 		6733412331344A298389F74A /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2244,7 +2258,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
-				COMPRESS_PNG_FILES = YES;
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2258,7 +2272,6 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "BUNDLE_VERSION=131";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -2311,7 +2324,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (Y659LH6YL9)";
-				COMPRESS_PNG_FILES = YES;
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2331,7 +2344,6 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "BUNDLE_VERSION=131";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -2363,7 +2375,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
-				COMPRESS_PNG_FILES = YES;
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2377,7 +2389,6 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "BUNDLE_VERSION=131";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
