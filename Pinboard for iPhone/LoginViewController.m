@@ -123,7 +123,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.progressView setProgress:updated.floatValue / total.floatValue];
+        [self.progressView setProgress:(updated.floatValue / total.floatValue) animated:YES];
 
         if (updated.integerValue == total.integerValue) {
             PPNavigationController *controller = [AppDelegate sharedDelegate].navigationController;
