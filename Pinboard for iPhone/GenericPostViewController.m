@@ -1434,6 +1434,10 @@ static NSInteger kToolbarHeight = 44;
 
 #pragma mark - PPBadgeWrapperDelegate
 
+- (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didTapAndHoldBadge:(PPBadgeView *)badge {
+    
+}
+
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
     NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
