@@ -14,6 +14,7 @@
 #import "PPToolbar.h"
 #import "PPWebViewController.h"
 
+#import "PPBadgeWrapperView.h"
 #import "FluidTableviewFlowLayout.h"
 
 enum PostSources {
@@ -86,7 +87,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UITableViewController <TTTAttributedLabelDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@interface GenericPostViewController : UITableViewController <UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate>
 
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;

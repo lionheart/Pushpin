@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class PPBadgeView;
+
+@protocol PPBadgeDelegate <NSObject>
+
+- (void)didSelectBadgeView:(PPBadgeView *)badgeView;
+- (void)didTapAndHoldBadgeView:(PPBadgeView *)badgeView;
+
+@end
+
 static const NSString *PPBadgeFontSize = @"fontSize";
 static const NSString *PPBadgeNormalBackgroundColor = @"normalBackgroundColor";
 static const NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
@@ -15,10 +24,9 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 
 @interface PPBadgeView : UIView
 
-// Selectors
-@property (nonatomic, readonly) SEL actionTouchUpInside;
-@property (nonatomic, readonly, weak) id targetTouchUpInside;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
+@property (nonatomic, weak) id<PPBadgeDelegate> delegate;
 @property (nonatomic, strong) UIView *badgeView;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *textLabel;
@@ -34,7 +42,7 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 - (id)initWithText:(NSString *)text;
 - (id)initWithText:(NSString *)text options:(NSDictionary *)options;
 
-- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
 - (void)updateBackgroundColor;
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
 @end
