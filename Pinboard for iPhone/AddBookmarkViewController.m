@@ -744,10 +744,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 
 - (void)keyboardDidShow:(NSNotification *)sender {
-    if (self.currentTextField == self.descriptionTextLabel) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
+    if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
 }

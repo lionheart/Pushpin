@@ -42,9 +42,7 @@ typedef NSInteger PPPostAction;
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
-- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSArray *)actionsForPost:(NSDictionary *)post;
@@ -61,6 +59,9 @@ typedef NSInteger PPPostAction;
 @optional
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
+
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
+- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;
 
 - (void)resetHeightsWithSuccess:(void (^)())success;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;

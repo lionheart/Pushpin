@@ -19,8 +19,12 @@
 
 @implementation PrimaryNavigationViewController
 
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+    [self dismissViewControllerAnimated:YES completion:success];
+}
+
 - (void)closeModal:(UIViewController *)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self closeModal:sender success:nil];
 }
 
 - (void)promptUserToAddBookmark {

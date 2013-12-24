@@ -43,11 +43,6 @@
     return NO;
 }
 
-- (void)closeModal:(UIViewController *)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
-    }];
-}
-
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.interactivePopGestureRecognizer.enabled = NO;
     [super pushViewController:viewController animated:animated];

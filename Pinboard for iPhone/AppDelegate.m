@@ -1040,8 +1040,12 @@
                            }];
 }
 
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+    [self.navigationController dismissViewControllerAnimated:YES completion:success];
+}
+
 - (void)closeModal:(UIViewController *)sender {
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [self closeModal:sender success:nil];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
