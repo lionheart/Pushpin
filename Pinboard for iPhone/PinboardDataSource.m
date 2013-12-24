@@ -303,7 +303,11 @@ static NSString *ellipsis = @"…";
     return _totalNumberOfPosts;
 }
 
-- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
+- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success
+                                            failure:(void (^)())failure
+                                           progress:(void (^)(NSInteger current, NSInteger total))progress
+                                            options:(NSDictionary *)options {
+
     
     if (!failure) {
         failure = ^(NSError *error) {};
@@ -431,14 +435,14 @@ static NSString *ellipsis = @"…";
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
             DLog(@"%@ - Iterating posts", [NSDate date]);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                progress(0, total);
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}];
-            });
+            progress(0, total);
+
+            NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
+            [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}] postingStyle:NSPostASAP];
             
             // Only track one date error per update
             BOOL dateError = NO;
-
+            
             for (NSDictionary *post in posts) {
                 if (index > 0 && (index % 1000) == 0) {
                     DLog(@"%@ - Index %ld of %ld", [NSDate date], (long)index, (long)total);
@@ -513,10 +517,9 @@ static NSString *ellipsis = @"…";
                 }
 
                 index++;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    progress(index, total);
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
-                });
+                progress(index, total);
+                NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
+                [queue enqueueNotification:note postingStyle:NSPostASAP];
             }
             
             DLog(@"%@ - Updating tags", [NSDate date]);
@@ -548,10 +551,10 @@ static NSString *ellipsis = @"…";
             [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
             kPinboardSyncInProgress = NO;
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                progress(total, total);
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}]; 
-            });
+            progress(total, total);
+            
+            NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
+            [queue enqueueNotification:note postingStyle:NSPostASAP];
 
             [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
             [self updateStarredPostsWithSuccess:success failure:nil];
@@ -687,7 +690,9 @@ static NSString *ellipsis = @"…";
     });
 }
 
-- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure {
+- (void)updatePostsFromDatabase:(void (^)())success
+                        failure:(void (^)(NSError *))failure {
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -792,7 +797,9 @@ static NSString *ellipsis = @"…";
     });
 }
 
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                                   failure:(void (^)(NSError *))failure {
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -915,7 +922,10 @@ static NSString *ellipsis = @"…";
     });
 }
 
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
+- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                       failure:(void (^)(NSError *))failure
+                       options:(NSDictionary *)options {
+
     [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
         [self updatePostsFromDatabaseWithSuccess:success failure:failure];
     } failure:failure progress:nil options:options];

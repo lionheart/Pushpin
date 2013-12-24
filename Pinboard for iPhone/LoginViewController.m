@@ -95,42 +95,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.loginTimer = nil;
     
     [self resetLoginScreen];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(progressNotificationReceived:) name:kPinboardDataSourceProgressNotification object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)progressNotificationReceived:(NSNotification *)notification {
-    NSInteger current = [notification.userInfo[@"current"] integerValue];
-    NSInteger total = [notification.userInfo[@"total"] integerValue];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (total == current) {
-            [self.messageUpdateTimer invalidate];
-            self.activityIndicator.frame = self.activityIndicatorFrameTop;
-            self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
-        }
-        else {
-            CGFloat f = current / (float)total;
-            [self.progressView setProgress:f animated:YES];
-        }
-    });
-}
-
-- (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.progressView setProgress:(updated.floatValue / total.floatValue) animated:YES];
-
-        if (updated.integerValue == total.integerValue) {
-            PPNavigationController *controller = [AppDelegate sharedDelegate].navigationController;
-            controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-            [self presentViewController:controller animated:YES completion:nil];
-        }
-    });
 }
 
 - (void)resetLoginScreen {
@@ -219,17 +183,25 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
                                                self.textView.hidden = NO;
 
-                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:4 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                                
                                                self.progressView.hidden = NO;
                                                
+                                               [CATransaction begin];
                                                [self.tableView beginUpdates];
                                                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0]]
                                                                      withRowAnimation:UITableViewRowAnimationAutomatic];
                                                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]]
                                                                      withRowAnimation:UITableViewRowAnimationAutomatic];
                                                [self.tableView endUpdates];
+                                               
+                                               [CATransaction setCompletionBlock:^{
+                                                   [self.tableView beginUpdates];
+                                                   [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                                                   [self.tableView endUpdates];
+                                               }];
+                                               [CATransaction begin];
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    [delegate setToken:token];
@@ -245,7 +217,19 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                        });
                                                    }
                                                                                                    failure:nil
-                                                                                                  progress:nil
+                                                                                                  progress:^(NSInteger current, NSInteger total) {
+                                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                          if (total == current) {
+                                                                                                              [self.messageUpdateTimer invalidate];
+                                                                                                              self.activityIndicator.frame = self.activityIndicatorFrameTop;
+                                                                                                              self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
+                                                                                                          }
+                                                                                                          else {
+                                                                                                              CGFloat f = current / (float)total;
+                                                                                                              [self.progressView setProgress:f animated:YES];
+                                                                                                          }
+                                                                                                      });
+                                                                                                  }
                                                                                                    options:@{@"count": @(-1)}];
                                                    
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
