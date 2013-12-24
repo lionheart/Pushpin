@@ -47,7 +47,7 @@ static const CGFloat PADDING_Y = 6;
 
 - (CGFloat)calculateHeightForWidth:(CGFloat)width {
     CGFloat offsetX = 0;
-    CGFloat offsetY = 0;
+    CGFloat offsetY = 3;
     
     if (self.badges.count == 0) {
         return 0;
@@ -73,7 +73,7 @@ static const CGFloat PADDING_Y = 6;
         offsetY += badgeFrame.size.height;
     }
     
-    return offsetY + PADDING_Y;
+    return offsetY;
 }
 
 - (CGFloat)calculateHeight {
@@ -167,14 +167,10 @@ static const CGFloat PADDING_Y = 6;
     if (self.subviews.count > 0) {
         offsetY += badgeFrame.size.height;
     }
-    
-    CGRect frame = self.frame;
-    frame.size.height = offsetY + PADDING_Y;
-    self.frame = frame;
 }
 
 - (CGSize)intrinsicContentSize {
-    return CGSizeMake(self.frame.size.width, [self calculateHeight]);
+    return CGSizeMake(self.frame.size.width, [self calculateHeightForWidth:self.frame.size.width]);
 }
 
 @end

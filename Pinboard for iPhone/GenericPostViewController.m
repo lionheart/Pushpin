@@ -916,7 +916,7 @@ static NSInteger kToolbarHeight = 44;
     TTTAttributedLabel *textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     textView.translatesAutoresizingMaskIntoConstraints = NO;
     textView.numberOfLines = 0;
-    textView.preferredMaxLayoutWidth = 320;
+    textView.preferredMaxLayoutWidth = 300;
     textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
     textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
 
@@ -927,7 +927,7 @@ static NSInteger kToolbarHeight = 44;
     textView.activeLinkAttributes = mutableActiveLinkAttributes;
     textView.backgroundColor = [UIColor clearColor];
     textView.delegate = self;
-    textView.userInteractionEnabled = YES;
+    textView.userInteractionEnabled = NO;
     textView.text = string;
     
     NSArray *links;
@@ -954,6 +954,8 @@ static NSInteger kToolbarHeight = 44;
         else {
             badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
         }
+        
+        CGFloat height = [badgeWrapperView calculateHeightForWidth:cell.contentView.bounds.size.width];
         badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
         
         // TODO Let's switch to delegation instead of settings selectors / targets.
@@ -961,7 +963,7 @@ static NSInteger kToolbarHeight = 44;
 
         [cell.contentView addSubview:badgeWrapperView];
         [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": badgeWrapperView}];
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": textView, @"badges": badgeWrapperView }];
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": textView, @"badges": badgeWrapperView }];
     }
     else {
         [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": textView }];
