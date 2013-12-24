@@ -362,17 +362,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
             label.text = NSLocalizedString(@"Separate tags with spaces", nil);
             [self.footerView addSubview:label];
         }
-        return self.footerView;
+        
+        if (self.editingTags) {
+            return self.footerView;
+        }
     }
     return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == kBookmarkTopSection) {
-        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
-        NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
-        CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
-        return rect.size.height;
+        if (self.editingTags) {
+            UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
+            CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
+            return rect.size.height;
+        }
     }
     return 0;
 }
@@ -414,6 +419,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
         else {
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+
             if (self.popularAndRecommendedTagsVisible) {
                 cell.textLabel.text = self.filteredPopularAndRecommendedTags[indexPath.row - 1];
                 cell.detailTextLabel.textColor = HEX(0x96989DFF);
@@ -494,6 +501,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     case kBookmarkTagRow: {
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
+
+                        if ([self.tagTextField.text isEqualToString:@""]) {
+                            self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                            [cell.contentView addSubview:self.tagTextField];
+                            self.tagTextField.placeholder = @"Tap to add tags.";
+                        }
+
                         [cell.contentView addSubview:topImageView];
                         [cell.contentView addSubview:self.badgeWrapperView];
                         [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
@@ -709,7 +723,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
 
             [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
         }
     }
