@@ -47,24 +47,36 @@ static const CGFloat PADDING_Y = 6;
 
 - (CGFloat)calculateHeightForWidth:(CGFloat)width {
     CGFloat offsetX = 0;
-    CGFloat offsetY = 3;
+    CGFloat offsetY = 0;
     
     if (self.badges.count == 0) {
         return 0;
     }
-    
+
+    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
+    CGRect ellipsisFrame = ellipsisView.frame;
     CGRect badgeFrame;
+
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
             badgeFrame = badgeView.frame;
             offsetX += badgeFrame.size.width + PADDING_X;
-            
-            BOOL hitsBoundary = offsetX > width;
-            if (hitsBoundary) {
-                // Wrap to the next line
-                offsetX = badgeFrame.size.width + PADDING_X;
-                offsetY += badgeFrame.size.height + PADDING_Y;
+            if (self.compressed) {
+                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > self.frame.size.width;
+                if (hitsBoundaryWithEllipsis) {
+                    // Hide the current badge and put the ellipsis in its place
+                    badgeView.hidden = YES;
+                    break;
+                }
+            }
+            else {
+                BOOL hitsBoundary = offsetX > width;
+                if (hitsBoundary) {
+                    // Wrap to the next line
+                    offsetX = badgeFrame.size.width + PADDING_X;
+                    offsetY += badgeFrame.size.height + PADDING_Y;
+                }
             }
         }
     }
@@ -73,7 +85,7 @@ static const CGFloat PADDING_Y = 6;
         offsetY += badgeFrame.size.height;
     }
     
-    return offsetY;
+    return offsetY + PADDING_Y;
 }
 
 - (CGFloat)calculateHeight {
@@ -167,6 +179,10 @@ static const CGFloat PADDING_Y = 6;
     if (self.subviews.count > 0) {
         offsetY += badgeFrame.size.height;
     }
+    
+    CGRect frame = self.frame;
+    frame.size.height = offsetY + PADDING_Y;
+    self.frame = frame;
 }
 
 - (CGSize)intrinsicContentSize {
