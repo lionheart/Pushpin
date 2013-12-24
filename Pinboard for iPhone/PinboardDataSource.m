@@ -15,7 +15,6 @@
 
 #import "NSAttributedString+Attributes.h"
 
-#import <BloomFilter/BloomFilter.h>
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>

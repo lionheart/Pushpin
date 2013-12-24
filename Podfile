@@ -14,5 +14,4 @@ pod 'LHSCategoryCollection', :git => 'https://github.com/lionheart/LHSCategoryCo
 pod 'oauthconsumer', :podspec => 'Specs/oauthconsumer.podspec'
 pod 'RPSTPasswordManagementAppService', :podspec => 'Specs/RPSTPasswordManagementAppService.podspec'
 pod 'HTMLParser', :podspec => 'Specs/HTMLParser.podspec'
-pod 'BloomFilter', :podspec => 'Specs/BloomFilter.podspec'
 pod 'TextExpanderTouchSDK', :podspec => 'Specs/TextExpanderTouchSDK.podspec'
