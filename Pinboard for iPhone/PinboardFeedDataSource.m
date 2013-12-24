@@ -12,6 +12,7 @@
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PostMetadata.h"
+#import "PPTitleButton.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
@@ -599,7 +600,11 @@ static NSString *ellipsis = @"…";
     [db close];
     
     postViewController.postDataSource = dataSource;
-    postViewController.title = [components componentsJoinedByString:@"+"];
+    
+    PPTitleButton *button = [PPTitleButton button];
+    [button setTitle:[components componentsJoinedByString:@"+"] imageName:nil];
+    
+    postViewController.navigationItem.titleView = button;
     return postViewController;
 }
 
