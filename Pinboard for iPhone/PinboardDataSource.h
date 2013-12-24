@@ -30,6 +30,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, strong) NSArray *urls;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSDateFormatter *enUSPOSIXDateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
 @property (nonatomic, strong) NSMutableArray *badges;
 @property (nonatomic, strong) NSMutableArray *heights;

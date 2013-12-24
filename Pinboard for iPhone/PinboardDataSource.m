@@ -53,6 +53,12 @@ static NSString *ellipsis = @"…";
         self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
+
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        self.enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
+        [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
+        [self.enUSPOSIXDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
     }
     return self;
 }
@@ -412,11 +418,6 @@ static NSString *ellipsis = @"…";
             NSUInteger deleteCount = 0;
             NSUInteger tagAddCount = 0;
             NSUInteger tagDeleteCount = 0;
-            NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setLocale:enUSPOSIXLocale];
-            [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-            [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
@@ -444,7 +445,7 @@ static NSString *ellipsis = @"…";
                 
                 // Add if necessary
                 if ([additionBookmarksSet containsObject:hash]) {
-                    NSDate *date = [dateFormatter dateFromString:post[@"time"]];
+                    NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                     if (!dateError && !date) {
                         date = [NSDate dateWithTimeIntervalSince1970:0];
                         [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
