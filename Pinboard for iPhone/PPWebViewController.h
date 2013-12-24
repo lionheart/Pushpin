@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIActionSheetDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
+@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, ModalDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
 @property (nonatomic, strong) UIView *webViewContainer;
@@ -57,6 +57,7 @@
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 
+@property (nonatomic, strong) NSURL *urlToOpenExternally;
 @property (nonatomic, strong) NSMutableArray *history;
 @property (nonatomic, strong) NSLayoutConstraint *topLayoutConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *titleHeightConstraint;
@@ -67,6 +68,7 @@
 @property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
 @property (nonatomic, strong) UIActivityViewController *activityView;
+@property (nonatomic, strong) UIAlertView *openLinkExternallyAlertView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *webViewTimeoutTimer;
