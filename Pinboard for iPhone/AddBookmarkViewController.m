@@ -262,6 +262,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (self.navigationController.topViewController != self.editTextViewController) {
+        self.callback();
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - UIViewController
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -682,6 +690,42 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return YES;
 }
 
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (actionSheet == self.removeTagActionSheet) {
+        if (buttonIndex == 0) {
+            NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+            
+            NSMutableArray *newTags = [NSMutableArray array];
+            for (NSString *tag in existingTags) {
+                if (![tag isEqualToString:self.currentlySelectedTag]) {
+                    [newTags addObject:tag];
+                }
+            }
+            
+            self.tagTextField.text = [newTags componentsJoinedByString:@" "];
+            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }
+    }
+}
+
+#pragma mark - PPBadgeWrapperDelegate
+
+- (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
+    NSString *tag = badge.textLabel.text;
+    self.currentlySelectedTag = tag;
+
+    NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
+    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
+    [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
+}
+
 #pragma mark - Everything Else
 
 
@@ -698,14 +742,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_main_queue(), ^{
         self.autocompleteInProgress = NO;
     });
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    if (self.navigationController.topViewController != self.editTextViewController) {
-        self.callback();
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
