@@ -48,6 +48,10 @@ static const CGFloat PADDING_Y = 6;
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
     
+    if (self.badges.count == 0) {
+        return 0;
+    }
+    
     CGRect badgeFrame;
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
@@ -57,7 +61,6 @@ static const CGFloat PADDING_Y = 6;
             
             BOOL hitsBoundary = offsetX > width;
             if (hitsBoundary) {
-                DLog(@"hit a new line");
                 // Wrap to the next line
                 offsetX = badgeFrame.size.width + PADDING_X;
                 offsetY += badgeFrame.size.height + PADDING_Y;
@@ -69,7 +72,7 @@ static const CGFloat PADDING_Y = 6;
         offsetY += badgeFrame.size.height;
     }
     
-    return offsetY;
+    return offsetY + PADDING_Y;
 }
 
 - (CGFloat)calculateHeight {
@@ -165,7 +168,7 @@ static const CGFloat PADDING_Y = 6;
     }
     
     CGRect frame = self.frame;
-    frame.size.height = offsetY;
+    frame.size.height = offsetY + PADDING_Y;
     self.frame = frame;
 }
 
