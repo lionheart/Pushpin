@@ -879,11 +879,11 @@ static NSInteger kToolbarHeight = 44;
     PPBadgeWrapperView *badgeWrapperView;
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13;
     }
 
     badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
-    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
+    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 13;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
