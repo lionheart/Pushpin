@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "GenericPostViewController.h"
-#import "BookmarkCell.h"
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
 
@@ -29,7 +28,7 @@
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
-static NSString *BookmarkCellIdentifier = @"BookmarkCell";
+static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
@@ -154,7 +153,7 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.backgroundColor = [UIColor whiteColor];
 
     // Initial database update
-    [self.tableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -592,7 +591,7 @@ static NSInteger kToolbarHeight = 44;
                             CGFloat offset = -([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height - self.searchDisplayController.searchBar.frame.size.height);
                             [self.tableView setContentOffset:CGPointMake(0, offset)];
 
-                            [self.searchDisplayController.searchResultsTableView registerClass:[BookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+                            [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
                         }
                     }];
 
@@ -773,18 +772,18 @@ static NSInteger kToolbarHeight = 44;
     PPBadgeWrapperView *wrapperView = (PPBadgeWrapperView *)badgeView.superview;
     NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
 
-    BookmarkCell *cell;
+    UITableViewCell *cell;
     NSMutableArray *badges;
     
     for (NSIndexPath *indexPath in indexPathsForVisibleRows) {
-        cell = (BookmarkCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        cell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         if ([cell.contentView.subviews containsObject:wrapperView]) {
             badges = [[dataSource badgesForPostAtIndex:indexPath.row] mutableCopy];
             break;
         }
     }
     
-    NSUInteger __block visibleBadgeCount = 0;
+    NSUInteger visibleBadgeCount = 0;
     for (PPBadgeView *badgeView in wrapperView.subviews) {
         if (badgeView.hidden == NO) {
             visibleBadgeCount++;
@@ -879,15 +878,15 @@ static NSInteger kToolbarHeight = 44;
     PPBadgeWrapperView *badgeWrapperView;
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
     }
 
     badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
-    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeight] + 10;
+    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
 
     // TODO: This is a bit of a hack, and could be updated to reuse the views
     for (UIView *subview in [cell.contentView subviews]) {
@@ -904,77 +903,70 @@ static NSInteger kToolbarHeight = 44;
 
     NSAttributedString *string;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-    NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
         string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
     }
     else {
         string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-        cell.badgeView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
     }
-    
-    // TODO Let's switch to delegation instead of settings selectors / targets.
-    [cell.badgeView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 
     cell.backgroundColor = [UIColor whiteColor];
     cell.contentView.backgroundColor = [UIColor clearColor];
 
-    cell.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-    cell.textView.translatesAutoresizingMaskIntoConstraints = NO;
-    cell.textView.numberOfLines = 0;
-    cell.textView.preferredMaxLayoutWidth = 320;
-    cell.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    cell.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
+    TTTAttributedLabel *textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    textView.translatesAutoresizingMaskIntoConstraints = NO;
+    textView.numberOfLines = 0;
+    textView.preferredMaxLayoutWidth = 320;
+    textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
 
     NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
     [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
     [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
     [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
-    cell.textView.activeLinkAttributes = mutableActiveLinkAttributes;
-    cell.textView.backgroundColor = [UIColor clearColor];
-    [cell.contentView addSubview:cell.textView];
+    textView.activeLinkAttributes = mutableActiveLinkAttributes;
+    textView.backgroundColor = [UIColor clearColor];
+    textView.delegate = self;
+    textView.userInteractionEnabled = YES;
+    textView.text = string;
     
-    cell.badgeView.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:cell.badgeView];
-    
-    [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": cell.textView}];
-    if (badges.count > 0) {
-        [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": cell.badgeView}];
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": cell.textView, @"badges": cell.badgeView }];
-    }
-    else {
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": cell.textView }];
-    }
-
-    [cell.textView setText:string];
-
     NSArray *links;
-    if ([dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)] && self.compressPosts) {
+    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)]) {
         links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
     }
     else {
         links = [dataSource linksForPostAtIndex:indexPath.row];
     }
-
+    
     for (NSDictionary *link in links) {
-        [cell.textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
+        [textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
     }
 
-    NSArray* sublayers = cell.contentView.layer.sublayers;
-    for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"]) {
-            [layer removeFromSuperlayer];
+    [cell.contentView addSubview:textView];
+    [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": textView}];
+    
+    NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
+    if (badges.count > 0) {
+        PPBadgeWrapperView *badgeWrapperView;
+        if (self.compressPosts) {
+            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
         }
+        else {
+            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
+        }
+        badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        // TODO Let's switch to delegation instead of settings selectors / targets.
+        [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
+
+        [cell.contentView addSubview:badgeWrapperView];
+        [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": badgeWrapperView}];
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges]-5-|" views:@{@"text": textView, @"badges": badgeWrapperView }];
+    }
+    else {
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": textView }];
     }
 
-    sublayers = cell.selectedBackgroundView.layer.sublayers;
-    for (CALayer *layer in sublayers) {
-        [layer removeFromSuperlayer];
-    }
-
-    cell.textView.delegate = self;
-    cell.textView.userInteractionEnabled = YES;
     return cell;
 }
 
