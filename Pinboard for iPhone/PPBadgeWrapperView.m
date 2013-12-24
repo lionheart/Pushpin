@@ -55,18 +55,18 @@ static const CGFloat PADDING_Y = 6;
 
     PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
     CGRect ellipsisFrame = ellipsisView.frame;
-    CGRect badgeFrame;
+    CGSize badgeSize;
 
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            badgeFrame = badgeView.frame;
-            offsetX += badgeFrame.size.width + PADDING_X;
+            badgeSize = badgeView.frame.size;
+            offsetX += badgeSize.width + PADDING_X;
+
             if (self.compressed) {
-                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > self.frame.size.width;
+                BOOL hitsBoundaryWithEllipsis = offsetX + ellipsisFrame.size.width + PADDING_X > width;
                 if (hitsBoundaryWithEllipsis) {
                     // Hide the current badge and put the ellipsis in its place
-                    badgeView.hidden = YES;
                     break;
                 }
             }
@@ -74,15 +74,15 @@ static const CGFloat PADDING_Y = 6;
                 BOOL hitsBoundary = offsetX > width;
                 if (hitsBoundary) {
                     // Wrap to the next line
-                    offsetX = badgeFrame.size.width + PADDING_X;
-                    offsetY += badgeFrame.size.height + PADDING_Y;
+                    offsetX = badgeSize.width + PADDING_X;
+                    offsetY += badgeSize.height + PADDING_Y;
                 }
             }
         }
     }
     
     if (self.subviews.count > 0) {
-        offsetY += badgeFrame.size.height;
+        offsetY += badgeSize.height;
     }
     
     return offsetY + PADDING_Y;

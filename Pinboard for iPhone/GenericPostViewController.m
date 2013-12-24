@@ -966,7 +966,7 @@ static NSInteger kToolbarHeight = 44;
         [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": textView, @"badges": badgeWrapperView }];
     }
     else {
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-5-|" views:@{@"text": textView }];
+        [cell.contentView lhs_addConstraints:@"V:|-5-[text]" views:@{@"text": textView }];
     }
 
     return cell;
