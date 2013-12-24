@@ -443,16 +443,14 @@
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold"
      }];
 
-    Reachability* reach = [Reachability reachabilityWithHostname:@"google.com"];
+    Reachability *reach = [Reachability reachabilityWithHostname:@"http://google.com"];
     self.connectionAvailable = @([reach isReachable]);
-    reach.reachableBlock = ^(Reachability*reach) {
+    reach.reachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = @(YES);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
     };
 
-    reach.unreachableBlock = ^(Reachability*reach) {
+    reach.unreachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = @(NO);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectionStatusDidChangeNotification" object:nil];
     };
     [reach startNotifier];
     
