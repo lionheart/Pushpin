@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
-#import "PPSwitch.h"
+#import "PPBadgeWrapperView.h"
+
 #import <TextExpander/SMTEDelegateController.h>
 
 @class PPNavigationController;

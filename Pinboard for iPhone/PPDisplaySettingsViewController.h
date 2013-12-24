@@ -7,7 +7,6 @@
 //
 
 #import "PPTableViewController.h"
-#import "PPSwitch.h"
 
 @interface PPDisplaySettingsViewController : PPTableViewController
 

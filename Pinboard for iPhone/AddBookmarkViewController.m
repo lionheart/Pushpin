@@ -1252,6 +1252,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
+    wrapper.delegate = self;
 
     self.badgeTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.badgeTapGestureRecognizer.numberOfTapsRequired = 1;
