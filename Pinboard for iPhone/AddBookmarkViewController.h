@@ -28,7 +28,7 @@ typedef enum BookmarkSections {
     kBookmarkBottomSection,
 } BookmarkSectionType;
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate> {
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate, PPBadgeWrapperDelegate, UIActionSheetDelegate> {
     UIEdgeInsets _oldContentInset;
 }
 
@@ -52,6 +52,8 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSMutableArray *recommendedTags;
 
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
+@property (nonatomic, strong) NSString *currentlySelectedTag;
+@property (nonatomic, strong) UIActionSheet *removeTagActionSheet;
 @property (nonatomic, strong) NSMutableArray *previousTagSuggestions;
 @property (nonatomic, strong) NSMutableArray *tagCompletions;
 @property (nonatomic, strong) NSNumber *markAsRead;
