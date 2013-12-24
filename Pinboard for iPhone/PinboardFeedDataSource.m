@@ -490,6 +490,7 @@ static NSString *ellipsis = @"…";
         }
     }
     
+    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
     CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
                                                    withConstraints:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)
                                             limitedToNumberOfLines:0];
