@@ -30,7 +30,6 @@
 		3714DB921757DFFD00B23F4F /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB901757DFFD00B23F4F /* user.png */; };
 		3714DB931757DFFD00B23F4F /* user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB911757DFFD00B23F4F /* user@2x.png */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
-		371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 371BCAFE15772B4400BDA996 /* BookmarkCell.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
@@ -650,8 +649,6 @@
 		3714DB901757DFFD00B23F4F /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user.png; path = Assets/user.png; sourceTree = "<group>"; };
 		3714DB911757DFFD00B23F4F /* user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "user@2x.png"; path = "Assets/user@2x.png"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
-		371BCAFD15772B4400BDA996 /* BookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkCell.h; sourceTree = "<group>"; };
-		371BCAFE15772B4400BDA996 /* BookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkCell.m; sourceTree = "<group>"; };
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		371EE5C6185B49FE005DB908 /* PPTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTheme.h; sourceTree = "<group>"; };
 		371EE5C7185B49FE005DB908 /* PPTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTheme.m; sourceTree = "<group>"; };
@@ -1788,8 +1785,6 @@
 				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
-				371BCAFD15772B4400BDA996 /* BookmarkCell.h */,
-				371BCAFE15772B4400BDA996 /* BookmarkCell.m */,
 				E84A8D2217F7B4FF003B4F50 /* LoginTableCell.h */,
 				E84A8D2317F7B4FF003B4F50 /* LoginTableCell.m */,
 				37D59A1216EEDC91005C9C24 /* PPButton.h */,
@@ -2809,7 +2804,6 @@
 				E89001F9183EA5B500C1F969 /* PPBadgeView.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
-				371BCAFF15772B4400BDA996 /* BookmarkCell.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
 				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,

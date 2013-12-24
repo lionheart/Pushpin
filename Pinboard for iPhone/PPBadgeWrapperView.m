@@ -22,6 +22,7 @@ static const CGFloat PADDING_Y = 6;
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -125,11 +126,12 @@ static const CGFloat PADDING_Y = 6;
     for (UIView *subview in self.subviews) {
         subview.hidden = YES;
     }
-    
+
+    CGRect badgeFrame;
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
-            CGRect badgeFrame = badgeView.frame;
+            badgeFrame = badgeView.frame;
             badgeFrame.origin = CGPointMake(offsetX, offsetY);
             offsetX += badgeFrame.size.width + PADDING_X;
 
@@ -163,8 +165,7 @@ static const CGFloat PADDING_Y = 6;
     }
     
     if (self.subviews.count > 0) {
-        PPBadgeView *lastBadgeView = (PPBadgeView *)[self.subviews lastObject];
-        offsetY += lastBadgeView.frame.size.height;
+        offsetY += badgeFrame.size.height;
     }
     
     CGRect frame = self.frame;
