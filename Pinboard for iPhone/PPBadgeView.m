@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 
@@ -85,43 +86,12 @@ static const CGFloat PADDING_Y = 2.0f;
         
         self.enabled = YES;
         self.userInteractionEnabled = YES;
+
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        self.tapGestureRecognizer.numberOfTapsRequired = 1;
+        [self addGestureRecognizer:self.tapGestureRecognizer];
     }
     return self;
-}
-
-- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
-    if (controlEvents & UIControlEventTouchUpInside) {
-        _targetTouchUpInside = target;
-        _actionTouchUpInside = action;
-    }
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.enabled) {
-        self.selected = YES;
-    }
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self.superview];
-    self.selected = CGRectContainsPoint(self.frame, touchPoint);
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self.superview];
-    
-    if (self.enabled && CGRectContainsPoint(self.frame, touchPoint)) {
-        // Send touch up inside action
-        if ([_targetTouchUpInside respondsToSelector:_actionTouchUpInside]) {
-            [_targetTouchUpInside performSelector:_actionTouchUpInside withObject:self];
-        }
-    }
-    
-    if (self.enabled) {
-        self.selected = NO;
-    }
 }
 
 #pragma mark Setters
@@ -177,6 +147,23 @@ static const CGFloat PADDING_Y = 2.0f;
 
 - (UIColor *)darkenColor:(UIColor *)color amount:(CGFloat)amount {
     return [self lightenColor:color amount:-(amount)];
+}
+
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.tapGestureRecognizer) {
+        if (recognizer.state == UIGestureRecognizerStateBegan && self.enabled) {
+            self.selected = YES;
+        }
+        else if (recognizer.state == UIGestureRecognizerStateEnded) {
+            self.selected = NO;
+            
+            if (self.enabled) {
+                if ([self.delegate respondsToSelector:@selector(didSelectBadgeView:)]) {
+                    [self.delegate didSelectBadgeView:self];
+                }
+            }
+        }
+    }
 }
 
 @end

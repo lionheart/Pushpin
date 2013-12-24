@@ -22,6 +22,4 @@
 - (id)initWithTags:(NSArray *)tags;
 - (void)tagsToAddTextFieldUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 
-- (void)tagSelected:(id)sender;
-
 @end

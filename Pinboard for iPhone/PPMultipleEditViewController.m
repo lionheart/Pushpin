@@ -132,7 +132,6 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             [cell.contentView addSubview:badgeWrapperView];
             [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
             [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
-            [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
         } else {
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             NSString *tag = self.tagsToAddCompletions[indexPath.row - kMultipleEditViewControllerTagIndexOffset];
@@ -149,7 +148,6 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         [cell.contentView addSubview:badgeWrapperView];
         [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
         [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
-        [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return cell;
@@ -360,25 +358,6 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
                 }
             });
         }
-    }
-}
-
-- (void)tagSelected:(id)sender {
-    PPBadgeView *badgeView = (PPBadgeView *)sender;
-    if (![badgeView.textLabel.text isEqualToString:@""]) {
-        NSString *tag = badgeView.textLabel.text;
-        NSLog(@"%@ selected", tag);
-        
-        if ([self.tagsToRemove containsObject:tag]) {
-            [badgeView setNormalColor:HEX(0x73c5ffff)];
-            [self.tagsToRemove removeObject:tag];
-        } else {
-            [badgeView setNormalColor:HEX(0xccccccff)];
-            [self.tagsToRemove addObject:tag];
-        }
-        
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-
     }
 }
 

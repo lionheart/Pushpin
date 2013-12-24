@@ -110,6 +110,8 @@ static const CGFloat PADDING_Y = 6;
         else if ([badge[@"type"] isEqualToString:@"tag"]) {
             badgeView = [[PPBadgeView alloc] initWithText:badge[@"tag"] options:mergedOptions];
         }
+        
+        badgeView.delegate = self;
         [self addSubview:badgeView];
     }
 }
@@ -119,19 +121,12 @@ static const CGFloat PADDING_Y = 6;
     [self layoutSubviews];
 }
 
-- (void)addBadgeTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
-    for (UIView *subview in self.subviews) {
-        if ([subview isKindOfClass:[PPBadgeView class]]) {
-            [(PPBadgeView *)subview addTarget:target action:action forControlEvents:controlEvents];
-        }
-    }
-}
-
 - (void)layoutSubviews {
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
 
     PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
+    ellipsisView.delegate = self;
     CGRect ellipsisFrame = ellipsisView.frame;
 
     // Hide all the subviews initially.
@@ -152,9 +147,8 @@ static const CGFloat PADDING_Y = 6;
                 if (hitsBoundaryWithEllipsis) {
                     // Hide the current badge and put the ellipsis in its place
                     badgeView.hidden = YES;
-                    
+
                     [self addSubview:ellipsisView];
-                    [ellipsisView addTarget:badgeView.targetTouchUpInside action:badgeView.actionTouchUpInside forControlEvents:UIControlEventTouchUpInside];
                     ellipsisView.frame = (CGRect){badgeFrame.origin, ellipsisFrame.size};
                     break;
                 }
@@ -187,6 +181,20 @@ static const CGFloat PADDING_Y = 6;
 
 - (CGSize)intrinsicContentSize {
     return CGSizeMake(self.frame.size.width, [self calculateHeightForWidth:self.frame.size.width]);
+}
+
+#pragma mark - PPBadgeViewDelegate
+
+- (void)didSelectBadgeView:(PPBadgeView *)badgeView {
+    if ([self.delegate respondsToSelector:@selector(badgeWrapperView:didSelectBadge:)]) {
+        [self.delegate badgeWrapperView:self didSelectBadge:badgeView];
+    }
+}
+
+- (void)didTapAndHoldBadgeView:(PPBadgeView *)badgeView {
+    if ([self.delegate respondsToSelector:@selector(badgeWrapperView:didTapAndHoldBadge:)]) {
+        [self.delegate badgeWrapperView:self didTapAndHoldBadge:badgeView];
+    }
 }
 
 @end

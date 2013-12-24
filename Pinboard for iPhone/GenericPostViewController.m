@@ -766,71 +766,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)tagSelected:(id)sender {
-    PPBadgeView *badgeView = (PPBadgeView *)sender;
-    
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
-    PPBadgeWrapperView *wrapperView = (PPBadgeWrapperView *)badgeView.superview;
-    NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
-
-    UITableViewCell *cell;
-    NSMutableArray *badges;
-    
-    for (NSIndexPath *indexPath in indexPathsForVisibleRows) {
-        cell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-        if ([cell.contentView.subviews containsObject:wrapperView]) {
-            badges = [[dataSource badgesForPostAtIndex:indexPath.row] mutableCopy];
-            break;
-        }
-    }
-    
-    NSUInteger visibleBadgeCount = 0;
-    for (PPBadgeView *badgeView in wrapperView.subviews) {
-        if (badgeView.hidden == NO) {
-            visibleBadgeCount++;
-        }
-    }
-
-    [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
-    if (badges.count > 5) {
-        [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
-    }
-    
-    NSString *tag = badgeView.textLabel.text;
-    if (![tag isEqualToString:@""]) {
-        if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
-            // Show more tag options
-            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-            for (NSDictionary *badge in badges) {
-                if ([badge[@"type"] isEqualToString:@"tag"]) {
-                    [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
-                }
-            }
-            
-            // Properly set the cancel button index
-            [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
-            self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
-            self.actionSheetVisible = YES;
-
-            [self.additionalTagsActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
-            self.tableView.scrollEnabled = NO;
-        }
-        else {
-            // Go to the tag link
-            id <GenericPostDataSource> dataSource = [self currentDataSource];
-            if (!self.tableView.editing) {
-                if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-                    // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
-                    [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
-                                              callback:^(UIViewController *controller) {
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      [self.navigationController pushViewController:controller animated:YES];
-                                                  });
-                                              }];
-                }
-            }
-        }
-    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -926,21 +861,8 @@ static NSInteger kToolbarHeight = 44;
     [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
     textView.activeLinkAttributes = mutableActiveLinkAttributes;
     textView.backgroundColor = [UIColor clearColor];
-    textView.delegate = self;
     textView.userInteractionEnabled = NO;
     textView.text = string;
-    
-    NSArray *links;
-    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedLinksForPostAtIndex:)]) {
-        links = [dataSource compressedLinksForPostAtIndex:indexPath.row];
-    }
-    else {
-        links = [dataSource linksForPostAtIndex:indexPath.row];
-    }
-    
-    for (NSDictionary *link in links) {
-        [textView addLinkToURL:link[@"url"] withRange:NSMakeRange([link[@"location"] integerValue], [link[@"length"] integerValue])];
-    }
 
     [cell.contentView addSubview:textView];
     [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": textView}];
@@ -954,12 +876,10 @@ static NSInteger kToolbarHeight = 44;
         else {
             badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
         }
-        
+
+        badgeWrapperView.delegate = self;
         CGFloat height = [badgeWrapperView calculateHeightForWidth:cell.contentView.bounds.size.width];
         badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        // TODO Let's switch to delegation instead of settings selectors / targets.
-        [badgeWrapperView addBadgeTarget:self action:@selector(tagSelected:) forControlEvents:UIControlEventTouchUpInside];
 
         [cell.contentView addSubview:badgeWrapperView];
         [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": badgeWrapperView}];
@@ -970,20 +890,6 @@ static NSInteger kToolbarHeight = 44;
     }
 
     return cell;
-}
-
-- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
-    id <GenericPostDataSource> dataSource = [self currentDataSource];
-    if (!self.tableView.editing) {
-        if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-            [dataSource handleTapOnLinkWithURL:url
-                                      callback:^(UIViewController *controller) {
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              [self.navigationController pushViewController:controller animated:YES];
-                                          });
-                                      }];
-        }
-    }
 }
 
 - (void)openActionSheetForSelectedPost {
@@ -1526,5 +1432,71 @@ static NSInteger kToolbarHeight = 44;
     } failure:nil];
 }
 
+#pragma mark - PPBadgeWrapperDelegate
+
+- (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
+    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
+    NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
+
+    UITableViewCell *cell;
+    NSMutableArray *badges;
+    
+    for (NSIndexPath *indexPath in indexPathsForVisibleRows) {
+        cell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        if ([cell.contentView.subviews containsObject:badgeWrapperView]) {
+            badges = [[dataSource badgesForPostAtIndex:indexPath.row] mutableCopy];
+            break;
+        }
+    }
+    
+    NSUInteger visibleBadgeCount = 0;
+    for (PPBadgeView *badgeView in badgeWrapperView.subviews) {
+        if (badgeView.hidden == NO) {
+            visibleBadgeCount++;
+        }
+    }
+    
+    [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
+    if (badges.count > 5) {
+        [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
+    }
+    
+    NSString *tag = badge.textLabel.text;
+    if (![tag isEqualToString:@""]) {
+        if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
+            // Show more tag options
+            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            
+            for (NSDictionary *badge in badges) {
+                if ([badge[@"type"] isEqualToString:@"tag"]) {
+                    [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
+                }
+            }
+            
+            // Properly set the cancel button index
+            [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
+            self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
+            self.actionSheetVisible = YES;
+            
+            [self.additionalTagsActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+            self.tableView.scrollEnabled = NO;
+        }
+        else {
+            // Go to the tag link
+            id <GenericPostDataSource> dataSource = [self currentDataSource];
+            if (!self.tableView.editing) {
+                if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+                    // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
+                    [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
+                                              callback:^(UIViewController *controller) {
+                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                      [self.navigationController pushViewController:controller animated:YES];
+                                                  });
+                                              }];
+                }
+            }
+        }
+    }
+}
 
 @end
