@@ -1286,6 +1286,7 @@ static NSString *ellipsis = @"…";
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x585858ff) range:descriptionRange];
     }
 
+    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
     CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
                                                    withConstraints:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)
                                             limitedToNumberOfLines:0];
