@@ -311,10 +311,8 @@
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    // UINavigationItem doesn't like auto layout, so trick it with a button
+
     PPTitleButton *titleButton = [PPTitleButton button];
-    
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
@@ -428,12 +426,10 @@
                 
                 if (indexPath.row == 5) {
                     PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
-                    controller.navigationItem.titleView = titleButton;
-                    
                     [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
-                    
-                    postViewController.navigationItem.titleView = titleButton;
+
+                    controller.navigationItem.titleView = titleButton;
                     [self.navigationController pushViewController:controller animated:YES];
                 }
                 else {

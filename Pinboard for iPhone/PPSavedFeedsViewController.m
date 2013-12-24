@@ -19,22 +19,26 @@
 
 #import <FMDB/FMDatabase.h>
 
+static NSString *CellIdentifier = @"Cell";
+
 @interface PPSavedFeedsViewController ()
 
 @end
 
 @implementation PPSavedFeedsViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.feeds = [NSMutableArray array];
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
     self.feeds = [NSMutableArray array];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -60,6 +64,8 @@
     self.navigationItem.rightBarButtonItem = addBarButtonItem;
 }
 
+#pragma mark UITableViewDataSource
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -72,37 +78,27 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
-    CGFloat fontSize = 17;
-    UIFont *font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+
+    UIFont *font = [PPTheme titleFont];
 
     NSString *title;
     if (self.feeds.count > 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         title = self.feeds[indexPath.row][@"title"];
-        
-        NSDictionary *attributes = @{NSFontAttributeName: font};
-        CGSize maxSize = CGSizeMake(320, CGFLOAT_MAX);
-        CGRect titleRect = [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
-        while (titleRect.size.width > 280 || fontSize < 5) {
-            fontSize -= 0.2;
-            font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
-        }
     }
     else {
         title = NSLocalizedString(@"You have no saved feeds.", nil);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.textLabel.font = font;
     cell.textLabel.text = title;
     return cell;
 }
+
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -111,17 +107,6 @@
         GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
         [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
     }
-}
-
-- (void)addSavedFeedButtonTouchUpInside:(id)sender {
-    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
-    addSavedFeedViewController.modalDelegate = self;
-    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
-    [self presentViewController:navigationController animated:YES completion:nil];
-}
-
-- (void)closeModal:(UIViewController *)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -157,6 +142,19 @@
             [self.tableView endUpdates];
         });
     }];
+}
+
+#pragma mark - Utils
+
+- (void)addSavedFeedButtonTouchUpInside:(id)sender {
+    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+    addSavedFeedViewController.modalDelegate = self;
+    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+- (void)closeModal:(UIViewController *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
