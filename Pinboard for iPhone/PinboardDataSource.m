@@ -1330,6 +1330,7 @@ static NSString *ellipsis = @"…";
     }
 
     if (tags && ![tags isEqualToString:emptyString]) {
+        // Order tags in the badges by frequency
         NSArray *tagList = [[tags componentsSeparatedByString:@" "] sortedArrayUsingComparator:^NSComparisonResult(NSString *first, NSString *second) {
             return self.tagsWithFrequency[first] > self.tagsWithFrequency[second];
         }];
