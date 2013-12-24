@@ -474,7 +474,8 @@
     
     UIViewController *vc = [[UIViewController alloc] init];
     UINavigationController *nv = [[UINavigationController alloc] initWithRootViewController:vc];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     self.window.rootViewController = nv;
 
      /*
