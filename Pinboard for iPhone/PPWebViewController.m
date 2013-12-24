@@ -989,36 +989,49 @@ static CGFloat timeInterval = 3;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    self.numberOfRequestsCompleted = 0;
-    self.numberOfRequests = 0;
     
-    self.markAsReadButton.enabled = NO;
-    self.addButton.enabled = NO;
-    self.editButton.enabled = NO;
-    self.actionButton.enabled = NO;
-    self.viewMobilizeButton.enabled = NO;
-    self.viewRawButton.enabled = NO;
-
-    switch (navigationType) {
-        case UIWebViewNavigationTypeOther:
-            break;
-
-        case UIWebViewNavigationTypeReload:
-            break;
-
-        case UIWebViewNavigationTypeBackForward:
-            // We've disabled forward in the UI, so it must be a pop of the stack.
-            [self.history removeLastObject];
-
-        default:
-            self.yOffsetToStartShowingTitleView = 0;
-            webView.scrollView.contentOffset = CGPointMake(0, 0);
-            webView.scrollView.scrollEnabled = NO;
-            webView.scrollView.scrollsToTop = NO;
-            break;
+    if ([@[@"http", @"https"] containsObject:request.URL.scheme]) {
+        self.numberOfRequestsCompleted = 0;
+        self.numberOfRequests = 0;
+        
+        self.markAsReadButton.enabled = NO;
+        self.addButton.enabled = NO;
+        self.editButton.enabled = NO;
+        self.actionButton.enabled = NO;
+        self.viewMobilizeButton.enabled = NO;
+        self.viewRawButton.enabled = NO;
+        
+        switch (navigationType) {
+            case UIWebViewNavigationTypeOther:
+                break;
+                
+            case UIWebViewNavigationTypeReload:
+                break;
+                
+            case UIWebViewNavigationTypeBackForward:
+                // We've disabled forward in the UI, so it must be a pop of the stack.
+                [self.history removeLastObject];
+                
+            default:
+                self.yOffsetToStartShowingTitleView = 0;
+                webView.scrollView.contentOffset = CGPointMake(0, 0);
+                webView.scrollView.scrollEnabled = NO;
+                webView.scrollView.scrollsToTop = NO;
+                break;
+        }
+        
+        return YES;
     }
-    
-    return YES;
+    else {
+        self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
+                                                                      message:@"The link is requesting to open an external application. Would you like to continue?"
+                                                                     delegate:self
+                                                            cancelButtonTitle:@"Cancel"
+                                                            otherButtonTitles:@"Open", nil];
+        [self.openLinkExternallyAlertView show];
+        self.urlToOpenExternally = webView.request.URL;
+        return NO;
+    }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -1087,18 +1100,31 @@ static CGFloat timeInterval = 3;
     [self updateInterfaceWithComputedWebPageBackgroundColor];
 }
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView == self.openLinkExternallyAlertView) {
+        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:@"Open"]) {
+            [[UIApplication sharedApplication] openURL:self.urlToOpenExternally];
+        }
+    }
+}
+
+#pragma mark - Utils
+
 - (void)updateInterfaceWithComputedWebPageBackgroundColor {
     if (self.webView.scrollView.contentOffset.y == 0) {
         [self showToolbarAnimated:NO];
     }
-
+    
     self.prefersStatusBarHidden = NO;
-
+    
     if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
         self.webView.scrollView.scrollEnabled = YES;
         self.webView.scrollView.scrollsToTop = YES;
     }
-
+    
     NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
     
     NSError *error;
@@ -1183,7 +1209,6 @@ static CGFloat timeInterval = 3;
     return YES;
 }
 
-#pragma mark Utils
 
 - (void)showToolbarAnimated:(BOOL)animated {
     void (^ShowToolbarBlock)() = ^{
