@@ -59,6 +59,8 @@ static NSString *ellipsis = @"…";
         [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
         [self.enUSPOSIXDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
         [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        
+        self.tagsWithFrequency = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -82,6 +84,14 @@ static NSString *ellipsis = @"…";
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
         [self filterWithParameters:parameters];
+        
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        self.enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
+        [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
+        [self.enUSPOSIXDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        
+        self.tagsWithFrequency = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -731,6 +741,15 @@ static NSString *ellipsis = @"…";
             [newPosts addObject:post];
             index++;
         }
+        
+        [self.tagsWithFrequency removeAllObjects];
+        
+        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+        while ([tagResult next]) {
+            NSString *tag = [tagResult stringForColumnIndex:0];
+            NSNumber *count = [tagResult objectForColumnIndex:1];
+            self.tagsWithFrequency[tag] = count;
+        }
         [db close];
         
         NSMutableArray *newStrings = [NSMutableArray array];
@@ -840,6 +859,16 @@ static NSString *ellipsis = @"…";
             [newPosts addObject:post];
             index++;
         }
+        
+        [self.tagsWithFrequency removeAllObjects];
+        
+        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+        while ([tagResult next]) {
+            NSString *tag = [tagResult stringForColumnIndex:0];
+            NSNumber *count = [tagResult objectForColumnIndex:1];
+            self.tagsWithFrequency[tag] = count;
+        }
+
         [db close];
         
         for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
@@ -1301,7 +1330,10 @@ static NSString *ellipsis = @"…";
     }
 
     if (tags && ![tags isEqualToString:emptyString]) {
-        NSArray *tagList = [tags componentsSeparatedByString:@" "];
+        NSArray *tagList = [[tags componentsSeparatedByString:@" "] sortedArrayUsingComparator:^NSComparisonResult(NSString *first, NSString *second) {
+            return self.tagsWithFrequency[first] > self.tagsWithFrequency[second];
+        }];
+
         for (NSString *tag in tagList) {
             if (![tag hasPrefix:@"via:"]) {
                 if (isRead && dimReadPosts) {
