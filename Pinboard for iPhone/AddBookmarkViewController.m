@@ -1179,14 +1179,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         NSArray *indexPathsToDelete = @[[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]];
-        
         NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
-        
+
         [CATransaction begin];
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:kBookmarkBottomSection] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
         [CATransaction setCompletionBlock:^{
             [self.tagTextField becomeFirstResponder];
@@ -1201,11 +1200,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.navigationItem.rightBarButtonItem.enabled = YES;
         self.navigationItem.leftBarButtonItem.enabled = YES;
 
-        NSArray *indexPathsToInsert = @[[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection],
-                                        [NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]];
+        NSArray *indexPathsToInsert = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
+                                        [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
         
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-        NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
 
         if (self.popularAndRecommendedTagsVisible) {
             for (NSInteger i=1; i<self.filteredPopularAndRecommendedTags.count+1; i++) {
@@ -1221,6 +1219,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tagCompletions removeAllObjects];
         [self.popularTags removeAllObjects];
         [self.recommendedTags removeAllObjects];
+
+        NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
 
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationTop];
