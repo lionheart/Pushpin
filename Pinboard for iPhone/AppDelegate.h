@@ -43,17 +43,9 @@ enum bookmarkupdateevents {
 @class FMDatabaseQueue;
 @class PPNavigationController;
 
-@protocol BookmarkUpdateProgressDelegate <NSObject>
-- (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total;
-@end
-
 @protocol ModalDelegate <NSObject>
 - (void)closeModal:(UIViewController *)sender;
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success;
-@end
-
-@protocol BookmarkUpdatedDelegate <NSObject>
-- (void)bookmarkUpdateEvent:(int)type;
 @end
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, ModalDelegate> {
@@ -80,7 +72,6 @@ enum bookmarkupdateevents {
 @property (nonatomic) BOOL doubleTapToEdit;
 @property (nonatomic) BOOL openLinksWithMobilizer;
 @property (nonatomic, retain) NSString *feedToken;
-@property (nonatomic, weak) id<BookmarkUpdateProgressDelegate> bookmarkUpdateDelegate;
 @property (nonatomic, retain) NSNumber *connectionAvailable;
 @property (nonatomic, retain) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) PPNavigationController *navigationController;
