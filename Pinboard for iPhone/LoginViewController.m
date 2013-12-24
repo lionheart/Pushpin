@@ -124,7 +124,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)bookmarkUpdateEvent:(NSNumber *)updated total:(NSNumber *)total {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.progressView setProgress:updated.floatValue / total.floatValue];
-        
+
         if (updated.integerValue == total.integerValue) {
             PPNavigationController *controller = [AppDelegate sharedDelegate].navigationController;
             controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -218,8 +218,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
                                                self.textView.hidden = NO;
-                                               
-                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:2 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+
+                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:4 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
                                                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                                                
                                                self.progressView.hidden = NO;
