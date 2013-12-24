@@ -12,6 +12,8 @@
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+#import "PostMetadata.h"
+#import "GenericPostViewController.h"
 
 #import "NSAttributedString+Attributes.h"
 
@@ -32,9 +34,6 @@ static NSString *ellipsis = @"…";
 @synthesize heights = _heights;
 @synthesize strings = _strings;
 @synthesize badges = _badges;
-@synthesize totalNumberOfPosts = _totalNumberOfPosts;
-@synthesize urls;
-@synthesize maxResults;
 
 - (id)init {
     self = [super init];
@@ -337,8 +336,8 @@ static NSString *ellipsis = @"…";
             NSMutableArray *localMetaTable = [NSMutableArray array];
             
             DLog(@"%@ - Getting local data", [NSDate date]);
-            
-            NSString *firstHash = ([posts count] > 0) ? posts[0][@"hash"] : @"";
+
+            NSString *firstHash = (posts.count > 0) ? posts[0][@"hash"] : @"";
             NSUInteger firstBookmarkIndex = NSNotFound;
             NSUInteger total = posts.count;
             NSUInteger deleteOffset;
@@ -465,9 +464,6 @@ static NSString *ellipsis = @"…";
                                };
                     
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                    
-                    // Remove from the updateBookmarks array
-                    //[updateBookmarks removeObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
                     
                     updated_or_created = YES;
                     addCount++;

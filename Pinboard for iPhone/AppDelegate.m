@@ -462,6 +462,7 @@
         [self setNetworkActivityIndicatorVisible:YES];
     }];
 
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     if (self.token) {
         [pinboard setToken:self.token];
         [mixpanel identify:self.username];

@@ -7,9 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GenericPostViewController.h"
-#import "FMDatabase.h"
-#import "PostMetadata.h"
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
@@ -18,29 +15,41 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
     PinboardErrorSyncInProgress
 };
 
+@class FMResultSet;
+@class PostMetadata;
+@protocol GenericPostDataSource;
+
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 
-@property (nonatomic, strong) NSArray *tags;
-@property (nonatomic, retain) NSMutableArray *posts;
-@property (nonatomic, retain) NSMutableArray *heights;
-@property (nonatomic, retain) NSMutableArray *strings;
-@property (nonatomic, retain) NSMutableArray *links;
-@property (nonatomic, retain) NSMutableArray *badges;
-@property (nonatomic, strong) NSArray *compressedStrings;
+@property (nonatomic) NSInteger maxResults;
+@property (nonatomic) NSInteger totalNumberOfPosts;
+@property (nonatomic, strong) NSArray *compressedBadges;
 @property (nonatomic, strong) NSArray *compressedHeights;
 @property (nonatomic, strong) NSArray *compressedLinks;
-@property (nonatomic, strong) NSArray *compressedBadges;
-@property (nonatomic, retain) NSArray *urls;
-@property (nonatomic) NSInteger maxResults;
+@property (nonatomic, strong) NSArray *compressedStrings;
+@property (nonatomic, strong) NSArray *tags;
+@property (nonatomic, strong) NSArray *urls;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
-
-@property (nonatomic, strong) NSString *query;
+@property (nonatomic, strong) NSMutableArray *badges;
+@property (nonatomic, strong) NSMutableArray *heights;
+@property (nonatomic, strong) NSMutableArray *links;
+@property (nonatomic, strong) NSMutableArray *posts;
+@property (nonatomic, strong) NSMutableArray *strings;
 @property (nonatomic, strong) NSMutableDictionary *queryParameters;
+@property (nonatomic, strong) NSString *query;
 
-- (void)updateStarredPostsWithSuccess:(void (^)())success failure:(void (^)())failure;
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
-- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success failure:(void (^)())failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options;
+- (void)updateStarredPostsWithSuccess:(void (^)())success
+                              failure:(void (^)())failure;
+
+- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                                   failure:(void (^)(NSError *))failure;
+
+- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success
+                                            failure:(void (^)())failure
+                                           progress:(void (^)(NSInteger, NSInteger))progress
+                                            options:(NSDictionary *)options;
+
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
 - (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead isStarred:(NSNumber *)starred hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit;
