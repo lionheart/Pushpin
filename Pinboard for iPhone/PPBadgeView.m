@@ -90,6 +90,9 @@ static const CGFloat PADDING_Y = 2.0f;
         self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         self.tapGestureRecognizer.numberOfTapsRequired = 1;
         [self addGestureRecognizer:self.tapGestureRecognizer];
+        
+        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self addGestureRecognizer:self.longPressGestureRecognizer];
     }
     return self;
 }
@@ -161,6 +164,13 @@ static const CGFloat PADDING_Y = 2.0f;
                 if ([self.delegate respondsToSelector:@selector(didSelectBadgeView:)]) {
                     [self.delegate didSelectBadgeView:self];
                 }
+            }
+        }
+    }
+    else if (recognizer == self.longPressGestureRecognizer) {
+        if (recognizer.state == UIGestureRecognizerStateBegan) {
+            if ([self.delegate respondsToSelector:@selector(didTapAndHoldBadgeView:)]) {
+                [self.delegate didTapAndHoldBadgeView:self];
             }
         }
     }

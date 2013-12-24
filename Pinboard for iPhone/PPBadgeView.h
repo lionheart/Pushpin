@@ -25,6 +25,7 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 @interface PPBadgeView : UIView
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, weak) id<PPBadgeDelegate> delegate;
 @property (nonatomic, strong) UIView *badgeView;
