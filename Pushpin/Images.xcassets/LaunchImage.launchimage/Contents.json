@@ -12,7 +12,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "Default-568h@2x-1.png",
+      "filename" : "iOS Simulator Screen shot Dec 24, 2013, 9.52.14 AM.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -22,7 +22,6 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default~ipad.png",
       "scale" : "1x"
     },
     {
@@ -37,7 +36,6 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default@2x~ipad.png",
       "scale" : "2x"
     },
     {
