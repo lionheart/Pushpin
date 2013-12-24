@@ -250,6 +250,8 @@ static CGFloat timeInterval = 3;
 
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    
+    [self tintButtonsWithColor:[UIColor darkGrayColor]];
 
     [self.view addSubview:self.toolbar];
     
@@ -272,7 +274,7 @@ static CGFloat timeInterval = 3;
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
     [self.view lhs_addConstraints:@"V:|[background][title][webview][toolbar(>=height)]" metrics:metrics views:views];
     
-    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:self.toolbarConstraint];
@@ -351,7 +353,7 @@ static CGFloat timeInterval = 3;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     [UIView animateWithDuration:0.3 animations:^{
@@ -1023,13 +1025,15 @@ static CGFloat timeInterval = 3;
         return YES;
     }
     else {
-        self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
-                                                                      message:@"The link is requesting to open an external application. Would you like to continue?"
-                                                                     delegate:self
-                                                            cancelButtonTitle:@"Cancel"
-                                                            otherButtonTitles:@"Open", nil];
-        [self.openLinkExternallyAlertView show];
-        self.urlToOpenExternally = webView.request.URL;
+        if (!self.openLinkExternallyAlertView) {
+            self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
+                                                                          message:@"The link is requesting to open an external application. Would you like to continue?"
+                                                                         delegate:self
+                                                                cancelButtonTitle:@"Cancel"
+                                                                otherButtonTitles:@"Open", nil];
+            [self.openLinkExternallyAlertView show];
+            self.urlToOpenExternally = webView.request.URL;
+        }
         return NO;
     }
 }
@@ -1109,6 +1113,12 @@ static CGFloat timeInterval = 3;
             [[UIApplication sharedApplication] openURL:self.urlToOpenExternally];
         }
     }
+    
+    self.openLinkExternallyAlertView = nil;
+}
+
+- (void)alertViewCancel:(UIAlertView *)alertView {
+    self.openLinkExternallyAlertView = nil;
 }
 
 #pragma mark - Utils
@@ -1163,36 +1173,31 @@ static CGFloat timeInterval = 3;
                 self.toolbarBackgroundView.backgroundColor = backgroundColor;
                 
                 if (isDark) {
-                    self.actionButton.tintColor = [UIColor whiteColor];
-                    self.backButton.tintColor = [UIColor whiteColor];
-                    self.editButton.tintColor = [UIColor whiteColor];
-                    self.addButton.tintColor = [UIColor whiteColor];
-                    self.stopButton.tintColor = [UIColor whiteColor];
-                    self.viewMobilizeButton.tintColor = [UIColor whiteColor];
-                    self.viewRawButton.tintColor = [UIColor whiteColor];
-                    self.markAsReadButton.tintColor = [UIColor whiteColor];
-                    
+                    [self tintButtonsWithColor:[UIColor whiteColor]];
                     self.titleLabel.textColor = [UIColor whiteColor];
                     self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
                 }
                 else {
-                    self.actionButton.tintColor = HEX(0x808D96FF);
-                    self.backButton.tintColor = HEX(0x808D96FF);
-                    self.editButton.tintColor = HEX(0x808D96FF);
-                    self.addButton.tintColor = HEX(0x808D96FF);
-                    self.stopButton.tintColor = HEX(0x808D96FF);
-                    self.viewMobilizeButton.tintColor = HEX(0x808D96FF);
-                    self.viewRawButton.tintColor = HEX(0x808D96FF);
-                    self.markAsReadButton.tintColor = HEX(0x808D96FF);
-                    
+                    [self tintButtonsWithColor:HEX(0x808D96FF)];
                     self.titleLabel.textColor = [UIColor darkTextColor];
                     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
                 }
-                
+
                 [self setNeedsStatusBarAppearanceUpdate];
             }];
         });
     }
+}
+
+- (void)tintButtonsWithColor:(UIColor *)color {
+    self.actionButton.tintColor = color;
+    self.backButton.tintColor = color;
+    self.editButton.tintColor = color;
+    self.addButton.tintColor = color;
+    self.stopButton.tintColor = color;
+    self.viewMobilizeButton.tintColor = color;
+    self.viewRawButton.tintColor = color;
+    self.markAsReadButton.tintColor = color;
 }
 
 - (BOOL)canMobilizeCurrentURL {

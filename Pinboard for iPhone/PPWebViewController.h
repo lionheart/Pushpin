@@ -100,6 +100,7 @@
 
 - (BOOL)canMobilizeURL:(NSURL *)url;
 - (BOOL)canMobilizeCurrentURL;
+- (void)tintButtonsWithColor:(UIColor *)color;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
