@@ -23,6 +23,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 @property (nonatomic) NSInteger maxResults;
 @property (nonatomic) NSInteger totalNumberOfPosts;
+@property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;
 @property (nonatomic, strong) NSArray *compressedBadges;
 @property (nonatomic, strong) NSArray *compressedHeights;
 @property (nonatomic, strong) NSArray *compressedLinks;
