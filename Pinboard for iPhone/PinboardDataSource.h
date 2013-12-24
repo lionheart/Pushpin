@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GenericPostViewController.h"
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
@@ -17,7 +18,6 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 @class FMResultSet;
 @class PostMetadata;
-@protocol GenericPostDataSource;
 
 @interface PinboardDataSource : NSObject <GenericPostDataSource>
 

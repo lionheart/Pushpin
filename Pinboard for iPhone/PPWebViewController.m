@@ -29,7 +29,6 @@
 
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
-static CGFloat timeInterval = 3;
 
 @interface PPWebViewController ()
 
@@ -847,8 +846,12 @@ static CGFloat timeInterval = 3;
     });
 }
 
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+    [self dismissViewControllerAnimated:YES completion:success];
+}
+
 - (void)closeModal:(UIViewController *)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self closeModal:sender success:nil];
 }
 
 - (BOOL)isMobilized {

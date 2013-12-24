@@ -13,7 +13,6 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PostMetadata.h"
-#import "GenericPostViewController.h"
 
 #import "NSAttributedString+Attributes.h"
 

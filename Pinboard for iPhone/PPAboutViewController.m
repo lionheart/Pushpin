@@ -318,31 +318,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [loadingAlertView addSubview:self.loadingIndicator];
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    if ([accountStore respondsToSelector:@selector(requestAccessToAccountsWithType:withCompletionHandler:)]) {
-                        [accountStore requestAccessToAccountsWithType:twitter
-                                                withCompletionHandler:^(BOOL granted, NSError *error) {
-                                                               if (granted) {
-                                                                   AccessGrantedBlock(loadingAlertView);
-                                                               }
-                                                               else {
-                                                                   [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                                                               }
-                                                           }];
-                    }
-                    else {
-                        [accountStore requestAccessToAccountsWithType:twitter
-                                                              options:nil
-                                                           completion:^(BOOL granted, NSError *error) {
-                                                               if (granted) {
-                                                                   AccessGrantedBlock(loadingAlertView);
-                                                               }
-                                                               else {
-                                                                   [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                                   [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                                                               }
-                                                           }];
-                    }
+                    [accountStore requestAccessToAccountsWithType:twitter
+                                                          options:nil
+                                                       completion:^(BOOL granted, NSError *error) {
+                                                           if (granted) {
+                                                               AccessGrantedBlock(loadingAlertView);
+                                                           }
+                                                           else {
+                                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                                                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                           }
+                                                       }];
                 });
             });
         }

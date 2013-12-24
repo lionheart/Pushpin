@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface PPNavigationController : UINavigationController <ModalDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@interface PPNavigationController : UINavigationController <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @end

@@ -13,6 +13,8 @@
 
 @protocol PPBadgeWrapperDelegate <NSObject>
 
+@optional
+
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge;
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didTapAndHoldBadge:(PPBadgeView *)badge;
 

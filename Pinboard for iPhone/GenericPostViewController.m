@@ -291,7 +291,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
     if (selectedRowCount > 0) {
-        self.multiStatusLabel.text = [NSString stringWithFormat:@"%lu %@", selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+        self.multiStatusLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
     }
     else {
         self.multiStatusLabel.text = NSLocalizedString(@"No bookmarks selected", nil);
@@ -957,8 +957,16 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Table view delegate
 
 - (void)closeModal:(UIViewController *)sender {
+    [self closeModal:sender success:nil];
+}
+
+- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.navigationController dismissViewControllerAnimated:YES completion:^{
+            if (success) {
+                success();
+            }
+
             [self updateFromLocalDatabaseWithCallback:nil];
         }];
     });

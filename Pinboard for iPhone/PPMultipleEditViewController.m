@@ -183,9 +183,8 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
         tagCompletions = self.tagsToAddCompletions;
     }
 
-    NSString *tagText = textField.text;
     NSInteger row = indexPath.row;
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *completion;
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
