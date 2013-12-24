@@ -21,14 +21,17 @@
 
 @implementation PPAddSavedFeedViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-    }
-    return self;
+    return [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.userTextField = [[UITextField alloc] init];
     self.userTextField.font = font;
