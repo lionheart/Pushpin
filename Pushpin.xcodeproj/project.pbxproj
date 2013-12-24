@@ -45,7 +45,6 @@
 		372D433A1723A87E00E802C0 /* SettingsNavigationDimmed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */; };
 		372D43411723AE1A00E802C0 /* SwitchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D433F1723AE1A00E802C0 /* SwitchThumb.png */; };
 		372D43421723AE1A00E802C0 /* SwitchThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */; };
-		372D43491724492E00E802C0 /* PPSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 372D43481724492E00E802C0 /* PPSwitch.m */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
@@ -667,8 +666,6 @@
 		372D43361723A87E00E802C0 /* SettingsNavigationDimmed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SettingsNavigationDimmed@2x.png"; sourceTree = "<group>"; };
 		372D433F1723AE1A00E802C0 /* SwitchThumb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SwitchThumb.png; sourceTree = "<group>"; };
 		372D43401723AE1A00E802C0 /* SwitchThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SwitchThumb@2x.png"; sourceTree = "<group>"; };
-		372D43471724492E00E802C0 /* PPSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSwitch.h; sourceTree = "<group>"; };
-		372D43481724492E00E802C0 /* PPSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSwitch.m; sourceTree = "<group>"; };
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
@@ -1795,8 +1792,6 @@
 				E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */,
 				E89001F7183EA5B500C1F969 /* PPBadgeView.h */,
 				E89001F8183EA5B500C1F969 /* PPBadgeView.m */,
-				372D43471724492E00E802C0 /* PPSwitch.h */,
-				372D43481724492E00E802C0 /* PPSwitch.m */,
 				376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */,
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
 				374698BE174B33CE00407345 /* PPNotification.h */,
@@ -2826,7 +2821,6 @@
 				37D59A1416EEDC91005C9C24 /* PPButton.m in Sources */,
 				37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
-				372D43491724492E00E802C0 /* PPSwitch.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */,
 				371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */,
