@@ -88,8 +88,9 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UITableViewController <UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate>
+@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate>
 
+@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *pullToRefreshView;
 @property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
@@ -112,8 +113,6 @@ typedef NSInteger PPPostAction;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 @property (nonatomic, strong) NSString *latestSearchText;
 @property (nonatomic, strong) NSTimer *latestSearchTimer;
-
-@property (nonatomic, strong) UIDynamicAnimator *animator;
 
 @property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
