@@ -54,9 +54,22 @@ static NSInteger kToolbarHeight = 44;
     return UIStatusBarStyleLightContent;
 }
 
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.tableView];
+
+    self.prefersStatusBarHidden = NO;
+    self.extendedLayoutIncludesOpaqueBars = YES;
+
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.tableView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -144,13 +157,10 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
+    [self.tableView lhs_expandToFillSuperview];
+
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    
-    // Make sure the delegate and datasource are configured
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [UIColor whiteColor];
 
     // Initial database update
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
