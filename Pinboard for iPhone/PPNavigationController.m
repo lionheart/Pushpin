@@ -13,10 +13,19 @@
 
 @implementation PPNavigationController
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        self.navigationBar.translucent = NO;
+    }
+    return self;
+}
+
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
     self = [super init];
     if (self) {
         self.viewControllers = @[rootViewController];
+        self.navigationBar.translucent = NO;
     }
     return self;
 }
