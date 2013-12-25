@@ -34,7 +34,6 @@ typedef enum kLoginRows {
 - (void)login;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
-- (void)progressNotificationReceived:(NSNotification *)notification;
 - (void)showContactForm;
 - (BOOL)is1PasswordAvailable;
 

@@ -39,7 +39,6 @@ enum bookmarkupdateevents {
     BOOKMARK_EVENT_DELETE
 };
 
-@class PrimaryNavigationViewController;
 @class FMDatabaseQueue;
 @class PPNavigationController;
 
