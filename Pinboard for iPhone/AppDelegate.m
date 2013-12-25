@@ -390,7 +390,6 @@
             pinboardViewController.postDataSource = feedDataSource;
         }
 
-        //_navigationController.navigationBar.translucent = NO;
         pinboardViewController.navigationItem.titleView = titleButton;
         _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
         [_navigationController popToViewController:pinboardViewController animated:NO];
