@@ -110,7 +110,6 @@
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
 		375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* FeedListViewController.m */; };
-		3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */; };
 		376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
 		376C9E8417488B8500A62CB5 /* NotificationBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8217488B8500A62CB5 /* NotificationBackground.png */; };
 		376C9E8517488B8500A62CB5 /* NotificationBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */; };
@@ -594,8 +593,6 @@
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		375A638816C0CB0800665CA1 /* FeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* FeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedListViewController.m; sourceTree = "<group>"; };
-		3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrimaryNavigationViewController.h; sourceTree = "<group>"; };
-		3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrimaryNavigationViewController.m; sourceTree = "<group>"; };
 		376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoadingView.h; sourceTree = "<group>"; };
 		376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoadingView.m; sourceTree = "<group>"; };
 		376C9E8217488B8500A62CB5 /* NotificationBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NotificationBackground.png; path = Assets/NotificationBackground.png; sourceTree = "<group>"; };
@@ -1287,8 +1284,6 @@
 				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
 				3733251D16E155A2002E2AB0 /* GenericPostViewController.h */,
 				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
-				3760C3B516BF1BEB00262FF2 /* PrimaryNavigationViewController.h */,
-				3760C3B616BF1BEB00262FF2 /* PrimaryNavigationViewController.m */,
 				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
 				376C9E8E1749969200A62CB5 /* PPTableViewController.m */,
 				3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */,
@@ -2173,7 +2168,6 @@
 				E8734227180DA20300CF9E5F /* PPBrowserActivity.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
-				3760C3B716BF1BEB00262FF2 /* PrimaryNavigationViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,

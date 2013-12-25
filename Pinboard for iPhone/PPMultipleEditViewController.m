@@ -218,7 +218,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             if (self.tagsToRemove.count == 1) {
                 [footerString appendString:NSLocalizedString(@"1 tag will be deleted", nil)];
             } else if (self.tagsToRemove.count >= 2) {
-                [footerString appendString:[NSString stringWithFormat:@"%d %@", self.tagsToRemove.count, NSLocalizedString(@"tags will be deleted", nil)]];
+                [footerString appendString:[NSString stringWithFormat:@"%lu %@", (unsigned long)self.tagsToRemove.count, NSLocalizedString(@"tags will be deleted", nil)]];
             }
             
             if (self.tagsToRemove.count > 0 && self.tagsToAdd.count > 0) {
@@ -228,7 +228,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
             if (self.tagsToAdd.count == 1) {
                 [footerString appendString:NSLocalizedString(@"1 tag will be added", nil)];
             } else if (self.tagsToAdd.count >= 2) {
-                [footerString appendString:[NSString stringWithFormat:@"%d %@", self.tagsToAdd.count, NSLocalizedString(@"tags will be added", nil)]];
+                [footerString appendString:[NSString stringWithFormat:@"%lu %@", (unsigned long)self.tagsToAdd.count, NSLocalizedString(@"tags will be added", nil)]];
             }
             
             return footerString;

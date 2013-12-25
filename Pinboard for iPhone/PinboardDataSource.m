@@ -540,11 +540,11 @@ static NSString *ellipsis = @"…";
             skipped = total - addCount - updateCount - deleteCount;
 
             DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
-            DLog(@"added %d", addCount);
-            DLog(@"updated %d", updateCount);
-            DLog(@"skipped %d", skipped);
-            DLog(@"removed %d", deleteCount);
-            DLog(@"tags added %d", tagAddCount);
+            DLog(@"added %lu", (unsigned long)addCount);
+            DLog(@"updated %lu", (unsigned long)updateCount);
+            DLog(@"skipped %lu", (unsigned long)skipped);
+            DLog(@"removed %lu", (unsigned long)deleteCount);
+            DLog(@"tags added %lu", (unsigned long)tagAddCount);
             
             self.totalNumberOfPosts = index;
 
@@ -1095,7 +1095,7 @@ static NSString *ellipsis = @"…";
             notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
         }
         else {
-            notification.alertBody = [NSString stringWithFormat:@"%d bookmarks were deleted.", [posts count]];
+            notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks were deleted.", (unsigned long)[posts count]];
         }
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     });

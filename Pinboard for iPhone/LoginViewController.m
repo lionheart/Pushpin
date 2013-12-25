@@ -9,7 +9,6 @@
 #import "LoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
-#import "PrimaryNavigationViewController.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
 #import "PPTheme.h"
