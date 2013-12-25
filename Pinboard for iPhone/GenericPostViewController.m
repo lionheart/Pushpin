@@ -24,6 +24,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
+#import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
@@ -34,6 +35,7 @@ static NSInteger kToolbarHeight = 44;
 @interface GenericPostViewController ()
 
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
+@property (nonatomic) BOOL prefersStatusBarHidden;
 
 @end
 
@@ -964,7 +966,7 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-#pragma mark - Table view delegate
+#pragma mark - UITableViewDelegate
 
 - (void)closeModal:(UIViewController *)sender {
     [self closeModal:sender success:nil];
@@ -1237,7 +1239,7 @@ static NSInteger kToolbarHeight = 44;
     [self.confirmDeletionAlertView show];
 }
 
-#pragma mark - Alert View Delegate
+#pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
@@ -1312,7 +1314,7 @@ static NSInteger kToolbarHeight = 44;
         CGFloat searchHeight = self.searchBar.frame.size.height;
         CGFloat minimumOffset = statusBarHeight + navigationHeight;
         NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + self.pullToRefreshImageView.frame.size.height + 20)) * 32, 32));
-        NSString *imageName = [NSString stringWithFormat:@"ptr_%02d", index];
+        NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
         UIOffset imageOffset;
         
         if (offset < 0) {
@@ -1328,7 +1330,7 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-#pragma mark Search Bar Delegate
+#pragma mark - UISearchBarDelegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (![searchText isEqualToString:@""]) {
@@ -1439,7 +1441,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     self.badgeFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
-    
+
     [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_sync(dispatch_get_main_queue(), ^(void) {
             [self.tableView beginUpdates];
