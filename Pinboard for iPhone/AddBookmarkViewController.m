@@ -22,7 +22,7 @@
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
-#import <LHSCategoryCollection/UIImage+Tint.h>
+#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
@@ -127,14 +127,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.privateButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] imageWithColor:HEX(0xFFAE44FF)] forState:UIControlStateSelected];
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] lhs_imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] lhs_imageWithColor:HEX(0xFFAE44FF)] forState:UIControlStateSelected];
         [self.privateButton addTarget:self action:@selector(togglePrivate:) forControlEvents:UIControlEventTouchUpInside];
         
         self.readButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.readButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
-        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] imageWithColor:HEX(0xEF6034FF)] forState:UIControlStateSelected];
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
+        [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)] forState:UIControlStateSelected];
         [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
@@ -400,7 +400,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (self.editingTags) {
         if (indexPath.row == 0) {
-            UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0xD8DDE4FF)]];
+            UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
             topImageView.frame = CGRectMake(14, 12, 20, 20);
             [cell.contentView addSubview:topImageView];
             self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
@@ -438,7 +438,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             case kBookmarkTopSection:
                 switch (indexPath.row) {
                     case kBookmarkTitleRow: {
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] imageWithColor:HEX(0xD8DDE4FF)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-bookmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
                         if (self.loadingTitle) {
@@ -473,7 +473,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
                         self.descriptionTextLabel.frame = (CGRect){{40, 10}, descriptionRect.size};
                         
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] imageWithColor:HEX(0xD8DDE4FF)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
                         [cell.contentView addSubview:topImageView];
                         
@@ -499,7 +499,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         break;
                     }
                     case kBookmarkTagRow: {
-                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] imageWithColor:HEX(0xD8DDE4FF)]];
+                        UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
 
                         if ([self.tagTextField.text isEqualToString:@""]) {

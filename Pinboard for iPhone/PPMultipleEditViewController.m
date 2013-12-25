@@ -15,7 +15,7 @@
 #import "PPTheme.h"
 
 #import <FMDB/FMDatabase.h>
-#import <LHSCategoryCollection/UIImage+Tint.h>
+#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
@@ -104,7 +104,7 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
     
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            cell.imageView.image = [[UIImage imageNamed:@"navigation-tags"] imageWithColor:HEX(0x1a98fcff)];
+            cell.imageView.image = [[UIImage imageNamed:@"navigation-tags"] lhs_imageWithColor:HEX(0x1a98fcff)];
             self.tagsToAddTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
             [cell.contentView addSubview:self.tagsToAddTextField];
             cell.accessoryView = nil;

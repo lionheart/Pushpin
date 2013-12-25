@@ -23,7 +23,7 @@
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <PocketAPI/PocketAPI.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIImage+Tint.h>
+#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kGenericPostViewControllerResizingPosts = NO;
@@ -120,19 +120,19 @@ static NSInteger kToolbarHeight = 44;
     // Buttons
     UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
     markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [markAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [markAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
     [markAsReadButton addTarget:self action:@selector(multiMarkAsRead:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:markAsReadButton];
     
     UIButton *editTagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     editTagsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [editTagsButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [editTagsButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
     [editTagsButton addTarget:self action:@selector(multiEdit:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:editTagsButton];
     
     UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [deleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [deleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
     [deleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:deleteButton];
     
