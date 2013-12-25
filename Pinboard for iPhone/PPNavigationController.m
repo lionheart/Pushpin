@@ -7,20 +7,14 @@
 //
 
 #import "PPNavigationController.h"
-#import "PPNavigationBar.h"
 #import "PPWebViewController.h"
 
 #import <FMDB/FMDatabase.h>
 
 @implementation PPNavigationController
 
-- (id)init {
-    self = [super initWithNavigationBarClass:[PPNavigationBar class] toolbarClass:nil];
-    return self;
-}
-
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
-    self = [super initWithNavigationBarClass:[PPNavigationBar class] toolbarClass:nil];
+    self = [super init];
     if (self) {
         self.viewControllers = @[rootViewController];
     }
@@ -28,15 +22,10 @@
 }
 
 - (void)viewDidLoad {
+    // We do this to retain the interactive pop gesture
     __weak PPNavigationController *weakSelf = self;
-    
     self.interactivePopGestureRecognizer.delegate = weakSelf;
     self.delegate = weakSelf;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self becomeFirstResponder];
 }
 
 - (BOOL)disablesAutomaticKeyboardDismissal {
