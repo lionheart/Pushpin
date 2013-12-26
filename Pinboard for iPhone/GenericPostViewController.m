@@ -161,7 +161,7 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
     [self.tableView lhs_expandToFillSuperview];
-
+    
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 
