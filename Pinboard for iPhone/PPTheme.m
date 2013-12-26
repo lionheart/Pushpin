@@ -64,4 +64,8 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 
++ (UIColor *)bookmarkBackgroundColor {
+    return [UIColor whiteColor];
+}
+
 @end

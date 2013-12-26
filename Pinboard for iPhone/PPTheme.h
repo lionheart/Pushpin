@@ -25,4 +25,8 @@
 + (CGFloat)badgeFontSize;
 + (CGFloat)tagFontSize;
 
++ (UIColor *)bookmarkBackgroundColor;
++ (UIColor *)badgeBackgroundColor;
++ (UIColor *)badgeTextColor;
+
 @end

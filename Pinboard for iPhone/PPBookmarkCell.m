@@ -65,23 +65,29 @@
         string = [dataSource attributedStringForPostAtIndex:index];
     }
     
-    self.backgroundColor = [UIColor whiteColor];
-    self.contentView.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [PPTheme bookmarkBackgroundColor];
+    self.contentView.backgroundColor = [PPTheme bookmarkBackgroundColor];
+    
+    static NSDictionary *linkAttributes;
+    static NSDictionary *activeLinkAttributes;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO)};
+        activeLinkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
+                                 (NSString *)kTTTBackgroundFillColorAttributeName: HEX(0xeeddddff),
+                                 (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(5)};
+    });
     
     self.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     self.textView.numberOfLines = 0;
     self.textView.preferredMaxLayoutWidth = 300;
-    self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    self.textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-    
-    NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
-    [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-    [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
-    [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
-    self.textView.activeLinkAttributes = mutableActiveLinkAttributes;
-    self.textView.backgroundColor = [UIColor clearColor];
+    self.textView.opaque = YES;
+    self.textView.backgroundColor = [PPTheme bookmarkBackgroundColor];
     self.textView.userInteractionEnabled = NO;
+    self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    self.textView.linkAttributes = linkAttributes;
+    self.textView.activeLinkAttributes = activeLinkAttributes;
     self.textView.text = string;
     
     [self.contentView addSubview:self.textView];
