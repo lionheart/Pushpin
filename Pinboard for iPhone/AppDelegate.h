@@ -53,38 +53,36 @@ enum bookmarkupdateevents {
     NSInteger secondsLeft;
 }
 
-@property (strong, nonatomic) UIWindow *window;
-@property (nonatomic, retain) NSString *token;
-@property (nonatomic, retain) NSDate *lastUpdated;
-@property (nonatomic, retain) NSNumber *browser;
-@property (nonatomic, retain) NSNumber *readlater;
-@property (nonatomic, strong) NSNumber *mobilizer;
-@property (nonatomic) BOOL compressPosts;
-@property (nonatomic) BOOL dimReadPosts;
-@property (nonatomic) BOOL markReadPosts;
-@property (nonatomic) BOOL enableAutoCorrect;
-@property (nonatomic) BOOL enableAutoCapitalize;
-@property (nonatomic, strong) NSNumber *openLinksInApp;
-@property (nonatomic, retain) NSNumber *privateByDefault;
-@property (nonatomic, retain) NSNumber *readByDefault;
-@property (nonatomic, retain) NSString *defaultFeed;
-@property (nonatomic) BOOL doubleTapToEdit;
-@property (nonatomic) BOOL openLinksWithMobilizer;
-@property (nonatomic, retain) NSString *feedToken;
-@property (nonatomic, retain) NSNumber *connectionAvailable;
-@property (nonatomic, retain) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) PPNavigationController *navigationController;
-@property (nonatomic, strong) PPNavigationController *loginViewController;
 @property (nonatomic) BOOL addBookmarkAlertViewIsVisible;
-
-@property (nonatomic, strong) NSString *clipboardBookmarkTitle;
-@property (nonatomic, strong) NSString *clipboardBookmarkURL;
-
-@property (nonatomic, retain) NSNumber *bookmarksUpdated;
-@property (nonatomic, retain) NSString *bookmarksUpdatedMessage;
-@property (nonatomic, retain) NSTimer *refreshTimer;
 @property (nonatomic) BOOL bookmarksLoading;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
+@property (nonatomic) BOOL compressPosts;
+@property (nonatomic) BOOL dimReadPosts;
+@property (nonatomic) BOOL doubleTapToEdit;
+@property (nonatomic) BOOL enableAutoCapitalize;
+@property (nonatomic) BOOL enableAutoCorrect;
+@property (nonatomic) BOOL markReadPosts;
+@property (nonatomic) BOOL openLinksWithMobilizer;
+@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) NSDate *lastUpdated;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSNumber *bookmarksUpdated;
+@property (nonatomic, strong) NSNumber *browser;
+@property (nonatomic, strong) NSNumber *connectionAvailable;
+@property (nonatomic, strong) NSNumber *mobilizer;
+@property (nonatomic, strong) NSNumber *openLinksInApp;
+@property (nonatomic, strong) NSNumber *privateByDefault;
+@property (nonatomic, strong) NSNumber *readByDefault;
+@property (nonatomic, strong) NSNumber *readlater;
+@property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
+@property (nonatomic, strong) NSString *clipboardBookmarkTitle;
+@property (nonatomic, strong) NSString *clipboardBookmarkURL;
+@property (nonatomic, strong) NSString *defaultFeed;
+@property (nonatomic, strong) NSString *feedToken;
+@property (nonatomic, strong) NSString *token;
+@property (nonatomic, strong) NSTimer *refreshTimer;
+@property (nonatomic, strong) PPNavigationController *loginViewController;
+@property (nonatomic, strong) PPNavigationController *navigationController;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
