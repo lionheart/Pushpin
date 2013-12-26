@@ -25,6 +25,8 @@
 #import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+#import "ScreenshotViewController.h"
+#import "PPStatusBarNotification.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -78,15 +80,16 @@
     [application cancelAllLocalNotifications];
     if (application.applicationState == UIApplicationStateActive) {
         self.bookmarksUpdated = notification.userInfo[@"updated"];
+        NSString *text = notification.alertBody;
 
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
+                [[PPStatusBarNotification sharedNotification] showWithText:text];
             });
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[PPNotification sharedInstance] showInView:self.navigationController.view withMessage:notification.alertBody];
+                [[PPStatusBarNotification sharedNotification] showWithText:text];
             });
         }
     }
@@ -472,10 +475,9 @@
         [self.window setRootViewController:self.loginViewController];
     }
 
-     /*
-    PPMultipleEditViewController *mevc = [[PPMultipleEditViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [self.window setRootViewController:mevc];
-     */    
+//    ScreenshotViewController *screenshot = [[ScreenshotViewController alloc] init];
+//    UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:screenshot];
+//    self.window.rootViewController = controller;
     [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];

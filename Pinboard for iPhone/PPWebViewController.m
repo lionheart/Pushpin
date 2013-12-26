@@ -26,6 +26,7 @@
 #import <FMDB/FMDatabase.h>
 #import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
@@ -277,12 +278,9 @@ static NSInteger kTitleHeight = 40;
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:self.toolbarConstraint];
-    
-    self.titleHeightConstraint = [NSLayoutConstraint constraintWithItem:self.titleView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
-    [self.view addConstraint:self.titleHeightConstraint];
-    
-    self.topLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.statusBarBackgroundView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:0];
-    [self.view addConstraint:self.topLayoutConstraint];
+
+    self.titleHeightConstraint = [self.titleView lhs_setHeight:0];
+    self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {

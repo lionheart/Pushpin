@@ -16,7 +16,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.navigationBar.translucent = YES;
+        self.navigationBar.translucent = NO;
         self.edgesForExtendedLayout = UIRectEdgeAll;
     }
     return self;
@@ -26,7 +26,7 @@
     self = [super init];
     if (self) {
         self.viewControllers = @[rootViewController];
-        self.navigationBar.translucent = YES;
+        self.navigationBar.translucent = NO;
         self.edgesForExtendedLayout = UIRectEdgeAll;
     }
     return self;
