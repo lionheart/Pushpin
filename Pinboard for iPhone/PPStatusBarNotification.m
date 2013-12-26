@@ -50,8 +50,7 @@
     label.font = [UIFont boldSystemFontOfSize:12];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
-//    label.backgroundColor = HEX(0x28A6FEFF);
-    label.backgroundColor = HEX(0x0096FFFF);
+    label.backgroundColor = [UIColor darkGrayColor];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     [notificationContainer addSubview:label];
 
