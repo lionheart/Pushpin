@@ -19,7 +19,6 @@ typedef enum : NSInteger {
 
 + (id)sharedNotification;
 - (void)showWithText:(NSString *)text;
-- (void)displayText:(NSString *)text withAnimation:(PPStatusBarNotificationAnimation)animation;
 - (void)displayText:(NSString *)text withAnimation:(PPStatusBarNotificationAnimation)animation duration:(CGFloat)duration;
 
 @end
