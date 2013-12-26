@@ -10,11 +10,12 @@
 
 #import "AppDelegate.h"
 #import "BookmarkletInstallationViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
+static NSString *CellIdentifier = @"Cell";
 
 @interface BookmarkletInstallationViewController ()
 
@@ -32,6 +33,7 @@
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Browser Integration", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 #pragma mark - Table view data source
@@ -64,11 +66,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.textLabel.font = [PPTheme titleFont];
     if (indexPath.section == 0) {

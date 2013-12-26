@@ -12,7 +12,6 @@
 #import "AppDelegate.h"
 #import "GenericPostViewController.h"
 #import "PinboardFeedDataSource.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"

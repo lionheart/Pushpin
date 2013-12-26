@@ -8,11 +8,12 @@
 
 #import "AppDelegate.h"
 #import "PPDefaultFeedViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 
 #import <FMDB/FMDatabase.h>
+
+static NSString *CellIdentifier = @"Cell";
 
 @interface PPDefaultFeedViewController ()
 
@@ -70,6 +71,8 @@
             self.defaultIndexPath = [NSIndexPath indexPathForRow:4 inSection:1];
         }
     }
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -149,12 +152,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.textLabel.font = [PPTheme titleFont];
 
     switch (indexPath.section) {

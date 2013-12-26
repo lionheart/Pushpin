@@ -10,15 +10,16 @@
 
 #import "AppDelegate.h"
 #import "PPMultipleEditViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
+#import "UITableViewCellValue1.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
+static NSString *CellIdentifier = @"Cell";
 
 @interface PPMultipleEditViewController ()
 
@@ -49,6 +50,11 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
     return self;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+}
+
 - (id)initWithTags:(NSArray *)tags {
     _existingTags = [NSMutableArray arrayWithArray:tags];
     return [self initWithStyle:UITableViewStyleGrouped];
@@ -73,25 +79,16 @@ static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-    }
-    
-    NSArray *subviews = [cell.contentView subviews];
-    for (UIView *view in subviews) {
-        [view removeFromSuperview];
-    }
-    
+    [cell.contentView lhs_removeSubviews];
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
     
     CGRect frame = cell.frame;
     

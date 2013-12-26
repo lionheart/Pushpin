@@ -13,11 +13,11 @@
 
 #import "AppDelegate.h"
 #import "PPAboutViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+#import "UITableViewCellSubtitle.h"
 
 #import "UITableView+Additions.h"
 
@@ -104,6 +104,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 
     self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -133,10 +134,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.accessoryView = nil;
 
     if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
@@ -171,7 +169,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.textLabel.text = title;
     }
     if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
         if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
             cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
         }
