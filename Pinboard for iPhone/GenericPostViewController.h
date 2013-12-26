@@ -174,4 +174,6 @@ typedef NSInteger PPPostAction;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
++ (UIImage *)screenshot;
+
 @end

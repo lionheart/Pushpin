@@ -47,7 +47,7 @@
         
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         NSString *count, *previousCount;
-        BOOL skip = [self.bookmarkCounts count] < 5;
+        BOOL skip = self.bookmarkCounts.count < 5;
         
         [db open];
         NSArray *resultSets = @[

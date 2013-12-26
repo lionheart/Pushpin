@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PPStatusBarNotification : UIView
+@interface PPStatusBarNotification : NSObject
 
 + (id)sharedNotification;
 - (void)showWithText:(NSString *)text;
