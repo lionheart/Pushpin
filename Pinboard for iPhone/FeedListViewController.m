@@ -10,7 +10,6 @@
 
 #import "FeedListViewController.h"
 #import "AppDelegate.h"
-#import "PPBrowseCell.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
