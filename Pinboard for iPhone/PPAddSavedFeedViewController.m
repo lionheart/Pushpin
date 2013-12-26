@@ -9,11 +9,12 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "PPAddSavedFeedViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PinboardFeedDataSource.h"
 #import "PPTheme.h"
 
 #import "NSString+URLEncoding2.h"
+
+static NSString *CellIdentifier = @"Cell";
 
 @interface PPAddSavedFeedViewController ()
 
@@ -58,6 +59,8 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(addButtonTouchUpInside:)];
 
     self.title = NSLocalizedString(@"Add Feed", nil);
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -74,11 +77,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 

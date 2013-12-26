@@ -10,10 +10,14 @@
 
 #import "AppDelegate.h"
 #import "PPDisplaySettingsViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+
+#import "UITableViewCellValue1.h"
+
+static NSString *CellIdentifier = @"Cell";
+static NSString *ChoiceCellIdentifier = @"ChoiceCell";
 
 @interface PPDisplaySettingsViewController ()
 
@@ -35,6 +39,9 @@
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -58,35 +65,14 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    static NSString *ChoiceCellIdentifier = @"ChoiceCell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        switch (indexPath.section) {
-            case 0:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
-                break;
-                
-            case 1:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
-                break;
-                
-            case 2:
-                cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-                break;
-                
-            default:
-                break;
-        }
-    }
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.accessoryView = nil;
     
     CGSize size;
     CGSize switchSize;
     
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
     
     if (indexPath.section == 0) {
         switch (indexPath.row) {

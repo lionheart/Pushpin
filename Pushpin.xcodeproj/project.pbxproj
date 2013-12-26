@@ -12,7 +12,6 @@
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
 		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
-		3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */; };
 		3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB7E175673E200B23F4F /* safari-instructions.html */; };
 		3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */; };
 		3714DB921757DFFD00B23F4F /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB901757DFFD00B23F4F /* user.png */; };
@@ -127,6 +126,7 @@
 		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
+		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
@@ -477,8 +477,6 @@
 		3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardNotesDataSource.m; sourceTree = "<group>"; };
 		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
 		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; };
-		3714DB791755B0D700B23F4F /* PPGroupedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGroupedTableViewCell.h; sourceTree = "<group>"; };
-		3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPGroupedTableViewCell.m; sourceTree = "<group>"; };
 		3714DB7E175673E200B23F4F /* safari-instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-instructions.html"; path = "Assets/safari-instructions.html"; sourceTree = "<group>"; };
 		3714DB8D1757D81D00B23F4F /* PPAddSavedFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAddSavedFeedViewController.h; sourceTree = "<group>"; };
 		3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPAddSavedFeedViewController.m; sourceTree = "<group>"; };
@@ -621,6 +619,8 @@
 		37800E43162B389B009FCB17 /* AddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBookmarkViewController.h; sourceTree = "<group>"; };
 		37800E44162B389B009FCB17 /* AddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddBookmarkViewController.m; sourceTree = "<group>"; };
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
+		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -1325,8 +1325,12 @@
 		37516A03186C8AE200AEF7A6 /* Table View Cells */ = {
 			isa = PBXGroup;
 			children = (
+				374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */,
+				374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */,
 				37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */,
 				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
+				378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */,
+				378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -1456,8 +1460,6 @@
 				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
 				3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */,
 				3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */,
-				3714DB791755B0D700B23F4F /* PPGroupedTableViewCell.h */,
-				3714DB7A1755B0D700B23F4F /* PPGroupedTableViewCell.m */,
 				E8734225180DA20300CF9E5F /* PPBrowserActivity.h */,
 				E8734226180DA20300CF9E5F /* PPBrowserActivity.m */,
 				E8734240180DB18500CF9E5F /* PPReadLaterActivity.h */,
@@ -1466,8 +1468,6 @@
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
-				374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */,
-				374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */,
 				372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */,
 				372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */,
 				37C6D61E186B99820096FA88 /* PPStatusBarNotification.h */,
@@ -2211,11 +2211,11 @@
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,
 				370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */,
-				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
 				3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */,
 				374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */,
 				37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */,
+				378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */,
 				37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */,
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,

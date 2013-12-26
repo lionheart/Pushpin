@@ -32,11 +32,15 @@
 }
 
 + (UIFont *)urlFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 1];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 2];
 }
 
 + (UIFont *)tagFont {
     return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme tagFontSize]];
+}
+
++ (UIFont *)cellTextLabelFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:16];
 }
 
 + (CGFloat)fontSize {

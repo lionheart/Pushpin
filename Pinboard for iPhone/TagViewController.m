@@ -12,13 +12,15 @@
 #import "FMDatabase.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
+#import "UITableViewCellValue1.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+
+static NSString *CellIdentifier = @"TagCell";
 
 @interface TagViewController ()
 
@@ -112,6 +114,8 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
+    
+    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -188,12 +192,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"TagCell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     NSDictionary *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {

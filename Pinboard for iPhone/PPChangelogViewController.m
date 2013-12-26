@@ -10,11 +10,13 @@
 
 #import "AppDelegate.h"
 #import "PPChangelogViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
+#import "UITableViewCellSubtitle.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import "UITableView+Additions.h"
+
+static NSString *CellIdentifier = @"Cell";
 
 @interface PPChangelogViewController ()
 
@@ -40,6 +42,11 @@
     self.titles = [NSMutableArray array];
 
     [self calculateHeightsForWidth:self.tableView.frame.size.width];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)calculateHeightsForWidth:(CGFloat)w {
@@ -137,13 +144,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    static NSString *ChoiceCellIdentifier = @"ChoiceCell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChoiceCellIdentifier];
-    }
-
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     cell.accessoryView = nil;
     cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:15];
     cell.textLabel.text = nil;

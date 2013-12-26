@@ -16,11 +16,11 @@
 #import "NSString+URLEncoding.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPAboutViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
+#import "UITableViewCellValue1.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
@@ -28,6 +28,8 @@
 #import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
+static NSString *CellIdentifier = @"Cell";
 
 @interface SettingsViewController ()
 
@@ -124,6 +126,8 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketStartedLogin) name:(NSString *)PocketAPILoginStartedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketFinishedLogin) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
+    
+    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -196,29 +200,15 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    static NSString *ChoiceCellIdentifier = @"ChoiceCell";
-    PPGroupedTableViewCell *cell;
-    
-    if (indexPath.section == 0) {
-        cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier];
-        if (!cell) {
-            cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChoiceCellIdentifier];
-        }
-    } else {
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (!cell) {
-            cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-        }
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.accessoryView = nil;
     
     CGSize size;
     CGSize switchSize;
 
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
     cell.detailTextLabel.text = nil;
     cell.textLabel.text = nil;
     cell.accessoryView = nil;

@@ -18,7 +18,6 @@
 #import "TagViewController.h"
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
-#import "PPGroupedTableViewCell.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
@@ -27,6 +26,8 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+
+static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @interface FeedListViewController ()
 
@@ -125,6 +126,7 @@
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:FeedListCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -173,23 +175,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    PPGroupedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-
-    static NSUInteger badgeTag = 1;
-    UILabel *badgeLabel;
-
-    if (!cell) {
-        cell = [[PPGroupedTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
     
-    // The badge is hidden by default
-    badgeLabel = (UILabel *)[cell.contentView viewWithTag:badgeTag];
-    [badgeLabel setHidden:YES];
-    
-    cell.textLabel.font = [PPTheme descriptionFont];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
     cell.detailTextLabel.text = nil;
-    cell.detailTextLabel.font = [PPTheme descriptionFont];
+    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
 
     NSString *badgeCount;
     switch (indexPath.section) {
