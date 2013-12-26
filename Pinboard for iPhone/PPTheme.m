@@ -28,7 +28,7 @@
 }
 
 + (UIFont *)descriptionFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 1];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 3];
 }
 
 + (UIFont *)urlFont {
