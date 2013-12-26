@@ -33,7 +33,7 @@
 
 - (void)showWithText:(NSString *)text {
     [self displayText:text
-        withAnimation:PPStatusBarNotificationAnimationSlideDown
+        withAnimation:PPStatusBarNotificationAnimationSlideToLeft
              duration:1.5];
 
 }
@@ -43,7 +43,7 @@
            duration:(CGFloat)duration {
     self.notificationWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
     self.notificationWindow.clipsToBounds = YES;
-    
+
     UIView *notificationContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
     notificationContainer.clipsToBounds = YES;
     notificationContainer.backgroundColor = [UIColor darkGrayColor];
@@ -182,6 +182,12 @@
         [notificationContainer layoutIfNeeded];
     };
     
+    void (^CompletionBlock)(BOOL finished) = ^(BOOL finished) {
+        [self.notificationWindow resignKeyWindow];
+        self.notificationWindow.hidden = YES;
+        self.notificationWindow = nil;
+    };
+    
     BOOL bounce = bounceConstraints.count > 0;
     [UIView animateWithDuration:animationDuration
                           delay:0
@@ -202,7 +208,7 @@
                                                         initialSpringVelocity:1
                                                                       options:UIViewAnimationOptionCurveEaseOut
                                                                    animations:BounceEndBlock
-                                                                   completion:nil];
+                                                                   completion:CompletionBlock];
                                               }];
                          }
                          else {
@@ -212,10 +218,7 @@
                                    initialSpringVelocity:-100
                                                  options:0
                                               animations:HideStatusLabelBlock
-                                              completion:^(BOOL finished) {
-                                                  [self.notificationWindow resignKeyWindow];
-                                                  self.notificationWindow.hidden = YES;
-                                              }];
+                                              completion:CompletionBlock];
                          }
                      }];
 }
