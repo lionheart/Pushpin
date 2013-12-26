@@ -69,4 +69,8 @@
     return [UIColor whiteColor];
 }
 
++ (NSInteger)maxNumberOfLinesForCompressedDescriptions {
+    return 2;
+}
+
 @end

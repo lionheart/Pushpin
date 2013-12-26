@@ -375,7 +375,7 @@ static NSString *ellipsis = @"…";
             for (numberOfLines=0, index=0; index < numberOfGlyphs; numberOfLines++){
                 [layoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
                 descriptionLineRange.length += tempLineRange.length;
-                if (numberOfLines >= 2) {
+                if (numberOfLines >= [PPTheme maxNumberOfLinesForCompressedDescriptions] - 1) {
                     break;
                 }
                 index = NSMaxRange(tempLineRange);

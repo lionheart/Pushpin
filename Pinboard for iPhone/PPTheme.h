@@ -29,4 +29,6 @@
 + (UIColor *)badgeBackgroundColor;
 + (UIColor *)badgeTextColor;
 
++ (NSInteger)maxNumberOfLinesForCompressedDescriptions;
+
 @end
