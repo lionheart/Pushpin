@@ -23,6 +23,7 @@
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
+		372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
@@ -154,6 +155,7 @@
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
 		37C611EB16377D5D008DB30B /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E816377D5D008DB30B /* Default@2x~iphone.png */; };
+		37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */; };
 		37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37D0D0C116B8E2310062C27E /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 37D0D0C016B8E2310062C27E /* about.html */; };
 		37D59A2716EFDE08005C9C24 /* PPBrowseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D59A2616EFDE08005C9C24 /* PPBrowseCell.m */; };
@@ -490,6 +492,8 @@
 		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3727558A161A66A2001A857B /* TagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagViewController.h; sourceTree = "<group>"; };
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
+		372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotViewController.h; sourceTree = "<group>"; };
+		372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotViewController.m; sourceTree = "<group>"; };
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
@@ -649,6 +653,8 @@
 		37C611E616377D5D008DB30B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Assets/Default-568h@2x.png"; sourceTree = "<group>"; };
 		37C611E716377D5D008DB30B /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~iphone.png"; path = "Assets/Default~iphone.png"; sourceTree = "<group>"; };
 		37C611E816377D5D008DB30B /* Default@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~iphone.png"; path = "Assets/Default@2x~iphone.png"; sourceTree = "<group>"; };
+		37C6D61E186B99820096FA88 /* PPStatusBarNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBarNotification.h; sourceTree = "<group>"; };
+		37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPStatusBarNotification.m; sourceTree = "<group>"; };
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
@@ -1449,6 +1455,10 @@
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
 				374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */,
 				374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */,
+				372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */,
+				372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */,
+				37C6D61E186B99820096FA88 /* PPStatusBarNotification.h */,
+				37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2167,6 +2177,7 @@
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
 				E8734227180DA20300CF9E5F /* PPBrowserActivity.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
+				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
@@ -2185,6 +2196,7 @@
 				E8734242180DB18500CF9E5F /* PPReadLaterActivity.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
+				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,
 				370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */,
 				3714DB7B1755B0D800B23F4F /* PPGroupedTableViewCell.m in Sources */,
 				3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */,
