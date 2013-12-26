@@ -33,13 +33,14 @@
 
 - (void)showWithText:(NSString *)text {
     [self displayText:text
-        withAnimation:PPStatusBarNotificationAnimationSlideDown];
+        withAnimation:PPStatusBarNotificationAnimationSlideDown
+             duration:1.5];
 
 }
 
 - (void)displayText:(NSString *)text
-      withAnimation:(PPStatusBarNotificationAnimation)animation {
-
+      withAnimation:(PPStatusBarNotificationAnimation)animation
+           duration:(CGFloat)duration {
     self.notificationWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
     self.notificationWindow.clipsToBounds = YES;
     
@@ -68,7 +69,7 @@
     NSDictionary *views = @{@"status": statusBarView,
                             @"label": label};
     
-    CGFloat duration;
+    CGFloat animationDuration;
     
     switch (animation) {
         case PPStatusBarNotificationAnimationSlideDown:
@@ -87,7 +88,7 @@
             [statusBarView lhs_setHeight:20];
             [label lhs_setHeight:20];
             
-            duration = 0.6;
+            animationDuration = 0.6;
             break;
             
         case PPStatusBarNotificationAnimationSlideUp:
@@ -106,7 +107,7 @@
             [statusBarView lhs_setHeight:20];
             [label lhs_setHeight:20];
             
-            duration = 0.6;
+            animationDuration = 0.6;
             break;
             
         case PPStatusBarNotificationAnimationSlideToLeft:
@@ -125,7 +126,7 @@
             [label lhs_matchWidthOfSuperview];
             [statusBarView lhs_matchWidthOfSuperview];
             
-            duration = 0.4;
+            animationDuration = 0.4;
             break;
             
         case PPStatusBarNotificationAnimationSlideToRight:
@@ -144,7 +145,7 @@
             [label lhs_matchWidthOfSuperview];
             [statusBarView lhs_matchWidthOfSuperview];
             
-            duration = 0.4;
+            animationDuration = 0.4;
             break;
     }
     
@@ -182,7 +183,7 @@
     };
     
     BOOL bounce = bounceConstraints.count > 0;
-    [UIView animateWithDuration:0.4
+    [UIView animateWithDuration:animationDuration
                           delay:0
          usingSpringWithDamping:0.7
           initialSpringVelocity:1
@@ -191,7 +192,7 @@
                      completion:^(BOOL finished) {
                          if (bounce) {
                              [UIView animateWithDuration:0.3
-                                                   delay:1.5
+                                                   delay:duration
                                                  options:UIViewAnimationOptionCurveEaseInOut
                                               animations:BounceBeginBlock
                                               completion:^(BOOL finished) {
@@ -206,7 +207,7 @@
                          }
                          else {
                              [UIView animateWithDuration:0.4
-                                                   delay:1.5
+                                                   delay:duration
                                   usingSpringWithDamping:1
                                    initialSpringVelocity:-100
                                                  options:0
