@@ -12,11 +12,13 @@
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
 #import "PPStatusBarNotification.h"
+#import "PPBookmarkCell.h"
 
 #import "PinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
 #import "PPMultipleEditViewController.h"
 #import "FeedListViewController.h"
+#import "PPTheme.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -130,9 +132,6 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView addSubview:multiToolbarBorderView];
     self.multiToolbarView.hidden = YES;
     
-    // Badge settings
-    self.badgeFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
-    
     // Buttons
     UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
     markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -166,7 +165,7 @@ static NSInteger kToolbarHeight = 44;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 
     // Initial database update
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+    [self.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -596,7 +595,7 @@ static NSInteger kToolbarHeight = 44;
                             CGFloat offset = -([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height - self.searchDisplayController.searchBar.frame.size.height);
                             [self.tableView setContentOffset:CGPointMake(0, offset)];
 
-                            [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+                            [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
                         }
                     }];
 
@@ -817,83 +816,18 @@ static NSInteger kToolbarHeight = 44;
 
     PPBadgeWrapperView *badgeWrapperView;
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
-        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
+        badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:YES];
         return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
     }
 
-    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
+    badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
     return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
-
-    // TODO: This is a bit of a hack, and could be updated to reuse the views
-    for (UIView *subview in [cell.contentView subviews]) {
-        if ([subview isKindOfClass:[UIImageView class]]) {
-            [subview removeFromSuperview];
-        }
-        else if ([subview isKindOfClass:[TTTAttributedLabel class]]) {
-            [subview removeFromSuperview];
-        }
-        else if ([subview isKindOfClass:[PPBadgeWrapperView class]]) {
-            [subview removeFromSuperview];
-        }
-    }
-
-    NSAttributedString *string;
+    PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
-        string = [dataSource compressedAttributedStringForPostAtIndex:indexPath.row];
-    }
-    else {
-        string = [dataSource attributedStringForPostAtIndex:indexPath.row];
-    }
-
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.contentView.backgroundColor = [UIColor clearColor];
-
-    TTTAttributedLabel *textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-    textView.translatesAutoresizingMaskIntoConstraints = NO;
-    textView.numberOfLines = 0;
-    textView.preferredMaxLayoutWidth = 300;
-    textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    textView.linkAttributes = [NSDictionary dictionaryWithObject:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-
-    NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
-    [mutableActiveLinkAttributes setValue:@(NO) forKey:(NSString *)kCTUnderlineStyleAttributeName];
-    [mutableActiveLinkAttributes setValue:(id)[HEX(0xeeddddff) CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
-    [mutableActiveLinkAttributes setValue:(id)@(5.0f) forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
-    textView.activeLinkAttributes = mutableActiveLinkAttributes;
-    textView.backgroundColor = [UIColor clearColor];
-    textView.userInteractionEnabled = NO;
-    textView.text = string;
-
-    [cell.contentView addSubview:textView];
-    [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:@{@"text": textView}];
-    
-    NSArray *badges = [dataSource badgesForPostAtIndex:indexPath.row];
-    if (badges.count > 0) {
-        PPBadgeWrapperView *badgeWrapperView;
-        if (self.compressPosts) {
-            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) } compressed:YES];
-        }
-        else {
-            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(self.badgeFontSize) }];
-        }
-
-        badgeWrapperView.delegate = self;
-        CGFloat height = [badgeWrapperView calculateHeightForWidth:cell.contentView.bounds.size.width];
-        badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
-
-        [cell.contentView addSubview:badgeWrapperView];
-        [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": badgeWrapperView}];
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": textView, @"badges": badgeWrapperView }];
-    }
-    else {
-        [cell.contentView lhs_addConstraints:@"V:|-5-[text]" views:@{@"text": textView }];
-    }
-
+    [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
 }
 
@@ -1433,8 +1367,6 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark iOS 7 Updates
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    self.badgeFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
-
     [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_sync(dispatch_get_main_queue(), ^(void) {
             [self.tableView beginUpdates];

@@ -19,7 +19,9 @@
 + (UIFont *)tagFont;
 + (NSString *)fontName;
 + (NSString *)boldFontName;
+
 + (CGFloat)fontSize;
++ (CGFloat)badgeFontSize;
 + (CGFloat)tagFontSize;
 
 @end
