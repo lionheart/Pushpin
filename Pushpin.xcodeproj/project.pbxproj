@@ -425,6 +425,7 @@
 		E8DA7970183D2415002B1D0B /* browse-public@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA7964183D2415002B1D0B /* browse-public@2x.png */; };
 		E8DA7971183D2416002B1D0B /* browse-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA7965183D2415002B1D0B /* browse-private@2x.png */; };
 		E8DA7972183D2416002B1D0B /* browse-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8DA7966183D2415002B1D0B /* browse-all@2x.png */; };
+		E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
 		E8F987CE183E765D00EF976D /* navigation-tags@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987CC183E765D00EF976D /* navigation-tags@2x.png */; };
 		E8F987CF183E765D00EF976D /* navigation-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987CD183E765D00EF976D /* navigation-settings@2x.png */; };
 		E8F987D2183E795B00EF976D /* navigation-settings.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987D0183E795A00EF976D /* navigation-settings.png */; };
@@ -936,6 +937,8 @@
 		E8DA7964183D2415002B1D0B /* browse-public@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-public@2x.png"; path = "Assets/browse-public@2x.png"; sourceTree = "<group>"; };
 		E8DA7965183D2415002B1D0B /* browse-private@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-private@2x.png"; path = "Assets/browse-private@2x.png"; sourceTree = "<group>"; };
 		E8DA7966183D2415002B1D0B /* browse-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-all@2x.png"; path = "Assets/browse-all@2x.png"; sourceTree = "<group>"; };
+		E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationBar.h; sourceTree = "<group>"; };
+		E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNavigationBar.m; sourceTree = "<group>"; };
 		E8F987CC183E765D00EF976D /* navigation-tags@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-tags@2x.png"; path = "Assets/navigation-tags@2x.png"; sourceTree = "<group>"; };
 		E8F987CD183E765D00EF976D /* navigation-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-settings@2x.png"; path = "Assets/navigation-settings@2x.png"; sourceTree = "<group>"; };
 		E8F987D0183E795A00EF976D /* navigation-settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-settings.png"; path = "Assets/navigation-settings.png"; sourceTree = "<group>"; };
@@ -1460,6 +1463,8 @@
 				372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */,
 				37C6D61E186B99820096FA88 /* PPStatusBarNotification.h */,
 				37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */,
+				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
+				E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2179,6 +2184,7 @@
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
+				E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
