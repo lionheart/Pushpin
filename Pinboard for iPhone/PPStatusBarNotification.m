@@ -53,12 +53,16 @@
     label.backgroundColor = [UIColor darkGrayColor];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     [notificationContainer addSubview:label];
+    
+    NSMutableArray *hiddenStatusBarConstraints = [NSMutableArray array];
+    [hiddenStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [hiddenStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:20]];
+    
+    NSMutableArray *visibleStatusBarConstraints = [NSMutableArray array];
+    [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:-20]];
+    [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
 
-    NSLayoutConstraint *statusBarConstraint = [NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    NSLayoutConstraint *labelConstraint = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:-20];
-
-    [notificationContainer addConstraint:statusBarConstraint];
-    [notificationContainer addConstraint:labelConstraint];
+    [notificationContainer addConstraints:visibleStatusBarConstraints];
 
     [statusBarView lhs_setHeight:20];
     [statusBarView lhs_fillWidthOfSuperview];
@@ -70,22 +74,30 @@
 
     self.notificationWindow.windowLevel = UIWindowLevelStatusBar;
     [self.notificationWindow makeKeyAndVisible];
+    
+    void (^ShowStatusLabelBlock)() = ^{
+        [notificationContainer removeConstraints:visibleStatusBarConstraints];
+        [notificationContainer addConstraints:hiddenStatusBarConstraints];
+        [self.notificationWindow layoutIfNeeded];
+    };
 
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         labelConstraint.constant = 0;
-                         statusBarConstraint.constant = 20;
-                         [self.notificationWindow layoutIfNeeded];
-                     }
+    void (^HideStatusLabelBlock)() = ^{
+        [notificationContainer removeConstraints:hiddenStatusBarConstraints];
+        [notificationContainer addConstraints:visibleStatusBarConstraints];
+        [self.notificationWindow layoutIfNeeded];
+    };
+
+    [UIView animateWithDuration:0.4
+                          delay:0
+         usingSpringWithDamping:0.6
+          initialSpringVelocity:10
+                        options:0
+                     animations:ShowStatusLabelBlock
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.5
                                                delay:1.5
                                              options:0
-                                          animations:^{
-                                              labelConstraint.constant = -20;
-                                              statusBarConstraint.constant = 0;
-                                              [self.notificationWindow layoutIfNeeded];
-                                          }
+                                          animations:HideStatusLabelBlock
                                           completion:^(BOOL finished) {
                                               [self.notificationWindow resignKeyWindow];
                                               self.notificationWindow.hidden = YES;
