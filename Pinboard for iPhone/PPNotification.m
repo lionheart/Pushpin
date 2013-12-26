@@ -33,7 +33,7 @@ static PPNotification *shared;
 - (void)hide:(BOOL)animated {
     if (!self.hiding) {
         self.hiding = YES;
-        CGRect hiddenFrame = CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, self.notificationView.frame.size.height);
+        CGRect hiddenFrame = CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, CGRectGetHeight(self.notificationView.frame));
         if (animated) {
             [UIView animateWithDuration:0.2
                              animations:^{
@@ -67,7 +67,7 @@ static PPNotification *shared;
                               delay:0
                             options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
-                             self.notificationView.frame = CGRectMake(0, [UIApplication currentSize].height - self.notificationView.frame.size.height, [UIApplication currentSize].width, self.notificationView.frame.size.height);
+                             self.notificationView.frame = CGRectMake(0, [UIApplication currentSize].height - CGRectGetHeight(self.notificationView.frame), [UIApplication currentSize].width, CGRectGetHeight(self.notificationView.frame));
                          }
                          completion:^(BOOL finished) {
                              if (finished) {
@@ -110,7 +110,7 @@ static PPNotification *shared;
         button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-        button.frame = CGRectMake([UIApplication currentSize].width - 27, (_notificationView.frame.size.height - 17) / 2, 17, 17);
+        button.frame = CGRectMake([UIApplication currentSize].width - 27, (CGRectGetHeight(_notificationView.frame) - 17) / 2, 17, 17);
         
         [_notificationView addSubview:label];
         [_notificationView addSubview:button];

@@ -384,7 +384,7 @@ static NSString *CellIdentifier = @"Cell";
             [self.instapaperVerificationAlertView show];
 
             if (self.instapaperVerificationAlertView != nil) {
-                self.loadingIndicator.center = CGPointMake(self.instapaperVerificationAlertView.bounds.size.width/2, self.instapaperVerificationAlertView.bounds.size.height-45);
+                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.instapaperVerificationAlertView.bounds)/2, CGRectGetHeight(self.instapaperVerificationAlertView.bounds)-45);
                 [self.loadingIndicator startAnimating];
                 [self.instapaperVerificationAlertView addSubview:self.loadingIndicator];
             }
@@ -449,7 +449,7 @@ static NSString *CellIdentifier = @"Cell";
             [self.readabilityVerificationAlertView show];
 
             if (self.readabilityVerificationAlertView != nil) {
-                self.loadingIndicator.center = CGPointMake(self.readabilityVerificationAlertView.bounds.size.width/2, self.readabilityVerificationAlertView.bounds.size.height-45);
+                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.readabilityVerificationAlertView.bounds)/2, CGRectGetHeight(self.readabilityVerificationAlertView.bounds)-45);
                 [self.loadingIndicator startAnimating];
                 [self.readabilityVerificationAlertView addSubview:self.loadingIndicator];
             }
@@ -571,7 +571,7 @@ static NSString *CellIdentifier = @"Cell";
     [self.pocketVerificationAlertView show];
     
     if (self.pocketVerificationAlertView != nil) {
-        self.loadingIndicator.center = CGPointMake(self.pocketVerificationAlertView.bounds.size.width/2, self.pocketVerificationAlertView.bounds.size.height-45);
+        self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.pocketVerificationAlertView.bounds)/2, CGRectGetHeight(self.pocketVerificationAlertView.bounds)-45);
         [self.loadingIndicator startAnimating];
         [self.pocketVerificationAlertView addSubview:self.loadingIndicator];
     }
@@ -636,7 +636,7 @@ static NSString *CellIdentifier = @"Cell";
                     UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
-                    self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
+                    self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
                     [self.loadingIndicator startAnimating];
                     [loadingAlertView addSubview:self.loadingIndicator];
 

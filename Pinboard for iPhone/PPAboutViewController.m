@@ -56,7 +56,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
     NSInteger index = 0;
-    CGFloat width = self.tableView.frame.size.width - 2 * self.tableView.groupedCellMargin - 40;
+    CGFloat width = CGRectGetWidth(self.tableView.frame) - 2 * self.tableView.groupedCellMargin - 40;
     CGFloat descriptionHeight;
     NSUInteger emptyLines;
     NSArray *lines;
@@ -311,7 +311,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                 [loadingAlertView show];
 
-                self.loadingIndicator.center = CGPointMake(loadingAlertView.bounds.size.width/2, loadingAlertView.bounds.size.height-45);
+                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
                 [self.loadingIndicator startAnimating];
                 [loadingAlertView addSubview:self.loadingIndicator];
 

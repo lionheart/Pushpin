@@ -99,7 +99,7 @@ static NSInteger kToolbarHeight = 44;
     [self.tableView addSubview:self.pullToRefreshView];
 
     CGRect bounds = [[UIScreen mainScreen] bounds];
-    CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+    CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
     self.toolbar = [[PPToolbar alloc] initWithFrame:frame];
     
     // Setup the multi-edit status view
@@ -203,7 +203,7 @@ static NSInteger kToolbarHeight = 44;
     [super viewDidAppear:animated];
 
     // Multi edit status and toolbar
-    CGFloat topOffset = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+    CGFloat topOffset = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
     [self.navigationController.view addSubview:self.multiStatusView];
     [self.navigationController.view lhs_addConstraints:@"H:|[statusView]|" views:@{ @"statusView": self.multiStatusView }];
     [self.navigationController.view lhs_addConstraints:@"V:|-offset-[statusView(height)]" metrics:@{ @"offset": @(topOffset), @"height": @(kToolbarHeight) } views:@{ @"statusView": self.multiStatusView }];
@@ -243,7 +243,7 @@ static NSInteger kToolbarHeight = 44;
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        self.pullToRefreshView.frame = CGRectMake(0, -60, self.tableView.frame.size.width, 60);
+        self.pullToRefreshView.frame = CGRectMake(0, -60, CGRectGetWidth(self.tableView.frame), 60);
         self.tableView.contentInset = UIEdgeInsetsMake(124, 0, 0, 0);
         self.tableView.contentOffset = CGPointMake(0, -124);
         [self.pullToRefreshImageView startAnimating];
@@ -573,7 +573,7 @@ static NSInteger kToolbarHeight = 44;
 
                     self.loading = NO;
                     [UIView animateWithDuration:0.2 animations:^{
-                        CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+                        CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
                         self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
@@ -592,7 +592,7 @@ static NSInteger kToolbarHeight = 44;
                             self.searchDisplayController.searchResultsDelegate = self;
                             self.searchDisplayController.delegate = self;
                             self.tableView.tableHeaderView = self.searchBar;
-                            CGFloat offset = -([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height - self.searchDisplayController.searchBar.frame.size.height);
+                            CGFloat offset = -(CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame) - CGRectGetHeight(self.searchDisplayController.searchBar.frame));
                             [self.tableView setContentOffset:CGPointMake(0, offset)];
 
                             [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
@@ -643,7 +643,7 @@ static NSInteger kToolbarHeight = 44;
                 [self.tableView endUpdates];
 
                 [UIView animateWithDuration:0.2 animations:^{
-                    CGFloat tableOffsetTop = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+                    CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
                     self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
                 } completion:^(BOOL finished) {
                     [self.pullToRefreshImageView setHidden:YES];
@@ -710,7 +710,7 @@ static NSInteger kToolbarHeight = 44;
                 searchTextField.enabled = YES;
                 
                 CGRect bounds = [[UIScreen mainScreen] bounds];
-                CGRect frame = CGRectMake(0, bounds.size.height, bounds.size.width, 44);
+                CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
                 self.toolbar.frame = frame;
             } completion:^(BOOL finished) {
                 self.indexPathsToDelete = nil;
@@ -817,11 +817,11 @@ static NSInteger kToolbarHeight = 44;
     PPBadgeWrapperView *badgeWrapperView;
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:YES];
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.tableView.frame) - 20] + 10;
     }
 
     badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:[dataSource badgesForPostAtIndex:indexPath.row] options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
-    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:self.tableView.frame.size.width - 20] + 10;
+    return [dataSource heightForPostAtIndex:indexPath.row] + [badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.tableView.frame) - 20] + 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1212,13 +1212,13 @@ static NSInteger kToolbarHeight = 44;
     if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height;
-        CGFloat searchHeight = self.searchBar.frame.size.height;
+        CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
+        CGFloat searchHeight = CGRectGetHeight(self.searchBar.frame);
         CGFloat minimumOffset = statusBarHeight + navigationHeight;
-        if (offset < -(minimumOffset + self.pullToRefreshImageView.frame.size.height + 20)) {
+        if (offset < -(minimumOffset + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(minimumOffset + self.pullToRefreshImageView.frame.size.height + 20, 0, 0, 0);
+                    self.tableView.contentInset = UIEdgeInsetsMake(minimumOffset + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
@@ -1237,10 +1237,10 @@ static NSInteger kToolbarHeight = 44;
     if (!self.loading) {
         CGFloat offset = scrollView.contentOffset.y;
         CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height;
-        CGFloat searchHeight = self.searchBar.frame.size.height;
+        CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
+        CGFloat searchHeight = CGRectGetHeight(self.searchBar.frame);
         CGFloat minimumOffset = statusBarHeight + navigationHeight;
-        NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + self.pullToRefreshImageView.frame.size.height + 20)) * 32, 32));
+        NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20)) * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
         UIOffset imageOffset;
         
@@ -1252,7 +1252,7 @@ static NSInteger kToolbarHeight = 44;
             imageOffset = UIOffsetMake(0, 10.0f);
             [self.pullToRefreshImageView setHidden:NO];
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-            self.pullToRefreshImageView.frame = CGRectMake(self.pullToRefreshView.frame.size.width / 2 - 20, imageOffset.vertical, 40, 40);
+            self.pullToRefreshImageView.frame = CGRectMake(CGRectGetWidth(self.pullToRefreshView.frame) / 2 - 20, imageOffset.vertical, 40, 40);
         }
     }
 }

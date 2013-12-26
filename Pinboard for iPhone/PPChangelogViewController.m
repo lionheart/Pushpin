@@ -41,7 +41,7 @@ static NSString *CellIdentifier = @"Cell";
     self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
 
-    [self calculateHeightsForWidth:self.tableView.frame.size.width];
+    [self calculateHeightsForWidth:CGRectGetWidth(self.tableView.frame)];
 }
 
 - (void)viewDidLoad {
@@ -104,7 +104,7 @@ static NSString *CellIdentifier = @"Cell";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSString *title = self.titles[section];
     if (![title isEqualToString:@""]) {
-        float width = tableView.bounds.size.width;
+        float width = CGRectGetWidth(tableView.bounds);
 
         NSUInteger fontSize = 17;
         NSUInteger padding = tableView.groupedCellMargin;
@@ -131,7 +131,7 @@ static NSString *CellIdentifier = @"Cell";
     if (![title isEqual:@""]) {
         UIFont *font = [UIFont fontWithName:[PPTheme boldFontName] size:17];
         NSUInteger padding = tableView.groupedCellMargin;
-        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(tableView.frame.size.width - padding * 2, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
+        return [self.titles[section] sizeWithFont:font constrainedToSize:CGSizeMake(CGRectGetWidth(tableView.frame) - padding * 2, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height + 20;
     }
     return 0;
 }

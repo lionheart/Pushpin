@@ -248,7 +248,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             offset = 225;
         }
 
-        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - offset)];
+        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - offset)];
         self.postDescriptionTextView.autocorrectionType = [AppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
         self.postDescriptionTextView.autocapitalizationType =  [AppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
         self.postDescriptionTextView.spellCheckingType = UITextSpellCheckingTypeDefault;
@@ -334,7 +334,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                     case kBookmarkDescriptionRow: {
                         CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
-                        return descriptionRect.size.height + 20;
+                        return CGRectGetHeight(descriptionRect) + 20;
                     }
 
                     case kBookmarkTagRow: {
@@ -353,7 +353,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             self.footerView = [[UIView alloc] init];
             self.footerView.clipsToBounds = NO;
             UILabel *label = [[UILabel alloc] init];
-            label.frame = CGRectMake(20, 5, self.tableView.frame.size.width - 40, [self tableView:tableView heightForFooterInSection:0]);
+            label.frame = CGRectMake(20, 5, CGRectGetWidth(self.tableView.frame) - 40, [self tableView:tableView heightForFooterInSection:0]);
             label.textAlignment = NSTextAlignmentCenter;
             label.font = [UIFont fontWithName:[PPTheme fontName] size:13];
             label.textColor = HEX(0x4C586AFF);
@@ -375,8 +375,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (self.editingTags) {
             UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
             NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
-            CGRect rect = [title boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
-            return rect.size.height;
+            CGRect rect = [title boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
+            return CGRectGetHeight(rect);
         }
     }
     return 0;
@@ -395,7 +395,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryView = nil;
 
-    CGFloat textFieldWidth = tableView.frame.size.width - 2 * tableView.groupedCellMargin - 40;
+    CGFloat textFieldWidth = CGRectGetWidth(tableView.frame) - 2 * tableView.groupedCellMargin - 40;
     CGRect frame = cell.frame;
     
     if (self.editingTags) {
@@ -403,7 +403,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
             topImageView.frame = CGRectMake(14, 12, 20, 20);
             [cell.contentView addSubview:topImageView];
-            self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+            self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
             [cell.contentView addSubview:self.tagTextField];
 
             if (self.loadingTags) {
@@ -414,7 +414,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 cell.textLabel.enabled = NO;
             }
             else {
-                self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
                 [cell.contentView addSubview:self.tagTextField];
             }
         }
@@ -503,7 +503,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
 
                         if ([self.tagTextField.text isEqualToString:@""]) {
-                            self.tagTextField.frame = CGRectMake(40, (frame.size.height - 31) / 2.0, textFieldWidth, 31);
+                            self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
                             [cell.contentView addSubview:self.tagTextField];
                             self.tagTextField.placeholder = @"Tap to add tags.";
                         }

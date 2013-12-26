@@ -366,7 +366,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
             else {
                 CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(300, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-                return rect.size.height + 14;
+                return CGRectGetHeight(rect) + 14;
             }
         }
     }
