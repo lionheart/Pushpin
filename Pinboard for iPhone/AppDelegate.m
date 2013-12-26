@@ -445,7 +445,7 @@
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold"
      }];
 
-    Reachability *reach = [Reachability reachabilityWithHostname:@"http://google.com"];
+    Reachability *reach = [Reachability reachabilityWithHostname:@"google.com"];
     self.connectionAvailable = @([reach isReachable]);
     reach.reachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = @(YES);
