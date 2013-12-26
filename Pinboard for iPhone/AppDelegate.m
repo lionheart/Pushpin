@@ -81,7 +81,7 @@
     if (application.applicationState == UIApplicationStateActive) {
         self.bookmarksUpdated = notification.userInfo[@"updated"];
         NSString *text = notification.alertBody;
-
+        
         if ([notification.userInfo[@"success"] isEqual:@YES]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[PPStatusBarNotification sharedNotification] showWithText:text];

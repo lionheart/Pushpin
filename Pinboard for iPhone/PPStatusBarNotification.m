@@ -66,7 +66,7 @@
 
     [label lhs_setHeight:20];
     [label lhs_fillWidthOfSuperview];
-
+    
     [self.notificationWindow layoutIfNeeded];
 
     self.notificationWindow.windowLevel = UIWindowLevelStatusBar;
