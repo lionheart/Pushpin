@@ -33,7 +33,7 @@
 
 - (void)showWithText:(NSString *)text {
     [self displayText:text
-        withAnimation:PPStatusBarNotificationAnimationSlideToLeft];
+        withAnimation:PPStatusBarNotificationAnimationSlideDown];
 
 }
 
@@ -68,6 +68,8 @@
     NSDictionary *views = @{@"status": statusBarView,
                             @"label": label};
     
+    CGFloat duration;
+    
     switch (animation) {
         case PPStatusBarNotificationAnimationSlideDown:
             [hiddenStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
@@ -76,11 +78,16 @@
             [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:-20]];
             [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
             
+            [bounceConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:5]];
+            [bounceConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:25]];
+            
             [notificationContainer lhs_addConstraints:@"H:|[status]|" views:views];
             [notificationContainer lhs_addConstraints:@"H:|[label]|" views:views];
 
             [statusBarView lhs_setHeight:20];
             [label lhs_setHeight:20];
+            
+            duration = 0.6;
             break;
             
         case PPStatusBarNotificationAnimationSlideUp:
@@ -90,11 +97,16 @@
             [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:20]];
             [visibleStatusBarConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
             
+            [bounceConstraints addObject:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:-5]];
+            [bounceConstraints addObject:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:notificationContainer attribute:NSLayoutAttributeTop multiplier:1 constant:-5]];
+            
             [notificationContainer lhs_addConstraints:@"H:|[status]|" views:views];
             [notificationContainer lhs_addConstraints:@"H:|[label]|" views:views];
 
             [statusBarView lhs_setHeight:20];
             [label lhs_setHeight:20];
+            
+            duration = 0.6;
             break;
             
         case PPStatusBarNotificationAnimationSlideToLeft:
@@ -112,6 +124,8 @@
 
             [label lhs_matchWidthOfSuperview];
             [statusBarView lhs_matchWidthOfSuperview];
+            
+            duration = 0.4;
             break;
             
         case PPStatusBarNotificationAnimationSlideToRight:
@@ -129,6 +143,8 @@
 
             [label lhs_matchWidthOfSuperview];
             [statusBarView lhs_matchWidthOfSuperview];
+            
+            duration = 0.4;
             break;
     }
     
@@ -148,6 +164,7 @@
     void (^HideStatusLabelBlock)() = ^{
         [notificationContainer removeConstraints:hiddenStatusBarConstraints];
         [notificationContainer addConstraints:visibleStatusBarConstraints];
+        notificationContainer.backgroundColor = [UIColor clearColor];
         [self.notificationWindow layoutIfNeeded];
     };
     
@@ -160,6 +177,7 @@
     void (^BounceEndBlock)() = ^{
         [notificationContainer removeConstraints:bounceConstraints];
         [notificationContainer addConstraints:visibleStatusBarConstraints];
+        notificationContainer.backgroundColor = [UIColor clearColor];
         [notificationContainer layoutIfNeeded];
     };
     
