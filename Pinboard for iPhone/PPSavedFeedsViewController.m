@@ -79,8 +79,6 @@ static NSString *CellIdentifier = @"Cell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
-    UIFont *font = [PPTheme titleFont];
-
     NSString *title;
     if (self.feeds.count > 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -92,7 +90,7 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.textLabel.font = font;
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
     cell.textLabel.text = title;
     return cell;
 }

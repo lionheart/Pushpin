@@ -203,11 +203,11 @@ static NSString *CellIdentifier = @"TagCell";
     }
 
     cell.textLabel.text = tag[@"name"];
-    cell.textLabel.font = [PPTheme titleFont];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
     cell.detailTextLabel.text = badgeCount;
-    cell.detailTextLabel.font = [PPTheme titleFont];
+    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
     return cell;
 }
 
