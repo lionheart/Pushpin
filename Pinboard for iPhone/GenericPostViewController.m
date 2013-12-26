@@ -199,17 +199,57 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        self.tableView.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+//    CGImageRef imageRef = UIGetScreenImage();
+//    UIImage *result = [UIImage imageWithCGImage:imageRef];
+//    UIImage *image = [UIImage lhs_screenshot];
+//    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//    imageView.backgroundColor = [UIColor redColor];
+
+    /*
+    UIView *statusBarView = [UIScreen lhs_snapshotContainingStatusBar];
+    statusBarView.translatesAutoresizingMaskIntoConstraints = NO;
+    statusBarView.alpha = 1;
+    [self.navigationController.view addSubview:statusBarView];
+
+    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self.topLayoutGuide attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:statusBarView attribute:NSLayoutAttributeBottom multiplier:1 constant:40];
+    [self.navigationController.view addConstraint:constraint];
+    [self.navigationController.view addConstraint:[NSLayoutConstraint constraintWithItem:statusBarView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:[UIApplication sharedApplication].statusBarFrame.size.height]];
+    [self.navigationController.view lhs_addConstraints:@"H:|[view]|" views:@{@"view": statusBarView}];
+
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.prefersStatusBarHidden = YES;
+                         constraint.constant = 20;
+                         self.navigationController.navigationBar.frame = CGRectOffset(self.navigationController.navigationBar.frame, 0, 20);
+                         [self setNeedsStatusBarAppearanceUpdate];
+                         [self.view layoutIfNeeded];
+                     }
+                     completion:^(BOOL finished) {
+                         statusBarView.alpha = 1;
+                         self.navigationController.navigationBar.frame = CGRectOffset(self.navigationController.navigationBar.frame, 0, 20);
+                     }];
+     */
+
+    /*
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [superview.layer renderInContext:context];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    UIGraphicsEndImageContext();
+    DLog(@"%@", NSStringFromCGSize(image.size));
+//    view.frame = (CGRect){{0, 50}, {320, 20}};
+    imageView.frame = (CGRect){{0, 50}, image.size};
+
+
+    view.frame = CGRectMake(0, 50, 320, 20);
+    view.contentMode = UIViewContentModeTop;
+    [self.view addSubview:view];
+     */
+
     // Multi edit status and toolbar
     CGFloat topOffset = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
     [self.navigationController.view addSubview:self.multiStatusView];
