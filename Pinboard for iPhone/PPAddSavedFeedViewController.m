@@ -86,12 +86,12 @@ static NSString *CellIdentifier = @"Cell";
     CGRect frame = cell.frame;
     if (indexPath.row == 0) {
         cell.imageView.image = [[UIImage imageNamed:@"single-person"] lhs_imageWithColor:[UIColor darkGrayColor]];
-        self.userTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+        self.userTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
         [cell.contentView addSubview:self.userTextField];
     }
     else {
         cell.imageView.image = [[UIImage imageNamed:@"single-tag"] lhs_imageWithColor:[UIColor darkGrayColor]];
-        self.tagsTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+        self.tagsTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
         [cell.contentView addSubview:self.tagsTextField];
     }
 

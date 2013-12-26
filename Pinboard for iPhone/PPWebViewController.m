@@ -935,7 +935,7 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (self.webView.scrollView.contentOffset.y + self.webView.frame.size.height > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+    if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
         self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
     }
     else {
@@ -1081,7 +1081,7 @@ static NSInteger kTitleHeight = 40;
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 
-    if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
+    if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
         self.webView.scrollView.scrollEnabled = YES;
         self.webView.scrollView.scrollsToTop = YES;
     }
@@ -1131,7 +1131,7 @@ static NSInteger kTitleHeight = 40;
     
     self.prefersStatusBarHidden = NO;
     
-    if (self.webView.scrollView.contentSize.height > self.webView.frame.size.height) {
+    if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
         self.webView.scrollView.scrollEnabled = YES;
         self.webView.scrollView.scrollsToTop = YES;
     }
@@ -1224,8 +1224,8 @@ static NSInteger kTitleHeight = 40;
     };
 
     if (animated) {
-        if (self.webView.scrollView.contentOffset.y + self.webView.frame.size.height > self.webView.scrollView.contentSize.height - kToolbarHeight) {
-            [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - kToolbarHeight - self.webView.frame.size.height) animated:NO];
+        if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+            [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - kToolbarHeight - CGRectGetHeight(self.webView.frame)) animated:NO];
         }
         self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y + kTitleHeight;
 

@@ -12,7 +12,7 @@
 
 - (CGFloat)groupedCellMargin {
     CGFloat marginWidth;
-    CGFloat tableViewWidth = self.frame.size.width;
+    CGFloat tableViewWidth = CGRectGetWidth(self.frame);
     if (tableViewWidth > 20) {
         if (tableViewWidth < 400) {
             marginWidth = 10;

@@ -104,7 +104,7 @@
         }
 
         badgeWrapperView.delegate = badgeDelegate;
-        CGFloat height = [badgeWrapperView calculateHeightForWidth:self.contentView.bounds.size.width];
+        CGFloat height = [badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.contentView.bounds)];
         badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self.contentView addSubview:badgeWrapperView];

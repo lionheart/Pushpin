@@ -102,7 +102,7 @@ static NSString *CellIdentifier = @"Cell";
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             cell.imageView.image = [[UIImage imageNamed:@"navigation-tags"] lhs_imageWithColor:HEX(0x1a98fcff)];
-            self.tagsToAddTextField.frame = CGRectMake((frame.size.width - 240) / 2.0, (frame.size.height - 31) / 2.0, 240, 31);
+            self.tagsToAddTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
             [cell.contentView addSubview:self.tagsToAddTextField];
             cell.accessoryView = nil;
         } else if (indexPath.row == (1 + self.tagsToAddCompletions.count)) {
