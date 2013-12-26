@@ -129,8 +129,6 @@ typedef NSInteger PPPostAction;
 @property (nonatomic, strong) UILabel *multiStatusLabel;
 @property (nonatomic, retain) UIView *multiToolbarView;
 
-@property (nonatomic) CGFloat badgeFontSize;
-
 - (void)toggleEditingMode:(id)sender;
 
 // Gesture and tap recognizers

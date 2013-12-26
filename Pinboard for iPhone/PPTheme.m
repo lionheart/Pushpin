@@ -43,6 +43,10 @@
     return [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
 }
 
++ (CGFloat)badgeFontSize {
+    return [self tagFontSize];
+}
+
 + (CGFloat)tagFontSize {
     return [PPTheme fontSize] - 4;
 }

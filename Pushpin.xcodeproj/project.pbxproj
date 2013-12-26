@@ -102,6 +102,7 @@
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */ = {isa = PBXBuildFile; fileRef = 374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */; };
+		37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
 		3751D18218346C0200E0A42A /* mobilize.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17E18346C0200E0A42A /* mobilize.png */; };
 		3751D18318346C0200E0A42A /* mobilize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17F18346C0200E0A42A /* mobilize@2x.png */; };
 		3751D18418346C0200E0A42A /* mobilized.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18018346C0200E0A42A /* mobilized.png */; };
@@ -585,6 +586,8 @@
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNotification.m; sourceTree = "<group>"; };
 		374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellValue1.h; sourceTree = "<group>"; };
 		374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellValue1.m; sourceTree = "<group>"; };
+		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
+		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBookmarkCell.m; sourceTree = "<group>"; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
 		3751D17F18346C0200E0A42A /* mobilize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize@2x.png"; path = "Assets/mobilize@2x.png"; sourceTree = "<group>"; };
 		3751D18018346C0200E0A42A /* mobilized.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilized.png; path = Assets/mobilized.png; sourceTree = "<group>"; };
@@ -1319,6 +1322,15 @@
 			path = Localizations;
 			sourceTree = "<group>";
 		};
+		37516A03186C8AE200AEF7A6 /* Table View Cells */ = {
+			isa = PBXGroup;
+			children = (
+				37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */,
+				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
+			);
+			name = "Table View Cells";
+			sourceTree = "<group>";
+		};
 		37A7B5C018345D6A0038677E /* Web View Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -1405,6 +1417,7 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				37516A03186C8AE200AEF7A6 /* Table View Cells */,
 				37405C18186152F70052213A /* View Controllers */,
 				37405C1418614FF50052213A /* Categories */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
@@ -2207,6 +2220,7 @@
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
+				37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
