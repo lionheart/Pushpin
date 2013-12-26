@@ -129,6 +129,10 @@
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
+		378482D3186CB92D00DF7A74 /* single-tag.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D1186CB92C00DF7A74 /* single-tag.png */; };
+		378482D4186CB92D00DF7A74 /* single-tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D2186CB92C00DF7A74 /* single-tag@2x.png */; };
+		378482D7186CB9ED00DF7A74 /* single-person.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D5186CB9ED00DF7A74 /* single-person.png */; };
+		378482D8186CB9ED00DF7A74 /* single-person@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D6186CB9ED00DF7A74 /* single-person@2x.png */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
@@ -620,6 +624,10 @@
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
 		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
+		378482D1186CB92C00DF7A74 /* single-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag.png"; path = "Assets/single-tag.png"; sourceTree = "<group>"; };
+		378482D2186CB92C00DF7A74 /* single-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag@2x.png"; path = "Assets/single-tag@2x.png"; sourceTree = "<group>"; };
+		378482D5186CB9ED00DF7A74 /* single-person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person.png"; path = "Assets/single-person.png"; sourceTree = "<group>"; };
+		378482D6186CB9ED00DF7A74 /* single-person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person@2x.png"; path = "Assets/single-person@2x.png"; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -1490,6 +1498,8 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				378482D5186CB9ED00DF7A74 /* single-person.png */,
+				378482D6186CB9ED00DF7A74 /* single-person@2x.png */,
 				E8F987EC183E7BF800EF976D /* Bookmarks */,
 				E8F987CB183E764A00EF976D /* General UI */,
 				E8DA795A183D23F9002B1D0B /* Browse */,
@@ -1500,6 +1510,8 @@
 				E8734228180DAA4B00CF9E5F /* Activities */,
 				372D43291723A7AC00E802C0 /* Appearance */,
 				37D0D0C016B8E2310062C27E /* about.html */,
+				378482D1186CB92C00DF7A74 /* single-tag.png */,
+				378482D2186CB92C00DF7A74 /* single-tag@2x.png */,
 				37E312E31868CCD600B944F1 /* 56_Key-alt.png */,
 				37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */,
 				3732DF9E17596D7500978A68 /* apple.png */,
@@ -1933,6 +1945,7 @@
 				37EAB9FE173F01DA00B2684B /* loading_30.png in Resources */,
 				37EAB9FF173F01DA00B2684B /* loading_30@2x.png in Resources */,
 				37EABA00173F01DA00B2684B /* loading_31.png in Resources */,
+				378482D3186CB92D00DF7A74 /* single-tag.png in Resources */,
 				E8F987EB183E796900EF976D /* browse-wikipedia.png in Resources */,
 				37EABA01173F01DA00B2684B /* loading_31@2x.png in Resources */,
 				37EABA02173F01DA00B2684B /* loading_32.png in Resources */,
@@ -1968,6 +1981,7 @@
 				37EABA1A173F01DA00B2684B /* loading_44.png in Resources */,
 				37EABA1B173F01DA00B2684B /* loading_44@2x.png in Resources */,
 				37EABA1C173F01DA00B2684B /* loading_45.png in Resources */,
+				378482D7186CB9ED00DF7A74 /* single-person.png in Resources */,
 				E89002371840173600C1F969 /* navigation-popular@2x.png in Resources */,
 				37EABA1D173F01DA00B2684B /* loading_45@2x.png in Resources */,
 				37EABA1E173F01DA00B2684B /* loading_46.png in Resources */,
@@ -2087,6 +2101,7 @@
 				37A7B5C918345DAE0038677E /* mark-as-read.png in Resources */,
 				3732DFA117596D7500978A68 /* apple@2x.png in Resources */,
 				E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */,
+				378482D4186CB92D00DF7A74 /* single-tag@2x.png in Resources */,
 				E8DA7972183D2416002B1D0B /* browse-all@2x.png in Resources */,
 				3732DFA41759703A00978A68 /* twitter.png in Resources */,
 				3732DFA51759703A00978A68 /* twitter@2x.png in Resources */,
@@ -2102,6 +2117,7 @@
 				E80EEF8F185B6A1300979AA3 /* roundbutton-private.png in Resources */,
 				E8900208183FA8F600C1F969 /* navigation-edit.png in Resources */,
 				E80EEF80185A4AD900979AA3 /* toolbar-bookmark@2x.png in Resources */,
+				378482D8186CB9ED00DF7A74 /* single-person@2x.png in Resources */,
 				E8F987E5183E796900EF976D /* browse-private.png in Resources */,
 				E80EEF97185F5BD000979AA3 /* badge-private.png in Resources */,
 				E80EEF71184E9AA000979AA3 /* toolbar-trash@2x.png in Resources */,

@@ -20,6 +20,7 @@
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
+#import "UITableViewCellValue1.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -125,7 +126,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:FeedListCellIdentifier];
+    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:FeedListCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
