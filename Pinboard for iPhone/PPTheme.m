@@ -24,7 +24,7 @@
 }
 
 + (UIFont *)titleFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
+    return [UIFont fontWithName:[PPTheme boldFontName] size:[PPTheme fontSize] + 1];
 }
 
 + (UIFont *)descriptionFont {
@@ -56,11 +56,12 @@
 }
 
 + (NSString *)fontName {
-    return @"Avenir";
+    return @"AvenirNext-Regular";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.FontName"];
 }
 
 + (NSString *)boldFontName {
+    return @"AvenirNext-DemiBold";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 
