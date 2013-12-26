@@ -68,7 +68,7 @@ static NSString *CellIdentifier = @"Cell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
-    cell.textLabel.font = [PPTheme titleFont];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }

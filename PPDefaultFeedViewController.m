@@ -153,7 +153,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.textLabel.font = [PPTheme titleFont];
+    cell.textLabel.font = [PPTheme cellTextLabelFont];
 
     switch (indexPath.section) {
         case 0: {
