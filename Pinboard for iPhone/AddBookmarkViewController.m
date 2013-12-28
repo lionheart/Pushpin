@@ -1338,7 +1338,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSArray *)existingTags {
     NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    return [tagText componentsSeparatedByString:@" "];
+
+    if ([tagText isEqualToString:@""]) {
+        return @[];
+    }
+    else {
+        return [tagText componentsSeparatedByString:@" "];
+    }
 }
 
 @end
