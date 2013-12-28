@@ -162,16 +162,35 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return 6;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *containerView = [[UIView alloc] init];
+    UILabel *label = [[UILabel alloc] init];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.font = [UIFont fontWithName:[PPTheme boldFontName] size:18];
+    
     switch (section) {
         case 0:
-            return NSLocalizedString(@"Personal", nil);
+            label.text = NSLocalizedString(@"Personal", nil);
             break;
+            
         case 1:
-            return NSLocalizedString(@"Community", nil);
+            label.text = NSLocalizedString(@"Community", nil);
             break;
     }
-    return @"";
+    
+    if (label.text) {
+        [containerView addSubview:label];
+        
+        [containerView lhs_addConstraints:@"H:|-12-[label]-12-|" views:NSDictionaryOfVariableBindings(label)];
+        [containerView lhs_addConstraints:@"V:[label]-8-|" views:NSDictionaryOfVariableBindings(label)];
+//        [containerView lhs_centerVerticallyForView:label];
+        return containerView;
+    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -407,6 +426,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         nc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
     svc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(dismissViewController)];
+    
     [self presentViewController:nc animated:YES completion:nil];
 }
 
