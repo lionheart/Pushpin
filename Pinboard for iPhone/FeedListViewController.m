@@ -107,7 +107,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleDone target:self action:@selector(openSettings)];
 
     UIImage *tagImage = [[UIImage imageNamed:@"navigation-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -115,7 +115,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [tagButton setImage:[tagImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tagButton];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = tagBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
