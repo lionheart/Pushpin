@@ -37,8 +37,10 @@ static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
+@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactivePopTransition;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 
 @end
 
@@ -55,6 +57,8 @@ static NSInteger kToolbarHeight = 44;
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize itemSize = _itemSize;
 
+
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
@@ -66,8 +70,12 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.navigationController.delegate = self;
     self.prefersStatusBarHidden = NO;
     self.extendedLayoutIncludesOpaqueBars = YES;
+
+    self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    [self.view addGestureRecognizer:self.panGestureRecognizer];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -508,6 +516,33 @@ static NSInteger kToolbarHeight = 44;
         }
         [self openActionSheetForSelectedPost];
     }
+    else if (recognizer == self.panGestureRecognizer) {
+        CGFloat progress = [(UIPanGestureRecognizer *)recognizer translationInView:self.view].x / (self.view.bounds.size.width * 1.0);
+        progress = MIN(1.0, MAX(0.0, progress));
+
+        if (recognizer.state == UIGestureRecognizerStateBegan) {
+            // Create a interactive transition and pop the view controller
+            self.interactivePopTransition = [[UIPercentDrivenInteractiveTransition alloc] init];
+            
+            self.navigationController.delegate = self;
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else if (recognizer.state == UIGestureRecognizerStateChanged) {
+            // Update the interactive transition's progress
+            [self.interactivePopTransition updateInteractiveTransition:progress];
+        }
+        else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
+            // Finish or cancel the interactive transition
+            if (progress > 0.9) {
+                [self.interactivePopTransition finishInteractiveTransition];
+            }
+            else {
+                [self.interactivePopTransition cancelInteractiveTransition];
+            }
+            
+            self.interactivePopTransition = nil;
+        }
+    }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
             if (!kGenericPostViewControllerResizingPosts) {
@@ -556,6 +591,12 @@ static NSInteger kToolbarHeight = 44;
             });
         } failure:nil];
     }
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+                         interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
+    // Check if this is for our custom transition
+    return self.interactivePopTransition;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
