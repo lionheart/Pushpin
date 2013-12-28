@@ -31,6 +31,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 
+- (NSArray *)existingTags;
+
 @end
 
 @implementation AddBookmarkViewController
@@ -296,10 +298,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.editingTags) {
         if (self.popularAndRecommendedTagsVisible) {
-            return self.filteredPopularAndRecommendedTags.count + 1;
+            return self.filteredPopularAndRecommendedTags.count + 2;
+        }
+        else if ([self.tagTextField.text isEqualToString:@""]){
+            return self.tagTextField
         }
         else {
-            return self.tagCompletions.count + 1;
+            return self.tagCompletions.count + 2;
         }
     }
     else {
@@ -709,10 +714,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.removeTagActionSheet) {
         if (buttonIndex == 0) {
-            NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
-            
             NSMutableArray *newTags = [NSMutableArray array];
+            NSArray *existingTags = [self existingTags];
             for (NSString *tag in existingTags) {
                 if (![tag isEqualToString:self.currentlySelectedTag]) {
                     [newTags addObject:tag];
@@ -778,7 +781,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                 
                 NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
-                NSArray *existingTags = [tagTextFieldText componentsSeparatedByString:@" "];
+                NSArray *existingTags = [self existingTags];
                 
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                 [db open];
@@ -915,7 +918,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.popularTags removeAllObjects];
             [self.recommendedTags removeAllObjects];
 
-            NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+            NSArray *existingTags = [self existingTags];
             for (NSString *tag in self.unfilteredPopularTags) {
                 if (![existingTags containsObject:tag]) {
                     self.tagDescriptions[tag] = @"popular";
@@ -1288,9 +1291,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags {
     NSMutableArray *badges = [NSMutableArray array];
-
-    NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSArray *existingTags = [tagText componentsSeparatedByString:@" "];
+    NSArray *existingTags = [self existingTags];
     for (NSString *tag in existingTags) {
         if (![tag isEqualToString:@""]) {
             [badges addObject:@{ @"type": @"tag", @"tag": tag }];
@@ -1333,6 +1334,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     callback(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
+}
+
+- (NSArray *)existingTags {
+    NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return [tagText componentsSeparatedByString:@" "];
 }
 
 @end
