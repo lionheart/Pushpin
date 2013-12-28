@@ -175,7 +175,7 @@ static const CGFloat PADDING_Y = 6;
     }
     
     CGRect frame = self.frame;
-    CGRectGetHeight(frame) = offsetY + PADDING_Y;
+    frame.size.height = offsetY + PADDING_Y;
     self.frame = frame;
 }
 
