@@ -31,6 +31,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 
+- (NSString *)tagTextFieldText;
 - (NSArray *)existingTags;
 
 @end
@@ -301,7 +302,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             return self.filteredPopularAndRecommendedTags.count + 2;
         }
         else if ([self.tagTextField.text isEqualToString:@""]){
-            return self.tagTextField
+            return self.tagTextField;
         }
         else {
             return self.tagCompletions.count + 2;
@@ -507,7 +508,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                         topImageView.frame = CGRectMake(14, 12, 20, 20);
 
-                        if ([self.tagTextField.text isEqualToString:@""]) {
+                        if ([[self tagTextFieldText] isEqualToString:@""]) {
                             self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
                             [cell.contentView addSubview:self.tagTextField];
                             self.tagTextField.placeholder = @"Tap to add tags.";
@@ -572,7 +573,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     if (self.editingTags) {
-        NSString *tagText = self.tagTextField.text;
+        NSString *tagText = [self tagTextFieldText];
         NSInteger row = indexPath.row;
         
         if (row > 0) {
@@ -762,8 +763,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (!self.autocompleteInProgress) {
         self.autocompleteInProgress = YES;
         
-        NSString *tagTextFieldText = self.tagTextField.text;
-        
+        NSString *tagTextFieldText = [self tagTextFieldText];
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *indexPathsToRemove = [NSMutableArray array];
             NSMutableArray *indexPathsToAdd = [NSMutableArray array];
@@ -903,8 +904,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleTagSuggestions {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (!self.popularAndRecommendedTagsVisible) {
-            NSString *tagText = self.tagTextField.text;
-
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
             
             NSInteger previousCount;
@@ -935,9 +934,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.popularTags filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
 
             if (self.filteredPopularAndRecommendedTags.count > 0) {
-                if (self.tagTextField.text.length > 0 && [self.tagTextField.text characterAtIndex:self.tagTextField.text.length-1] != ' ') {
+                NSString *tagTextFieldText = [self tagTextFieldText];
+                if (tagTextFieldText.length > 0 && [tagTextFieldText characterAtIndex:tagTextFieldText.length-1] != ' ') {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.tagTextField.text = [NSString stringWithFormat:@"%@ ", self.tagTextField.text];
+                        self.tagTextField.text = [NSString stringWithFormat:@"%@ ", tagTextFieldText];
                     });
                 }
             }
@@ -1072,7 +1072,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
         NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
-        NSString *tags = [self.tagTextField.text stringByTrimmingCharactersInSet:characterSet];
+        NSString *tags = [self tagTextFieldText];
         BOOL private = self.privateSwitch.on;
         BOOL unread = !self.readSwitch.on;
         
@@ -1336,8 +1336,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     callback(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
 }
 
+- (NSString *)tagTextFieldText {
+    return [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 - (NSArray *)existingTags {
-    NSString *tagText = [self.tagTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *tagText = [self tagTextFieldText];
 
     if ([tagText isEqualToString:@""]) {
         return @[];
