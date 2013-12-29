@@ -35,6 +35,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSString *)tagTextFieldText;
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
+- (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
 
 @end
 
@@ -1375,17 +1376,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSArray *)indexPathsForAutocompletedRows {
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    for (NSInteger i=0; i<self.tagCompletions.count; i++) {
-        [indexPaths addObject:[NSIndexPath indexPathForRow:i+2 inSection:0]];
-    }
-    return indexPaths;
+    return [self indexPathsForArray:self.tagCompletions offset:2];
 }
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows {
+    return [self indexPathsForArray:self.filteredPopularAndRecommendedTags offset:2];
+}
+
+- (NSArray *)indexPathsForArray:(NSArray *)array
+                         offset:(NSInteger)offset {
     NSMutableArray *indexPaths = [NSMutableArray array];
-    for (NSInteger i=0; i<self.filteredPopularAndRecommendedTags.count; i++) {
-        [indexPaths addObject:[NSIndexPath indexPathForRow:i+2 inSection:0]];
+    for (NSInteger i=0; i<array.count; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
     }
     return indexPaths;
 }
