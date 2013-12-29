@@ -31,10 +31,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 @property (nonatomic, strong) NSMutableArray *existingTags;
+@property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
+- (void)cancelButtonTouchUpInside:(id)sender;
+- (void)deleteTag:(UIButton *)sender;
 
 @end
 
@@ -93,9 +96,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagTextField.font = font;
         self.tagTextField.userInteractionEnabled = NO;
         self.tagTextField.delegate = self;
+        self.tagTextField.returnKeyType = UIReturnKeyDone;
         self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
+        
+#warning Set to the user defaults
         self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagTextField.text = @"";
@@ -145,10 +150,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return self;
 }
 
-+ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
++ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark
+                                                           update:(NSNumber *)isUpdate
+                                                         delegate:(id <ModalDelegate>)delegate
+                                                         callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
     
+    addBookmarkViewController.modalDelegate = delegate;
     [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
     
     if (isUpdate.boolValue) {
@@ -160,7 +169,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:delegate action:@selector(closeModal:)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(cancelButtonTouchUpInside:)];
     
     if (bookmark[@"title"]) {
         addBookmarkViewController.titleTextField.text = bookmark[@"title"];
@@ -488,7 +497,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSString *tag = self.existingTags[indexPath.row];
             cell.textLabel.text = tag;
             cell.detailTextLabel.text = self.tagCounts[tag];
-            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
+
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+            [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
+            button.tag = indexPath.row - 2;
+            button.userInteractionEnabled = YES;
+            button.translatesAutoresizingMaskIntoConstraints = NO;
+
+            [cell.contentView addSubview:button];
+            [cell.contentView lhs_addConstraints:@"[button(23)]-10-|" views:@{@"button": button}];
+            [cell.contentView lhs_centerVerticallyForView:button height:23];
         }
     }
     else {
@@ -563,7 +582,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         if ([self.tagTextField.text isEqualToString:@""]) {
                             self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
                             [cell.contentView addSubview:self.tagTextField];
-                            self.tagTextField.placeholder = @"Type to add tags.";
+                            self.tagTextField.placeholder = @"";
                         }
 
                         [cell.contentView addSubview:topImageView];
@@ -851,6 +870,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - Everything Else
 
+- (void)deleteTag:(UIButton *)sender {
+    NSString *tag = self.existingTags[sender.tag];
+    NSIndexPath *indexPathToDelete = [NSIndexPath indexPathForRow:(sender.tag+2) inSection:0];
+    NSIndexPath *indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection];
+    [self.existingTags removeObject:tag];
+
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+    
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView deleteRowsAtIndexPaths:@[indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
+}
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
@@ -1333,7 +1365,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagTextField.userInteractionEnabled = YES;
 
         self.navigationItem.rightBarButtonItem.enabled = NO;
-        self.navigationItem.leftBarButtonItem.enabled = NO;
         
         NSArray *indexPathsToDelete = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
@@ -1360,7 +1391,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tagTextField resignFirstResponder];
 
         self.navigationItem.rightBarButtonItem.enabled = YES;
-        self.navigationItem.leftBarButtonItem.enabled = YES;
 
         NSArray *indexPathsToInsert = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
@@ -1467,6 +1497,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [indexPaths addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
     }
     return indexPaths;
+}
+
+- (void)cancelButtonTouchUpInside:(id)sender {
+    if (self.editingTags) {
+        self.editingTags = NO;
+    }
+    else {
+        [self.modalDelegate closeModal:self];
+    }
 }
 
 @end

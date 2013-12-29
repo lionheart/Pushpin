@@ -68,7 +68,6 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UITextField *tagTextField;
 @property (nonatomic, strong) UITextField *titleTextField;
 @property (nonatomic, strong) UITextField *urlTextField;
-@property (nonatomic, strong) id<ModalDelegate> modalDelegate;
 
 @property (nonatomic) BOOL textExpanderSnippetExpanded;
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
