@@ -1339,7 +1339,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return wrapper;
 }
 
-- (void)intersectionBetweenStartingAmount:(NSInteger)start andFinalAmount:(NSInteger)final offset:(NSInteger)offset callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
+- (void)intersectionBetweenStartingAmount:(NSInteger)start
+                           andFinalAmount:(NSInteger)final
+                                   offset:(NSInteger)offset
+                                 callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
+
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
     NSMutableArray *indexPathsToInsert = [NSMutableArray array];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
