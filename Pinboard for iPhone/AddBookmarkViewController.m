@@ -33,6 +33,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) NSMutableArray *existingTags;
 
 - (NSString *)tagTextFieldText;
+- (NSArray *)indexPathsForPopularAndSuggestedRows;
+- (NSArray *)indexPathsForAutocompletedRows;
 
 @end
 
@@ -663,6 +665,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - UITextFieldDelegate
 
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    if (self.popularAndRecommendedTagsVisible) {
+        
+    }
+    return YES;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.tagTextField) {
         self.editingTags = NO;
@@ -861,19 +870,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                 
                 [db close];
-                
-                
+
                 if (self.popularAndRecommendedTagsVisible) {
-                    for (NSInteger i=0; i<self.filteredPopularAndRecommendedTags.count; i++) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+2) inSection:kBookmarkTopSection]];
-                    }
+                    [indexPathsToRemove addObjectsFromArray:self.indexPathsForPopularAndSuggestedRows];
                 }
                 else {
-                    for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(i+2) inSection:kBookmarkTopSection]];
-                    }
+                    [indexPathsToRemove addObjectsFromArray:self.indexPathsForAutocompletedRows];
                 }
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.popularTags removeAllObjects];
                     [self.recommendedTags removeAllObjects];
@@ -1364,6 +1368,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSString *)tagTextFieldText {
     return [self.existingTags componentsJoinedByString:@" "];
+}
+
+- (NSArray *)indexPathsForAutocompletedRows {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    for (NSInteger i=0; i<self.tagCompletions.count; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:i+2 inSection:0]];
+    }
+    return indexPaths;
+}
+
+- (NSArray *)indexPathsForPopularAndSuggestedRows {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    for (NSInteger i=0; i<self.filteredPopularAndRecommendedTags.count; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:i+2 inSection:0]];
+    }
+    return indexPaths;
 }
 
 @end
