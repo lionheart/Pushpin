@@ -96,7 +96,7 @@ typedef enum BookmarkSections {
 - (void)finishEditingDescription;
 - (void)setEditingTags:(BOOL)editingTags;
 - (NSArray *)filteredPopularAndRecommendedTags;
-- (BOOL)popularAndRecommendedTagsVisible;
+- (BOOL)filteredPopularAndRecommendedTagsVisible;
 - (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 - (void)intersectionBetweenStartingAmount:(NSInteger)start andFinalAmount:(NSInteger)final offset:(NSInteger)offset callback:(void (^)(NSArray *, NSArray *, NSArray *))callback;
 
