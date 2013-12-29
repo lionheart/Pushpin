@@ -23,6 +23,8 @@
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
 		372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */; };
+		372C84091870E3B300BF520D /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
+		372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
 		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3732DF9D175957F100978A68 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
@@ -496,6 +498,8 @@
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
 		372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotViewController.h; sourceTree = "<group>"; };
 		372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotViewController.m; sourceTree = "<group>"; };
+		372C84071870E3B300BF520D /* Delete-Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button.png"; path = "Assets/Delete-Button.png"; sourceTree = "<group>"; };
+		372C84081870E3B300BF520D /* Delete-Button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button@2x.png"; path = "Assets/Delete-Button@2x.png"; sourceTree = "<group>"; };
 		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
@@ -1498,6 +1502,8 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				372C84071870E3B300BF520D /* Delete-Button.png */,
+				372C84081870E3B300BF520D /* Delete-Button@2x.png */,
 				378482D5186CB9ED00DF7A74 /* single-person.png */,
 				378482D6186CB9ED00DF7A74 /* single-person@2x.png */,
 				E8F987EC183E7BF800EF976D /* Bookmarks */,
@@ -1797,6 +1803,7 @@
 				373C82C916F81C6900A7D7C8 /* ptr_07.png in Resources */,
 				E890022F1840173600C1F969 /* navigation-fandom@2x.png in Resources */,
 				373C82CA16F81C6900A7D7C8 /* ptr_07@2x.png in Resources */,
+				372C84091870E3B300BF520D /* Delete-Button.png in Resources */,
 				373C82CB16F81C6900A7D7C8 /* ptr_08.png in Resources */,
 				373C82CC16F81C6900A7D7C8 /* ptr_08@2x.png in Resources */,
 				373C82CD16F81C6900A7D7C8 /* ptr_09.png in Resources */,
@@ -2071,6 +2078,7 @@
 				E8F987E7183E796900EF976D /* browse-saved.png in Resources */,
 				37EABA5B173F01DA00B2684B /* loading_76@2x.png in Resources */,
 				E89002361840173600C1F969 /* navigation-popular.png in Resources */,
+				372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */,
 				37EABA5C173F01DA00B2684B /* loading_77.png in Resources */,
 				37EABA5D173F01DA00B2684B /* loading_77@2x.png in Resources */,
 				37EABA5E173F01DA00B2684B /* loading_78.png in Resources */,
