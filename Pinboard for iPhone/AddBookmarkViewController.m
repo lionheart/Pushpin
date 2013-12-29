@@ -1287,14 +1287,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
 
         if (self.popularAndRecommendedTagsVisible) {
-            for (NSInteger i=2; i<self.filteredPopularAndRecommendedTags.count+2; i++) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:kBookmarkTopSection]];
-            }
+            [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
         }
         else {
-            for (NSInteger i=2; i<self.tagCompletions.count+2; i++) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:kBookmarkTopSection]];
-            }
+            [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
         }
         
         [self.tagCompletions removeAllObjects];
