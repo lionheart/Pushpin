@@ -40,7 +40,7 @@
 + (CGFloat)heightWithText:(NSString *)text fontSize:(CGFloat)fontSize {
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:fontSize]};
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:text attributes:attributes];
-    return CGRectGetHeight([string boundingRectWithSize:CGSizeMake(320 - 12*2, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil]);
+    return CGRectGetHeight([string boundingRectWithSize:CGSizeMake(320 - 12*2, CGFLOAT_MAX) options:0 context:nil]);
 }
 
 + (PPTableViewHeader *)headerWithText:(NSString *)text fontSize:(CGFloat)fontSize {
