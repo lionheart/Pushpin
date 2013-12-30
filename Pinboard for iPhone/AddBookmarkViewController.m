@@ -30,7 +30,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface AddBookmarkViewController ()
 
-@property (nonatomic, strong) NSMutableDictionary *deleteTapGestureRecognizers;
+@property (nonatomic, strong) NSMutableDictionary *deleteTagButtons;
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 @property (nonatomic, strong) NSMutableArray *existingTags;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
@@ -133,7 +133,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.recommendedTags = [NSMutableArray array];
         self.tagDescriptions = [NSMutableDictionary dictionary];
         self.tagCounts = [NSMutableDictionary dictionary];
-        self.deleteTapGestureRecognizers = [NSMutableDictionary dictionary];
+        self.deleteTagButtons = [NSMutableDictionary dictionary];
         self.existingTags = [NSMutableArray array];
         
         self.callback = ^(void) {};
@@ -492,7 +492,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             button.frame = CGRectMake(0, 0, 23, 23);
             [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
             [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-            button.tag = self.existingTags.count - indexPath.row - 1;
+            self.deleteTagButtons[tag] = button;
             cell.accessoryView = button;
         }
     }
@@ -1619,7 +1619,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation {
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
-    NSMutableArray *indexPathsOfOtherExistingTags = [NSMutableArray array];
     NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
 
     if (self.editingTags) {
@@ -1628,13 +1627,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (self.existingTags.count > 1) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
             [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:kBookmarkBottomSection]];
-            
-            // We reload all of the other rows to reset their button tag values
-            for (NSInteger i=0; i<self.existingTags.count; i++) {
-                if (i != self.existingTags.count - index - 1) {
-                    [indexPathsOfOtherExistingTags addObject:[NSIndexPath indexPathForRow:i inSection:kBookmarkBottomSection]];
-                }
-            }
         }
         else {
             [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -1651,7 +1643,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView reloadRowsAtIndexPaths:indexPathsOfOtherExistingTags withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:animation];
         [self.tableView endUpdates];
@@ -1712,8 +1703,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)deleteTagButtonTouchUpInside:(id)sender {
-    UIButton *button = (UIButton *)sender;
-    NSString *tag = self.existingTags[button.tag];
+    NSString *tag = [[self.deleteTagButtons allKeysForObject:sender] firstObject];
     [self deleteTagWithName:tag animation:UITableViewRowAnimationFade];
 }
 
