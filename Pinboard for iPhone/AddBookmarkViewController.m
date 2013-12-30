@@ -38,6 +38,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
 - (void)cancelButtonTouchUpInside:(id)sender;
 - (void)deleteTag:(UIButton *)sender;
+- (void)deleteTagWithName:(NSString *)name;
+- (NSInteger)tagOffset;
+
+- (void)rightBarButtonItemTouchUpInside:(id)sender;
 
 @end
 
@@ -127,14 +131,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.descriptionGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.descriptionTextLabel addGestureRecognizer:self.descriptionGestureRecognizer];
         
-        self.tagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-        [self.tagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
-        [self.tagTextField addGestureRecognizer:self.tagGestureRecognizer];
-        
-        self.leftSwipeTagGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-        [self.leftSwipeTagGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionLeft];
-        [self.tagTextField addGestureRecognizer:self.leftSwipeTagGestureRecognizer];
-        
         self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.privateButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] lhs_imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
@@ -161,12 +157,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
     
     if (isUpdate.boolValue) {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(rightBarButtonItemTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
         addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     }
     else {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(addBookmark)];
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonItemTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(cancelButtonTouchUpInside:)];
@@ -188,6 +184,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     addBookmarkViewController.badgeWrapperView = [addBookmarkViewController badgeWrapperViewForCurrentTags];
+    addBookmarkViewController.badgeWrapperView.userInteractionEnabled = NO;
     
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
@@ -311,13 +308,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.editingTags) {
         if (section == 0) {
             if (self.filteredPopularAndRecommendedTagsVisible) {
-                return self.filteredPopularAndRecommendedTags.count + 2;
+                return self.filteredPopularAndRecommendedTags.count + [self tagOffset];
             }
             else if (self.tagCompletions.count > 0) {
-                return self.tagCompletions.count + 2;
+                return self.tagCompletions.count + [self tagOffset];
             }
             else {
-                return self.existingTags.count + 2;
+                return self.existingTags.count + [self tagOffset];
             }
         }
         else {
@@ -447,7 +444,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (self.editingTags) {
         if (indexPath.section == 0) {
-            NSInteger index = indexPath.row - 2;
+            NSInteger index = indexPath.row - [self tagOffset];
             if (indexPath.row == 0) {
                 [cell.contentView addSubview:self.badgeWrapperView];
                 [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
@@ -472,7 +469,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [cell.contentView addSubview:self.tagTextField];
                 }
             }
-            else {
+
+            if (index >= 0) {
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
                 if (self.filteredPopularAndRecommendedTagsVisible) {
@@ -501,7 +499,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
             [button addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-            button.tag = indexPath.row - 2;
+            button.tag = indexPath.row - [self tagOffset];
             button.userInteractionEnabled = YES;
             button.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -647,33 +645,37 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *tagText = self.tagTextField.text;
         NSInteger row = indexPath.row;
         
-        if (row > 1) {
+        if (row >= [self tagOffset]) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSString *completion;
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
                 NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                 
+                if (self.existingTags.count == 0) {
+                    [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+                }
+
+                NSInteger index = row - [self tagOffset];
+                
                 if (self.tagCompletions.count > 0) {
-                    completion = self.tagCompletions[row - 2];
+                    completion = self.tagCompletions[index];
                     [indexPathsToDelete addObject:indexPath];
-                    [self.tagCompletions removeObjectAtIndex:row-2];
+                    [self.tagCompletions removeObjectAtIndex:index];
                     [self.existingTags addObject:completion];
                 }
                 else if (self.filteredPopularAndRecommendedTagsVisible) {
-                    completion = self.filteredPopularAndRecommendedTags[row - 2];
+                    completion = self.filteredPopularAndRecommendedTags[index];
 
-                    if (self.popularTags.count >= row) {
-                        [self.popularTags removeObjectAtIndex:(row - 2)];
+                    if (index < self.popularTags.count) {
+                        completion = self.popularTags[index];
+                        [self.popularTags removeObjectAtIndex:index];
                     }
                     else {
-                        [self.recommendedTags removeObjectAtIndex:(row - self.popularTags.count - 2)];
+                        completion = self.recommendedTags[index];
+                        [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
                     }
 
-                    unichar space = ' ';
-                    if (tagText.length > 0 && [tagText characterAtIndex:tagText.length - 1] != space) {
-                        [self.existingTags addObject:tagText];
-                    }
-                    
+                    [self.existingTags addObject:completion];
                     [indexPathsToDelete addObject:indexPath];
                 }
                 
@@ -682,6 +684,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationAutomatic];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                 });
             });
@@ -713,18 +716,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
-    [self.tableView beginUpdates];
+    NSArray *indexPathsToDelete;
     if (self.filteredPopularAndRecommendedTagsVisible) {
-        [self.tableView deleteRowsAtIndexPaths:[self indexPathsForPopularAndSuggestedRows] withRowAnimation:UITableViewRowAnimationFade];
+        indexPathsToDelete = [self indexPathsForPopularAndSuggestedRows];
         [self.popularTags removeAllObjects];
         [self.recommendedTags removeAllObjects];
     }
     else if (self.tagCompletions.count > 0) {
-        [self.tableView deleteRowsAtIndexPaths:[self indexPathsForAutocompletedRows] withRowAnimation:UITableViewRowAnimationFade];
+        indexPathsToDelete = [self indexPathsForAutocompletedRows];
         [self.tagCompletions removeAllObjects];
     }
     
-    [self.tableView insertRowsAtIndexPaths:[self indexPathsForArray:self.existingTags offset:2] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertRowsAtIndexPaths:[self indexPathsForArray:self.existingTags offset:[self tagOffset]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
     return YES;
 }
@@ -758,6 +763,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSInteger finalAmount;
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 finalAmount = self.filteredPopularAndRecommendedTags.count;
+                self.navigationItem.rightBarButtonItem.title = @"Suggest";
             }
             else {
                 finalAmount = self.existingTags.count;
@@ -765,9 +771,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             [self intersectionBetweenStartingAmount:self.tagCompletions.count
                                      andFinalAmount:finalAmount
-                                             offset:2
+                                             offset:[self tagOffset]
                                            callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                                                [self.tagCompletions removeAllObjects];
+                                               [self.popularTags removeAllObjects];
+                                               [self.recommendedTags removeAllObjects];
+
                                                [self.tableView beginUpdates];
                                                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
                                                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -791,7 +800,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.filteredPopularAndRecommendedTagsVisible) {
         [self intersectionBetweenStartingAmount:self.filteredPopularAndRecommendedTags.count
                                  andFinalAmount:self.tagCompletions.count
-                                         offset:2
+                                         offset:[self tagOffset]
                                        callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                [self.popularTags removeAllObjects];
@@ -832,14 +841,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.removeTagActionSheet) {
         if (buttonIndex == 0) {
-            NSMutableArray *newTags = [NSMutableArray array];
-            NSArray *existingTags = [self existingTags];
-            for (NSString *tag in existingTags) {
-                if (![tag isEqualToString:self.currentlySelectedTag]) {
-                    [newTags addObject:tag];
-                }
-            }
-
             self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
 
             NSIndexPath *indexPathToReload;
@@ -853,6 +854,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
+
+            [self deleteTagWithName:self.currentlySelectedTag];
         }
     }
 }
@@ -872,16 +875,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)deleteTag:(UIButton *)sender {
     NSString *tag = self.existingTags[sender.tag];
-    NSIndexPath *indexPathToDelete = [NSIndexPath indexPathForRow:(sender.tag+2) inSection:0];
-    NSIndexPath *indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection];
-    [self.existingTags removeObject:tag];
-
-    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-    
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView deleteRowsAtIndexPaths:@[indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView endUpdates];
+    [self deleteTagWithName:tag];
 }
 
 - (void)keyboardDidShow:(NSNotification *)sender {
@@ -918,7 +912,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
                 
                 NSString *tag, *count;
-                NSInteger index = 2;
+                NSInteger index = [self tagOffset];
                 NSInteger skipPivot = 0;
                 BOOL tagFound = NO;
                 
@@ -937,7 +931,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             if ([oldTagCompletions[i] isEqualToString:tag]) {
                                 // Delete all posts that were skipped
                                 for (NSInteger j=skipPivot; j<i; j++) {
-                                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+2) inSection:kBookmarkTopSection]];
+                                    [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+[self tagOffset]) inSection:kBookmarkTopSection]];
                                 }
                                 
                                 tagFound = YES;
@@ -962,20 +956,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                 else if (oldTagCompletions.count > 0) {
                     for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+2) inSection:0]];
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
                     }
                 }
                 else {
                     for (NSInteger i=0; i<self.existingTags.count; i++) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+2) inSection:0]];
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
                     }
                 }
 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    oldTagCompletions;
-                    skipPivot;
-                    newTagCompletions;
-
                     [self.popularTags removeAllObjects];
                     [self.recommendedTags removeAllObjects];
 
@@ -1050,6 +1040,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (self.tagCompletions.count > 0) {
                 previousCount = self.tagCompletions.count;
+                [self.tagCompletions removeAllObjects];
             }
             else {
                 previousCount = self.existingTags.count;
@@ -1076,14 +1067,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             [self intersectionBetweenStartingAmount:previousCount
                                      andFinalAmount:self.filteredPopularAndRecommendedTags.count
-                                             offset:2
+                                             offset:[self tagOffset]
                                            callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                    [self.tableView beginUpdates];
 
                                                    if (self.loadingTags) {
                                                        self.loadingTags = NO;
-                                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
                                                    }
 
                                                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
@@ -1105,10 +1095,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (shouldPrefillTags) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.loadingTags = YES;
-
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
         });
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1122,9 +1108,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                            [self.unfilteredPopularTags addObjectsFromArray:popular];
                                            [self.unfilteredRecommendedTags addObjectsFromArray:recommended];
                                            [self handleTagSuggestions];
-                                       });
-                                       
-                                       dispatch_async(dispatch_get_main_queue(), ^{
                                        });
                                    }];
         });
@@ -1186,7 +1169,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             });
             return;
         }
-        
+
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         
@@ -1316,45 +1299,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)gestureRecognizer {
-    if (gestureRecognizer == self.tagGestureRecognizer) {
-        [self prefillPopularTags];
-        [self.tagTextField resignFirstResponder];
-    }
-    else if (gestureRecognizer == self.titleGestureRecognizer) {
+    if (gestureRecognizer == self.titleGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
     }
     else if (gestureRecognizer == self.descriptionGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
-    }
-    else if (gestureRecognizer == self.leftSwipeTagGestureRecognizer) {
-        [self.tagTextField resignFirstResponder];
-
-        if (self.filteredPopularAndRecommendedTagsVisible) {
-            NSInteger finalAmount;
-            if (self.tagCompletions.count > 0) {
-                finalAmount = self.tagCompletions.count;
-            }
-            else {
-                finalAmount = self.existingTags.count;
-            }
-
-            [self intersectionBetweenStartingAmount:self.filteredPopularAndRecommendedTags.count
-                                     andFinalAmount:finalAmount
-                                             offset:2
-                                           callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                                               [self.popularTags removeAllObjects];
-                                               [self.recommendedTags removeAllObjects];
-                                               
-                                               [self.tableView beginUpdates];
-                                               [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                               [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                               [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                               [self.tableView endUpdates];
-                                           }];
-        }
-    }
-    else if (gestureRecognizer == self.badgeTapGestureRecognizer) {
-        self.editingTags = YES;
     }
 }
 
@@ -1362,14 +1311,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
     _editingTags = editingTags;
 
     if (editingTags) {
-        self.tagTextField.userInteractionEnabled = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.title = @"Edit Tags";
+            self.navigationItem.rightBarButtonItem.title = @"Suggest";
+            self.navigationItem.leftBarButtonItem.title = @"Done";
+        });
 
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+        self.tagTextField.userInteractionEnabled = YES;
+        self.tagTextField.text = @"";
+        
+        self.badgeWrapperView.userInteractionEnabled = YES;
         
         NSArray *indexPathsToDelete = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
-        NSArray *indexPathsToInsert = [self indexPathsForArray:self.existingTags offset:2];
-
+        NSArray *indexPathsToInsert = [self indexPathsForArray:self.existingTags offset:[self tagOffset]];
         NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
 
         [CATransaction begin];
@@ -1386,11 +1341,24 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [CATransaction commit];
     }
     else {
-        self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-        self.tagTextField.userInteractionEnabled = NO;
-        [self.tagTextField resignFirstResponder];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Cancel", nil);
 
-        self.navigationItem.rightBarButtonItem.enabled = YES;
+            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+            self.badgeWrapperView.userInteractionEnabled = NO;
+
+            self.tagTextField.userInteractionEnabled = NO;
+            [self.tagTextField resignFirstResponder];
+            
+            if (self.isUpdate) {
+                self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Update", nil);
+                self.title = NSLocalizedString(@"Update Bookmark", nil);
+            }
+            else {
+                self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Add", nil);
+                self.title = NSLocalizedString(@"Add Bookmark", nil);
+            }
+        });
 
         NSArray *indexPathsToInsert = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
@@ -1405,7 +1373,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
         }
         else {
-            [indexPathsToDelete addObjectsFromArray:[self indexPathsForArray:self.existingTags offset:2]];
+            [indexPathsToDelete addObjectsFromArray:[self indexPathsForArray:self.existingTags offset:[self tagOffset]]];
         }
         
         [self.tagCompletions removeAllObjects];
@@ -1443,11 +1411,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
     wrapper.delegate = self;
-
-    self.badgeTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.badgeTapGestureRecognizer.numberOfTapsRequired = 1;
-
-    [wrapper addGestureRecognizer:self.badgeTapGestureRecognizer];
     return wrapper;
 }
 
@@ -1483,11 +1446,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSArray *)indexPathsForAutocompletedRows {
-    return [self indexPathsForArray:self.tagCompletions offset:2];
+    return [self indexPathsForArray:self.tagCompletions offset:[self tagOffset]];
 }
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows {
-    return [self indexPathsForArray:self.filteredPopularAndRecommendedTags offset:2];
+    return [self indexPathsForArray:self.filteredPopularAndRecommendedTags offset:[self tagOffset]];
 }
 
 - (NSArray *)indexPathsForArray:(NSArray *)array
@@ -1505,6 +1468,82 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     else {
         [self.modalDelegate closeModal:self];
+    }
+}
+
+- (void)deleteTagWithName:(NSString *)name {
+    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+
+    if (self.editingTags) {
+        NSInteger index = [self.existingTags indexOfObject:name];
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(index+[self tagOffset]) inSection:0]];
+        
+        if (self.existingTags.count > 1) {
+            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
+        }
+    }
+    else {
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
+    }
+    
+    [self.existingTags removeObject:name];
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+    
+    if (self.existingTags.count == 0) {
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
+}
+
+- (NSInteger)tagOffset {
+    if (self.existingTags.count == 0) {
+        return 1;
+    }
+    return 2;
+}
+
+- (void)rightBarButtonItemTouchUpInside:(id)sender {
+    if (self.editingTags) {
+        self.navigationItem.rightBarButtonItem.title = @"Suggest";
+
+        if (self.filteredPopularAndRecommendedTagsVisible) {
+            // Hide them if they're already showing
+            NSInteger finalAmount;
+            if (self.tagCompletions.count > 0) {
+                finalAmount = self.tagCompletions.count;
+            }
+            else {
+                finalAmount = self.existingTags.count;
+            }
+            
+            [self intersectionBetweenStartingAmount:self.filteredPopularAndRecommendedTags.count
+                                     andFinalAmount:finalAmount
+                                             offset:[self tagOffset]
+                                           callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+                                               [self.popularTags removeAllObjects];
+                                               [self.recommendedTags removeAllObjects];
+                                               
+                                               [self.tableView beginUpdates];
+                                               [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                               [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                               [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                               [self.tableView endUpdates];
+                                           }];
+        }
+        else {
+            self.navigationItem.rightBarButtonItem.title = @"Hide";
+            [self prefillPopularTags];
+        }
+    }
+    else {
+        [self addBookmark];
     }
 }
 
