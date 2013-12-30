@@ -19,6 +19,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
 #import "UITableView+Additions.h"
+#import "PPTableViewHeader.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
@@ -392,14 +393,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return 44;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (self.editingTags) {
         if (section == 1) {
-            return @"Existing Tags (swipe to delete)";
+            return [PPTableViewHeader headerWithText:@"Existing Tags (swipe to delete)" fontSize:15];
         }
         else {
             NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-            return [NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host];
+            return [PPTableViewHeader headerWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
         }
     }
     return nil;
@@ -708,7 +713,35 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.tagTextField) {
-        self.editingTags = NO;
+        NSString *tag = self.tagTextField.text;
+        if (tag.length > 0 && ![self.existingTags containsObject:tag]) {
+            self.tagTextField.text = @"";
+            [self.existingTags addObject:tag];
+            
+            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+            
+            if (self.existingTags.count == 1) {
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+                [indexSetsToInsert addIndex:1];
+            }
+            else {
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
+            }
+            
+            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+            
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
+        return NO;
     }
     else if (textField == self.urlTextField) {
         [textField resignFirstResponder];
@@ -727,7 +760,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             if (containsInvalidCharacters) {
                 return NO;
             }
-
         }
 
         NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -1394,7 +1426,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.recommendedTags removeAllObjects];
 
         NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
-
+        
+        [CATransaction begin];
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
@@ -1402,6 +1435,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView reloadSections:indexSetsToReload withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
+        [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
+        [CATransaction commit];
     }
 }
 
