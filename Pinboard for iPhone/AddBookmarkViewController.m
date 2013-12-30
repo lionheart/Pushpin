@@ -29,16 +29,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface AddBookmarkViewController ()
 
+@property (nonatomic, strong) NSMutableDictionary *deleteTapGestureRecognizers;
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 @property (nonatomic, strong) NSMutableArray *existingTags;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
+- (NSArray *)indexPathsForExistingRows;
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
 - (void)cancelButtonTouchUpInside:(id)sender;
 - (void)deleteTag:(UIButton *)sender;
 - (void)deleteTagWithName:(NSString *)name;
+- (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation;
 - (NSInteger)tagOffset;
 
 - (void)rightBarButtonItemTouchUpInside:(id)sender;
@@ -109,6 +113,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.tagTextField.text = @"";
         
+        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self.tableView addGestureRecognizer:self.panGestureRecognizer];
+
         self.markAsRead = @(NO);
         self.loadingTitle = NO;
         self.loadingTags = NO;
@@ -121,6 +128,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.recommendedTags = [NSMutableArray array];
         self.tagDescriptions = [NSMutableDictionary dictionary];
         self.tagCounts = [NSMutableDictionary dictionary];
+        self.deleteTapGestureRecognizers = [NSMutableDictionary dictionary];
         
         self.callback = ^(void) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
@@ -152,7 +160,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                          callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
-    
+
+    addBookmarkViewController.bookmarkData = bookmark;
     addBookmarkViewController.modalDelegate = delegate;
     [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
     
@@ -180,7 +189,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     if (bookmark[@"tags"]) {
-        addBookmarkViewController.existingTags = [[bookmark[@"tags"] componentsSeparatedByString:@" "] mutableCopy];
+        NSString *tags = [bookmark[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (tags.length > 0) {
+            addBookmarkViewController.existingTags = [[tags componentsSeparatedByString:@" "] mutableCopy];
+        }
+        else {
+            addBookmarkViewController.existingTags = [NSMutableArray array];
+        }
     }
     
     addBookmarkViewController.badgeWrapperView = [addBookmarkViewController badgeWrapperViewForCurrentTags];
@@ -298,7 +314,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.editingTags) {
+    if (self.editingTags && self.existingTags.count == 0) {
         return 1;
     }
     return 2;
@@ -314,7 +330,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 return self.tagCompletions.count + [self tagOffset];
             }
             else {
-                return self.existingTags.count + [self tagOffset];
+                return [self tagOffset];
             }
         }
         else {
@@ -337,8 +353,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.editingTags) {
-        if (indexPath.row == 0) {
-            return MAX(44, [self.badgeWrapperView calculateHeightForWidth:300] + 20);
+        if (indexPath.section == 0) {
+            if (indexPath.row == 0) {
+                return MAX(44, [self.badgeWrapperView calculateHeightForWidth:300] + 20);
+            }
+            else {
+                return 44;
+            }
         }
         else {
             return 44;
@@ -371,55 +392,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return 44;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == kBookmarkTopSection) {
-        if (!self.footerView) {
-            self.footerView = [[UIView alloc] init];
-            self.footerView.clipsToBounds = NO;
-            UILabel *label = [[UILabel alloc] init];
-            label.frame = CGRectMake(20, 5, CGRectGetWidth(self.tableView.frame) - 40, [self tableView:tableView heightForFooterInSection:0]);
-            label.textAlignment = NSTextAlignmentCenter;
-            label.font = [UIFont fontWithName:[PPTheme fontName] size:13];
-            label.textColor = HEX(0x4C586AFF);
-            label.numberOfLines = 0;
-            label.backgroundColor = HEX(0xF7F9FDff);
-            label.text = NSLocalizedString(@"Separate tags with spaces", nil);
-            [self.footerView addSubview:label];
-        }
-        
-        if (self.editingTags) {
-            return self.footerView;
-        }
-    }
-    return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == kBookmarkTopSection) {
-        if (self.editingTags) {
-            UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:13];
-            NSString *title = NSLocalizedString(@"Separate tags with spaces", nil);
-            CGRect rect = [title boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: font} context:nil];
-            return CGRectGetHeight(rect);
-        }
-    }
-    return 0;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-    }
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.tagCompletions.count == 0 && !self.filteredPopularAndRecommendedTagsVisible) {
-        return indexPath.row > 1;
-    }
-    return NO;
-}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (self.editingTags) {
+        if (section == 1) {
+            return @"Existing Tags (swipe to delete)";
+        }
+        else {
+            NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
+            return [NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host];
+        }
+    }
     return nil;
 }
 
@@ -442,30 +424,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.editingTags) {
         if (indexPath.section == 0) {
             NSInteger index = indexPath.row - [self tagOffset];
-            if (indexPath.row == 0) {
-                [cell.contentView addSubview:self.badgeWrapperView];
-                [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
-                [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
-            }
-            else if (indexPath.row == 1) {
-                UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
-                topImageView.frame = CGRectMake(14, 12, 20, 20);
-                [cell.contentView addSubview:topImageView];
-                self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
-                [cell.contentView addSubview:self.tagTextField];
-
-                if (self.loadingTags) {
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    [activity startAnimating];
-                    cell.accessoryView = activity;
-                    cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
-                    cell.textLabel.enabled = NO;
-                }
-                else {
-                    self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
-                    [cell.contentView addSubview:self.tagTextField];
-                }
-            }
 
             if (index >= 0) {
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
@@ -480,29 +438,37 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = tag;
                     cell.detailTextLabel.text = self.tagCounts[tag];
                 }
+            }
+            else {
+                if ([self tagOffset] == 2 && indexPath.row == 0) {
+                    [cell.contentView addSubview:self.badgeWrapperView];
+                    [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
+                    [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
+                }
                 else {
-                    NSString *tag = self.existingTags[index];
-                    cell.textLabel.text = tag;
-                    cell.detailTextLabel.text = self.tagCounts[tag];
-                    cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
+                    UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                    topImageView.frame = CGRectMake(14, 12, 20, 20);
+                    [cell.contentView addSubview:topImageView];
+                    self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
+                    [cell.contentView addSubview:self.tagTextField];
+                    
+                    if (self.loadingTags) {
+                        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                        [activity startAnimating];
+                        cell.accessoryView = activity;
+                        cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
+                        cell.textLabel.enabled = NO;
+                    }
+                    else {
+                        self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
+                        [cell.contentView addSubview:self.tagTextField];
+                    }
                 }
             }
         }
         else {
-            NSString *tag = self.existingTags[indexPath.row];
+            NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
             cell.textLabel.text = tag;
-            cell.detailTextLabel.text = self.tagCounts[tag];
-
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-            [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
-            [button addTarget:self action:@selector(deleteTag:) forControlEvents:UIControlEventTouchUpInside];
-            button.tag = indexPath.row - [self tagOffset];
-            button.userInteractionEnabled = YES;
-            button.translatesAutoresizingMaskIntoConstraints = NO;
-
-            [cell.contentView addSubview:button];
-            [cell.contentView lhs_addConstraints:@"[button(23)]-10-|" views:@{@"button": button}];
-            [cell.contentView lhs_centerVerticallyForView:button height:23];
         }
     }
     else {
@@ -639,7 +605,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     if (self.editingTags) {
-        NSString *tagText = self.tagTextField.text;
         NSInteger row = indexPath.row;
         
         if (row >= [self tagOffset]) {
@@ -647,9 +612,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSString *completion;
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
                 NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+                NSMutableArray *indexPathsToReload = [NSMutableArray array];
+                NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+                
+                // Add the row to the bookmark list below
+
                 
                 if (self.existingTags.count == 0) {
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+                    [indexSetsToInsert addIndex:1];
+                }
+                else {
+                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+                    [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:kBookmarkBottomSection]];
                 }
 
                 NSInteger index = row - [self tagOffset];
@@ -675,13 +650,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.existingTags addObject:completion];
                     [indexPathsToDelete addObject:indexPath];
                 }
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
                     [self.tableView beginUpdates];
-                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
                 });
             });
@@ -726,7 +702,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     [self.tableView beginUpdates];
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView insertRowsAtIndexPaths:[self indexPathsForArray:self.existingTags offset:[self tagOffset]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
     return YES;
 }
@@ -763,7 +738,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 self.navigationItem.rightBarButtonItem.title = @"Suggest";
             }
             else {
-                finalAmount = self.existingTags.count;
+                finalAmount = 0;
             }
 
             [self intersectionBetweenStartingAmount:self.tagCompletions.count
@@ -860,12 +835,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - PPBadgeWrapperDelegate
 
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
-    NSString *tag = badge.textLabel.text;
-    self.currentlySelectedTag = tag;
+    if (self.editingTags) {
+        NSString *tag = badge.textLabel.text;
+        self.currentlySelectedTag = tag;
 
-    NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
-    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
-    [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
+        NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
+        self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
+        [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
+    }
+    else {
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection] animated:YES scrollPosition:UITableViewScrollPositionNone];
+    }
 }
 
 #pragma mark - Everything Else
@@ -956,11 +936,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
                     }
                 }
-                else {
-                    for (NSInteger i=0; i<self.existingTags.count; i++) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
-                    }
-                }
 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.popularTags removeAllObjects];
@@ -1040,7 +1015,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tagCompletions removeAllObjects];
             }
             else {
-                previousCount = self.existingTags.count;
+                previousCount = 0;
             }
 
             [self.popularTags removeAllObjects];
@@ -1185,8 +1160,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
         NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
         NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
-        BOOL private = self.privateSwitch.on;
-        BOOL unread = !self.readSwitch.on;
+        BOOL private = self.setAsPrivate.boolValue;
+        BOOL unread = !(self.markAsRead.boolValue);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
@@ -1302,75 +1277,116 @@ static NSString *CellIdentifier = @"CellIdentifier";
     else if (gestureRecognizer == self.descriptionGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
     }
+    else if (gestureRecognizer == self.panGestureRecognizer) {
+        CGPoint point = [gestureRecognizer locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGFloat xTranslation = [self.panGestureRecognizer translationInView:self.tableView].x;
+
+        if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+            if (xTranslation < 0) {
+                CATransform3D transform = CATransform3DIdentity;
+                transform = CATransform3DTranslate(transform, xTranslation, 0, 0);
+                cell.layer.transform = transform;
+            }
+        }
+        else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+            if (ABS(xTranslation) > CGRectGetWidth(self.tableView.frame) / 2) {
+                NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
+                [self deleteTagWithName:tag animation:UITableViewRowAnimationLeft];
+            }
+            else {
+                [UIView animateWithDuration:0.3 animations:^{
+                    cell.layer.transform = CATransform3DIdentity;
+                }];
+            }
+        }
+    }
 }
 
 - (void)setEditingTags:(BOOL)editingTags {
     _editingTags = editingTags;
 
     if (editingTags) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.title = @"Edit Tags";
-            self.navigationItem.rightBarButtonItem.title = @"Suggest";
-            self.navigationItem.leftBarButtonItem.title = @"Done";
-        });
+        self.title = @"Edit Tags";
+        self.navigationItem.rightBarButtonItem.title = @"Suggest";
+        self.navigationItem.leftBarButtonItem.title = @"Done";
 
         self.tagTextField.userInteractionEnabled = YES;
         self.tagTextField.text = @"";
         
         self.badgeWrapperView.userInteractionEnabled = YES;
         
-        NSArray *indexPathsToDelete = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
-                                        [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
-        NSArray *indexPathsToInsert = [self indexPathsForArray:self.existingTags offset:[self tagOffset]];
-        NSArray *indexPathsToReload = @[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
+        NSMutableArray *indexPathsToDelete = [@[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
+                                                [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]] mutableCopy];
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+        NSMutableIndexSet *indexSetsToDelete = [NSMutableIndexSet indexSet];
+        NSMutableIndexSet *indexSetsToReload = [NSMutableIndexSet indexSet];
+        
+        if (self.existingTags.count == 0) {
+            [indexSetsToDelete addIndex:1];
+        }
+        else {
+            [indexSetsToReload addIndex:1];
+            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
+            [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
+        }
 
         [CATransaction begin];
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:kBookmarkBottomSection] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:indexSetsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteSections:indexSetsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
         [CATransaction setCompletionBlock:^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
             [self.tagTextField becomeFirstResponder];
         }];
         [CATransaction commit];
     }
     else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Cancel", nil);
+        self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Cancel", nil);
 
-            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-            self.badgeWrapperView.userInteractionEnabled = NO;
+        self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+        self.badgeWrapperView.userInteractionEnabled = NO;
 
-            self.tagTextField.userInteractionEnabled = NO;
-            [self.tagTextField resignFirstResponder];
-            
-            if (self.isUpdate) {
-                self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Update", nil);
-                self.title = NSLocalizedString(@"Update Bookmark", nil);
-            }
-            else {
-                self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Add", nil);
-                self.title = NSLocalizedString(@"Add Bookmark", nil);
-            }
-        });
+        self.tagTextField.userInteractionEnabled = NO;
+        [self.tagTextField resignFirstResponder];
+        
+        if (self.isUpdate) {
+            self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Update", nil);
+            self.title = NSLocalizedString(@"Update Bookmark", nil);
+        }
+        else {
+            self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Add", nil);
+            self.title = NSLocalizedString(@"Add Bookmark", nil);
+        }
 
         NSArray *indexPathsToInsert = @[[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection],
                                         [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
-        
-        NSMutableArray *indexPathsToDelete = [NSMutableArray arrayWithObjects:
-                                              [NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection], nil];
 
+        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+        NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+        NSMutableIndexSet *indexSetsToReload = [NSMutableIndexSet indexSet];
+
+        if (self.existingTags.count > 0) {
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:1 inSection:kBookmarkTopSection]];
+            [indexSetsToReload addIndex:1];
+        }
+        else {
+            [indexSetsToInsert addIndex:1];
+        }
+        
         if (self.filteredPopularAndRecommendedTagsVisible) {
             [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
         }
         else if (self.tagCompletions.count > 0) {
             [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
-        }
-        else {
-            [indexPathsToDelete addObjectsFromArray:[self indexPathsForArray:self.existingTags offset:[self tagOffset]]];
         }
         
         [self.tagCompletions removeAllObjects];
@@ -1383,7 +1399,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:kBookmarkBottomSection] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:indexSetsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
     }
 }
@@ -1469,34 +1486,48 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)deleteTagWithName:(NSString *)name {
+    [self deleteTagWithName:name animation:UITableViewRowAnimationFade];
+}
+
+- (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation {
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
+    NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
 
     if (self.editingTags) {
         NSInteger index = [self.existingTags indexOfObject:name];
-        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(index+[self tagOffset]) inSection:0]];
-        
+
         if (self.existingTags.count > 1) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
+        }
+        else {
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+            [sectionIndicesToDelete addIndex:1];
         }
     }
     else {
-        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
+        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]];
     }
     
     [self.existingTags removeObject:name];
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-    
-    if (self.existingTags.count == 0) {
-        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-    }
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:animation];
         [self.tableView endUpdates];
     });
+}
+
+- (NSArray *)indexPathsForExistingRows {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    for (NSInteger i=0; i<self.existingTags.count; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:1]];
+    }
+    return [indexPaths copy];
 }
 
 - (NSInteger)tagOffset {
@@ -1517,7 +1548,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 finalAmount = self.tagCompletions.count;
             }
             else {
-                finalAmount = self.existingTags.count;
+                finalAmount = 0;
             }
             
             [self intersectionBetweenStartingAmount:self.filteredPopularAndRecommendedTags.count
