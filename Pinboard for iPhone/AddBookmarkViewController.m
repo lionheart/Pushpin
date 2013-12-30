@@ -1312,25 +1312,28 @@ static NSString *CellIdentifier = @"CellIdentifier";
     else if (gestureRecognizer == self.panGestureRecognizer) {
         CGPoint point = [gestureRecognizer locationInView:self.tableView];
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGFloat xTranslation = [self.panGestureRecognizer translationInView:self.tableView].x;
+        
+        if (indexPath.section == 1) {
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            CGFloat xTranslation = [self.panGestureRecognizer translationInView:self.tableView].x;
 
-        if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
-            if (xTranslation < 0) {
-                CATransform3D transform = CATransform3DIdentity;
-                transform = CATransform3DTranslate(transform, xTranslation, 0, 0);
-                cell.layer.transform = transform;
+            if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+                if (xTranslation < 0) {
+                    CATransform3D transform = CATransform3DIdentity;
+                    transform = CATransform3DTranslate(transform, xTranslation, 0, 0);
+                    cell.layer.transform = transform;
+                }
             }
-        }
-        else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-            if (ABS(xTranslation) > CGRectGetWidth(self.tableView.frame) / 2) {
-                NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
-                [self deleteTagWithName:tag animation:UITableViewRowAnimationLeft];
-            }
-            else {
-                [UIView animateWithDuration:0.3 animations:^{
-                    cell.layer.transform = CATransform3DIdentity;
-                }];
+            else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+                if (ABS(xTranslation) > CGRectGetWidth(self.tableView.frame) / 2) {
+                    NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
+                    [self deleteTagWithName:tag animation:UITableViewRowAnimationLeft];
+                }
+                else {
+                    [UIView animateWithDuration:0.3 animations:^{
+                        cell.layer.transform = CATransform3DIdentity;
+                    }];
+                }
             }
         }
     }
@@ -1375,7 +1378,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView endUpdates];
         [CATransaction setCompletionBlock:^{
             [self.tableView beginUpdates];
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             [self.tagTextField becomeFirstResponder];
         }];
@@ -1437,7 +1440,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView endUpdates];
         [CATransaction setCompletionBlock:^{
             [self.tableView beginUpdates];
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
         }];
         [CATransaction commit];
