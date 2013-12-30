@@ -892,6 +892,8 @@ static NSInteger kToolbarHeight = 44;
 
         PPPostAction action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
+        NSInteger count = 0;
+        NSInteger deleteIndex;
 
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
@@ -903,6 +905,7 @@ static NSInteger kToolbarHeight = 44;
             }
             else if (action == PPPostActionDelete) {
                 [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+                deleteIndex = count;
             }
             else if (action == PPPostActionEdit) {
                 [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
@@ -922,11 +925,13 @@ static NSInteger kToolbarHeight = 44;
                     [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
                 }
             }
+            count++;
         }
 
         // Properly set the cancel button index
         [self.longPressActionSheet addButtonWithTitle:@"Cancel"];
         self.longPressActionSheet.cancelButtonIndex = self.longPressActionSheet.numberOfButtons - 1;
+        self.longPressActionSheet.destructiveButtonIndex = deleteIndex;
 
         self.actionSheetVisible = YES;
         [self.longPressActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
