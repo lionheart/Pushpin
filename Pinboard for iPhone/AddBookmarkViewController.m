@@ -42,6 +42,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSArray *)indexPathsForExistingRows;
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
 - (void)cancelButtonTouchUpInside:(id)sender;
+- (void)deleteTagButtonTouchUpInside:(id)sender;
 - (void)deleteTag:(UIButton *)sender;
 - (void)deleteTagWithName:(NSString *)name;
 - (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation;
@@ -395,13 +396,23 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 50;
+    if (self.editingTags) {
+        if (section == 0) {
+            NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
+            return [PPTableViewHeader heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        }
+        else {
+            return 10 + [PPTableViewHeader heightWithText:@"Current Tags" fontSize:15];
+        }
+    }
+
+    return 0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (self.editingTags) {
         if (section == 1) {
-            return [PPTableViewHeader headerWithText:@"Existing Tags (swipe to delete)" fontSize:15];
+            return [PPTableViewHeader headerWithText:@"Current Tags" fontSize:15];
         }
         else {
             NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
@@ -467,6 +478,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     else {
                         self.tagTextField.frame = CGRectMake(40, (CGRectGetHeight(frame) - 31) / 2.0, textFieldWidth, 31);
+                        
                         [cell.contentView addSubview:self.tagTextField];
                     }
                 }
@@ -475,6 +487,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
         else {
             NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
             cell.textLabel.text = tag;
+            
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+            button.frame = CGRectMake(0, 0, 23, 23);
+            [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+            button.tag = self.existingTags.count - indexPath.row - 1;
+            cell.accessoryView = button;
         }
     }
     else {
@@ -616,7 +635,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.editingTags) {
         NSInteger row = indexPath.row;
         
-        if (row >= [self tagOffset]) {
+        if (row >= [self tagOffset] && indexPath.section == 0) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSString *completion;
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
@@ -637,13 +656,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                 NSInteger index = row - [self tagOffset];
                 
+                BOOL shouldRefreshAutocompletion = NO;
                 if (self.tagCompletions.count > 0) {
                     completion = self.tagCompletions[index];
                     [indexPathsToDelete addObject:indexPath];
                     [self.tagCompletions removeObjectAtIndex:index];
                     [self.existingTags addObject:completion];
                     
-                    if (self.tagCompletions.count == 0) {
+                    shouldRefreshAutocompletion = self.tagCompletions.count > 0;
+                    if (!shouldRefreshAutocompletion) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             self.tagTextField.text = @"";
                         });
@@ -679,6 +700,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
+
+                    if (shouldRefreshAutocompletion) {
+                        [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:@""];
+                    }
                 });
             });
         }
@@ -732,14 +757,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (tag.length > 0) {
             if (![self.existingTags containsObject:tag]) {
                 self.tagTextField.text = @"";
-                [self.existingTags addObject:tag];
                 
                 NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                 NSMutableArray *indexPathsToDelete = [NSMutableArray array];
                 NSMutableArray *indexPathsToReload = [NSMutableArray array];
                 NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
                 
-                if (self.existingTags.count == 1) {
+                if (self.existingTags.count == 0) {
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                     [indexSetsToInsert addIndex:1];
                 }
@@ -748,6 +772,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                 }
                 
+                if (self.filteredPopularAndRecommendedTagsVisible) {
+                    [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
+                    [self.popularTags removeAllObjects];
+                    [self.recommendedTags removeAllObjects];
+                }
+                else {
+                    [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
+                    [self.tagCompletions removeAllObjects];
+                }
+                
+                [self.existingTags addObject:tag];
                 self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
                 
                 [self.tableView beginUpdates];
@@ -1347,6 +1382,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         CGPoint point = [gestureRecognizer locationInView:self.tableView];
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
         
+        void (^MoveCellBackIntoPlace)(UITableViewCell *) = ^(UITableViewCell *cell) {
+            [UIView animateWithDuration:0.3 animations:^{
+                cell.layer.transform = CATransform3DIdentity;
+            } completion:^(BOOL finished) {
+                self.indexPathForPanningCell = nil;
+            }];
+        };
+        
         if (!self.indexPathForPanningCell) {
             self.indexPathForPanningCell = indexPath;
         }
@@ -1370,19 +1413,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         self.indexPathForPanningCell = nil;
                     }
                     else {
-                        [UIView animateWithDuration:0.3 animations:^{
-                            cell.layer.transform = CATransform3DIdentity;
-                        } completion:^(BOOL finished) {
-                            self.indexPathForPanningCell = nil;
-                        }];
+                        MoveCellBackIntoPlace(cell);
                     }
                 }
                 else {
-                    [UIView animateWithDuration:0.3 animations:^{
-                        cell.layer.transform = CATransform3DIdentity;
-                    } completion:^(BOOL finished) {
-                        self.indexPathForPanningCell = nil;
-                    }];
+                    MoveCellBackIntoPlace(cell);
                 }
             }
         }
@@ -1584,6 +1619,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation {
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
+    NSMutableArray *indexPathsOfOtherExistingTags = [NSMutableArray array];
     NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
 
     if (self.editingTags) {
@@ -1591,7 +1627,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         if (self.existingTags.count > 1) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:kBookmarkTopSection]];
-            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:kBookmarkBottomSection]];
+            
+            // We reload all of the other rows to reset their button tag values
+            for (NSInteger i=0; i<self.existingTags.count; i++) {
+                if (i != self.existingTags.count - index - 1) {
+                    [indexPathsOfOtherExistingTags addObject:[NSIndexPath indexPathForRow:i inSection:kBookmarkBottomSection]];
+                }
+            }
         }
         else {
             [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -1608,6 +1651,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsOfOtherExistingTags withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:animation];
         [self.tableView endUpdates];
@@ -1665,6 +1709,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     else {
         [self addBookmark];
     }
+}
+
+- (void)deleteTagButtonTouchUpInside:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    NSString *tag = self.existingTags[button.tag];
+    [self deleteTagWithName:tag animation:UITableViewRowAnimationFade];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
