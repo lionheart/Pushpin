@@ -21,6 +21,7 @@
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
+#import "PPTableViewHeader.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -167,29 +168,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *containerView = [[UIView alloc] init];
-    UILabel *label = [[UILabel alloc] init];
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.font = [UIFont fontWithName:[PPTheme boldFontName] size:18];
-    
     switch (section) {
         case 0:
-            label.text = NSLocalizedString(@"Personal", nil);
-            break;
+            return [PPTableViewHeader headerWithText:NSLocalizedString(@"Personal", nil)];
             
         case 1:
-            label.text = NSLocalizedString(@"Community", nil);
-            break;
+            return [PPTableViewHeader headerWithText:NSLocalizedString(@"Community", nil)];
     }
-    
-    if (label.text) {
-        [containerView addSubview:label];
-        
-        [containerView lhs_addConstraints:@"H:|-12-[label]-12-|" views:NSDictionaryOfVariableBindings(label)];
-        [containerView lhs_addConstraints:@"V:[label]-8-|" views:NSDictionaryOfVariableBindings(label)];
-//        [containerView lhs_centerVerticallyForView:label];
-        return containerView;
-    }
+
     return nil;
 }
 
