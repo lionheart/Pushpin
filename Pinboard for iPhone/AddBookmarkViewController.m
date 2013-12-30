@@ -420,9 +420,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 1) {
-        return @"Existing Tags";
-    }
     return nil;
 }
 
