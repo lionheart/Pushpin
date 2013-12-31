@@ -105,6 +105,7 @@ static NSInteger kToolbarHeight = 44;
     // Setup the multi-edit status view
     self.multiStatusView = [[UIView alloc] init];
     self.multiStatusView.backgroundColor = HEX(0xFFFFFFFF);
+    self.multiStatusView.alpha = 0;
     self.multiStatusView.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.multiStatusLabel = [[UILabel alloc] init];
@@ -579,6 +580,9 @@ static NSInteger kToolbarHeight = 44;
 
                             self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
                             self.searchBar.delegate = self;
+                            self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Description", @"Tags"];
+                            self.searchBar.showsScopeBar = YES;
+                            self.searchBar.tintColor = [UIColor darkGrayColor];
                             self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
@@ -664,6 +668,7 @@ static NSInteger kToolbarHeight = 44;
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
+            self.multiStatusView.alpha = 0;
             self.multipleEditStatusViewTopConstraint.constant = -kToolbarHeight;
             self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
             [self.view layoutIfNeeded];
@@ -682,7 +687,8 @@ static NSInteger kToolbarHeight = 44;
             if (self.tableView.contentOffset.y < 0) {
                 self.tableView.contentOffset = CGPointMake(0, -64);
             }
-
+            
+            self.multiStatusView.alpha = 1;
             self.multipleEditStatusViewTopConstraint.constant = 0;
             self.multipleEditToolbarBottomConstraint.constant = 0;
             [self.view layoutIfNeeded];
