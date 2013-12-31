@@ -37,6 +37,7 @@ static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
+@property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactivePopTransition;
@@ -702,10 +703,6 @@ static NSInteger kToolbarHeight = 44;
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-            
-            [self.navigationItem setHidesBackButton:NO animated:YES];
-            [self.editButton setStyle:UIBarButtonItemStylePlain];
-            [self.editButton setTitle:@"Edit"];
         
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
@@ -725,12 +722,7 @@ static NSInteger kToolbarHeight = 44;
         });
     };
 
-    if (self.searchDisplayController.isActive) {
-        [self.searchPostDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
-    }
-    else {
-        [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
-    }
+    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
 }
 
 - (void)multiMarkAsRead:(id)sender {
@@ -772,8 +764,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
 
-    self.confirmMultipleDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
-    [self.confirmMultipleDeletionAlertView show];
+    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    [self.confirmMultipleDeletionActionSheet showInView:self.view];
 }
 
 - (void)tagSelected:(id)sender {
@@ -923,9 +915,16 @@ static NSInteger kToolbarHeight = 44;
     });
 }
 
+- (void)dismissViewController {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheetCancel:(UIActionSheet *)actionSheet {
+    if (actionSheet == self.confirmMultipleDeletionActionSheet && self.tableView.editing) {
+        [self toggleEditingMode:nil];
+    }
     self.tableView.scrollEnabled = YES;
 }
 
@@ -951,6 +950,12 @@ static NSInteger kToolbarHeight = 44;
             }
         }
 
+    }
+    else if (actionSheet == self.confirmMultipleDeletionActionSheet) {
+        if (buttonIndex == 0) {
+            [self deletePostsAtIndexPaths:self.indexPathsToDelete];
+            [self toggleEditingMode:nil];
+        }
     }
     else if (actionSheet == self.longPressActionSheet) {
         if (buttonIndex >= 0) {
@@ -997,10 +1002,6 @@ static NSInteger kToolbarHeight = 44;
             self.longPressActionSheet = nil;
         }
     }
-}
-
-- (void)dismissViewController {
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Post Action Methods
@@ -1358,19 +1359,19 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)removeBarButtonTouchUpside:(id)sender {
-    __weak GenericPostViewController *vc = self;
+    __weak GenericPostViewController *weakself = self;
     [self.postDataSource removeDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:vc action:@selector(addBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
         });
     }];
 }
 
 - (void)addBarButtonTouchUpside:(id)sender {
-    __weak GenericPostViewController *vc = self;
+    __weak GenericPostViewController *weakself = self;
     [self.postDataSource addDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            vc.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:vc action:@selector(removeBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
         });
     }];
 }
@@ -1510,9 +1511,20 @@ static NSInteger kToolbarHeight = 44;
         kGenericPostViewControllerResizingPosts = YES;
         
         NSArray *visibleIndexPaths = [self.tableView indexPathsForVisibleRows];
+        // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
+
+        NSInteger row;
+        if ([(NSIndexPath *)visibleIndexPaths[0] row] == 0) {
+            row = 0;
+        }
+        else {
+            row = 1;
+        }
+
+        NSIndexPath *currentIndexPath = visibleIndexPaths[row];
 
         self.compressPosts = !self.compressPosts;
-        
+
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
@@ -1520,7 +1532,7 @@ static NSInteger kToolbarHeight = 44;
         double delayInSeconds = 0.25;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
             kGenericPostViewControllerResizingPosts = NO;
         });
     }
