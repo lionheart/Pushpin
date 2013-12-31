@@ -25,6 +25,12 @@ static NSString *emptyString = @"";
 static NSString *newLine = @"\n";
 static NSString *ellipsis = @"…";
 
+@interface PinboardDataSource ()
+
+- (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
+
+@end
+
 @implementation PinboardDataSource
 
 - (id)init {
@@ -36,8 +42,14 @@ static NSString *ellipsis = @"…";
         self.heights = [NSMutableArray array];
         self.links = [NSMutableArray array];
 
-        self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
         self.tags = @[];
+        self.untagged = kPinboardFilterNone;
+        self.isPrivate = kPinboardFilterNone;
+        self.unread = kPinboardFilterNone;
+        self.starred = kPinboardFilterNone;
+        self.offset = 0;
+        self.limit = 50;
+        self.searchQuery = nil;
 
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
@@ -46,37 +58,6 @@ static NSString *ellipsis = @"…";
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
 
-        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-        self.enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
-        [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
-        [self.enUSPOSIXDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-        [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        
-        self.tagsWithFrequency = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-- (id)initWithParameters:(NSDictionary *)parameters {
-    self = [super init];
-    if (self) {
-        self.totalNumberOfPosts = 0;
-        self.posts = [NSMutableArray array];
-        self.strings = [NSMutableArray array];
-        self.heights = [NSMutableArray array];
-        self.links = [NSMutableArray array];
-
-        self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(0), @"limit": @(50)}];
-        self.tags = @[];
-
-        self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [NSLocale currentLocale];
-        [self.dateFormatter setLocale:self.locale];
-        [self.dateFormatter setDoesRelativeDateFormatting:YES];
-        [self filterWithParameters:parameters];
-        
         NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         self.enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
         [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
@@ -89,21 +70,37 @@ static NSString *ellipsis = @"…";
 }
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
-    NSNumber *isPrivate = parameters[@"private"];
-    NSNumber *isRead;
+    kPinboardFilterType isPrivate = kPinboardFilterNone;
+    if (parameters[@"private"]) {
+        isPrivate = [parameters[@"private"] boolValue];
+    }
+
+    kPinboardFilterType unread = kPinboardFilterNone;
     if (parameters[@"unread"]) {
-        isRead = @(!([parameters[@"unread"] boolValue]));
+        unread = [parameters[@"unread"] boolValue];
     }
-    else {
-        isRead = nil;
+
+    kPinboardFilterType starred = kPinboardFilterNone;
+    if (parameters[@"starred"]) {
+        starred = [parameters[@"starred"] boolValue];
     }
-    NSNumber *isStarred = parameters[@"starred"];
-    NSNumber *hasTags = parameters[@"tagged"];
+    
+    kPinboardFilterType untagged = kPinboardFilterNone;
+    if (parameters[@"tagged"]) {
+        untagged = ![parameters[@"tagged"] boolValue];
+    }
+
     NSArray *tags = parameters[@"tags"];
     NSInteger offset = [parameters[@"offset"] integerValue];
     NSInteger limit = [parameters[@"limit"] integerValue];
 
-    [self filterByPrivate:isPrivate isRead:isRead isStarred:isStarred hasTags:hasTags tags:tags offset:offset limit:limit];
+    [self filterByPrivate:isPrivate
+                 isUnread:unread
+                isStarred:starred
+                 untagged:untagged
+                     tags:tags
+                   offset:offset
+                    limit:limit];
 }
 
 - (void)filterWithQuery:(NSString *)query {
@@ -131,156 +128,54 @@ static NSString *ellipsis = @"…";
         }
     }
 
-    NSString *newQuery = [newComponents componentsJoinedByString:@" "];
-    self.queryParameters[@"query"] = newQuery;
+    self.searchQuery = [newComponents componentsJoinedByString:@" "];
 }
 
 - (PinboardDataSource *)searchDataSource {
-    PinboardDataSource *search = [[PinboardDataSource alloc] init];
-
-    search.maxResults = 10;
-
-    NSMutableArray *queryComponents = [NSMutableArray array];
-    if (self.queryParameters[@"private"]) {
-        [queryComponents addObject:@"private = :private"];
-    }
-    
-    if (self.queryParameters[@"unread"]) {
-        [queryComponents addObject:@"unread = :unread"];
-    }
-    
-    if (self.queryParameters[@"starred"]) {
-        [queryComponents addObject:@"starred = :starred"];
-    }
-
-    if (self.queryParameters[@"tags"]) {
-        [queryComponents addObject:@"tags = :tags"];
-    }
-
-    if (self.tags.count > 0) {
-#warning TODO need to stop using subqueries. They slow things down.
-        NSString *tagComponent = [self.quotedTags componentsJoinedByString:@", "];
-        [queryComponents addObject:[NSString stringWithFormat:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name IN (%@))", tagComponent]];
-    }
-
-    [queryComponents addObject:@"hash in (SELECT hash FROM bookmark_fts WHERE bookmark_fts MATCH :query)"];
-
-    NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
-    search.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
-    search.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
-    search.queryParameters[@"offset"] = @(0);
-    search.queryParameters[@"limit"] = @(search.maxResults);
-    search.queryParameters[@"query"] = @"*";
-    search.tags = [self.tags copy];
+    PinboardDataSource *search = [self copy];
+    search.searchQuery = @"*";
     return search;
 }
 
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
-    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-    
-    dataSource.maxResults = 50;
-    
-    NSMutableArray *queryComponents = [NSMutableArray array];
-    if (self.queryParameters[@"private"]) {
-        [queryComponents addObject:@"private = :private"];
-    }
-
-    if (self.queryParameters[@"unread"]) {
-        [queryComponents addObject:@"unread = :unread"];
-    }
-
-    if (self.queryParameters[@"starred"]) {
-        [queryComponents addObject:@"starred = :starred"];
-    }
-
-    if (self.queryParameters[@"tags"]) {
-        [queryComponents addObject:@"tags = :tags"];
-    }
-    
-    NSMutableArray *newTags = [NSMutableArray arrayWithArray:self.tags];
-    if (![newTags containsObject:tag]) {
-        [newTags addObject:tag];
-    }
-
-    for (NSString *tag in newTags) {
-        [queryComponents addObject:[NSString stringWithFormat:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name=\"%@\")", tag]];
-    }
-
-    NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
-
-    dataSource.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
-    dataSource.queryParameters = [NSMutableDictionary dictionaryWithDictionary:self.queryParameters];
-    dataSource.queryParameters[@"offset"] = @(0);
-    dataSource.queryParameters[@"limit"] = @(50);
+    NSArray *newTags = [self.tags arrayByAddingObject:tag];
+    PinboardDataSource *dataSource = [self copy];
     dataSource.tags = newTags;
     return dataSource;
 }
 
-- (void)filterByPrivate:(NSNumber *)isPrivate isRead:(NSNumber *)isRead isStarred:(NSNumber *)starred hasTags:(NSNumber *)hasTags tags:(NSArray *)tags offset:(NSInteger)offset limit:(NSInteger)limit {
-    NSMutableArray *queryComponents = [NSMutableArray array];
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{@"offset": @(offset), @"limit": @(limit)}];
-    self.maxResults = limit;  
-
-    if (isPrivate) {
-        [queryComponents addObject:@"private = :private"];
-        parameters[@"private"] = isPrivate;
-    }
-
-    if (isRead) {
-        [queryComponents addObject:@"unread = :unread"];
-        parameters[@"unread"] = @(![isRead boolValue]);
-    }
-    
-    if (starred) {
-        [queryComponents addObject:@"starred = :starred"];
-        parameters[@"starred"] = starred;
-    }
-
-    if (hasTags) {
-        if ([hasTags boolValue]) {
-            [queryComponents addObject:@"tags != :tags"];
-            parameters[@"tags"] = @"";
-        }
-        else {
-            [queryComponents addObject:@"tags = :tags"];
-            parameters[@"tags"] = @"";
-        }
-    }
-
-    self.queryParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
-
-    if (tags != nil && [tags count] > 0) {
-        self.tags = [tags copy];
-        NSString *tagComponent = [self.quotedTags componentsJoinedByString:@", "];
-        [queryComponents addObject:[NSString stringWithFormat:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name IN (%@))", tagComponent]];
-    }
-
-    if ([queryComponents count] > 0) {
-        NSString *whereComponent = [queryComponents componentsJoinedByString:@" AND "];
-        self.query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE %@ ORDER BY created_at DESC LIMIT :limit OFFSET :offset", whereComponent];
-    }
-    else {
-        self.query = @"SELECT * FROM bookmark ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-    }
+- (void)filterByPrivate:(kPinboardFilterType)isPrivate
+               isUnread:(kPinboardFilterType)isUnread
+              isStarred:(kPinboardFilterType)starred
+               untagged:(kPinboardFilterType)untagged
+                   tags:(NSArray *)tags
+                 offset:(NSInteger)offset
+                  limit:(NSInteger)limit {
+    self.limit = limit;
+    self.untagged = untagged;
+    self.isPrivate = isPrivate;
+    self.unread = isUnread;
+    self.starred = starred;
+    self.tags = tags;
+    self.offset = offset;
+    self.limit = limit;
 }
 
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback {
-    NSInteger limit = [self.queryParameters[@"limit"] integerValue];
-
-    BOOL needsUpdate = indexPath.row >= limit * 3. / 4.;
+    BOOL needsUpdate = indexPath.row >= self.limit * 3. / 4.;
     if (needsUpdate) {
-        if (self.queryParameters[@"query"]) {
-            self.queryParameters[@"limit"] = @(limit + 10);
+        if (self.searchQuery) {
+            self.limit += 10;
         }
         else {
-            self.queryParameters[@"limit"] = @(limit + 50);
+            self.limit += 50;
         }
     }
     callback(needsUpdate);
 }
 
 - (NSInteger)numberOfPosts {
-    return [self.posts count];
+    return self.posts.count;
 }
 
 - (NSInteger)totalNumberOfPosts {
@@ -687,106 +582,109 @@ static NSString *ellipsis = @"…";
                         failure:(void (^)(NSError *))failure {
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-        
-        NSArray *oldPosts = [self.posts copy];
-        NSMutableArray *newPosts = [NSMutableArray array];
-        
-        NSMutableArray *oldHashes = [NSMutableArray array];
-        NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
-        for (NSDictionary *post in self.posts) {
-            [oldHashes addObject:post[@"hash"]];
-            oldMetas[post[@"hash"]] = post[@"meta"];
-        }
-
-        NSInteger index = 0;
-        
-        // The index of the list that `index` corresponds to
-        NSInteger skipPivot = 0;
-        BOOL postFound = NO;
-        
-        while ([results next]) {
-            postFound = NO;
-            NSString *hash = [results stringForColumn:@"hash"];
-            NSString *meta = [results stringForColumn:@"meta"];
-            NSDictionary *post;
+        [self generateQueryAndParameters:^(NSString *query, NSArray *parameters) {
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
             
-            // Go from the last found value to the end of the list.
-            // If you find something, break and set the pivot to the current skip index.
-            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                if ([oldHashes[i] isEqualToString:hash]) {
-                    post = oldPosts[i];
-                    
-                    // Reload the post if its meta value has changed.
-                    if (![meta isEqualToString:oldMetas[hash]]) {
-                        post = [PinboardDataSource postFromResultSet:results];
+            FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
+
+            NSArray *oldPosts = [self.posts copy];
+            NSMutableArray *newPosts = [NSMutableArray array];
+            
+            NSMutableArray *oldHashes = [NSMutableArray array];
+            NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
+            for (NSDictionary *post in self.posts) {
+                [oldHashes addObject:post[@"hash"]];
+                oldMetas[post[@"hash"]] = post[@"meta"];
+            }
+            
+            NSInteger index = 0;
+            
+            // The index of the list that `index` corresponds to
+            NSInteger skipPivot = 0;
+            BOOL postFound = NO;
+            
+            while ([results next]) {
+                postFound = NO;
+                NSString *hash = [results stringForColumn:@"hash"];
+                NSString *meta = [results stringForColumn:@"meta"];
+                NSDictionary *post;
+                
+                // Go from the last found value to the end of the list.
+                // If you find something, break and set the pivot to the current skip index.
+                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                    if ([oldHashes[i] isEqualToString:hash]) {
+                        post = oldPosts[i];
+                        
+                        // Reload the post if its meta value has changed.
+                        if (![meta isEqualToString:oldMetas[hash]]) {
+                            post = [PinboardDataSource postFromResultSet:results];
+                        }
+                        
+                        postFound = YES;
+                        skipPivot = i+1;
+                        break;
                     }
-
-                    postFound = YES;
-                    skipPivot = i+1;
-                    break;
                 }
+                
+                // If the post wasn't found by looping through, it's a new one
+                if (!postFound) {
+                    post = [PinboardDataSource postFromResultSet:results];
+                }
+                
+                [newPosts addObject:post];
+                index++;
             }
             
-            // If the post wasn't found by looping through, it's a new one
-            if (!postFound) {
-                post = [PinboardDataSource postFromResultSet:results];
+            [self.tagsWithFrequency removeAllObjects];
+            
+            FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+            while ([tagResult next]) {
+                NSString *tag = [tagResult stringForColumnIndex:0];
+                NSNumber *count = [tagResult objectForColumnIndex:1];
+                self.tagsWithFrequency[tag] = count;
+            }
+            [db close];
+            
+            NSMutableArray *newStrings = [NSMutableArray array];
+            NSMutableArray *newHeights = [NSMutableArray array];
+            NSMutableArray *newLinks = [NSMutableArray array];
+            NSMutableArray *newBadges = [NSMutableArray array];
+            
+            NSMutableArray *newCompressedStrings = [NSMutableArray array];
+            NSMutableArray *newCompressedHeights = [NSMutableArray array];
+            NSMutableArray *newCompressedLinks = [NSMutableArray array];
+            NSMutableArray *newCompressedBadges = [NSMutableArray array];
+            
+            for (NSDictionary *post in newPosts) {
+                PostMetadata *metadata = [self metadataForPost:post];
+                [newHeights addObject:metadata.height];
+                [newStrings addObject:metadata.string];
+                [newLinks addObject:metadata.links];
+                [newBadges addObject:metadata.badges];
+                
+                PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+                [newCompressedHeights addObject:compressedMetadata.height];
+                [newCompressedStrings addObject:compressedMetadata.string];
+                [newCompressedLinks addObject:compressedMetadata.links];
+                [newCompressedBadges addObject:compressedMetadata.badges];
             }
             
-            [newPosts addObject:post];
-            index++;
-        }
-        
-        [self.tagsWithFrequency removeAllObjects];
-        
-        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-        while ([tagResult next]) {
-            NSString *tag = [tagResult stringForColumnIndex:0];
-            NSNumber *count = [tagResult objectForColumnIndex:1];
-            self.tagsWithFrequency[tag] = count;
-        }
-        [db close];
-        
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newLinks = [NSMutableArray array];
-        NSMutableArray *newBadges = [NSMutableArray array];
-
-        NSMutableArray *newCompressedStrings = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedLinks = [NSMutableArray array];
-        NSMutableArray *newCompressedBadges = [NSMutableArray array];
-
-        for (NSDictionary *post in newPosts) {
-            PostMetadata *metadata = [self metadataForPost:post];
-            [newHeights addObject:metadata.height];
-            [newStrings addObject:metadata.string];
-            [newLinks addObject:metadata.links];
-            [newBadges addObject:metadata.badges];
+            self.posts = newPosts;
+            self.strings = newStrings;
+            self.heights = newHeights;
+            self.links = newLinks;
+            self.badges = newBadges;
             
-            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
-            [newCompressedHeights addObject:compressedMetadata.height];
-            [newCompressedStrings addObject:compressedMetadata.string];
-            [newCompressedLinks addObject:compressedMetadata.links];
-            [newCompressedBadges addObject:compressedMetadata.badges];
-        }
-        
-        self.posts = newPosts;
-        self.strings = newStrings;
-        self.heights = newHeights;
-        self.links = newLinks;
-        self.badges = newBadges;
-        
-        self.compressedStrings = newCompressedStrings;
-        self.compressedHeights = newCompressedHeights;
-        self.compressedLinks = newCompressedLinks;
-        self.compressedBadges = newCompressedBadges;
-
-        if (success) {
-            success();
-        }
+            self.compressedStrings = newCompressedStrings;
+            self.compressedHeights = newCompressedHeights;
+            self.compressedLinks = newCompressedLinks;
+            self.compressedBadges = newCompressedBadges;
+            
+            if (success) {
+                success();
+            }
+        }];
     });
 }
 
@@ -794,124 +692,127 @@ static NSString *ellipsis = @"…";
                                    failure:(void (^)(NSError *))failure {
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *results = [db executeQuery:self.query withParameterDictionary:self.queryParameters];
-        
-        NSArray *oldPosts = [self.posts copy];
-        NSMutableArray *newPosts = [NSMutableArray array];
-
-        NSMutableArray *oldHashes = [NSMutableArray array];
-        NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
-        for (NSDictionary *post in self.posts) {
-            [oldHashes addObject:post[@"hash"]];
-            oldMetas[post[@"hash"]] = post[@"meta"];
-        }
-        
-        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        NSInteger index = 0;
-        
-        // The index of the list that `index` corresponds to
-        NSInteger skipPivot = 0;
-        BOOL postFound = NO;
-
-        while ([results next]) {
-            postFound = NO;
-            NSString *hash = [results stringForColumn:@"hash"];
-            NSString *meta = [results stringForColumn:@"meta"];
-            NSDictionary *post;
-
-            // Go from the last found value to the end of the list.
-            // If you find something, break and set the pivot to the current skip index.
-
-            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                if ([oldHashes[i] isEqualToString:hash]) {
-                    // Delete all posts that were skipped
-                    for (NSInteger j=skipPivot; j<i; j++) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
-                    }
-
-                    post = oldPosts[i];
-
-                    // Reload the post if its meta value has changed.
-                    if (![meta isEqualToString:oldMetas[hash]]) {
-                        post = [PinboardDataSource postFromResultSet:results];
-
-                        // Reloads affect the old index path
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
-                    }
-
-                    postFound = YES;
-                    skipPivot = i+1;
-                    break;
-                }
-            }
-
-            // If the post wasn't found by looping through, it's a new one
-            if (!postFound) {
-                post = [PinboardDataSource postFromResultSet:results];
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-            }
-
-            [newPosts addObject:post];
-            index++;
-        }
-        
-        [self.tagsWithFrequency removeAllObjects];
-        
-        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-        while ([tagResult next]) {
-            NSString *tag = [tagResult stringForColumnIndex:0];
-            NSNumber *count = [tagResult objectForColumnIndex:1];
-            self.tagsWithFrequency[tag] = count;
-        }
-
-        [db close];
-        
-        for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newLinks = [NSMutableArray array];
-        NSMutableArray *newBadges = [NSMutableArray array];
-        
-        NSMutableArray *newCompressedStrings = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedLinks = [NSMutableArray array];
-        NSMutableArray *newCompressedBadges = [NSMutableArray array];
-
-        for (NSDictionary *post in newPosts) {
-            PostMetadata *metadata = [self metadataForPost:post];
-            [newHeights addObject:metadata.height];
-            [newStrings addObject:metadata.string];
-            [newLinks addObject:metadata.links];
-            [newBadges addObject:metadata.badges];
+        [self generateQueryAndParameters:^(NSString *query, NSArray *parameters) {
             
-            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
-            [newCompressedHeights addObject:compressedMetadata.height];
-            [newCompressedStrings addObject:compressedMetadata.string];
-            [newCompressedLinks addObject:compressedMetadata.links];
-            [newCompressedBadges addObject:compressedMetadata.badges];
-        }
-
-        self.posts = newPosts;
-        self.strings = newStrings;
-        self.heights = newHeights;
-        self.links = newLinks;
-        self.badges = newBadges;
-
-        self.compressedStrings = newCompressedStrings;
-        self.compressedHeights = newCompressedHeights;
-        self.compressedLinks = newCompressedLinks;
-        self.compressedBadges = newBadges;
-        
-        if (success) {
-            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
-        }
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
+            
+            NSArray *oldPosts = [self.posts copy];
+            NSMutableArray *newPosts = [NSMutableArray array];
+            
+            NSMutableArray *oldHashes = [NSMutableArray array];
+            NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
+            for (NSDictionary *post in self.posts) {
+                [oldHashes addObject:post[@"hash"]];
+                oldMetas[post[@"hash"]] = post[@"meta"];
+            }
+            
+            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+            NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            NSInteger index = 0;
+            
+            // The index of the list that `index` corresponds to
+            NSInteger skipPivot = 0;
+            BOOL postFound = NO;
+            
+            while ([results next]) {
+                postFound = NO;
+                NSString *hash = [results stringForColumn:@"hash"];
+                NSString *meta = [results stringForColumn:@"meta"];
+                NSDictionary *post;
+                
+                // Go from the last found value to the end of the list.
+                // If you find something, break and set the pivot to the current skip index.
+                
+                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                    if ([oldHashes[i] isEqualToString:hash]) {
+                        // Delete all posts that were skipped
+                        for (NSInteger j=skipPivot; j<i; j++) {
+                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                        }
+                        
+                        post = oldPosts[i];
+                        
+                        // Reload the post if its meta value has changed.
+                        if (![meta isEqualToString:oldMetas[hash]]) {
+                            post = [PinboardDataSource postFromResultSet:results];
+                            
+                            // Reloads affect the old index path
+                            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
+                        }
+                        
+                        postFound = YES;
+                        skipPivot = i+1;
+                        break;
+                    }
+                }
+                
+                // If the post wasn't found by looping through, it's a new one
+                if (!postFound) {
+                    post = [PinboardDataSource postFromResultSet:results];
+                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+                
+                [newPosts addObject:post];
+                index++;
+            }
+            
+            [self.tagsWithFrequency removeAllObjects];
+            
+            FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+            while ([tagResult next]) {
+                NSString *tag = [tagResult stringForColumnIndex:0];
+                NSNumber *count = [tagResult objectForColumnIndex:1];
+                self.tagsWithFrequency[tag] = count;
+            }
+            
+            [db close];
+            
+            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+            
+            NSMutableArray *newStrings = [NSMutableArray array];
+            NSMutableArray *newHeights = [NSMutableArray array];
+            NSMutableArray *newLinks = [NSMutableArray array];
+            NSMutableArray *newBadges = [NSMutableArray array];
+            
+            NSMutableArray *newCompressedStrings = [NSMutableArray array];
+            NSMutableArray *newCompressedHeights = [NSMutableArray array];
+            NSMutableArray *newCompressedLinks = [NSMutableArray array];
+            NSMutableArray *newCompressedBadges = [NSMutableArray array];
+            
+            for (NSDictionary *post in newPosts) {
+                PostMetadata *metadata = [self metadataForPost:post];
+                [newHeights addObject:metadata.height];
+                [newStrings addObject:metadata.string];
+                [newLinks addObject:metadata.links];
+                [newBadges addObject:metadata.badges];
+                
+                PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+                [newCompressedHeights addObject:compressedMetadata.height];
+                [newCompressedStrings addObject:compressedMetadata.string];
+                [newCompressedLinks addObject:compressedMetadata.links];
+                [newCompressedBadges addObject:compressedMetadata.badges];
+            }
+            
+            self.posts = newPosts;
+            self.strings = newStrings;
+            self.heights = newHeights;
+            self.links = newLinks;
+            self.badges = newBadges;
+            
+            self.compressedStrings = newCompressedStrings;
+            self.compressedHeights = newCompressedHeights;
+            self.compressedLinks = newCompressedLinks;
+            self.compressedBadges = newBadges;
+            
+            if (success) {
+                success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+            }
+        }];
     });
 }
 
@@ -1478,6 +1379,103 @@ static NSString *ellipsis = @"…";
     }
 
     return string;
+}
+
+- (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback {
+    NSMutableArray *components = [NSMutableArray array];
+    NSMutableArray *parameters = [NSMutableArray array];
+    
+    [components addObject:@"SELECT bookmark.* FROM"];
+    
+    NSMutableArray *tables = [NSMutableArray arrayWithObject:@"bookmark"];
+    if (self.searchQuery) {
+        [tables addObject:@"bookmark_fts"];
+    }
+
+    [components addObject:[tables componentsJoinedByString:@", "]];
+    
+    NSMutableArray *whereComponents = [NSMutableArray array];
+    if (self.searchQuery) {
+        [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
+        [whereComponents addObject:@"bookmark_fts MATCH ?"];
+        [parameters addObject:self.searchQuery];
+    }
+
+    if (self.tags.count > 0) {
+        // In this situation, "untagged" is a meaningless filter, and we ignore it.
+        for (NSString *tag in self.tags) {
+            [whereComponents addObject:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
+            [parameters addObject:tag];
+        }
+    }
+    else {
+        switch (self.untagged) {
+            case kPinboardFilterFalse:
+                [whereComponents addObject:@"bookmark.tags = ?"];
+                [parameters addObject:@""];
+                break;
+                
+            case kPinboardFilterTrue:
+                [whereComponents addObject:@"bookmark.tags = ?"];
+                [parameters addObject:@""];
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    if (self.starred != kPinboardFilterNone) {
+        [whereComponents addObject:@"bookmark.starred = ?"];
+        [parameters addObject:@(self.starred)];
+    }
+    
+    if (self.isPrivate != kPinboardFilterNone) {
+        [whereComponents addObject:@"bookmark.private = ?"];
+        [parameters addObject:@(self.isPrivate)];
+    }
+        
+    if (self.unread != kPinboardFilterNone) {
+        [whereComponents addObject:@"bookmark.unread = ?"];
+        [parameters addObject:@(self.unread)];
+    }
+
+    if (whereComponents.count > 0) {
+        [components addObject:@"WHERE"];
+        [components addObject:[whereComponents componentsJoinedByString:@" AND "]];
+    }
+    
+    if (self.orderBy) {
+        [components addObject:[NSString stringWithFormat:@"ORDER BY %@", self.orderBy]];
+    }
+    
+    if (self.limit > 0) {
+        [components addObject:@"LIMIT ?"];
+        [parameters addObject:@(self.limit)];
+    }
+    
+    if (self.offset > 0) {
+        [components addObject:@"OFFSET ?"];
+        [parameters addObject:@(self.offset)];
+    }
+    
+    NSString *query = [components componentsJoinedByString:@" "];
+    callback(query, parameters);
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
+    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+    dataSource.limit = self.limit;
+    dataSource.tags = self.tags;
+    dataSource.orderBy = self.orderBy;
+    dataSource.searchQuery = self.searchQuery;
+    dataSource.offset = self.offset;
+    dataSource.isPrivate = self.isPrivate;
+    dataSource.unread = self.unread;
+    dataSource.starred = self.starred;
+    return dataSource;
 }
 
 @end

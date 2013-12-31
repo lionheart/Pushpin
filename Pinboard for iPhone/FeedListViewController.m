@@ -271,9 +271,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:postViewController];
     switch (indexPath.section) {
         case 0: {
+            PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+            dataSource.limit = 100;
+
             switch (indexPath.row) {
                 case 0: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"limit": @(100), @"offset": @(0)}];
                     postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
                     [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096ffff)];
@@ -281,7 +283,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
                 case 1: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    dataSource.isPrivate = YES;
                     postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
                     [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0xffae46ff)];
@@ -289,7 +291,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
                 case 2: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"private": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    dataSource.isPrivate = NO;
                     postViewController.title = NSLocalizedString(@"Public", nil);
                     [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0x7bb839ff)];
@@ -297,7 +299,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
                 case 3: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"unread": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    dataSource.unread = YES;
                     postViewController.title = NSLocalizedString(@"Unread", nil);
                     [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0xef6034ff)];
@@ -305,7 +307,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
                 case 4: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"tagged": @(NO), @"limit": @(100), @"offset": @(0)}];
+                    dataSource.untagged = YES;
                     postViewController.title = NSLocalizedString(@"Untagged", nil);
                     [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0xacb3bbff)];
@@ -313,7 +315,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
                 case 5: {
-                    postViewController.postDataSource = [[PinboardDataSource alloc] initWithParameters:@{@"starred": @(YES), @"limit": @(100), @"offset": @(0)}];
+                    dataSource.starred = YES;
                     postViewController.title = NSLocalizedString(@"Starred", nil);
                     [titleButton setTitle:NSLocalizedString(@"Starred", nil) imageName:@"navigation-starred"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0x8361f4ff)];
@@ -322,6 +324,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
             }
 
+            postViewController.postDataSource = dataSource;
             // Can we just use self.navigationController instead?
             postViewController.navigationItem.titleView = titleButton;
             [self.navigationController pushViewController:postViewController animated:YES];
