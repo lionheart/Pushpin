@@ -22,6 +22,7 @@
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
+		3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3C18726EC900155791 /* PPTagEditViewController.m */; };
 		372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */; };
 		372C84091870E3B300BF520D /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
 		372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
@@ -497,6 +498,8 @@
 		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3727558A161A66A2001A857B /* TagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagViewController.h; sourceTree = "<group>"; };
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
+		3728CF3B18726EC900155791 /* PPTagEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagEditViewController.h; sourceTree = "<group>"; };
+		3728CF3C18726EC900155791 /* PPTagEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTagEditViewController.m; sourceTree = "<group>"; };
 		372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotViewController.h; sourceTree = "<group>"; };
 		372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotViewController.m; sourceTree = "<group>"; };
 		372C84071870E3B300BF520D /* Delete-Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button.png"; path = "Assets/Delete-Button.png"; sourceTree = "<group>"; };
@@ -1291,6 +1294,8 @@
 				3727558B161A66A2001A857B /* TagViewController.m */,
 				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
 				37800E44162B389B009FCB17 /* AddBookmarkViewController.m */,
+				3728CF3B18726EC900155791 /* PPTagEditViewController.h */,
+				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				37A25A2015FC42B5009716BB /* NoteViewController.h */,
 				37A25A2115FC42B5009716BB /* NoteViewController.m */,
 				37919F1C16091DF5007708EF /* LoginViewController.h */,
@@ -2220,6 +2225,7 @@
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
+				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,

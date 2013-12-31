@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "PPBadgeWrapperView.h"
+#import "PPTagEditViewController.h"
 
 #import <TextExpander/SMTEDelegateController.h>
 
 @class PPNavigationController;
-@class PPBadgeWrapperView;
 
 typedef enum BookmarkRows {
     kBookmarkTitleRow,
@@ -28,34 +28,20 @@ typedef enum BookmarkSections {
     kBookmarkBottomSection,
 } BookmarkSectionType;
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate, PPBadgeWrapperDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate> {
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate, PPTagEditing, UIActionSheetDelegate> {
     UIEdgeInsets _oldContentInset;
 }
 
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) NSString *postDescription;
 @property (nonatomic, strong) UITextView *postDescriptionTextView;
-@property (nonatomic, strong) NSMutableDictionary *tagCounts;
-@property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
-@property (nonatomic) BOOL editingTags;
-@property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL isUpdate;
-@property (nonatomic) BOOL loadingTags;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)();
 
-@property (nonatomic, strong) NSMutableArray *unfilteredPopularTags;
-@property (nonatomic, strong) NSMutableArray *unfilteredRecommendedTags;
-@property (nonatomic, strong) NSMutableArray *popularTags;
-@property (nonatomic, strong) NSMutableArray *recommendedTags;
-
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
-@property (nonatomic, strong) NSString *currentlySelectedTag;
-@property (nonatomic, strong) UIActionSheet *removeTagActionSheet;
-@property (nonatomic, strong) NSMutableArray *previousTagSuggestions;
-@property (nonatomic, strong) NSMutableArray *tagCompletions;
 @property (nonatomic, strong) NSNumber *markAsRead;
 @property (nonatomic, strong) NSNumber *setAsPrivate;
 @property (nonatomic, strong) NSString *previousURLContents;
@@ -65,9 +51,10 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UISwitch *privateSwitch;
 @property (nonatomic, strong) UISwitch *readSwitch;
 @property (nonatomic, strong) UITextField *currentTextField;
-@property (nonatomic, strong) UITextField *tagTextField;
 @property (nonatomic, strong) UITextField *titleTextField;
 @property (nonatomic, strong) UITextField *urlTextField;
+@property (nonatomic, strong) UITextField *tagTextField;
+@property (nonatomic, strong) NSMutableArray *existingTags;
 
 @property (nonatomic) BOOL textExpanderSnippetExpanded;
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
@@ -80,23 +67,15 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UITapGestureRecognizer *badgeTapGestureRecognizer;
 
 - (void)keyboardDidShow:(NSNotification *)sender;
-- (void)keyboardDidHide:(NSNotification *)sender;
-
+- (void)leftBarButtonTouchUpInside:(id)sender;
 - (void)urlTextFieldDidChange:(NSNotification *)notification;
-- (void)prefillPopularTags;
-- (void)handleTagSuggestions;
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
-- (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string;
 - (void)togglePrivate:(id)sender;
 - (void)toggleRead:(id)sender;
 - (void)addBookmark;
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)finishEditingDescription;
-- (void)setEditingTags:(BOOL)editingTags;
-- (NSArray *)filteredPopularAndRecommendedTags;
-- (BOOL)filteredPopularAndRecommendedTagsVisible;
-- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 - (void)intersectionBetweenStartingAmount:(NSInteger)start andFinalAmount:(NSInteger)final offset:(NSInteger)offset callback:(void (^)(NSArray *, NSArray *, NSArray *))callback;
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
