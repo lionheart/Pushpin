@@ -59,10 +59,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setNeedsStatusBarAppearanceUpdate];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     [self.tagTextField becomeFirstResponder];
 }
 

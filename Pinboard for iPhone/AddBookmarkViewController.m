@@ -170,10 +170,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     addBookmarkViewController.badgeWrapperView.userInteractionEnabled = NO;
     
     if (bookmark[@"description"]) {
-        addBookmarkViewController.postDescription = bookmark[@"description"];
+        addBookmarkViewController.postDescription = [bookmark[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
-        if (![bookmark[@"description"] isEqualToString:@""]) {
-            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:bookmark[@"description"] attributes:addBookmarkViewController.descriptionAttributes];
+        if (![addBookmarkViewController.postDescription isEqualToString:@""]) {
+            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:addBookmarkViewController.postDescription attributes:addBookmarkViewController.descriptionAttributes];
         }
     }
     
@@ -278,8 +278,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryView = nil;
 
-    CGFloat textFieldWidth = CGRectGetWidth(tableView.frame) - 2 * tableView.groupedCellMargin - 40;
-
     switch (indexPath.section) {
         case kBookmarkTopSection:
             switch (indexPath.row) {
@@ -325,8 +323,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                 }
                 case kBookmarkDescriptionRow: {
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    
                     CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
 
                     UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
@@ -765,8 +761,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - PPDescriptionEditing
 
 - (void)editDescriptionViewControllerDidUpdateDescription:(PPEditDescriptionViewController *)editDescriptionViewController {
-    self.postDescription = editDescriptionViewController.textView.text;
-    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:editDescriptionViewController.textView.text attributes:self.descriptionAttributes];
+    NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.postDescription = text;
+    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
     
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
