@@ -23,6 +23,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @interface PPTagEditViewController ()
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+@property (nonatomic, strong) NSString *searchString;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
@@ -41,6 +42,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)keyboardDidHide:(NSNotification *)sender;
 - (void)keyboardDidShow:(NSNotification *)sender;
+
+- (void)searchUpdatedWithString:(NSString *)string;
 
 @end
 
@@ -110,6 +113,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.returnKeyType = UIReturnKeyDone;
     self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.tagTextField.placeholder = NSLocalizedString(@"Add new tags here.", nil);
     
 #warning Set to the user defaults
     self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -158,12 +162,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             BOOL shouldRefreshAutocompletion = NO;
             if (self.tagCompletions.count > 0) {
+                shouldRefreshAutocompletion = YES;
+
                 completion = self.tagCompletions[index];
                 [indexPathsToDelete addObject:indexPath];
                 [self.tagCompletions removeObjectAtIndex:index];
                 [self.existingTags addObject:completion];
-                
-                shouldRefreshAutocompletion = self.tagCompletions.count > 0;
             }
             else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
@@ -190,7 +194,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tableView endUpdates];
                 
                 if (shouldRefreshAutocompletion) {
-                    [self searchUpdatedWithRange:NSMakeRange(0, 0) andString:@""];
+                    [self searchUpdatedWithString:self.searchString];
                 }
 
                 [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
@@ -426,8 +430,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 }
 
-
-- (void)searchUpdatedWithRange:(NSRange)range andString:(NSString *)string {
+- (void)searchUpdatedWithString:(NSString *)string {
     if (!self.autocompleteInProgress) {
         self.autocompleteInProgress = YES;
         
@@ -436,10 +439,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *newTagCompletions = [NSMutableArray array];
             NSMutableArray *oldTagCompletions = [self.tagCompletions copy];
-            
-            NSString *newString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
-            if (string && newString.length > 0) {
-                NSString *searchString = [newString stringByAppendingString:@"*"];
+            if (string.length > 0) {
+                NSString *searchString = [string stringByAppendingString:@"*"];
                 NSArray *existingTags = [self existingTags];
                 
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
@@ -456,8 +457,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [arguments addObject:tag];
                 }
                 
-                [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT 6"];
-                
+                [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
+                [arguments addObject:@(MAX(2, (NSInteger)(4 - self.existingTags.count)))];
+
 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                 FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
                 
@@ -533,18 +535,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 }
 
-#pragma mark - PPBadgeWrapperDelegate
-
-- (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
-    NSString *tag = badge.textLabel.text;
-    self.currentlySelectedTag = tag;
-    
-    NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
-    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
-    [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
-}
-
-
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -568,6 +558,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     if (finalString.length == 0) {
+        self.searchString = nil;
         NSInteger finalAmount;
         if (self.filteredPopularAndRecommendedTagsVisible) {
             finalAmount = self.filteredPopularAndRecommendedTags.count;
@@ -593,7 +584,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        }];
     }
     else {
-        [self searchUpdatedWithRange:range andString:string];
+        self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
+        [self searchUpdatedWithString:self.searchString];
     }
     return YES;
 }
@@ -689,6 +681,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView endUpdates];
         
         [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
+        
+        if (self.searchString) {
+            [self searchUpdatedWithString:self.searchString];
+        }
     });
 }
 
