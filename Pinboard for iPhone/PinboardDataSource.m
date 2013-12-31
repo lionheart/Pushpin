@@ -27,13 +27,6 @@ static NSString *ellipsis = @"…";
 
 @implementation PinboardDataSource
 
-@synthesize query = _query;
-@synthesize queryParameters = _queryParameters;
-@synthesize posts = _posts;
-@synthesize heights = _heights;
-@synthesize strings = _strings;
-@synthesize badges = _badges;
-
 - (id)init {
     self = [super init];
     if (self) {
