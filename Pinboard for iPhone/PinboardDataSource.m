@@ -1090,7 +1090,7 @@ static NSString *ellipsis = @"…";
     
     dispatch_group_notify(group, queue, ^{
         UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
         if ([posts count] == 1) {
             notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
         }

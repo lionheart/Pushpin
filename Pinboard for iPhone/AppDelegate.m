@@ -82,7 +82,7 @@
         self.bookmarksUpdated = notification.userInfo[@"updated"];
         NSString *text = notification.alertBody;
         
-        if ([notification.userInfo[@"success"] isEqual:@YES]) {
+        if ([notification.userInfo[@"success"] isEqual:@(YES)]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[PPStatusBarNotification sharedNotification] showWithText:text];
             });
@@ -113,7 +113,7 @@
     }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
-        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@NO delegate:self callback:nil];
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) delegate:self callback:nil];
     }
     else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
@@ -147,7 +147,7 @@
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
-            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@NO delegate:self callback:^{
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) delegate:self callback:^{
                 if (queryParameters[@"url"]) {
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
@@ -231,7 +231,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UILocalNotification *notification = [[UILocalNotification alloc] init];
                     notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
-                    notification.userInfo = @{@"success": @YES, @"updated": @(NO)};
+                    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 });
             }

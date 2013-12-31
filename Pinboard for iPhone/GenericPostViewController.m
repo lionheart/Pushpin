@@ -994,7 +994,7 @@ static NSInteger kToolbarHeight = 44;
     if (![[delegate connectionAvailable] boolValue]) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = @"Connection unavailable.";
-        notification.userInfo = @{@"success": @NO, @"updated": @YES};
+        notification.userInfo = @{@"success": @(NO), @"updated": @(YES)};
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     }
     else {
@@ -1008,15 +1008,15 @@ static NSInteger kToolbarHeight = 44;
             
 
             UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.userInfo = @{@"success": @YES, @"updated": @YES};
-            notification.alertBody = NSLocalizedString(@"Your bookmarks were updated.", nil);
+            notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
+            notification.alertBody = NSLocalizedString(@"Your bookmarks were marked as read.", nil);
             
             // Enumerate all posts
             [posts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 dispatch_group_enter(group);
                 [dataSource markPostAsRead:obj[@"url"] callback:^(NSError *error) {
                     if (error) {
-                        notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                        notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                         hasError = YES;
                     }
                     dispatch_group_leave(group);
@@ -1025,8 +1025,8 @@ static NSInteger kToolbarHeight = 44;
             
             // If we have any errors, update the local notification
             if (hasError) {
-                notification.alertBody = NSLocalizedString(@"There was an error updating your bookmarks.", nil);
-                notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                notification.alertBody = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
+                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
             }
             
             // Once all async tasks are done, present the notification and update the local database
@@ -1047,7 +1047,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)copyURL {
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
-    notification.userInfo = @{@"success": @YES, @"updated": @NO};
+    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
@@ -1081,16 +1081,16 @@ static NSInteger kToolbarHeight = 44;
                                    notification.alertAction = @"Open Pushpin";
                                    if (httpResponse.statusCode == 200) {
                                        notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                    }
                                    else if (httpResponse.statusCode == 1221) {
                                        notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    else {
                                        notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
@@ -1118,16 +1118,16 @@ static NSInteger kToolbarHeight = 44;
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    if (httpResponse.statusCode == 202) {
                                        notification.alertBody = @"Sent to Readability.";
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                    }
                                    else if (httpResponse.statusCode == 409) {
                                        notification.alertBody = @"Link already sent to Readability.";
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    else {
                                        notification.alertBody = @"Error sending to Readability.";
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
@@ -1139,7 +1139,7 @@ static NSInteger kToolbarHeight = 44;
                                    if (!error) {
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertBody = @"Sent to Pocket.";
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                        
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];

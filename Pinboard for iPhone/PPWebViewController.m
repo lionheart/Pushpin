@@ -623,16 +623,16 @@ static NSInteger kTitleHeight = 40;
                                    notification.alertAction = @"Open Pushpin";
                                    if (httpResponse.statusCode == 200) {
                                        notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                    }
                                    else if (httpResponse.statusCode == 1221) {
                                        notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    else {
                                        notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
@@ -660,16 +660,16 @@ static NSInteger kTitleHeight = 40;
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    if (httpResponse.statusCode == 202) {
                                        notification.alertBody = @"Sent to Readability.";
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                    }
                                    else if (httpResponse.statusCode == 409) {
                                        notification.alertBody = @"Link already sent to Readability.";
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    else {
                                        notification.alertBody = @"Error sending to Readability.";
-                                       notification.userInfo = @{@"success": @NO, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                    }
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
@@ -681,7 +681,7 @@ static NSInteger kTitleHeight = 40;
                                    if (!error) {
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertBody = @"Sent to Pocket.";
-                                       notification.userInfo = @{@"success": @YES, @"updated": @NO};
+                                       notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                        
                                        [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
@@ -697,10 +697,10 @@ static NSInteger kTitleHeight = 40;
         [[SSReadingList defaultReadingList] addReadingListItemWithURL:self.url title:[self.webView stringByEvaluatingJavaScriptFromString:@"document.title"] previewText:nil error:&error];
         if (error) {
             notification.alertBody = @"Error adding to Reading List";
-            notification.userInfo = @{@"success": @NO, @"updated": @NO};
+            notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
         } else {
             notification.alertBody = @"Added to Reading List";
-            notification.userInfo = @{@"success": @YES, @"updated": @NO};
+            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
         }
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
@@ -769,7 +769,7 @@ static NSInteger kTitleHeight = 40;
 - (void)copyURL:(NSURL *)url {
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
-    notification.userInfo = @{@"success": @YES, @"updated": @NO};
+    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
     [[UIPasteboard generalPasteboard] setString:[self urlStringForDemobilizedURL:url]];
