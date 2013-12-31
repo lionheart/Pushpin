@@ -130,15 +130,14 @@ static NSString *ellipsis = @"…";
         else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\": "]].location == NSNotFound) {
             [newComponents addObject:[component stringByAppendingString:@"*"]];
         }
+        else if ([component hasSuffix:@":"]) {
+            [newComponents addObject:[component stringByAppendingString:@"*"]];
+        }
         else {
-            if ([component hasSuffix:@":"]) {
-                [newComponents addObject:[component stringByAppendingString:@"*"]];
-            }
-            else {
-                [newComponents addObject:component];
-            }
+            [newComponents addObject:component];
         }
     }
+
     NSString *newQuery = [newComponents componentsJoinedByString:@" "];
     self.queryParameters[@"query"] = newQuery;
 }
@@ -166,6 +165,7 @@ static NSString *ellipsis = @"…";
     }
 
     if (self.tags.count > 0) {
+#warning TODO need to stop using subqueries. They slow things down.
         NSString *tagComponent = [self.quotedTags componentsJoinedByString:@", "];
         [queryComponents addObject:[NSString stringWithFormat:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name IN (%@))", tagComponent]];
     }

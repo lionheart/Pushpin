@@ -37,6 +37,9 @@ static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
+@property (nonatomic, strong) UIButton *multipleMarkAsReadButton;
+@property (nonatomic, strong) UIButton *multipleTagEditButton;
+@property (nonatomic, strong) UIButton *multipleDeleteButton;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
@@ -45,6 +48,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 
 - (void)toggleCompressedPosts;
+- (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
 
 @end
 
@@ -137,25 +141,32 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView addSubview:multiToolbarBorderView];
     
     // Buttons
-    UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [markAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
-    [markAsReadButton addTarget:self action:@selector(multiMarkAsRead:) forControlEvents:UIControlEventTouchUpInside];
-    [self.multiToolbarView addSubview:markAsReadButton];
+    self.multipleMarkAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.multipleMarkAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multipleMarkAsReadButton setImage:[[UIImage imageNamed:@"toolbar-checkmark"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multipleMarkAsReadButton addTarget:self action:@selector(multiMarkAsRead:) forControlEvents:UIControlEventTouchUpInside];
+    [self.multiToolbarView addSubview:self.multipleMarkAsReadButton];
+    self.multipleMarkAsReadButton.enabled = NO;
     
-    UIButton *editTagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    editTagsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [editTagsButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
-    [editTagsButton addTarget:self action:@selector(multiEdit:) forControlEvents:UIControlEventTouchUpInside];
-    [self.multiToolbarView addSubview:editTagsButton];
-    
-    UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [deleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
-    [deleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
-    [self.multiToolbarView addSubview:deleteButton];
-    
-    NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView, @"read": markAsReadButton, @"edit": editTagsButton, @"delete": deleteButton };
+    self.multipleTagEditButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.multipleTagEditButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multipleTagEditButton setImage:[[UIImage imageNamed:@"toolbar-edit-tags"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multipleTagEditButton addTarget:self action:@selector(multiEdit:) forControlEvents:UIControlEventTouchUpInside];
+    [self.multiToolbarView addSubview:self.multipleTagEditButton];
+    self.multipleTagEditButton.enabled = NO;
+
+    self.multipleDeleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.multipleDeleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.multipleDeleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
+    [self.multipleDeleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
+    [self.multiToolbarView addSubview:self.multipleDeleteButton];
+    self.multipleDeleteButton.enabled = NO;
+
+    NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
+                                    @"read": self.multipleMarkAsReadButton,
+                                    @"edit": self.multipleTagEditButton,
+                                    @"delete": self.multipleDeleteButton };
+
     [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
@@ -300,12 +311,20 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
-    if (selectedRowCount > 0) {
+    if (self.tableView.editing) {
+        NSUInteger selectedRowCount = [tableView.indexPathsForSelectedRows count];
+        if (selectedRowCount > 0) {
+            self.multipleDeleteButton.enabled = YES;
+            self.multipleTagEditButton.enabled = YES;
+            self.multipleMarkAsReadButton.enabled = YES;
+        }
+        else {
+            self.multipleDeleteButton.enabled = NO;
+            self.multipleTagEditButton.enabled = NO;
+            self.multipleMarkAsReadButton.enabled = NO;
+        }
+
         self.multiStatusLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
-    }
-    else {
-        self.multiStatusLabel.text = NSLocalizedString(@"No bookmarks selected", nil);
     }
 }
 
@@ -336,6 +355,8 @@ static NSInteger kToolbarHeight = 44;
 
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
+            [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
+
             self.multiStatusLabel.text = [NSString stringWithFormat:@"%ld %@", (long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
         }
         else {
@@ -357,6 +378,7 @@ static NSInteger kToolbarHeight = 44;
                             httpRange = [urlString rangeOfString:@"http"];
                         }
                         
+#warning TODO Check outside links
                         // Check for App Store link
                         
                         if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
@@ -517,9 +539,7 @@ static NSInteger kToolbarHeight = 44;
     }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
-            NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
             BOOL needsReload = NO;
-            
             if (self.compressPosts) {
                 needsReload = self.pinchGestureRecognizer.scale > 1.5;
             }
@@ -616,12 +636,7 @@ static NSInteger kToolbarHeight = 44;
             if (time == weakself.latestSearchUpdateTime) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     weakself.searchLoading = NO;
-                    [weakself.searchDisplayController.searchResultsTableView beginUpdates];
-                    [weakself.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
-                    [weakself.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
-                    [weakself.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-                    [weakself.searchDisplayController.searchResultsTableView endUpdates];
-                    weakself.searchDisplayController.searchResultsTableView.separatorColor = HEX(0xE0E0E0ff);
+                    [weakself.searchDisplayController.searchResultsTableView reloadData];
                 });
             }
         } failure:nil];
@@ -658,10 +673,12 @@ static NSInteger kToolbarHeight = 44;
         for (NSIndexPath *indexPath in selectedIndexPaths) {
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
+        
+        [self setMultipleEditButtonsEnabled:NO];
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
-        
+
         self.navigationItem.leftBarButtonItem.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
@@ -1528,13 +1545,28 @@ static NSInteger kToolbarHeight = 44;
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
-        
+
         double delayInSeconds = 0.25;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            if (self.tableView.contentOffset.y > 0) {
+                [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            }
             kGenericPostViewControllerResizingPosts = NO;
         });
+    }
+}
+
+- (void)setMultipleEditButtonsEnabled:(BOOL)enabled {
+    if (enabled) {
+        self.multipleDeleteButton.enabled = YES;
+        self.multipleTagEditButton.enabled = YES;
+        self.multipleMarkAsReadButton.enabled = YES;
+    }
+    else {
+        self.multipleDeleteButton.enabled = NO;
+        self.multipleTagEditButton.enabled = NO;
+        self.multipleMarkAsReadButton.enabled = NO;
     }
 }
 
