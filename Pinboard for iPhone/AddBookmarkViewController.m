@@ -41,13 +41,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSArray *)indexPathsForAutocompletedRows;
 - (NSArray *)indexPathsForExistingRows;
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
-- (void)cancelButtonTouchUpInside:(id)sender;
 - (void)deleteTagButtonTouchUpInside:(id)sender;
 - (void)deleteTag:(UIButton *)sender;
 - (void)deleteTagWithName:(NSString *)name;
 - (void)deleteTagWithName:(NSString *)name animation:(UITableViewRowAnimation)animation;
 - (NSInteger)tagOffset;
 
+- (void)leftBarButtonTouchUpInside:(id)sender;
 - (void)rightBarButtonItemTouchUpInside:(id)sender;
 
 @end
@@ -180,7 +180,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonItemTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(cancelButtonTouchUpInside:)];
+    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(leftBarButtonTouchUpInside:)];
     
     if (bookmark[@"title"]) {
         addBookmarkViewController.titleTextField.text = bookmark[@"title"];
@@ -794,7 +794,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
         else {
-            [textField resignFirstResponder];
+            self.editingTags = NO;
             return YES;
         }
         return NO;
@@ -1429,8 +1429,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     if (editingTags) {
         self.title = @"Edit Tags";
-        self.navigationItem.rightBarButtonItem.title = @"Suggest";
-        self.navigationItem.leftBarButtonItem.title = @"Done";
+        self.navigationItem.leftBarButtonItem.title = @"Suggest";
+        self.navigationItem.rightBarButtonItem.title = @"Done";
 
         self.tagTextField.userInteractionEnabled = YES;
         self.tagTextField.text = @"";
@@ -1603,15 +1603,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return indexPaths;
 }
 
-- (void)cancelButtonTouchUpInside:(id)sender {
-    if (self.editingTags) {
-        self.editingTags = NO;
-    }
-    else {
-        [self.modalDelegate closeModal:self];
-    }
-}
-
 - (void)deleteTagWithName:(NSString *)name {
     [self deleteTagWithName:name animation:UITableViewRowAnimationFade];
 }
@@ -1664,10 +1655,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return 2;
 }
 
-- (void)rightBarButtonItemTouchUpInside:(id)sender {
+
+- (void)leftBarButtonTouchUpInside:(id)sender {
+    
     if (self.editingTags) {
         self.navigationItem.rightBarButtonItem.title = @"Suggest";
-
+        
         if (self.filteredPopularAndRecommendedTagsVisible) {
             // Hide them if they're already showing
             NSInteger finalAmount;
@@ -1699,6 +1692,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     else {
         [self addBookmark];
+    }
+}
+
+- (void)rightBarButtonItemTouchUpInside:(id)sender {
+    if (self.editingTags) {
+        self.editingTags = NO;
+    }
+    else {
+        [self.modalDelegate closeModal:self];
     }
 }
 
