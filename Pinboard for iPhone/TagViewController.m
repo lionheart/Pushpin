@@ -287,7 +287,7 @@ static NSString *CellIdentifier = @"TagCell";
     
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    [pinboardDataSource filterByPrivate:nil isRead:nil isStarred:nil hasTags:nil tags:@[tag[@"name"]] offset:0 limit:50];
+    pinboardDataSource.tags = @[tag[@"name"]];
     postViewController.postDataSource = pinboardDataSource;
     
     PPTitleButton *button = [PPTitleButton button];
