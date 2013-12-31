@@ -23,6 +23,7 @@
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
 		3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3C18726EC900155791 /* PPTagEditViewController.m */; };
+		3728CF401872880A00155791 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */; };
 		372C84091870E3B300BF520D /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
 		372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
@@ -500,6 +501,8 @@
 		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
 		3728CF3B18726EC900155791 /* PPTagEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagEditViewController.h; sourceTree = "<group>"; };
 		3728CF3C18726EC900155791 /* PPTagEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTagEditViewController.m; sourceTree = "<group>"; };
+		3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPEditDescriptionViewController.h; sourceTree = "<group>"; };
+		3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPEditDescriptionViewController.m; sourceTree = "<group>"; };
 		372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotViewController.h; sourceTree = "<group>"; };
 		372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotViewController.m; sourceTree = "<group>"; };
 		372C84071870E3B300BF520D /* Delete-Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button.png"; path = "Assets/Delete-Button.png"; sourceTree = "<group>"; };
@@ -1294,6 +1297,8 @@
 				3727558B161A66A2001A857B /* TagViewController.m */,
 				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
 				37800E44162B389B009FCB17 /* AddBookmarkViewController.m */,
+				3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */,
+				3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */,
 				3728CF3B18726EC900155791 /* PPTagEditViewController.h */,
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				37A25A2015FC42B5009716BB /* NoteViewController.h */,
@@ -2202,6 +2207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3728CF401872880A00155791 /* PPEditDescriptionViewController.m in Sources */,
 				378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */,
 				378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */,
 				37E333971871E9D7002AB237 /* PPTableViewHeader.m in Sources */,

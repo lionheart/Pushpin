@@ -10,8 +10,8 @@
 #import "AppDelegate.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTagEditViewController.h"
+#import "PPEditDescriptionViewController.h"
 
-#import <TextExpander/SMTEDelegateController.h>
 
 @class PPNavigationController;
 
@@ -28,13 +28,12 @@ typedef enum BookmarkSections {
     kBookmarkBottomSection,
 } BookmarkSectionType;
 
-@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, SMTEFillDelegate, PPTagEditing, UIActionSheetDelegate> {
+@interface AddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, PPTagEditing, PPDescriptionEditing, UIActionSheetDelegate> {
     UIEdgeInsets _oldContentInset;
 }
 
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) NSString *postDescription;
-@property (nonatomic, strong) UITextView *postDescriptionTextView;
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
 @property (nonatomic) BOOL isUpdate;
@@ -56,9 +55,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UITextField *tagTextField;
 @property (nonatomic, strong) NSMutableArray *existingTags;
 
-@property (nonatomic) BOOL textExpanderSnippetExpanded;
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
-@property (nonatomic, strong) SMTEDelegateController *textExpander;
 @property (nonatomic, strong) UISwipeGestureRecognizer *descriptionGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *tagGestureRecognizer;
@@ -75,8 +72,6 @@ typedef enum BookmarkSections {
 - (void)addBookmark;
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
-- (void)finishEditingDescription;
-- (void)intersectionBetweenStartingAmount:(NSInteger)start andFinalAmount:(NSInteger)final offset:(NSInteger)offset callback:(void (^)(NSArray *, NSArray *, NSArray *))callback;
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
