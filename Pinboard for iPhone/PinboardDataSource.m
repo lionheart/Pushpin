@@ -1404,7 +1404,7 @@ static NSString *ellipsis = @"…";
     if (self.tags.count > 0) {
         // In this situation, "untagged" is a meaningless filter, and we ignore it.
         for (NSString *tag in self.tags) {
-            [whereComponents addObject:@"hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
+            [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
             [parameters addObject:tag];
         }
     }
