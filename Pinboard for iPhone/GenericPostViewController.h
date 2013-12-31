@@ -16,6 +16,7 @@
 
 #import "PPBadgeWrapperView.h"
 #import "FluidTableviewFlowLayout.h"
+#import "PPTitleButton.h"
 
 enum PostSources {
     POST_SOURCE_TWITTER,
@@ -88,7 +89,7 @@ typedef NSInteger PPPostAction;
 
 @end
 
-@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate>
+@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *pullToRefreshView;

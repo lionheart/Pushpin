@@ -101,14 +101,14 @@ static NSString *CellIdentifier = @"Cell";
 #pragma mark Text Field Delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
     if (textField == self.tagsTextField) {
         self.tagsTextField.text = [self.tagsTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        [self addButtonTouchUpInside:nil];
     }
     else {
         [self.tagsTextField becomeFirstResponder];
     }
-    return YES;
+    return NO;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -138,7 +138,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)closeButtonTouchUpInside:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)addButtonTouchUpInside:(id)sender {
@@ -176,7 +176,7 @@ static NSString *CellIdentifier = @"Cell";
         PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
         [dataSource addDataSource:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.modalDelegate closeModal:self];
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
         }];
     }

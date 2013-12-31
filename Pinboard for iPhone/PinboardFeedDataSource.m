@@ -604,8 +604,8 @@ static NSString *ellipsis = @"…";
     [db close];
     
     postViewController.postDataSource = dataSource;
-    
-    PPTitleButton *button = [PPTitleButton button];
+
+    PPTitleButton *button = [PPTitleButton buttonWithDelegate:postViewController];
     [button setTitle:[components componentsJoinedByString:@"+"] imageName:nil];
     
     postViewController.navigationItem.titleView = button;

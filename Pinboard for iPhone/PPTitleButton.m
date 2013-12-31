@@ -17,20 +17,22 @@
 @property (nonatomic, strong) UIImageView *imageView;
 
 @property (nonatomic, strong) NSMutableArray *existingConstraints;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 - (void)addConstraintsForImageAndTitle;
 - (void)addConstraintsForTitleOnly;
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
 @end
 
 @implementation PPTitleButton
 
-+ (instancetype)button {
++ (instancetype)buttonWithDelegate:(id)delegate {
     PPTitleButton *titleButton = [[PPTitleButton alloc] init];
     titleButton.frame = CGRectMake(0, 0, 300, 24);
     titleButton.containerView = [[UIView alloc] init];
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     titleButton.titleLabel = [[UILabel alloc] init];
     titleButton.titleLabel.clipsToBounds = YES;
     titleButton.titleLabel.textColor = [UIColor whiteColor];
@@ -38,16 +40,25 @@
     titleButton.titleLabel.font = [PPTheme extraLargeFont];
     titleButton.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.titleLabel];
-
+    
     titleButton.imageView = [[UIImageView alloc] init];
     titleButton.imageView.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.imageView];
-
+    
     [titleButton addSubview:titleButton.containerView];
     [titleButton lhs_centerVerticallyForView:titleButton.containerView];
     [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
     [titleButton addConstraintsForImageAndTitle];
+    
+    titleButton.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:titleButton action:@selector(gestureDetected:)];
+    [titleButton addGestureRecognizer:titleButton.tapGestureRecognizer];
+    
+    titleButton.delegate = delegate;
     return titleButton;
+}
+
++ (instancetype)button {
+    return [PPTitleButton buttonWithDelegate:nil];
 }
 
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
@@ -82,6 +93,14 @@
     [self.containerView removeConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[title(<=240)]|" views:views];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+}
+
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.tapGestureRecognizer) {
+        if (self.delegate) {
+            [self.delegate titleButtonTouchUpInside:self];
+        }
+    }
 }
 
 @end
