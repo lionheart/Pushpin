@@ -318,7 +318,7 @@
         _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
         
         // TODO
-        PPTitleButton *titleButton = [PPTitleButton button];
+        PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:pinboardViewController];
         
         // Determine our default feed
         NSString *feedDetails;

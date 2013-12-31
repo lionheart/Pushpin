@@ -41,18 +41,12 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 
+- (void)toggleCompressedPosts;
+
 @end
 
 @implementation GenericPostViewController
 
-@synthesize postDataSource;
-@synthesize selectedPost;
-@synthesize selectedIndexPath;
-@synthesize actionSheetVisible;
-@synthesize confirmDeletionAlertView;
-@synthesize pullToRefreshView;
-@synthesize pullToRefreshImageView;
-@synthesize loading;
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize itemSize = _itemSize;
 
@@ -511,36 +505,18 @@ static NSInteger kToolbarHeight = 44;
     }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
-            if (!kGenericPostViewControllerResizingPosts) {
-                kGenericPostViewControllerResizingPosts = YES;
+            NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+            BOOL needsReload = NO;
+            
+            if (self.compressPosts) {
+                needsReload = self.pinchGestureRecognizer.scale > 1.5;
+            }
+            else {
+                needsReload = self.pinchGestureRecognizer.scale < 0.5;
+            }
 
-                NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-                BOOL needsReload = NO;
-                
-                if (self.compressPosts) {
-                    needsReload = self.pinchGestureRecognizer.scale > 1.5;
-                }
-                else {
-                    needsReload = self.pinchGestureRecognizer.scale < 0.5;
-                }
-                
-                if (needsReload) {
-                    self.compressPosts = !self.compressPosts;
-                    
-                    [self.tableView beginUpdates];
-                    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    
-                    double delayInSeconds = 0.25;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                        kGenericPostViewControllerResizingPosts = NO;
-                    });
-                }
-                else {
-                    kGenericPostViewControllerResizingPosts = NO;
-                }
+            if (needsReload) {
+                [self toggleCompressedPosts];
             }
         }
     }
@@ -1453,6 +1429,33 @@ static NSInteger kToolbarHeight = 44;
                 }
             }
         }
+    }
+}
+
+#pragma mark - PPTitleButtonDelegate
+
+- (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton {
+    [self toggleCompressedPosts];
+}
+
+- (void)toggleCompressedPosts {
+    if (!kGenericPostViewControllerResizingPosts) {
+        kGenericPostViewControllerResizingPosts = YES;
+        
+        NSArray *visibleIndexPaths = [self.tableView indexPathsForVisibleRows];
+
+        self.compressPosts = !self.compressPosts;
+        
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+        
+        double delayInSeconds = 0.25;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self.tableView scrollToRowAtIndexPath:visibleIndexPaths[0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            kGenericPostViewControllerResizingPosts = NO;
+        });
     }
 }
 

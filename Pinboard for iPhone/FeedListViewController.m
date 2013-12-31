@@ -268,7 +268,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    PPTitleButton *titleButton = [PPTitleButton button];
+    PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:postViewController];
     switch (indexPath.section) {
         case 0: {
             switch (indexPath.row) {
