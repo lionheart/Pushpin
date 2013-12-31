@@ -88,7 +88,7 @@
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    self.bottomConstraint.constant = -(CGRectGetHeight(frame) + 4);
+    self.bottomConstraint.constant = -CGRectGetHeight(frame);
     [self.view layoutIfNeeded];
 }
 
@@ -100,14 +100,12 @@
 #pragma mark - UITextViewDelegate
 
 - (void)fixTextView:(UITextView *)textView {
-    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f) {
-        [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
-    }
+    [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
     if (self.textExpanderSnippetExpanded) {
-//        [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
+        [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
         self.textExpanderSnippetExpanded = NO;
     }
 

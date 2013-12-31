@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PPBadgeWrapperView.h"
 
 @class PPTagEditViewController;
 
@@ -17,7 +16,7 @@
 
 @end
 
-@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate, UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface PPTagEditViewController : UIViewController <UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
@@ -35,7 +34,6 @@
 @property (nonatomic, strong) NSString *currentlySelectedTag;
 @property (nonatomic, strong) UIActionSheet *removeTagActionSheet;
 @property (nonatomic, strong) UITextField *tagTextField;
-@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 @property (nonatomic, weak) id<PPTagEditing> tagDelegate;
 @property (nonatomic, strong) UITableView *tableView;
 

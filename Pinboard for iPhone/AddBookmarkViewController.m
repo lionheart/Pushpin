@@ -91,15 +91,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagTextField.font = font;
         self.tagTextField.placeholder = @"Tap to add tags.";
         self.tagTextField.translatesAutoresizingMaskIntoConstraints = NO;
-        self.tagTextField.userInteractionEnabled = YES;
-        self.tagTextField.delegate = self;
-        self.tagTextField.returnKeyType = UIReturnKeyDone;
-        self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        
-#warning Set to the user defaults
-        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.tagTextField.userInteractionEnabled = NO;
         self.tagTextField.text = @"";
 
         self.markAsRead = @(NO);
@@ -222,10 +215,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewDidAppear:animated];
 
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     [self.tableView reloadData];
 }
 
@@ -537,13 +528,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 #pragma mark - Everything Else
-
-- (void)keyboardDidShow:(NSNotification *)sender {
-    if (self.currentTextField == self.urlTextField || self.currentTextField == self.titleTextField) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:kBookmarkTitleRow inSection:kBookmarkTopSection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-}
-
 
 - (void)togglePrivate:(id)sender {
     self.setAsPrivate = @(!self.setAsPrivate.boolValue);
