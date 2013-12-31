@@ -64,7 +64,7 @@ static void PSPDFAssertIfNotMainThread(void) {
 
 // This installs a small guard that checks for the most common threading-errors in UIKit.
 // This won't really slow down performance but still only is compiled in DEBUG versions of PSPDFKit.
-// @note No private API is used here.
+// @(NO)te No private API is used here.
 __attribute__((constructor)) static void PSPDFUIKitMainThreadGuard(void) {
     @autoreleasepool {
         for (NSString *selStr in @[PROPERTY(setNeedsLayout), PROPERTY(setNeedsDisplay), PROPERTY(setNeedsDisplayInRect:)]) {

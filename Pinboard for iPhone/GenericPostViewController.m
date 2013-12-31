@@ -37,6 +37,8 @@ static NSInteger kToolbarHeight = 44;
 
 @interface GenericPostViewController ()
 
+@property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactivePopTransition;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
@@ -63,12 +65,15 @@ static NSInteger kToolbarHeight = 44;
 
     self.prefersStatusBarHidden = NO;
     self.extendedLayoutIncludesOpaqueBars = YES;
+    self.actionSheetVisible = NO;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
     [self.view addSubview:self.tableView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
@@ -76,7 +81,7 @@ static NSInteger kToolbarHeight = 44;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
-    
+
     self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
 
@@ -101,31 +106,33 @@ static NSInteger kToolbarHeight = 44;
     self.multiStatusView = [[UIView alloc] init];
     self.multiStatusView.backgroundColor = HEX(0xFFFFFFFF);
     self.multiStatusView.translatesAutoresizingMaskIntoConstraints = NO;
+
     self.multiStatusLabel = [[UILabel alloc] init];
     self.multiStatusLabel.textColor = [UIColor grayColor];
     self.multiStatusLabel.text = @"No bookmarks selected";
     self.multiStatusLabel.textAlignment = NSTextAlignmentCenter;
     self.multiStatusLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.multiStatusView addSubview:self.multiStatusLabel];
+
     UIView *multiStatusBorderView = [[UIView alloc] init];
     multiStatusBorderView.backgroundColor = HEX(0xb2b2b2ff);
     multiStatusBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.multiStatusView addSubview:multiStatusBorderView];
+
     NSDictionary *statusViews = @{ @"label": self.multiStatusLabel, @"border": multiStatusBorderView };
     [self.multiStatusView lhs_addConstraints:@"H:|-[label]-|" views:statusViews];
     [self.multiStatusView lhs_addConstraints:@"H:|[border]|" views:statusViews];
     [self.multiStatusView lhs_addConstraints:@"V:|-4-[label]-4-[border(0.5)]|" views:statusViews];
-    self.multiStatusView.hidden = YES;
     
     // Setup the multi-edit toolbar
     self.multiToolbarView = [[UIView alloc] init];
     self.multiToolbarView.backgroundColor = HEX(0xEBF2F6FF);
     self.multiToolbarView.translatesAutoresizingMaskIntoConstraints = NO;
+
     UIView *multiToolbarBorderView = [[UIView alloc] init];
     multiToolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
     multiToolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.multiToolbarView addSubview:multiToolbarBorderView];
-    self.multiToolbarView.hidden = YES;
     
     // Buttons
     UIButton *markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -155,6 +162,25 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
     [self.tableView lhs_expandToFillSuperview];
+    
+    NSDictionary *views = @{@"statusView": self.multiStatusView,
+                            @"toolbarView": self.multiToolbarView};
+    
+    // Multi edit status and toolbar
+    [self.view addSubview:self.multiStatusView];
+    [self.view addSubview:self.multiToolbarView];
+    [self.view addSubview:self.toolbar];
+    
+    [self.view lhs_addConstraints:@"H:|[statusView]|" views:views];
+    [self.view lhs_addConstraints:@"V:[statusView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
+    [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
+    [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
+    
+    self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
+    [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
+    
+    self.multipleEditStatusViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.multiStatusView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:-kToolbarHeight];
+    [self.view addConstraint:self.multipleEditStatusViewTopConstraint];
     
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -196,22 +222,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    // Multi edit status and toolbar
-    CGFloat topOffset = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
-    [self.navigationController.view addSubview:self.multiStatusView];
-    [self.navigationController.view lhs_addConstraints:@"H:|[statusView]|" views:@{ @"statusView": self.multiStatusView }];
-    [self.navigationController.view lhs_addConstraints:@"V:|-offset-[statusView(height)]" metrics:@{ @"offset": @(topOffset), @"height": @(kToolbarHeight) } views:@{ @"statusView": self.multiStatusView }];
-    [self.navigationController.view addSubview:self.multiToolbarView];
-    [self.navigationController.view lhs_addConstraints:@"H:|[toolbarView]|" views:@{ @"toolbarView": self.multiToolbarView }];
-    [self.navigationController.view lhs_addConstraints:@"V:[toolbarView(height)]|" metrics:@{ @"height": @(kToolbarHeight) } views:@{ @"toolbarView": self.multiToolbarView }];
-    
-    [self.navigationController.view addSubview:self.toolbar];
-
-    self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = NO;
-
-    self.actionSheetVisible = NO;
     
     BOOL oldCompressPosts = self.compressPosts;
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
@@ -646,28 +656,36 @@ static NSInteger kToolbarHeight = 44;
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
+        
+        self.navigationItem.leftBarButtonItem.enabled = YES;
 
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
-            // TODO: Animate auto layout
-            self.multiStatusView.hidden = YES;
-            self.multiToolbarView.hidden = YES;
+            self.multipleEditStatusViewTopConstraint.constant = -kToolbarHeight;
+            self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
+            [self.view layoutIfNeeded];
         }];
     }
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
 
+        self.navigationItem.leftBarButtonItem.enabled = NO;
+
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
+            
+            if (self.tableView.contentOffset.y < 0) {
+                self.tableView.contentOffset = CGPointMake(0, -64);
+            }
 
-            // TODO: Animate auto layout
-            self.multiStatusView.hidden = NO;
-            self.multiToolbarView.hidden = NO;
+            self.multipleEditStatusViewTopConstraint.constant = 0;
+            self.multipleEditToolbarBottomConstraint.constant = 0;
+            [self.view layoutIfNeeded];
         }];
     }
 }
@@ -1005,28 +1023,29 @@ static NSInteger kToolbarHeight = 44;
             
             dispatch_group_t group = dispatch_group_create();
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            
 
             UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
-            notification.alertBody = NSLocalizedString(@"Your bookmarks were marked as read.", nil);
             
             // Enumerate all posts
-            [posts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            for (NSDictionary *post in posts) {
                 dispatch_group_enter(group);
-                [dataSource markPostAsRead:obj[@"url"] callback:^(NSError *error) {
+                [dataSource markPostAsRead:post[@"url"] callback:^(NSError *error) {
                     if (error) {
                         notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                         hasError = YES;
                     }
                     dispatch_group_leave(group);
                 }];
-            }];
+            }
             
             // If we have any errors, update the local notification
             if (hasError) {
                 notification.alertBody = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+            }
+            else {
+                notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
+                notification.alertBody = NSLocalizedString(@"Bookmarks marked as read.", nil);
             }
             
             // Once all async tasks are done, present the notification and update the local database
