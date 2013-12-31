@@ -92,7 +92,7 @@ static NSString *CellIdentifier = @"Cell";
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = NSLocalizedString(@"Bookmarklet copied to clipboard.", nil);
         notification.alertAction = @"Open Pushpin";
-        notification.userInfo = @{@"success": @YES, @"updated": @NO};
+        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     }
     else {
