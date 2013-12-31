@@ -22,6 +22,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface PPTagEditViewController ()
 
+@property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
 - (NSArray *)indexPathsForExistingRows;
@@ -36,8 +38,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSArray *)filteredPopularAndRecommendedTags;
 - (BOOL)filteredPopularAndRecommendedTagsVisible;
-- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
+
 - (void)keyboardDidHide:(NSNotification *)sender;
+- (void)keyboardDidShow:(NSNotification *)sender;
 
 @end
 
@@ -55,8 +58,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self setNeedsStatusBarAppearanceUpdate];
 }
 
@@ -68,7 +69,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLayoutSubviews {
     NSDictionary *views = @{@"view": self.tableView,
                             @"guide": self.topLayoutGuide };
-    [self.view lhs_addConstraints:@"V:[guide][view]|" views:views];
+    [self.view lhs_addConstraints:@"V:[guide][view]" views:views];
     [self.view lhs_addConstraints:@"H:|[view]|" views:views];
     [self.view layoutIfNeeded];
 }
@@ -85,6 +86,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tableView.backgroundColor = [UIColor blackColor];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
+    
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    [self.view addConstraint:self.bottomConstraint];
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     self.automaticallyAdjustsScrollViewInsets = NO;
@@ -117,30 +121,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.text = @"";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
-}
-
-- (void)keyboardDidHide:(NSNotification *)sender {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.autocompleteInProgress = NO;
-    });
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            return MAX(44, [self.badgeWrapperView calculateHeightForWidth:300] + 20);
-        }
-        else {
-            return 44;
-        }
-    }
-    else {
-        return 44;
-    }
-    
-    return 44;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -164,17 +147,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSString *completion;
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-            NSMutableArray *indexPathsToReload = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
             
             // Add the row to the bookmark list below
             
             if (self.existingTags.count == 0) {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [indexSetsToInsert addIndex:1];
             }
             else {
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
             }
             
@@ -188,11 +168,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.existingTags addObject:completion];
                 
                 shouldRefreshAutocompletion = self.tagCompletions.count > 0;
-                if (!shouldRefreshAutocompletion) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.tagTextField.text = @"";
-                    });
-                }
             }
             else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
@@ -206,20 +181,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
                 }
                 
-                if (!self.filteredPopularAndRecommendedTagsVisible) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.tagTextField.text = @"";
-                    });
-                }
-                
                 [self.existingTags addObject:completion];
                 [indexPathsToDelete addObject:indexPath];
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+                self.tagTextField.text = @"";
                 [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -266,30 +234,23 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
         else {
-            if ([self tagOffset] == 2 && indexPath.row == 0) {
-                [cell.contentView addSubview:self.badgeWrapperView];
-                [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
-                [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
+            UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+            topImageView.frame = CGRectMake(14, 12, 20, 20);
+            [cell.contentView addSubview:topImageView];
+            
+            if (self.loadingTags) {
+                UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                [activity startAnimating];
+                cell.accessoryView = activity;
+                cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
+                cell.textLabel.enabled = NO;
             }
-            else {
-                UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
-                topImageView.frame = CGRectMake(14, 12, 20, 20);
-                [cell.contentView addSubview:topImageView];
-                
-                if (self.loadingTags) {
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    [activity startAnimating];
-                    cell.accessoryView = activity;
-                    cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
-                    cell.textLabel.enabled = NO;
-                }
 
-                [cell.contentView addSubview:self.tagTextField];
+            [cell.contentView addSubview:self.tagTextField];
 
-                NSDictionary *views = @{@"view": self.tagTextField};
-                [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
-                [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
-            }
+            NSDictionary *views = @{@"view": self.tagTextField};
+            [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
         }
     }
     else {
@@ -378,22 +339,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (BOOL)filteredPopularAndRecommendedTagsVisible {
     return self.filteredPopularAndRecommendedTags.count > 0;
 }
-
-- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags {
-    NSMutableArray *badges = [NSMutableArray array];
-    NSArray *existingTags = [self existingTags];
-    for (NSString *tag in existingTags) {
-        if (![tag isEqualToString:@""]) {
-            [badges addObject:@{ @"type": @"tag", @"tag": tag }];
-        }
-    }
-    
-    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
-    wrapper.translatesAutoresizingMaskIntoConstraints = NO;
-    wrapper.delegate = self;
-    return wrapper;
-}
-
 
 - (void)handleTagSuggestions {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -609,15 +554,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.removeTagActionSheet) {
         if (buttonIndex == 0) {
-            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-            
-            NSIndexPath *indexPathToReload;
-            indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
-            
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-            
             [self deleteTagWithName:self.currentlySelectedTag];
         }
     }
@@ -674,15 +610,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-            NSMutableArray *indexPathsToReload = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
             
             if (self.existingTags.count == 0) {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [indexSetsToInsert addIndex:1];
             }
             else {
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
             }
             
@@ -697,10 +630,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             
             [self.existingTags addObject:tag];
-            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
             
             [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -710,7 +641,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
     }
     else {
-        [self.tagTextField resignFirstResponder];
+        [self.navigationController popViewControllerAnimated:YES];
         return YES;
     }
     return NO;
@@ -746,16 +677,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSInteger index = [self.existingTags indexOfObject:name];
     
     if (self.existingTags.count > 1) {
-        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
     }
     else {
-        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [sectionIndicesToDelete addIndex:1];
     }
     
     [self.existingTags removeObject:name];
-    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
@@ -815,10 +743,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSInteger)tagOffset {
-    if (self.existingTags.count == 0) {
-        return 1;
-    }
-    return 2;
+    return 1;
 }
 
 - (NSArray *)indexPathsForExistingRows {
@@ -836,6 +761,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [indexPaths addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
     }
     return indexPaths;
+}
+
+- (void)keyboardDidShow:(NSNotification *)sender {
+    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    self.bottomConstraint.constant = -CGRectGetHeight(frame);
+    [self.view layoutIfNeeded];
+}
+
+- (void)keyboardDidHide:(NSNotification *)sender {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.autocompleteInProgress = NO;
+        self.bottomConstraint.constant = 0;
+        [self.view layoutIfNeeded];
+    });
 }
 
 @end
