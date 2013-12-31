@@ -20,6 +20,7 @@
 #import "PPBadgeView.h"
 #import "UITableView+Additions.h"
 #import "PPTableViewHeader.h"
+#import "PPEditDescriptionViewController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
@@ -177,7 +178,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = bookmark[@"description"];
-        addBookmarkViewController.postDescriptionTextView.text = bookmark[@"description"];
         
         if (![bookmark[@"description"] isEqualToString:@""]) {
             addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:bookmark[@"description"] attributes:addBookmarkViewController.descriptionAttributes];
@@ -226,7 +226,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
 
-    [self.postDescriptionTextView resignFirstResponder];
     [self.tableView reloadData];
 }
 
@@ -234,37 +233,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewWillAppear:animated];
     
     [self setNeedsStatusBarAppearanceUpdate];
-
-    if (!self.postDescriptionTextView) {
-        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
-        BOOL isIPad = [UIApplication isIPad];
-        CGFloat offset;
-        if (isIPad) {
-            offset = 75;
-        }
-        else {
-            offset = 225;
-        }
-
-        self.postDescriptionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - offset)];
-        self.postDescriptionTextView.autocorrectionType = [AppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-        self.postDescriptionTextView.autocapitalizationType =  [AppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
-        self.postDescriptionTextView.spellCheckingType = UITextSpellCheckingTypeDefault;
-        self.postDescriptionTextView.font = font;
-        self.postDescriptionTextView.text = self.postDescription;
-        
-        // TextExpander SDK
-        self.textExpander = [[SMTEDelegateController alloc] init];
-        [self.postDescriptionTextView setDelegate:_textExpander];
-        [self.textExpander setNextDelegate:self];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    if (self.navigationController.topViewController != self.editTextViewController) {
-        self.callback();
-    }
+    self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -504,16 +477,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     switch (indexPath.section) {
         case kBookmarkTopSection:
             switch (indexPath.row) {
-                case kBookmarkDescriptionRow:
-                    self.editTextViewController = [[UIViewController alloc] init];
-                    self.editTextViewController.title = NSLocalizedString(@"Description", nil);
-                    self.editTextViewController.view = [[UIView alloc] initWithFrame:SCREEN.bounds];
-                    self.editTextViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishEditingDescription)];
-                    [self.editTextViewController.view addSubview:self.postDescriptionTextView];
-                    self.postDescriptionTextView.text = self.postDescription;
-                    [self.navigationController pushViewController:self.editTextViewController animated:YES];
-                    [self.postDescriptionTextView becomeFirstResponder];
+                case kBookmarkDescriptionRow: {
+                    PPEditDescriptionViewController *editDescriptionViewController = [[PPEditDescriptionViewController alloc] initWithDescription:self.postDescription];
+                    editDescriptionViewController.delegate = self;
+                    [self.navigationController pushViewController:editDescriptionViewController animated:YES];
                     break;
+                }
                     
                 case kBookmarkTagRow: {
                     PPTagEditViewController *tagEditViewController = [[PPTagEditViewController alloc] init];
@@ -564,23 +533,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     self.currentTextField = textField;
-    return YES;
-}
-
-#pragma mark - UITextViewDelegate
-
-- (void)textViewDidChange:(UITextView *)textView {
-    if (self.textExpanderSnippetExpanded) {
-        [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
-        self.textExpanderSnippetExpanded = NO;
-    }
-}
-
-- (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if (self.textExpander.isAttemptingToExpandText) {
-        self.textExpanderSnippetExpanded = YES;
-    }
-    
     return YES;
 }
 
@@ -777,23 +729,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     });
 }
 
-- (void)fixTextView:(UITextView *)textView {
-    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0f) {
-        [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
-    }
-}
-
-- (void)finishEditingDescription {
-    // Update the description text
-    self.postDescription = self.postDescriptionTextView.text;
-    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescriptionTextView.text attributes:self.descriptionAttributes];
-    
-    [self.navigationController popViewControllerAnimated:YES];
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView endUpdates];
-}
-
 - (void)gestureDetected:(UIGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer == self.titleGestureRecognizer) {
         [self prefillTitleAndForceUpdate:YES];
@@ -840,6 +775,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+}
+
+#pragma mark - PPDescriptionEditing
+
+- (void)editDescriptionViewControllerDidUpdateDescription:(PPEditDescriptionViewController *)editDescriptionViewController {
+    self.postDescription = editDescriptionViewController.textView.text;
+    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:editDescriptionViewController.textView.text attributes:self.descriptionAttributes];
+    
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
 }
 
