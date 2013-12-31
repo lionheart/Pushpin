@@ -67,7 +67,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.navigationController.delegate = self;
     self.prefersStatusBarHidden = NO;
     self.extendedLayoutIncludesOpaqueBars = YES;
 

@@ -143,12 +143,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
     
     if (isUpdate.boolValue) {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(rightBarButtonItemTouchUpInside:)];
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(rightBarButtonTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
         addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
     }
     else {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonItemTouchUpInside:)];
+        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(leftBarButtonTouchUpInside:)];
