@@ -582,7 +582,7 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Description", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
-                            self.searchBar.tintColor = [UIColor darkGrayColor];
+                            self.searchBar.tintColor = [UIColor blackColor];
                             self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
@@ -1284,13 +1284,55 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+    if (![searchBar.text isEqualToString:@""]) {
+        if (self.latestSearchTimer) {
+            [self.latestSearchTimer invalidate];
+        }
+
+        self.latestSearchText = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.latestSearchTimer = [NSTimer timerWithTimeInterval:0.3 target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    return YES;
+}
+
 - (void)searchTimerFired {
-    [self.searchPostDataSource filterWithQuery:self.latestSearchText];
+    NSString *query;
+    switch (self.searchBar.selectedScopeButtonIndex) {
+        case 0:
+            query = self.latestSearchText;
+            break;
+            
+        case 1:
+            query = [NSString stringWithFormat:@"title:\"%@\"", self.latestSearchText];
+            break;
+
+        case 2:
+            query = [NSString stringWithFormat:@"description:\"%@\"", self.latestSearchText];
+            break;
+
+        case 3: {
+            NSArray *tags = [self.latestSearchText componentsSeparatedByString:@" "];
+            NSMutableArray *tagQueries = [NSMutableArray array];
+            for (NSString *tag in tags) {
+                [tagQueries addObject:[NSString stringWithFormat:@"tags:%@*", tag]];
+            }
+            query = [tagQueries componentsJoinedByString:@" "];
+            break;
+        }
+            
+        default:
+            break;
+    }
+    [self.searchPostDataSource filterWithQuery:query];
     [self updateSearchResults];
 }
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
