@@ -37,18 +37,6 @@ static NSString *CellIdentifier = @"Cell";
 
 @implementation SettingsViewController
 
-@synthesize logOutAlertView;
-@synthesize supportActionSheet;
-@synthesize readLaterServices;
-@synthesize readLaterActionSheet;
-@synthesize privateByDefaultSwitch;
-@synthesize instapaperAlertView;
-@synthesize instapaperVerificationAlertView;
-@synthesize loadingIndicator;
-@synthesize readByDefaultSwitch;
-@synthesize readabilityAlertView;
-@synthesize readabilityVerificationAlertView;
-
 - (id)init {
     return [super initWithStyle:UITableViewStyleGrouped];
 }

@@ -28,12 +28,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 @implementation TagViewController
 
-@synthesize titleToTags;
-@synthesize alphabet;
-@synthesize sortedTitles;
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
-@synthesize filteredTags;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     return [super initWithStyle:UITableViewStyleGrouped];

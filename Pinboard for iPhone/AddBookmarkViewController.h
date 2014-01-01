@@ -63,7 +63,6 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UIViewController *editTextViewController;
 @property (nonatomic, strong) UITapGestureRecognizer *badgeTapGestureRecognizer;
 
-- (void)keyboardDidShow:(NSNotification *)sender;
 - (void)leftBarButtonTouchUpInside:(id)sender;
 - (void)urlTextFieldDidChange:(NSNotification *)notification;
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
