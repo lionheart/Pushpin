@@ -38,7 +38,6 @@
 
 @implementation AppDelegate
 
-@synthesize window;
 @synthesize readlater = _readlater;
 @synthesize token = _token;
 @synthesize browser = _browser;
@@ -50,11 +49,6 @@
 @synthesize enableAutoCorrect = _enableAutoCorrect;
 @synthesize enableAutoCapitalize = _enableAutoCapitalize;
 @synthesize feedToken = _feedToken;
-@synthesize connectionAvailable;
-@synthesize dateFormatter;
-@synthesize bookmarksUpdated;
-@synthesize bookmarksUpdatedMessage;
-@synthesize bookmarksLoading;
 @synthesize readByDefault = _readByDefault;
 @synthesize defaultFeed = _defaultFeed;
 @synthesize openLinksInApp = _openLinksInApp;
@@ -495,8 +489,8 @@
     [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    self.dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+    self.dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
 
     // Update iCloud so that the user gets credited for future updates.
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];

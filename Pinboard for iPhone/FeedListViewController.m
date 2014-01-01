@@ -36,9 +36,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @implementation FeedListViewController
 
-@synthesize updateTimer;
-@synthesize bookmarkCounts;
-
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }

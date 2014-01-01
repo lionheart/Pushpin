@@ -38,8 +38,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @implementation AddBookmarkViewController
 
-@synthesize isUpdate = _isUpdate;
-
 #pragma mark - Instantiation
 
 - (id)init {

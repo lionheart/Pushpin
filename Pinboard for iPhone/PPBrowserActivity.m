@@ -11,10 +11,6 @@
 
 @implementation PPBrowserActivity
 
-@synthesize browserName;
-@synthesize urlScheme;
-@synthesize urlString;
-
 - (id)initWithUrlScheme:(NSString *)scheme {
     if (self = [super init]) {
         self.urlScheme = scheme;

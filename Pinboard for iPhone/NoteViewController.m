@@ -17,12 +17,9 @@
 
 @implementation NoteViewController
 
+// We have to re-synthesize this, because UITableViewController already has a searchDisplayController property. Confusing, right? Remove it and you'll understand.
 @synthesize searchDisplayController;
 @synthesize notes = _notes;
-@synthesize searchBar;
-@synthesize noteDetailViewController;
-@synthesize webView;
-@synthesize navigationController;
 
 #pragma mark - Table view data source
 
