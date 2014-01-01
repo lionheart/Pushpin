@@ -24,6 +24,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 @interface TagViewController ()
 
+@property (nonatomic) BOOL searchInProgress;
+
 @end
 
 @implementation TagViewController
@@ -47,10 +49,13 @@ static NSString *CellIdentifier = @"TagCell";
     
     // TODO Trying to get this to @"" but back button still displays "Back"
     self.navigationItem.titleView = titleView;
+    self.searchInProgress = NO;
     
     self.tableView.opaque = NO;
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    self.tableView.sectionIndexBackgroundColor = [UIColor whiteColor];
+    self.tableView.sectionIndexTrackingBackgroundColor = [UIColor lightGrayColor];
+    self.tableView.sectionIndexColor = [UIColor darkGrayColor];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -105,6 +110,8 @@ static NSString *CellIdentifier = @"TagCell";
 
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     self.searchBar.delegate = self;
+    self.searchBar.barTintColor = HEX(0x0096FFFF);
+
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
     self.searchDisplayController.searchResultsDataSource = self;
     self.searchDisplayController.searchResultsDelegate = self;
@@ -112,6 +119,7 @@ static NSString *CellIdentifier = @"TagCell";
     self.tableView.tableHeaderView = self.searchBar;
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -215,59 +223,69 @@ static NSString *CellIdentifier = @"TagCell";
     return NO;
 }
 
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    return YES;
+}
+
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+    if (!self.searchInProgress) {
+        self.searchInProgress = YES;
 
-        NSMutableArray *newTagNames = [NSMutableArray array];
-        NSMutableArray *oldTagNames = [NSMutableArray array];
-        
-        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        NSMutableArray *newTags = [NSMutableArray array];
-        NSInteger index = 0;
-
-        for (NSDictionary *tag in self.filteredTags) {
-            [oldTagNames addObject:tag[@"name"]];
-        }
-
-        while ([result next]) {
-            NSString *tagName = [result stringForColumn:@"name"];
-            NSString *tagCount = [result stringForColumn:@"count"];
-
-            if (tagName && tagCount) {
-                [newTags addObject:@{
-                    @"name": tagName,
-                    @"count": tagCount }];
-                [newTagNames addObject:tagName];
-
-                if (![oldTagNames containsObject:tagName]) {
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+            
+            NSMutableArray *newTagNames = [NSMutableArray array];
+            NSMutableArray *oldTagNames = [NSMutableArray array];
+            
+            NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            NSMutableArray *newTags = [NSMutableArray array];
+            NSInteger index = 0;
+            
+            for (NSDictionary *tag in self.filteredTags) {
+                [oldTagNames addObject:tag[@"name"]];
+            }
+            
+            while ([result next]) {
+                NSString *tagName = [result stringForColumn:@"name"];
+                NSString *tagCount = [result stringForColumn:@"count"];
+                
+                if (tagName && tagCount) {
+                    [newTags addObject:@{
+                                         @"name": tagName,
+                                         @"count": tagCount }];
+                    [newTagNames addObject:tagName];
+                    
+                    if (![oldTagNames containsObject:tagName]) {
+                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                    }
+                    index++;
                 }
-                index++;
             }
-        }
-        [db close];
-        
-        NSInteger i;
-        for (i=0; i<oldTagNames.count; i++) {
-            if (![newTagNames containsObject:oldTagNames[i]]) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            [db close];
+            
+            NSInteger i;
+            for (i=0; i<oldTagNames.count; i++) {
+                if (![newTagNames containsObject:oldTagNames[i]]) {
+                    [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                }
             }
-        }
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.searchDisplayController.searchResultsTableView beginUpdates];
-            self.filteredTags = newTags;
-            [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-            [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-            [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-            [self.searchDisplayController.searchResultsTableView endUpdates];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.filteredTags = newTags;
+                [self.searchDisplayController.searchResultsTableView beginUpdates];
+                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchDisplayController.searchResultsTableView endUpdates];
+                self.searchInProgress = NO;
+            });
         });
-    });
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

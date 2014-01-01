@@ -49,6 +49,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
+- (void)resetSearchTimer;
 
 @end
 
@@ -601,9 +602,9 @@ static NSInteger kToolbarHeight = 44;
 
                             self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
                             self.searchBar.delegate = self;
-                            self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Description", @"Tags"];
+                            self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
-                            self.searchBar.tintColor = [UIColor whiteColor];
+                            self.searchBar.tintColor = HEX(0x666666FF);
                             self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
@@ -632,14 +633,25 @@ static NSInteger kToolbarHeight = 44;
         __block CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
         __weak GenericPostViewController *weakself = self;
         self.latestSearchUpdateTime = time;
+        BOOL shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
+        
+        if (shouldSearchFullText) {
+            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        }
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             if (time == weakself.latestSearchUpdateTime) {
+                if (shouldSearchFullText) {
+                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                }
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     weakself.searchLoading = NO;
                     [weakself.searchDisplayController.searchResultsTableView reloadData];
                 });
             }
-        } failure:nil];
+        } failure:^(NSError *error) {
+            self.searchLoading = NO;
+        }];
     }
 }
 
@@ -1292,25 +1304,13 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (![searchText isEqualToString:@""]) {
-        if (self.latestSearchTimer) {
-            [self.latestSearchTimer invalidate];
-        }
-
-        self.latestSearchText = searchText;
-        self.latestSearchTimer = [NSTimer timerWithTimeInterval:0.3 target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+        [self resetSearchTimer];
     }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     if (![searchBar.text isEqualToString:@""]) {
-        if (self.latestSearchTimer) {
-            [self.latestSearchTimer invalidate];
-        }
-
-        self.latestSearchText = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        self.latestSearchTimer = [NSTimer timerWithTimeInterval:0.3 target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+        [self resetSearchTimer];
     }
 }
 
@@ -1318,22 +1318,35 @@ static NSInteger kToolbarHeight = 44;
     return YES;
 }
 
+- (void)resetSearchTimer {
+    if (self.latestSearchTimer) {
+        [self.latestSearchTimer invalidate];
+    }
+    
+    CGFloat interval;
+    if (self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText) {
+        interval = 0.6;
+    }
+    else {
+        interval = 0.3;
+    }
+    self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
+    [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+}
+
 - (void)searchTimerFired {
     NSString *query;
     switch (self.searchBar.selectedScopeButtonIndex) {
-        case 0:
-            query = self.latestSearchText;
-            break;
-            
-        case 1:
+        case PinboardSearchTitles:
             query = [NSString stringWithFormat:@"title:\"%@\"", self.latestSearchText];
             break;
 
-        case 2:
+        case PinboardSearchDescriptions:
             query = [NSString stringWithFormat:@"description:\"%@\"", self.latestSearchText];
             break;
 
-        case 3: {
+        case PinboardSearchTags: {
             NSArray *tags = [self.latestSearchText componentsSeparatedByString:@" "];
             NSMutableArray *tagQueries = [NSMutableArray array];
             for (NSString *tag in tags) {
@@ -1344,9 +1357,16 @@ static NSInteger kToolbarHeight = 44;
         }
             
         default:
+            query = self.latestSearchText;
             break;
     }
+
     [self.searchPostDataSource filterWithQuery:query];
+
+    if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
+        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
+    }
+
     [self updateSearchResults];
 }
 
@@ -1375,10 +1395,19 @@ static NSInteger kToolbarHeight = 44;
     return NO;
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self updateSearchResults];
+}
+
 - (void)removeBarButtonTouchUpside:(id)sender {
     __weak GenericPostViewController *weakself = self;
     [self.postDataSource removeDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            notification.alertBody = NSLocalizedString(@"Removed from saved feeds.", nil);
+            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
         });
     }];
@@ -1388,6 +1417,11 @@ static NSInteger kToolbarHeight = 44;
     __weak GenericPostViewController *weakself = self;
     [self.postDataSource addDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            notification.alertBody = NSLocalizedString(@"Added to saved feeds.", nil);
+            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
         });
     }];

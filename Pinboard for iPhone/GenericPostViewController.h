@@ -38,6 +38,14 @@ enum PPPostActions {
 };
 typedef NSInteger PPPostAction;
 
+typedef enum : NSInteger {
+    PinboardSearchAllField,
+    PinboardSearchFullText,
+    PinboardSearchTitles,
+    PinboardSearchDescriptions,
+    PinboardSearchTags,
+} PinboardSearchType;
+
 @class PPNavigationController;
 
 @protocol GenericPostDataSource <NSObject>
@@ -60,6 +68,7 @@ typedef NSInteger PPPostAction;
 @optional
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
+@property (nonatomic) BOOL shouldSearchFullText;
 
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;

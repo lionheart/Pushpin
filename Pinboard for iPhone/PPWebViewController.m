@@ -993,10 +993,10 @@ static NSInteger kTitleHeight = 40;
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
-    if ([@[@"http", @"https"] containsObject:request.URL.scheme]) {
+    if ([@[@"http", @"https"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
         self.numberOfRequestsCompleted = 0;
         self.numberOfRequests = 0;
-        
+
         self.markAsReadButton.enabled = NO;
         self.addButton.enabled = NO;
         self.editButton.enabled = NO;

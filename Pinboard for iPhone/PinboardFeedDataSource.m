@@ -166,7 +166,7 @@ static NSString *ellipsis = @"…";
                                        NSMutableArray *tags = [NSMutableArray array];
                                        NSDate *date;
 
-                                       #warning XXX Should refactor to update / reload / delete more efficiently
+                                       // TODO: Should refactor to update / reload / delete more efficiently
                                        for (NSDictionary *element in payload) {
                                            [tags removeAllObjects];
                                            [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
