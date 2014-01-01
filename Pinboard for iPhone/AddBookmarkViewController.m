@@ -726,8 +726,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [badges addObject:@{ @"type": @"tag", @"tag": tag }];
         }
     }
-    
-    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
+
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     wrapper.userInteractionEnabled = NO;
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
     return wrapper;

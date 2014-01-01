@@ -25,6 +25,10 @@
 + (CGFloat)badgeFontSize;
 + (CGFloat)tagFontSize;
 
+#pragma mark Static Sizes
+
++ (CGFloat)staticBadgeFontSize;
+
 + (UIColor *)bookmarkBackgroundColor;
 + (UIColor *)badgeBackgroundColor;
 + (UIColor *)badgeTextColor;
