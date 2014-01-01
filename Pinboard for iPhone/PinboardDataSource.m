@@ -1411,7 +1411,7 @@ static NSString *ellipsis = @"…";
     else {
         switch (self.untagged) {
             case kPinboardFilterFalse:
-                [whereComponents addObject:@"bookmark.tags = ?"];
+                [whereComponents addObject:@"bookmark.tags != ?"];
                 [parameters addObject:@""];
                 break;
                 
