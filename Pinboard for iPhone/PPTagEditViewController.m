@@ -126,6 +126,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
+#pragma mark - UITableViewDataSource
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
@@ -133,73 +135,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     else {
         return 10 + [PPTableViewHeader heightWithText:@"Current Tags" fontSize:15];
-    }
-}
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-    NSInteger row = indexPath.row;
-    
-    if (row >= [self tagOffset] && indexPath.section == 0) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSString *completion;
-            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-            NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
-            
-            // Add the row to the bookmark list below
-            
-            if (self.existingTags.count == 0) {
-                [indexSetsToInsert addIndex:1];
-            }
-            else {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
-            }
-            
-            NSInteger index = row - [self tagOffset];
-            
-            BOOL shouldRefreshAutocompletion = NO;
-            if (self.tagCompletions.count > 0) {
-                shouldRefreshAutocompletion = YES;
-
-                completion = self.tagCompletions[index];
-                [indexPathsToDelete addObject:indexPath];
-                [self.tagCompletions removeObjectAtIndex:index];
-                [self.existingTags addObject:completion];
-            }
-            else if (self.filteredPopularAndRecommendedTagsVisible) {
-                completion = self.filteredPopularAndRecommendedTags[index];
-                
-                if (index < self.popularTags.count) {
-                    completion = self.popularTags[index];
-                    [self.popularTags removeObjectAtIndex:index];
-                }
-                else {
-                    completion = self.recommendedTags[index];
-                    [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
-                }
-                
-                [self.existingTags addObject:completion];
-                [indexPathsToDelete addObject:indexPath];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.tagTextField.text = @"";
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                
-                if (shouldRefreshAutocompletion) {
-                    [self searchUpdatedWithString:self.searchString];
-                }
-
-                [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
-            });
-        });
     }
 }
 
@@ -300,6 +235,195 @@ static NSString *CellIdentifier = @"CellIdentifier";
         return [PPTableViewHeader headerWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
     }
 }
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSInteger row = indexPath.row;
+    
+    if (row >= [self tagOffset] && indexPath.section == 0) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *completion;
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+            NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+            
+            // Add the row to the bookmark list below
+            
+            if (self.existingTags.count == 0) {
+                [indexSetsToInsert addIndex:1];
+            }
+            else {
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
+            }
+            
+            NSInteger index = row - [self tagOffset];
+            
+            BOOL shouldRefreshAutocompletion = NO;
+            if (self.tagCompletions.count > 0) {
+                shouldRefreshAutocompletion = YES;
+                
+                completion = self.tagCompletions[index];
+                [indexPathsToDelete addObject:indexPath];
+                [self.tagCompletions removeObjectAtIndex:index];
+                [self.existingTags addObject:completion];
+            }
+            else if (self.filteredPopularAndRecommendedTagsVisible) {
+                completion = self.filteredPopularAndRecommendedTags[index];
+                
+                if (index < self.popularTags.count) {
+                    completion = self.popularTags[index];
+                    [self.popularTags removeObjectAtIndex:index];
+                }
+                else {
+                    completion = self.recommendedTags[index];
+                    [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
+                }
+                
+                [self.existingTags addObject:completion];
+                [indexPathsToDelete addObject:indexPath];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.tagTextField.text = @"";
+                [self.tableView beginUpdates];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+                
+                if (shouldRefreshAutocompletion) {
+                    [self searchUpdatedWithString:self.searchString];
+                }
+                
+                [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
+            });
+        });
+    }
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (actionSheet == self.removeTagActionSheet) {
+        if (buttonIndex == 0) {
+            [self deleteTagWithName:self.currentlySelectedTag];
+        }
+    }
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSCharacterSet *invalidCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    if (string.length > 0) {
+        NSRange range = [string rangeOfCharacterFromSet:invalidCharacterSet];
+        BOOL containsInvalidCharacters = range.location != NSNotFound;
+        if (containsInvalidCharacters) {
+            return NO;
+        }
+    }
+    
+    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if (finalString.length == 0) {
+        self.searchString = nil;
+        NSInteger finalAmount;
+        if (self.filteredPopularAndRecommendedTagsVisible) {
+            finalAmount = self.filteredPopularAndRecommendedTags.count;
+            self.navigationItem.rightBarButtonItem.title = @"Suggest";
+        }
+        else {
+            finalAmount = 0;
+        }
+        
+        [self intersectionBetweenStartingAmount:self.tagCompletions.count
+                                 andFinalAmount:finalAmount
+                                         offset:[self tagOffset]
+                                       callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+                                           [self.tagCompletions removeAllObjects];
+                                           [self.popularTags removeAllObjects];
+                                           [self.recommendedTags removeAllObjects];
+                                           
+                                           [self.tableView beginUpdates];
+                                           [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
+                                           [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+                                           [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+                                           [self.tableView endUpdates];
+                                       }];
+    }
+    else {
+        self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
+        [self searchUpdatedWithString:self.searchString];
+    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    NSString *tag = self.tagTextField.text;
+    if (tag.length > 0) {
+        if (![self.existingTags containsObject:tag]) {
+            self.tagTextField.text = @"";
+            
+            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+            
+            if (self.existingTags.count == 0) {
+                [indexSetsToInsert addIndex:1];
+            }
+            else {
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
+            }
+            
+            if (self.filteredPopularAndRecommendedTagsVisible) {
+                [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
+                [self.popularTags removeAllObjects];
+                [self.recommendedTags removeAllObjects];
+            }
+            else {
+                [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
+                [self.tagCompletions removeAllObjects];
+            }
+            
+            [self.existingTags addObject:tag];
+            
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+
+            [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
+        }
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    NSArray *indexPathsToDelete;
+    if (self.filteredPopularAndRecommendedTagsVisible) {
+        indexPathsToDelete = [self indexPathsForPopularAndSuggestedRows];
+        [self.popularTags removeAllObjects];
+        [self.recommendedTags removeAllObjects];
+    }
+    else if (self.tagCompletions.count > 0) {
+        indexPathsToDelete = [self indexPathsForAutocompletedRows];
+        [self.tagCompletions removeAllObjects];
+    }
+    
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
+    return YES;
+}
+
+#pragma mark - Utils
 
 - (void)intersectionBetweenStartingAmount:(NSInteger)start
                            andFinalAmount:(NSInteger)final
@@ -459,7 +583,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 
                 [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
                 [arguments addObject:@(MAX(2, (NSInteger)(4 - self.existingTags.count)))];
-
+                
 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                 FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
                 
@@ -533,125 +657,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         });
     }
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.removeTagActionSheet) {
-        if (buttonIndex == 0) {
-            [self deleteTagWithName:self.currentlySelectedTag];
-        }
-    }
-}
-
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSCharacterSet *invalidCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    if (string.length > 0) {
-        NSRange range = [string rangeOfCharacterFromSet:invalidCharacterSet];
-        BOOL containsInvalidCharacters = range.location != NSNotFound;
-        if (containsInvalidCharacters) {
-            return NO;
-        }
-    }
-    
-    NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    if (finalString.length == 0) {
-        self.searchString = nil;
-        NSInteger finalAmount;
-        if (self.filteredPopularAndRecommendedTagsVisible) {
-            finalAmount = self.filteredPopularAndRecommendedTags.count;
-            self.navigationItem.rightBarButtonItem.title = @"Suggest";
-        }
-        else {
-            finalAmount = 0;
-        }
-        
-        [self intersectionBetweenStartingAmount:self.tagCompletions.count
-                                 andFinalAmount:finalAmount
-                                         offset:[self tagOffset]
-                                       callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                                           [self.tagCompletions removeAllObjects];
-                                           [self.popularTags removeAllObjects];
-                                           [self.recommendedTags removeAllObjects];
-                                           
-                                           [self.tableView beginUpdates];
-                                           [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView endUpdates];
-                                       }];
-    }
-    else {
-        self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
-        [self searchUpdatedWithString:self.searchString];
-    }
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSString *tag = self.tagTextField.text;
-    if (tag.length > 0) {
-        if (![self.existingTags containsObject:tag]) {
-            self.tagTextField.text = @"";
-            
-            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-            NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
-            
-            if (self.existingTags.count == 0) {
-                [indexSetsToInsert addIndex:1];
-            }
-            else {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
-            }
-            
-            if (self.filteredPopularAndRecommendedTagsVisible) {
-                [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
-                [self.popularTags removeAllObjects];
-                [self.recommendedTags removeAllObjects];
-            }
-            else {
-                [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
-                [self.tagCompletions removeAllObjects];
-            }
-            
-            [self.existingTags addObject:tag];
-            
-            [self.tableView beginUpdates];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-
-            [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
-        }
-    }
-    else {
-        [self.navigationController popViewControllerAnimated:YES];
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL)textFieldShouldClear:(UITextField *)textField {
-    NSArray *indexPathsToDelete;
-    if (self.filteredPopularAndRecommendedTagsVisible) {
-        indexPathsToDelete = [self indexPathsForPopularAndSuggestedRows];
-        [self.popularTags removeAllObjects];
-        [self.recommendedTags removeAllObjects];
-    }
-    else if (self.tagCompletions.count > 0) {
-        indexPathsToDelete = [self indexPathsForAutocompletedRows];
-        [self.tagCompletions removeAllObjects];
-    }
-    
-    [self.tableView beginUpdates];
-    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView endUpdates];
-    return YES;
 }
 
 - (void)deleteTagWithName:(NSString *)name {
@@ -755,6 +760,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     return indexPaths;
 }
+
+#pragma mark - Notification Handlers
 
 - (void)keyboardDidShow:(NSNotification *)sender {
     CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
