@@ -55,6 +55,10 @@
     return [PPTheme fontSize] - 4;
 }
 
++ (CGFloat)staticBadgeFontSize {
+    return 13;
+}
+
 + (NSString *)fontName {
     return @"AvenirNext-Regular";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.FontName"];
