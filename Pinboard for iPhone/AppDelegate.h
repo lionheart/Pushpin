@@ -80,6 +80,9 @@ enum bookmarkupdateevents {
 @property (nonatomic, strong) NSString *defaultFeed;
 @property (nonatomic, strong) NSString *feedToken;
 @property (nonatomic, strong) NSString *token;
+
+@property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *password;
 @property (nonatomic, strong) NSTimer *refreshTimer;
 @property (nonatomic, strong) PPNavigationController *loginViewController;
 @property (nonatomic, strong) PPNavigationController *navigationController;

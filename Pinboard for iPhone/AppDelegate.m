@@ -35,6 +35,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <TestFlightSDK/TestFlight.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <KeychainItemWrapper/KeychainItemWrapper.h>
 
 @implementation AppDelegate
 
@@ -1077,6 +1078,17 @@
             [db close];
         }
     }
+}
+
+- (NSString *)password {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
+    return [keychain objectForKey:(__bridge id)kSecValueData];
+}
+
+- (void)setPassword:(NSString *)password {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
+    [keychain setObject:self.username forKey:(__bridge id)kSecAttrAccount];
+    [keychain setObject:password forKey:(__bridge id)kSecValueData];
 }
 
 @end

@@ -219,68 +219,74 @@ static NSString *CellIdentifier = @"Cell";
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
-    NSIndexPath *previousDefaultIndexPath = self.defaultIndexPath;
-    self.defaultIndexPath = indexPath;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BOOL selectedChanged = ![self.defaultIndexPath isEqual:indexPath];
+    if (selectedChanged) {
+        NSIndexPath *previousDefaultIndexPath = self.defaultIndexPath;
+        self.defaultIndexPath = indexPath;
 
-    [CATransaction begin];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [CATransaction setCompletionBlock:^{
-        [tableView beginUpdates];
-        [tableView reloadRowsAtIndexPaths:@[indexPath, previousDefaultIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-        [tableView endUpdates];
-    }];
-    [CATransaction commit];
-
-    // Build our new default view string
-    NSString *defaultFeed = @"personal-all";
-    if (indexPath.section == 0) {
-        switch (indexPath.row) {
-            case 0:
-                defaultFeed = @"personal-all";
-                break;
-            case 1:
-                defaultFeed = @"personal-private";
-                break;
-            case 2:
-                defaultFeed = @"personal-public";
-                break;
-            case 3:
-                defaultFeed = @"personal-unread";
-                break;
-            case 4:
-                defaultFeed = @"personal-untagged";
-                break;
-            case 5:
-                defaultFeed = @"personal-starred";
-                break;
+        [CATransaction begin];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [CATransaction setCompletionBlock:^{
+            [tableView beginUpdates];
+            [tableView reloadRowsAtIndexPaths:@[indexPath, previousDefaultIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView endUpdates];
+        }];
+        [CATransaction commit];
+        
+        // Build our new default view string
+        NSString *defaultFeed = @"personal-all";
+        if (indexPath.section == 0) {
+            switch (indexPath.row) {
+                case 0:
+                    defaultFeed = @"personal-all";
+                    break;
+                case 1:
+                    defaultFeed = @"personal-private";
+                    break;
+                case 2:
+                    defaultFeed = @"personal-public";
+                    break;
+                case 3:
+                    defaultFeed = @"personal-unread";
+                    break;
+                case 4:
+                    defaultFeed = @"personal-untagged";
+                    break;
+                case 5:
+                    defaultFeed = @"personal-starred";
+                    break;
+            }
         }
-    }
-    else if (indexPath.section == 1) {
-        switch (indexPath.row) {
-            case 0:
-                defaultFeed = @"community-network";
-                break;
-            case 1:
-                defaultFeed = @"community-popular";
-                break;
-            case 2:
-                defaultFeed = @"community-wikipedia";
-                break;
-            case 3:
-                defaultFeed = @"community-fandom";
-                break;
-            case 4:
-                defaultFeed = @"community-japanese";
-                break;
+        else if (indexPath.section == 1) {
+            switch (indexPath.row) {
+                case 0:
+                    defaultFeed = @"community-network";
+                    break;
+                case 1:
+                    defaultFeed = @"community-popular";
+                    break;
+                case 2:
+                    defaultFeed = @"community-wikipedia";
+                    break;
+                case 3:
+                    defaultFeed = @"community-fandom";
+                    break;
+                case 4:
+                    defaultFeed = @"community-japanese";
+                    break;
+            }
         }
+        else if (indexPath.section == 2) {
+            defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
+        }
+        
+        // Update the default feed and pop the view
+        [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
     }
-    else if (indexPath.section == 2) {
-        defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
-    
-    // Update the default feed and pop the view
-    [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
 }
 
 @end

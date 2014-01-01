@@ -177,6 +177,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                       password:self.passwordTextField.text
                                        success:^(NSString *token) {
                                            self.loginInProgress = NO;
+                                           delegate.password = self.passwordTextField.text;
 
                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];

@@ -42,6 +42,7 @@ typedef enum : NSInteger {
 @property (nonatomic, strong) NSMutableArray *links;
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSMutableArray *strings;
+@property (nonatomic) BOOL shouldSearchFullText;
 
 #pragma mark Query
 

@@ -92,7 +92,7 @@
 
     [self.containerView removeConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[title(<=240)]|" views:views];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {

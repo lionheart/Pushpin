@@ -104,31 +104,36 @@ static NSString *ellipsis = @"…";
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-    NSArray *components = [query componentsSeparatedByString:@" "];
-    NSMutableArray *newComponents = [NSMutableArray array];
-    for (NSString *component in components) {
-        if ([component isEqualToString:@"AND"]) {
-            [newComponents addObject:component];
-        }
-        else if ([component isEqualToString:@"OR"]) {
-            [newComponents addObject:component];
-        }
-        else if ([component isEqualToString:@"NOT"]) {
-            [newComponents addObject:component];
-        }
-        else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\": "]].location == NSNotFound) {
-            [newComponents addObject:[component stringByAppendingString:@"*"]];
-        }
-        else if ([component hasSuffix:@":"]) {
-            [newComponents addObject:[component stringByAppendingString:@"*"]];
-        }
-        else {
-            [newComponents addObject:component];
-        }
+    if (self.shouldSearchFullText) {
+        self.searchQuery = query;
     }
-
-    self.searchQuery = [newComponents componentsJoinedByString:@" "];
+    else {
+        query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+        NSArray *components = [query componentsSeparatedByString:@" "];
+        NSMutableArray *newComponents = [NSMutableArray array];
+        for (NSString *component in components) {
+            if ([component isEqualToString:@"AND"]) {
+                [newComponents addObject:component];
+            }
+            else if ([component isEqualToString:@"OR"]) {
+                [newComponents addObject:component];
+            }
+            else if ([component isEqualToString:@"NOT"]) {
+                [newComponents addObject:component];
+            }
+            else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\": "]].location == NSNotFound) {
+                [newComponents addObject:[component stringByAppendingString:@"*"]];
+            }
+            else if ([component hasSuffix:@":"]) {
+                [newComponents addObject:[component stringByAppendingString:@"*"]];
+            }
+            else {
+                [newComponents addObject:component];
+            }
+        }
+        
+        self.searchQuery = [newComponents componentsJoinedByString:@" "];
+    }
 }
 
 - (PinboardDataSource *)searchDataSource {
@@ -691,129 +696,156 @@ static NSString *ellipsis = @"…";
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
                                    failure:(void (^)(NSError *))failure {
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self generateQueryAndParameters:^(NSString *query, NSArray *parameters) {
+    void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
+        
+        NSArray *oldPosts = [self.posts copy];
+        NSMutableArray *newPosts = [NSMutableArray array];
+        
+        NSMutableArray *oldHashes = [NSMutableArray array];
+        NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
+        for (NSDictionary *post in self.posts) {
+            [oldHashes addObject:post[@"hash"]];
+            oldMetas[post[@"hash"]] = post[@"meta"];
+        }
+        
+        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
+        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        NSInteger index = 0;
+        
+        // The index of the list that `index` corresponds to
+        NSInteger skipPivot = 0;
+        BOOL postFound = NO;
+        
+        while ([results next]) {
+            postFound = NO;
+            NSString *hash = [results stringForColumn:@"hash"];
+            NSString *meta = [results stringForColumn:@"meta"];
+            NSDictionary *post;
             
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-            [db open];
-            FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
-            
-            NSArray *oldPosts = [self.posts copy];
-            NSMutableArray *newPosts = [NSMutableArray array];
-            
-            NSMutableArray *oldHashes = [NSMutableArray array];
-            NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
-            for (NSDictionary *post in self.posts) {
-                [oldHashes addObject:post[@"hash"]];
-                oldMetas[post[@"hash"]] = post[@"meta"];
-            }
-            
-            NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-            NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-            NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            NSInteger index = 0;
-            
-            // The index of the list that `index` corresponds to
-            NSInteger skipPivot = 0;
-            BOOL postFound = NO;
-            
-            while ([results next]) {
-                postFound = NO;
-                NSString *hash = [results stringForColumn:@"hash"];
-                NSString *meta = [results stringForColumn:@"meta"];
-                NSDictionary *post;
-                
-                // Go from the last found value to the end of the list.
-                // If you find something, break and set the pivot to the current skip index.
-                
-                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                    if ([oldHashes[i] isEqualToString:hash]) {
-                        // Delete all posts that were skipped
-                        for (NSInteger j=skipPivot; j<i; j++) {
-                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
-                        }
-                        
-                        post = oldPosts[i];
-                        
-                        // Reload the post if its meta value has changed.
-                        if (![meta isEqualToString:oldMetas[hash]]) {
-                            post = [PinboardDataSource postFromResultSet:results];
-                            
-                            // Reloads affect the old index path
-                            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
-                        }
-                        
-                        postFound = YES;
-                        skipPivot = i+1;
-                        break;
-                    }
-                }
-                
-                // If the post wasn't found by looping through, it's a new one
-                if (!postFound) {
-                    post = [PinboardDataSource postFromResultSet:results];
-                    [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                }
-                
-                [newPosts addObject:post];
-                index++;
-            }
-            
-            [self.tagsWithFrequency removeAllObjects];
-            
-            FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-            while ([tagResult next]) {
-                NSString *tag = [tagResult stringForColumnIndex:0];
-                NSNumber *count = [tagResult objectForColumnIndex:1];
-                self.tagsWithFrequency[tag] = count;
-            }
-            
-            [db close];
+            // Go from the last found value to the end of the list.
+            // If you find something, break and set the pivot to the current skip index.
             
             for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                if ([oldHashes[i] isEqualToString:hash]) {
+                    // Delete all posts that were skipped
+                    for (NSInteger j=skipPivot; j<i; j++) {
+                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                    }
+                    
+                    post = oldPosts[i];
+                    
+                    // Reload the post if its meta value has changed.
+                    if (![meta isEqualToString:oldMetas[hash]]) {
+                        post = [PinboardDataSource postFromResultSet:results];
+                        
+                        // Reloads affect the old index path
+                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
+                    }
+                    
+                    postFound = YES;
+                    skipPivot = i+1;
+                    break;
+                }
             }
             
-            NSMutableArray *newStrings = [NSMutableArray array];
-            NSMutableArray *newHeights = [NSMutableArray array];
-            NSMutableArray *newLinks = [NSMutableArray array];
-            NSMutableArray *newBadges = [NSMutableArray array];
-            
-            NSMutableArray *newCompressedStrings = [NSMutableArray array];
-            NSMutableArray *newCompressedHeights = [NSMutableArray array];
-            NSMutableArray *newCompressedLinks = [NSMutableArray array];
-            NSMutableArray *newCompressedBadges = [NSMutableArray array];
-            
-            for (NSDictionary *post in newPosts) {
-                PostMetadata *metadata = [self metadataForPost:post];
-                [newHeights addObject:metadata.height];
-                [newStrings addObject:metadata.string];
-                [newLinks addObject:metadata.links];
-                [newBadges addObject:metadata.badges];
-                
-                PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
-                [newCompressedHeights addObject:compressedMetadata.height];
-                [newCompressedStrings addObject:compressedMetadata.string];
-                [newCompressedLinks addObject:compressedMetadata.links];
-                [newCompressedBadges addObject:compressedMetadata.badges];
+            // If the post wasn't found by looping through, it's a new one
+            if (!postFound) {
+                post = [PinboardDataSource postFromResultSet:results];
+                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             
-            self.posts = newPosts;
-            self.strings = newStrings;
-            self.heights = newHeights;
-            self.links = newLinks;
-            self.badges = newBadges;
+            [newPosts addObject:post];
+            index++;
+        }
+        
+        [self.tagsWithFrequency removeAllObjects];
+        
+        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+        while ([tagResult next]) {
+            NSString *tag = [tagResult stringForColumnIndex:0];
+            NSNumber *count = [tagResult objectForColumnIndex:1];
+            self.tagsWithFrequency[tag] = count;
+        }
+        
+        [db close];
+        
+        for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
+            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        }
+        
+        NSMutableArray *newStrings = [NSMutableArray array];
+        NSMutableArray *newHeights = [NSMutableArray array];
+        NSMutableArray *newLinks = [NSMutableArray array];
+        NSMutableArray *newBadges = [NSMutableArray array];
+        
+        NSMutableArray *newCompressedStrings = [NSMutableArray array];
+        NSMutableArray *newCompressedHeights = [NSMutableArray array];
+        NSMutableArray *newCompressedLinks = [NSMutableArray array];
+        NSMutableArray *newCompressedBadges = [NSMutableArray array];
+        
+        for (NSDictionary *post in newPosts) {
+            PostMetadata *metadata = [self metadataForPost:post];
+            [newHeights addObject:metadata.height];
+            [newStrings addObject:metadata.string];
+            [newLinks addObject:metadata.links];
+            [newBadges addObject:metadata.badges];
             
-            self.compressedStrings = newCompressedStrings;
-            self.compressedHeights = newCompressedHeights;
-            self.compressedLinks = newCompressedLinks;
-            self.compressedBadges = newBadges;
-            
-            if (success) {
-                success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
-            }
-        }];
-    });
+            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            [newCompressedHeights addObject:compressedMetadata.height];
+            [newCompressedStrings addObject:compressedMetadata.string];
+            [newCompressedLinks addObject:compressedMetadata.links];
+            [newCompressedBadges addObject:compressedMetadata.badges];
+        }
+        
+        self.posts = newPosts;
+        self.strings = newStrings;
+        self.heights = newHeights;
+        self.links = newLinks;
+        self.badges = newBadges;
+        
+        self.compressedStrings = newCompressedStrings;
+        self.compressedHeights = newCompressedHeights;
+        self.compressedLinks = newCompressedLinks;
+        self.compressedBadges = newBadges;
+        
+        if (success) {
+            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+        }
+    };
+
+    if (self.shouldSearchFullText) {
+        ASPinboard *pinboard = [ASPinboard sharedInstance];
+        AppDelegate *sharedDelegate = [AppDelegate sharedDelegate];
+        [pinboard searchBookmarksWithUsername:sharedDelegate.username
+                                     password:sharedDelegate.password
+                                        query:self.searchQuery
+                                      success:^(NSArray *urls) {
+                                          NSMutableArray *components = [NSMutableArray array];
+                                          NSMutableArray *parameters = [NSMutableArray array];
+                                          [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
+                                          
+                                          NSMutableArray *urlComponents = [NSMutableArray array];
+                                          for (NSString *url in urls) {
+                                              [urlComponents addObject:@"?"];
+                                              [parameters addObject:url];
+                                          }
+                                          
+                                          [components addObject:[urlComponents componentsJoinedByString:@", "]];
+                                          [components addObject:@")"];
+                                          
+                                          NSString *query = [components componentsJoinedByString:@" "];
+                                          HandleSearch(query, parameters);
+                                      }];
+    }
+    else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self generateQueryAndParameters:HandleSearch];
+        });
+    }
 }
 
 - (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
