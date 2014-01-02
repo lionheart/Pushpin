@@ -1156,7 +1156,9 @@ static NSString *ellipsis = @"…";
             }
             descriptionLineRange.length = MIN(descriptionLineRange.length, descriptionAttributedString.length);
         }
-        
+
+        // Set this to hide links
+        // linkRange = NSMakeRange(NSNotFound, 0);
         if (linkRange.location != NSNotFound) {
             linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
             [textContainer setSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeLink.width - 10.0f, CGFLOAT_MAX)];
