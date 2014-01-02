@@ -103,6 +103,7 @@
 		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
+		3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */ = {isa = PBXBuildFile; fileRef = 374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */; };
 		37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
@@ -594,6 +595,8 @@
 		3740A23D16863CF000F95D82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23E16863CF000F95D82 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardMetadataCache.h; sourceTree = "<group>"; };
+		3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPPinboardMetadataCache.m; sourceTree = "<group>"; };
 		374698BE174B33CE00407345 /* PPNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotification.h; sourceTree = "<group>"; };
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNotification.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellValue1.h; sourceTree = "<group>"; };
@@ -1459,6 +1462,8 @@
 				37405C1418614FF50052213A /* Categories */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				378482CD186C965700DF7A74 /* Activities */,
+				3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */,
+				3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
 				37FEEBA215745488003F2B77 /* AppDelegate.m */,
 				370B1B771864FADC00319A20 /* PPTitleButton.h */,
@@ -2243,6 +2248,7 @@
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
+				3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */,
 				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,
