@@ -112,7 +112,6 @@ typedef enum : NSInteger {
 
 @property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
-@property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;

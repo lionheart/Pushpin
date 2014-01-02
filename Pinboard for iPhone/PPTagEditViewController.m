@@ -192,10 +192,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
         cell.textLabel.text = tag;
         
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0, 0, 23, 23);
-        [button setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
         [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+        button.clipsToBounds = YES;
+        [button addSubview:imageView];
+
+        [button lhs_addConstraints:@"H:[imageView(23)]|" views:NSDictionaryOfVariableBindings(imageView)];
+        [button lhs_centerVerticallyForView:imageView height:23];
         self.deleteTagButtons[tag] = button;
         cell.accessoryView = button;
     }

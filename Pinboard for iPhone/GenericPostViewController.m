@@ -30,6 +30,7 @@
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
+static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
 static BOOL kGenericPostViewControllerResizingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
@@ -43,13 +44,16 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
-@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactivePopTransition;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+@property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
 - (void)resetSearchTimer;
+- (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
 
 @end
 
@@ -93,6 +97,8 @@ static NSInteger kToolbarHeight = 44;
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
+    
+    self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
     self.loading = NO;
     self.searchLoading = NO;
@@ -281,6 +287,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
     // Remove the multi editting views
     [self.multiStatusView removeFromSuperview];
     [self.multiToolbarView removeFromSuperview];
@@ -288,7 +296,6 @@ static NSInteger kToolbarHeight = 44;
     // Hide the editing toolbar
     [self.toolbar removeFromSuperview];
     
-    [super viewWillDisappear:animated];
     [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
 
@@ -525,17 +532,15 @@ static NSInteger kToolbarHeight = 44;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer) {
         [self.view endEditing:YES];
-        
-        if (self.searchDisplayController.isActive) {
-            self.selectedPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
-            self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:self.selectedPoint];
-            self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
-        }
-        else {
-            self.selectedPoint = [recognizer locationInView:self.tableView];
-            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
-            self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
-        }
+        self.selectedPoint = [recognizer locationInView:self.tableView];
+        self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
+        self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+        [self openActionSheetForSelectedPost];
+    }
+    else if (recognizer == self.searchDisplayLongPressGestureRecognizer) {
+        self.selectedPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
+        self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:self.selectedPoint];
+        self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
         [self openActionSheetForSelectedPost];
     }
     else if (recognizer == self.pinchGestureRecognizer) {
@@ -560,18 +565,10 @@ static NSInteger kToolbarHeight = 44;
         [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *realIndexPathsToReload = self.tableView.indexPathsForVisibleRows;
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:realIndexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                [self performTableViewUpdatesWithInserts:nil reloads:realIndexPathsToReload deletes:nil];
             });
         } failure:nil];
     }
-}
-
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
-                         interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
-    // Check if this is for our custom transition
-    return self.interactivePopTransition;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
@@ -580,11 +577,7 @@ static NSInteger kToolbarHeight = 44;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
+                    [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
                     self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
                     self.loading = NO;
@@ -604,12 +597,14 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
-                            self.searchBar.showsSearchResultsButton = YES;
 
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
                             self.searchDisplayController.searchResultsDelegate = self;
                             self.searchDisplayController.delegate = self;
+                            
+                            [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
+
                             self.tableView.tableHeaderView = self.searchBar;
                             CGFloat offset = -(CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame) - CGRectGetHeight(self.searchDisplayController.searchBar.frame));
                             [self.tableView setContentOffset:CGPointMake(0, offset)];
@@ -661,11 +656,7 @@ static NSInteger kToolbarHeight = 44;
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.loading = NO;
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
 
                 [UIView animateWithDuration:0.2 animations:^{
                     CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
@@ -1460,9 +1451,7 @@ static NSInteger kToolbarHeight = 44;
         [self.postDataSource resetHeightsWithSuccess:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                [self performTableViewUpdatesWithInserts:nil reloads:indexPathsForVisibleRows deletes:nil];
             });
         }];
     }
@@ -1482,9 +1471,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
         dispatch_sync(dispatch_get_main_queue(), ^(void) {
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
+            [self performTableViewUpdatesWithInserts:nil reloads:[self.tableView indexPathsForVisibleRows] deletes:nil];
             [self.view setNeedsLayout];
         });
     } failure:nil];
@@ -1607,6 +1594,31 @@ static NSInteger kToolbarHeight = 44;
         self.multipleDeleteButton.enabled = NO;
         self.multipleTagEditButton.enabled = NO;
         self.multipleMarkAsReadButton.enabled = NO;
+    }
+}
+
+- (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert
+                                   reloads:(NSArray *)indexPathsToReload
+                                   deletes:(NSArray *)indexPathsToDelete {
+    
+    if (kGenericPostViewControllerPerformAtomicUpdates) {
+        [self.tableView beginUpdates];
+        if (indexPathsToReload) {
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+        if (indexPathsToDelete) {
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+        if (indexPathsToInsert) {
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+        }
+
+        [self.tableView endUpdates];
+    }
+    else {
+        [self.tableView reloadData];
     }
 }
 

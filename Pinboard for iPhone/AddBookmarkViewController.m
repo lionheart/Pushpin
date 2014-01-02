@@ -71,9 +71,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.previousURLContents = @"";
 
         self.descriptionTextLabel = [[UILabel alloc] init];
-        self.descriptionTextLabel.numberOfLines = 0;
+        self.descriptionTextLabel.numberOfLines = 3;
+        self.descriptionTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.descriptionTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.descriptionTextLabel.preferredMaxLayoutWidth = 270;
+        self.descriptionTextLabel.preferredMaxLayoutWidth = 250;
         self.descriptionTextLabel.userInteractionEnabled = NO;
 
         self.titleTextField = [[UITextField alloc] init];
@@ -292,7 +293,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                     [cell.contentView lhs_addConstraints:@"H:|-14-[image(20)]" views:views];
                     [cell.contentView lhs_addConstraints:@"H:|-40-[url]-10-|" views:views];
-                    [cell.contentView lhs_addConstraints:@"H:|-40-[title]-10-|" views:views];
 
                     [cell.contentView lhs_addConstraints:@"V:|-12-[image(20)]" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-8-[title(24)][url]" views:views];
@@ -301,12 +301,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                         [activity startAnimating];
                         cell.accessoryView = activity;
-                        cell.textLabel.text = @"Loading";
-                        cell.textLabel.enabled = NO;
-                        self.titleTextField.hidden = YES;
+                        [cell.contentView lhs_addConstraints:@"H:|-40-[title]-30-|" views:views];
                     }
                     else {
-                        self.titleTextField.hidden = NO;
+                        [cell.contentView lhs_addConstraints:@"H:|-40-[title]-10-|" views:views];
                     }
 
                     if (self.isUpdate) {
@@ -321,8 +319,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                 }
                 case kBookmarkDescriptionRow: {
-                    CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
-
                     UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-description"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                     topImageView.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -336,22 +332,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                         [activity startAnimating];
                         cell.accessoryView = activity;
-                        cell.textLabel.text = @"Loading";
-                        cell.textLabel.enabled = NO;
+                        self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
+                        self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Loading..." attributes:self.descriptionAttributes];
                     }
                     else {
-                        if (![self.postDescription isEqualToString:@""]) {
+                        if ([self.postDescription isEqualToString:@""]) {
+                            self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
+                            self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tap to add a description.", nil) attributes:self.descriptionAttributes];
+                        }
+                        else {
                             self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
                             self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
                         }
-                        else {
-                            self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
-                            self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tap here to add description", nil) attributes:self.descriptionAttributes];
-                        }
                         
                         [cell.contentView addSubview:self.descriptionTextLabel];
-                        [cell.contentView lhs_addConstraints:@"H:|-40-[description(width)]" metrics:@{@"width": @(CGRectGetWidth(descriptionRect))} views:views];
-                        [cell.contentView lhs_addConstraints:@"V:|-10-[description(height)]" metrics:@{@"height": @(CGRectGetHeight(descriptionRect))} views:views];
+                        [cell.contentView lhs_addConstraints:@"H:|-40-[description]" views:views];
+                        [cell.contentView lhs_addConstraints:@"V:|-10-[description]" views:views];
                     }
 
                     break;
@@ -440,8 +436,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     
                 case kBookmarkDescriptionRow: {
-                    CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
-                    return CGRectGetHeight(descriptionRect) + 20;
+                    if (self.descriptionTextLabel.text && ![self.descriptionTextLabel.text isEqualToString:@""]) {
+                        CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
+                        return CGRectGetHeight(descriptionRect) + 20;
+                    }
+                    else {
+                        return 42;
+                    }
                 }
                     
                 case kBookmarkTagRow: {
@@ -556,15 +557,23 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (shouldPrefillTitle) {
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
-        
-        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:1 inSection:0], [NSIndexPath indexPathForRow:2 inSection:0]];
-        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+
+        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:1 inSection:0]];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
         [[AppDelegate sharedDelegate] retrievePageTitle:url
                                                callback:^(NSString *title, NSString *description) {
                                                    self.titleTextField.text = title;
                                                    self.postDescription = description;
+
+                                                   self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
+                                                   self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
                                                    self.loadingTitle = NO;
-                                                   [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+
+                                                   [self.tableView beginUpdates];
+                                                   [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+                                                   [self.tableView endUpdates];
                                                }];
     }
 }
