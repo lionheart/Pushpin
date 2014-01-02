@@ -54,7 +54,7 @@ static NSString *CellIdentifier = @"TagCell";
     self.tableView.opaque = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.sectionIndexBackgroundColor = [UIColor whiteColor];
-    self.tableView.sectionIndexTrackingBackgroundColor = [UIColor lightGrayColor];
+    self.tableView.sectionIndexTrackingBackgroundColor = HEX(0xDDDDDDFF);
     self.tableView.sectionIndexColor = [UIColor darkGrayColor];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
