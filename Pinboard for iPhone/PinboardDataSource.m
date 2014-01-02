@@ -27,7 +27,11 @@ static NSString *ellipsis = @"…";
 
 @interface PinboardDataSource ()
 
+@property (nonatomic, strong) NSMutableDictionary *metadata;
+@property (nonatomic, strong) NSMutableDictionary *compressedMetadata;
+
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
+- (NSString *)metadataKeyForBookmark:(NSDictionary *)bookmark;
 
 @end
 
@@ -41,6 +45,10 @@ static NSString *ellipsis = @"…";
         self.strings = [NSMutableArray array];
         self.heights = [NSMutableArray array];
         self.links = [NSMutableArray array];
+        
+        // Keys are hash:meta pairs
+        self.metadata = [NSMutableDictionary dictionary];
+        self.compressedMetadata = [NSMutableDictionary dictionary];
 
         self.tags = @[];
         self.untagged = kPinboardFilterNone;
@@ -662,13 +670,24 @@ static NSString *ellipsis = @"…";
             NSMutableArray *newCompressedBadges = [NSMutableArray array];
             
             for (NSDictionary *post in newPosts) {
-                PostMetadata *metadata = [self metadataForPost:post];
+                NSString *key = [self metadataKeyForBookmark:post];
+                PostMetadata *metadata = self.metadata[key];
+                if (!metadata) {
+                    metadata = [self metadataForPost:post];
+                    self.metadata[key] = metadata;
+                }
+                
                 [newHeights addObject:metadata.height];
                 [newStrings addObject:metadata.string];
                 [newLinks addObject:metadata.links];
                 [newBadges addObject:metadata.badges];
                 
-                PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+                PostMetadata *compressedMetadata = self.compressedMetadata[key];
+                if (!compressedMetadata) {
+                    compressedMetadata = [self compressedMetadataForPost:post];
+                    self.compressedMetadata[key] = compressedMetadata;
+                }
+                
                 [newCompressedHeights addObject:compressedMetadata.height];
                 [newCompressedStrings addObject:compressedMetadata.string];
                 [newCompressedLinks addObject:compressedMetadata.links];
@@ -787,14 +806,26 @@ static NSString *ellipsis = @"…";
         NSMutableArray *newCompressedLinks = [NSMutableArray array];
         NSMutableArray *newCompressedBadges = [NSMutableArray array];
         
+
         for (NSDictionary *post in newPosts) {
-            PostMetadata *metadata = [self metadataForPost:post];
+            NSString *key = [self metadataKeyForBookmark:post];
+            PostMetadata *metadata = self.metadata[key];
+            if (!metadata) {
+                metadata = [self metadataForPost:post];
+                self.metadata[key] = metadata;
+            }
+
             [newHeights addObject:metadata.height];
             [newStrings addObject:metadata.string];
             [newLinks addObject:metadata.links];
             [newBadges addObject:metadata.badges];
             
-            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            PostMetadata *compressedMetadata = self.compressedMetadata[key];
+            if (!compressedMetadata) {
+                compressedMetadata = [self compressedMetadataForPost:post];
+                self.compressedMetadata[key] = compressedMetadata;
+            }
+
             [newCompressedHeights addObject:compressedMetadata.height];
             [newCompressedStrings addObject:compressedMetadata.string];
             [newCompressedLinks addObject:compressedMetadata.links];
@@ -1389,10 +1420,21 @@ static NSString *ellipsis = @"…";
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
 
         for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [self metadataForPost:post];
+            NSString *key = [self metadataKeyForBookmark:post];
+            PostMetadata *metadata = self.metadata[key];
+            if (!metadata) {
+                metadata = [self metadataForPost:post];
+                self.metadata[key] = metadata;
+            }
+            
             [newHeights addObject:metadata.height];
-
-            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            
+            PostMetadata *compressedMetadata = self.compressedMetadata[key];
+            if (!compressedMetadata) {
+                compressedMetadata = [self compressedMetadataForPost:post];
+                self.compressedMetadata[key] = compressedMetadata;
+            }
+            
             [newCompressedHeights addObject:compressedMetadata.height];
         }
         
@@ -1510,6 +1552,10 @@ static NSString *ellipsis = @"…";
     dataSource.unread = self.unread;
     dataSource.starred = self.starred;
     return dataSource;
+}
+
+- (NSString *)metadataKeyForBookmark:(NSDictionary *)bookmark {
+    return [NSString stringWithFormat:@"%@:%@", bookmark[@"hash"], bookmark[@"meta"]];
 }
 
 @end
