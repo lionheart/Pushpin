@@ -604,6 +604,22 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
+                            
+                            CAGradientLayer *layer = [CAGradientLayer layer];
+
+                            layer.locations = @[@(0), @(1)];
+                            
+                            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+                            CGFloat locations[] = { 0.0, 1.0 };
+                            NSArray *colors = @[(__bridge id)HEX(0xC9C9CEFF).CGColor, (__bridge id)[UIColor whiteColor].CGColor];
+                            CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+
+                            UIGraphicsBeginImageContext(CGSizeMake(1, 32));
+                            CGContextRef context = UIGraphicsGetCurrentContext();
+                            CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, 32), 0);
+                            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+                            UIGraphicsEndImageContext();
+                            self.searchBar.scopeBarBackgroundImage = image;
 
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
