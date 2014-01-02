@@ -13,8 +13,10 @@
 @interface PPTitleButton ()
 
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIView *centerView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *subtitleLabel;
 
 @property (nonatomic, strong) NSMutableArray *existingConstraints;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
@@ -27,38 +29,56 @@
 
 @implementation PPTitleButton
 
+- (instancetype)initWithDelegate:(id<PPTitleButtonDelegate>)delegate {
+    self = [super initWithFrame:CGRectMake(0, 0, 300, 24)];
+    if (self) {
+        self.containerView = [[UIView alloc] init];
+        self.containerView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        self.centerView = [[UIView alloc] init];
+        self.centerView.translatesAutoresizingMaskIntoConstraints = NO;
+
+        self.titleLabel = [[UILabel alloc] init];
+        self.titleLabel.clipsToBounds = YES;
+        self.titleLabel.textColor = [UIColor whiteColor];
+        self.titleLabel.adjustsFontSizeToFitWidth = NO;
+        self.titleLabel.font = [PPTheme extraLargeFont];
+        self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.centerView addSubview:self.titleLabel];
+        
+        self.subtitleLabel = [[UILabel alloc] init];
+        self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.subtitleLabel.font = [UIFont fontWithName:[PPTheme fontName] size:12];
+        self.subtitleLabel.textColor = [UIColor whiteColor];
+        self.subtitleLabel.text = @"◍";
+        self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
+        [self.containerView addSubview:self.subtitleLabel];
+        
+        self.imageView = [[UIImageView alloc] init];
+        self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.centerView addSubview:self.imageView];
+        
+        [self addSubview:self.containerView];
+        [self.containerView addSubview:self.centerView];
+
+        [self lhs_centerVerticallyForView:self.containerView];
+        [self lhs_centerHorizontallyForView:self.containerView];
+        [self addConstraintsForImageAndTitle];
+        
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        [self addGestureRecognizer:self.tapGestureRecognizer];
+        
+        self.delegate = delegate;
+    }
+    return self;
+}
+
 + (instancetype)buttonWithDelegate:(id)delegate {
-    PPTitleButton *titleButton = [[PPTitleButton alloc] init];
-    titleButton.frame = CGRectMake(0, 0, 300, 24);
-    titleButton.containerView = [[UIView alloc] init];
-    titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    titleButton.titleLabel = [[UILabel alloc] init];
-    titleButton.titleLabel.clipsToBounds = YES;
-    titleButton.titleLabel.textColor = [UIColor whiteColor];
-    titleButton.titleLabel.adjustsFontSizeToFitWidth = NO;
-    titleButton.titleLabel.font = [PPTheme extraLargeFont];
-    titleButton.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [titleButton.containerView addSubview:titleButton.titleLabel];
-    
-    titleButton.imageView = [[UIImageView alloc] init];
-    titleButton.imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [titleButton.containerView addSubview:titleButton.imageView];
-    
-    [titleButton addSubview:titleButton.containerView];
-    [titleButton lhs_centerVerticallyForView:titleButton.containerView];
-    [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
-    [titleButton addConstraintsForImageAndTitle];
-    
-    titleButton.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:titleButton action:@selector(gestureDetected:)];
-    [titleButton addGestureRecognizer:titleButton.tapGestureRecognizer];
-    
-    titleButton.delegate = delegate;
-    return titleButton;
+    return [[PPTitleButton alloc] initWithDelegate:delegate];
 }
 
 + (instancetype)button {
-    return [PPTitleButton buttonWithDelegate:nil];
+    return [[PPTitleButton alloc] initWithDelegate:nil];
 }
 
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
@@ -72,6 +92,10 @@
         self.imageView.image = nil;
         [self addConstraintsForTitleOnly];
     }
+    
+    NSDictionary *views = @{@"subtitle": self.subtitleLabel };
+    [self.containerView lhs_addConstraints:@"H:|[subtitle]|" views:views];
+    [self.containerView lhs_centerHorizontallyForView:self.centerView];
 
     [self layoutIfNeeded];
     self.frame = (CGRect){{0, 0}, self.containerView.frame.size};
@@ -79,20 +103,30 @@
 
 - (void)addConstraintsForImageAndTitle {
     NSDictionary *views = @{@"title": self.titleLabel,
-                            @"image": self.imageView};
+                            @"image": self.imageView,
+                            @"subtitle": self.subtitleLabel,
+                            @"center": self.centerView };
 
+    [self.centerView removeConstraints:self.centerView.constraints];
+    [self.centerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=215)]|" views:views];
+    [self.centerView lhs_centerVerticallyForView:self.imageView height:20];
+    [self.centerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.centerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=215)]|" views:views];
-    [self.containerView lhs_centerVerticallyForView:self.imageView height:20];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self.containerView lhs_addConstraints:@"V:|[center][subtitle]|" views:views];
 }
 
 - (void)addConstraintsForTitleOnly {
-    NSDictionary *views = @{@"title": self.titleLabel};
+    NSDictionary *views = @{@"title": self.titleLabel,
+                            @"subtitle": self.subtitleLabel,
+                            @"center": self.centerView };
+
+    [self.centerView removeConstraints:self.centerView.constraints];
+    [self.centerView lhs_addConstraints:@"H:|[title(<=240)]|" views:views];
+    [self.centerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.centerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[title(<=240)]|" views:views];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self.containerView lhs_addConstraints:@"V:|-8-[center]-8-[subtitle]|" views:views];
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
