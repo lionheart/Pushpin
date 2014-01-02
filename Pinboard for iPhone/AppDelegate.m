@@ -1021,32 +1021,31 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [self setNetworkActivityIndicatorVisible:NO];
                                
+                               NSString *description = @"";
+                               NSString *title = @"";
                                if (!error) {
                                    HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
-                                   NSString *description = @"";
 
                                    if (!error) {
+                                       NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+
                                        HTMLNode *root = [parser head];
                                        HTMLNode *titleTag = [root findChildTag:@"title"];
                                        NSArray *metaTags = [root findChildTags:@"meta"];
                                        for (HTMLNode *tag in metaTags) {
                                            if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
-                                               description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                                               description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:whitespace];
                                                break;
                                            }
                                        }
                                        
                                        if (titleTag && titleTag.contents) {
-                                           callback([titleTag.contents stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]], description);
-                                       }
-                                       else {
-                                           callback(@"", description);
+                                           title = [titleTag.contents stringByTrimmingCharactersInSet:whitespace];
                                        }
                                    }
                                }
-                               else {
-                                   callback(@"", @"");
-                               }
+
+                               callback(title, description);
                            }];
 }
 
