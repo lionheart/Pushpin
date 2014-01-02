@@ -22,7 +22,6 @@
 
 @property (nonatomic, weak) id<PPTitleButtonDelegate> delegate;
 
-- (instancetype)initWithDelegate:(id<PPTitleButtonDelegate>)delegate;
 + (instancetype)button;
 + (instancetype)buttonWithDelegate:(id<PPTitleButtonDelegate>)delegate;
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName;
