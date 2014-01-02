@@ -1081,7 +1081,13 @@ static NSInteger kToolbarHeight = 44;
             }
             else {
                 notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
-                notification.alertBody = NSLocalizedString(@"Bookmarks marked as read.", nil);
+                
+                if (posts.count == 1) {
+                    notification.alertBody = NSLocalizedString(@"Bookmark marked as read.", nil);
+                }
+                else {
+                    notification.alertBody = NSLocalizedString(@"Bookmarks marked as read.", nil);
+                }
             }
             
             // Once all async tasks are done, present the notification and update the local database
