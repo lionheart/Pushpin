@@ -604,6 +604,15 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
+                            
+                            UIGraphicsBeginImageContext(CGSizeMake(1, 1));
+                            CGContextRef context = UIGraphicsGetCurrentContext();
+                            CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
+                            CGContextFillRect(context, CGRectMake(0, 0, 1, 1));
+                            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+                            UIGraphicsEndImageContext();
+
+                            [self.searchBar setScopeBarButtonBackgroundImage:image forState:UIControlStateNormal];
 
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
