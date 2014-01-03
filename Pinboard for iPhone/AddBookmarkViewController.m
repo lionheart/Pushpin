@@ -19,7 +19,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
 #import "UITableView+Additions.h"
-#import "PPTableViewHeader.h"
+#import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>

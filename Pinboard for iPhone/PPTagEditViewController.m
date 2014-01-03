@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "PPTagEditViewController.h"
-#import "PPTableViewHeader.h"
+#import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "UITableViewCellValue1.h"
@@ -131,10 +131,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return 30 + [PPTableViewHeader heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        return 30 + [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
     }
     else {
-        return 10 + [PPTableViewHeader heightWithText:@"Current Tags" fontSize:15];
+        return 10 + [PPTableViewTitleView heightWithText:@"Current Tags" fontSize:15];
     }
 }
 
@@ -234,11 +234,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return [PPTableViewHeader headerWithText:@"Current Tags" fontSize:15];
+        return [PPTableViewTitleView headerWithText:@"Current Tags" fontSize:15];
     }
     else {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return [PPTableViewHeader headerWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        return [PPTableViewTitleView headerWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
     }
 }
 
