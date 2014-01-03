@@ -92,7 +92,7 @@ static NSInteger kToolbarHeight = 44;
     
     self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
     self.pullToRefreshView.clipsToBounds = YES;
-    self.pullToRefreshView.backgroundColor = [UIColor redColor];
+    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
