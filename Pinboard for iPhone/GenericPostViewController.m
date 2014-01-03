@@ -49,12 +49,14 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
+@property (nonatomic, strong) NSDate *latestSearchTime;
 
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
 - (void)resetSearchTimer;
 - (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
+- (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
 @end
 
@@ -77,14 +79,7 @@ static NSInteger kToolbarHeight = 44;
     self.prefersStatusBarHidden = NO;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.actionSheetVisible = NO;
-
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
-    self.pullToRefreshView.clipsToBounds = YES;
-    self.pullToRefreshView.backgroundColor = [UIColor redColor];
-    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
-    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
-    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
-    [self.tableView addSubview:self.pullToRefreshView];
+    self.latestSearchTime = [NSDate date];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -94,6 +89,14 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     [self.view addSubview:self.tableView];
+    
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
+    self.pullToRefreshView.clipsToBounds = YES;
+    self.pullToRefreshView.backgroundColor = [UIColor redColor];
+    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
+    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
+    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
+    [self.tableView addSubview:self.pullToRefreshView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -588,7 +591,9 @@ static NSInteger kToolbarHeight = 44;
                     } completion:^(BOOL finished) {
                         [self.pullToRefreshImageView stopAnimating];
                         [self.pullToRefreshImageView setHidden:YES];
-                        CGFloat offset = self.tableView.contentOffset.y;
+//                        CGFloat offset = self.tableView.contentOffset.y;
+                        CGFloat offset = -60;
+#warning This offset is messing things up. It's making the pull to refresh view cover the entire table view.
                         self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
                         
                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
@@ -623,19 +628,17 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)updateSearchResults {
+- (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
     if (!self.searchLoading) {
         self.searchLoading = YES;
-        __block CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
         __weak GenericPostViewController *weakself = self;
-        self.latestSearchUpdateTime = time;
         BOOL shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
         
         if (shouldSearchFullText) {
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         }
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            if (time == weakself.latestSearchUpdateTime) {
+            if ([time isEqualToDate:self.latestSearchTime]) {
                 if (shouldSearchFullText) {
                     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                 }
@@ -645,8 +648,15 @@ static NSInteger kToolbarHeight = 44;
                     [weakself.searchDisplayController.searchResultsTableView reloadData];
                 });
             }
+            else {
+                weakself.searchLoading = NO;
+            }
         } failure:^(NSError *error) {
-            self.searchLoading = NO;
+            weakself.searchLoading = NO;
+            
+            if (shouldSearchFullText) {
+                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+            }
         }];
     }
 }
@@ -808,7 +818,7 @@ static NSInteger kToolbarHeight = 44;
                         [self updateFromLocalDatabaseWithCallback:nil];
                     }
                     else {
-                        [self updateSearchResults];
+                        [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
                     }
                 }
             }];
@@ -1318,8 +1328,10 @@ static NSInteger kToolbarHeight = 44;
         UIOffset imageOffset;
         
         if (offset < 0) {
-            // Start showing the view under the navigation bar
-            self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, ABS(offset) - minimumOffset);
+#warning This line below might be messing things up. It's making the pull to refresh view cover the entire table view.
+//            self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, - minimumOffset);
+            offset = -60;
+            self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
             
             // Make sure the image view is visible, and update with the appropriate photo
             imageOffset = UIOffsetMake(0, 10.0f);
@@ -1360,12 +1372,17 @@ static NSInteger kToolbarHeight = 44;
     else {
         interval = 0.1;
     }
-    self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
-    [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+
+    NSDate *time = [NSDate date];
+    if ([time compare:self.latestSearchTime]) {
+        self.latestSearchTime = time;
+        self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired:) userInfo:@{@"time": time} repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
+    }
 }
 
-- (void)searchTimerFired {
+- (void)searchTimerFired:(NSTimer *)timer {
     NSString *query;
     switch (self.searchBar.selectedScopeButtonIndex) {
         case PinboardSearchTitles:
@@ -1392,7 +1409,7 @@ static NSInteger kToolbarHeight = 44;
         self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
     }
 
-    [self updateSearchResults];
+    [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];
 }
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
@@ -1421,7 +1438,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self updateSearchResults];
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
+    [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
 }
 
 - (void)removeBarButtonTouchUpside:(id)sender {

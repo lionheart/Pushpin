@@ -155,7 +155,7 @@ typedef enum : NSInteger {
 
 - (void)handleCellTap;
 - (void)popViewController;
-- (void)searchTimerFired;
+- (void)searchTimerFired:(NSTimer *)timer;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
@@ -164,7 +164,6 @@ typedef enum : NSInteger {
 - (void)sendToReadLater;
 - (void)updateWithRatio:(NSNumber *)ratio;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
-- (void)updateSearchResults;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
