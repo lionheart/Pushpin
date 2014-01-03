@@ -7,19 +7,14 @@
 //
 
 #import "ASStyleSheet.h"
+#import <uservoice-iphone-sdk/UVStyleSheet.h>
 
 @implementation ASStyleSheet
 
-- (UIColor *)backgroundColor {
-    return [UIColor whiteColor];
-}
-
-- (UIColor *)navigationBarTextColor {
-    return [UIColor whiteColor];
-}
-
-- (UIColor *)navigationBarTintColor {
-    return [UIColor whiteColor];
++ (void)applyStyles {
+    [UVStyleSheet instance].tintColor = [UIColor whiteColor];
+    [UVStyleSheet instance].navigationBarBackgroundColor = [UIColor whiteColor];
+    [UVStyleSheet instance].navigationBarTextColor = [UIColor whiteColor];
 }
 
 @end

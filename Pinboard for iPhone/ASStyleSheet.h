@@ -10,4 +10,6 @@
 
 @interface ASStyleSheet : UVStyleSheet
 
++ (void)applyStyles;
+
 @end

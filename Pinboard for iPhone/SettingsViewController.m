@@ -615,7 +615,7 @@ static NSString *CellIdentifier = @"Cell";
                     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                    [UVStyleSheet setStyleSheet:[[ASStyleSheet alloc] init]];
+                    [ASStyleSheet applyStyles];
                     [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
                     break;
                 }
