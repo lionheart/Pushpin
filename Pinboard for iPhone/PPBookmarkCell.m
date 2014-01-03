@@ -20,12 +20,16 @@
 @property (nonatomic, weak) id<GenericPostDataSource> dataSource;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIButton *editButton;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 
 @property (nonatomic) BOOL didReachDeleteThreshold;
 @property (nonatomic) BOOL didReachEditThreshold;
 @property (nonatomic) NSInteger index;
 @property (nonatomic) BOOL compressed;
-@property (nonatomic, strong) PPScrollView *scrollView;
+@property (nonatomic, strong) NSLayoutConstraint *mainWidthConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *leftPositionConstraint;
+
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
 @end
 
@@ -47,23 +51,16 @@
                             index:(NSInteger)index
                        compressed:(BOOL)compressed {
     
+    [self.contentView lhs_removeSubviews];
+
     self.index = index;
     self.didReachDeleteThreshold = NO;
     self.didReachEditThreshold = NO;
     self.compressed = compressed;
-
-    // TODO: This is a bit of a hack, and could be updated to reuse the views
-    for (UIView *subview in [self.contentView subviews]) {
-        if ([subview isKindOfClass:[UIImageView class]]) {
-            [subview removeFromSuperview];
-        }
-        else if ([subview isKindOfClass:[TTTAttributedLabel class]]) {
-            [subview removeFromSuperview];
-        }
-        else if ([subview isKindOfClass:[PPBadgeWrapperView class]]) {
-            [subview removeFromSuperview];
-        }
-    }
+    
+    self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.panGestureRecognizer.delegate = self;
+    [self.contentView addGestureRecognizer:self.panGestureRecognizer];
 
     NSAttributedString *string;
     if (compressed && [dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
@@ -98,47 +95,46 @@
     self.textView.activeLinkAttributes = activeLinkAttributes;
     self.textView.text = string;
 
-    self.scrollView = [[PPScrollView alloc] init];
-    self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds) + 1, CGRectGetHeight(self.bounds));
-    self.scrollView.delegate = self;
-    self.scrollView.directionalLockEnabled = YES;
-    self.scrollView.backgroundColor = HEX(0xEEEEEEFF);
-    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.contentView.backgroundColor = HEX(0xEEEEEEFF);
     
     self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.deleteButton setImage:[UIImage imageNamed:@"Delete-Button-Light"] forState:UIControlStateDisabled];
     [self.deleteButton setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
     self.deleteButton.enabled = NO;
-    self.deleteButton.frame = CGRectMake(CGRectGetWidth(self.bounds) + 15, 0, 23, 23);
-    CGPoint center = self.deleteButton.center;
-    center.y = CGRectGetMidY(self.bounds);
-    self.deleteButton.center = center;
     
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-blue"] forState:UIControlStateDisabled];
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-darker"] forState:UIControlStateNormal];
     self.editButton.enabled = NO;
-    self.editButton.frame = CGRectMake(- 15 - 16, 0, 16, 20);
-    center = self.deleteButton.center;
-    center.y = CGRectGetMidY(self.bounds);
-    self.editButton.center = center;
 
     UIView *mainContentView = [[UIView alloc] initWithFrame:self.bounds];
+    mainContentView.translatesAutoresizingMaskIntoConstraints = NO;
     mainContentView.backgroundColor = [UIColor whiteColor];
 
     [mainContentView addSubview:self.textView];
-    [self.scrollView addSubview:mainContentView];
-    [self.scrollView addSubview:self.deleteButton];
-    [self.scrollView addSubview:self.editButton];
-    [self.contentView addSubview:self.scrollView];
+    [self.contentView addSubview:mainContentView];
+    [self.contentView addSubview:self.deleteButton];
+    [self.contentView addSubview:self.editButton];
     
-    NSDictionary *views = @{@"scroll": self.scrollView,
-                            @"main": mainContentView,
+    NSDictionary *views = @{@"main": mainContentView,
+                            @"edit": self.editButton,
+                            @"delete": self.deleteButton,
                             @"text": self.textView };
-
-    [self.contentView lhs_addConstraints:@"V:|[scroll]|" views:views];
-    [self.contentView lhs_addConstraints:@"H:|[scroll]|" views:views];
+    
+    [self.contentView lhs_centerVerticallyForView:self.deleteButton height:23];
+    [self.contentView lhs_centerVerticallyForView:self.editButton height:20];
+    [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=15)-[main]" views:views];
+    [self.contentView lhs_addConstraints:@"H:[main]-(>=15)-[delete]" views:views];
+    [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=20)-|" views:views];
+    [self.contentView lhs_addConstraints:@"H:|-(<=20)-[edit]" views:views];
+    [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
+    
+    self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
+    self.leftPositionConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    
+    [self.contentView addConstraints:@[self.mainWidthConstraint, self.leftPositionConstraint]];
 
     [mainContentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:views];
     
@@ -165,79 +161,42 @@
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGRect deleteRect = self.deleteButton.frame;
-    CGRect editRect = self.editButton.frame;
-
-    CGFloat minDistance = 15;
-    CGFloat threshold = 60;
-    CGFloat deleteOriginalDistance = scrollView.contentSize.width + minDistance;
-    CGFloat editOriginalDistance = -minDistance - 16;
-    if (scrollView.contentOffset.x > threshold) {
-        deleteRect.origin.x = deleteOriginalDistance + scrollView.contentOffset.x - threshold;
-        self.deleteButton.enabled = YES;
-    }
-    else {
-        deleteRect.origin.x = deleteOriginalDistance;
-        self.deleteButton.enabled = NO;
-    }
-
-    if (scrollView.contentOffset.x < -threshold) {
-        editRect.origin.x = editOriginalDistance + scrollView.contentOffset.x + threshold;
-        self.editButton.enabled = YES;
-    }
-    else {
-        editRect.origin.x = editOriginalDistance;
-        self.editButton.enabled = NO;
-    }
-    
-    // We reset the y coordinate as a weird side effect of the interaction with the table view pan gesture
-    CGPoint point = scrollView.contentOffset;
-    point.y = 0;
-    scrollView.contentOffset = point;
-
-    self.deleteButton.frame = deleteRect;
-    self.editButton.frame = editRect;
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    CGPoint velocity = [self.panGestureRecognizer velocityInView:self.contentView];
+    return fabs(velocity.y) < fabs(velocity.x);
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (self.deleteButton.enabled) {
-        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forIndex:)]) {
-            [self.delegate bookmarkCellDidActivateDeleteButton:self forIndex:self.index];
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.panGestureRecognizer) {
+        CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
+        if (recognizer.state == UIGestureRecognizerStateChanged) {
+            
+            self.deleteButton.enabled = offset.x < -63;
+            self.editButton.enabled = offset.x > 51;
+            
+            self.leftPositionConstraint.constant = offset.x;
+
+            [self.contentView layoutIfNeeded];
         }
-        self.didReachDeleteThreshold = YES;
-    }
-    
-    if (self.editButton.enabled) {
-        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forIndex:)]) {
-            [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
+        else if (recognizer.state == UIGestureRecognizerStateEnded) {
+            if (self.deleteButton.enabled) {
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forIndex:)]) {
+                    [self.delegate bookmarkCellDidActivateDeleteButton:self forIndex:self.index];
+                }
+            }
+            else if (self.editButton.enabled) {
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forIndex:)]) {
+                    [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
+                }
+            }
+            
+            [UIView animateWithDuration:0.5
+                             animations:^{
+                                 self.leftPositionConstraint.constant = 0;
+                                 [self.contentView layoutIfNeeded];
+                             }];
         }
-        self.didReachEditThreshold = YES;
     }
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    if (self.didReachDeleteThreshold) {
-        self.didReachDeleteThreshold = NO;
-    }
-    
-    if (self.didReachEditThreshold) {
-        self.didReachEditThreshold = NO;
-    }
-
-    scrollView.contentOffset = CGPointZero;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds) + 1, CGRectGetHeight(self.bounds));
-    self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
-}
-
-- (void)prepareForReuse {
-    [super prepareForReuse];
-    [self.scrollView setContentOffset:CGPointZero animated:NO];
 }
 
 @end
