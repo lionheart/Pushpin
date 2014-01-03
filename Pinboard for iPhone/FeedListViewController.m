@@ -21,7 +21,7 @@
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
-#import "PPTableViewHeader.h"
+#import "PPTableViewTitleView.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -167,10 +167,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [PPTableViewHeader headerWithText:NSLocalizedString(@"Personal", nil)];
+            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Personal", nil)];
             
         case 1:
-            return [PPTableViewHeader headerWithText:NSLocalizedString(@"Community", nil)];
+            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Community", nil)];
     }
 
     return nil;

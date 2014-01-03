@@ -1,16 +1,16 @@
 //
-//  PPTableViewHeader.m
+//  PPTableViewTitleView.m
 //  Pushpin
 //
-//  Created by Dan Loewenherz on 12/30/13.
+//  Created by Dan Loewenherz on 1/2/14.
 //
 //
 
-#import "PPTableViewHeader.h"
+#import "PPTableViewTitleView.h"
 #import "PPTheme.h"
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
-@implementation PPTableViewHeader
+@implementation PPTableViewTitleView
 
 - (id)initWithText:(NSString *)text {
     return [self initWithText:text fontSize:18];
@@ -43,12 +43,12 @@
     return CGRectGetHeight([string boundingRectWithSize:CGSizeMake(320 - 12*2, CGFLOAT_MAX) options:0 context:nil]);
 }
 
-+ (PPTableViewHeader *)headerWithText:(NSString *)text fontSize:(CGFloat)fontSize {
-    return [[PPTableViewHeader alloc] initWithText:text fontSize:fontSize];
++ (PPTableViewTitleView *)headerWithText:(NSString *)text fontSize:(CGFloat)fontSize {
+    return [[PPTableViewTitleView alloc] initWithText:text fontSize:fontSize];
 }
 
-+ (PPTableViewHeader *)headerWithText:(NSString *)text {
-    return [[PPTableViewHeader alloc] initWithText:text];
++ (PPTableViewTitleView *)headerWithText:(NSString *)text {
+    return [[PPTableViewTitleView alloc] initWithText:text];
 }
 
 @end
