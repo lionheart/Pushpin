@@ -171,8 +171,8 @@
         CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
         if (recognizer.state == UIGestureRecognizerStateChanged) {
             
-            self.deleteButton.enabled = offset.x < -63;
-            self.editButton.enabled = offset.x > 51;
+            self.deleteButton.enabled = offset.x <= -58;
+            self.editButton.enabled = offset.x >= 51;
             
             self.leftPositionConstraint.constant = offset.x;
 
