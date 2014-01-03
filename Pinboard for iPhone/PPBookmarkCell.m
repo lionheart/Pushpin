@@ -96,7 +96,7 @@
     self.textView.text = string;
 
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);
-    
+
     self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.deleteButton setImage:[UIImage imageNamed:@"Delete-Button-Light"] forState:UIControlStateDisabled];
@@ -162,8 +162,13 @@
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    CGPoint velocity = [self.panGestureRecognizer velocityInView:self.contentView];
-    return fabs(velocity.y) < fabs(velocity.x);
+    if ([self.delegate respondsToSelector:@selector(bookmarkCellCanSwipe:)]) {
+        if ([self.delegate bookmarkCellCanSwipe:self]) {
+            CGPoint velocity = [self.panGestureRecognizer velocityInView:self.contentView];
+            return fabs(velocity.y) < fabs(velocity.x);
+        }
+    }
+    return NO;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {

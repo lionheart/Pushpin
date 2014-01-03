@@ -17,6 +17,7 @@
 
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index;
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index;
+- (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell;
 
 @end
 
