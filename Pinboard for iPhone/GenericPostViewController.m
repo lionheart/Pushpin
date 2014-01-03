@@ -638,7 +638,7 @@ static NSInteger kToolbarHeight = 44;
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         }
         [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            if ([time isEqualToDate:self.latestSearchTime]) {
+            if ([time compare:self.latestSearchTime] == NSOrderedSame) {
                 if (shouldSearchFullText) {
                     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                 }
@@ -1361,21 +1361,24 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)resetSearchTimer {
-    if (self.latestSearchTimer) {
-        [self.latestSearchTimer invalidate];
-    }
-    
-    CGFloat interval;
-    if (self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText) {
-        interval = 0.6;
-    }
-    else {
-        interval = 0.1;
-    }
 
     NSDate *time = [NSDate date];
     if ([time compare:self.latestSearchTime]) {
         self.latestSearchTime = time;
+
+        if (self.latestSearchTimer) {
+            [self.latestSearchTimer invalidate];
+            self.latestSearchTimer = nil;
+        }
+        
+        CGFloat interval;
+        if (self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText) {
+            interval = 0.6;
+        }
+        else {
+            interval = 0.1;
+        }
+
         self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired:) userInfo:@{@"time": time} repeats:NO];
         [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
@@ -1438,7 +1441,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
     [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
 }
 
