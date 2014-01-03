@@ -1325,7 +1325,7 @@ static NSInteger kToolbarHeight = 44;
         interval = 0.6;
     }
     else {
-        interval = 0.3;
+        interval = 0.1;
     }
     self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired) userInfo:nil repeats:NO];
@@ -1344,15 +1344,10 @@ static NSInteger kToolbarHeight = 44;
             break;
 
         case PinboardSearchTags: {
-            NSArray *tags = [self.latestSearchText componentsSeparatedByString:@" "];
-            NSMutableArray *tagQueries = [NSMutableArray array];
-            for (NSString *tag in tags) {
-                [tagQueries addObject:[NSString stringWithFormat:@"tags:%@*", tag]];
-            }
-            query = [tagQueries componentsJoinedByString:@" "];
+            query = [NSString stringWithFormat:@"tags:\"%@\"", self.latestSearchText];
             break;
         }
-            
+
         default:
             query = self.latestSearchText;
             break;
