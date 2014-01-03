@@ -490,8 +490,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
     
-    ASStyleSheet *styleSheet = [[ASStyleSheet alloc] init];
-    [UVStyleSheet setStyleSheet:styleSheet];
+    [ASStyleSheet applyStyles];
     [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
