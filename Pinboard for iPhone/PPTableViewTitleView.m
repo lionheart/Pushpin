@@ -18,6 +18,7 @@
 
 - (id)initWithText:(NSString *)text fontSize:(CGFloat)fontSize {
     self = [super init];
+    self.text = text;
     UILabel *label = [[UILabel alloc] init];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     label.font = [UIFont fontWithName:[PPTheme boldFontName] size:fontSize];
@@ -40,7 +41,7 @@
 + (CGFloat)heightWithText:(NSString *)text fontSize:(CGFloat)fontSize {
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:fontSize]};
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:text attributes:attributes];
-    return CGRectGetHeight([string boundingRectWithSize:CGSizeMake(320 - 12*2, CGFLOAT_MAX) options:0 context:nil]);
+    return CGRectGetHeight([string boundingRectWithSize:CGSizeMake(320 - 12*2, CGFLOAT_MAX) options:0 context:nil]) + 20;
 }
 
 + (PPTableViewTitleView *)headerWithText:(NSString *)text fontSize:(CGFloat)fontSize {
