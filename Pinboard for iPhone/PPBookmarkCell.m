@@ -202,26 +202,26 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (self.deleteButton.enabled) {
+        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forIndex:)]) {
+            [self.delegate bookmarkCellDidActivateDeleteButton:self forIndex:self.index];
+        }
         self.didReachDeleteThreshold = YES;
     }
     
     if (self.editButton.enabled) {
+        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forIndex:)]) {
+            [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
+        }
         self.didReachEditThreshold = YES;
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (self.didReachDeleteThreshold) {
-        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forIndex:)]) {
-            [self.delegate bookmarkCellDidActivateDeleteButton:self forIndex:self.index];
-        }
         self.didReachDeleteThreshold = NO;
     }
     
     if (self.didReachEditThreshold) {
-        if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forIndex:)]) {
-            [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
-        }
         self.didReachEditThreshold = NO;
     }
 
