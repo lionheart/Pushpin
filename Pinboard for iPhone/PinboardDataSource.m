@@ -110,35 +110,62 @@ static NSString *ellipsis = @"…";
 }
 
 - (void)filterWithQuery:(NSString *)query {
+    query = [query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (self.shouldSearchFullText) {
         self.searchQuery = query;
     }
     else {
-        query = [query stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-        NSArray *components = [query componentsSeparatedByString:@" "];
-        NSMutableArray *newComponents = [NSMutableArray array];
-        for (NSString *component in components) {
-            if ([component isEqualToString:@"AND"]) {
-                [newComponents addObject:component];
-            }
-            else if ([component isEqualToString:@"OR"]) {
-                [newComponents addObject:component];
-            }
-            else if ([component isEqualToString:@"NOT"]) {
-                [newComponents addObject:component];
-            }
-            else if ([component rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\": "]].location == NSNotFound) {
-                [newComponents addObject:[component stringByAppendingString:@"*"]];
-            }
-            else if ([component hasSuffix:@":"]) {
-                [newComponents addObject:[component stringByAppendingString:@"*"]];
-            }
-            else {
-                [newComponents addObject:component];
-            }
+        NSError *error;
+        NSRegularExpression *complexExpression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:\"[^\\\\\"]+\")|(\"[^ ]+\"))" options:0 error:&error];
+        NSArray *complexExpressions = [complexExpression matchesInString:query options:0 range:NSMakeRange(0, query.length)];
+
+        NSMutableOrderedSet *components = [NSMutableOrderedSet orderedSet];
+        NSMutableArray *rangeValuesToDelete = [NSMutableArray array];
+        
+        for (NSTextCheckingResult *result in complexExpressions) {
+            NSString *value = [query substringWithRange:result.range];
+            [rangeValuesToDelete addObject:[NSValue valueWithRange:result.range]];
+            [components addObject:value];
+        }
+
+        NSMutableString *remainingQuery = [NSMutableString stringWithString:query];
+        for (NSValue *value in [rangeValuesToDelete reverseObjectEnumerator]) {
+            [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
         }
         
-        self.searchQuery = [newComponents componentsJoinedByString:@" "];
+        NSRegularExpression *simpleExpression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|([^ \"]+))" options:0 error:&error];
+        NSArray *simpleExpressions = [simpleExpression matchesInString:remainingQuery options:0 range:NSMakeRange(0, remainingQuery.length)];
+        
+        for (NSTextCheckingResult *result in simpleExpressions) {
+            NSString *value = [query substringWithRange:result.range];
+            
+            BOOL isKeyword = NO;
+            for (NSString *keyword in @[@"AND", @"OR", @"NOT"]) {
+                if ([keyword isEqualToString:[value uppercaseString]]) {
+                    isKeyword = YES;
+                    break;
+                }
+            }
+
+            if (isKeyword) {
+                [components addObject:[value uppercaseString]];
+            }
+            else {
+                if (![value hasSuffix:@"*"]) {
+                    value = [value stringByAppendingString:@"*"];
+                }
+                
+                [components addObject:value];
+            }
+
+        }
+        
+        NSMutableArray *finalArray = [NSMutableArray array];
+        for (NSString *item in components) {
+            [finalArray addObject:item];
+        }
+        
+        self.searchQuery = [finalArray componentsJoinedByString:@" "];
     }
 }
 
@@ -1093,6 +1120,9 @@ static NSString *ellipsis = @"…";
     
     NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
     NSString *linkHost = [linkUrl host];
+    if ([linkHost hasPrefix:@"www."]) {
+        linkHost = [linkHost stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
+    }
     NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
     [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
     
@@ -1467,8 +1497,58 @@ static NSString *ellipsis = @"…";
     NSMutableArray *whereComponents = [NSMutableArray array];
     if (self.searchQuery) {
         [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
-        [whereComponents addObject:@"bookmark_fts MATCH ?"];
-        [parameters addObject:self.searchQuery];
+
+        NSError *error;
+        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|(\\w+:\"[^\"]+\"))" options:0 error:&error];
+        NSRegularExpression *subExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\w+):\"?([^\"]+)\"?" options:0 error:&error];
+        NSArray *fieldMatches = [expression matchesInString:self.searchQuery options:0 range:NSMakeRange(0, self.searchQuery.length)];
+        NSMutableArray *valuesForRanges = [NSMutableArray array];
+        for (NSTextCheckingResult *result in fieldMatches) {
+            [valuesForRanges addObject:[NSValue valueWithRange:result.range]];
+            
+            NSString *matchString = [self.searchQuery substringWithRange:result.range];
+            NSTextCheckingResult *subresult = [subExpression firstMatchInString:matchString options:0 range:NSMakeRange(0, matchString.length)];
+
+            if (subresult.numberOfRanges == 3) {
+                NSString *field = [[matchString substringWithRange:[subresult rangeAtIndex:1]] lowercaseString];
+                
+                BOOL isValidField = NO;
+                for (NSString *validField in @[@"title", @"description", @"url", @"tags"]) {
+                    if ([validField isEqualToString:field]) {
+                        isValidField = YES;
+                        break;
+                    }
+                }
+
+                if (isValidField) {
+                    NSString *value = [matchString substringWithRange:[subresult rangeAtIndex:2]];
+                    NSArray *words = [value componentsSeparatedByString:@" "];
+                    NSMutableArray *wordsWithWildcards = [NSMutableArray array];
+                    for (NSString *word in words) {
+                        if ([word hasSuffix:@"*"]) {
+                            [wordsWithWildcards addObject:word];
+                        }
+                        else {
+                            [wordsWithWildcards addObject:[word stringByAppendingString:@"*"]];
+                        }
+                    }
+                    [whereComponents addObject:[NSString stringWithFormat:@"bookmark_fts.%@ MATCH ?", field]];
+                    [parameters addObject:[wordsWithWildcards componentsJoinedByString:@" "]];
+                }
+            }
+        }
+
+        NSMutableString *remainingQuery = [NSMutableString stringWithString:self.searchQuery];
+        for (NSValue *value in [valuesForRanges reverseObjectEnumerator]) {
+            [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
+        }
+
+        NSString *trimmedQuery = [remainingQuery stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (![trimmedQuery isEqualToString:@""]) {
+            [whereComponents addObject:@"bookmark_fts MATCH ?"];
+            [parameters addObject:trimmedQuery];
+        }
     }
 
     if (self.tags.count > 0) {
