@@ -111,7 +111,7 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
                 cell.accessoryView = self.markReadSwitch;
                 break;
             case 3:
-                cell.textLabel.text = NSLocalizedString(@"Auto correct text", nil);
+                cell.textLabel.text = NSLocalizedString(@"Autocorrect text", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.autoCorrectionSwitch = [[UISwitch alloc] init];
@@ -122,7 +122,7 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
                 cell.accessoryView = self.autoCorrectionSwitch;
                 break;
             case 4:
-                cell.textLabel.text = NSLocalizedString(@"Auto capitalize text", nil);
+                cell.textLabel.text = NSLocalizedString(@"Autocapitalize text", nil);
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 size = cell.frame.size;
                 self.autoCapitalizationSwitch = [[UISwitch alloc] init];
