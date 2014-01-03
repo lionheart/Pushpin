@@ -77,6 +77,14 @@ static NSInteger kToolbarHeight = 44;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.actionSheetVisible = NO;
 
+    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
+    self.pullToRefreshView.clipsToBounds = YES;
+    self.pullToRefreshView.backgroundColor = [UIColor redColor];
+    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
+    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
+    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
+    [self.tableView addSubview:self.pullToRefreshView];
+
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
@@ -102,13 +110,6 @@ static NSInteger kToolbarHeight = 44;
 
     self.loading = NO;
     self.searchLoading = NO;
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
-    self.pullToRefreshView.clipsToBounds = YES;
-    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
-    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
-    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
-    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
-    [self.tableView addSubview:self.pullToRefreshView];
 
     CGRect bounds = [[UIScreen mainScreen] bounds];
     CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
