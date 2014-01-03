@@ -46,6 +46,7 @@ typedef enum : NSInteger {
     PinboardSearchTags,
 } PinboardSearchType;
 
+@protocol PPBookmarkCellDelegate;
 @class PPNavigationController;
 
 @protocol GenericPostDataSource <NSObject>
@@ -98,7 +99,7 @@ typedef enum : NSInteger {
 
 @end
 
-@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate>
+@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *pullToRefreshView;

@@ -276,13 +276,13 @@ static NSString *CellIdentifier = @"Cell";
                 case 4:
                     cell.textLabel.text = NSLocalizedString(@"Advanced Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    cell.accessoryType = UITableViewCellAccessoryDetailButton;
                     break;
 
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    cell.accessoryType = UITableViewCellAccessoryDetailButton;
                     break;
 
                 default:

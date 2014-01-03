@@ -41,10 +41,10 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIButton *multipleMarkAsReadButton;
 @property (nonatomic, strong) UIButton *multipleTagEditButton;
 @property (nonatomic, strong) UIButton *multipleDeleteButton;
+@property (nonatomic, strong) UIActionSheet *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
@@ -183,24 +183,18 @@ static NSInteger kToolbarHeight = 44;
     
     [self.tableView lhs_expandToFillSuperview];
     
-    NSDictionary *views = @{@"statusView": self.multiStatusView,
-                            @"toolbarView": self.multiToolbarView};
-    
     // Multi edit status and toolbar
     [self.view addSubview:self.multiStatusView];
     [self.view addSubview:self.multiToolbarView];
     [self.view addSubview:self.toolbar];
     
+    NSDictionary *views = @{@"statusView": self.multiStatusView,
+                            @"toolbarView": self.multiToolbarView};
+    
     [self.view lhs_addConstraints:@"H:|[statusView]|" views:views];
     [self.view lhs_addConstraints:@"V:[statusView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
-    
-    self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
-    [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
-    
-    self.multipleEditStatusViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.multiStatusView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:-kToolbarHeight];
-    [self.view addConstraint:self.multipleEditStatusViewTopConstraint];
     
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -211,6 +205,17 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (self.multipleEditToolbarBottomConstraint) {
+        [self.view removeConstraint:self.multipleEditToolbarBottomConstraint];
+    }
+    self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
+    [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
+
+    if (self.multipleEditStatusViewTopConstraint) {
+        [self.view removeConstraint:self.multipleEditStatusViewTopConstraint];
+    }
+    self.multipleEditStatusViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.multiStatusView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:-kToolbarHeight];
+    [self.view addConstraint:self.multipleEditStatusViewTopConstraint];
     
     [UIView animateWithDuration:0.2
                      animations:^{
@@ -289,13 +294,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    // Remove the multi editting views
-    [self.multiStatusView removeFromSuperview];
-    [self.multiToolbarView removeFromSuperview];
-    
-    // Hide the editing toolbar
-    [self.toolbar removeFromSuperview];
-    
     [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
 
@@ -304,6 +302,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
     return self.tableView == tableView && [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
 }
 
@@ -315,7 +314,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewCellEditingStyleDelete;
+    return UITableViewCellEditingStyleNone;
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -845,6 +844,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
+    cell.delegate = self;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
     [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
@@ -970,6 +970,33 @@ static NSInteger kToolbarHeight = 44;
             }
         }
 
+    }
+    else if (actionSheet == self.confirmDeletionActionSheet) {
+        NSString *title = [self.confirmDeletionActionSheet buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:NSLocalizedString(@"Delete", nil)]) {
+            if (self.searchDisplayController.isActive) {
+                [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.searchDisplayController.searchResultsTableView beginUpdates];
+                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.searchDisplayController.searchResultsTableView endUpdates];
+                    });
+                }];
+            }
+            else {
+                [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
+
+                        [self.tableView beginUpdates];
+                        [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationTop];
+                        [self.tableView endUpdates];
+                    });
+                }];
+            }
+        }
     }
     else if (actionSheet == self.confirmMultipleDeletionActionSheet) {
         if (buttonIndex == 0) {
@@ -1201,9 +1228,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionAlert {
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
-
-    [self.confirmDeletionAlertView show];
+    self.confirmDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    [self.confirmDeletionActionSheet showInView:self.view];
 }
 
 #pragma mark - UIAlertViewDelegate
@@ -1582,7 +1608,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled {
     if (enabled) {
         self.multipleDeleteButton.enabled = YES;
-        self.multipleTagEditButton.enabled = YES;
+        self.multipleTagEditButton.enabled = NO;
         self.multipleMarkAsReadButton.enabled = YES;
     }
     else {
@@ -1615,6 +1641,20 @@ static NSInteger kToolbarHeight = 44;
     else {
         [self.tableView reloadData];
     }
+}
+
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index {
+    self.selectedPost = [self.postDataSource postAtIndex:index];
+    [self showConfirmDeletionAlert];
+}
+
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index {
+    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:index withDelegate:self];
+    
+    if ([UIApplication isIPad]) {
+        vc.modalPresentationStyle = UIModalPresentationFormSheet;
+    }
+    [self.navigationController presentViewController:vc animated:YES completion:nil];
 }
 
 @end
