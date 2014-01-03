@@ -12,10 +12,12 @@
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+
 @implementation PPBadgeView
 
-static const CGFloat PADDING_X = 4.0f;
-static const CGFloat PADDING_Y = 2.0f;
+static const CGFloat PADDING_X = 4;
+static const CGFloat PADDING_Y = 2;
 
 @synthesize imageView = _imageView;
 @synthesize textLabel = _textLabel;
@@ -36,12 +38,16 @@ static const CGFloat PADDING_Y = 2.0f;
                                                } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
         
-        self.layer.cornerRadius = 1.0f;
-        self.layer.backgroundColor = ((UIColor *)badgeOptions[PPBadgeNormalBackgroundColor]).CGColor;
+        self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
+        self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
+        self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
+
+        self.backgroundColor = self.normalColor;
         
         self.imageView = [[UIImageView alloc] initWithImage:image];
+        self.imageView.backgroundColor = self.normalColor;
         [self addSubview:self.imageView];
-        
+
         // Calculate our frame
         CGSize size = [@"badge" sizeWithAttributes:@{ NSFontAttributeName: [PPTheme tagFont] }];
         self.frame = CGRectMake(0, 0, size.height + (PADDING_X * 2), size.height + (PADDING_Y * 2));
@@ -70,16 +76,17 @@ static const CGFloat PADDING_Y = 2.0f;
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
         
-        self.layer.cornerRadius = 1.0f;
-        self.layer.backgroundColor = self.normalColor.CGColor;
+        self.backgroundColor = self.normalColor;
         
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = text;
         self.textLabel.font = [PPTheme tagFont];
+        self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.textLabel.backgroundColor = self.normalColor;
         self.textLabel.textColor = [UIColor whiteColor];
-        
+
         // Calculate our frame
-        CGSize size = [text sizeWithAttributes:@{ NSFontAttributeName: self.textLabel.font }];
+        CGSize size = [self.textLabel textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
         self.frame = CGRectMake(0, 0, size.width + (PADDING_X * 2), size.height + (PADDING_Y * 2));
         self.textLabel.frame = CGRectMake(PADDING_X, PADDING_Y, size.width, size.height);
         [self addSubview:self.textLabel];
@@ -90,7 +97,7 @@ static const CGFloat PADDING_Y = 2.0f;
         self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         self.tapGestureRecognizer.numberOfTapsRequired = 1;
         [self addGestureRecognizer:self.tapGestureRecognizer];
-        
+
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self addGestureRecognizer:self.longPressGestureRecognizer];
     }
@@ -98,14 +105,6 @@ static const CGFloat PADDING_Y = 2.0f;
 }
 
 #pragma mark Setters
-- (void)setBackgroundColor:(UIColor *)backgroundColor {
-    if (!self.imageView.image) {
-        [super setBackgroundColor:[UIColor colorWithCGColor:self.layer.backgroundColor]];
-    }
-    else {
-        [super setBackgroundColor:backgroundColor];
-    }
-}
 
 - (void)setEnabled:(BOOL)enabled {
     _enabled = enabled;
@@ -115,7 +114,7 @@ static const CGFloat PADDING_Y = 2.0f;
 - (void)setSelected:(BOOL)selected {
     _selected = selected;
     if (selected) {
-        self.layer.backgroundColor = self.selectedColor.CGColor;
+        self.backgroundColor = self.selectedColor;
     }
     else {
         [self updateBackgroundColor];
@@ -131,10 +130,10 @@ static const CGFloat PADDING_Y = 2.0f;
 
 - (void)updateBackgroundColor {
     if (self.enabled) {
-        self.layer.backgroundColor = self.normalColor.CGColor;
+        self.backgroundColor = self.normalColor;
     }
     else {
-        self.layer.backgroundColor = self.disabledColor.CGColor;
+        self.backgroundColor = self.disabledColor;
     }
 }
 
