@@ -1552,28 +1552,26 @@ static NSString *ellipsis = @"…";
         }
     }
 
-    if (self.tags.count > 0) {
-        // In this situation, "untagged" is a meaningless filter, and we ignore it.
-        for (NSString *tag in self.tags) {
-            [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
-            [parameters addObject:tag];
-        }
-    }
-    else {
-        switch (self.untagged) {
-            case kPinboardFilterFalse:
-                [whereComponents addObject:@"bookmark.tags != ?"];
-                [parameters addObject:@""];
-                break;
-                
-            case kPinboardFilterTrue:
-                [whereComponents addObject:@"bookmark.tags = ?"];
-                [parameters addObject:@""];
-                break;
-                
-            default:
-                break;
-        }
+    switch (self.untagged) {
+        case kPinboardFilterFalse:
+            [whereComponents addObject:@"bookmark.tags != ?"];
+            [parameters addObject:@""];
+            break;
+            
+        case kPinboardFilterTrue:
+            [whereComponents addObject:@"bookmark.tags = ?"];
+            [parameters addObject:@""];
+            break;
+            
+        default:
+            // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
+            if (!self.searchQuery) {
+                for (NSString *tag in self.tags) {
+                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
+                    [parameters addObject:tag];
+                }
+            }
+            break;
     }
     
     if (self.starred != kPinboardFilterNone) {
@@ -1626,7 +1624,32 @@ static NSString *ellipsis = @"…";
     dataSource.isPrivate = self.isPrivate;
     dataSource.unread = self.unread;
     dataSource.starred = self.starred;
+    dataSource.untagged = self.untagged;
     return dataSource;
+}
+
+- (NSString *)searchPlaceholder {
+    if (self.isPrivate == kPinboardFilterTrue) {
+        return @"Search Private";
+    }
+    
+    if (self.isPrivate == kPinboardFilterFalse) {
+        return @"Search Public";
+    }
+    
+    if (self.starred == kPinboardFilterTrue) {
+        return @"Search Starred";
+    }
+    
+    if (self.unread == kPinboardFilterTrue) {
+        return @"Search Unread";
+    }
+    
+    if (self.untagged == kPinboardFilterTrue) {
+        return @"Search Untagged";
+    }
+
+    return @"Search";
 }
 
 @end

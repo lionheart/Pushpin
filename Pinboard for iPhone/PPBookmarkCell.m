@@ -130,7 +130,7 @@
     [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=20)-|" views:views];
     [self.contentView lhs_addConstraints:@"H:|-(<=20)-[edit]" views:views];
     [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
-    
+
     self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
     self.leftPositionConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
     

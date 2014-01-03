@@ -71,6 +71,8 @@ typedef enum : NSInteger {
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic) BOOL shouldSearchFullText;
 
+- (NSString *)searchPlaceholder;
+
 - (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
 - (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;
 
