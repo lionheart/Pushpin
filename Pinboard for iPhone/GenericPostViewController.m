@@ -307,7 +307,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
     return self.tableView == tableView && [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
 }
 
@@ -1686,6 +1685,10 @@ static NSInteger kToolbarHeight = 44;
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
     [self.navigationController presentViewController:vc animated:YES completion:nil];
+}
+
+- (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
+    return ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]);
 }
 
 @end
