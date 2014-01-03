@@ -55,6 +55,7 @@ static NSString *ellipsis = @"…";
         self.starred = kPinboardFilterNone;
         self.offset = 0;
         self.limit = 50;
+        self.orderBy = @"created_at DESC";
         self.searchQuery = nil;
 
         self.dateFormatter = [[NSDateFormatter alloc] init];
