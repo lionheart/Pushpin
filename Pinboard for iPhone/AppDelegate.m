@@ -620,7 +620,6 @@
                 [db executeUpdate:@"PRAGMA user_version=6;"];
 
             case 6:
-                db.logsErrors = YES;
                 [db closeOpenResultSets];
                 [db executeUpdate:@"ALTER TABLE bookmark RENAME TO bookmark_old;"];
                 [db executeUpdate:@"ALTER TABLE tagging RENAME TO tagging_old;"];
@@ -676,7 +675,8 @@
 
                 // FTS Updates
                 [db executeUpdate:@"DROP TRIGGER bookmark_fts_insert_trigger;"];
-                [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];                
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_delete_trigger;"];
                 [db executeUpdate:@"DROP TABLE bookmark_fts;"];
 
                 [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url);"];
@@ -693,6 +693,25 @@
                 [db executeUpdate:@"DROP TABLE tag_old;"];
                 [db executeUpdate:@"DROP TABLE bookmark_old;"];
                 [db executeUpdate:@"PRAGMA user_version=7;"];
+
+            case 7:
+                [db closeOpenResultSets];
+                [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
+
+                // FTS Updates
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_insert_trigger;"];
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];
+                [db executeUpdate:@"DROP TRIGGER bookmark_fts_delete_trigger;"];
+                [db executeUpdate:@"DROP TABLE bookmark_fts;"];
+
+                [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
+
+                // Repopulate bookmarks
+                [db executeUpdate:@"INSERT INTO bookmark_fts (hash, title, description, tags, url) SELECT hash, title, description, tags, url FROM bookmark;"];
+                [db executeUpdate:@"PRAGMA user_version=8;"];
 
             default:
                 break;
