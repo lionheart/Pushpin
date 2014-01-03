@@ -35,7 +35,7 @@
 }
 
 + (CGFloat)heightWithText:(NSString *)text {
-    return [self heightWithText:text fontSize:18];
+    return [self heightWithText:text fontSize:16];
 }
 
 + (CGFloat)heightWithText:(NSString *)text fontSize:(CGFloat)fontSize {

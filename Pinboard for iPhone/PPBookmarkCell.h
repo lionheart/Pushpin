@@ -11,7 +11,18 @@
 @protocol GenericPostDataSource;
 @protocol PPBadgeWrapperDelegate;
 
-@interface PPBookmarkCell : UITableViewCell
+@class PPBookmarkCell;
+
+@protocol PPBookmarkCellDelegate <NSObject>
+
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index;
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index;
+
+@end
+
+@interface PPBookmarkCell : UITableViewCell <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+
+@property (nonatomic, weak) id<PPBookmarkCellDelegate> delegate;
 
 - (void)prepareCellWithDataSource:(id<GenericPostDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
