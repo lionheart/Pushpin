@@ -14,6 +14,7 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
+#import "PPTableViewTitleView.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -81,18 +82,18 @@ static NSString *CellIdentifier = @"Cell";
     return 1;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return NSLocalizedString(@"Browser Bookmarklet", nil);
+        return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Browser Bookmarklet", nil) fontSize:14];
     }
     return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        return 0;
+    if (section == 1) {
+        return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Browser Bookmarklet", nil) fontSize:14];
     }
-    return 40;
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

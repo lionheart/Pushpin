@@ -10,6 +10,8 @@
 
 @interface PPTableViewTitleView : UIView
 
+@property (nonatomic, strong) NSString *text;
+
 - (id)initWithText:(NSString *)text;
 - (id)initWithText:(NSString *)text fontSize:(CGFloat)fontSize;
 

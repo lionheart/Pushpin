@@ -16,6 +16,7 @@
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "UITableViewCellValue1.h"
+#import "PPTableViewTitleView.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -25,6 +26,8 @@ static NSString *CellIdentifier = @"TagCell";
 @interface TagViewController ()
 
 @property (nonatomic) BOOL searchInProgress;
+
+- (NSString *)titleForSectionIndex:(NSInteger)section;
 
 @end
 
@@ -181,18 +184,18 @@ static NSString *CellIdentifier = @"TagCell";
     return 0;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        return self.sortedTitles[section];
-    }
-    return nil;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section > 0) {
-        return 44;
+    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
+        return [PPTableViewTitleView heightWithText:self.sortedTitles[section]];
     }
     return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
+        return [PPTableViewTitleView headerWithText:self.sortedTitles[section]];
+    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -203,7 +206,7 @@ static NSString *CellIdentifier = @"TagCell";
         tag = self.filteredTags[indexPath.row];
     }
     else {
-        tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
+        tag = self.titleToTags[[self titleForSectionIndex:indexPath.section]][indexPath.row];
     }
 
     cell.textLabel.text = tag[@"name"];
@@ -292,7 +295,7 @@ static NSString *CellIdentifier = @"TagCell";
     NSDictionary *tag;
     if (tableView == self.tableView) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        tag = self.titleToTags[[self tableView:tableView titleForHeaderInSection:indexPath.section]][indexPath.row];
+        tag = self.titleToTags[[self titleForSectionIndex:indexPath.section]][indexPath.row];
     }
     else {
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -313,6 +316,11 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)popViewController {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (NSString *)titleForSectionIndex:(NSInteger)section {
+    PPTableViewTitleView *titleView = (PPTableViewTitleView *)[self tableView:self.tableView viewForHeaderInSection:section];
+    return titleView.text;
 }
 
 @end

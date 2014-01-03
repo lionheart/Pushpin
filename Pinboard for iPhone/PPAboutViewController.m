@@ -18,6 +18,7 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellSubtitle.h"
+#import "PPTableViewTitleView.h"
 
 #import "UITableView+Additions.h"
 
@@ -119,8 +120,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return [self.data[section][1] count];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.titles[section];
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return [PPTableViewTitleView heightWithText:self.titles[section]];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return [PPTableViewTitleView headerWithText:self.titles[section]];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

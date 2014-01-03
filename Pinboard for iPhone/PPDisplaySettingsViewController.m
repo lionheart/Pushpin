@@ -171,7 +171,8 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
         return NSLocalizedString(@"You can also toggle this by pinching in or out when viewing bookmarks.", nil);
-    } else if (section == 1) {
+    }
+    else if (section == 1) {
         return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
     }
     

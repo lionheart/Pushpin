@@ -14,6 +14,7 @@
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "ASStyleSheet.h"
+#import "PPTableViewTitleView.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -314,11 +315,18 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 #pragma mark - UITableViewDataSource
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (self.progressView.hidden && section == 0) {
-        return @"Pinboard Login";
+        return [PPTableViewTitleView headerWithText:@"Pinboard Login"];
     }
     return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (self.progressView.hidden && section == 0) {
+        return [PPTableViewTitleView heightWithText:@"Pinboard Login"];
+    }
+    return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

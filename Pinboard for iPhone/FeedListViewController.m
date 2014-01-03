@@ -161,7 +161,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 50;
+    switch (section) {
+        case 0:
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)];
+            
+        case 1:
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Community", nil)];
+    }
+    
+    return 0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

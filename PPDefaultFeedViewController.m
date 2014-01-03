@@ -10,6 +10,7 @@
 #import "PPDefaultFeedViewController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
+#import "PPTableViewTitleView.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -136,19 +137,34 @@ static NSString *CellIdentifier = @"Cell";
     return 0;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return NSLocalizedString(@"Personal", nil);
-            break;
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)];
+
         case 1:
-            return NSLocalizedString(@"Community", nil);
-            break;
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Community", nil)];
+
         case 2:
-            return NSLocalizedString(@"Saved Feeds", nil);
-            break;
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Saved Feeds", nil)];
+
     }
-    return @"";
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    switch (section) {
+        case 0:
+            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Personal", nil)];
+            
+        case 1:
+            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Community", nil)];
+            
+        case 2:
+            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Saved Feeds", nil)];
+            
+    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
