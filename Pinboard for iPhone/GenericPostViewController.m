@@ -603,6 +603,10 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
+                            
+                            if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
+                                self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
+                            }
 
                             self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
                             self.searchDisplayController.searchResultsDataSource = self;
