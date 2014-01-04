@@ -20,7 +20,7 @@
  */
 
 var Readability = function(uri, doc) {
-  const ENABLE_LOGGING = false;
+  const ENABLE_LOGGING = true;
 
   this._uri = uri;
   this._doc = doc;
@@ -47,7 +47,7 @@ var Readability = function(uri, doc) {
   // Control whether log messages are sent to the console
   if (ENABLE_LOGGING) {
     this.log = function (msg) {
-      dump("Reader: (Readability) " + msg);
+      console.log("Reader: (Readability) " + msg);
     };
   } else {
     this.log = function () {};
@@ -70,12 +70,12 @@ Readability.prototype = {
   // All of the regular expressions in use within readability.
   // Defined up here so we don't instantiate them repeatedly in loops.
   REGEXPS: {
-    unlikelyCandidates: /combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup|tweet|twitter/i,
-    okMaybeItsACandidate: /and|article|body|column|main|shadow/i,
-    positive: /article|body|content|entry|hentry|main|page|pagination|post|text|blog|story/i,
+    unlikelyCandidates: /combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup|tweet|twitter|addthis/i,
+    okMaybeItsACandidate: /and|article|body|column|main|shadow|primary/i,
+    positive: /article|body|primary|content|entry|hentry|main|page|pagination|post|text|blog|story|row/i,
     negative: /hidden|combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget/i,
     extraneous: /print|archive|comment|discuss|e[\-]?mail|share|reply|all|login|sign|single|utility/i,
-    byline: /byline|author|dateline|writtenby/i,
+    byline: /byline|editor|author|dateline|writtenby/i,
     replaceFonts: /<(\/?)font[^>]*>/gi,
     trim: /^\s+|\s+$/g,
     normalize: /\s{2,}/g,
@@ -105,9 +105,9 @@ Readability.prototype = {
    * @return void
    */
   _fixRelativeUris: function(articleContent) {
-    let scheme = this._uri.scheme;
-    let prePath = this._uri.prePath;
-    let pathBase = this._uri.pathBase;
+    var scheme = this._uri.scheme;
+    var prePath = this._uri.prePath;
+    var pathBase = this._uri.pathBase;
 
     function toAbsoluteURI(uri) {
       // If this is already an absolute URI, return it.
@@ -128,10 +128,10 @@ Readability.prototype = {
     }
 
     function convertRelativeURIs(tagName, propName) {
-      let elems = articleContent.getElementsByTagName(tagName);
-      for (let i = elems.length; --i >= 0;) {
-        let elem = elems[i];
-        let relativeURI = elem.getAttribute(propName);
+      var elems = articleContent.getElementsByTagName(tagName);
+      for (var i = elems.length; --i >= 0;) {
+        var elem = elems[i];
+        var relativeURI = elem.getAttribute(propName);
         if (relativeURI != null)
           elems[i].setAttribute(propName, toAbsoluteURI(relativeURI));
       }
@@ -150,9 +150,9 @@ Readability.prototype = {
    * @return void
    **/
   _getArticleTitle: function() {
-    let doc = this._doc;
-    let curTitle = "";
-    let origTitle = "";
+    var doc = this._doc;
+    var curTitle = "";
+    var origTitle = "";
 
     try {
       curTitle = origTitle = doc.title;
@@ -173,7 +173,7 @@ Readability.prototype = {
       if (curTitle.split(' ').length < 3)
         curTitle = origTitle.replace(/[^:]*[:](.*)/gi,'$1');
     } else if (curTitle.length > 150 || curTitle.length < 15) {
-      let hOnes = doc.getElementsByTagName('h1');
+      var hOnes = doc.getElementsByTagName('h1');
 
       if (hOnes.length === 1)
         curTitle = this._getInnerText(hOnes[0]);
@@ -194,13 +194,13 @@ Readability.prototype = {
    * @return void
    **/
   _prepDocument: function() {
-    let doc = this._doc;
+    var doc = this._doc;
 
     // In some cases a body element can't be found (if the HTML is
     // totally hosed for example) so we create a new body node and
     // append it to the document.
     if (doc.body === null) {
-      let body = doc.createElement("body");
+      var body = doc.createElement("body");
 
       try {
         doc.body = body;
@@ -211,15 +211,15 @@ Readability.prototype = {
     }
 
     // Remove all style tags in head
-    let styleTags = doc.getElementsByTagName("style");
-    for (let st = 0; st < styleTags.length; st += 1) {
+    var styleTags = doc.getElementsByTagName("style");
+    for (var st = 0; st < styleTags.length; st += 1) {
       styleTags[st].textContent = "";
     }
 
     this._replaceBrs(doc.body);
 
-    let fonts = doc.getElementsByTagName("FONT");
-    for (let i = fonts.length; --i >=0;) {
+    var fonts = doc.getElementsByTagName("FONT");
+    for (var i = fonts.length; --i >=0;) {
       this._setNodeTag(fonts[i], "SPAN");
     }
   },
@@ -230,7 +230,7 @@ Readability.prototype = {
    * returned.
    */
   _nextElement: function (node) {
-    let next = node;
+    var next = node;
     while (next
         && (next.nodeType != Node.ELEMENT_NODE)
         && this.REGEXPS.whitespace.test(next.textContent)) {
@@ -247,21 +247,21 @@ Readability.prototype = {
    *   <div>foo<br>bar<p>abc</p></div>
    */
   _replaceBrs: function (elem) {
-    let brs = elem.getElementsByTagName("br");
-    for (let i = 0; i < brs.length; i++) {
-      let br = brs[i];
-      let next = br.nextSibling;
+    var brs = elem.getElementsByTagName("br");
+    for (var i = 0; i < brs.length; i++) {
+      var br = brs[i];
+      var next = br.nextSibling;
 
       // Whether 2 or more <br> elements have been found and replaced with a
       // <p> block.
-      let replaced = false;
+      var replaced = false;
 
       // If we find a <br> chain, remove the <br>s until we hit another element
       // or non-whitespace. This leaves behind the first <br> in the chain
       // (which will be replaced with a <p> later).
       while ((next = this._nextElement(next)) && (next.tagName == "BR")) {
         replaced = true;
-        let sibling = next.nextSibling;
+        var sibling = next.nextSibling;
         next.parentNode.removeChild(next);
         next = sibling;
       }
@@ -270,20 +270,20 @@ Readability.prototype = {
       // all sibling nodes as children of the <p> until we hit another <br>
       // chain.
       if (replaced) {
-        let p = this._doc.createElement("p");
+        var p = this._doc.createElement("p");
         br.parentNode.replaceChild(p, br);
 
         next = p.nextSibling;
         while (next) {
           // If we've hit another <br><br>, we're done adding children to this <p>.
           if (next.tagName == "BR") {
-            let nextElem = this._nextElement(next);
+            var nextElem = this._nextElement(next);
             if (nextElem && nextElem.tagName == "BR")
               break;
           }
           
           // Otherwise, make this node a child of the new <p>.
-          let sibling = next.nextSibling;
+          var sibling = next.nextSibling;
           p.appendChild(next);
           next = sibling;
         }
@@ -326,11 +326,11 @@ Readability.prototype = {
     this._cleanConditionally(articleContent, "div");
 
     // Remove extra paragraphs
-    let articleParagraphs = articleContent.getElementsByTagName('p');
-    for (let i = articleParagraphs.length - 1; i >= 0; i -= 1) {
-      let imgCount = articleParagraphs[i].getElementsByTagName('img').length;
-      let embedCount = articleParagraphs[i].getElementsByTagName('embed').length;
-      let objectCount = articleParagraphs[i].getElementsByTagName('object').length;
+    var articleParagraphs = articleContent.getElementsByTagName('p');
+    for (var i = articleParagraphs.length - 1; i >= 0; i -= 1) {
+      var imgCount = articleParagraphs[i].getElementsByTagName('img').length;
+      var embedCount = articleParagraphs[i].getElementsByTagName('embed').length;
+      var objectCount = articleParagraphs[i].getElementsByTagName('object').length;
 
       if (imgCount === 0 &&
         embedCount === 0 &&
@@ -339,10 +339,10 @@ Readability.prototype = {
         articleParagraphs[i].parentNode.removeChild(articleParagraphs[i]);
     }
 
-    let brs = articleContent.getElementsByTagName("BR");
-    for (let i = brs.length; --i >= 0;) {
-      let br = brs[i];
-      let next = this._nextElement(br.nextSibling);
+    var brs = articleContent.getElementsByTagName("BR");
+    for (var i = brs.length; --i >= 0;) {
+      var br = brs[i];
+      var next = this._nextElement(br.nextSibling);
       if (next && next.tagName == "P")
         br.parentNode.removeChild(br);
     }
@@ -402,17 +402,17 @@ Readability.prototype = {
    * @return Element
   **/
   _grabArticle: function (page) {
-    let doc = this._doc;
-    let isPaging = (page !== null ? true: false);
+    var doc = this._doc;
+    var isPaging = (page !== null ? true: false);
     page = page ? page : this._doc.body;
-    let pageCacheHtml = page.innerHTML;
+    var pageCacheHtml = page.innerHTML;
 
     // Check if any "dir" is set on the toplevel document element
     this._articleDir = doc.documentElement.getAttribute("dir");
 
     while (true) {
-      let stripUnlikelyCandidates = this._flagIsActive(this.FLAG_STRIP_UNLIKELYS);
-      let allElements = page.getElementsByTagName('*');
+      var stripUnlikelyCandidates = this._flagIsActive(this.FLAG_STRIP_UNLIKELYS);
+      var allElements = page.getElementsByTagName('*');
 
       // First, node prepping. Trash nodes that look cruddy (like ones with the
       // class name "comment", etc), and turn divs into P tags where they have been
@@ -420,11 +420,11 @@ Readability.prototype = {
       //
       // Note: Assignment from index for performance. See http://www.peachpit.com/articles/article.aspx?p=31567&seqNum=5
       // TODO: Shouldn't this be a reverse traversal?
-      let node = null;
-      let nodesToScore = [];
+      var node = null;
+      var nodesToScore = [];
 
-      // Let each node know its index in the allElements array.
-      for (let i = allElements.length; --i >= 0;) {
+      // var each node know its index in the allElements array.
+      for (var i = allElements.length; --i >= 0;) {
         allElements[i]._index = i;
       }
 
@@ -434,18 +434,18 @@ Readability.prototype = {
        * of its children - from the allElements array.
        */
       function purgeNode(node) {
-        for (let i = node.childNodes.length; --i >= 0;) {
+        for (var i = node.childNodes.length; --i >= 0;) {
           purgeNode(node.childNodes[i]);
         }
         if (node._index !== undefined && allElements[node._index] == node)
           delete allElements[node._index];
       }
 
-      for (let nodeIndex = 0; nodeIndex < allElements.length; nodeIndex++) {
+      for (var nodeIndex = 0; nodeIndex < allElements.length; nodeIndex++) {
         if (!(node = allElements[nodeIndex]))
           continue;
 
-        let matchString = node.className + node.id;
+        var matchString = node.className + node.id;
         if (matchString.search(this.REGEXPS.byline) !== -1 && !this._articleByline) {
           this._articleByline = node.textContent;
           node.parentNode.removeChild(node);
@@ -474,11 +474,11 @@ Readability.prototype = {
           // element. DIVs with only a P element inside and no text content can be
           // safely converted into plain P elements to avoid confusing the scoring
           // algorithm with DIVs with are, in practice, paragraphs.
-          let pIndex = this._getSinglePIndexInsideDiv(node);
+          var pIndex = this._getSinglePIndexInsideDiv(node);
 
           if (pIndex >= 0 || !this._hasChildBlockElement(node)) {
             if (pIndex >= 0) {
-              let newNode = node.childNodes[pIndex];
+              var newNode = node.childNodes[pIndex];
               node.parentNode.replaceChild(newNode, node);
               purgeNode(node);
             } else {
@@ -487,13 +487,13 @@ Readability.prototype = {
             }
           } else {
             // EXPERIMENTAL
-            for (let i = 0, il = node.childNodes.length; i < il; i += 1) {
-              let childNode = node.childNodes[i];
+            for (var i = 0, il = node.childNodes.length; i < il; i += 1) {
+              var childNode = node.childNodes[i];
               if (!childNode)
                 continue;
 
               if (childNode.nodeType === 3) { // Node.TEXT_NODE
-                let p = doc.createElement('p');
+                var p = doc.createElement('p');
                 p.textContent = childNode.textContent;
                 p.style.display = 'inline';
                 p.className = 'readability-styled';
@@ -510,11 +510,11 @@ Readability.prototype = {
        *
        * A score is determined by things like number of commas, class names, etc. Maybe eventually link density.
       **/
-      let candidates = [];
-      for (let pt = 0; pt < nodesToScore.length; pt += 1) {
-        let parentNode = nodesToScore[pt].parentNode;
-        let grandParentNode = parentNode ? parentNode.parentNode : null;
-        let innerText = this._getInnerText(nodesToScore[pt]);
+      var candidates = [];
+      for (var pt = 0; pt < nodesToScore.length; pt += 1) {
+        var parentNode = nodesToScore[pt].parentNode;
+        var grandParentNode = parentNode ? parentNode.parentNode : null;
+        var innerText = this._getInnerText(nodesToScore[pt]);
 
         if (!parentNode || typeof(parentNode.tagName) === 'undefined')
           continue;
@@ -537,7 +537,7 @@ Readability.prototype = {
           candidates.push(grandParentNode);
         }
 
-        let contentScore = 0;
+        var contentScore = 0;
 
         // Add a point for the paragraph itself as a base.
         contentScore += 1;
@@ -557,21 +557,21 @@ Readability.prototype = {
 
       // After we've calculated scores, loop through all of the possible
       // candidate nodes we found and find the one with the highest score.
-      let topCandidates = [];
-      for (let c = 0, cl = candidates.length; c < cl; c += 1) {
-        let candidate = candidates[c];
+      var topCandidates = [];
+      for (var c = 0, cl = candidates.length; c < cl; c += 1) {
+        var candidate = candidates[c];
 
         // Scale the final candidates score based on link density. Good content
         // should have a relatively small link density (5% or less) and be mostly
         // unaffected by this operation.
-        let candidateScore = candidate.readability.contentScore * (1 - this._getLinkDensity(candidate));
+        var candidateScore = candidate.readability.contentScore * (1 - this._getLinkDensity(candidate));
         candidate.readability.contentScore = candidateScore;
 
         this.log('Candidate: ' + candidate + " (" + candidate.className + ":" +
           candidate.id + ") with score " + candidateScore);
 
-        for (let t = 0; t < this.N_TOP_CANDIDATES; t++) {
-          let aTopCandidate = topCandidates[t];
+        for (var t = 0; t < this.N_TOP_CANDIDATES; t++) {
+          var aTopCandidate = topCandidates[t];
 
           if (!aTopCandidate || candidateScore > aTopCandidate.readability.contentScore) {
             topCandidates.splice(t, 0, candidate);
@@ -582,16 +582,16 @@ Readability.prototype = {
         }
       }
 
-      let topCandidate = topCandidates[0] || null;
-      let lastTopCandidate = (topCandidates.length > 3 ? topCandidates[topCandidates.length - 1] : null);
+      var topCandidate = topCandidates[0] || null;
+      var lastTopCandidate = (topCandidates.length > 3 ? topCandidates[topCandidates.length - 1] : null);
 
       // If we still have no top candidate, just use the body as a last resort.
       // We also have to copy the body node so it is something we can modify.
       if (topCandidate === null || topCandidate.tagName === "BODY") {
         // Move all of the page's children into topCandidate
         topCandidate = doc.createElement("DIV");
-        let children = page.childNodes;
-        for (let i = 0; i < children.length; ++i) {
+        var children = page.childNodes;
+        for (var i = 0; i < children.length; ++i) {
           topCandidate.appendChild(children[i]);
         }
 
@@ -603,16 +603,16 @@ Readability.prototype = {
       // Now that we have the top candidate, look through its siblings for content
       // that might also be related. Things like preambles, content split by ads
       // that we removed, etc.
-      let articleContent = doc.createElement("DIV");
+      var articleContent = doc.createElement("DIV");
       if (isPaging)
         articleContent.id = "readability-content";
 
-      let siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
-      let siblingNodes = topCandidate.parentNode.childNodes;
+      var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
+      var siblingNodes = topCandidate.parentNode.childNodes;
 
-      for (let s = 0, sl = siblingNodes.length; s < sl; s += 1) {
-        let siblingNode = siblingNodes[s];
-        let append = false;
+      for (var s = 0, sl = siblingNodes.length; s < sl; s += 1) {
+        var siblingNode = siblingNodes[s];
+        var append = false;
 
         this.log("Looking at sibling node: " + siblingNode + " (" + siblingNode.className + ":" + siblingNode.id + ")" + ((typeof siblingNode.readability !== 'undefined') ? (" with score " + siblingNode.readability.contentScore) : ''));
         this.log("Sibling has score " + (siblingNode.readability ? siblingNode.readability.contentScore : 'Unknown'));
@@ -620,7 +620,7 @@ Readability.prototype = {
         if (siblingNode === topCandidate)
           append = true;
 
-        let contentBonus = 0;
+        var contentBonus = 0;
 
         // Give a bonus if sibling nodes and top candidates have the example same classname
         if (siblingNode.className === topCandidate.className && topCandidate.className !== "")
@@ -631,9 +631,9 @@ Readability.prototype = {
           append = true;
 
         if (siblingNode.nodeName === "P") {
-          let linkDensity = this._getLinkDensity(siblingNode);
-          let nodeContent = this._getInnerText(siblingNode);
-          let nodeLength = nodeContent.length;
+          var linkDensity = this._getLinkDensity(siblingNode);
+          var nodeContent = this._getInnerText(siblingNode);
+          var nodeLength = nodeContent.length;
 
           if (nodeLength > 80 && linkDensity < 0.25) {
             append = true;
@@ -674,11 +674,11 @@ Readability.prototype = {
       this._prepArticle(articleContent);
 
       if (this._curPageNum === 1) {
-        let div = doc.createElement("DIV");
+        var div = doc.createElement("DIV");
         div.id = "readability-page-1";
         div.className = "page";
-        let children = articleContent.childNodes;
-        for (let i = 0; i < children.length; ++i) {
+        var children = articleContent.childNodes;
+        for (var i = 0; i < children.length; ++i) {
           div.appendChild(children[i]);
         }
         articleContent.appendChild(div);
@@ -708,7 +708,7 @@ Readability.prototype = {
           // a list or directory of links with summaries. It takes the score of the last top candidate
           // (see N_TOP_CANDIDATES) and checks how it compares to the top candidate's. On pages that are not
           // actual articles, there will likely be many candidates with similar score (i.e. higher contrast ratio).
-          let contrastRatio = lastTopCandidate.readability.contentScore / topCandidate.readability.contentScore;
+          var contrastRatio = lastTopCandidate.readability.contentScore / topCandidate.readability.contentScore;
           if (contrastRatio > 0.45)
             return null;
         }
@@ -724,8 +724,8 @@ Readability.prototype = {
    * @param Element
   **/
   _removeScripts: function(doc) {
-    let scripts = doc.getElementsByTagName('script');
-    for (let i = scripts.length - 1; i >= 0; i -= 1) {
+    var scripts = doc.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0; i -= 1) {
       scripts[i].nodeValue="";
       scripts[i].removeAttribute('src');
 
@@ -742,11 +742,11 @@ Readability.prototype = {
    * @param Element
   **/
   _getSinglePIndexInsideDiv: function(e) {
-    let childNodes = e.childNodes;
-    let pIndex = -1;
+    var childNodes = e.childNodes;
+    var pIndex = -1;
 
-    for (let i = childNodes.length; --i >= 0;) {
-      let node = childNodes[i];
+    for (var i = childNodes.length; --i >= 0;) {
+      var node = childNodes[i];
 
       if (node.nodeType === Node.ELEMENT_NODE) {
         if (node.tagName !== "P")
@@ -770,9 +770,9 @@ Readability.prototype = {
    * @param Element
    */
   _hasChildBlockElement: function (e) {
-    let length = e.childNodes.length;
-    for (let i = 0; i < length; i++) {
-      let child = e.childNodes[i];
+    var length = e.childNodes.length;
+    for (var i = 0; i < length; i++) {
+      var child = e.childNodes[i];
       if (child.nodeType != 1)
         continue;
 
@@ -790,7 +790,7 @@ Readability.prototype = {
    * @return string
   **/
   _getInnerText: function(e, normalizeSpaces) {
-    let textContent = e.textContent.replace(this.REGEXPS.trim, "");
+    var textContent = e.textContent.replace(this.REGEXPS.trim, "");
     normalizeSpaces = (typeof normalizeSpaces === 'undefined') ? true : normalizeSpaces;
 
     if (normalizeSpaces) {
@@ -821,7 +821,7 @@ Readability.prototype = {
   **/
   _cleanStyles: function(e) {
     e = e || this._doc;
-    let cur = e.firstChild;
+    var cur = e.firstChild;
 
     if (!e)
       return;
@@ -852,11 +852,11 @@ Readability.prototype = {
    * @return number (float)
   **/
   _getLinkDensity: function(e) {
-    let links = e.getElementsByTagName("a");
-    let textLength = this._getInnerText(e).length;
-    let linkLength = 0;
+    var links = e.getElementsByTagName("a");
+    var textLength = this._getInnerText(e).length;
+    var linkLength = 0;
 
-    for (let i = 0, il = links.length; i < il; i += 1) {
+    for (var i = 0, il = links.length; i < il; i += 1) {
       linkLength += this._getInnerText(links[i]).length;
     }
 
@@ -870,14 +870,14 @@ Readability.prototype = {
    * @return string the base url
   **/
   _findBaseUrl: function() {
-    let uri = this._uri;
-    let noUrlParams = uri.path.split("?")[0];
-    let urlSlashes = noUrlParams.split("/").reverse();
-    let cleanedSegments = [];
-    let possibleType = "";
+    var uri = this._uri;
+    var noUrlParams = uri.path.split("?")[0];
+    var urlSlashes = noUrlParams.split("/").reverse();
+    var cleanedSegments = [];
+    var possibleType = "";
 
-    for (let i = 0, slashLen = urlSlashes.length; i < slashLen; i += 1) {
-      let segment = urlSlashes[i];
+    for (var i = 0, slashLen = urlSlashes.length; i < slashLen; i += 1) {
+      var segment = urlSlashes[i];
 
       // Split off and save anything that looks like a file type.
       if (segment.indexOf(".") !== -1) {
@@ -897,7 +897,7 @@ Readability.prototype = {
       if (segment.match(/((_|-)?p[a-z]*|(_|-))[0-9]{1,2}$/i) && ((i === 1) || (i === 0)))
         segment = segment.replace(/((_|-)?p[a-z]*|(_|-))[0-9]{1,2}$/i, "");
 
-      let del = false;
+      var del = false;
 
       // If this is purely a number, and it's the first or second segment,
       // it's probably a page number. Remove it.
@@ -929,10 +929,10 @@ Readability.prototype = {
    * @return object (array)
   **/
   _findNextPageLink: function(elem) {
-    let uri = this._uri;
-    let possiblePages = {};
-    let allLinks = elem.getElementsByTagName('a');
-    let articleBaseUrl = this._findBaseUrl();
+    var uri = this._uri;
+    var possiblePages = {};
+    var allLinks = elem.getElementsByTagName('a');
+    var articleBaseUrl = this._findBaseUrl();
 
     // Loop through all links, looking for hints that they may be next-page links.
     // Things like having "page" in their textContent, className or id, or being a child
@@ -941,9 +941,9 @@ Readability.prototype = {
     // Also possible: levenshtein distance? longest common subsequence?
     //
     // After we do that, assign each page a score, and
-    for (let i = 0, il = allLinks.length; i < il; i += 1) {
-      let link = allLinks[i];
-      let linkHref = allLinks[i].href.replace(/#.*$/, '').replace(/\/$/, '');
+    for (var i = 0, il = allLinks.length; i < il; i += 1) {
+      var link = allLinks[i];
+      var linkHref = allLinks[i].href.replace(/#.*$/, '').replace(/\/$/, '');
 
       // If we've already seen this page, ignore it.
       if (linkHref === "" ||
@@ -957,7 +957,7 @@ Readability.prototype = {
       if (uri.host !== linkHref.split(/\/+/g)[1])
         continue;
 
-      let linkText = this._getInnerText(link);
+      var linkText = this._getInnerText(link);
 
       // If the linkText looks like it's not the next page, skip it.
       if (linkText.match(this.REGEXPS.extraneous) || linkText.length > 25)
@@ -965,7 +965,7 @@ Readability.prototype = {
 
       // If the leftovers of the URL after removing the base URL don't contain
       // any digits, it's certainly not a next page link.
-      let linkHrefLeftover = linkHref.replace(articleBaseUrl, '');
+      var linkHrefLeftover = linkHref.replace(articleBaseUrl, '');
       if (!linkHrefLeftover.match(/\d/))
         continue;
 
@@ -975,7 +975,7 @@ Readability.prototype = {
         possiblePages[linkHref].linkText += ' | ' + linkText;
       }
 
-      let linkObj = possiblePages[linkHref];
+      var linkObj = possiblePages[linkHref];
 
       // If the articleBaseUrl isn't part of this URL, penalize this link. It could
       // still be the link, but the odds are lower.
@@ -983,7 +983,7 @@ Readability.prototype = {
       if (linkHref.indexOf(articleBaseUrl) !== 0)
         linkObj.score -= 25;
 
-      let linkData = linkText + ' ' + link.className + ' ' + link.id;
+      var linkData = linkText + ' ' + link.className + ' ' + link.id;
       if (linkData.match(this.REGEXPS.nextLink))
         linkObj.score += 50;
 
@@ -1005,12 +1005,12 @@ Readability.prototype = {
         linkObj.score -= 200;
 
       // If a parentNode contains page or paging or paginat
-      let parentNode = link.parentNode;
-      let positiveNodeMatch = false;
-      let negativeNodeMatch = false;
+      var parentNode = link.parentNode;
+      var positiveNodeMatch = false;
+      var negativeNodeMatch = false;
 
       while (parentNode) {
-        let parentNodeClassAndId = parentNode.className + ' ' + parentNode.id;
+        var parentNodeClassAndId = parentNode.className + ' ' + parentNode.id;
 
         if (!positiveNodeMatch && parentNodeClassAndId && parentNodeClassAndId.match(/pag(e|ing|inat)/i)) {
           positiveNodeMatch = true;
@@ -1050,7 +1050,7 @@ Readability.prototype = {
       // If the link text can be parsed as a number, give it a minor bonus, with a slight
       // bias towards lower numbered pages. This is so that pages that might not have 'next'
       // in their text can still get scored, and sorted properly by score.
-      let linkTextAsNumber = parseInt(linkText, 10);
+      var linkTextAsNumber = parseInt(linkText, 10);
       if (linkTextAsNumber) {
         // Punish 1 since we're either already there, or it's probably
         // before what we want anyways.
@@ -1065,8 +1065,8 @@ Readability.prototype = {
     // Loop thrugh all of our possible pages from above and find our top
     // candidate for the next page URL. Require at least a score of 50, which
     // is a relatively high confidence that this page is the next link.
-    let topPage = null;
-    for (let page in possiblePages) {
+    var topPage = null;
+    for (var page in possiblePages) {
       if (possiblePages.hasOwnProperty(page)) {
         if (possiblePages[page].score >= 50 &&
           (!topPage || topPage.score < possiblePages[page].score))
@@ -1075,7 +1075,7 @@ Readability.prototype = {
     }
 
     if (topPage) {
-      let nextHref = topPage.href.replace(/\/$/,'');
+      var nextHref = topPage.href.replace(/\/$/,'');
 
       this.log('NEXT PAGE IS ' + nextHref);
       this._parsedPages[nextHref] = true;
@@ -1092,7 +1092,7 @@ Readability.prototype = {
   },
 
   _ajax: function(url, options) {
-    let request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
 
     function respondToReadyState(readyState) {
       if (request.readyState === 4) {
@@ -1125,10 +1125,10 @@ Readability.prototype = {
   },
 
   _appendNextPage: function(nextPageLink) {
-    let doc = this._doc;
+    var doc = this._doc;
     this._curPageNum += 1;
 
-    let articlePage = doc.createElement("DIV");
+    var articlePage = doc.createElement("DIV");
     articlePage.id = 'readability-page-' + this._curPageNum;
     articlePage.className = 'page';
     articlePage.innerHTML = '<p class="page-separator" title="Page ' + this._curPageNum + '">&sect;</p>';
@@ -1136,7 +1136,7 @@ Readability.prototype = {
     doc.getElementById("readability-content").appendChild(articlePage);
 
     if (this._curPageNum > this.MAX_PAGES) {
-      let nextPageMarkup = "<div style='text-align: center'><a href='" + nextPageLink + "'>View Next Page</a></div>";
+      var nextPageMarkup = "<div style='text-align: center'><a href='" + nextPageLink + "'>View Next Page</a></div>";
       articlePage.innerHTML = articlePage.innerHTML + nextPageMarkup;
       return;
     }
@@ -1148,7 +1148,7 @@ Readability.prototype = {
         success: function(r) {
 
           // First, check to see if we have a matching ETag in headers - if we do, this is a duplicate page.
-          let eTag = r.getResponseHeader('ETag');
+          var eTag = r.getResponseHeader('ETag');
           if (eTag) {
             if (eTag in this._pageETags) {
               this.log("Exact duplicate page found via ETag. Aborting.");
@@ -1160,7 +1160,7 @@ Readability.prototype = {
           }
 
           // TODO: this ends up doubling up page numbers on NYTimes articles. Need to generically parse those away.
-          let page = doc.createElement("DIV");
+          var page = doc.createElement("DIV");
 
           // Do some preprocessing to our HTML to make it ready for appending.
           // - Remove any script tags. Swap and reswap newlines with a unicode
@@ -1170,7 +1170,7 @@ Readability.prototype = {
           // - Turn all double br's into p's - was handled by prepDocument in the original view.
           //   Maybe in the future abstract out prepDocument to work for both the original document
           //   and AJAX-added pages.
-          let responseHtml = r.responseText.replace(/\n/g,'\uffff').replace(/<script.*?>.*?<\/script>/gi, '');
+          var responseHtml = r.responseText.replace(/\n/g,'\uffff').replace(/<script.*?>.*?<\/script>/gi, '');
           responseHtml = responseHtml.replace(/\n/g,'\uffff').replace(/<script.*?>.*?<\/script>/gi, '');
           responseHtml = responseHtml.replace(/\uffff/g,'\n').replace(/<(\/?)noscript/gi, '<$1div');
           responseHtml = responseHtml.replace(this.REGEXPS.replaceFonts, '<$1span>');
@@ -1182,11 +1182,11 @@ Readability.prototype = {
           // disable as necessary at the end of grabArticle.
           this._flags = 0x1 | 0x2 | 0x4;
 
-          let nextPageLink = this._findNextPageLink(page);
+          var nextPageLink = this._findNextPageLink(page);
           
           // NOTE: if we end up supporting _appendNextPage(), we'll need to
           // change this call to be async
-          let content = this._grabArticle(page);
+          var content = this._grabArticle(page);
 
           if (!content) {
             this.log("No content found in page to append. Aborting.");
@@ -1196,10 +1196,10 @@ Readability.prototype = {
           // Anti-duplicate mechanism. Essentially, get the first paragraph of our new page.
           // Compare it against all of the the previous document's we've gotten. If the previous
           // document contains exactly the innerHTML of this first paragraph, it's probably a duplicate.
-          let firstP = content.getElementsByTagName("P").length ? content.getElementsByTagName("P")[0] : null;
+          var firstP = content.getElementsByTagName("P").length ? content.getElementsByTagName("P")[0] : null;
           if (firstP && firstP.innerHTML.length > 100) {
-            for (let i = 1; i <= this._curPageNum; i += 1) {
-              let rPage = doc.getElementById('readability-page-' + i);
+            for (var i = 1; i <= this._curPageNum; i += 1) {
+              var rPage = doc.getElementById('readability-page-' + i);
               if (rPage && rPage.innerHTML.indexOf(firstP.innerHTML) !== -1) {
                 this.log('Duplicate of page ' + i + ' - skipping.');
                 articlePage.style.display = 'none';
@@ -1239,7 +1239,7 @@ Readability.prototype = {
     if (!this._flagIsActive(this.FLAG_WEIGHT_CLASSES))
       return 0;
 
-    let weight = 0;
+    var weight = 0;
 
     // Look for a special classname
     if (typeof(e.className) === 'string' && e.className !== '') {
@@ -1271,14 +1271,14 @@ Readability.prototype = {
    * @return void
    **/
   _clean: function(e, tag) {
-    let targetList = e.getElementsByTagName(tag);
-    let isEmbed = (tag === 'object' || tag === 'embed');
+    var targetList = e.getElementsByTagName(tag);
+    var isEmbed = (tag === 'object' || tag === 'embed');
 
-    for (let y = targetList.length - 1; y >= 0; y -= 1) {
+    for (var y = targetList.length - 1; y >= 0; y -= 1) {
       // Allow youtube and vimeo videos through as people usually want to see those.
       if (isEmbed) {
-        let attributeValues = "";
-        for (let i = 0, il = targetList[y].attributes.length; i < il; i += 1) {
+        var attributeValues = "";
+        for (var i = 0, il = targetList[y].attributes.length; i < il; i += 1) {
           attributeValues += targetList[y].attributes[i].value + '|';
         }
 
@@ -1305,17 +1305,17 @@ Readability.prototype = {
     if (!this._flagIsActive(this.FLAG_CLEAN_CONDITIONALLY))
       return;
 
-    let tagsList = e.getElementsByTagName(tag);
-    let curTagsLength = tagsList.length;
+    var tagsList = e.getElementsByTagName(tag);
+    var curTagsLength = tagsList.length;
 
     // Gather counts for other typical elements embedded within.
     // Traverse backwards so we can remove nodes at the same time
     // without effecting the traversal.
     //
     // TODO: Consider taking into account original contentScore here.
-    for (let i = curTagsLength-1; i >= 0; i -= 1) {
-      let weight = this._getClassWeight(tagsList[i]);
-      let contentScore = 0;
+    for (var i = curTagsLength-1; i >= 0; i -= 1) {
+      var weight = this._getClassWeight(tagsList[i]);
+      var contentScore = 0;
 
       this.log("Cleaning Conditionally " + tagsList[i] + " (" + tagsList[i].className + ":" + tagsList[i].id + ")");
 
@@ -1325,21 +1325,21 @@ Readability.prototype = {
         // If there are not very many commas, and the number of
         // non-paragraph elements is more than paragraphs or other
         // ominous signs, remove the element.
-        let p = tagsList[i].getElementsByTagName("p").length;
-        let img = tagsList[i].getElementsByTagName("img").length;
-        let li = tagsList[i].getElementsByTagName("li").length-100;
-        let input = tagsList[i].getElementsByTagName("input").length;
+        var p = tagsList[i].getElementsByTagName("p").length;
+        var img = tagsList[i].getElementsByTagName("img").length;
+        var li = tagsList[i].getElementsByTagName("li").length-100;
+        var input = tagsList[i].getElementsByTagName("input").length;
 
-        let embedCount = 0;
-        let embeds = tagsList[i].getElementsByTagName("embed");
-        for (let ei = 0, il = embeds.length; ei < il; ei += 1) {
+        var embedCount = 0;
+        var embeds = tagsList[i].getElementsByTagName("embed");
+        for (var ei = 0, il = embeds.length; ei < il; ei += 1) {
           if (embeds[ei].src.search(this.REGEXPS.videos) === -1)
             embedCount += 1;
         }
 
-        let linkDensity = this._getLinkDensity(tagsList[i]);
-        let contentLength = this._getInnerText(tagsList[i]).length;
-        let toRemove = false;
+        var linkDensity = this._getLinkDensity(tagsList[i]);
+        var contentLength = this._getInnerText(tagsList[i]).length;
+        var toRemove = false;
 
         if (img > p) {
           toRemove = true;
@@ -1370,9 +1370,9 @@ Readability.prototype = {
    * @return void
   **/
   _cleanHeaders: function(e) {
-    for (let headerIndex = 1; headerIndex < 3; headerIndex += 1) {
-      let headers = e.getElementsByTagName('h' + headerIndex);
-      for (let i = headers.length - 1; i >= 0; i -= 1) {
+    for (var headerIndex = 1; headerIndex < 3; headerIndex += 1) {
+      var headers = e.getElementsByTagName('h' + headerIndex);
+      for (var i = headers.length - 1; i >= 0; i -= 1) {
         if (this._getClassWeight(headers[i]) < 0 || this._getLinkDensity(headers[i]) > 0.33)
           headers[i].parentNode.removeChild(headers[i]);
       }
@@ -1415,14 +1415,15 @@ Readability.prototype = {
     // this._parsedPages[uri.spec.replace(/\/$/, '')] = true;
 
     // Pull out any possible next page link first.
-    // let nextPageLink = this._findNextPageLink(doc.body);
+    // var nextPageLink = this._findNextPageLink(doc.body);
 
     this._prepDocument();
 
-    let articleTitle = this._getArticleTitle();
-    let articleContent = this._grabArticle();
-    if (!articleContent)
+    var articleTitle = this._getArticleTitle();
+    var articleContent = this._grabArticle();
+    if (!articleContent) {
       return null;
+    }
 
     this._postProcessContent(articleContent);
 
@@ -1441,3 +1442,5 @@ Readability.prototype = {
   }
 };
 
+readable = new Readability(document.location.href, document)
+content = readable.parse()
