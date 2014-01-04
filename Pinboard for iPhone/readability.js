@@ -681,8 +681,6 @@ var readability = {
             var grandParentNode = parentNode ? parentNode.parentNode : null;
             var innerText       = readability.getInnerText(nodesToScore[pt]);
 
-            dbg(innerText);
-
             if (!parentNode || typeof(parentNode.tagName) === 'undefined') {
                 dbg("Skipping. Parent node undefined.");
                 continue;
@@ -699,7 +697,8 @@ var readability = {
                 candidates.push(parentNode);
                 dbg("Pushed.");
             }
-            else if (grandParentNode && typeof(grandParentNode.readability) === 'undefined' && typeof(grandParentNode.tagName) !== 'undefined') {
+
+            if (grandParentNode && typeof(grandParentNode.readability) === 'undefined' && typeof(grandParentNode.tagName) !== 'undefined') {
                 /* Initialize readability data for the grandparent. */
                 readability.initializeNode(grandParentNode);
                 candidates.push(grandParentNode);
@@ -720,7 +719,7 @@ var readability = {
             /* Add the score to the parent. The grandparent gets half. */
             parentNode.readability.contentScore += contentScore;
 
-            if(grandParentNode) {
+            if (grandParentNode) {
                 grandParentNode.readability.contentScore += contentScore/2;
             }
         }
