@@ -47,7 +47,7 @@ var readability = {
      * Defined up here so we don't instantiate them repeatedly in loops.
      **/
     regexps: {
-        unlikelyCandidates:    /combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup|tweet|twitter/i,
+        unlikelyCandidates:    /combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup|tweet|twitter|subscribe|related|addthis/i,
         okMaybeItsACandidate:  /and|article|body|column|main|shadow/i,
         positive:              /article|body|content|entry|hentry|main|page|pagination|post|text|blog|story/i,
         negative:              /combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget/i,
@@ -681,24 +681,29 @@ var readability = {
             var grandParentNode = parentNode ? parentNode.parentNode : null;
             var innerText       = readability.getInnerText(nodesToScore[pt]);
 
-            if(!parentNode || typeof(parentNode.tagName) === 'undefined') {
+            dbg(innerText);
+
+            if (!parentNode || typeof(parentNode.tagName) === 'undefined') {
+                dbg("Skipping. Parent node undefined.");
+                continue;
+            }
+            else if (innerText.length < 25) {
+                /* If this paragraph is less than 25 characters, don't even count it. */
+                dbg("Skipping. Too short.");
                 continue;
             }
 
-            /* If this paragraph is less than 25 characters, don't even count it. */
-            if(innerText.length < 25) {
-                continue; }
-
             /* Initialize readability data for the parent. */
-            if(typeof parentNode.readability === 'undefined') {
+            if (typeof parentNode.readability === 'undefined') {
                 readability.initializeNode(parentNode);
                 candidates.push(parentNode);
+                dbg("Pushed.");
             }
-
-            /* Initialize readability data for the grandparent. */
-            if(grandParentNode && typeof(grandParentNode.readability) === 'undefined' && typeof(grandParentNode.tagName) !== 'undefined') {
+            else if (grandParentNode && typeof(grandParentNode.readability) === 'undefined' && typeof(grandParentNode.tagName) !== 'undefined') {
+                /* Initialize readability data for the grandparent. */
                 readability.initializeNode(grandParentNode);
                 candidates.push(grandParentNode);
+                dbg("Pushed.");
             }
 
             var contentScore = 0;
@@ -1076,36 +1081,37 @@ var readability = {
          *
          * After we do that, assign each page a score, and
         **/
-        for(var i = 0, il = allLinks.length; i < il; i+=1) {
+        for (var i = 0, il = allLinks.length; i < il; i+=1) {
             var link     = allLinks[i],
                 linkHref = allLinks[i].href.replace(/#.*$/, '').replace(/\/$/, '');
 
             /* If we've already seen this page, ignore it */
-            if(linkHref === "" || linkHref === articleBaseUrl || linkHref === window.location.href || linkHref in readability.parsedPages) {
+            if (linkHref === "" || linkHref === articleBaseUrl || linkHref === window.location.href || linkHref in readability.parsedPages) {
                 continue;
             }
 
             /* If it's on a different domain, skip it. */
-            if(window.location.host !== linkHref.split(/\/+/g)[1]) {
+            if (window.location.host !== linkHref.split(/\/+/g)[1]) {
                 continue;
             }
 
             var linkText = readability.getInnerText(link);
 
             /* If the linkText looks like it's not the next page, skip it. */
-            if(linkText.match(readability.regexps.extraneous) || linkText.length > 25) {
+            if (linkText.match(readability.regexps.extraneous) || linkText.length > 25) {
                 continue;
             }
 
             /* If the leftovers of the URL after removing the base URL don't contain any digits, it's certainly not a next page link. */
             var linkHrefLeftover = linkHref.replace(articleBaseUrl, '');
-            if(!linkHrefLeftover.match(/\d/)) {
+            if (!linkHrefLeftover.match(/\d/)) {
                 continue;
             }
 
-            if(!(linkHref in possiblePages)) {
+            if (!(linkHref in possiblePages)) {
                 possiblePages[linkHref] = {"score": 0, "linkText": linkText, "href": linkHref};
-            } else {
+            }
+            else {
                 possiblePages[linkHref].linkText += ' | ' + linkText;
             }
 
@@ -1490,8 +1496,7 @@ var readability = {
      * @return void
      **/
     cleanConditionally: function (e, tag) {
-
-        if(!readability.flagIsActive(readability.FLAG_CLEAN_CONDITIONALLY)) {
+        if (!readability.flagIsActive(readability.FLAG_CLEAN_CONDITIONALLY)) {
             return;
         }
 
@@ -1510,8 +1515,7 @@ var readability = {
 
             dbg("Cleaning Conditionally " + tagsList[i] + " (" + tagsList[i].className + ":" + tagsList[i].id + ")" + ((typeof tagsList[i].readability !== 'undefined') ? (" with score " + tagsList[i].readability.contentScore) : ''));
 
-            if(weight+contentScore < 0)
-            {
+            if (weight+contentScore < 0) {
                 tagsList[i].parentNode.removeChild(tagsList[i]);
             }
             else if ( readability.getCharCount(tagsList[i],',') < 10) {
@@ -1526,7 +1530,7 @@ var readability = {
 
                 var embedCount = 0;
                 var embeds     = tagsList[i].getElementsByTagName("embed");
-                for(var ei=0,il=embeds.length; ei < il; ei+=1) {
+                for (var ei=0,il=embeds.length; ei < il; ei+=1) {
                     if (embeds[ei].src.search(readability.regexps.videos) === -1) {
                       embedCount+=1;
                     }
@@ -1552,7 +1556,7 @@ var readability = {
                     toRemove = true;
                 }
 
-                if(toRemove) {
+                if (toRemove) {
                     tagsList[i].parentNode.removeChild(tagsList[i]);
                 }
             }
