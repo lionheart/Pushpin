@@ -99,7 +99,6 @@ var readability = {
         var innerDiv       = document.createElement("DIV");
         var articleTitle   = readability.getArticleTitle();
         var articleContent = readability.grabArticle();
-        var articleFooter  = readability.getArticleFooter();
 
         if(!articleContent) {
             articleContent    = document.createElement("DIV");
@@ -135,7 +134,6 @@ var readability = {
         /* Glue the structure of our document together. */
         innerDiv.appendChild( articleTitle   );
         innerDiv.appendChild( articleContent );
-        innerDiv.appendChild( articleFooter  );
          overlay.appendChild( innerDiv       );
 
         /* Clear the old HTML, insert the new content. */
@@ -167,11 +165,6 @@ var readability = {
         readability.postProcessContent(articleContent);
 
         window.scrollTo(0, 0);
-
-        /* If we're using the Typekit library, select the font */
-        if (readStyle === "style-athelas" || readStyle === "style-apertura") {
-            readability.useRdbTypekit();
-        }
 
         if (nextPageLink) {
             /**
@@ -331,30 +324,6 @@ var readability = {
         articleTitle.innerHTML = curTitle;
 
         return articleTitle;
-    },
-
-    /**
-     * Get the footer with the readability mark etc.
-     *
-     * @return void
-     **/
-    getArticleFooter: function () {
-        var articleFooter = document.createElement("DIV");
-        articleFooter.id = "readFooter";
-        articleFooter.innerHTML = [
-        "<div id='rdb-footer-print'>Excerpted from <cite>" + document.title + "</cite><br />" + window.location.href + "</div>",
-        "<div id='rdb-footer-wrapper'>",
-             "<div id='rdb-footer-left'>",
-                 "<a href='http://kerrick.github.com/readability-js/' id='readability-logo'>Readability JS</a> &mdash;",
-                 " <a href='https://github.com/Kerrick/readability-js'>An open source project</a>",
-                 " <span id='readability-attribution'>based on <a href='http://lab.arc90.com/experiments/readability'>An Arc90 Laboratory Experiment</a></span>",
-             "</div>",
-             "<div id='rdb-footer-right'>",
-                 "<span class='version'>Readability version " + readability.version + "</span>",
-             "</div>",
-        "</div>"].join('');
-
-        return articleFooter;
     },
 
     /**
@@ -519,63 +488,6 @@ var readability = {
         if(linkCount > 0) {
             footnotesWrapper.style.display = 'block';
         }
-    },
-
-    useRdbTypekit: function () {
-        var rdbHead      = document.getElementsByTagName('head')[0];
-        var rdbTKScript  = document.createElement('script');
-        var rdbTKCode    = null;
-
-        var rdbTKLink    = document.createElement('a');
-            rdbTKLink.setAttribute('class','rdbTK-powered');
-            rdbTKLink.setAttribute('title','Fonts by Typekit');
-            rdbTKLink.innerHTML = "Fonts by <span class='rdbTK'>Typekit</span>";
-
-        if (readStyle === "style-athelas") {
-            rdbTKCode = "sxt6vzy";
-            dbg("Using Athelas Theme");
-
-            rdbTKLink.setAttribute('href','http://typekit.com/?utm_source=readability&utm_medium=affiliate&utm_campaign=athelas');
-            rdbTKLink.setAttribute('id','rdb-athelas');
-            document.getElementById("rdb-footer-right").appendChild(rdbTKLink);
-        }
-        if (readStyle === "style-apertura") {
-            rdbTKCode = "bae8ybu";
-            dbg("Using Inverse Theme");
-
-            rdbTKLink.setAttribute('href','http://typekit.com/?utm_source=readability&utm_medium=affiliate&utm_campaign=inverse');
-            rdbTKLink.setAttribute('id','rdb-inverse');
-            document.getElementById("rdb-footer-right").appendChild(rdbTKLink);
-        }
-
-        /**
-         * Setting new script tag attributes to pull Typekits libraries
-        **/
-        rdbTKScript.setAttribute('type','text/javascript');
-        rdbTKScript.setAttribute('src',"http://use.typekit.com/" + rdbTKCode + ".js");
-        rdbTKScript.setAttribute('charset','UTF-8');
-        rdbHead.appendChild(rdbTKScript);
-
-        /**
-         * In the future, maybe try using the following experimental Callback function?:
-         * http://gist.github.com/192350
-         * &
-         * http://getsatisfaction.com/typekit/topics/support_a_pre_and_post_load_callback_function
-        **/
-        var typekitLoader = function() {
-            dbg("Looking for Typekit.");
-            if(typeof Typekit !== "undefined") {
-                try {
-                    dbg("Caught typekit");
-                    Typekit.load();
-                    clearInterval(window.typekitInterval);
-                } catch(e) {
-                    dbg("Typekit error: " + e);
-                }
-            }
-        };
-
-        window.typekitInterval = window.setInterval(typekitLoader, 100);
     },
 
     /**
@@ -928,6 +840,7 @@ var readability = {
 
                 /* Append sibling and subtract from our list because it removes the node when you append to another node */
                 articleContent.appendChild(nodeToAppend);
+                dbg(nodeToAppend.innerHTML);
             }
         }
 
