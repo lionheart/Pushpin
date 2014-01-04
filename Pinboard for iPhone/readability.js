@@ -695,14 +695,12 @@ var readability = {
             if (typeof parentNode.readability === 'undefined') {
                 readability.initializeNode(parentNode);
                 candidates.push(parentNode);
-                dbg("Pushed.");
             }
 
             if (grandParentNode && typeof(grandParentNode.readability) === 'undefined' && typeof(grandParentNode.tagName) !== 'undefined') {
                 /* Initialize readability data for the grandparent. */
                 readability.initializeNode(grandParentNode);
                 candidates.push(grandParentNode);
-                dbg("Pushed.");
             }
 
             var contentScore = 0;
@@ -729,8 +727,7 @@ var readability = {
          * and find the one with the highest score.
         **/
         var topCandidate = null;
-        for(var c=0, cl=candidates.length; c < cl; c+=1)
-        {
+        for (var c=0, cl=candidates.length; c < cl; c+=1) {
             /**
              * Scale the final candidates score based on link density. Good content should have a
              * relatively small link density (5% or less) and be mostly unaffected by this operation.
@@ -766,7 +763,6 @@ var readability = {
         }
         var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
         var siblingNodes          = topCandidate.parentNode.childNodes;
-
 
         for(var s=0, sl=siblingNodes.length; s < sl; s+=1) {
             var siblingNode = siblingNodes[s];
