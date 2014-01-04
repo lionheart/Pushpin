@@ -46,6 +46,22 @@
     }
 }
 
+- (void)didTransitionToState:(UITableViewCellStateMask)state {
+    [super didTransitionToState:state];
+
+    if (state == UITableViewCellStateDefaultMask) {
+        self.editButton.hidden = NO;
+    }
+}
+
+- (void)willTransitionToState:(UITableViewCellStateMask)state {
+    [super willTransitionToState:state];
+
+    if (state == UITableViewCellStateEditingMask) {
+        self.editButton.hidden = YES;
+    }
+}
+
 - (void)prepareCellWithDataSource:(id<GenericPostDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
                             index:(NSInteger)index
@@ -125,10 +141,10 @@
     
     [self.contentView lhs_centerVerticallyForView:self.deleteButton height:23];
     [self.contentView lhs_centerVerticallyForView:self.editButton height:20];
-    [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=15)-[main]" views:views];
-    [self.contentView lhs_addConstraints:@"H:[main]-(>=15)-[delete]" views:views];
-    [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=20)-|" views:views];
-    [self.contentView lhs_addConstraints:@"H:|-(<=20)-[edit]" views:views];
+    [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=30)-[main]" views:views];
+    [self.contentView lhs_addConstraints:@"H:[main]-(>=30)-[delete]" views:views];
+    [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=30)-|" views:views];
+    [self.contentView lhs_addConstraints:@"H:|-(<=30)-[edit]" views:views];
     [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
 
     self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
@@ -176,8 +192,8 @@
         CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
         if (recognizer.state == UIGestureRecognizerStateChanged) {
             
-            self.deleteButton.enabled = offset.x <= -58;
-            self.editButton.enabled = offset.x >= 51;
+            self.deleteButton.enabled = offset.x <= -83;
+            self.editButton.enabled = offset.x >= 76;
             
             self.leftPositionConstraint.constant = offset.x;
 
@@ -195,10 +211,19 @@
                 }
             }
             
-            [UIView animateWithDuration:0.5
+            CGFloat xVelocity = [self.panGestureRecognizer velocityInView:self.contentView].x * 1.1;
+            
+            [UIView animateWithDuration:0.3
                              animations:^{
-                                 self.leftPositionConstraint.constant = 0;
+                                 self.leftPositionConstraint.constant += xVelocity * 0.3;
                                  [self.contentView layoutIfNeeded];
+                             }
+                             completion:^(BOOL finished) {
+                                 [UIView animateWithDuration:0.5
+                                                  animations:^{
+                                                      self.leftPositionConstraint.constant = 0;
+                                                      [self.contentView layoutIfNeeded];
+                                                  }];
                              }];
         }
     }
