@@ -682,15 +682,31 @@ static NSInteger kTitleHeight = 40;
 - (void)toggleMobilizer {
     self.mobilized = !self.mobilized;
     self.mobilizeButton.selected = self.mobilized;
-
+    
+    NSURL *url;
     if (self.mobilized) {
-        NSString *readabilityJSFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"js"];
-        NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityJSFile encoding:NSUTF8StringEncoding error:nil];
-        [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
+        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
+            case MOBILIZER_GOOGLE:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.url.absoluteString]];
+                break;
+                
+            case MOBILIZER_INSTAPAPER:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.url.absoluteString]];
+                break;
+                
+            case MOBILIZER_READABILITY:
+                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.url.absoluteString]];
+                break;
+        }
     }
     else {
-        [self.webView reload];
+        url = [NSURL URLWithString:[self urlStringForDemobilizedURL:self.url]];
     }
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    self.title = self.urlString;
+    [self.webView loadRequest:request];
 }
 
 - (void)emailURL {
