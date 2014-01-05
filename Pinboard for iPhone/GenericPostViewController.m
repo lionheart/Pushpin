@@ -81,7 +81,6 @@ static NSInteger kToolbarHeight = 44;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
-    self.navigationController.delegate = self;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -1663,23 +1662,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
     return ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]);
-}
-
-#pragma mark - UINavigationControllerDelegate
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
-        [self.navigationController setNavigationBarHidden:YES animated:animated];
-    }
-    else if ([[viewController class] isSubclassOfClass:[GenericPostViewController class]]) {
-        [self.navigationController setNavigationBarHidden:viewController.searchDisplayController.isActive animated:animated];
-    }
-}
-
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
-        [self.navigationController setNavigationBarHidden:YES animated:animated];
-    }
 }
 
 @end
