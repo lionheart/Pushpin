@@ -628,13 +628,8 @@
         postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:postViewController action:@selector(addBarButtonTouchUpside:)];
     }
     [db close];
-    
-    postViewController.postDataSource = dataSource;
 
-    PPTitleButton *button = [PPTitleButton buttonWithDelegate:postViewController];
-    [button setTitle:[components componentsJoinedByString:@"+"] imageName:nil];
-    
-    postViewController.navigationItem.titleView = button;
+    postViewController.postDataSource = dataSource;
     return postViewController;
 }
 
@@ -735,6 +730,122 @@
     }
     
     return string;
+}
+
+- (UIColor *)barTintColor {
+    switch (self.components.count) {
+        case 1:
+            if ([self.components[0] isEqualToString:@"popular?count=100"]) {
+                return HEX(0xFF9409FF);
+            }
+            
+        case 2:
+            if ([self.components[0] isEqualToString:@"popular"]) {
+                if ([self.components[1] isEqualToString:@"wikipedia"]) {
+                    return HEX(0x2CA881FF);
+                }
+                
+                if ([self.components[1] isEqualToString:@"fandom"]) {
+                    return HEX(0xE062D6FF);
+                }
+                
+                if ([self.components[1] isEqualToString:@"japanese"]) {
+                    return HEX(0xFF5353FF);
+                }
+            }
+            
+        case 3:
+            // Network Feed
+            return HEX(0x30A1C1FF);
+
+        default:
+            return HEX(0x30A1C1FF);
+    }
+}
+
+- (NSString *)title {
+    switch (self.components.count) {
+        case 1:
+            if ([self.components[0] isEqualToString:@"popular?count=100"]) {
+                return NSLocalizedString(@"Popular", nil);
+            }
+            break;
+
+        case 2:
+            if ([self.components[0] isEqualToString:@"popular"]) {
+                if ([self.components[1] isEqualToString:@"wikipedia"]) {
+                    return @"Wikipedia";
+                }
+                
+                if ([self.components[1] isEqualToString:@"fandom"]) {
+                    return NSLocalizedString(@"Fandom", nil);
+                }
+                
+                if ([self.components[1] isEqualToString:@"japanese"]) {
+                    return @"日本語";
+                }
+            }
+            break;
+
+        case 3:
+            // Network Feed?
+            if ([self.components[2] isEqualToString:@"network"]) {
+                return NSLocalizedString(@"Network", nil);
+            }
+            break;
+    }
+
+    return [self.components componentsJoinedByString:@"+"];
+}
+
+- (UIView *)titleView {
+    return [self titleViewWithDelegate:nil];
+}
+
+- (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate {
+    PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:delegate];
+    BOOL titleViewSet = NO;
+    switch (self.components.count) {
+        case 1:
+            if ([self.components[0] isEqualToString:@"popular?count=100"]) {
+                titleViewSet = YES;
+                [titleButton setTitle:NSLocalizedString(@"Popular", nil) imageName:@"navigation-popular"];
+            }
+            break;
+
+        case 2:
+            if ([self.components[0] isEqualToString:@"popular"]) {
+                if ([self.components[1] isEqualToString:@"wikipedia"]) {
+                    titleViewSet = YES;
+                    [titleButton setTitle:NSLocalizedString(@"Wikipedia", nil) imageName:@"navigation-wikipedia"];
+                }
+                
+                if ([self.components[1] isEqualToString:@"fandom"]) {
+                    titleViewSet = YES;
+                    [titleButton setTitle:NSLocalizedString(@"Fandom", nil) imageName:@"navigation-fandom"];
+                }
+                
+                if ([self.components[1] isEqualToString:@"japanese"]) {
+                    titleViewSet = YES;
+                    [titleButton setTitle:NSLocalizedString(@"日本語", nil) imageName:@"navigation-japanese"];
+                }
+            }
+            break;
+
+        case 3:
+            // Network Feed?
+            if ([self.components[2] isEqualToString:@"network"]) {
+                titleViewSet = YES;
+                [titleButton setTitle:NSLocalizedString(@"Network", nil) imageName:@"navigation-network"];
+            }
+            break;
+    }
+    
+    if (!titleViewSet) {
+        [titleButton setTitle:[self.components componentsJoinedByString:@"+"] imageName:nil];
+    }
+
+    return titleButton;
 }
 
 @end

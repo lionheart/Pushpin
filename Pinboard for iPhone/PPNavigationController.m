@@ -51,6 +51,24 @@
 
 #pragma mark - UINavigationControllerDelegate
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
+    
+    /*
+    if ([[toVC class] isSubclassOfClass:[GenericPostViewController class]]) {
+        GenericPostViewController *pvc = (GenericPostViewController *)toVC;
+        if ([pvc.postDataSource respondsToSelector:@selector(barTintColor)]) {
+            [self.navigationController.navigationBar setBarTintColor:[pvc.postDataSource barTintColor]];
+        }
+        
+        if ([pvc.postDataSource respondsToSelector:@selector(title)]) {
+            self.navigationItem.title = [pvc.postDataSource title];
+        }
+        
+        if ([pvc.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
+            PPTitleButton *titleView = (PPTitleButton *)[pvc.postDataSource titleViewWithDelegate:pvc];
+            self.navigationItem.titleView = titleView;
+        }
+    }
+     */
     return nil;
 }
 

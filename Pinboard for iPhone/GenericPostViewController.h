@@ -99,6 +99,11 @@ typedef enum : NSInteger {
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback;
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
 
+- (UIColor *)barTintColor;
+- (NSString *)title;
+- (UIView *)titleView;
+- (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate;
+
 @end
 
 @interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate>

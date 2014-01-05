@@ -1651,4 +1651,93 @@ static BOOL kPinboardSyncInProgress = NO;
     return @"Search";
 }
 
+- (UIColor *)barTintColor {
+    if (self.starred == kPinboardFilterTrue) {
+        return HEX(0x8361F4FF);
+    }
+    
+    if (self.unread == kPinboardFilterTrue) {
+        return HEX(0xEF6034FF);
+    }
+    
+    switch (self.isPrivate) {
+        case kPinboardFilterTrue:
+            return HEX(0xFFAE46FF);
+            
+        case kPinboardFilterFalse:
+            return HEX(0x7BB839FF);
+            
+        default:
+            break;
+    }
+    
+    if (self.untagged == kPinboardFilterTrue) {
+        return HEX(0xACB3BBFF);
+    }
+    
+    return HEX(0x0096FFFF);
+}
+
+- (NSString *)title {
+    if (self.isPrivate == kPinboardFilterTrue) {
+        return NSLocalizedString(@"Private Bookmarks", nil);
+    }
+    
+    if (self.isPrivate == kPinboardFilterFalse) {
+        return NSLocalizedString(@"Public", nil);
+    }
+    
+    if (self.starred == kPinboardFilterTrue) {
+        return NSLocalizedString(@"Starred", nil);
+    }
+    
+    if (self.unread == kPinboardFilterTrue) {
+        return NSLocalizedString(@"Unread", nil);
+    }
+    
+    if (self.untagged == kPinboardFilterTrue) {
+        return NSLocalizedString(@"Untagged", nil);
+    }
+    
+    if (self.isPrivate == kPinboardFilterNone && self.starred == kPinboardFilterNone && self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+        return NSLocalizedString(@"All Bookmarks", nil);
+    }
+    
+    return [self.tags componentsJoinedByString:@"+"];
+}
+
+- (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate {
+    PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:delegate];
+
+    if (self.isPrivate == kPinboardFilterTrue) {
+        [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
+    }
+    
+    if (self.isPrivate == kPinboardFilterFalse) {
+        [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
+    }
+    
+    if (self.starred == kPinboardFilterTrue) {
+        [titleButton setTitle:NSLocalizedString(@"Starred", nil) imageName:@"navigation-starred"];
+    }
+    
+    if (self.unread == kPinboardFilterTrue) {
+        [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
+    }
+    
+    if (self.untagged == kPinboardFilterTrue) {
+        [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
+    }
+
+    if (self.isPrivate == kPinboardFilterNone && self.starred == kPinboardFilterNone && self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+        [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
+    }
+
+    return titleButton;
+}
+
+- (UIView *)titleView {
+    return [self titleViewWithDelegate:nil];
+}
+
 @end
