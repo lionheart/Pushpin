@@ -339,7 +339,7 @@ static NSInteger kTitleHeight = 40;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     if (!self.alreadyLoaded) {
         [self loadURL];
@@ -348,7 +348,8 @@ static NSInteger kTitleHeight = 40;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.webView stopLoading];
     
     if ([UIApplication sharedApplication].statusBarHidden) {

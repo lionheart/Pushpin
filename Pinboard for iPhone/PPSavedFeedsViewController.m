@@ -58,7 +58,7 @@ static NSString *CellIdentifier = @"Cell";
         }
         [db commit];
 
-        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY componentsaves ASC"];
         [self.feeds removeAllObjects];
         while ([result next]) {
             NSString *componentString = [result stringForColumnIndex:0];

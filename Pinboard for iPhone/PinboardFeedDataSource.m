@@ -13,6 +13,7 @@
 #import "PPTheme.h"
 #import "PostMetadata.h"
 #import "PPTitleButton.h"
+#import "PPPinboardMetadataCache.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
@@ -25,11 +26,20 @@ static NSString *emptyString = @"";
 static NSString *newLine = @"\n";
 static NSString *ellipsis = @"…";
 
+@interface PinboardFeedDataSource ()
+
+@property (nonatomic, strong) PPPinboardMetadataCache *cache;
+
+@end
+
 @implementation PinboardFeedDataSource
 
 - (id)initWithComponents:(NSArray *)components {
     self = [super init];
     if (self) {
+        // Keys are hash:meta pairs
+        self.cache = [PPPinboardMetadataCache sharedCache];
+
         self.components = components;
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
@@ -45,6 +55,9 @@ static NSString *ellipsis = @"…";
 - (id)init {
     self = [super init];
     if (self) {
+        // Keys are hash:meta pairs
+        self.cache = [PPPinboardMetadataCache sharedCache];
+
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -231,13 +244,23 @@ static NSString *ellipsis = @"…";
                                        NSMutableArray *newCompressedLinks = [NSMutableArray array];
                                        NSMutableArray *newCompressedBadges = [NSMutableArray array];
                                        for (NSDictionary *post in newPosts) {
-                                           PostMetadata *metadata = [self metadataForPost:post];
+                                           PostMetadata *metadata = [self.cache cachedMetadataForPost:post compressed:NO];
+                                           if (!metadata) {
+                                               metadata = [self metadataForPost:post];
+                                               [self.cache cacheMetadata:metadata forPost:post compressed:NO];
+                                           }
+                                           
                                            [newHeights addObject:metadata.height];
                                            [newStrings addObject:metadata.string];
                                            [newLinks addObject:metadata.links];
                                            [newBadges addObject:metadata.badges];
                                            
-                                           PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+                                           PostMetadata *compressedMetadata = [self.cache cachedMetadataForPost:post compressed:YES];
+                                           if (!compressedMetadata) {
+                                               compressedMetadata = [self compressedMetadataForPost:post];
+                                               [self.cache cacheMetadata:compressedMetadata forPost:post compressed:YES];
+                                           }
+                                           
                                            [newCompressedHeights addObject:compressedMetadata.height];
                                            [newCompressedStrings addObject:compressedMetadata.string];
                                            [newCompressedLinks addObject:compressedMetadata.links];
@@ -664,10 +687,20 @@ static NSString *ellipsis = @"…";
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
 
         for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [self metadataForPost:post];
+            PostMetadata *metadata = [self.cache cachedMetadataForPost:post compressed:NO];
+            if (!metadata) {
+                metadata = [self metadataForPost:post];
+                [self.cache cacheMetadata:metadata forPost:post compressed:NO];
+            }
+            
             [newHeights addObject:metadata.height];
-
-            PostMetadata *compressedMetadata = [self compressedMetadataForPost:post];
+            
+            PostMetadata *compressedMetadata = [self.cache cachedMetadataForPost:post compressed:YES];
+            if (!compressedMetadata) {
+                compressedMetadata = [self compressedMetadataForPost:post];
+                [self.cache cacheMetadata:compressedMetadata forPost:post compressed:YES];
+            }
+            
             [newCompressedHeights addObject:compressedMetadata.height];
         }
 

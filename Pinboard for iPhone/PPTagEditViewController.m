@@ -131,10 +131,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return 30 + [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        return [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
     }
     else {
-        return 10 + [PPTableViewTitleView heightWithText:@"Current Tags" fontSize:15];
+        return [PPTableViewTitleView heightWithText:@"Current Tags" fontSize:15];
     }
 }
 
