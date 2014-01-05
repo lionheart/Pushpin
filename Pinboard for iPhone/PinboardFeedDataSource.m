@@ -14,6 +14,7 @@
 #import "PostMetadata.h"
 #import "PPTitleButton.h"
 #import "PPPinboardMetadataCache.h"
+#import "PPConstants.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
@@ -21,10 +22,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-
-static NSString *emptyString = @"";
-static NSString *newLine = @"\n";
-static NSString *ellipsis = @"…";
 
 @interface PinboardFeedDataSource ()
 
@@ -504,10 +501,10 @@ static NSString *ellipsis = @"…";
     NSArray *tagList = [tags componentsSeparatedByString:@" "];
     for (NSString *tag in tagList) {
         if ([tag hasPrefix:@"via:"]) {
-            [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0x6EBBCCFF) } }];
-
+            // [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0x6EBBCCFF) } }];
+            
             // Other alternative--dark on light. I don't know if this is preferable or not.
-            // [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xECECECFF), PPBadgeFontColor: HEX(0x444444FF) } }];
+            [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xECECECFF), PPBadgeFontColor: HEX(0x444444FF) } }];
         }
         else {
             if (isRead && dimReadPosts) {

@@ -13,6 +13,7 @@
 #import "NSString+URLEncoding2.h"
 #import "PPStatusBarNotification.h"
 #import "PPBookmarkCell.h"
+#import "PPConstants.h"
 
 #import "PinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
@@ -876,7 +877,7 @@ static NSInteger kToolbarHeight = 44;
     else {
         NSString *urlString;
         if ([self.selectedPost[@"url"] length] > 67) {
-            urlString = [NSString stringWithFormat:@"%@...", [self.selectedPost[@"url"] substringToIndex:67]];
+            urlString = [[self.selectedPost[@"url"] substringToIndex:67] stringByAppendingString:ellipsis];
         }
         else {
             urlString = self.selectedPost[@"url"];
@@ -1520,44 +1521,30 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - PPBadgeWrapperDelegate
 
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.tableView];
-    NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
+    NSArray *badgeViews = badgeWrapperView.subviews;
+    NSMutableArray *badges = [badgeWrapperView.badges mutableCopy];
 
-    UITableViewCell *cell;
-    NSMutableArray *badges;
-    
-    for (NSIndexPath *indexPath in indexPathsForVisibleRows) {
-        cell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-        if ([cell.contentView.subviews containsObject:badgeWrapperView]) {
-            badges = [[dataSource badgesForPostAtIndex:indexPath.row] mutableCopy];
-            break;
-        }
-    }
-    
-    NSUInteger visibleBadgeCount = 0;
-    for (PPBadgeView *badgeView in badgeWrapperView.subviews) {
-        if (badgeView.hidden == NO) {
-            visibleBadgeCount++;
-        }
-    }
-    
+    NSUInteger visibleBadgeCount = [badgeViews indexesOfObjectsPassingTest:^BOOL(UIView *badgeView, NSUInteger idx, BOOL *stop) {
+        return !badgeView.hidden;
+    }].count;
+
     [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
     if (badges.count > 5) {
         [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
     }
-    
+
     NSString *tag = badge.textLabel.text;
-    if (![tag isEqualToString:@""]) {
-        if ([tag isEqualToString:@"…"] && cell && badges.count > 0) {
+    if (![tag isEqualToString:emptyString]) {
+        if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
             // Show more tag options
             self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-            
+
             for (NSDictionary *badge in badges) {
                 if ([badge[@"type"] isEqualToString:@"tag"]) {
                     [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
                 }
             }
-            
+
             // Properly set the cancel button index
             [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
             self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;

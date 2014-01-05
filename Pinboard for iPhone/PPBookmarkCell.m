@@ -24,6 +24,7 @@ static NSInteger kEditButtonRightMargin = 15;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 
 @property (nonatomic) BOOL didReachDeleteThreshold;
 @property (nonatomic) BOOL didReachEditThreshold;
@@ -161,21 +162,20 @@ static NSInteger kEditButtonRightMargin = 15;
     
     NSArray *badges = [dataSource badgesForPostAtIndex:index];
     if (badges.count > 0) {
-        PPBadgeWrapperView *badgeWrapperView;
         if (compressed) {
-            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:YES];
+            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:YES];
         }
         else {
-            badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
+            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
         }
 
-        badgeWrapperView.delegate = badgeDelegate;
-        CGFloat height = [badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.contentView.bounds)];
-        badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.badgeWrapperView.delegate = badgeDelegate;
+        CGFloat height = [self.badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.contentView.bounds)];
+        self.badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [mainContentView addSubview:badgeWrapperView];
-        [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": badgeWrapperView}];
-        [mainContentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": self.textView, @"badges": badgeWrapperView }];
+        [mainContentView addSubview:self.badgeWrapperView];
+        [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
+        [mainContentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": self.textView, @"badges": self.badgeWrapperView }];
     }
     else {
         [mainContentView lhs_addConstraints:@"V:|-5-[text]" views:views];

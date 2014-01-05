@@ -7,15 +7,13 @@
 //
 
 #import "PPBadgeWrapperView.h"
+#import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @implementation PPBadgeWrapperView
 
-@synthesize badges = _badges;
-
-static NSString *ellipsis = @"…";
 static const CGFloat PADDING_X = 6;
 static const CGFloat PADDING_Y = 6;
 

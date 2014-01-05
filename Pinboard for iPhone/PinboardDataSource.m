@@ -13,6 +13,8 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PostMetadata.h"
+#import "PPDefaultFeedViewController.h"
+#import "PPConstants.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "PPPinboardMetadataCache.h"
@@ -22,9 +24,6 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
-static NSString *emptyString = @"";
-static NSString *newLine = @"\n";
-static NSString *ellipsis = @"…";
 
 @interface PinboardDataSource ()
 
