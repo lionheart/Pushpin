@@ -9,6 +9,7 @@
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 #import "PPWebViewController.h"
+#import "GenericPostViewController.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -55,6 +56,10 @@
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.interactivePopGestureRecognizer.enabled = YES;
+    
+    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
+        [self.navigationController setNavigationBarHidden:YES animated:animated];
+    }
 }
 
 #pragma mark Status Bar Styles
