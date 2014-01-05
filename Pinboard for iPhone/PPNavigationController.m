@@ -46,29 +46,12 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.interactivePopGestureRecognizer.enabled = NO;
+
     [super pushViewController:viewController animated:animated];
 }
 
 #pragma mark - UINavigationControllerDelegate
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
-    
-    /*
-    if ([[toVC class] isSubclassOfClass:[GenericPostViewController class]]) {
-        GenericPostViewController *pvc = (GenericPostViewController *)toVC;
-        if ([pvc.postDataSource respondsToSelector:@selector(barTintColor)]) {
-            [self.navigationController.navigationBar setBarTintColor:[pvc.postDataSource barTintColor]];
-        }
-        
-        if ([pvc.postDataSource respondsToSelector:@selector(title)]) {
-            self.navigationItem.title = [pvc.postDataSource title];
-        }
-        
-        if ([pvc.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
-            PPTitleButton *titleView = (PPTitleButton *)[pvc.postDataSource titleViewWithDelegate:pvc];
-            self.navigationItem.titleView = titleView;
-        }
-    }
-     */
     return nil;
 }
 
@@ -78,6 +61,11 @@
     if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
         [self.navigationController setNavigationBarHidden:YES animated:animated];
     }
+}
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
+    viewController.navigationItem.backBarButtonItem = backButton;
 }
 
 #pragma mark Status Bar Styles
