@@ -42,18 +42,40 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // Check if we have any updates from iCloud
+    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+    [store synchronize];
+    NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
+        
+        [db beginTransaction];
+        for (NSString *components in iCloudFeeds) {
+            [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
+        }
+        [db commit];
+
         FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
         [self.feeds removeAllObjects];
         while ([result next]) {
-            NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
+            NSString *componentString = [result stringForColumnIndex:0];
+            NSArray *components = [componentString componentsSeparatedByString:@" "];
+
+            [iCloudFeeds addObject:componentString];
             [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
         }
+        
         [db close];
         
+        // Remove duplicates from the array
+        NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
+
+        // Sync the new saved feed list with iCloud
+        [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });

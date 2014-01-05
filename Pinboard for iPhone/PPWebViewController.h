@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;
-@property (nonatomic, strong) UIView *titleView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorBarButtonItem;

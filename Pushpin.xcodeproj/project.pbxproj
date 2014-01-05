@@ -346,6 +346,8 @@
 		37EABA63173F01DA00B2684B /* loading_80@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37EAB9C3173F01DA00B2684B /* loading_80@2x.png */; };
 		37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
 		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
+		37ED8D321878D8960010CDA8 /* libPython.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37ED8D311878D8960010CDA8 /* libPython.a */; };
+		37F48EAE1878816000B9E71B /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37F48EAC18787E4800B9E71B /* readability.js */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
@@ -869,6 +871,8 @@
 		37EAB9C3173F01DA00B2684B /* loading_80@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_80@2x.png"; sourceTree = "<group>"; };
 		37ECBC5617739C24005AE740 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~ipad.png"; path = "Assets/Default@2x~ipad.png"; sourceTree = "<group>"; };
 		37ECBC5717739C24005AE740 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~ipad.png"; path = "Assets/Default~ipad.png"; sourceTree = "<group>"; };
+		37ED8D311878D8960010CDA8 /* libPython.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPython.a; path = "../libPython 1-4-14, 5.58 PM/usr/local/lib/libPython.a"; sourceTree = "<group>"; };
+		37F48EAC18787E4800B9E71B /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = "Pinboard for iPhone/readability.js"; sourceTree = "<group>"; };
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
 		37F91F3C177AB1D500683D46 /* PPNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationController.h; sourceTree = "<group>"; };
@@ -1001,6 +1005,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37ED8D321878D8960010CDA8 /* libPython.a in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37FEEB9315745488003F2B77 /* UIKit.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
@@ -1445,6 +1450,7 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				37ED8D311878D8960010CDA8 /* libPython.a */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				376E0A7F175AA9EC004CCDEE /* StoreKit.framework */,
@@ -1539,6 +1545,7 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				37F48EAC18787E4800B9E71B /* readability.js */,
 				3798B08A18767DAB002D684B /* navigation-edit-blue.png */,
 				3798B08B18767DAB002D684B /* navigation-edit-darker.png */,
 				3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */,
@@ -1806,6 +1813,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37F48EAE1878816000B9E71B /* readability.js in Resources */,
 				E8900200183EB90100C1F969 /* bookmark-private.png in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				3715EEC715787CAA00FD21EE /* main.css in Resources */,
@@ -2356,7 +2364,7 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
-					"”$(OBJROOT)/UninstalledProducts/include”",
+					"\"$(OBJROOT)/UninstalledProducts/include”",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2391,9 +2399,14 @@
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Beta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Beta Release";
@@ -2508,9 +2521,14 @@
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Dev-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2528,9 +2546,14 @@
 				GCC_PREFIX_HEADER = "Pinboard for iPhone/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pinboard for iPhone/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
+					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
