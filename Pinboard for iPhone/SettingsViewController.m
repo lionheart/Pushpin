@@ -326,7 +326,7 @@ static NSString *CellIdentifier = @"Cell";
         default:
             break;
     }
-    return @"";
+    return nil;
 }
 
 #pragma mark - Table view delegate

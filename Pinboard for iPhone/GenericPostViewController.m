@@ -602,6 +602,7 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
+                            self.searchBar.showsBookmarkButton = YES;
                             
                             if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
                                 self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];

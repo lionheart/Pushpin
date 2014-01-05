@@ -180,8 +180,15 @@
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if ([self.delegate respondsToSelector:@selector(bookmarkCellCanSwipe:)]) {
         if ([self.delegate bookmarkCellCanSwipe:self]) {
+            CGPoint point = [self.panGestureRecognizer locationInView:self.contentView];
+            BOOL nearLeftEdgeOfScreen = point.x < 30;
+            if (nearLeftEdgeOfScreen) {
+                return NO;
+            }
+
             CGPoint velocity = [self.panGestureRecognizer velocityInView:self.contentView];
-            return fabs(velocity.y) < fabs(velocity.x);
+            BOOL movingHorizontally = fabs(velocity.y) < fabs(velocity.x);
+            return movingHorizontally;
         }
     }
     return NO;

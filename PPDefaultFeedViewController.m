@@ -42,37 +42,20 @@ static NSString *CellIdentifier = @"Cell";
     // Setup the currently selected index path
     self.defaultIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     NSString *feedDetails;
-    if ([[[AppDelegate sharedDelegate].defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+    NSInteger row = 0;
+    NSInteger section = 0;
+    if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"personal"]) {
         feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:9];
-        if ([feedDetails isEqualToString:@"all"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        } else if ([feedDetails isEqualToString:@"private"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
-        } else if ([feedDetails isEqualToString:@"public"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
-        } else if ([feedDetails isEqualToString:@"unread"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:3 inSection:0];
-        } else if ([feedDetails isEqualToString:@"untagged"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:4 inSection:0];
-        } else if ([feedDetails isEqualToString:@"starred"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:5 inSection:0];
-        }
-    } else if ([[[AppDelegate sharedDelegate].defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+        row = [@[@"all", @"private", @"public", @"unread", @"untagged", @"starred"] indexOfObject:feedDetails];
+        section = 0;
+    }
+    else if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"community"]) {
         feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:10];
-        
-        if ([feedDetails isEqualToString:@"network"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:0 inSection:1];
-        } else if ([feedDetails isEqualToString:@"popular"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:1 inSection:1];
-        } else if ([feedDetails isEqualToString:@"wikipedia"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:2 inSection:1];
-        } else if ([feedDetails isEqualToString:@"fandom"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:3 inSection:1];
-        } else if ([feedDetails isEqualToString:@"japanese"]) {
-            self.defaultIndexPath = [NSIndexPath indexPathForRow:4 inSection:1];
-        }
+        row = [@[@"network", @"popular", @"wikipedia", @"fandom", @"japanese"] indexOfObject:feedDetails];
+        section = 1;
     }
     
+    self.defaultIndexPath = [NSIndexPath indexPathForRow:row inSection:section];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
