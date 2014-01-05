@@ -685,6 +685,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     [self.existingTags removeObject:name];
     
+    [indexPathsToDelete addObjectsFromArray:self.indexPathsForAutocompletedRows];
+    self.tagTextField.text = @"";
+    self.searchString = @"";
+    [self.tagCompletions removeAllObjects];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];

@@ -21,6 +21,7 @@
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
+#import "PPMobilizerUtility.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
@@ -257,13 +258,13 @@ static NSString *CellIdentifier = @"Cell";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     switch ([[[AppDelegate sharedDelegate] mobilizer] integerValue]) {
-                        case MOBILIZER_GOOGLE:
+                        case PPMobilizerGoogle:
                             cell.detailTextLabel.text = @"Google";
                             break;
-                        case MOBILIZER_READABILITY:
+                        case PPMobilizerReadability:
                             cell.detailTextLabel.text = @"Readability";
                             break;
-                        case MOBILIZER_INSTAPAPER:
+                        case PPMobilizerInstapaper:
                             cell.detailTextLabel.text = @"Instapaper";
                             break;
                         default:
@@ -518,13 +519,13 @@ static NSString *CellIdentifier = @"Cell";
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
             if ([buttonTitle isEqualToString:@"Google"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_GOOGLE)];
+                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerGoogle)];
             }
             else if ([buttonTitle isEqualToString:@"Instapaper"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_INSTAPAPER)];
+                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerInstapaper)];
             }
             else if ([buttonTitle isEqualToString:@"Readability"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(MOBILIZER_READABILITY)];
+                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerReadability)];
             }
 
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];

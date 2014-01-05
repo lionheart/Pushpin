@@ -18,6 +18,7 @@
 #import "PPReadLaterActivity.h"
 #import "PPNavigationController.h"
 #import "GenericPostViewController.h"
+#import "PPMobilizerUtility.h"
 
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -34,6 +35,7 @@ static NSInteger kTitleHeight = 40;
 @interface PPWebViewController ()
 
 @property (nonatomic) BOOL mobilized;
+@property (nonatomic, strong) PPMobilizerUtility *mobilizerUtility;
 
 @end
 
@@ -50,6 +52,7 @@ static NSInteger kTitleHeight = 40;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
+    self.mobilizerUtility = [PPMobilizerUtility sharedInstance];
     self.mobilized = NO;
     self.yOffsetToStartShowingTitleView = 0;
     self.prefersStatusBarHidden = NO;
@@ -312,34 +315,13 @@ static NSInteger kTitleHeight = 40;
     }];
     
     // Determine if we should mobilize or not
-    if (self.shouldMobilize && ![self isURLStringMobilized:self.urlString]) {
-        NSString *mobilizedUrlString;
-
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.urlString];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.urlString];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                mobilizedUrlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.urlString];
-                break;
-                
-            default:
-                break;
-        }
-        
-        self.urlString = mobilizedUrlString;
+    if (self.shouldMobilize && ![self.mobilizerUtility isURLMobilized:self.url]) {
+        self.urlString = [self.mobilizerUtility urlStringForMobilizerForURL:self.url];
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     if (!self.alreadyLoaded) {
         [self loadURL];
@@ -348,8 +330,7 @@ static NSInteger kTitleHeight = 40;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+
     [self.webView stopLoading];
     
     if ([UIApplication sharedApplication].statusBarHidden) {
@@ -383,7 +364,7 @@ static NSInteger kTitleHeight = 40;
         self.actionButton.enabled = YES;
         self.mobilizeButton.enabled = YES;
 
-        NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
+        NSString *theURLString = [self.mobilizerUtility originalURLStringForURL:self.url];
 
         if (theURLString) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -431,7 +412,7 @@ static NSInteger kTitleHeight = 40;
     // Browsers
     NSMutableArray *browserActivites = [NSMutableArray array];
     PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
-    [browserActivity setUrlString:[self urlStringForDemobilizedURL:self.url]];
+    [browserActivity setUrlString:[self.mobilizerUtility originalURLStringForURL:self.url]];
     [browserActivites addObject:browserActivity];
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
         browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"icabmobile" browser:@"iCab Mobile"];
@@ -476,7 +457,7 @@ static NSInteger kTitleHeight = 40;
     }
     
     NSString *title = NSLocalizedString(@"\r\nShared via Pinboard", nil);
-    NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
+    NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
     NSURL *url = [NSURL URLWithString:tempUrl];
     
     NSMutableArray *allActivities = [NSMutableArray arrayWithArray:readLaterActivities];
@@ -535,7 +516,7 @@ static NSInteger kTitleHeight = 40;
         [self.activityView dismissViewControllerAnimated:YES completion:nil];
     }
 
-    NSString *tempUrl = [self urlStringForDemobilizedURL:self.url];
+    NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
     if (service.integerValue == READLATER_INSTAPAPER) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
@@ -645,59 +626,37 @@ static NSInteger kTitleHeight = 40;
     }
 }
 
-- (NSString *)urlStringForDemobilizedURL:(NSURL *)url {
-    if ([self isURLStringMobilized:url.absoluteString]) {
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                return [url.absoluteString substringFromIndex:57];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                return [url.absoluteString substringFromIndex:36];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                return [url.absoluteString substringFromIndex:33];
-                break;
-        }
-    }
-    return url.absoluteString;
-}
-
 - (void)toggleMobilizer {
-    self.mobilized = !self.mobilized;
-    self.mobilizeButton.selected = self.mobilized;
-    
-    NSURL *url;
-    if (self.mobilized) {
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.url.absoluteString]];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.url.absoluteString]];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.url.absoluteString]];
-                break;
+    if ([self.mobilizerUtility canMobilizeURL:self.url]) {
+        self.mobilized = !self.mobilized;
+        self.mobilizeButton.selected = self.mobilized;
+
+        NSURL *url;
+        if (self.mobilized) {
+            url = [NSURL URLWithString:[self.mobilizerUtility urlStringForMobilizerForURL:self.url]];
+        }
+        else {
+            url = [NSURL URLWithString:[self.mobilizerUtility originalURLStringForURL:self.url]];
+        }
+
+        self.title = self.urlString;
+
+        NSString *previousURLString = [self.history lastObject][@"url"];
+        if ([previousURLString isEqualToString:url.absoluteString]) {
+            [self.history removeLastObject];
+            [self.webView goBack];
+        }
+        else {
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            [self.webView loadRequest:request];
         }
     }
-    else {
-        url = [NSURL URLWithString:[self urlStringForDemobilizedURL:self.url]];
-    }
-
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    self.title = self.urlString;
-    [self.webView loadRequest:request];
 }
 
 - (void)emailURL {
     MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
     mailComposeViewController.mailComposeDelegate = self;
-    [mailComposeViewController setMessageBody:[self urlStringForDemobilizedURL:self.url] isHTML:NO];
+    [mailComposeViewController setMessageBody:[self.mobilizerUtility originalURLStringForURL:self.url] isHTML:NO];
     [self presentViewController:mailComposeViewController animated:YES completion:nil];
 }
 
@@ -711,7 +670,7 @@ static NSInteger kTitleHeight = 40;
     notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
-    [[UIPasteboard generalPasteboard] setString:[self urlStringForDemobilizedURL:url]];
+    [[UIPasteboard generalPasteboard] setString:[self.mobilizerUtility originalURLStringForURL:url]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
@@ -735,7 +694,7 @@ static NSInteger kTitleHeight = 40;
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSDictionary *post = @{
         @"title": pageTitle,
-        @"url": [self urlStringForDemobilizedURL:self.url]
+        @"url": [self.mobilizerUtility originalURLStringForURL:self.url]
     };
     [self showAddViewController:post];
 }
@@ -752,7 +711,7 @@ static NSInteger kTitleHeight = 40;
 
 - (void)showEditViewController {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *editUrlString = [self urlStringForDemobilizedURL:self.url];
+        NSString *editUrlString = [self.mobilizerUtility originalURLStringForURL:self.url];
         if (editUrlString) {
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
@@ -791,17 +750,6 @@ static NSInteger kTitleHeight = 40;
     [self closeModal:sender success:nil];
 }
 
-- (BOOL)isMobilized {
-    return [self isURLStringMobilized:self.url.absoluteString];
-}
-
-- (BOOL)isURLStringMobilized:(NSString *)url {
-    BOOL googleMobilized = [url hasPrefix:@"http://www.google.com/gwt/x"];
-    BOOL readabilityMobilized = [url hasPrefix:@"http://www.readability.com/m?url="];
-    BOOL instapaperMobilized = [url hasPrefix:@"http://mobilizer.instapaper.com/m?u="];
-    return googleMobilized || readabilityMobilized || instapaperMobilized;
-}
-
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url {
     PPWebViewController *webViewController = [[PPWebViewController alloc] init];
     webViewController.urlString = url;
@@ -811,23 +759,8 @@ static NSInteger kTitleHeight = 40;
 + (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url {
     PPWebViewController *webViewController = [[PPWebViewController alloc] init];
     NSString *urlString;
-    if (![webViewController isURLStringMobilized:url] && [webViewController canMobilizeURL:[NSURL URLWithString:url]]) {
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                urlString = [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", url];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                urlString = [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", url];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                urlString = [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", url];
-                break;
-                
-            default:
-                break;
-        }
+    if (![webViewController.mobilizerUtility isURLMobilized:[NSURL URLWithString:url]] && [webViewController.mobilizerUtility canMobilizeURL:[NSURL URLWithString:url]]) {
+        urlString = [webViewController.mobilizerUtility urlStringForMobilizerForURL:[NSURL URLWithString:url]];
     }
     else {
         urlString = url;
@@ -1138,19 +1071,8 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (BOOL)canMobilizeCurrentURL {
-    return [self canMobilizeURL:self.url];
+    return [self.mobilizerUtility canMobilizeURL:self.url];
 }
-
-- (BOOL)canMobilizeURL:(NSURL *)url {
-    NSArray *hosts = @[@"twitter.com", @"mobile.twitter.com"];
-    for (NSString *host in hosts) {
-        if ([url.host isEqualToString:host]) {
-            return NO;
-        }
-    }
-    return YES;
-}
-
 
 - (void)showToolbarAnimated:(BOOL)animated {
     void (^ShowToolbarBlock)() = ^{

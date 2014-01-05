@@ -80,6 +80,7 @@ static NSInteger kToolbarHeight = 44;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
+    self.navigationController.delegate = self;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -612,7 +613,6 @@ static NSInteger kToolbarHeight = 44;
                             self.searchDisplayController.searchResultsDataSource = self;
                             self.searchDisplayController.searchResultsDelegate = self;
                             self.searchDisplayController.delegate = self;
-                            
                             [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
 
                             self.tableView.tableHeaderView = self.searchBar;
@@ -1419,22 +1419,14 @@ static NSInteger kToolbarHeight = 44;
     [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];
 }
 
-- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-}
-
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 }
 
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
 }
 
-- (void)searchDisplayController:(UISearchDisplayController *)controller willHideSearchResultsTableView:(UITableView *)tableView {
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
-}
+#pragma mark - UISearchDisplayControllerDelegate
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
@@ -1442,10 +1434,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     return NO;
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
 }
 
 - (void)removeBarButtonTouchUpside:(id)sender {
@@ -1690,6 +1678,23 @@ static NSInteger kToolbarHeight = 44;
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
     return ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]);
+}
+
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
+        [self.navigationController setNavigationBarHidden:YES animated:animated];
+    }
+    else if ([[viewController class] isSubclassOfClass:[GenericPostViewController class]]) {
+        [self.navigationController setNavigationBarHidden:viewController.searchDisplayController.isActive animated:animated];
+    }
+}
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
+        [self.navigationController setNavigationBarHidden:YES animated:animated];
+    }
 }
 
 @end
