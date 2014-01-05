@@ -1561,9 +1561,7 @@ static NSInteger kToolbarHeight = 44;
                     // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
                     [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
                                               callback:^(UIViewController *controller) {
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      [self.navigationController pushViewController:controller animated:YES];
-                                                  });
+                                                  [self.navigationController pushViewController:controller animated:YES];
                                               }];
                 }
             }
