@@ -211,6 +211,20 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
+        [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
+    }
+    
+    if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
+        self.title = [self.postDataSource title];
+    }
+
+    if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
+        PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
+        self.navigationItem.titleView = titleView;
+    }
+
     if (self.multipleEditToolbarBottomConstraint) {
         [self.view removeConstraint:self.multipleEditToolbarBottomConstraint];
     }

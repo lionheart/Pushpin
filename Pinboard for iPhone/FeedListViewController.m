@@ -273,7 +273,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:postViewController];
     switch (indexPath.section) {
         case 0: {
             PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
@@ -281,49 +280,31 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             switch (indexPath.row) {
                 case 0: {
-                    postViewController.title = NSLocalizedString(@"All Bookmarks", nil);
-                    [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0x0096ffff)];
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
                 }
                 case 1: {
                     dataSource.isPrivate = YES;
-                    postViewController.title = NSLocalizedString(@"Private Bookmarks", nil);
-                    [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0xffae46ff)];
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
                 }
                 case 2: {
                     dataSource.isPrivate = NO;
-                    postViewController.title = NSLocalizedString(@"Public", nil);
-                    [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0x7bb839ff)];
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
                 }
                 case 3: {
                     dataSource.unread = YES;
-                    postViewController.title = NSLocalizedString(@"Unread", nil);
-                    [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0xef6034ff)];
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
                 }
                 case 4: {
                     dataSource.untagged = YES;
-                    postViewController.title = NSLocalizedString(@"Untagged", nil);
-                    [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0xacb3bbff)];
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
                 }
                 case 5: {
                     dataSource.starred = YES;
-                    postViewController.title = NSLocalizedString(@"Starred", nil);
-                    [titleButton setTitle:NSLocalizedString(@"Starred", nil) imageName:@"navigation-starred"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0x8361f4ff)];
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
                 }
@@ -331,7 +312,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             postViewController.postDataSource = dataSource;
             // Can we just use self.navigationController instead?
-            postViewController.navigationItem.titleView = titleButton;
             [self.navigationController pushViewController:postViewController animated:YES];
             break;
         }
@@ -349,40 +329,30 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-                        [titleButton setTitle:NSLocalizedString(@"Network", nil) imageName:@"navigation-network"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0x30a1c1ff)];
                         [mixpanel track:@"Browsed network bookmarks"];
                         break;
                     }
 
                     case 1: {
                         feedDataSource.components = @[@"popular?count=100"];
-                        [titleButton setTitle:NSLocalizedString(@"Popular", nil) imageName:@"navigation-popular"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0xff9409ff)];
                         [mixpanel track:@"Browsed popular bookmarks"];
                         break;
                     }
 
                     case 2: {
                         feedDataSource.components = @[@"popular", @"wikipedia"];
-                        [titleButton setTitle:NSLocalizedString(@"Wikipedia", nil) imageName:@"navigation-wikipedia"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0x2ca881ff)];
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
                         break;
                     }
 
                     case 3: {
                         feedDataSource.components = @[@"popular", @"fandom"];
-                        [titleButton setTitle:NSLocalizedString(@"Fandom", nil) imageName:@"navigation-fandom"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0xe062d6ff)];
                         [mixpanel track:@"Browsed fandom bookmarks"];
                         break;
                     }
 
                     case 4: {
                         feedDataSource.components = @[@"popular", @"japanese"];
-                        [titleButton setTitle:NSLocalizedString(@"日本語", nil) imageName:@"navigation-japanese"];
-                        [self.navigationController.navigationBar setBarTintColor:HEX(0xff5353ff)];
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
                         break;
                     }
@@ -390,6 +360,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
                 if (indexPath.row == 5) {
                     PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
+                    PPTitleButton *titleButton = [PPTitleButton button];
                     [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
                     [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
 
@@ -397,7 +368,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     [self.navigationController pushViewController:controller animated:YES];
                 }
                 else {
-                    postViewController.navigationItem.titleView = titleButton;
                     [self.navigationController pushViewController:postViewController animated:YES];
                 }
                 
