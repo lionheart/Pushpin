@@ -618,20 +618,42 @@ static NSString *ellipsis = @"…";
 
 - (void)addDataSource:(void (^)())callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *componentString = [self.components componentsJoinedByString:@" "];
+
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
+        [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
         [db close];
+        
+        NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+        [store synchronize];
+        
+        NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
+        if (![iCloudFeeds containsObject:componentString]) {
+            [iCloudFeeds addObject:componentString];
+            [store setArray:iCloudFeeds forKey:kSavedFeedsKey];
+        }
         callback();
     });
 }
 
 - (void)removeDataSource:(void (^)())callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *componentString = [self.components componentsJoinedByString:@" "];
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
-        [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[[self.components componentsJoinedByString:@" "]]];
+        [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[componentString]];
         [db close];
+
+        NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+        [store synchronize];
+
+        NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
+        if ([iCloudFeeds containsObject:componentString]) {
+            [iCloudFeeds removeObject:componentString];
+            [store setArray:iCloudFeeds forKey:kSavedFeedsKey];
+        }
+
         callback();
     });
 }

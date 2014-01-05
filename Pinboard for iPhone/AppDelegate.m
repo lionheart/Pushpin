@@ -696,6 +696,7 @@
 
             case 7:
                 [db closeOpenResultSets];
+                
                 [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
 
                 // FTS Updates

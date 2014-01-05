@@ -39,10 +39,6 @@ static NSInteger kTitleHeight = 40;
 
 @implementation PPWebViewController
 
-@synthesize shouldMobilize, urlString;
-@synthesize longPressGestureRecognizer;
-@synthesize selectedLink, selectedActionSheet;
-
 - (void)viewDidLayoutSubviews {
     self.topLayoutConstraint.constant = [self.topLayoutGuide length];
     [self.view layoutIfNeeded];
@@ -175,21 +171,12 @@ static NSInteger kTitleHeight = 40;
     toolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:toolbarBorderView];
     
-    self.titleView = [[UIView alloc] init];
-    self.titleView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.titleView addGestureRecognizer:self.tapGestureRecognizer];
-    [self.view addSubview:self.titleView];
-    
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.titleLabel.minimumScaleFactor = 0.5;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-    [self.titleView addSubview:self.titleLabel];
-    [self.titleView lhs_centerHorizontallyForView:self.titleLabel];
-    [self.titleView lhs_addConstraints:@"H:|-(>=15)-[label]-(>=15)-|" views:@{@"label": self.titleLabel}];
-    [self.titleView lhs_addConstraints:@"V:|-(<=3)-[label]-(<=3)-|" views:@{@"label": self.titleLabel}];
     
     NSDictionary *toolbarViews = @{@"back": self.backButton,
                                    @"read": self.markAsReadButton,
@@ -228,7 +215,6 @@ static NSInteger kTitleHeight = 40;
     [self.view addSubview:self.toolbar];
     
     NSDictionary *views = @{@"toolbar": self.toolbar,
-                            @"title": self.titleView,
                             @"background": self.statusBarBackgroundView,
                             @"show": self.showToolbarAndTitleBarHiddenView,
                             @"webview": self.webView };
@@ -237,21 +223,19 @@ static NSInteger kTitleHeight = 40;
     [self.view lhs_addConstraints:@"H:|[background]|" views:views];
     [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
     [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[title]|" views:views];
     [self.view lhs_addConstraints:@"H:|[show]|" views:views];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view lhs_addConstraints:@"V:[show(20)]" views:views];
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
-    [self.view lhs_addConstraints:@"V:|[background][title][webview][toolbar(>=height)]" metrics:metrics views:views];
+    [self.view lhs_addConstraints:@"V:|[background][webview][toolbar(>=height)]" metrics:metrics views:views];
     
     self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:self.toolbarConstraint];
 
-    self.titleHeightConstraint = [self.titleView lhs_setHeight:0];
     self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
 }
 
@@ -322,8 +306,6 @@ static NSInteger kTitleHeight = 40;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     [UIView animateWithDuration:0.3 animations:^{
         [self setNeedsStatusBarAppearanceUpdate];
@@ -356,6 +338,8 @@ static NSInteger kTitleHeight = 40;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 
     if (!self.alreadyLoaded) {
         [self loadURL];
@@ -599,7 +583,7 @@ static NSInteger kTitleHeight = 40;
         OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
         OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
         [request setHTTPMethod:@"POST"];
-        [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
+        [request setParameters:@[[OARequestParameter requestParameter:@"url" value:_urlString]]];
         [request prepare];
         
         [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
@@ -628,7 +612,7 @@ static NSInteger kTitleHeight = 40;
                                }];
     }
     else if (service.integerValue == READLATER_POCKET) {
-        [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:urlString]
+        [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:_urlString]
                              withTitle:self.title
                                handler:^(PocketAPI *api, NSURL *url, NSError *error) {
                                    if (!error) {
@@ -935,7 +919,7 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
-    if (self.titleHeightConstraint.constant == kTitleHeight) {
+    if (self.toolbarConstraint.constant == kToolbarHeight) {
         return YES;
     }
 
@@ -1123,7 +1107,6 @@ static NSInteger kTitleHeight = 40;
             [UIView animateWithDuration:0.3 animations:^{
                 UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
                 self.statusBarBackgroundView.backgroundColor = backgroundColor;
-                self.titleView.backgroundColor = backgroundColor;
                 self.toolbarBackgroundView.backgroundColor = backgroundColor;
                 
                 if (isDark) {
