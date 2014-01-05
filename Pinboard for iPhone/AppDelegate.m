@@ -27,6 +27,7 @@
 #import "PPTitleButton.h"
 #import "ScreenshotViewController.h"
 #import "PPStatusBarNotification.h"
+#import "PPMobilizerUtility.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -991,7 +992,7 @@
         _mobilizer = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
 
         if (!_mobilizer) {
-            _mobilizer = @(MOBILIZER_INSTAPAPER);
+            _mobilizer = @(PPMobilizerInstapaper);
         }
     }
     return _mobilizer;

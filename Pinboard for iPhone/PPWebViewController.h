@@ -80,8 +80,6 @@
 - (void)showEditViewController;
 - (void)showAddViewController;
 - (void)showAddViewController:(NSDictionary *)data;
-- (BOOL)isMobilized;
-- (BOOL)isURLStringMobilized:(NSString *)url;
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
@@ -89,12 +87,10 @@
 - (void)loadURL;
 - (void)stopLoading;
 - (NSURL *)url;
-- (NSString *)urlStringForDemobilizedURL:(NSURL *)url;
 - (NSInteger)numberOfRequestsInProgress;
 - (void)webViewLoadTimedOut;
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 
-- (BOOL)canMobilizeURL:(NSURL *)url;
 - (BOOL)canMobilizeCurrentURL;
 - (void)tintButtonsWithColor:(UIColor *)color;
 

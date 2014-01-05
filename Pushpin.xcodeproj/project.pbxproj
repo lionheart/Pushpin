@@ -117,6 +117,7 @@
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
 		375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* FeedListViewController.m */; };
+		3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
 		376C9E8417488B8500A62CB5 /* NotificationBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8217488B8500A62CB5 /* NotificationBackground.png */; };
 		376C9E8517488B8500A62CB5 /* NotificationBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */; };
@@ -626,6 +627,8 @@
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		375A638816C0CB0800665CA1 /* FeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* FeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMobilizerUtility.h; sourceTree = "<group>"; };
+		3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMobilizerUtility.m; sourceTree = "<group>"; };
 		376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoadingView.h; sourceTree = "<group>"; };
 		376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoadingView.m; sourceTree = "<group>"; };
 		376C9E8217488B8500A62CB5 /* NotificationBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NotificationBackground.png; path = Assets/NotificationBackground.png; sourceTree = "<group>"; };
@@ -1520,6 +1523,8 @@
 				3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */,
 				3798AD7C18767718002D684B /* PPScrollView.h */,
 				3798AD7D18767718002D684B /* PPScrollView.m */,
+				3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */,
+				3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */,
 			);
 			name = Pushpin;
 			path = "Pinboard for iPhone";
@@ -2255,6 +2260,7 @@
 				E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */,
 				E89001F9183EA5B500C1F969 /* PPBadgeView.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
+				3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */,
 				37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */,
 				3743B73B18763D1D00B97E6D /* PPTableViewTitleView.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,

@@ -27,12 +27,6 @@ enum readlaterservices {
     READLATER_NATIVE
 };
 
-enum mobilizers {
-    MOBILIZER_GOOGLE,
-    MOBILIZER_INSTAPAPER,
-    MOBILIZER_READABILITY
-};
-
 enum bookmarkupdateevents {
     BOOKMARK_EVENT_ADD,
     BOOKMARK_EVENT_UPDATE,

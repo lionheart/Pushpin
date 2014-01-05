@@ -163,7 +163,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)];
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 5;
             
         case 1:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Community", nil)];
