@@ -501,10 +501,10 @@
     NSArray *tagList = [tags componentsSeparatedByString:@" "];
     for (NSString *tag in tagList) {
         if ([tag hasPrefix:@"via:"]) {
-            // [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0x6EBBCCFF) } }];
+            [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0x6EBBCCFF) } }];
             
             // Other alternative--dark on light. I don't know if this is preferable or not.
-            [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xECECECFF), PPBadgeFontColor: HEX(0x444444FF) } }];
+            // [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xECECECFF), PPBadgeFontColor: HEX(0x444444FF) } }];
         }
         else {
             if (isRead && dimReadPosts) {

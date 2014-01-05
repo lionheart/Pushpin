@@ -67,7 +67,7 @@ static NSString *CellIdentifier = @"Cell";
             [iCloudFeeds addObject:componentString];
             [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
         }
-        
+
         [db close];
         
         // Remove duplicates from the array
