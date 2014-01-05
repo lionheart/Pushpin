@@ -33,6 +33,8 @@ static NSInteger kTitleHeight = 40;
 
 @interface PPWebViewController ()
 
+@property (nonatomic) BOOL mobilized;
+
 @end
 
 @implementation PPWebViewController
@@ -52,6 +54,7 @@ static NSInteger kTitleHeight = 40;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
+    self.mobilized = NO;
     self.yOffsetToStartShowingTitleView = 0;
     self.prefersStatusBarHidden = NO;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
@@ -94,11 +97,6 @@ static NSInteger kTitleHeight = 40;
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.longPressGestureRecognizer.delegate = self;
     [self.webView addGestureRecognizer:self.longPressGestureRecognizer];
-
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    [self.activityIndicator startAnimating];
-    self.activityIndicator.frame = CGRectMake(0, 0, 30, 30);
-    self.activityIndicatorBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
     self.toolbar = [[UIView alloc] init];
     self.toolbar.backgroundColor = [UIColor whiteColor];
@@ -108,12 +106,6 @@ static NSInteger kTitleHeight = 40;
     self.toolbarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.toolbarBackgroundView];
-    
-    self.bottomActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.bottomActivityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
-    self.bottomActivityIndicator.hidesWhenStopped = YES;
-    [self.bottomActivityIndicator startAnimating];
-    [self.toolbar addSubview:self.bottomActivityIndicator];
 
     UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -144,26 +136,14 @@ static NSInteger kTitleHeight = 40;
     [self.toolbar addSubview:self.stopButton];
 
     UIImage *viewMobilizeButtonImage = [[UIImage imageNamed:@"mobilize"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    UIImage *viewMobilizeButtonHighlightedImage = [[UIImage imageNamed:@"mobilize-active"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.viewMobilizeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.viewMobilizeButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-    [self.viewMobilizeButton setImage:viewMobilizeButtonImage forState:UIControlStateNormal];
-    [self.viewMobilizeButton setImage:viewMobilizeButtonHighlightedImage forState:UIControlStateHighlighted];
-    self.viewMobilizeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.viewMobilizeButton.hidden = YES;
-    self.viewMobilizeButton.enabled = NO;
-    [self.toolbar addSubview:self.viewMobilizeButton];
-    
     UIImage *viewRawButtonImage = [[UIImage imageNamed:@"mobilized"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    UIImage *viewRawButtonHighlightedImage = [[UIImage imageNamed:@"mobilized-active"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.viewRawButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.viewRawButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
-    [self.viewRawButton setImage:viewRawButtonImage forState:UIControlStateNormal];
-    [self.viewRawButton setImage:viewRawButtonHighlightedImage forState:UIControlStateHighlighted];
-    self.viewRawButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.viewRawButton.hidden = YES;
-    self.viewRawButton.enabled = NO;
-    [self.toolbar addSubview:self.viewRawButton];
+
+    self.mobilizeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.mobilizeButton addTarget:self action:@selector(toggleMobilizer) forControlEvents:UIControlEventTouchUpInside];
+    [self.mobilizeButton setImage:viewMobilizeButtonImage forState:UIControlStateNormal];
+    [self.mobilizeButton setImage:viewRawButtonImage forState:UIControlStateSelected];
+    self.mobilizeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.toolbar addSubview:self.mobilizeButton];
 
     UIImage *actionButtonImage = [[UIImage imageNamed:@"share"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -212,10 +192,8 @@ static NSInteger kTitleHeight = 40;
     [self.titleView lhs_addConstraints:@"V:|-(<=3)-[label]-(<=3)-|" views:@{@"label": self.titleLabel}];
     
     NSDictionary *toolbarViews = @{@"back": self.backButton,
-                                   @"indicator": self.bottomActivityIndicator,
                                    @"read": self.markAsReadButton,
-                                   @"raw": self.viewRawButton,
-                                   @"mobilize": self.viewMobilizeButton,
+                                   @"mobilize": self.mobilizeButton,
                                    @"action": self.actionButton,
                                    @"edit": self.editButton,
                                    @"stop": self.stopButton,
@@ -230,7 +208,6 @@ static NSInteger kTitleHeight = 40;
     [self.toolbar lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[back]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[raw]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[mobilize]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[action]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
@@ -238,15 +215,10 @@ static NSInteger kTitleHeight = 40;
     [self.toolbar lhs_addConstraints:@"V:|[add]|" views:toolbarViews];
     
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.stopButton attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.viewRawButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.viewMobilizeButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
 
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.viewRawButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.viewMobilizeButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.bottomActivityIndicator attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.mobilizeButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.mobilizeButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
 
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
@@ -417,22 +389,14 @@ static NSInteger kTitleHeight = 40;
 
 - (void)enableOrDisableButtons {
     self.stopButton.hidden = YES;
-    self.viewMobilizeButton.hidden = YES;
-    self.viewRawButton.hidden = YES;
 
-    if (self.numberOfRequestsInProgress > 0) {
-        self.navigationItem.rightBarButtonItem = self.activityIndicatorBarButtonItem;
-        [self.bottomActivityIndicator startAnimating];
-    }
-    else {
+    if (self.numberOfRequestsInProgress <= 0) {
         self.alreadyLoaded = YES;
-        [self.bottomActivityIndicator stopAnimating];
         
         self.addButton.enabled = YES;
         self.editButton.enabled = YES;
         self.actionButton.enabled = YES;
-        self.viewMobilizeButton.enabled = YES;
-        self.viewRawButton.enabled = YES;
+        self.mobilizeButton.enabled = YES;
 
         NSString *theURLString = [self urlStringForDemobilizedURL:self.url];
 
@@ -456,17 +420,6 @@ static NSInteger kTitleHeight = 40;
                     else {
                         self.editButton.hidden = YES;
                         self.addButton.hidden = NO;
-                    }
-
-                    if (self.isMobilized) {
-                        self.viewRawButton.hidden = NO;
-                    }
-                    else {
-                        self.viewMobilizeButton.hidden = NO;
-
-                        if (![self canMobilizeCurrentURL]) {
-                            self.viewMobilizeButton.enabled = NO;
-                        }
                     }
 
                     self.markAsReadButton.enabled = !isRead;
@@ -727,32 +680,17 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)toggleMobilizer {
-    NSURL *url;
-    if (self.isMobilized) {
-        [AppDelegate sharedDelegate].openLinksWithMobilizer = NO;
-        url = [NSURL URLWithString:[self urlStringForDemobilizedURL:self.url]];
+    self.mobilized = !self.mobilized;
+    self.mobilizeButton.selected = self.mobilized;
+
+    if (self.mobilized) {
+        NSString *readabilityJSFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"js"];
+        NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityJSFile encoding:NSUTF8StringEncoding error:nil];
+        [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
     }
     else {
-        [AppDelegate sharedDelegate].openLinksWithMobilizer = YES;
-        switch ([[AppDelegate sharedDelegate] mobilizer].integerValue) {
-            case MOBILIZER_GOOGLE:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", self.url.absoluteString]];
-                break;
-                
-            case MOBILIZER_INSTAPAPER:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", self.url.absoluteString]];
-                break;
-                
-            case MOBILIZER_READABILITY:
-                url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.readability.com/m?url=%@", self.url.absoluteString]];
-                break;
-        }
+        [self.webView reload];
     }
-    self.stopped = NO;
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    self.title = self.urlString;
-    [self.webView loadRequest:request];
 }
 
 - (void)emailURL {
@@ -1001,8 +939,7 @@ static NSInteger kTitleHeight = 40;
         self.addButton.enabled = NO;
         self.editButton.enabled = NO;
         self.actionButton.enabled = NO;
-        self.viewMobilizeButton.enabled = NO;
-        self.viewRawButton.enabled = NO;
+        self.mobilizeButton.enabled = NO;
         
         switch (navigationType) {
             case UIWebViewNavigationTypeOther:
@@ -1137,7 +1074,7 @@ static NSInteger kTitleHeight = 40;
     }
     
     NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
-    
+
     NSError *error;
     NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
     NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
@@ -1196,8 +1133,7 @@ static NSInteger kTitleHeight = 40;
     self.editButton.tintColor = color;
     self.addButton.tintColor = color;
     self.stopButton.tintColor = color;
-    self.viewMobilizeButton.tintColor = color;
-    self.viewRawButton.tintColor = color;
+    self.mobilizeButton.tintColor = color;
     self.markAsReadButton.tintColor = color;
 }
 
