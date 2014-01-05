@@ -83,7 +83,7 @@ static NSString *ellipsis = @"…";
     if ([[AppDelegate sharedDelegate] readlater]) {
         [actions addObject:@(PPPostActionReadLater)];
     }
-    
+
     return actions;
 }
 
@@ -276,7 +276,7 @@ static NSString *ellipsis = @"…";
                                        self.compressedHeights = newCompressedHeights;
                                        self.compressedLinks = newCompressedLinks;
                                        self.compressedBadges = newCompressedBadges;
-                                       
+
                                        if (success != nil) {
                                            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
                                        }
@@ -503,7 +503,13 @@ static NSString *ellipsis = @"…";
 
     NSArray *tagList = [tags componentsSeparatedByString:@" "];
     for (NSString *tag in tagList) {
-        if (![tag hasPrefix:@"via:"]) {
+        if ([tag hasPrefix:@"via:"]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0x6EBBCCFF) } }];
+
+            // Other alternative--dark on light. I don't know if this is preferable or not.
+            // [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xECECECFF), PPBadgeFontColor: HEX(0x444444FF) } }];
+        }
+        else {
             if (isRead && dimReadPosts) {
                 [badges addObject:@{ @"type": @"tag", @"tag": tag, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xddddddff) } }];
             }

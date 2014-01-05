@@ -65,7 +65,7 @@
 }
 
 + (NSString *)boldFontName {
-    return @"AvenirNext-Medium";
+    return @"AvenirNext-DemiBold";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 

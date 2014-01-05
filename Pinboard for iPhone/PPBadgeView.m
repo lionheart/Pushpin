@@ -69,6 +69,7 @@ static const CGFloat PADDING_Y = 2;
                                          PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
                                          PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
                                          PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
+                                         PPBadgeFontColor: [UIColor whiteColor]
                                          } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
         
@@ -83,7 +84,7 @@ static const CGFloat PADDING_Y = 2;
         self.textLabel.font = [PPTheme tagFont];
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.textLabel.backgroundColor = self.normalColor;
-        self.textLabel.textColor = [UIColor whiteColor];
+        self.textLabel.textColor = badgeOptions[PPBadgeFontColor];
 
         // Calculate our frame
         CGSize size = [self.textLabel textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;

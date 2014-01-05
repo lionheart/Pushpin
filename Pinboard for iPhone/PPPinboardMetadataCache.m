@@ -45,7 +45,13 @@
 }
 
 - (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed {
-    return [NSString stringWithFormat:@"%@:%@:%@", post[@"hash"], post[@"meta"], compressed ? @"1": @"0"];
+    if (post[@"hash"]) {
+        return [NSString stringWithFormat:@"%@:%@:%@", post[@"hash"], post[@"meta"], compressed ? @"1": @"0"];
+    }
+    else {
+        // It's a network item
+        return [NSString stringWithFormat:@"%@:%@", post[@"url"], compressed ? @"1": @"0"];
+    }
 }
 
 @end

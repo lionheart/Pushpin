@@ -21,6 +21,7 @@ static const NSString *PPBadgeFontSize = @"fontSize";
 static const NSString *PPBadgeNormalBackgroundColor = @"normalBackgroundColor";
 static const NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
 static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
+static const NSString *PPBadgeFontColor = @"fontColor";
 
 @interface PPBadgeView : UIView
 
