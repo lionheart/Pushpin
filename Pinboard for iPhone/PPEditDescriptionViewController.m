@@ -88,14 +88,18 @@
 }
 
 - (void)keyboardDidShow:(NSNotification *)sender {
-    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    self.bottomConstraint.constant = -CGRectGetHeight(frame);
-    [self.view layoutIfNeeded];
+    if (![UIApplication isIPad]) {
+        CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        self.bottomConstraint.constant = -CGRectGetHeight(frame);
+        [self.view layoutIfNeeded];
+    }
 }
 
 - (void)keyboardDidHide:(id)sender {
-    self.bottomConstraint.constant = 0;
-    [self.view layoutIfNeeded];
+    if (![UIApplication isIPad]) {
+        self.bottomConstraint.constant = 0;
+        [self.view layoutIfNeeded];
+    }
 }
 
 #pragma mark - UITextViewDelegate

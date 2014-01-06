@@ -9,6 +9,7 @@
 #import "PPStatusBarNotification.h"
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPStatusBarNotification ()
 
@@ -41,10 +42,10 @@
 - (void)displayText:(NSString *)text
       withAnimation:(PPStatusBarNotificationAnimation)animation
            duration:(CGFloat)duration {
-    self.notificationWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+    self.notificationWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 20)];
     self.notificationWindow.clipsToBounds = YES;
 
-    UIView *notificationContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+    UIView *notificationContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 20)];
     notificationContainer.clipsToBounds = YES;
     notificationContainer.backgroundColor = [UIColor darkGrayColor];
     [self.notificationWindow addSubview:notificationContainer];
@@ -148,7 +149,7 @@
             animationDuration = 0.4;
             break;
     }
-    
+
     [notificationContainer addConstraints:visibleStatusBarConstraints];
     
     [self.notificationWindow layoutIfNeeded];

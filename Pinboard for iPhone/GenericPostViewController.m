@@ -883,7 +883,6 @@ static NSInteger kToolbarHeight = 44;
     if (self.longPressActionSheet) {
         if ([UIApplication isIPad]) {
             [(UIActionSheet *)self.longPressActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-            self.longPressActionSheet = nil;
         }
     }
     else {

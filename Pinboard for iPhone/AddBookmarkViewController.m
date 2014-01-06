@@ -455,7 +455,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     
                 case kBookmarkDescriptionRow: {
                     if (self.descriptionTextLabel.text && ![self.descriptionTextLabel.text isEqualToString:@""]) {
-                        CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, 250, CGFLOAT_MAX) limitedToNumberOfLines:3];
+                        CGFloat width = self.view.frame.size.width - 70;
+                        CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, width, CGFLOAT_MAX) limitedToNumberOfLines:3];
                         return CGRectGetHeight(descriptionRect) + 20;
                     }
                     else {
@@ -464,7 +465,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                     
                 case kBookmarkTagRow: {
-                    return MAX(44, [self.badgeWrapperView calculateHeightForWidth:270] + 20);
+                    CGFloat width = self.view.frame.size.width - 50;
+                    return MAX(44, [self.badgeWrapperView calculateHeightForWidth:width] + 20);
                 }
             }
     }
