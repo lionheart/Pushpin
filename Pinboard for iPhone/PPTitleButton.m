@@ -81,17 +81,20 @@
     NSDictionary *views = @{@"title": self.titleLabel,
                             @"image": self.imageView};
 
+    NSDictionary *metrics = @{@"width": @([UIApplication currentSize].width - 120)};
+
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=200)]|" views:views];
+    [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=width)]|" metrics:metrics views:views];
     [self.containerView lhs_centerVerticallyForView:self.imageView height:20];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 
 - (void)addConstraintsForTitleOnly {
     NSDictionary *views = @{@"title": self.titleLabel};
+    NSDictionary *metrics = @{@"width": @([UIApplication currentSize].width - 95)};
 
     [self.containerView removeConstraints:self.containerView.constraints];
-    [self.containerView lhs_addConstraints:@"H:|[title(<=225)]|" views:views];
+    [self.containerView lhs_addConstraints:@"H:|[title(<=width)]|" metrics:metrics views:views];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 

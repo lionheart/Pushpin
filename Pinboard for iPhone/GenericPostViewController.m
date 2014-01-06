@@ -1548,7 +1548,7 @@ static NSInteger kToolbarHeight = 44;
     if (![tag isEqualToString:emptyString]) {
         if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
             // Show more tag options
-            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:@"Additional Tags" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
             for (NSDictionary *badge in badges) {
                 if ([badge[@"type"] isEqualToString:@"tag"]) {
@@ -1560,8 +1560,9 @@ static NSInteger kToolbarHeight = 44;
             [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
             self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
             self.actionSheetVisible = YES;
-            
-            [self.additionalTagsActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+
+            CGPoint point = CGPointMake(badge.center.x - 2, badge.center.y);
+            [self.additionalTagsActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
             self.tableView.scrollEnabled = NO;
         }
         else {

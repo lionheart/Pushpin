@@ -171,6 +171,7 @@ static NSInteger kEditButtonOuterMargin = 20;
             self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
         }
 
+        self.badgeWrapperView.tag = index;
         self.badgeWrapperView.delegate = badgeDelegate;
         CGFloat height = [self.badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.contentView.bounds)];
         self.badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -224,20 +225,11 @@ static NSInteger kEditButtonOuterMargin = 20;
                     [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
                 }
             }
-            
-            CGFloat xVelocity = [self.panGestureRecognizer velocityInView:self.contentView].x * 1.1;
-            
+
             [UIView animateWithDuration:0.3
                              animations:^{
-                                 self.leftPositionConstraint.constant += xVelocity * 0.3;
+                                 self.leftPositionConstraint.constant = 0;
                                  [self.contentView layoutIfNeeded];
-                             }
-                             completion:^(BOOL finished) {
-                                 [UIView animateWithDuration:0.5
-                                                  animations:^{
-                                                      self.leftPositionConstraint.constant = 0;
-                                                      [self.contentView layoutIfNeeded];
-                                                  }];
                              }];
         }
     }
