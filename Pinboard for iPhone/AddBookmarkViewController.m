@@ -593,7 +593,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)close {
-    [self.modalDelegate closeModal:self];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)addBookmark {
@@ -604,7 +604,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                [self.modalDelegate closeModal:self];
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
         }
         
@@ -630,7 +630,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 notification.alertBody = NSLocalizedString(@"Unable to add bookmark without a URL.", nil);
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                [self.modalDelegate closeModal:self];
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
             return;
         }
@@ -714,7 +714,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                              notification.alertAction = @"Open Pushpin";
                                              notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
                                              [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                             [self.modalDelegate closeModal:self];
+                                             [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
                                          });
                                      });
                                  }

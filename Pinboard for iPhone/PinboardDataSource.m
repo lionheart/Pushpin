@@ -1110,8 +1110,8 @@ static BOOL kPinboardSyncInProgress = NO;
     return [PostMetadata metadataForPost:post compressed:compressed tagsWithFrequency:self.tagsWithFrequency];
 }
 
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) delegate:delegate callback:nil];
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index {
+    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:nil];
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {

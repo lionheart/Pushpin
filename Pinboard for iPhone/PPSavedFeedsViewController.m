@@ -167,7 +167,6 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)addSavedFeedButtonTouchUpInside:(id)sender {
     PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
-    addSavedFeedViewController.modalDelegate = self;
     PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
     [self presentViewController:navigationController animated:YES completion:nil];
 }

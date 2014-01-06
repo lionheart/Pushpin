@@ -700,7 +700,7 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)showAddViewController:(NSDictionary *)data {
-    PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:data update:@(NO) delegate:self callback:nil];
+    PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:data update:@(NO) callback:nil];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
