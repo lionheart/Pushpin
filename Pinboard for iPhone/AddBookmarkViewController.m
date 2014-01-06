@@ -34,7 +34,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @interface AddBookmarkViewController ()
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
-@property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 
 @end
 
@@ -125,7 +124,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 + (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString
-                                                             delegate:(id<ModalDelegate>)delegate
                                                              callback:(void (^)())callback {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
@@ -137,19 +135,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                      update:@(YES)
-                                                                   delegate:delegate
                                                                    callback:callback];
 }
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark
                                                            update:(NSNumber *)isUpdate
-                                                         delegate:(id <ModalDelegate>)delegate
                                                          callback:(void (^)())callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
     addBookmarkViewController.bookmarkData = bookmark;
-    addBookmarkViewController.modalDelegate = delegate;
     [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
     
     if (isUpdate.boolValue) {
@@ -192,10 +187,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (![addBookmarkViewController.postDescription isEqualToString:@""]) {
             addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:addBookmarkViewController.postDescription attributes:addBookmarkViewController.descriptionAttributes];
         }
-    }
-    
-    if (delegate) {
-        addBookmarkViewController.modalDelegate = delegate;
     }
     
     if (callback) {
@@ -768,7 +759,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
-    [self.modalDelegate closeModal:self];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIGestureRecognizerDelegate

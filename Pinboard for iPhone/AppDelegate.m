@@ -98,8 +98,8 @@
     }
 }
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback {
-    PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate delegate:delegate callback:callback];
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
+    PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
     if (self.navigationController.presentedViewController) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
             [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
@@ -116,7 +116,7 @@
     }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
-        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) delegate:self callback:nil];
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
     }
     else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
@@ -150,7 +150,7 @@
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
-            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) delegate:self callback:^{
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
                 if (queryParameters[@"url"]) {
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
