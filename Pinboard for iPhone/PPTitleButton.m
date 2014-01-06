@@ -9,6 +9,7 @@
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPTitleButton ()
 
@@ -28,7 +29,7 @@
 
 + (instancetype)buttonWithDelegate:(id)delegate {
     PPTitleButton *titleButton = [[PPTitleButton alloc] init];
-    titleButton.frame = CGRectMake(0, 0, 300, 24);
+    titleButton.frame = CGRectMake(0, 0, [UIApplication currentSize].width - 20, 24);
     titleButton.containerView = [[UIView alloc] init];
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     

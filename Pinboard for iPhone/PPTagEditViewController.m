@@ -17,6 +17,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -131,7 +132,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        CGFloat height = [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        if ([UIApplication isIPad]) {
+            return height + 10;
+        }
+        else {
+            return height;
+        }
     }
     else {
         return [PPTableViewTitleView heightWithText:@"Current Tags" fontSize:15];
@@ -588,7 +595,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                 
                 [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
-                [arguments addObject:@(MAX(2, (NSInteger)(4 - self.existingTags.count)))];
+                [arguments addObject:@(MAX([self minTagsToAutocomplete], (NSInteger)([self maxTagsToAutocomplete] - self.existingTags.count)))];
                 
 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                 FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
@@ -775,17 +782,39 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - Notification Handlers
 
 - (void)keyboardDidShow:(NSNotification *)sender {
-    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    self.bottomConstraint.constant = -CGRectGetHeight(frame);
-    [self.view layoutIfNeeded];
+    if (![UIApplication isIPad]) {
+        CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        self.bottomConstraint.constant = -CGRectGetHeight(frame);
+        [self.view layoutIfNeeded];
+    }
 }
 
 - (void)keyboardDidHide:(NSNotification *)sender {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.autocompleteInProgress = NO;
-        self.bottomConstraint.constant = 0;
-        [self.view layoutIfNeeded];
-    });
+    self.autocompleteInProgress = NO;
+    if (![UIApplication isIPad]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.bottomConstraint.constant = 0;
+            [self.view layoutIfNeeded];
+        });
+    }
+}
+
+- (NSInteger)maxTagsToAutocomplete {
+    if ([UIApplication isIPad]) {
+        return 8;
+    }
+    else {
+        return 4;
+    }
+}
+
+- (NSInteger)minTagsToAutocomplete {
+    if ([UIApplication isIPad]) {
+        return 6;
+    }
+    else {
+        return 2;
+    }
 }
 
 @end

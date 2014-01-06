@@ -13,6 +13,7 @@
 #import "PPScrollView.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSInteger kEditButtonInnerMargin = 15;
 static NSInteger kEditButtonOuterMargin = 20;
@@ -72,6 +73,7 @@ static NSInteger kEditButtonOuterMargin = 20;
                        compressed:(BOOL)compressed {
     
     [self.contentView lhs_removeSubviews];
+    self.contentView.clipsToBounds = YES;
 
     self.index = index;
     self.didReachDeleteThreshold = NO;
@@ -106,7 +108,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     self.textView.numberOfLines = 0;
-    self.textView.preferredMaxLayoutWidth = 300;
+    self.textView.preferredMaxLayoutWidth = [UIApplication currentSize].width - 20;
     self.textView.opaque = YES;
     self.textView.backgroundColor = [PPTheme bookmarkBackgroundColor];
     self.textView.userInteractionEnabled = NO;

@@ -37,4 +37,7 @@
 @property (nonatomic, weak) id<PPTagEditing> tagDelegate;
 @property (nonatomic, strong) UITableView *tableView;
 
+- (NSInteger)maxTagsToAutocomplete;
+- (NSInteger)minTagsToAutocomplete;
+
 @end
