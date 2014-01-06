@@ -13,6 +13,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "UITableViewCellValue1.h"
+#import "PPConstants.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>

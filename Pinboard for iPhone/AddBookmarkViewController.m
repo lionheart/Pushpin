@@ -22,6 +22,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
 #import "PinboardDataSource.h"
+#import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>

@@ -11,6 +11,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPScrollView.h"
+#import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
