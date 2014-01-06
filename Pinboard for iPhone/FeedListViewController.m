@@ -36,54 +36,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @implementation FeedListViewController
 
+#pragma mark UITableViewController
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
-- (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        NSString *count, *previousCount;
-        BOOL skip = self.bookmarkCounts.count < 5;
-        
-        [db open];
-        NSArray *resultSets = @[
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
-            [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-        ];
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+}
 
-        NSInteger i = 0;
-        for (FMResultSet *resultSet in resultSets) {
-            [resultSet next];
-            count = [resultSet stringForColumnIndex:0];
-            
-            if (skip) {
-                previousCount = @"";
-            }
-            else {
-                previousCount = self.bookmarkCounts[i];
-            }
-            
-            if (previousCount != nil && ![count isEqualToString:previousCount]) {
-                self.bookmarkCounts[i] = count;
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-            }
-            
-            i++;
-        }
-        
-        [db close];
-        
-        if (callback) {
-            callback(indexPathsToReload);
-        }
-    });
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)viewDidLoad {
@@ -150,7 +121,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -267,6 +238,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     return cell;
 }
+
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
@@ -406,21 +379,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self.navigationController pushViewController:tagViewController animated:YES];
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView endUpdates];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
-}
-
 - (void)closeModal:(UIViewController *)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -431,6 +389,53 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.tableView reloadData];
+}
+
+
+- (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        NSString *count, *previousCount;
+        BOOL skip = self.bookmarkCounts.count < 5;
+        
+        [db open];
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
+                                ];
+        
+        NSInteger i = 0;
+        for (FMResultSet *resultSet in resultSets) {
+            [resultSet next];
+            count = [resultSet stringForColumnIndex:0];
+            
+            if (skip) {
+                previousCount = @"";
+            }
+            else {
+                previousCount = self.bookmarkCounts[i];
+            }
+            
+            if (previousCount != nil && ![count isEqualToString:previousCount]) {
+                self.bookmarkCounts[i] = count;
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+            
+            i++;
+        }
+        
+        [db close];
+        
+        if (callback) {
+            callback(indexPathsToReload);
+        }
+    });
 }
 
 @end
