@@ -72,6 +72,7 @@ typedef enum BookmarkSections {
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 
++ (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
 
 @end

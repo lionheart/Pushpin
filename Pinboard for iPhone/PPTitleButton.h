@@ -20,6 +20,7 @@
 
 @interface PPTitleButton : UIView
 
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, weak) id<PPTitleButtonDelegate> delegate;
 
 + (instancetype)button;

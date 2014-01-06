@@ -201,7 +201,7 @@ static NSInteger kToolbarHeight = 44;
     [self.view lhs_addConstraints:@"V:[statusView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
-    
+
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
 
@@ -617,7 +617,6 @@ static NSInteger kToolbarHeight = 44;
                             self.searchBar.delegate = self;
                             self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                             self.searchBar.showsScopeBar = YES;
-                            self.searchBar.showsBookmarkButton = YES;
                             
                             if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
                                 self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
@@ -1131,13 +1130,13 @@ static NSInteger kToolbarHeight = 44;
                 notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
                 
                 if (posts.count == 1) {
-                    notification.alertBody = NSLocalizedString(@"Bookmark marked as read.", nil);
+                    notification.alertBody = @"Bookmark marked as read.";
                 }
                 else {
-                    notification.alertBody = NSLocalizedString(@"Bookmarks marked as read.", nil);
+                    notification.alertBody = [NSString stringWithFormat:@"%d bookmarks marked as read.", posts.count];
                 }
             }
-            
+
             // Once all async tasks are done, present the notification and update the local database
             dispatch_group_notify(group, queue, ^{
                 if (notify) {

@@ -14,8 +14,8 @@
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
-static NSInteger kEditButtonLeftMargin = 15;
-static NSInteger kEditButtonRightMargin = 15;
+static NSInteger kEditButtonInnerMargin = 15;
+static NSInteger kEditButtonOuterMargin = 20;
 
 @interface PPBookmarkCell ()
 
@@ -143,14 +143,14 @@ static NSInteger kEditButtonRightMargin = 15;
                             @"delete": self.deleteButton,
                             @"text": self.textView };
     
-    NSDictionary *metrics = @{@"leftMargin": @(kEditButtonLeftMargin),
-                              @"rightMargin": @(kEditButtonRightMargin) };
+    NSDictionary *metrics = @{@"innerMargin": @(kEditButtonInnerMargin),
+                              @"outerMargin": @(kEditButtonOuterMargin) };
     [self.contentView lhs_centerVerticallyForView:self.deleteButton height:23];
     [self.contentView lhs_centerVerticallyForView:self.editButton height:20];
-    [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=rightMargin)-[main]" metrics:metrics views:views];
-    [self.contentView lhs_addConstraints:@"H:[main]-(>=leftMargin)-[delete]" metrics:metrics views:views];
-    [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=rightMargin)-|" metrics:metrics views:views];
-    [self.contentView lhs_addConstraints:@"H:|-(<=rightMargin)-[edit]" metrics:metrics views:views];
+    [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=innerMargin)-[main]" metrics:metrics views:views];
+    [self.contentView lhs_addConstraints:@"H:[main]-(>=innerMargin)-[delete]" metrics:metrics views:views];
+    [self.contentView lhs_addConstraints:@"H:[delete(23)]-(<=outerMargin)-|" metrics:metrics views:views];
+    [self.contentView lhs_addConstraints:@"H:|-(<=outerMargin)-[edit]" metrics:metrics views:views];
     [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
 
     self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
@@ -204,8 +204,8 @@ static NSInteger kEditButtonRightMargin = 15;
         CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
         if (recognizer.state == UIGestureRecognizerStateChanged) {
             
-            self.deleteButton.enabled = offset.x <= -(23 + kEditButtonLeftMargin + kEditButtonRightMargin);
-            self.editButton.enabled = offset.x >= (20 + kEditButtonLeftMargin + kEditButtonRightMargin);
+            self.deleteButton.enabled = offset.x <= -(23 + kEditButtonOuterMargin + kEditButtonInnerMargin);
+            self.editButton.enabled = offset.x >= (20 + kEditButtonOuterMargin + kEditButtonInnerMargin);
             
             self.leftPositionConstraint.constant = offset.x;
 
