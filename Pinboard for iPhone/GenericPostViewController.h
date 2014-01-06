@@ -82,7 +82,7 @@ typedef enum : NSInteger {
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index withDelegate:(id<ModalDelegate>)delegate;
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index;
 - (id <GenericPostDataSource>)searchDataSource;
 - (void)filterWithQuery:(NSString *)query;
 - (void)addDataSource:(void (^)())callback;
@@ -93,7 +93,7 @@ typedef enum : NSInteger {
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;
 
-- (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index delegate:(id<ModalDelegate>)delegate;
+- (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback;
@@ -106,7 +106,7 @@ typedef enum : NSInteger {
 
 @end
 
-@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, ModalDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate>
+@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *pullToRefreshView;

@@ -21,7 +21,7 @@ enum PINBOARD_FEED_ITEMS {
     PinboardFeedStarredBookmarks
 };
 
-@interface FeedListViewController : PPTableViewController <ModalDelegate> {
+@interface FeedListViewController : PPTableViewController {
     NSString *postViewTitle;
 }
 

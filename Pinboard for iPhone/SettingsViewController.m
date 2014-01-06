@@ -346,14 +346,13 @@ static NSString *CellIdentifier = @"Cell";
             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
             if ([UIApplication isIPad]) {
-                [self.modalDelegate closeModal:self success:^{
-                    [(UIViewController *)self.modalDelegate presentViewController:delegate.loginViewController
-                                                                         animated:YES
-                                                   completion:nil];
-                        
+                [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+                    [(UIViewController *)self.parentViewController presentViewController:delegate.loginViewController
+                                                                                animated:YES
+                                                                              completion:nil];
+
                     [[AppDelegate sharedDelegate] migrateDatabase];
                 }];
-
             }
             else {
                 [self presentViewController:delegate.loginViewController

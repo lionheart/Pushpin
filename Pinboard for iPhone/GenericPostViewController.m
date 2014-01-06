@@ -518,10 +518,10 @@ static NSInteger kToolbarHeight = 44;
                 case 2: {
                     UIViewController *vc;
                     if ([dataSource respondsToSelector:@selector(addViewControllerForPostAtIndex:delegate:)]) {
-                        vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+                        vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
                     }
                     else if ([dataSource respondsToSelector:@selector(editViewControllerForPostAtIndex:withDelegate:)]) {
-                        vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+                        vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row];
                     }
 
                     if (vc) {
@@ -1041,7 +1041,7 @@ static NSInteger kToolbarHeight = 44;
                 [self showConfirmDeletionAlert];
             }
             else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row withDelegate:self];
+                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row];
                 
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1065,7 +1065,7 @@ static NSInteger kToolbarHeight = 44;
                 [self copyURL];
             }
             else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-                UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row delegate:self];
+                UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
                 
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1665,7 +1665,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index {
-    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:index withDelegate:self];
+    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:index];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;

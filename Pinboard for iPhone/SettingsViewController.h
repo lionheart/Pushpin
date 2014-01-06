@@ -33,7 +33,6 @@
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
 
-@property (nonatomic, weak) id<ModalDelegate> modalDelegate;
 @property (nonatomic, strong) id actionSheet;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;

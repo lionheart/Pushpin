@@ -1042,7 +1042,7 @@
         self.addBookmarkAlertView = nil;
 
         if (buttonIndex == 1) {
-            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) delegate:self callback:nil];
+            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
             
             if ([UIApplication isIPad]) {
                 addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1064,7 +1064,7 @@
         self.updateBookmarkAlertView = nil;
 
         if (buttonIndex == 1) {
-            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL delegate:self callback:nil];
+            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
             
             if ([UIApplication isIPad]) {
                 addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
