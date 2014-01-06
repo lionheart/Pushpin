@@ -9,7 +9,7 @@
 #import "PPTableViewController.h"
 #import "AppDelegate.h"
 
-@interface PPSavedFeedsViewController : PPTableViewController <ModalDelegate>
+@interface PPSavedFeedsViewController : PPTableViewController
 
 @property (nonatomic, strong) NSMutableArray *feeds;
 

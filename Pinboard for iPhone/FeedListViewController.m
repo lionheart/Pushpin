@@ -384,7 +384,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)openSettings {
     SettingsViewController *svc = [[SettingsViewController alloc] init];
     svc.title = NSLocalizedString(@"Settings", nil);
-    svc.modalDelegate = self;
     PPNavigationController *nc = [[PPNavigationController alloc] initWithRootViewController:svc];
     if ([UIApplication isIPad]) {
         nc.modalPresentationStyle = UIModalPresentationFormSheet;
