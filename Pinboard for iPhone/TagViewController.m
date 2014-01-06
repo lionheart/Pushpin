@@ -306,11 +306,6 @@ static NSString *CellIdentifier = @"TagCell";
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag[@"name"]];
     postViewController.postDataSource = pinboardDataSource;
-    
-    PPTitleButton *button = [PPTitleButton button];
-    [button setTitle:tag[@"name"] imageName:nil];
-    postViewController.title = @"";
-    postViewController.navigationItem.titleView = button;
     [self.navigationController pushViewController:postViewController animated:YES];
 }
 

@@ -47,7 +47,6 @@ enum bookmarkupdateevents {
     NSInteger secondsLeft;
 }
 
-@property (nonatomic) BOOL addBookmarkAlertViewIsVisible;
 @property (nonatomic) BOOL bookmarksLoading;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
 @property (nonatomic) BOOL compressPosts;

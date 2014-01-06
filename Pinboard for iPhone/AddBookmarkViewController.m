@@ -21,6 +21,7 @@
 #import "UITableView+Additions.h"
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
+#import "PinboardDataSource.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
@@ -121,6 +122,23 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
+}
+
++ (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString
+                                                             delegate:(id<ModalDelegate>)delegate
+                                                             callback:(void (^)())callback {
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    
+    FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
+    [results next];
+    NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+    [db close];
+    
+    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                                                                     update:@(YES)
+                                                                   delegate:delegate
+                                                                   callback:callback];
 }
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark

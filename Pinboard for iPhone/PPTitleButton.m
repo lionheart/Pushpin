@@ -13,7 +13,6 @@
 @interface PPTitleButton ()
 
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 
 @property (nonatomic, strong) NSMutableArray *existingConstraints;

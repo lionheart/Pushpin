@@ -33,7 +33,7 @@
 
 - (void)showWithText:(NSString *)text {
     [self displayText:text
-        withAnimation:PPStatusBarNotificationAnimationSlideToLeft
+        withAnimation:PPStatusBarNotificationAnimationSlideDown
              duration:1.5];
 
 }
