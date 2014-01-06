@@ -2390,7 +2390,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "BA48B35F-50F6-4A50-B0B7-AAEC056E86F2";
+				PROVISIONING_PROFILE = "F8BA150D-2B90-4038-BC78-F454B168EE54";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
