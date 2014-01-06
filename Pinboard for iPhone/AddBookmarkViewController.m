@@ -75,7 +75,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.descriptionTextLabel.numberOfLines = 3;
         self.descriptionTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.descriptionTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.descriptionTextLabel.preferredMaxLayoutWidth = 250;
         self.descriptionTextLabel.userInteractionEnabled = NO;
 
         self.titleTextField = [[UITextField alloc] init];
@@ -241,6 +240,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewWillAppear:animated];
     
     [self setNeedsStatusBarAppearanceUpdate];
+
+    // We need to set this here, since on iPad the table view's frame isn't set until this happens.
+    self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -455,7 +457,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     
                 case kBookmarkDescriptionRow: {
                     if (self.descriptionTextLabel.text && ![self.descriptionTextLabel.text isEqualToString:@""]) {
-                        CGFloat width = self.view.frame.size.width - 70;
+                        CGFloat width = self.view.frame.size.width - 50;
                         CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, width, CGFLOAT_MAX) limitedToNumberOfLines:3];
                         return CGRectGetHeight(descriptionRect) + 20;
                     }

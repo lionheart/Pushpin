@@ -12,6 +12,7 @@
 #import "GenericPostViewController.h"
 
 #import <FMDB/FMDatabase.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @implementation PPNavigationController
 
@@ -64,7 +65,14 @@
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
+    UIBarButtonItem *backButton;
+    if ([UIApplication isIPad]) {
+        backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:nil action:nil];
+    }
+    else {
+        backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
+    }
+
     viewController.navigationItem.backBarButtonItem = backButton;
 }
 
