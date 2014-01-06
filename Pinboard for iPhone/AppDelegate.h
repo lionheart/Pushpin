@@ -36,12 +36,7 @@ enum bookmarkupdateevents {
 @class FMDatabaseQueue;
 @class PPNavigationController;
 
-@protocol ModalDelegate <NSObject>
-- (void)closeModal:(UIViewController *)sender;
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success;
-@end
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, ModalDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
@@ -85,7 +80,7 @@ enum bookmarkupdateevents {
 + (AppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
 + (NSString *)databasePath;
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate delegate:(id <ModalDelegate>)delegate callback:(void (^)())callback;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
 - (void)openSettings;
