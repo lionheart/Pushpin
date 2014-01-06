@@ -167,6 +167,7 @@ static NSInteger kToolbarHeight = 44;
     [self.multipleTagEditButton addTarget:self action:@selector(multiEdit:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:self.multipleTagEditButton];
     self.multipleTagEditButton.enabled = NO;
+    self.multipleTagEditButton.hidden = YES;
 
     self.multipleDeleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.multipleDeleteButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -180,9 +181,8 @@ static NSInteger kToolbarHeight = 44;
                                     @"edit": self.multipleTagEditButton,
                                     @"delete": self.multipleDeleteButton };
 
-    [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
+    [self.multiToolbarView lhs_addConstraints:@"H:|[read][delete(==read)]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
-    [self.multiToolbarView lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[delete]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
