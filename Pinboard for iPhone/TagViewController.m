@@ -214,7 +214,7 @@ static NSString *CellIdentifier = @"TagCell";
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
     cell.detailTextLabel.text = badgeCount;
-    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
     return cell;
 }
 

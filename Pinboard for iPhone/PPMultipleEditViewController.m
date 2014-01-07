@@ -89,7 +89,7 @@ static NSString *CellIdentifier = @"Cell";
     cell.textLabel.font = [PPTheme cellTextLabelFont];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
     
     CGRect frame = cell.frame;
     
