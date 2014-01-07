@@ -39,11 +39,15 @@
     return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme tagFontSize]];
 }
 
-+ (UIFont *)cellTextLabelFont {
++ (UIFont *)boldTextLabelFont {
     return [UIFont fontWithName:[PPTheme boldFontName] size:16];
 }
 
-+ (UIFont *)cellDetailLabelFont {
++ (UIFont *)textLabelFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:16];
+}
+
++ (UIFont *)detailLabelFont {
     return [UIFont fontWithName:[PPTheme fontName] size:15];
 }
 

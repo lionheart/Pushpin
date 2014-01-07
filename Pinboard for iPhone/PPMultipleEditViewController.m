@@ -86,10 +86,10 @@ static NSString *CellIdentifier = @"Cell";
     cell.accessoryView = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = @"";
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
+    cell.detailTextLabel.font = [PPTheme detailLabelFont];
     
     CGRect frame = cell.frame;
     

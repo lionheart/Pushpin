@@ -83,24 +83,17 @@ static NSString *CellIdentifier = @"Cell";
     return 1;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Browser Bookmarklet", nil) fontSize:14];
+        return NSLocalizedString(@"Browser Bookmarklet", nil);
     }
     return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == 1) {
-        return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Browser Bookmarklet", nil) fontSize:14];
-    }
-    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
 
     switch (indexPath.section) {
         case 0: {

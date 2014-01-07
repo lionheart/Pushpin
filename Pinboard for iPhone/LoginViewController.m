@@ -315,18 +315,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 #pragma mark - UITableViewDataSource
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.progressView.hidden && section == 0) {
-        return [PPTableViewTitleView headerWithText:@"Pinboard Login"];
+        return @"Pinboard Login";
     }
     return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.progressView.hidden && section == 0) {
-        return [PPTableViewTitleView heightWithText:@"Pinboard Login"];
-    }
-    return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

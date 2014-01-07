@@ -184,16 +184,9 @@ static NSString *CellIdentifier = @"TagCell";
     return 0;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        return [PPTableViewTitleView heightWithText:self.sortedTitles[section]];
-    }
-    return 0;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        return [PPTableViewTitleView headerWithText:self.sortedTitles[section]];
+        return self.sortedTitles[section];
     }
     return nil;
 }
@@ -210,11 +203,11 @@ static NSString *CellIdentifier = @"TagCell";
     }
 
     cell.textLabel.text = tag[@"name"];
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
     cell.detailTextLabel.text = badgeCount;
-    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
+    cell.detailTextLabel.font = [PPTheme detailLabelFont];
     return cell;
 }
 
@@ -314,8 +307,7 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (NSString *)titleForSectionIndex:(NSInteger)section {
-    PPTableViewTitleView *titleView = (PPTableViewTitleView *)[self tableView:self.tableView viewForHeaderInSection:section];
-    return titleView.text;
+    return [self tableView:self.tableView titleForHeaderInSection:section];
 }
 
 @end

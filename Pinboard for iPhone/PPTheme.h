@@ -17,8 +17,9 @@
 + (UIFont *)descriptionFont;
 + (UIFont *)urlFont;
 + (UIFont *)tagFont;
-+ (UIFont *)cellTextLabelFont;
-+ (UIFont *)cellDetailLabelFont;
++ (UIFont *)boldTextLabelFont;
++ (UIFont *)textLabelFont;
++ (UIFont *)detailLabelFont;
 + (NSString *)fontName;
 + (NSString *)boldFontName;
 

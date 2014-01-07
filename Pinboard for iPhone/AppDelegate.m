@@ -284,7 +284,7 @@
     //[self.window setTintColor:[UIColor whiteColor]];
     //[[UIView appearance] setTintColor:[UIColor whiteColor]];
     
-    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme cellTextLabelFont]};
+    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont]};
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
                                                 forState:UIControlStateNormal];
     
