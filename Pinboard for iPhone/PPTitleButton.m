@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSMutableArray *existingConstraints;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
+- (void)addConstraintsForImageOnly;
 - (void)addConstraintsForImageAndTitle;
 - (void)addConstraintsForTitleOnly;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
@@ -62,13 +63,19 @@
 }
 
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
-    self.titleLabel.text = title;
-
     if (imageName) {
         self.imageView.image = [UIImage imageNamed:imageName];
-        [self addConstraintsForImageAndTitle];
+
+        if (title) {
+            self.titleLabel.text = title;
+            [self addConstraintsForImageAndTitle];
+        }
+        else {
+            [self addConstraintsForImageOnly];
+        }
     }
     else {
+        self.titleLabel.text = title;
         self.imageView.image = nil;
         [self addConstraintsForTitleOnly];
     }
@@ -96,6 +103,15 @@
     [self.containerView removeConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[title(<=width)]|" metrics:metrics views:views];
     [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+}
+
+- (void)addConstraintsForImageOnly {
+    NSDictionary *views = @{@"image": self.imageView};
+    NSDictionary *metrics = @{@"width": @(30)};
+
+    [self.containerView removeConstraints:self.containerView.constraints];
+    [self.containerView lhs_addConstraints:@"H:|[image(width)]|" metrics:metrics views:views];
+    [self.containerView lhs_addConstraints:@"V:|[image(width)]|" metrics:metrics views:views];
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {

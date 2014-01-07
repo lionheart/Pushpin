@@ -810,13 +810,15 @@
     if (self.defaultFeed) {
         if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
             feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
-        } else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+        }
+        else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
             NSString *communityDescription = [self.defaultFeed substringFromIndex:10];
             if ([communityDescription isEqualToString:@"japanese"]) {
                 communityDescription = @"日本語";
             }
             feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
-        } else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+        }
+        else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
             feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
         }
     }
