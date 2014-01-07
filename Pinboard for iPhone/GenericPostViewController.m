@@ -12,7 +12,6 @@
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
 #import "PPStatusBarNotification.h"
-#import "PPBookmarkCell.h"
 #import "PPConstants.h"
 
 #import "PinboardDataSource.h"
@@ -32,7 +31,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
-static BOOL kGenericPostViewControllerResizingPosts = NO;
+static BOOL kGenericPostViewControllerIsProcessingPosts = NO;
 static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
@@ -113,7 +112,6 @@ static NSInteger kToolbarHeight = 44;
     
     self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
-    self.loading = NO;
     self.searchLoading = NO;
 
     CGRect bounds = [[UIScreen mainScreen] bounds];
@@ -271,13 +269,13 @@ static NSInteger kToolbarHeight = 44;
     BOOL oldCompressPosts = self.compressPosts;
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
     if (self.compressPosts != oldCompressPosts) {
-        if (!kGenericPostViewControllerResizingPosts) {
-            kGenericPostViewControllerResizingPosts = YES;
+        if (!kGenericPostViewControllerIsProcessingPosts) {
+            kGenericPostViewControllerIsProcessingPosts = YES;
             NSArray *indexPathsToReload = [self.tableView indexPathsForVisibleRows];
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
-            kGenericPostViewControllerResizingPosts = NO;
+            kGenericPostViewControllerIsProcessingPosts = NO;
         }
     }
 
@@ -591,15 +589,15 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
-    if (!self.loading) {
-        self.loading = YES;
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        kGenericPostViewControllerIsProcessingPosts = YES;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
                     self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
-                    self.loading = NO;
+                    kGenericPostViewControllerIsProcessingPosts = NO;
                     [UIView animateWithDuration:0.2 animations:^{
                         CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
                         self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
@@ -680,11 +678,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateWithRatio:(NSNumber *)ratio {
-    if (!self.loading) {
-        self.loading = YES;
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        kGenericPostViewControllerIsProcessingPosts = YES;
         [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.loading = NO;
                 [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
 
                 [UIView animateWithDuration:0.2 animations:^{
@@ -693,6 +690,7 @@ static NSInteger kToolbarHeight = 44;
                 } completion:^(BOOL finished) {
                     [self.pullToRefreshImageView setHidden:YES];
                     [self.pullToRefreshImageView stopAnimating];
+                    kGenericPostViewControllerIsProcessingPosts = NO;
                 }];
             });
         } failure:nil options:@{@"ratio": ratio}];
@@ -828,7 +826,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
-    if (!self.loading) {
+    if (!kGenericPostViewControllerIsProcessingPosts) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
@@ -1337,7 +1335,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Scroll View delegate
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (!self.tableView.editing && !self.loading && !self.searchDisplayController.isActive) {
+    if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
@@ -1362,7 +1360,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (!self.loading) {
+    if (!kGenericPostViewControllerIsProcessingPosts) {
         CGFloat offset = scrollView.contentOffset.y;
         CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
         CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
@@ -1528,13 +1526,16 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if ([self.postDataSource respondsToSelector:@selector(resetHeightsWithSuccess:)]) {
-        [self.postDataSource resetHeightsWithSuccess:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
-                [self performTableViewUpdatesWithInserts:nil reloads:indexPathsForVisibleRows deletes:nil];
-            });
-        }];
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        kGenericPostViewControllerIsProcessingPosts = YES;
+        if ([self.postDataSource respondsToSelector:@selector(resetHeightsWithSuccess:)]) {
+            [self.postDataSource resetHeightsWithSuccess:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadData];
+                    kGenericPostViewControllerIsProcessingPosts = NO;
+                });
+            }];
+        }
     }
 }
 
@@ -1550,12 +1551,19 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark iOS 7 Updates
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-        dispatch_sync(dispatch_get_main_queue(), ^(void) {
-            [self performTableViewUpdatesWithInserts:nil reloads:[self.tableView indexPathsForVisibleRows] deletes:nil];
-            [self.view setNeedsLayout];
-        });
-    } failure:nil];
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        kGenericPostViewControllerIsProcessingPosts = YES;
+
+        [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                [self performTableViewUpdatesWithInserts:nil reloads:[self.tableView indexPathsForVisibleRows] deletes:nil];
+                [self.view setNeedsLayout];
+                kGenericPostViewControllerIsProcessingPosts = NO;
+            });
+        } failure:^(NSError *error) {
+            kGenericPostViewControllerIsProcessingPosts = NO;
+        }];
+    }
 }
 
 #pragma mark - PPBadgeWrapperDelegate
@@ -1617,8 +1625,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)toggleCompressedPosts {
-    if (!kGenericPostViewControllerResizingPosts) {
-        kGenericPostViewControllerResizingPosts = YES;
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        kGenericPostViewControllerIsProcessingPosts = YES;
         
         NSArray *visibleIndexPaths = [self.tableView indexPathsForVisibleRows];
         // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
@@ -1645,7 +1653,7 @@ static NSInteger kToolbarHeight = 44;
             if (self.tableView.contentOffset.y > 0) {
                 [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
-            kGenericPostViewControllerResizingPosts = NO;
+            kGenericPostViewControllerIsProcessingPosts = NO;
         });
     }
 }

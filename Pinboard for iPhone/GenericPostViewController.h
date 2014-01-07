@@ -17,8 +17,8 @@
 #import "PPBadgeWrapperView.h"
 #import "FluidTableviewFlowLayout.h"
 #import "PPTitleButton.h"
+#import "PPBookmarkCell.h"
 
-@protocol PPBookmarkCellDelegate;
 @class PPNavigationController;
 
 @protocol GenericPostDataSource <NSObject>
@@ -97,7 +97,6 @@
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) UIAlertView *confirmMultipleDeletionAlertView;
 @property (nonatomic, strong) UIAlertView *confirmDeletionAlertView;
-@property (nonatomic) BOOL loading;
 @property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 @property (nonatomic, strong) NSString *latestSearchText;
@@ -159,7 +158,5 @@
 - (id<GenericPostDataSource>)currentDataSource;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
-
-+ (UIImage *)screenshot;
 
 @end

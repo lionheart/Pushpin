@@ -98,6 +98,10 @@ typedef enum : NSInteger {
     kPinboardFilterNone
 } kPinboardFilterType;
 
+static dispatch_queue_t PPSerialQueue() {
+    return dispatch_queue_create("Pushpin Serial Queue", DISPATCH_QUEUE_SERIAL);
+}
+
 static NSArray *PPPersonalFeeds() {
     return @[@"all", @"private", @"public", @"unread", @"untagged", @"starred"];
 }

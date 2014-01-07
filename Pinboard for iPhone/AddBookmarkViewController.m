@@ -239,7 +239,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    self.callback();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -592,10 +591,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 }
 
-- (void)close {
-    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
@@ -759,7 +754,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
-    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:self.callback];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
