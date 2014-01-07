@@ -15,6 +15,9 @@
 @property (nonatomic, strong) NSArray *links;
 @property (nonatomic, strong) NSArray *badges;
 
-+ (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed tagsWithFrequency:(NSDictionary *)tagsWithFrequency;
++ (PostMetadata *)metadataForPost:(NSDictionary *)post
+                       compressed:(BOOL)compressed
+                      orientation:(UIInterfaceOrientation)orientation
+                tagsWithFrequency:(NSDictionary *)tagsWithFrequency;
 
 @end

@@ -14,7 +14,7 @@
 
 + (instancetype)sharedCache;
 
-- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
-- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed;
+- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation;
+- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation;
 
 @end
