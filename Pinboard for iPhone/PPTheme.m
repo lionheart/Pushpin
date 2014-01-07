@@ -40,7 +40,11 @@
 }
 
 + (UIFont *)cellTextLabelFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:16];
+    return [UIFont fontWithName:[PPTheme boldFontName] size:16];
+}
+
++ (UIFont *)cellDetailLabelFont {
+    return [UIFont fontWithName:[PPTheme fontName] size:15];
 }
 
 + (CGFloat)fontSize {
@@ -65,7 +69,7 @@
 }
 
 + (NSString *)boldFontName {
-    return @"AvenirNext-DemiBold";
+    return @"AvenirNext-Medium";
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 

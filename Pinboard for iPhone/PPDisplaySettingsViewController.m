@@ -72,7 +72,7 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
     CGSize switchSize;
     
     cell.textLabel.font = [PPTheme cellTextLabelFont];
-    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
     
     if (indexPath.section == 0) {
         switch (indexPath.row) {

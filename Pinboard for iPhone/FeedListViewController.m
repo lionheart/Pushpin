@@ -148,7 +148,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     switch (section) {
         case 0:
             return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Personal", nil)];
-            
+
         case 1:
             return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Community", nil)];
     }
@@ -161,7 +161,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     cell.textLabel.font = [PPTheme cellTextLabelFont];
     cell.detailTextLabel.text = nil;
-    cell.detailTextLabel.font = [PPTheme cellTextLabelFont];
+    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
 
     NSString *badgeCount;
     switch (indexPath.section) {
