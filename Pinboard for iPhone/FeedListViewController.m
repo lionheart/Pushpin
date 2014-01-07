@@ -132,36 +132,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return 6;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 10;
+            return NSLocalizedString(@"Personal", nil);
             
         case 1:
-            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Community", nil)];
+            return NSLocalizedString(@"Community", nil);
     }
     
-    return 0;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Personal", nil)];
-
-        case 1:
-            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Community", nil)];
-    }
-
     return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
     
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
     cell.detailTextLabel.text = nil;
-    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
+    cell.detailTextLabel.font = [PPTheme detailLabelFont];
 
     NSString *badgeCount;
     switch (indexPath.section) {

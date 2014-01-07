@@ -239,13 +239,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return 2;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return [PPTableViewTitleView headerWithText:@"Current Tags" fontSize:15];
+        return @"Current Tags";
     }
     else {
         NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return [PPTableViewTitleView headerWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
+        return [NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host];
     }
 }
 

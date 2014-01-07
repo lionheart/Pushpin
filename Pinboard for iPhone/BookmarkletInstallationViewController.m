@@ -52,16 +52,9 @@ static NSString *CellIdentifier = @"Cell";
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Watch a video", nil) fontSize:14];
-    }
-    return 0;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (section == 1) {
-        return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Watch a video", nil) fontSize:14];
+        return NSLocalizedString(@"Watch a video", nil);
     }
     return nil;
 }
@@ -69,7 +62,7 @@ static NSString *CellIdentifier = @"Cell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
     }

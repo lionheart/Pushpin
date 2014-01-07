@@ -112,7 +112,7 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
     cell.textLabel.text = title;
     return cell;
 }

@@ -135,16 +135,16 @@ static NSString *CellIdentifier = @"Cell";
     return 0;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Personal", nil)];
+            return NSLocalizedString(@"Personal", nil);
             
         case 1:
-            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Community", nil)];
+            return NSLocalizedString(@"Community", nil);
             
         case 2:
-            return [PPTableViewTitleView headerWithText:NSLocalizedString(@"Saved Feeds", nil)];
+            return NSLocalizedString(@"Saved Feeds", nil);
             
     }
     return nil;
@@ -152,7 +152,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
 
     switch (indexPath.section) {
         case 0: {

@@ -197,8 +197,8 @@ static NSString *CellIdentifier = @"Cell";
     CGSize size;
     CGSize switchSize;
 
-    cell.textLabel.font = [PPTheme cellTextLabelFont];
-    cell.detailTextLabel.font = [PPTheme cellDetailLabelFont];
+    cell.textLabel.font = [PPTheme textLabelFont];
+    cell.detailTextLabel.font = [PPTheme detailLabelFont];
     cell.detailTextLabel.text = nil;
     cell.textLabel.text = nil;
     cell.accessoryView = nil;
