@@ -28,6 +28,7 @@
 #import "ScreenshotViewController.h"
 #import "PPStatusBarNotification.h"
 #import "PPMobilizerUtility.h"
+#import "PPConstants.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -314,22 +315,34 @@
         if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
             feedDetails = [self.defaultFeed substringFromIndex:9];
             pinboardDataSource.limit = 100;
-            if ([feedDetails isEqualToString:@"private"]) {
-                pinboardDataSource.isPrivate = kPinboardFilterTrue;
-            }
-            else if ([feedDetails isEqualToString:@"public"]) {
-                pinboardDataSource.isPrivate = kPinboardFilterFalse;
-            }
-            else if ([feedDetails isEqualToString:@"unread"]) {
-                pinboardDataSource.unread = kPinboardFilterTrue;
-            }
-            else if ([feedDetails isEqualToString:@"untagged"]) {
-                pinboardDataSource.untagged = YES;
-            }
-            else if ([feedDetails isEqualToString:@"starred"]) {
-                pinboardDataSource.starred = kPinboardFilterTrue;
-            }
             
+            PPPersonalFeedType feedType = [PPPersonalFeeds() indexOfObject:feedDetails];
+            
+            switch (feedType) {
+                case PPPersonalFeedPrivate:
+                    pinboardDataSource.isPrivate = kPinboardFilterTrue;
+                    break;
+                    
+                case PPPersonalFeedPublic:
+                    pinboardDataSource.isPrivate = kPinboardFilterFalse;
+                    break;
+                    
+                case PPPersonalFeedUnread:
+                    pinboardDataSource.unread = kPinboardFilterTrue;
+                    break;
+                    
+                case PPPersonalFeedUntagged:
+                    pinboardDataSource.untagged = YES;
+                    break;
+                    
+                case PPPersonalFeedStarred:
+                    pinboardDataSource.starred = kPinboardFilterTrue;
+                    break;
+                    
+                default:
+                    break;
+            }
+
             pinboardViewController.postDataSource = pinboardDataSource;
         }
         else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
@@ -337,22 +350,34 @@
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
-            if ([feedDetails isEqualToString:@"network"]) {
-                NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-            }
-            else if ([feedDetails isEqualToString:@"popular"]) {
-                feedDataSource.components = @[@"popular?count=100"];
-            }
-            else if ([feedDetails isEqualToString:@"wikipedia"]) {
-                feedDataSource.components = @[@"popular", @"wikipedia"];
-            }
-            else if ([feedDetails isEqualToString:@"fandom"]) {
-                feedDataSource.components = @[@"popular", @"fandom"];
-            }
-            else if ([feedDetails isEqualToString:@"japanese"]) {
-                feedDataSource.components = @[@"popular", @"japanese"];
+            PPCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
+            
+            switch (feedType) {
+                case PPCommunityFeedNetwork: {
+                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                    feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
+                    break;
+                }
+                    
+                case PPCommunityFeedPopular:
+                    feedDataSource.components = @[@"popular?count=100"];
+                    break;
+                    
+                case PPCommunityFeedWikipedia:
+                    feedDataSource.components = @[@"popular", @"wikipedia"];
+                    break;
+                    
+                case PPCommunityFeedFandom:
+                    feedDataSource.components = @[@"popular", @"fandom"];
+                    break;
+                    
+                case PPCommunityFeedJapan:
+                    feedDataSource.components = @[@"popular", @"japanese"];
+                    break;
+                    
+                default:
+                    break;
             }
         }
         else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {

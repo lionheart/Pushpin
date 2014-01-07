@@ -12,15 +12,6 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 
-enum PINBOARD_FEED_ITEMS {
-    PinboardFeedAllBookmarks,
-    PinboardFeedPrivateBookmarks,
-    PinboardFeedPublicBookmarks,
-    PinboardFeedUnreadBookmarks,
-    PinboardFeedUntaggedBookmarks,
-    PinboardFeedStarredBookmarks
-};
-
 @interface FeedListViewController : PPTableViewController {
     NSString *postViewTitle;
 }

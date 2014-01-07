@@ -18,6 +18,31 @@ static const NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
 static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
 static const NSString *PPBadgeFontColor = @"fontColor";
 
+typedef enum : NSInteger {
+    PPPersonalFeedAll,
+    PPPersonalFeedPrivate,
+    PPPersonalFeedPublic,
+    PPPersonalFeedUnread,
+    PPPersonalFeedUntagged,
+    PPPersonalFeedStarred
+} PPPersonalFeedType;
+
+typedef enum : NSInteger {
+    PPCommunityFeedNetwork,
+    PPCommunityFeedPopular,
+    PPCommunityFeedWikipedia,
+    PPCommunityFeedFandom,
+    PPCommunityFeedJapan
+} PPCommunityFeedType;
+
+static NSArray *PPPersonalFeeds() {
+    return @[@"all", @"private", @"public", @"unread", @"untagged", @"starred"];
+}
+
+static NSArray *PPCommunityFeeds() {
+    return @[@"network", @"popular", @"wikipedia", @"fandom", @"japan"];
+}
+
 @interface PPConstants : NSObject
 
 @end
