@@ -923,9 +923,16 @@
 - (PPBrowserType)browser {
     if (!_browser) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _browser = [[defaults objectForKey:@"io.aurora.pinboard.Browser"] integerValue];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
         
-        if (_browser == PPBrowserWebview) {
+        if (result) {
+            _browser = [result integerValue];
+            
+            if (_browser == PPBrowserWebview) {
+                _browser = PPBrowserSafari;
+            }
+        }
+        else {
             _browser = PPBrowserSafari;
         }
     }
@@ -957,7 +964,14 @@
 - (PPReadLaterType)readLater {
     if (!_readLater) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readLater = [[defaults objectForKey:@"io.aurora.pinboard.ReadLater"] integerValue];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
+        
+        if (result) {
+            _readLater = [result integerValue];
+        }
+        else {
+            _readLater = PPReadLaterNone;
+        }
     }
     return _readLater;
 }
@@ -972,9 +986,12 @@
 - (PPMobilizerType)mobilizer {
     if (!_mobilizer) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _mobilizer = [[defaults objectForKey:@"io.aurora.pinboard.Mobilizer"] integerValue];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
         
-        if (!_mobilizer) {
+        if (result) {
+            _mobilizer = [result integerValue];
+        }
+        else {
             _mobilizer = PPMobilizerInstapaper;
         }
     }

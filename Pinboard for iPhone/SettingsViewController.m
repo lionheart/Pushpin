@@ -504,9 +504,9 @@ static NSString *CellIdentifier = @"Cell";
     }
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex >= 0) {
-        if (actionSheet == (UIActionSheet *)self.supportActionSheet) {
+        if (actionSheet == self.supportActionSheet) {
             if (buttonIndex == 3) {
                 MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
                 emailComposer.mailComposeDelegate = self;
@@ -524,7 +524,7 @@ static NSString *CellIdentifier = @"Cell";
                 return;
             }
         }
-        else if (actionSheet == (UIActionSheet *)self.mobilizerActionSheet) {
+        else if (actionSheet == self.mobilizerActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
             AppDelegate *delegate = [AppDelegate sharedDelegate];
 
@@ -540,7 +540,7 @@ static NSString *CellIdentifier = @"Cell";
 
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
-        else if (actionSheet == (UIActionSheet *)self.readLaterActionSheet) {
+        else if (actionSheet == self.readLaterActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
             if ([buttonTitle isEqualToString:@"Instapaper"]) {
