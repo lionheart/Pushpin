@@ -28,7 +28,6 @@
 #import "ScreenshotViewController.h"
 #import "PPStatusBarNotification.h"
 #import "PPMobilizerUtility.h"
-#import "PPConstants.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -48,7 +47,7 @@
 
 @implementation AppDelegate
 
-@synthesize readlater = _readlater;
+@synthesize readLater = _readLater;
 @synthesize token = _token;
 @synthesize browser = _browser;
 @synthesize mobilizer = _mobilizer;
@@ -570,7 +569,7 @@
                 [db executeUpdate:@"PRAGMA user_version=2;"];
 
             case 2:
-                [self setReadlater:@(PPReadLaterNone)];
+                self.readLater = PPReadLaterNone;
                 [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
                 [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
                 [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
@@ -914,20 +913,20 @@
     [defaults synchronize];
 }
 
-- (void)setBrowser:(NSNumber *)browser {
+- (void)setBrowser:(PPBrowserType)browser {
     _browser = browser;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:browser forKey:@"io.aurora.pinboard.Browser"];
+    [defaults setObject:@(browser) forKey:@"io.aurora.pinboard.Browser"];
     [defaults synchronize];
 }
 
-- (NSNumber *)browser {
+- (PPBrowserType)browser {
     if (!_browser) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _browser = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
+        _browser = [[defaults objectForKey:@"io.aurora.pinboard.Browser"] integerValue];
         
-        if ([_browser isEqual:@(PPBrowserWebview)]) {
-            _browser = @(PPBrowserSafari);
+        if (_browser == PPBrowserWebview) {
+            _browser = PPBrowserSafari;
         }
     }
     return _browser;
@@ -948,35 +947,35 @@
     return _feedToken;
 }
 
-- (void)setReadlater:(NSNumber *)readlater {
-    _readlater = readlater;
+- (void)setReadLater:(PPReadLaterType)readLater{
+    _readLater = readLater;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:readlater forKey:@"io.aurora.pinboard.ReadLater"];
+    [defaults setObject:@(readLater) forKey:@"io.aurora.pinboard.ReadLater"];
     [defaults synchronize];
 }
 
-- (NSNumber *)readlater {
-    if (!_readlater) {
+- (PPReadLaterType)readLater {
+    if (!_readLater) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readlater = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
+        _readLater = [[defaults objectForKey:@"io.aurora.pinboard.ReadLater"] integerValue];
     }
-    return _readlater;
+    return _readLater;
 }
 
-- (void)setMobilizer:(NSNumber *)mobilizer {
+- (void)setMobilizer:(PPMobilizerType)mobilizer {
     _mobilizer = mobilizer;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:mobilizer forKey:@"io.aurora.pinboard.Mobilizer"];
+    [defaults setObject:@(mobilizer) forKey:@"io.aurora.pinboard.Mobilizer"];
     [defaults synchronize];
 }
 
-- (NSNumber *)mobilizer {
+- (PPMobilizerType)mobilizer {
     if (!_mobilizer) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _mobilizer = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
-
+        _mobilizer = [[defaults objectForKey:@"io.aurora.pinboard.Mobilizer"] integerValue];
+        
         if (!_mobilizer) {
-            _mobilizer = @(PPMobilizerInstapaper);
+            _mobilizer = PPMobilizerInstapaper;
         }
     }
     return _mobilizer;

@@ -1090,8 +1090,8 @@ static BOOL kPinboardSyncInProgress = NO;
     
     [actions addObject:@(PPPostActionCopyURL)];
     
-    if ([[AppDelegate sharedDelegate] readlater]) {
-        [actions addObject:@(PPPostActionReadLater)];        
+    if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+        [actions addObject:@(PPPostActionReadLater)];
     }
 
     return actions;

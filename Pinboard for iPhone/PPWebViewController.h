@@ -83,7 +83,7 @@
 - (void)toggleMobilizer;
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
-- (void)sendToReadLater:(NSNumber *)service;
+- (void)sendToReadLater:(PPReadLaterType)service;
 - (void)loadURL;
 - (void)stopLoading;
 - (NSURL *)url;

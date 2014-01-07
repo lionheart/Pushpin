@@ -30,7 +30,7 @@
 }
 
 - (PPMobilizerType)mobilizer {
-    return [[AppDelegate sharedDelegate] mobilizer].integerValue;
+    return [[AppDelegate sharedDelegate] mobilizer];
 }
 
 - (BOOL)canMobilizeURL:(NSURL *)url {

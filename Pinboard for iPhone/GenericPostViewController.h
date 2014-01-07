@@ -18,7 +18,6 @@
 #import "FluidTableviewFlowLayout.h"
 #import "PPTitleButton.h"
 
-
 @protocol PPBookmarkCellDelegate;
 @class PPNavigationController;
 

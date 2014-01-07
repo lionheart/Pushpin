@@ -30,8 +30,6 @@
 + (CGFloat)staticBadgeFontSize;
 
 + (UIColor *)bookmarkBackgroundColor;
-+ (UIColor *)badgeBackgroundColor;
-+ (UIColor *)badgeTextColor;
 
 + (NSInteger)maxNumberOfLinesForCompressedDescriptions;
 
