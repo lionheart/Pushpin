@@ -7,12 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef enum : NSInteger {
-    PPMobilizerGoogle,
-    PPMobilizerInstapaper,
-    PPMobilizerReadability
-} PPMobilizerType;
+#import "PPConstants.h"
 
 @interface PPMobilizerUtility : NSObject
 

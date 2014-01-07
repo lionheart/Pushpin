@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LoginViewController.h"
+#import "PPConstants.h"
 
 @class FMDatabaseQueue;
 @class PPNavigationController;
@@ -31,13 +32,15 @@
 @property (nonatomic, strong) NSDate *lastUpdated;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSNumber *bookmarksUpdated;
-@property (nonatomic, strong) NSNumber *browser;
+
+@property (nonatomic) PPBrowserType browser;
+@property (nonatomic) PPMobilizerType mobilizer;
+@property (nonatomic) PPReadLaterType readLater;
+
 @property (nonatomic, strong) NSNumber *connectionAvailable;
-@property (nonatomic, strong) NSNumber *mobilizer;
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, strong) NSNumber *privateByDefault;
 @property (nonatomic, strong) NSNumber *readByDefault;
-@property (nonatomic, strong) NSNumber *readlater;
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;

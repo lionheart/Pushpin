@@ -234,7 +234,7 @@ static NSString *CellIdentifier = @"Cell";
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
-                    PPReadLaterType readLater = (PPReadLaterType)[[[AppDelegate sharedDelegate] readlater] integerValue];
+                    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
                     switch (readLater) {
                         case PPReadLaterNone:
                             cell.detailTextLabel.text = NSLocalizedString(@"None", nil);
@@ -251,6 +251,9 @@ static NSString *CellIdentifier = @"Cell";
                         case PPReadLaterPocket:
                             cell.detailTextLabel.text = @"Pocket";
                             break;
+                            
+                        default:
+                            break;
                     }
 
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -261,7 +264,7 @@ static NSString *CellIdentifier = @"Cell";
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-                    PPMobilizerType mobilizer = [[[AppDelegate sharedDelegate] mobilizer] integerValue];
+                    PPMobilizerType mobilizer = [AppDelegate sharedDelegate].mobilizer;
                     switch (mobilizer) {
                         case PPMobilizerGoogle:
                             cell.detailTextLabel.text = @"Google";
@@ -415,7 +418,8 @@ static NSString *CellIdentifier = @"Cell";
                                        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterInstapaper)];
+                                       
+                                       [AppDelegate sharedDelegate].readLater = PPReadLaterInstapaper;
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
@@ -472,7 +476,8 @@ static NSString *CellIdentifier = @"Cell";
                                        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterReadability)];
+                                       
+                                       [AppDelegate sharedDelegate].readLater = PPReadLaterReadability;
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
@@ -521,15 +526,16 @@ static NSString *CellIdentifier = @"Cell";
         }
         else if (actionSheet == (UIActionSheet *)self.mobilizerActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
 
             if ([buttonTitle isEqualToString:@"Google"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerGoogle)];
+                delegate.mobilizer = PPMobilizerGoogle;
             }
             else if ([buttonTitle isEqualToString:@"Instapaper"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerInstapaper)];
+                delegate.mobilizer = PPMobilizerInstapaper;
             }
             else if ([buttonTitle isEqualToString:@"Readability"]) {
-                [[AppDelegate sharedDelegate] setMobilizer:@(PPMobilizerReadability)];
+                delegate.mobilizer = PPMobilizerReadability;
             }
 
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
@@ -547,7 +553,7 @@ static NSString *CellIdentifier = @"Cell";
                 [[PocketAPI sharedAPI] loginWithDelegate:nil];;
             }
             else if ([buttonTitle isEqualToString:@"None"]) {
-                [[AppDelegate sharedDelegate] setReadlater:nil];
+                [AppDelegate sharedDelegate].readLater = PPReadLaterNone;
                 [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
             }
@@ -572,7 +578,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterPocket)];
+    [AppDelegate sharedDelegate].readLater = PPReadLaterPocket;
     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 }

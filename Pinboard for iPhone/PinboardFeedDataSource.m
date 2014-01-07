@@ -77,7 +77,7 @@
     [actions addObject:@(PPPostActionCopyToMine)];
     [actions addObject:@(PPPostActionCopyURL)];
     
-    if ([[AppDelegate sharedDelegate] readlater]) {
+    if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
         [actions addObject:@(PPPostActionReadLater)];
     }
 

@@ -19,6 +19,12 @@ static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColo
 static const NSString *PPBadgeFontColor = @"fontColor";
 
 typedef enum : NSInteger {
+    PPMobilizerGoogle,
+    PPMobilizerInstapaper,
+    PPMobilizerReadability
+} PPMobilizerType;
+
+typedef enum : NSInteger {
     PPPersonalFeedAll,
     PPPersonalFeedPrivate,
     PPPersonalFeedPublic,
