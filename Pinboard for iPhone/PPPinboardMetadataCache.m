@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *cache;
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed;
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation;
 
 @end
 
@@ -36,21 +36,22 @@
     return cache;
 }
 
-- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed {
-    return self.cache[[self cacheKeyForPost:post compressed:compressed]];
+- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
+    return self.cache[[self cacheKeyForPost:post compressed:compressed orientation:orientation]];
 }
 
-- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed {
-    self.cache[[self cacheKeyForPost:post compressed:compressed]] = metadata;
+- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
+    self.cache[[self cacheKeyForPost:post compressed:compressed orientation:orientation]] = metadata;
 }
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed {
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
+    BOOL portrait = UIInterfaceOrientationIsPortrait(orientation);
     if (post[@"hash"]) {
-        return [NSString stringWithFormat:@"%@:%@:%@", post[@"hash"], post[@"meta"], compressed ? @"1": @"0"];
+        return [NSString stringWithFormat:@"%@:%@:%@:%@", post[@"hash"], post[@"meta"], compressed ? @"1": @"0", portrait ? @"1" : @"0"];
     }
     else {
         // It's a network item
-        return [NSString stringWithFormat:@"%@:%@", post[@"url"], compressed ? @"1": @"0"];
+        return [NSString stringWithFormat:@"%@:%@:%@", post[@"url"], compressed ? @"1": @"0", portrait ? @"1" : @"0"];
     }
 }
 

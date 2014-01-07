@@ -10,6 +10,7 @@
 #import "PPConstants.h"
 #import "PPTheme.h"
 #import "AppDelegate.h"
+#import "PPPinboardMetadataCache.h"
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <LHSCategoryCollection/NSAttributedString+Attributes.h>
@@ -23,8 +24,17 @@
 
 @implementation PostMetadata
 
-+ (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed tagsWithFrequency:(NSDictionary *)tagsWithFrequency {
++ (PostMetadata *)metadataForPost:(NSDictionary *)post
+                       compressed:(BOOL)compressed
+                      orientation:(UIInterfaceOrientation)orientation
+                tagsWithFrequency:(NSDictionary *)tagsWithFrequency {
+    PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed orientation:orientation];
+    if (result) {
+        return result;
+    }
+    
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    CGFloat width = [UIApplication currentSize].width;
     
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
     if ([title isEqualToString:@""]) {
@@ -103,52 +113,133 @@
         CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes:titleAttributes];
         CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes:linkAttributes];
         CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes:descriptionAttributes];
-        static NSTextContainer *titleTextContainer;
-        static NSTextContainer *linkTextContainer;
-        static NSTextContainer *descriptionTextContainer;
-        
-        static NSLayoutManager *titleLayoutManager;
-        static NSLayoutManager *linkLayoutManager;
-        static NSLayoutManager *descriptionLayoutManager;
-        
-        static NSTextStorage *titleTextStorage;
-        static NSTextStorage *linkTextStorage;
-        static NSTextStorage *descriptionTextStorage;
-        
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
-            linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeLink.width - 10.0f, CGFLOAT_MAX)];
-            descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(UIApplication.currentSize.width - ellipsisSizeDescription.width - 10.0f, CGFLOAT_MAX)];
-            
-            titleLayoutManager = [[NSLayoutManager alloc] init];
-            titleLayoutManager.hyphenationFactor = 1.0;
-            [titleLayoutManager addTextContainer:titleTextContainer];
-            
-            linkLayoutManager = [[NSLayoutManager alloc] init];
-            linkLayoutManager.hyphenationFactor = 1.0;
-            [linkLayoutManager addTextContainer:linkTextContainer];
-            
-            descriptionLayoutManager = [[NSLayoutManager alloc] init];
-            descriptionLayoutManager.hyphenationFactor = 1.0;
-            [descriptionLayoutManager addTextContainer:descriptionTextContainer];
-            
-            titleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [titleTextStorage addLayoutManager:titleLayoutManager];
-            
-            linkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [linkTextStorage addLayoutManager:linkLayoutManager];
 
-            descriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [descriptionTextStorage addLayoutManager:descriptionLayoutManager];
+        static NSTextContainer *portraitTitleTextContainer;
+        static NSTextContainer *portraitLinkTextContainer;
+        static NSTextContainer *portraitDescriptionTextContainer;
+        
+        static NSLayoutManager *portraitTitleLayoutManager;
+        static NSLayoutManager *portraitLinkLayoutManager;
+        static NSLayoutManager *portraitDescriptionLayoutManager;
+        
+        static NSTextStorage *portraitTitleTextStorage;
+        static NSTextStorage *portraitLinkTextStorage;
+        static NSTextStorage *portraitDescriptionTextStorage;
+        
+        static NSTextContainer *landscapeTitleTextContainer;
+        static NSTextContainer *landscapeLinkTextContainer;
+        static NSTextContainer *landscapeDescriptionTextContainer;
+        
+        static NSLayoutManager *landscapeTitleLayoutManager;
+        static NSLayoutManager *landscapeLinkLayoutManager;
+        static NSLayoutManager *landscapeDescriptionLayoutManager;
+        
+        static NSTextStorage *landscapeTitleTextStorage;
+        static NSTextStorage *landscapeLinkTextStorage;
+        static NSTextStorage *landscapeDescriptionTextStorage;
+        
+        NSTextContainer *titleTextContainer;
+        NSTextContainer *linkTextContainer;
+        NSTextContainer *descriptionTextContainer;
+        
+        NSLayoutManager *titleLayoutManager;
+        NSLayoutManager *linkLayoutManager;
+        NSLayoutManager *descriptionLayoutManager;
+        
+        NSTextStorage *titleTextStorage;
+        NSTextStorage *linkTextStorage;
+        NSTextStorage *descriptionTextStorage;
+
+        if (UIInterfaceOrientationIsPortrait(orientation)) {
+            static dispatch_once_t portraitOnceToken;
+            dispatch_once(&portraitOnceToken, ^{
+                portraitTitleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
+                portraitLinkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 10, CGFLOAT_MAX)];
+                portraitDescriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 10, CGFLOAT_MAX)];
+
+                portraitTitleLayoutManager = [[NSLayoutManager alloc] init];
+                portraitTitleLayoutManager.hyphenationFactor = 1.0;
+                [portraitTitleLayoutManager addTextContainer:portraitTitleTextContainer];
+                
+                portraitLinkLayoutManager = [[NSLayoutManager alloc] init];
+                portraitLinkLayoutManager.hyphenationFactor = 1.0;
+                [portraitLinkLayoutManager addTextContainer:portraitLinkTextContainer];
+                
+                portraitDescriptionLayoutManager = [[NSLayoutManager alloc] init];
+                portraitDescriptionLayoutManager.hyphenationFactor = 1.0;
+                [portraitDescriptionLayoutManager addTextContainer:portraitDescriptionTextContainer];
+                
+                portraitTitleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [portraitTitleTextStorage addLayoutManager:portraitTitleLayoutManager];
+                
+                portraitLinkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [portraitLinkTextStorage addLayoutManager:portraitLinkLayoutManager];
+                
+                portraitDescriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [portraitDescriptionTextStorage addLayoutManager:portraitDescriptionLayoutManager];
+                
+                [portraitTitleLayoutManager glyphRangeForTextContainer:portraitTitleTextContainer];
+                [portraitLinkLayoutManager glyphRangeForTextContainer:portraitLinkTextContainer];
+                [portraitDescriptionLayoutManager glyphRangeForTextContainer:portraitDescriptionTextContainer];
+            });
             
-            [titleLayoutManager glyphRangeForTextContainer:titleTextContainer];
-            [linkLayoutManager glyphRangeForTextContainer:linkTextContainer];
-            [descriptionLayoutManager glyphRangeForTextContainer:descriptionTextContainer];
-        });
+            titleTextContainer = portraitTitleTextContainer;
+            linkTextContainer = portraitLinkTextContainer;
+            descriptionTextContainer = portraitDescriptionTextContainer;
+            titleLayoutManager = portraitTitleLayoutManager;
+            linkLayoutManager = portraitLinkLayoutManager;
+            descriptionLayoutManager = portraitDescriptionLayoutManager;
+            titleTextStorage = portraitTitleTextStorage;
+            linkTextStorage = portraitLinkTextStorage;
+            descriptionTextStorage = portraitDescriptionTextStorage;
+        }
+        else {
+            static dispatch_once_t portraitOnceToken;
+            dispatch_once(&portraitOnceToken, ^{
+                landscapeTitleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
+                landscapeLinkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 10, CGFLOAT_MAX)];
+                landscapeDescriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 10, CGFLOAT_MAX)];
+                
+                landscapeTitleLayoutManager = [[NSLayoutManager alloc] init];
+                landscapeTitleLayoutManager.hyphenationFactor = 1.0;
+                [landscapeTitleLayoutManager addTextContainer:landscapeTitleTextContainer];
+                
+                landscapeLinkLayoutManager = [[NSLayoutManager alloc] init];
+                landscapeLinkLayoutManager.hyphenationFactor = 1.0;
+                [landscapeLinkLayoutManager addTextContainer:landscapeLinkTextContainer];
+                
+                landscapeDescriptionLayoutManager = [[NSLayoutManager alloc] init];
+                landscapeDescriptionLayoutManager.hyphenationFactor = 1.0;
+                [landscapeDescriptionLayoutManager addTextContainer:landscapeDescriptionTextContainer];
+                
+                landscapeTitleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [landscapeTitleTextStorage addLayoutManager:landscapeTitleLayoutManager];
+                
+                landscapeLinkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [landscapeLinkTextStorage addLayoutManager:landscapeLinkLayoutManager];
+                
+                landscapeDescriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+                [landscapeDescriptionTextStorage addLayoutManager:landscapeDescriptionLayoutManager];
+                
+                [landscapeTitleLayoutManager glyphRangeForTextContainer:landscapeTitleTextContainer];
+                [landscapeLinkLayoutManager glyphRangeForTextContainer:landscapeLinkTextContainer];
+                [landscapeDescriptionLayoutManager glyphRangeForTextContainer:landscapeDescriptionTextContainer];
+
+            });
+
+            titleTextContainer = landscapeTitleTextContainer;
+            linkTextContainer = landscapeLinkTextContainer;
+            descriptionTextContainer = landscapeDescriptionTextContainer;
+            titleLayoutManager = landscapeTitleLayoutManager;
+            linkLayoutManager = landscapeLinkLayoutManager;
+            descriptionLayoutManager = landscapeDescriptionLayoutManager;
+            titleTextStorage = landscapeTitleTextStorage;
+            linkTextStorage = landscapeLinkTextStorage;
+            descriptionTextStorage = landscapeDescriptionTextStorage;
+        }
         
         NSRange titleLineRange, descriptionLineRange, linkLineRange;
-        
+
         // Get the compressed substrings
         NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
         
@@ -268,7 +359,7 @@
     
     // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
     CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
-                                                   withConstraints:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)
+                                                   withConstraints:CGSizeMake(width - 20, CGFLOAT_MAX)
                                             limitedToNumberOfLines:0];
     NSNumber *height = @(size.height);
     
@@ -335,6 +426,8 @@
     metadata.links = @[];
     metadata.string = attributedString;
     metadata.badges = badges;
+    
+    [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed orientation:orientation];
     return metadata;
 }
 

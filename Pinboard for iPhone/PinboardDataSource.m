@@ -694,23 +694,13 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *newCompressedBadges = [NSMutableArray array];
             
             for (NSDictionary *post in newPosts) {
-                PostMetadata *metadata = [self.cache cachedMetadataForPost:post compressed:NO];
-                if (!metadata) {
-                    metadata = [self metadataForPost:post];
-                    [self.cache cacheMetadata:metadata forPost:post compressed:NO];
-                }
-                
+                PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
                 [newHeights addObject:metadata.height];
                 [newStrings addObject:metadata.string];
                 [newLinks addObject:metadata.links];
                 [newBadges addObject:metadata.badges];
 
-                PostMetadata *compressedMetadata = [self.cache cachedMetadataForPost:post compressed:YES];
-                if (!compressedMetadata) {
-                    compressedMetadata = [self compressedMetadataForPost:post];
-                    [self.cache cacheMetadata:compressedMetadata forPost:post compressed:YES];
-                }
-                
+                PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
                 [newCompressedHeights addObject:compressedMetadata.height];
                 [newCompressedStrings addObject:compressedMetadata.string];
                 [newCompressedLinks addObject:compressedMetadata.links];
@@ -830,23 +820,13 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newCompressedBadges = [NSMutableArray array];
 
         for (NSDictionary *post in newPosts) {
-            PostMetadata *metadata = [self.cache cachedMetadataForPost:post compressed:NO];
-            if (!metadata) {
-                metadata = [self metadataForPost:post];
-                [self.cache cacheMetadata:metadata forPost:post compressed:NO];
-            }
-
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
             [newHeights addObject:metadata.height];
             [newStrings addObject:metadata.string];
             [newLinks addObject:metadata.links];
             [newBadges addObject:metadata.badges];
             
-            PostMetadata *compressedMetadata = [self.cache cachedMetadataForPost:post compressed:YES];
-            if (!compressedMetadata) {
-                compressedMetadata = [self compressedMetadataForPost:post];
-                [self.cache cacheMetadata:compressedMetadata forPost:post compressed:YES];
-            }
-
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
             [newCompressedHeights addObject:compressedMetadata.height];
             [newCompressedStrings addObject:compressedMetadata.string];
             [newCompressedLinks addObject:compressedMetadata.links];
@@ -1106,7 +1086,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed {
-    return [PostMetadata metadataForPost:post compressed:compressed tagsWithFrequency:self.tagsWithFrequency];
+    return [PostMetadata metadataForPost:post compressed:compressed orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index {
@@ -1206,20 +1186,10 @@ static BOOL kPinboardSyncInProgress = NO;
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
 
         for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [self.cache cachedMetadataForPost:post compressed:NO];
-            if (!metadata) {
-                metadata = [self metadataForPost:post];
-                [self.cache cacheMetadata:metadata forPost:post compressed:NO];
-            }
-            
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
             [newHeights addObject:metadata.height];
-            
-            PostMetadata *compressedMetadata = [self.cache cachedMetadataForPost:post compressed:YES];
-            if (!compressedMetadata) {
-                compressedMetadata = [self compressedMetadataForPost:post];
-                [self.cache cacheMetadata:compressedMetadata forPost:post compressed:YES];
-            }
-            
+
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:self.tagsWithFrequency];
             [newCompressedHeights addObject:compressedMetadata.height];
         }
         
