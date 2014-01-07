@@ -356,14 +356,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)openSettings {
     SettingsViewController *svc = [[SettingsViewController alloc] init];
-    svc.title = NSLocalizedString(@"Settings", nil);
-    PPNavigationController *nc = [[PPNavigationController alloc] initWithRootViewController:svc];
-    if ([UIApplication isIPad]) {
-        nc.modalPresentationStyle = UIModalPresentationFormSheet;
-    }
-    svc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(dismissViewController)];
-    
-    [self presentViewController:nc animated:YES completion:nil];
+    [self.navigationController pushViewController:svc animated:YES];
 }
 
 - (void)openNotes {
