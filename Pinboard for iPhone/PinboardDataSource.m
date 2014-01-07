@@ -14,7 +14,6 @@
 #import "PPTitleButton.h"
 #import "PostMetadata.h"
 #import "PPDefaultFeedViewController.h"
-#import "PPConstants.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "PPPinboardMetadataCache.h"

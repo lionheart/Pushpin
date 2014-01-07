@@ -15,6 +15,7 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
+#import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -107,29 +108,35 @@ static NSString *CellIdentifier = @"Cell";
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                        case BROWSER_WEBVIEW:
+                    
+                    PPBrowserType browser = (PPBrowserType)[[[AppDelegate sharedDelegate] browser] integerValue];
+                    switch (browser) {
+                        case PPBrowserWebview:
                             cell.detailTextLabel.text = @"Webview";
                             break;
-                        case BROWSER_SAFARI:
+
+                        case PPBrowserSafari:
                             cell.detailTextLabel.text = @"Safari";
                             break;
-                        case BROWSER_CHROME:
+
+                        case PPBrowserChrome:
                             cell.detailTextLabel.text = @"Chrome";
                             break;
-                        case BROWSER_ICAB_MOBILE:
+
+                        case PPBrowseriCabMobile:
                             cell.detailTextLabel.text = @"iCab Mobile";
                             break;
-                        case BROWSER_DOLPHIN:
+
+                        case PPBrowserDolphin:
                             cell.detailTextLabel.text = @"Dolphin";
                             break;
-                        case BROWSER_CYBERSPACE:
+
+                        case PPBrowserCyberspace:
                             cell.detailTextLabel.text = @"Cyberspace";
                             break;
-                        case BROWSER_OPERA:
+
+                        case PPBrowserOpera:
                             cell.detailTextLabel.text = @"Opera";
-                            break;
-                        default:
                             break;
                     }
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -146,9 +153,6 @@ static NSString *CellIdentifier = @"Cell";
                     self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] openLinksInApp].boolValue;
                     [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.openLinksInAppSwitch;
-                    break;
-                    
-                default:
                     break;
             }
             break;
@@ -209,31 +213,31 @@ static NSString *CellIdentifier = @"Cell";
             NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
             if ([title isEqualToString:@"Webview"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_WEBVIEW)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserWebview)];
             }
             else if ([title isEqualToString:@"Safari"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_SAFARI)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserSafari)];
             }
             else if ([title isEqualToString:@"Chrome"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CHROME)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserChrome)];
             }
             else if ([title isEqualToString:@"iCab Mobile"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_ICAB_MOBILE)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowseriCabMobile)];
             }
             else if ([title isEqualToString:@"Dolphin"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_DOLPHIN)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserDolphin)];
             }
             else if ([title isEqualToString:@"Cyberspace"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_CYBERSPACE)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserCyberspace)];
             }
             else if ([title isEqualToString:@"Opera"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
-                [[AppDelegate sharedDelegate] setBrowser:@(BROWSER_OPERA)];
+                [[AppDelegate sharedDelegate] setBrowser:@(PPBrowserOpera)];
             }
             
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];

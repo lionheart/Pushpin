@@ -430,7 +430,7 @@
         @"io.aurora.pinboard.OpenLinksInApp": @(YES),
         @"io.aurora.pinboard.PrivateByDefault": @(NO),
         @"io.aurora.pinboard.ReadByDefault": @(NO),
-        @"io.aurora.pinboard.Browser": @(BROWSER_SAFARI),
+        @"io.aurora.pinboard.Browser": @(PPBrowserSafari),
         @"io.aurora.pinboard.CompressPosts": @(NO),
         @"io.aurora.pinboard.DimReadPosts": @(NO),
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
@@ -570,7 +570,7 @@
                 [db executeUpdate:@"PRAGMA user_version=2;"];
 
             case 2:
-                [self setReadlater:@(READLATER_NONE)];
+                [self setReadlater:@(PPReadLaterNone)];
                 [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
                 [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
                 [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
@@ -926,8 +926,8 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _browser = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
         
-        if ([_browser isEqual:@(BROWSER_WEBVIEW)]) {
-            _browser = @(BROWSER_SAFARI);
+        if ([_browser isEqual:@(PPBrowserWebview)]) {
+            _browser = @(PPBrowserSafari);
         }
     }
     return _browser;

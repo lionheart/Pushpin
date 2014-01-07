@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "GenericPostViewController.h"
+#import "PPConstants.h"
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
@@ -15,12 +16,6 @@ static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceEr
 enum PINBOARD_DATA_SOURCE_ERROR_CODES {
     PinboardErrorSyncInProgress
 };
-
-typedef enum : NSInteger {
-    kPinboardFilterFalse = 0,
-    kPinboardFilterTrue = 1,
-    kPinboardFilterNone
-} kPinboardFilterType;
 
 @class FMResultSet;
 @class PostMetadata;
@@ -88,7 +83,5 @@ typedef enum : NSInteger {
 - (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post;
 - (PostMetadata *)metadataForPost:(NSDictionary *)post;
 - (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
-
-- (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
 
 @end

@@ -22,6 +22,7 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
 #import "PPMobilizerUtility.h"
+#import "PPConstants.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
@@ -68,11 +69,11 @@ static NSString *CellIdentifier = @"Cell";
     self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
     self.readLaterServices = [NSMutableArray array];
-    [self.readLaterServices addObject:@[@(READLATER_INSTAPAPER)]];
+    [self.readLaterServices addObject:@[@(PPReadLaterInstapaper)]];
     [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
-    [self.readLaterServices addObject:@[@(READLATER_READABILITY)]];
+    [self.readLaterServices addObject:@[@(PPReadLaterReadability)]];
     [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
-    [self.readLaterServices addObject:@[@(READLATER_POCKET)]];
+    [self.readLaterServices addObject:@[@(PPReadLaterPocket)]];
     [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
     [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"None", nil)];
     [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
@@ -232,20 +233,23 @@ static NSString *CellIdentifier = @"Cell";
                 case 2:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    switch ([[[AppDelegate sharedDelegate] readlater] integerValue]) {
-                        case READLATER_NONE:
+
+                    PPReadLaterType readLater = (PPReadLaterType)[[[AppDelegate sharedDelegate] readlater] integerValue];
+                    switch (readLater) {
+                        case PPReadLaterNone:
                             cell.detailTextLabel.text = NSLocalizedString(@"None", nil);
                             break;
-                        case READLATER_INSTAPAPER:
+
+                        case PPReadLaterInstapaper:
                             cell.detailTextLabel.text = @"Instapaper";
                             break;
-                        case READLATER_READABILITY:
+
+                        case PPReadLaterReadability:
                             cell.detailTextLabel.text = @"Readability";
                             break;
-                        case READLATER_POCKET:
+                            
+                        case PPReadLaterPocket:
                             cell.detailTextLabel.text = @"Pocket";
-                            break;
-                        default:
                             break;
                     }
 
@@ -257,17 +261,18 @@ static NSString *CellIdentifier = @"Cell";
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-                    switch ([[[AppDelegate sharedDelegate] mobilizer] integerValue]) {
+                    PPMobilizerType mobilizer = [[[AppDelegate sharedDelegate] mobilizer] integerValue];
+                    switch (mobilizer) {
                         case PPMobilizerGoogle:
                             cell.detailTextLabel.text = @"Google";
                             break;
+
                         case PPMobilizerReadability:
                             cell.detailTextLabel.text = @"Readability";
                             break;
+
                         case PPMobilizerInstapaper:
                             cell.detailTextLabel.text = @"Instapaper";
-                            break;
-                        default:
                             break;
                     }
                     
@@ -410,7 +415,7 @@ static NSString *CellIdentifier = @"Cell";
                                        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       [[AppDelegate sharedDelegate] setReadlater:@(READLATER_INSTAPAPER)];
+                                       [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterInstapaper)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
@@ -467,7 +472,7 @@ static NSString *CellIdentifier = @"Cell";
                                        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       [[AppDelegate sharedDelegate] setReadlater:@(READLATER_READABILITY)];
+                                       [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterReadability)];
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 
@@ -567,7 +572,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    [[AppDelegate sharedDelegate] setReadlater:@(READLATER_POCKET)];
+    [[AppDelegate sharedDelegate] setReadlater:@(PPReadLaterPocket)];
     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 }

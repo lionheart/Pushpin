@@ -8,6 +8,7 @@
 
 #import "PinboardNotesDataSource.h"
 #import "PPTheme.h"
+#import "PPConstants.h"
 
 #import "NSAttributedString+Attributes.h"
 

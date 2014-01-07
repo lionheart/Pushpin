@@ -14,17 +14,29 @@
 
 @synthesize service, serviceName;
 
-- (id)initWithService:(NSUInteger)type {
+- (id)initWithService:(PPReadLaterType)type {
     if (self = [super init]) {
         self.service = type;
-        if (type == READLATER_INSTAPAPER) {
-            self.serviceName = NSLocalizedString(@"Instapaper", nil);
-        } else if (type == READLATER_POCKET) {
-            self.serviceName = NSLocalizedString(@"Pocket", nil);
-        } else if (type == READLATER_READABILITY) {
-            self.serviceName = NSLocalizedString(@"Readability", nil);
-        } else if (type == READLATER_NATIVE) {
-            self.serviceName = @"readinglist";
+
+        switch (self.service) {
+            case PPReadLaterInstapaper:
+                self.serviceName = NSLocalizedString(@"Instapaper", nil);
+                break;
+                
+            case PPReadLaterReadability:
+                self.serviceName = NSLocalizedString(@"Readability", nil);
+                break;
+                
+            case PPReadLaterNative:
+                self.serviceName = @"readinglist";
+                break;
+
+            case PPReadLaterPocket:
+                self.serviceName = NSLocalizedString(@"Pocket", nil);
+                break;
+                
+            default:
+                break;
         }
     }
     
@@ -32,9 +44,10 @@
 }
 
 - (NSString *)activityTitle {
-    if (self.service == READLATER_NATIVE) {
+    if (self.service == PPReadLaterNative) {
         return NSLocalizedString(@"Add to Reading List", nil);
     }
+
     return [NSString stringWithFormat:@"Save to %@", self.serviceName];
 }
 
