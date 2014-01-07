@@ -421,14 +421,15 @@ static NSInteger kToolbarHeight = 44;
                             }
                         }
                         else {
-                            switch ([[[AppDelegate sharedDelegate] browser] integerValue]) {
-                                case BROWSER_SAFARI: {
+                            PPBrowserType browser = (PPBrowserType)[[[AppDelegate sharedDelegate] browser] integerValue];
+                            switch (browser) {
+                                case PPBrowserSafari: {
                                     [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
                                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
                                     break;
                                 }
                                     
-                                case BROWSER_CHROME:
+                                case PPBrowserChrome:
                                     if (httpRange.location != NSNotFound) {
                                         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
                                             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
@@ -448,7 +449,7 @@ static NSInteger kToolbarHeight = 44;
                                     
                                     break;
                                     
-                                case BROWSER_ICAB_MOBILE:
+                                case PPBrowseriCabMobile:
                                     if (httpRange.location != NSNotFound) {
                                         NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
                                         [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
@@ -461,7 +462,7 @@ static NSInteger kToolbarHeight = 44;
                                     
                                     break;
                                     
-                                case BROWSER_OPERA:
+                                case PPBrowserOpera:
                                     if (httpRange.location != NSNotFound) {
                                         NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
                                         [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
@@ -474,7 +475,7 @@ static NSInteger kToolbarHeight = 44;
                                     
                                     break;
                                     
-                                case BROWSER_DOLPHIN:
+                                case PPBrowserDolphin:
                                     if (httpRange.location != NSNotFound) {
                                         NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
                                         [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
@@ -487,7 +488,7 @@ static NSInteger kToolbarHeight = 44;
                                     
                                     break;
                                     
-                                case BROWSER_CYBERSPACE:
+                                case PPBrowserCyberspace:
                                     if (httpRange.location != NSNotFound) {
                                         NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
                                         [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
@@ -649,7 +650,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.searchLoading) {
         self.searchLoading = YES;
         __weak GenericPostViewController *weakself = self;
-        BOOL shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
+        BOOL shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
         
         if (shouldSearchFullText) {
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
@@ -896,41 +897,50 @@ static NSInteger kToolbarHeight = 44;
 
         self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
-        PPPostAction action;
+        PPPostActionType action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         NSInteger count = 0;
         NSInteger deleteIndex;
 
         for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
             action = [PPPAction integerValue];
-            if (action == PPPostActionCopyToMine) {
-                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
-            }
-            else if (action == PPPostActionCopyURL) {
-                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
-            }
-            else if (action == PPPostActionDelete) {
-                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
-                deleteIndex = count;
-            }
-            else if (action == PPPostActionEdit) {
-                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
-            }
-            else if (action == PPPostActionMarkAsRead) {
-                [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
-            }
-            else if (action == PPPostActionReadLater) {
-                NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
-                if (readlater == READLATER_INSTAPAPER) {
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+            switch (action) {
+                case PPPostActionCopyToMine:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+                    break;
+                    
+                case PPPostActionCopyURL:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+                    break;
+                    
+                case PPPostActionDelete:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+                    deleteIndex = count;
+                    break;
+                    
+                case PPPostActionEdit:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+                    break;
+                    
+                case PPPostActionMarkAsRead:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+                    break;
+                    
+                case PPPostActionReadLater: {
+                    NSInteger readlater = [[[AppDelegate sharedDelegate] readlater] integerValue];
+                    if (readlater == PPReadLaterInstapaper) {
+                        [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                    }
+                    else if (readlater == PPReadLaterReadability) {
+                        [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                    }
+                    else if (readlater == PPReadLaterPocket) {
+                        [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                    }
+                    break;
                 }
-                else if (readlater == READLATER_READABILITY) {
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
-                }
-                else if (readlater == READLATER_POCKET) {
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
-                }
             }
+
             count++;
         }
 
@@ -1163,7 +1173,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)sendToReadLater {
     NSNumber *readLater = [[AppDelegate sharedDelegate] readlater];
     NSString *urlString = self.selectedPost[@"url"];
-    if (readLater.integerValue == READLATER_INSTAPAPER) {
+    if (readLater.integerValue == PPReadLaterInstapaper) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -1202,7 +1212,7 @@ static NSInteger kToolbarHeight = 44;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (readLater.integerValue == READLATER_READABILITY) {
+    else if (readLater.integerValue == PPReadLaterReadability) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -1239,7 +1249,7 @@ static NSInteger kToolbarHeight = 44;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (readLater.integerValue == READLATER_POCKET) {
+    else if (readLater.integerValue == PPReadLaterPocket) {
         [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:urlString]
                              withTitle:self.selectedPost[@"title"]
                                handler:^(PocketAPI *api, NSURL *url, NSError *error) {
@@ -1388,7 +1398,7 @@ static NSInteger kToolbarHeight = 44;
         }
         
         CGFloat interval;
-        if (self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText) {
+        if (self.searchBar.selectedScopeButtonIndex == PPSearchFullText) {
             interval = 0.6;
         }
         else {
@@ -1404,15 +1414,15 @@ static NSInteger kToolbarHeight = 44;
 - (void)searchTimerFired:(NSTimer *)timer {
     NSString *query;
     switch (self.searchBar.selectedScopeButtonIndex) {
-        case PinboardSearchTitles:
+        case PPSearchTitles:
             query = [NSString stringWithFormat:@"title:\"%@\"", self.latestSearchText];
             break;
 
-        case PinboardSearchDescriptions:
+        case PPSearchDescriptions:
             query = [NSString stringWithFormat:@"description:\"%@\"", self.latestSearchText];
             break;
 
-        case PinboardSearchTags: {
+        case PPSearchTags: {
             query = [NSString stringWithFormat:@"tags:\"%@\"", self.latestSearchText];
             break;
         }
@@ -1425,7 +1435,7 @@ static NSInteger kToolbarHeight = 44;
     [self.searchPostDataSource filterWithQuery:query];
 
     if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
-        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PinboardSearchFullText;
+        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
     }
 
     [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];

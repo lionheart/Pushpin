@@ -445,12 +445,12 @@ static NSInteger kTitleHeight = 40;
     NSInteger readLaterSetting = [[[AppDelegate sharedDelegate] readlater] integerValue];
     
     // Always include the native Reading List
-    PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:READLATER_NATIVE];
+    PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:PPReadLaterNative];
     nativeReadLaterActivity.delegate = self;
     [readLaterActivities addObject:nativeReadLaterActivity];
 
     // If they have a third-party read later service configured, add it too
-    if (readLaterSetting > READLATER_NONE) {
+    if (readLaterSetting > PPReadLaterNone) {
         PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLaterSetting];
         readLaterActivity.delegate = self;
         [readLaterActivities addObject:readLaterActivity];
@@ -517,7 +517,7 @@ static NSInteger kTitleHeight = 40;
     }
 
     NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
-    if (service.integerValue == READLATER_INSTAPAPER) {
+    if (service.integerValue == PPReadLaterInstapaper) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -556,7 +556,7 @@ static NSInteger kTitleHeight = 40;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (service.integerValue == READLATER_READABILITY) {
+    else if (service.integerValue == PPReadLaterReadability) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
         NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
         NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -593,7 +593,7 @@ static NSInteger kTitleHeight = 40;
                                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                }];
     }
-    else if (service.integerValue == READLATER_POCKET) {
+    else if (service.integerValue == PPReadLaterPocket) {
         [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:_urlString]
                              withTitle:self.title
                                handler:^(PocketAPI *api, NSURL *url, NSError *error) {
@@ -607,7 +607,7 @@ static NSInteger kTitleHeight = 40;
                                    }
                                }];
     }
-    else if (service.integerValue == READLATER_NATIVE) {
+    else if (service.integerValue == PPReadLaterNative) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertAction = @"Open Pushpin";
         

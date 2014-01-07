@@ -9,30 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "LoginViewController.h"
 
-enum browsers {
-    BROWSER_WEBVIEW,
-    BROWSER_SAFARI,
-    BROWSER_CHROME,
-    BROWSER_ICAB_MOBILE,
-    BROWSER_DOLPHIN,
-    BROWSER_CYBERSPACE,
-    BROWSER_OPERA
-};
-
-enum readlaterservices {
-    READLATER_NONE,
-    READLATER_INSTAPAPER,
-    READLATER_READABILITY,
-    READLATER_POCKET,
-    READLATER_NATIVE
-};
-
-enum bookmarkupdateevents {
-    BOOKMARK_EVENT_ADD,
-    BOOKMARK_EVENT_UPDATE,
-    BOOKMARK_EVENT_DELETE
-};
-
 @class FMDatabaseQueue;
 @class PPNavigationController;
 

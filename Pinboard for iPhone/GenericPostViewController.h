@@ -18,33 +18,6 @@
 #import "FluidTableviewFlowLayout.h"
 #import "PPTitleButton.h"
 
-enum PostSources {
-    POST_SOURCE_TWITTER,
-    POST_SOURCE_TWITTER_FAVORITE,
-    POST_SOURCE_READABILITY,
-    POST_SOURCE_DELICIOUS,
-    POST_SOURCE_POCKET, // AKA Read It Later
-    POST_SOURCE_INSTAPAPER,
-    POST_SOURCE_EMAIL,
-};
-
-enum PPPostActions {
-    PPPostActionCopyToMine,
-    PPPostActionCopyURL,
-    PPPostActionDelete,
-    PPPostActionEdit,
-    PPPostActionReadLater,
-    PPPostActionMarkAsRead
-};
-typedef NSInteger PPPostAction;
-
-typedef enum : NSInteger {
-    PinboardSearchAllField,
-    PinboardSearchFullText,
-    PinboardSearchTitles,
-    PinboardSearchDescriptions,
-    PinboardSearchTags,
-} PinboardSearchType;
 
 @protocol PPBookmarkCellDelegate;
 @class PPNavigationController;

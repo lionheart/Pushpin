@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PPConstants.h"
 
 @interface PPReadLaterActivity : UIActivity
 
-@property (nonatomic) NSUInteger service;
+@property (nonatomic) PPReadLaterType service;
 @property (nonatomic, retain) NSString *serviceName;
 @property (nonatomic, retain) id delegate;
 
-- (id)initWithService:(NSUInteger)type;
+- (id)initWithService:(PPReadLaterType)type;
 
 @end
