@@ -48,7 +48,6 @@
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
-@property (nonatomic) CGFloat yOffsetToStartShowingTitleView;
 @property (nonatomic) NSInteger numberOfRequests;
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
@@ -56,7 +55,6 @@
 @property (nonatomic, strong) NSURL *urlToOpenExternally;
 @property (nonatomic, strong) NSMutableArray *history;
 @property (nonatomic, strong) NSLayoutConstraint *topLayoutConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *titleHeightConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *toolbarConstraint;
 @property (nonatomic, strong) NSMutableArray *navigationHistory;
 @property (nonatomic, strong) NSDictionary *selectedLink;
