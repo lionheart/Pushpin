@@ -62,7 +62,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
 
-    [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [@[@"", @"", @"", @"", @"", @""] mutableCopy];
 
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
@@ -119,14 +118,43 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             [self.tableView reloadData];
         }];
     }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
+                                ];
+        
+        NSInteger i = 0;
+        for (FMResultSet *resultSet in resultSets) {
+            [resultSet next];
+            NSString *count = [resultSet stringForColumnIndex:0];
+            NSString *previousCount = self.bookmarkCounts[i];
 
-    [self calculateBookmarkCounts:^(NSArray *indexPathsToReload) {
+            if (![count isEqualToString:previousCount]) {
+                self.bookmarkCounts[i] = count;
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+
+            i++;
+        }
+        
+        [db close];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
         });
-    }];
+    });
 }
 
 #pragma mark - UITableViewDataSource
@@ -411,53 +439,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.tableView reloadData];
-}
-
-
-- (void)calculateBookmarkCounts:(void (^)(NSArray *))callback {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        NSString *count, *previousCount;
-        BOOL skip = self.bookmarkCounts.count < 5;
-        
-        [db open];
-        NSArray *resultSets = @[
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-                            ];
-        
-        NSInteger i = 0;
-        for (FMResultSet *resultSet in resultSets) {
-            [resultSet next];
-            count = [resultSet stringForColumnIndex:0];
-            
-            if (skip) {
-                previousCount = @"";
-            }
-            else {
-                previousCount = self.bookmarkCounts[i];
-            }
-            
-            if (previousCount != nil && ![count isEqualToString:previousCount]) {
-                self.bookmarkCounts[i] = count;
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-            }
-            
-            i++;
-        }
-        
-        [db close];
-        
-        if (callback) {
-            callback(indexPathsToReload);
-        }
-    });
 }
 
 @end
