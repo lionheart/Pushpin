@@ -36,6 +36,8 @@ static NSInteger kTitleHeight = 40;
 
 @property (nonatomic) BOOL mobilized;
 @property (nonatomic, strong) PPMobilizerUtility *mobilizerUtility;
+@property (nonatomic) CGFloat yOffsetToStartShowingToolbar;
+@property (nonatomic) CGPoint previousContentOffset;
 
 @end
 
@@ -54,7 +56,6 @@ static NSInteger kTitleHeight = 40;
 
     self.mobilizerUtility = [PPMobilizerUtility sharedInstance];
     self.mobilized = NO;
-    self.yOffsetToStartShowingTitleView = 0;
     self.prefersStatusBarHidden = NO;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
@@ -815,7 +816,7 @@ static NSInteger kTitleHeight = 40;
         [self showToolbarAnimated:YES];
     }
     else {
-        [self hideToolbarAnimated:YES];
+        [self hideToolbarAnimated:NO];
     }
 }
 
@@ -830,45 +831,21 @@ static NSInteger kTitleHeight = 40;
         self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = YES;
     }
 
-    if (scrollView.contentOffset.y < self.yOffsetToStartShowingTitleView) {
-        self.yOffsetToStartShowingTitleView = MAX(0, scrollView.contentOffset.y);
-    }
+    CGPoint currentContentOffset = scrollView.contentOffset;
+    self.previousContentOffset = currentContentOffset;
 
-    // This is the scrollView's content offset PLUS the amount that the title bar has been shrunk
-    CGFloat effectiveOffset = scrollView.contentOffset.y + kTitleHeight - self.titleHeightConstraint.constant;
-
-    // Scroll Distance from Y Threshold. Greater than zero -> increase title view size.
-    CGFloat distanceFromYThreshold = effectiveOffset - self.yOffsetToStartShowingTitleView;
-
-    // This value is negative if the scroll view is above the threshold to show the view.
-    BOOL shouldUpdateViewConstants = distanceFromYThreshold >= 0 && scrollView.dragging && scrollView.tracking;
-    if (shouldUpdateViewConstants) {
-        self.titleHeightConstraint.constant = MAX(22, kTitleHeight - distanceFromYThreshold);
-        self.toolbarConstraint.constant = MAX(0, kToolbarHeight - distanceFromYThreshold * 2);
-        
-        if (self.titleHeightConstraint.constant == 22 && self.toolbarConstraint.constant == 0) {
-            self.yOffsetToStartShowingTitleView = 0;
-        }
-        [self.view layoutIfNeeded];
-    }
+    CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
+    self.toolbarConstraint.constant = MAX(0, height);
+    [self.view layoutIfNeeded];
     
-    BOOL titleViewIsExpanded = self.titleHeightConstraint.constant > 22;
-    if (titleViewIsExpanded) {
-        // If the title view isn't the minimum size, don't actually scroll the webview.
-        // We do this by resetting the offset.
-        if (scrollView.dragging && scrollView.tracking) {
-            scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, self.yOffsetToStartShowingTitleView);
-        }
-    }
-    else if (scrollView.contentOffset.y < 0) {
-        // The title view isn't currently its full height and the user is scrolling up. We just need to give it a little push.
-        self.titleHeightConstraint.constant--;
-        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
-        [self.view layoutIfNeeded];
+    if (self.toolbarConstraint.constant <= 0) {
+        self.yOffsetToStartShowingToolbar = 0;
     }
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
+    self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
+
     if (self.toolbarConstraint.constant == kToolbarHeight) {
         return YES;
     }
@@ -903,7 +880,6 @@ static NSInteger kTitleHeight = 40;
                 [self.history removeLastObject];
                 
             default:
-                self.yOffsetToStartShowingTitleView = 0;
                 webView.scrollView.contentOffset = CGPointMake(0, 0);
                 webView.scrollView.scrollEnabled = NO;
                 webView.scrollView.scrollsToTop = NO;
@@ -1093,7 +1069,6 @@ static NSInteger kTitleHeight = 40;
 - (void)showToolbarAnimated:(BOOL)animated {
     void (^ShowToolbarBlock)() = ^{
         self.toolbarConstraint.constant = kToolbarHeight;
-        self.titleHeightConstraint.constant = kTitleHeight;
         [self.view layoutIfNeeded];
     };
 
@@ -1101,7 +1076,6 @@ static NSInteger kTitleHeight = 40;
         if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
             [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - kToolbarHeight - CGRectGetHeight(self.webView.frame)) animated:NO];
         }
-        self.yOffsetToStartShowingTitleView = self.webView.scrollView.contentOffset.y + kTitleHeight;
 
         [UIView animateWithDuration:0.3
                               delay:0
@@ -1121,11 +1095,8 @@ static NSInteger kTitleHeight = 40;
 - (void)hideToolbarAnimated:(BOOL)animated {
     void (^HideToolbarBlock)() = ^{
         self.toolbarConstraint.constant = 0;
-        self.titleHeightConstraint.constant = 22;
         [self.view layoutIfNeeded];
     };
-
-    self.yOffsetToStartShowingTitleView = 0;
     
     if (animated) {
         [UIView animateWithDuration:0.3
