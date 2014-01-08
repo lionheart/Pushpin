@@ -81,6 +81,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor whiteColor];
     self.prefersStatusBarHidden = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = YES;
