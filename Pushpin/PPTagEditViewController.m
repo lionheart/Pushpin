@@ -112,7 +112,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.userInteractionEnabled = YES;
     self.tagTextField.delegate = self;
     self.tagTextField.returnKeyType = UIReturnKeyDone;
-    self.tagTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.tagTextField.clearButtonMode = UITextFieldViewModeAlways;
     self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.tagTextField.placeholder = NSLocalizedString(@"Add new tags here.", nil);
     
@@ -128,22 +128,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 #pragma mark - UITableViewDataSource
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        CGFloat height = [PPTableViewTitleView heightWithText:[NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host] fontSize:15];
-        if ([UIApplication isIPad]) {
-            return height + 10;
-        }
-        else {
-            return height;
-        }
-    }
-    else {
-        return [PPTableViewTitleView heightWithText:@"Current Tags" fontSize:15];
-    }
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -244,8 +228,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         return @"Current Tags";
     }
     else {
-        NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-        return [NSString stringWithFormat:@"%@ (%@)", self.bookmarkData[@"title"], url.host];
+        return self.bookmarkData[@"title"];
     }
 }
 
