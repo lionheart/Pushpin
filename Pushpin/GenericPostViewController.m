@@ -422,9 +422,13 @@ static NSInteger kToolbarHeight = 44;
                             else {
                                 self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                             }
+
+                            [self.searchDisplayController.searchContentsController.navigationController setNavigationBarHidden:YES animated:NO];
+                            [self.navigationController setNavigationBarHidden:YES animated:NO];
                             
                             if ([self.navigationController topViewController] == self) {
                                 [self.navigationController pushViewController:self.webViewController animated:YES];
+                                [self.navigationController setNavigationBarHidden:YES animated:NO];
                             }
                         }
                         else {
@@ -1459,6 +1463,9 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
