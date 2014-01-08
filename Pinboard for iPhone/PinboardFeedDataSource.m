@@ -241,13 +241,13 @@
                                        NSMutableArray *newCompressedLinks = [NSMutableArray array];
                                        NSMutableArray *newCompressedBadges = [NSMutableArray array];
                                        for (NSDictionary *post in newPosts) {
-                                           PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:nil];
+                                           PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
                                            [newHeights addObject:metadata.height];
                                            [newStrings addObject:metadata.string];
                                            [newLinks addObject:metadata.links];
                                            [newBadges addObject:metadata.badges];
                                            
-                                           PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:nil];
+                                           PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
                                            [newCompressedHeights addObject:compressedMetadata.height];
                                            [newCompressedStrings addObject:compressedMetadata.string];
                                            [newCompressedLinks addObject:compressedMetadata.links];
@@ -270,18 +270,6 @@
                                    }
                                });
                            }];
-}
-
-- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post {
-    return [self metadataForPost:post compressed:YES];
-}
-
-- (PostMetadata *)metadataForPost:(NSDictionary *)post {
-    return [self metadataForPost:post compressed:NO];
-}
-
-- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed {
-    return [PostMetadata metadataForPost:post compressed:compressed orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:nil];
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
@@ -439,10 +427,10 @@
         NSMutableArray *newCompressedHeights = [NSMutableArray array];
 
         for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:nil];
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
             [newHeights addObject:metadata.height];
             
-            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES orientation:[UIApplication sharedApplication].statusBarOrientation tagsWithFrequency:nil];
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
             [newCompressedHeights addObject:compressedMetadata.height];
         }
 

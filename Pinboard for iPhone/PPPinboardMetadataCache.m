@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *cache;
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation;
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width;
 
 @end
 
@@ -36,22 +36,21 @@
     return cache;
 }
 
-- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
-    return self.cache[[self cacheKeyForPost:post compressed:compressed orientation:orientation]];
+- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
+    return self.cache[[self cacheKeyForPost:post compressed:compressed width:width]];
 }
 
-- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
-    self.cache[[self cacheKeyForPost:post compressed:compressed orientation:orientation]] = metadata;
+- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
+    self.cache[[self cacheKeyForPost:post compressed:compressed width:width]] = metadata;
 }
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed orientation:(UIInterfaceOrientation)orientation {
-    BOOL portrait = UIInterfaceOrientationIsPortrait(orientation);
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
     if (post[@"hash"]) {
-        return [NSString stringWithFormat:@"%@:%@:%@:%@", post[@"hash"], post[@"meta"], compressed ? @"1": @"0", portrait ? @"1" : @"0"];
+        return [NSString stringWithFormat:@"%@:%@:%@:%.2f", post[@"hash"], post[@"meta"], compressed ? @"1": @"0", width];
     }
     else {
         // It's a network item
-        return [NSString stringWithFormat:@"%@:%@:%@", post[@"url"], compressed ? @"1": @"0", portrait ? @"1" : @"0"];
+        return [NSString stringWithFormat:@"%@:%@:%.2f", post[@"url"], compressed ? @"1": @"0", width];
     }
 }
 

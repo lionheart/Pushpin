@@ -10,13 +10,6 @@
 
 @implementation PPLoadingView
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-    }
-    return self;
-}
-
 - (void)startAnimating {
     NSMutableArray *images = [NSMutableArray array];
     for (int i=1; i<81; i++) {
@@ -26,6 +19,10 @@
     self.animationImages = images;
     self.animationDuration = 3;
     [super startAnimating];
+}
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(40, 40);
 }
 
 @end

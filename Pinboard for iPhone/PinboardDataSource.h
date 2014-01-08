@@ -80,8 +80,4 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 
-- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post;
-- (PostMetadata *)metadataForPost:(NSDictionary *)post;
-- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
-
 @end
