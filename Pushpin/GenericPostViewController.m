@@ -1664,7 +1664,7 @@ static NSInteger kToolbarHeight = 44;
             // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
 
             NSInteger row;
-            if ([(NSIndexPath *)indexPathsForVisibleRows[0] row] == 0) {
+            if ([(NSIndexPath *)indexPathsForVisibleRows[0] row] == 0 || ![indexPathsToReload isEqual:indexPathsForVisibleRows[0]]) {
                 row = 0;
             }
             else {

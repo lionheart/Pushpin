@@ -27,7 +27,6 @@
 @property (nonatomic) CGFloat detailTextSize;
 @property (nonatomic) CGFloat rowHeight;
 
-- (void)calculateBookmarkCounts:(void (^)(NSArray *))callback;
 - (void)openNotes;
 - (void)openSettings;
 - (void)openTags;
