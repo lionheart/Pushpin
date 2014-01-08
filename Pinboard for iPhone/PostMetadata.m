@@ -16,18 +16,117 @@
 #import <LHSCategoryCollection/NSAttributedString+Attributes.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
-@interface PostMetadata ()
+@interface PPBookmarkLayoutItem : NSObject <NSCopying>
 
-+ (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
+@property (nonatomic, strong) NSTextContainer *titleTextContainer;
+@property (nonatomic, strong) NSTextContainer *linkTextContainer;
+@property (nonatomic, strong) NSTextContainer *descriptionTextContainer;
 
-static dispatch_once_t dispatchOnceForWidth(CGFloat width) {
-    dispatch_once_t onceToken = width;
-    return onceToken;
+@property (nonatomic, strong) NSLayoutManager *titleLayoutManager;
+@property (nonatomic, strong) NSLayoutManager *linkLayoutManager;
+@property (nonatomic, strong) NSLayoutManager *descriptionLayoutManager;
+
+@property (nonatomic, strong) NSTextStorage *titleTextStorage;
+@property (nonatomic, strong) NSTextStorage *linkTextStorage;
+@property (nonatomic, strong) NSTextStorage *descriptionTextStorage;
+
++ (PPBookmarkLayoutItem *)layoutItemForWidth:(CGFloat)width;
+- (instancetype)initWithWidth:(CGFloat)width;
+
+@end
+
+@implementation PPBookmarkLayoutItem
+
++ (PPBookmarkLayoutItem *)layoutItemForWidth:(CGFloat)width {
+    return [[PPBookmarkLayoutItem alloc] initWithWidth:width];
+}
+
+- (instancetype)initWithWidth:(CGFloat)width {
+    self = [super init];
+    if (self) {
+        NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
+        NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme descriptionFont]};
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.paragraphSpacingBefore = 3;
+        paragraphStyle.paragraphSpacing = 0;
+        paragraphStyle.lineHeightMultiple = 0.7;
+        NSDictionary *linkAttributes = @{NSFontAttributeName: [PPTheme urlFont],
+                                         NSParagraphStyleAttributeName: paragraphStyle
+                                         };
+
+        // Calculate ellipsis size for each element
+        CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes:titleAttributes];
+        CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes:linkAttributes];
+        CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes:descriptionAttributes];
+
+        self.titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
+        self.linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 10, CGFLOAT_MAX)];
+        self.descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 10, CGFLOAT_MAX)];
+        
+        self.titleLayoutManager = [[NSLayoutManager alloc] init];
+        self.titleLayoutManager.hyphenationFactor = 1.0;
+        [self.titleLayoutManager addTextContainer:self.titleTextContainer];
+        
+        self.linkLayoutManager = [[NSLayoutManager alloc] init];
+        self.linkLayoutManager.hyphenationFactor = 1.0;
+        [self.linkLayoutManager addTextContainer:self.linkTextContainer];
+        
+        self.descriptionLayoutManager = [[NSLayoutManager alloc] init];
+        self.descriptionLayoutManager.hyphenationFactor = 1.0;
+        [self.descriptionLayoutManager addTextContainer:self.descriptionTextContainer];
+        
+        self.titleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+        [self.titleTextStorage addLayoutManager:self.titleLayoutManager];
+        
+        self.linkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+        [self.linkTextStorage addLayoutManager:self.linkLayoutManager];
+        
+        self.descriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
+        [self.descriptionTextStorage addLayoutManager:self.descriptionLayoutManager];
+        
+        [self.titleLayoutManager glyphRangeForTextContainer:self.titleTextContainer];
+        [self.linkLayoutManager glyphRangeForTextContainer:self.linkTextContainer];
+        [self.descriptionLayoutManager glyphRangeForTextContainer:self.descriptionTextContainer];
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    PPBookmarkLayoutItem *copy = [[[self class] alloc] init];
+    if (copy) {
+        copy.titleTextContainer = self.titleTextContainer;
+        copy.linkTextContainer = self.linkTextContainer;
+        copy.descriptionTextContainer = self.descriptionTextContainer;
+        copy.titleLayoutManager = self.titleLayoutManager;
+        copy.linkLayoutManager = self.linkLayoutManager;
+        copy.descriptionLayoutManager = self.descriptionLayoutManager;
+        copy.titleTextStorage = self.titleTextStorage;
+        copy.linkTextStorage = self.linkTextStorage;
+        copy.descriptionTextStorage = self.descriptionTextStorage;
+    }
+    return copy;
 }
 
 @end
 
+@interface PostMetadata ()
+
++ (NSMutableDictionary *)layoutObjectCache;
++ (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
+
+@end
+
 @implementation PostMetadata
+
++ (NSMutableDictionary *)layoutObjectCache {
+    static dispatch_once_t onceToken;
+    static NSMutableDictionary *objectCache;
+    dispatch_once(&onceToken, ^{
+        objectCache = [NSMutableDictionary dictionary];
+    });
+    return objectCache;
+}
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
                        compressed:(BOOL)compressed
@@ -113,54 +212,11 @@ static dispatch_once_t dispatchOnceForWidth(CGFloat width) {
     
     // Calculate our shorter strings if we're compressed
     if (compressed) {
-        // Calculate elippsis size for each element
-        CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes:titleAttributes];
-        CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes:linkAttributes];
-        CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes:descriptionAttributes];
-
-        static NSTextContainer *titleTextContainer;
-        static NSTextContainer *linkTextContainer;
-        static NSTextContainer *descriptionTextContainer;
-        
-        static NSLayoutManager *titleLayoutManager;
-        static NSLayoutManager *linkLayoutManager;
-        static NSLayoutManager *descriptionLayoutManager;
-        
-        static NSTextStorage *titleTextStorage;
-        static NSTextStorage *linkTextStorage;
-        static NSTextStorage *descriptionTextStorage;
-        
-        dispatch_once_t onceToken = dispatchOnceForWidth(320);
-        dispatch_once(&onceToken, ^{
-            titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
-            linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 10, CGFLOAT_MAX)];
-            descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 10, CGFLOAT_MAX)];
-            
-            titleLayoutManager = [[NSLayoutManager alloc] init];
-            titleLayoutManager.hyphenationFactor = 1.0;
-            [titleLayoutManager addTextContainer:titleTextContainer];
-            
-            linkLayoutManager = [[NSLayoutManager alloc] init];
-            linkLayoutManager.hyphenationFactor = 1.0;
-            [linkLayoutManager addTextContainer:linkTextContainer];
-            
-            descriptionLayoutManager = [[NSLayoutManager alloc] init];
-            descriptionLayoutManager.hyphenationFactor = 1.0;
-            [descriptionLayoutManager addTextContainer:descriptionTextContainer];
-            
-            titleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [titleTextStorage addLayoutManager:titleLayoutManager];
-            
-            linkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [linkTextStorage addLayoutManager:linkLayoutManager];
-            
-            descriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-            [descriptionTextStorage addLayoutManager:descriptionLayoutManager];
-            
-            [titleLayoutManager glyphRangeForTextContainer:titleTextContainer];
-            [linkLayoutManager glyphRangeForTextContainer:linkTextContainer];
-            [descriptionLayoutManager glyphRangeForTextContainer:descriptionTextContainer];
-        });
+        PPBookmarkLayoutItem *layout = [self layoutObjectCache][@(width)];
+        if (!layout) {
+            layout = [PPBookmarkLayoutItem layoutItemForWidth:width];
+            [self layoutObjectCache][@(width)] = layout;
+        };
         
         NSRange titleLineRange, descriptionLineRange, linkLineRange;
 
@@ -168,20 +224,20 @@ static dispatch_once_t dispatchOnceForWidth(CGFloat width) {
         NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
         
         titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
-        [titleTextStorage setAttributedString:titleAttributedString];
+        [layout.titleTextStorage setAttributedString:titleAttributedString];
 
         // Throws _NSLayoutTreeLineFragmentRectForGlyphAtIndex invalid glyph index 0 when title is of length 0
-        [titleLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
+        [layout.titleLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
         
         if (descriptionRange.location != NSNotFound) {
             descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
-            [descriptionTextStorage setAttributedString:descriptionAttributedString];
+            [layout.descriptionTextStorage setAttributedString:descriptionAttributedString];
             
             descriptionLineRange = NSMakeRange(0, 0);
-            NSUInteger index, numberOfLines, numberOfGlyphs = [descriptionLayoutManager numberOfGlyphs];
+            NSUInteger index, numberOfLines, numberOfGlyphs = [layout.descriptionLayoutManager numberOfGlyphs];
             NSRange tempLineRange;
             for (numberOfLines=0, index=0; index < numberOfGlyphs; numberOfLines++){
-                [descriptionLayoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
+                [layout.descriptionLayoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
                 descriptionLineRange.length += tempLineRange.length;
                 if (numberOfLines >= [PPTheme maxNumberOfLinesForCompressedDescriptions] - 1) {
                     break;
@@ -195,8 +251,8 @@ static dispatch_once_t dispatchOnceForWidth(CGFloat width) {
         // linkRange = NSMakeRange(NSNotFound, 0);
         if (linkRange.location != NSNotFound) {
             linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
-            [linkTextStorage setAttributedString:linkAttributedString];
-            [linkLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
+            [layout.linkTextStorage setAttributedString:linkAttributedString];
+            [layout.linkLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
         }
         
         // Re-create the main string

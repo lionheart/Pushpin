@@ -208,7 +208,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    [delegate setToken:token];
                                                    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
                                                    
-                                                   [dataSource updateLocalDatabaseFromRemoteAPIWithSuccess:^{
+                                                   [dataSource updateBookmarksWithSuccess:^{
                                                        dispatch_async(dispatch_get_main_queue(), ^{
                                                            [self.messageUpdateTimer invalidate];
                                                            delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -217,21 +217,21 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                             completion:nil];
                                                        });
                                                    }
-                                                                                                   failure:nil
-                                                                                                  progress:^(NSInteger current, NSInteger total) {
-                                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                          if (total == current) {
-                                                                                                              [self.messageUpdateTimer invalidate];
-                                                                                                              self.activityIndicator.frame = self.activityIndicatorFrameTop;
-                                                                                                              self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
-                                                                                                          }
-                                                                                                          else {
-                                                                                                              CGFloat f = current / (float)total;
-                                                                                                              [self.progressView setProgress:f animated:YES];
-                                                                                                          }
-                                                                                                      });
-                                                                                                  }
-                                                                                                   options:@{@"count": @(-1)}];
+                                                                                  failure:nil
+                                                                                 progress:^(NSInteger current, NSInteger total) {
+                                                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                         if (total == current) {
+                                                                                             [self.messageUpdateTimer invalidate];
+                                                                                             self.activityIndicator.frame = self.activityIndicatorFrameTop;
+                                                                                             self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
+                                                                                         }
+                                                                                         else {
+                                                                                             CGFloat f = current / (float)total;
+                                                                                             [self.progressView setProgress:f animated:YES];
+                                                                                         }
+                                                                                     });
+                                                                                 }
+                                                                                  options:@{@"count": @(-1)}];
                                                    
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                                        [delegate setFeedToken:feedToken];

@@ -24,8 +24,6 @@
 @protocol GenericPostDataSource <NSObject>
 
 - (NSInteger)numberOfPosts;
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options;
-
 - (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSArray *)linksForPostAtIndex:(NSInteger)index;
@@ -45,10 +43,15 @@
 
 - (NSString *)searchPlaceholder;
 
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure;
-- (void)updatePostsFromDatabase:(void (^)())success failure:(void (^)(NSError *))failure;
+- (void)updateBookmarksWithSuccess:(void (^)())success
+                           failure:(void (^)(NSError *))failure
+                          progress:(void (^)(NSInteger, NSInteger))progress
+                           options:(NSDictionary *)options;
 
-- (void)resetHeightsWithSuccess:(void (^)())success;
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                     failure:(void (^)(NSError *))failure
+                       width:(CGFloat)width;
+
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
 - (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
@@ -78,7 +81,7 @@
 
 @end
 
-@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate>
+@interface GenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *pullToRefreshView;
