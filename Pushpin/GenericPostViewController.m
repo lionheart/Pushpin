@@ -271,7 +271,7 @@ static NSInteger kToolbarHeight = 44;
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
 
-    if ([backViewController isKindOfClass:[FeedListViewController class]]) {
+    if (![UIApplication isIPad] && [backViewController isKindOfClass:[FeedListViewController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
 
         __weak id weakself = self;
@@ -1655,33 +1655,42 @@ static NSInteger kToolbarHeight = 44;
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
         
-        NSArray *visibleIndexPaths = [self.tableView indexPathsForVisibleRows];
-        // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
+        NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
+        NSArray *indexPathsToReload = [indexPathsForVisibleRows filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
+            return [self.currentDataSource heightForPostAtIndex:indexPath.row] != [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
+        }]];
 
-        NSInteger row;
-        if ([(NSIndexPath *)visibleIndexPaths[0] row] == 0) {
-            row = 0;
+        if (indexPathsToReload.count > 0) {
+            // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
+
+            NSInteger row;
+            if ([(NSIndexPath *)indexPathsForVisibleRows[0] row] == 0) {
+                row = 0;
+            }
+            else {
+                row = 1;
+            }
+
+            NSIndexPath *currentIndexPath = indexPathsForVisibleRows[row];
+
+            self.compressPosts = !self.compressPosts;
+
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+
+            double delayInSeconds = 0.25;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                if (self.tableView.contentOffset.y > 0) {
+                    [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                }
+                kGenericPostViewControllerIsProcessingPosts = NO;
+            });
         }
         else {
-            row = 1;
-        }
-
-        NSIndexPath *currentIndexPath = visibleIndexPaths[row];
-
-        self.compressPosts = !self.compressPosts;
-
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
-
-        double delayInSeconds = 0.25;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            if (self.tableView.contentOffset.y > 0) {
-                [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-            }
             kGenericPostViewControllerIsProcessingPosts = NO;
-        });
+        }
     }
 }
 

@@ -12,8 +12,10 @@
 
 @class FMDatabaseQueue;
 @class PPNavigationController;
+@class PPSplitViewController;
+@class FeedListViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
@@ -53,6 +55,8 @@
 @property (nonatomic, strong) NSTimer *refreshTimer;
 @property (nonatomic, strong) PPNavigationController *loginViewController;
 @property (nonatomic, strong) PPNavigationController *navigationController;
+@property (nonatomic, strong) PPSplitViewController *splitViewController;
+@property (nonatomic, strong) FeedListViewController *feedListViewController;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;

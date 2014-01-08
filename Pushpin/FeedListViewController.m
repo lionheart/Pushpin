@@ -50,21 +50,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self.tableView endUpdates];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Browse", nil) imageName:nil];
+
     self.title = @"";
+    self.extendedLayoutIncludesOpaqueBars = YES;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
+    self.view.backgroundColor = [UIColor whiteColor];
 
     [self calculateBookmarkCounts:nil];
     self.bookmarkCounts = [@[@"", @"", @"", @"", @"", @""] mutableCopy];
@@ -90,9 +86,20 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.navigationItem.rightBarButtonItem = tagBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    self.tableView.opaque = NO;
+    self.tableView.opaque = YES;
+    
+    [self.view addSubview:self.tableView];
+    
+    NSDictionary *views = @{@"table": self.tableView,
+                            @"top": self.topLayoutGuide };
+    
+    [self.view lhs_addConstraints:@"H:|[table]|" views:views];
+    [self.view lhs_addConstraints:@"V:[top][table]|" views:views];
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -242,6 +249,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    UIViewController *viewControllerToPush;
 
     switch (indexPath.section) {
         case 0: {
@@ -283,7 +292,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             postViewController.postDataSource = dataSource;
             // Can we just use self.navigationController instead?
-            [self.navigationController pushViewController:postViewController animated:YES];
+            viewControllerToPush = postViewController;
             break;
         }
         case 1: {
@@ -335,18 +344,32 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
                     PPTitleButton *titleButton = [PPTitleButton button];
                     [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
-                    [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
 
                     controller.navigationItem.titleView = titleButton;
-                    [self.navigationController pushViewController:controller animated:YES];
+                    viewControllerToPush = controller;
                 }
                 else {
-                    [self.navigationController pushViewController:postViewController animated:YES];
+                    viewControllerToPush = postViewController;
                 }
-                
+
                 break;
             }
         }
+    }
+    
+    // We need to switch this based on whether the user is on an iPad, due to the split view controller.
+    if ([UIApplication isIPad]) {
+        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+        if (navigationController.viewControllers.count == 1) {
+            UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+            viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+        }
+
+        [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
+        [self.popover dismissPopoverAnimated:YES];
+    }
+    else {
+        [self.navigationController pushViewController:viewControllerToPush animated:YES];
     }
 }
 

@@ -357,6 +357,7 @@
 		37FEEB9F15745488003F2B77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEBA315745488003F2B77 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* AppDelegate.m */; };
 		37FF412E187D954D00F2D481 /* readability.js in Sources */ = {isa = PBXBuildFile; fileRef = 37FF412D187D954D00F2D481 /* readability.js */; };
+		37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
 		CF13B9DB36F547EF92B4D8EE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
 		E804950D180EF20800C5CA8B /* webview-helpers.js in Sources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
@@ -892,6 +893,8 @@
 		37FEEBA115745488003F2B77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		37FEEBA215745488003F2B77 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		37FF412D187D954D00F2D481 /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
+		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
+		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSplitViewController.m; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
@@ -1530,6 +1533,8 @@
 				3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */,
 				3769A5771879C50D00AC8C44 /* PPConstants.h */,
 				3769A5781879C50D00AC8C44 /* PPConstants.m */,
+				37FF412F187D95CF00F2D481 /* PPSplitViewController.h */,
+				37FF4130187D95CF00F2D481 /* PPSplitViewController.m */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";
@@ -2313,6 +2318,7 @@
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
 				37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
+				37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
