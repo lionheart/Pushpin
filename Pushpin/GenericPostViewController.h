@@ -125,7 +125,6 @@
 // Gesture and tap recognizers
 @property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) NSTimer *singleTapTimer;
 @property (nonatomic, strong) NSTimer *doubleTapTimer;
 @property (nonatomic) NSUInteger numberOfTapsSinceTapReset;

@@ -14,7 +14,7 @@
 
 + (instancetype)sharedCache;
 
-- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width;
-- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width;
+- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
+- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
 
 @end

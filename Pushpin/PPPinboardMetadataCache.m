@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *cache;
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width;
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
 
 @end
 
@@ -36,21 +36,21 @@
     return cache;
 }
 
-- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
-    return self.cache[[self cacheKeyForPost:post compressed:compressed width:width]];
+- (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width {
+    return self.cache[[self cacheKeyForPost:post compressed:compressed dimmed:dimmed width:width]];
 }
 
-- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
-    self.cache[[self cacheKeyForPost:post compressed:compressed width:width]] = metadata;
+- (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width {
+    self.cache[[self cacheKeyForPost:post compressed:compressed dimmed:dimmed width:width]] = metadata;
 }
 
-- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed width:(CGFloat)width {
+- (NSString *)cacheKeyForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width {
     if (post[@"hash"]) {
-        return [NSString stringWithFormat:@"%@:%@:%@:%.2f", post[@"hash"], post[@"meta"], compressed ? @"1": @"0", width];
+        return [NSString stringWithFormat:@"%@:%@:%@:%@:%d", post[@"hash"], post[@"meta"], compressed ? @"1": @"0", dimmed ? @"1" : @"0", (NSInteger)width];
     }
     else {
         // It's a network item
-        return [NSString stringWithFormat:@"%@:%@:%.2f", post[@"url"], compressed ? @"1": @"0", width];
+        return [NSString stringWithFormat:@"%@:%@:%@:%d", post[@"url"], compressed ? @"1": @"0", dimmed ? @"1" : @"0", (NSInteger)width];
     }
 }
 
