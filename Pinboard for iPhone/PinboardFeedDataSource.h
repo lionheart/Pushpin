@@ -33,10 +33,6 @@
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
 
-- (PostMetadata *)compressedMetadataForPost:(NSDictionary *)post;
-- (PostMetadata *)metadataForPost:(NSDictionary *)post;
-- (PostMetadata *)metadataForPost:(NSDictionary *)post compressed:(BOOL)compressed;
-
 - (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;
 
 - (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;

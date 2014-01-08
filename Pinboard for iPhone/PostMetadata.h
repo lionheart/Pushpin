@@ -17,7 +17,7 @@
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
                        compressed:(BOOL)compressed
-                      orientation:(UIInterfaceOrientation)orientation
+                            width:(CGFloat)width
                 tagsWithFrequency:(NSDictionary *)tagsWithFrequency;
 
 @end

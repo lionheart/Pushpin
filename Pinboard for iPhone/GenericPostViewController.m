@@ -50,6 +50,11 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic, strong) NSDate *latestSearchTime;
+@property (nonatomic, strong) UIDynamicAnimator *animator;
+
+@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
 
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
@@ -77,26 +82,29 @@ static NSInteger kToolbarHeight = 44;
     [super viewDidLoad];
 
     self.prefersStatusBarHidden = NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.translatesAutoresizingMaskIntoConstraints = YES;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
-    [self.view addSubview:self.tableView];
+    self.tableView.frame = CGRectOffset(self.view.frame, 0, CGRectGetHeight(self.view.frame));
     
-    self.pullToRefreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, [UIApplication currentSize].width, 60)];
+    self.pullToRefreshView = [[UIView alloc] init];
+    self.pullToRefreshView.translatesAutoresizingMaskIntoConstraints = NO;
     self.pullToRefreshView.clipsToBounds = YES;
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
+
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
+    self.pullToRefreshImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
-    [self.tableView addSubview:self.pullToRefreshView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -113,15 +121,13 @@ static NSInteger kToolbarHeight = 44;
     self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
     self.searchLoading = NO;
-
-    CGRect bounds = [[UIScreen mainScreen] bounds];
-    CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
-    self.toolbar = [[PPToolbar alloc] initWithFrame:frame];
     
     // Setup the multi-edit status view
     self.multiStatusView = [[UIView alloc] init];
     self.multiStatusView.backgroundColor = HEX(0xFFFFFFFF);
     self.multiStatusView.alpha = 0;
+    self.multiStatusView.hidden = YES;
+    self.multiStatusView.clipsToBounds = YES;
     self.multiStatusView.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.multiStatusLabel = [[UILabel alloc] init];
@@ -137,7 +143,7 @@ static NSInteger kToolbarHeight = 44;
     [self.multiStatusView addSubview:multiStatusBorderView];
 
     NSDictionary *statusViews = @{ @"label": self.multiStatusLabel, @"border": multiStatusBorderView };
-    [self.multiStatusView lhs_addConstraints:@"H:|-[label]-|" views:statusViews];
+    [self.multiStatusView lhs_addConstraints:@"H:|[label]|" views:statusViews];
     [self.multiStatusView lhs_addConstraints:@"H:|[border]|" views:statusViews];
     [self.multiStatusView lhs_addConstraints:@"V:|-4-[label]-4-[border(0.5)]|" views:statusViews];
     
@@ -174,6 +180,12 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView addSubview:self.multipleDeleteButton];
     self.multipleDeleteButton.enabled = NO;
 
+    // Multi edit status and toolbar
+    [self.view addSubview:self.multiStatusView];
+    [self.view addSubview:self.multiToolbarView];
+    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.pullToRefreshView];
+
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
                                     @"read": self.multipleMarkAsReadButton,
                                     @"edit": self.multipleTagEditButton,
@@ -184,17 +196,30 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"V:|[delete]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
-    
-    [self.tableView lhs_expandToFillSuperview];
-    
-    // Multi edit status and toolbar
-    [self.view addSubview:self.multiStatusView];
-    [self.view addSubview:self.multiToolbarView];
-    [self.view addSubview:self.toolbar];
-    
+
     NSDictionary *views = @{@"statusView": self.multiStatusView,
-                            @"toolbarView": self.multiToolbarView};
+                            @"toolbarView": self.multiToolbarView,
+                            @"ptr": self.pullToRefreshView,
+                            @"image": self.pullToRefreshImageView,
+                            @"table": self.tableView,
+                            @"top": self.topLayoutGuide,
+                            @"bottom": self.bottomLayoutGuide };
     
+    [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
+    [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
+    
+    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.tableView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    [self.view addConstraint:self.pullToRefreshTopConstraint];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    
+//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
+//    self.tableViewPinnedToBottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+//    [self.view addConstraint:self.tableViewPinnedToTopConstraint];
+
+    [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
+    [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
     [self.view lhs_addConstraints:@"H:|[statusView]|" views:views];
     [self.view lhs_addConstraints:@"V:[statusView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
@@ -209,6 +234,10 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    if (![self.view.constraints containsObject:self.tableViewPinnedToBottomConstraint] && ![self.view.constraints containsObject:self.tableViewPinnedToTopConstraint]) {
+//        [self.view addConstraint:self.tableViewPinnedToBottomConstraint];
+    }
 
     if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
         [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
@@ -291,15 +320,36 @@ static NSInteger kToolbarHeight = 44;
     }
 
     if ([self.postDataSource numberOfPosts] == 0) {
-        self.pullToRefreshView.frame = CGRectMake(0, -60, CGRectGetWidth(self.tableView.frame), 60);
-        self.tableView.contentInset = UIEdgeInsetsMake(124, 0, 0, 0);
-        self.tableView.contentOffset = CGPointMake(0, -124);
         [self.pullToRefreshImageView startAnimating];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self updateFromLocalDatabaseWithCallback:^{
                 if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
-                    [self updateWithRatio:@(1.0)];
-                    [AppDelegate sharedDelegate].bookmarksNeedUpdate = NO;
+                    if (!kGenericPostViewControllerIsProcessingPosts) {
+                        kGenericPostViewControllerIsProcessingPosts = YES;
+                        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
+
+                                self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+                                
+                                UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:@[self.tableView]];
+                                collision.collisionMode = UICollisionBehaviorModeBoundaries;
+                                [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, 0) toPoint:CGPointMake(CGRectGetWidth(self.view.frame), 0)];
+
+                                UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.tableView]];
+                                gravity.gravityDirection = CGVectorMake(0, -4);
+                                
+                                UIPushBehavior *push = [[UIPushBehavior alloc] initWithItems:@[self.tableView] mode:UIPushBehaviorModeContinuous];
+                                push.pushDirection = CGVectorMake(0, -100);
+                                
+                                [self.animator addBehavior:collision];
+                                [self.animator addBehavior:gravity];
+//                                [self.animator addBehavior:push];
+
+                                kGenericPostViewControllerIsProcessingPosts = NO;
+                            });
+                        } failure:nil options:@{@"ratio": @(1.0), @"width": @(CGRectGetWidth(self.tableView.frame)) } ];
+                    }
                 }
             }];
         });
@@ -597,46 +647,33 @@ static NSInteger kToolbarHeight = 44;
                     [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
                     self.tableView.separatorColor = HEX(0xE0E0E0ff);
 
-                    kGenericPostViewControllerIsProcessingPosts = NO;
-                    [UIView animateWithDuration:0.2 animations:^{
-                        CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
-                        self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
-                    } completion:^(BOOL finished) {
-                        [self.pullToRefreshImageView stopAnimating];
-                        [self.pullToRefreshImageView setHidden:YES];
-//                        CGFloat offset = self.tableView.contentOffset.y;
-                        CGFloat offset = -60;
-#warning This offset is messing things up. It's making the pull to refresh view cover the entire table view.
-                        self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
+                    if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                        self.searchPostDataSource = [self.postDataSource searchDataSource];
                         
-                        if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                            self.searchPostDataSource = [self.postDataSource searchDataSource];
-
-                            self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
-                            self.searchBar.delegate = self;
-                            self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
-                            self.searchBar.showsScopeBar = YES;
-                            
-                            if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
-                                self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
-                            }
-
-                            self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                            self.searchDisplayController.searchResultsDataSource = self;
-                            self.searchDisplayController.searchResultsDelegate = self;
-                            self.searchDisplayController.delegate = self;
-                            [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
-
-                            self.tableView.tableHeaderView = self.searchBar;
-                            CGFloat offset = -(CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame) - CGRectGetHeight(self.searchDisplayController.searchBar.frame));
-                            [self.tableView setContentOffset:CGPointMake(0, offset)];
-
-                            [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+                        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
+                        self.searchBar.delegate = self;
+                        self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
+                        self.searchBar.showsScopeBar = YES;
+                        
+                        if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
+                            self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
                         }
-                    }];
+                        
+                        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+                        self.searchDisplayController.searchResultsDataSource = self;
+                        self.searchDisplayController.searchResultsDelegate = self;
+                        self.searchDisplayController.delegate = self;
+                        [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
+                        
+                        self.tableView.tableHeaderView = self.searchBar;
+                        self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
+                        [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 
-                    if (callback) {
-                        callback();
+                        kGenericPostViewControllerIsProcessingPosts = NO;
+
+                        if (callback) {
+                            callback();
+                        }
                     }
                 });
             } failure:nil];
@@ -684,14 +721,8 @@ static NSInteger kToolbarHeight = 44;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
 
-                [UIView animateWithDuration:0.2 animations:^{
-                    CGFloat tableOffsetTop = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame) + CGRectGetHeight(self.navigationController.navigationBar.frame);
-                    self.tableView.contentInset = UIEdgeInsetsMake(tableOffsetTop, 0, 0, 0);
-                } completion:^(BOOL finished) {
-                    [self.pullToRefreshImageView setHidden:YES];
-                    [self.pullToRefreshImageView stopAnimating];
-                    kGenericPostViewControllerIsProcessingPosts = NO;
-                }];
+                [self.pullToRefreshImageView stopAnimating];
+                kGenericPostViewControllerIsProcessingPosts = NO;
             });
         } failure:nil options:@{@"ratio": ratio}];
     }
@@ -732,10 +763,6 @@ static NSInteger kToolbarHeight = 44;
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
             
-            if (self.tableView.contentOffset.y < 0) {
-                self.tableView.contentOffset = CGPointMake(0, -64);
-            }
-            
             self.multiStatusView.alpha = 1;
             self.multipleEditStatusViewTopConstraint.constant = 0;
             self.multipleEditToolbarBottomConstraint.constant = 0;
@@ -762,7 +789,6 @@ static NSInteger kToolbarHeight = 44;
                 
                 CGRect bounds = [[UIScreen mainScreen] bounds];
                 CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
-                self.toolbar.frame = frame;
             } completion:^(BOOL finished) {
                 self.indexPathsToDelete = nil;
             }];
@@ -1344,7 +1370,6 @@ static NSInteger kToolbarHeight = 44;
         if (offset < -(minimumOffset + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [UIView animateWithDuration:0.5 animations:^{
-                    self.tableView.contentInset = UIEdgeInsetsMake(minimumOffset + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20, 0, 0, 0);
                     [self.pullToRefreshImageView startAnimating];
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.5 animations:^{
@@ -1362,25 +1387,16 @@ static NSInteger kToolbarHeight = 44;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!kGenericPostViewControllerIsProcessingPosts) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
-        CGFloat searchHeight = CGRectGetHeight(self.searchBar.frame);
-        CGFloat minimumOffset = statusBarHeight + navigationHeight;
-        NSInteger index = MAX(1, 32 - MIN((-offset / (minimumOffset + searchHeight + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20)) * 32, 32));
+        self.pullToRefreshTopConstraint.constant = -offset;
+        [self.view layoutIfNeeded];
+
+        NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
         NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
-        UIOffset imageOffset;
         
         if (offset < 0) {
-#warning This line below might be messing things up. It's making the pull to refresh view cover the entire table view.
-//            self.pullToRefreshView.frame = CGRectMake(0, offset + minimumOffset, [UIApplication currentSize].width, - minimumOffset);
             offset = -60;
-            self.pullToRefreshView.frame = CGRectMake(0, offset, [UIApplication currentSize].width, -offset);
-            
-            // Make sure the image view is visible, and update with the appropriate photo
-            imageOffset = UIOffsetMake(0, 10.0f);
-            [self.pullToRefreshImageView setHidden:NO];
+
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-            self.pullToRefreshImageView.frame = CGRectMake(CGRectGetWidth(self.pullToRefreshView.frame) / 2 - 20, imageOffset.vertical, 40, 40);
         }
     }
 }
