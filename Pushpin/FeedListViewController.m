@@ -362,11 +362,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
         if (navigationController.viewControllers.count == 1) {
             UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
-            viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+            if (showPopoverBarButtonItem) {
+                viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+            }
         }
-
+        
         [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
-        [self.popover dismissPopoverAnimated:YES];
+        
+        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+        if (popover) {
+            [popover dismissPopoverAnimated:YES];
+        }
     }
     else {
         [self.navigationController pushViewController:viewControllerToPush animated:YES];

@@ -17,6 +17,7 @@
 #import "PPTheme.h"
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
+#import "FeedListViewController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -299,7 +300,27 @@ static NSString *CellIdentifier = @"TagCell";
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag[@"name"]];
     postViewController.postDataSource = pinboardDataSource;
-    [self.navigationController pushViewController:postViewController animated:YES];
+    
+    // We need to switch this based on whether the user is on an iPad, due to the split view controller.
+    if ([UIApplication isIPad]) {
+        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+        if (navigationController.viewControllers.count == 1) {
+            UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+            if (showPopoverBarButtonItem) {
+                postViewController.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+            }
+        }
+        
+        [navigationController setViewControllers:@[postViewController] animated:YES];
+        
+        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+        if (popover) {
+            [popover dismissPopoverAnimated:YES];
+        }
+    }
+    else {
+        [self.navigationController pushViewController:postViewController animated:YES];
+    }
 }
 
 - (void)popViewController {
