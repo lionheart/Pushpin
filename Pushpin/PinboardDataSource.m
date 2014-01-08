@@ -617,6 +617,13 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
                      failure:(void (^)(NSError *))failure
                        width:(CGFloat)width {
+    [self bookmarksWithSuccess:success failure:failure cancel:nil width:width];
+}
+
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                     failure:(void (^)(NSError *))failure
+                      cancel:(void (^)(BOOL *))cancel
+                       width:(CGFloat)width {
     void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -722,19 +729,32 @@ static BOOL kPinboardSyncInProgress = NO;
             [newCompressedBadges addObject:compressedMetadata.badges];
         }
         
-        self.posts = newPosts;
-        self.strings = newStrings;
-        self.heights = newHeights;
-        self.links = newLinks;
-        self.badges = newBadges;
+        // We run this block to make sure that these results should be the latest on "file"
+        BOOL stop = NO;
         
-        self.compressedStrings = newCompressedStrings;
-        self.compressedHeights = newCompressedHeights;
-        self.compressedLinks = newCompressedLinks;
-        self.compressedBadges = newCompressedBadges;
-        
-        if (success) {
-            success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
+        if (cancel) {
+            cancel(&stop);
+        }
+
+        if (stop) {
+            failure(nil);
+            DLog(@"Cancelling search for query (%@)", self.searchQuery);
+        }
+        else {
+            self.posts = newPosts;
+            self.strings = newStrings;
+            self.heights = newHeights;
+            self.links = newLinks;
+            self.badges = newBadges;
+            
+            self.compressedStrings = newCompressedStrings;
+            self.compressedHeights = newCompressedHeights;
+            self.compressedLinks = newCompressedLinks;
+            self.compressedBadges = newCompressedBadges;
+
+            if (success) {
+                success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
+            }
         }
     };
 

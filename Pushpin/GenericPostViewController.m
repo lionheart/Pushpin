@@ -32,7 +32,6 @@
 
 static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
 static BOOL kGenericPostViewControllerIsProcessingPosts = NO;
-static BOOL kGenericPostViewControllerDimmingReadPosts = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
 
@@ -43,7 +42,6 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIButton *multipleDeleteButton;
 @property (nonatomic, strong) UIActionSheet *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
-@property (nonatomic, strong) NSLayoutConstraint *multipleEditStatusViewTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
@@ -51,18 +49,23 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic, strong) NSDate *latestSearchTime;
 @property (nonatomic, strong) UIDynamicAnimator *animator;
+@property (nonatomic, strong) NSString *formattedSearchString;
+@property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
+@property (nonatomic, strong) NSInvocation *invocation;
 
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
-- (void)resetSearchTimer;
 - (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
-- (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
+- (void)updateTitleViewText;
+
+- (void)updateSearchResultsForSearchPerformedWithTimer:(NSTimer *)timer;
+- (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
 @end
 
@@ -125,31 +128,6 @@ static NSInteger kToolbarHeight = 44;
 
     self.searchLoading = NO;
     
-    // Setup the multi-edit status view
-    self.multiStatusView = [[UIView alloc] init];
-    self.multiStatusView.backgroundColor = HEX(0xFFFFFFFF);
-    self.multiStatusView.alpha = 0;
-    self.multiStatusView.hidden = YES;
-    self.multiStatusView.clipsToBounds = YES;
-    self.multiStatusView.translatesAutoresizingMaskIntoConstraints = NO;
-
-    self.multiStatusLabel = [[UILabel alloc] init];
-    self.multiStatusLabel.textColor = [UIColor grayColor];
-    self.multiStatusLabel.text = @"No bookmarks selected";
-    self.multiStatusLabel.textAlignment = NSTextAlignmentCenter;
-    self.multiStatusLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.multiStatusView addSubview:self.multiStatusLabel];
-
-    UIView *multiStatusBorderView = [[UIView alloc] init];
-    multiStatusBorderView.backgroundColor = HEX(0xb2b2b2ff);
-    multiStatusBorderView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.multiStatusView addSubview:multiStatusBorderView];
-
-    NSDictionary *statusViews = @{ @"label": self.multiStatusLabel, @"border": multiStatusBorderView };
-    [self.multiStatusView lhs_addConstraints:@"H:|[label]|" views:statusViews];
-    [self.multiStatusView lhs_addConstraints:@"H:|[border]|" views:statusViews];
-    [self.multiStatusView lhs_addConstraints:@"V:|-4-[label]-4-[border(0.5)]|" views:statusViews];
-    
     // Setup the multi-edit toolbar
     self.multiToolbarView = [[UIView alloc] init];
     self.multiToolbarView.backgroundColor = HEX(0xEBF2F6FF);
@@ -184,10 +162,9 @@ static NSInteger kToolbarHeight = 44;
     self.multipleDeleteButton.enabled = NO;
 
     // Multi edit status and toolbar
-    [self.view addSubview:self.multiStatusView];
-    [self.view addSubview:self.multiToolbarView];
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.pullToRefreshView];
+    [self.view addSubview:self.multiToolbarView];
 
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
                                     @"read": self.multipleMarkAsReadButton,
@@ -200,8 +177,7 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
 
-    NSDictionary *views = @{@"statusView": self.multiStatusView,
-                            @"toolbarView": self.multiToolbarView,
+    NSDictionary *views = @{@"toolbarView": self.multiToolbarView,
                             @"ptr": self.pullToRefreshView,
                             @"image": self.pullToRefreshImageView,
                             @"table": self.tableView,
@@ -221,8 +197,6 @@ static NSInteger kToolbarHeight = 44;
 
     [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
     [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[statusView]|" views:views];
-    [self.view lhs_addConstraints:@"V:[statusView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
 
@@ -246,17 +220,10 @@ static NSInteger kToolbarHeight = 44;
         self.navigationItem.titleView = titleView;
     }
 
-    if (self.multipleEditToolbarBottomConstraint) {
-        [self.view removeConstraint:self.multipleEditToolbarBottomConstraint];
+    if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
+        self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kToolbarHeight];
+        [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
     }
-    self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
-    [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
-
-    if (self.multipleEditStatusViewTopConstraint) {
-        [self.view removeConstraint:self.multipleEditStatusViewTopConstraint];
-    }
-    self.multipleEditStatusViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.multiStatusView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:-kToolbarHeight];
-    [self.view addConstraint:self.multipleEditStatusViewTopConstraint];
     
     [UIView animateWithDuration:0.2
                      animations:^{
@@ -357,7 +324,7 @@ static NSInteger kToolbarHeight = 44;
             self.multipleMarkAsReadButton.enabled = NO;
         }
 
-        self.multiStatusLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+        [self updateTitleViewText];
     }
 }
 
@@ -389,8 +356,7 @@ static NSInteger kToolbarHeight = 44;
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
             [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
-
-            self.multiStatusLabel.text = [NSString stringWithFormat:@"%ld %@", (long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+            [self updateTitleViewText];
         }
         else {
             // If configured, always mark the post as read
@@ -659,36 +625,40 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (void)updateSearchResultsForSearchPerformedWithTimer:(NSTimer *)timer {
+    [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];
+}
+
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
     if (!self.searchLoading) {
         self.searchLoading = YES;
-        __weak GenericPostViewController *weakself = self;
-        BOOL shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
-        
-        if (shouldSearchFullText) {
+
+        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText && [self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)];
+
+        [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
+
+        if (self.searchPostDataSource.shouldSearchFullText) {
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         }
 
+        __weak GenericPostViewController *weakself = self;
         [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            if ([time compare:self.latestSearchTime] == NSOrderedSame) {
-                if (shouldSearchFullText) {
-                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                }
+            if (weakself.searchPostDataSource.shouldSearchFullText) {
+                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+            }
 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    weakself.searchLoading = NO;
-                    [weakself.searchDisplayController.searchResultsTableView reloadData];
-                });
-            }
-            else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakself.searchDisplayController.searchResultsTableView reloadData];
                 weakself.searchLoading = NO;
-            }
+            });
         } failure:^(NSError *error) {
             weakself.searchLoading = NO;
             
-            if (shouldSearchFullText) {
+            if (weakself.searchPostDataSource.shouldSearchFullText) {
                 [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
             }
+        } cancel:^(BOOL *stop) {
+            *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
         } width:CGRectGetWidth(self.view.frame)];
     }
 }
@@ -706,8 +676,7 @@ static NSInteger kToolbarHeight = 44;
 
                 [self.pullToRefreshImageView stopAnimating];
                 kGenericPostViewControllerIsProcessingPosts = NO;
-            }
-                                              failure:nil width:CGRectGetWidth(self.tableView.frame)];
+            } failure:nil width:CGRectGetWidth(self.tableView.frame)];
         } failure:nil progress:nil options:@{@"ratio": ratio}];
     }
 }
@@ -718,21 +687,29 @@ static NSInteger kToolbarHeight = 44;
         for (NSIndexPath *indexPath in selectedIndexPaths) {
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
-        
+
         [self setMultipleEditButtonsEnabled:NO];
 
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
 
         self.navigationItem.leftBarButtonItem.enabled = YES;
+        [self.navigationItem setRightBarButtonItem:self.editButton animated:YES];
+        
+        if ([self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
+            PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
+            self.navigationItem.titleView = titleView;
+        }
+        else {
+            self.navigationItem.titleView = nil;
+        }
 
         [UIView animateWithDuration:0.25 animations:^{
+
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
-            self.multiStatusView.alpha = 0;
-            self.multipleEditStatusViewTopConstraint.constant = -kToolbarHeight;
             self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
             [self.view layoutIfNeeded];
         }];
@@ -742,13 +719,15 @@ static NSInteger kToolbarHeight = 44;
         [self.tableView setEditing:YES animated:YES];
 
         self.navigationItem.leftBarButtonItem.enabled = NO;
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+        
+        [self updateTitleViewText];
 
         [UIView animateWithDuration:0.25 animations:^{
+
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
-            
-            self.multiStatusView.alpha = 1;
-            self.multipleEditStatusViewTopConstraint.constant = 0;
+
             self.multipleEditToolbarBottomConstraint.constant = 0;
             [self.view layoutIfNeeded];
         }];
@@ -841,7 +820,7 @@ static NSInteger kToolbarHeight = 44;
                         [self updateFromLocalDatabaseWithCallback:nil];
                     }
                     else {
-                        [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
+                        [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
                     }
                 }
             }];
@@ -861,8 +840,6 @@ static NSInteger kToolbarHeight = 44;
         return [self.searchPostDataSource numberOfPosts];
     }
 }
-
-#pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
@@ -971,6 +948,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UITableViewDelegate
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
 
 - (void)closeModal:(UIViewController *)sender {
     [self closeModal:sender success:nil];
@@ -1386,13 +1367,47 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (![searchText isEqualToString:@""]) {
-        [self resetSearchTimer];
+        switch (self.searchBar.selectedScopeButtonIndex) {
+            case PPSearchTitles:
+                self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
+                break;
+                
+            case PPSearchDescriptions:
+                self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
+                break;
+                
+            case PPSearchTags:
+                self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
+                break;
+                
+            default:
+                self.formattedSearchString = searchText;
+                break;
+        }
+
+        BOOL shouldSearchFullText = NO;
+        if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
+            shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
+        }
+
+        self.latestSearchTime = [NSDate date];
+        if (shouldSearchFullText) {
+            // Put this on a timer, since we don't want to kill Pinboard servers.
+            if (self.fullTextSearchTimer) {
+                [self.fullTextSearchTimer invalidate];
+            }
+
+            self.fullTextSearchTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(updateSearchResultsForSearchPerformedWithTimer:) userInfo:@{@"time": [self.latestSearchTime copy]} repeats:NO];
+        }
+        else {
+            [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
+        }
     }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     if (![searchBar.text isEqualToString:@""]) {
-        [self resetSearchTimer];
+        [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
     }
 }
 
@@ -1400,72 +1415,7 @@ static NSInteger kToolbarHeight = 44;
     return YES;
 }
 
-- (void)resetSearchTimer {
-
-    NSDate *time = [NSDate date];
-    if ([time compare:self.latestSearchTime]) {
-        self.latestSearchTime = time;
-
-        if (self.latestSearchTimer) {
-            [self.latestSearchTimer invalidate];
-            self.latestSearchTimer = nil;
-        }
-        
-        CGFloat interval;
-        if (self.searchBar.selectedScopeButtonIndex == PPSearchFullText) {
-            interval = 0.6;
-        }
-        else {
-            interval = 0.1;
-        }
-
-        self.latestSearchText = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        self.latestSearchTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(searchTimerFired:) userInfo:@{@"time": time} repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.latestSearchTimer forMode:NSRunLoopCommonModes];
-    }
-}
-
-- (void)searchTimerFired:(NSTimer *)timer {
-    NSString *query;
-    switch (self.searchBar.selectedScopeButtonIndex) {
-        case PPSearchTitles:
-            query = [NSString stringWithFormat:@"title:\"%@\"", self.latestSearchText];
-            break;
-
-        case PPSearchDescriptions:
-            query = [NSString stringWithFormat:@"description:\"%@\"", self.latestSearchText];
-            break;
-
-        case PPSearchTags: {
-            query = [NSString stringWithFormat:@"tags:\"%@\"", self.latestSearchText];
-            break;
-        }
-
-        default:
-            query = self.latestSearchText;
-            break;
-    }
-
-    [self.searchPostDataSource filterWithQuery:query];
-
-    if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
-        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
-    }
-
-    [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
-}
-
 #pragma mark - UISearchDisplayControllerDelegate
-
-- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
@@ -1571,49 +1521,60 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - PPBadgeWrapperDelegate
 
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
-    NSArray *badgeViews = badgeWrapperView.subviews;
-    NSMutableArray *badges = [badgeWrapperView.badges mutableCopy];
-
-    NSUInteger visibleBadgeCount = [badgeViews indexesOfObjectsPassingTest:^BOOL(UIView *badgeView, NSUInteger idx, BOOL *stop) {
-        return !badgeView.hidden;
-    }].count;
-
-    [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
-    if (badges.count > 5) {
-        [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
-    }
-
-    NSString *tag = badge.textLabel.text;
-    if (![tag isEqualToString:emptyString]) {
-        if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
-            // Show more tag options
-            self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:@"Additional Tags" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-            for (NSDictionary *badge in badges) {
-                if ([badge[@"type"] isEqualToString:@"tag"]) {
-                    [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
-                }
-            }
-
-            // Properly set the cancel button index
-            [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
-            self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
-            self.actionSheetVisible = YES;
-
-            CGPoint point = CGPointMake(badge.center.x - 2, badge.center.y);
-            [self.additionalTagsActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
-            self.tableView.scrollEnabled = NO;
+    if (self.tableView.editing) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:badgeWrapperView.tag inSection:0];
+        if ([self.tableView.indexPathsForSelectedRows containsObject:indexPath]) {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
         else {
-            // Go to the tag link
-            id <GenericPostDataSource> dataSource = [self currentDataSource];
-            if (!self.tableView.editing) {
-                if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
-                    // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
-                    [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
-                                              callback:^(UIViewController *controller) {
-                                                  [self.navigationController pushViewController:controller animated:YES];
-                                              }];
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+    }
+    else {
+        NSArray *badgeViews = badgeWrapperView.subviews;
+        NSMutableArray *badges = [badgeWrapperView.badges mutableCopy];
+        
+        NSUInteger visibleBadgeCount = [badgeViews indexesOfObjectsPassingTest:^BOOL(UIView *badgeView, NSUInteger idx, BOOL *stop) {
+            return !badgeView.hidden;
+        }].count;
+        
+        [badges removeObjectsInRange:NSMakeRange(0, visibleBadgeCount - 1)];
+        if (badges.count > 5) {
+            [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
+        }
+        
+        NSString *tag = badge.textLabel.text;
+        if (![tag isEqualToString:emptyString]) {
+            if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
+                // Show more tag options
+                self.additionalTagsActionSheet = [[UIActionSheet alloc] initWithTitle:@"Additional Tags" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                
+                for (NSDictionary *badge in badges) {
+                    if ([badge[@"type"] isEqualToString:@"tag"]) {
+                        [self.additionalTagsActionSheet addButtonWithTitle:badge[@"tag"]];
+                    }
+                }
+                
+                // Properly set the cancel button index
+                [self.additionalTagsActionSheet addButtonWithTitle:@"Cancel"];
+                self.additionalTagsActionSheet.cancelButtonIndex = self.additionalTagsActionSheet.numberOfButtons - 1;
+                self.actionSheetVisible = YES;
+                
+                CGPoint point = CGPointMake(badge.center.x - 2, badge.center.y);
+                [self.additionalTagsActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
+                self.tableView.scrollEnabled = NO;
+            }
+            else {
+                // Go to the tag link
+                id <GenericPostDataSource> dataSource = [self currentDataSource];
+                if (!self.tableView.editing) {
+                    if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
+                        // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
+                        [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
+                                                  callback:^(UIViewController *controller) {
+                                                      [self.navigationController pushViewController:controller animated:YES];
+                                                  }];
+                    }
                 }
             }
         }
@@ -1735,5 +1696,20 @@ static NSInteger kToolbarHeight = 44;
     [self.view layoutIfNeeded];
 }
 
-@end
+- (void)updateTitleViewText {
+    NSInteger selectedRowCount = [self.tableView indexPathsForSelectedRows].count;
+    PPTitleButton *button = [PPTitleButton button];
     
+    NSString *title;
+    if (selectedRowCount == 1) {
+        title = @"1 bookmark selected";
+    }
+    else {
+        title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+    }
+    
+    [button setTitle:title imageName:nil];
+    self.navigationItem.titleView = button;
+}
+
+@end

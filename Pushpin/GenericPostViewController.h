@@ -52,6 +52,11 @@
                      failure:(void (^)(NSError *))failure
                        width:(CGFloat)width;
 
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                     failure:(void (^)(NSError *))failure
+                      cancel:(void (^)(BOOL *))cancel
+                       width:(CGFloat)width;
+
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
 - (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
@@ -102,8 +107,6 @@
 @property (nonatomic, strong) UIAlertView *confirmDeletionAlertView;
 @property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
-@property (nonatomic, strong) NSString *latestSearchText;
-@property (nonatomic, strong) NSTimer *latestSearchTimer;
 
 @property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
@@ -116,8 +119,6 @@
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) UIBarButtonItem *editButton;
 
-@property (nonatomic, strong) UIView *multiStatusView;
-@property (nonatomic, strong) UILabel *multiStatusLabel;
 @property (nonatomic, retain) UIView *multiToolbarView;
 
 - (void)toggleEditingMode:(id)sender;
@@ -135,7 +136,6 @@
 
 - (void)handleCellTap;
 - (void)popViewController;
-- (void)searchTimerFired:(NSTimer *)timer;
 - (void)dismissViewController;
 - (void)showConfirmDeletionAlert;
 - (void)markPostAsRead;
