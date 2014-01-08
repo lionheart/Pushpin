@@ -118,16 +118,6 @@ static const CGFloat PADDING_Y = 2;
     [self updateBackgroundColor];
 }
 
-- (void)setSelected:(BOOL)selected {
-    _selected = selected;
-    if (selected) {
-        self.backgroundColor = self.selectedColor;
-    }
-    else {
-        [self updateBackgroundColor];
-    }
-}
-
 - (void)setNormalColor:(UIColor *)normalColor {
     _normalColor = normalColor;
     self.enabled = _enabled;
