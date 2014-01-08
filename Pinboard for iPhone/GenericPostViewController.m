@@ -94,6 +94,7 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
+    self.tableView.separatorColor = HEX(0xE0E0E0ff);
     self.tableView.frame = CGRectOffset(self.view.frame, 0, CGRectGetHeight(self.view.frame));
     
     self.pullToRefreshView = [[UIView alloc] init];
@@ -213,10 +214,8 @@ static NSInteger kToolbarHeight = 44;
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
-//    self.tableViewPinnedToBottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-//    [self.view addConstraint:self.tableViewPinnedToTopConstraint];
+    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+ toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
 
     [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
     [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
@@ -286,10 +285,6 @@ static NSInteger kToolbarHeight = 44;
         self.editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-edit"] landscapeImagePhone:[UIImage imageNamed:@"navigation-edit"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
-
-    if ([self.postDataSource numberOfPosts] == 0) {
-        self.tableView.separatorColor = [UIColor clearColor];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -319,40 +314,21 @@ static NSInteger kToolbarHeight = 44;
         }
     }
 
+    void (^BookmarkBlock)() = ^{
+        
+    };
+
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self updateFromLocalDatabaseWithCallback:^{
-                if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
-                    if (!kGenericPostViewControllerIsProcessingPosts) {
-                        kGenericPostViewControllerIsProcessingPosts = YES;
-                        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
-
-                                self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-                                
-                                UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:@[self.tableView]];
-                                collision.collisionMode = UICollisionBehaviorModeBoundaries;
-                                [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, 0) toPoint:CGPointMake(CGRectGetWidth(self.view.frame), 0)];
-
-                                UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.tableView]];
-                                gravity.gravityDirection = CGVectorMake(0, -4);
-                                
-                                UIPushBehavior *push = [[UIPushBehavior alloc] initWithItems:@[self.tableView] mode:UIPushBehaviorModeContinuous];
-                                push.pushDirection = CGVectorMake(0, -100);
-                                
-                                [self.animator addBehavior:collision];
-                                [self.animator addBehavior:gravity];
-//                                [self.animator addBehavior:push];
-
-                                kGenericPostViewControllerIsProcessingPosts = NO;
-                            });
-                        } failure:nil options:@{@"ratio": @(1.0), @"width": @(CGRectGetWidth(self.tableView.frame)) } ];
-                    }
-                }
-            }];
-        });
+        if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
+            [AppDelegate sharedDelegate].bookmarksNeedUpdate = NO;
+            [self.postDataSource updateBookmarksWithSuccess:^{
+                [self updateFromLocalDatabaseWithCallback:nil];
+            } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
+        }
+        else {
+            [self updateFromLocalDatabaseWithCallback:BookmarkBlock];
+        }
     }
     else {
         [self.tableView reloadData];
@@ -628,13 +604,16 @@ static NSInteger kToolbarHeight = 44;
     else if (recognizer == self.doubleTapGestureRecognizer) {
         self.dimReadPosts = !self.dimReadPosts;
         [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPosts];
-
-        [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        
+        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSArray *realIndexPathsToReload = self.tableView.indexPathsForVisibleRows;
-                [self performTableViewUpdatesWithInserts:nil reloads:realIndexPathsToReload deletes:nil];
+
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:realIndexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
             });
-        } failure:nil];
+        } failure:nil width:CGRectGetWidth(self.view.frame)];
     }
 }
 
@@ -642,11 +621,37 @@ static NSInteger kToolbarHeight = 44;
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
-                    self.tableView.separatorColor = HEX(0xE0E0E0ff);
+                    BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
+                    if (alreadyContainsBookmarks) {
+                        [self.tableView beginUpdates];
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    }
+                    else {
+                        [self.tableView reloadData];
 
+                        self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+                        self.animator.delegate = self;
+                        
+                        UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:@[self.tableView]];
+                        collision.collisionMode = UICollisionBehaviorModeBoundaries;
+                        [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, -1) toPoint:CGPointMake(CGRectGetWidth(self.view.frame), -1)];
+                        
+                        UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.tableView]];
+                        gravity.gravityDirection = CGVectorMake(0, -4);
+                        
+                        UIPushBehavior *push = [[UIPushBehavior alloc] initWithItems:@[self.tableView] mode:UIPushBehaviorModeInstantaneous];
+                        push.pushDirection = CGVectorMake(0, -200);
+                        
+                        [self.animator addBehavior:collision];
+                        [self.animator addBehavior:gravity];
+                        [self.animator addBehavior:push];
+                    }
+                    
                     if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                         self.searchPostDataSource = [self.postDataSource searchDataSource];
                         
@@ -668,15 +673,15 @@ static NSInteger kToolbarHeight = 44;
                         self.tableView.tableHeaderView = self.searchBar;
                         self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
                         [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
-
-                        kGenericPostViewControllerIsProcessingPosts = NO;
-
-                        if (callback) {
-                            callback();
-                        }
+                    }
+                    
+                    kGenericPostViewControllerIsProcessingPosts = NO;
+                    
+                    if (callback) {
+                        callback();
                     }
                 });
-            } failure:nil];
+            } failure:nil width:CGRectGetWidth(self.view.frame)];
         });
     }
 }
@@ -690,7 +695,8 @@ static NSInteger kToolbarHeight = 44;
         if (shouldSearchFullText) {
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         }
-        [self.searchPostDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+
+        [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             if ([time compare:self.latestSearchTime] == NSOrderedSame) {
                 if (shouldSearchFullText) {
                     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
@@ -710,21 +716,26 @@ static NSInteger kToolbarHeight = 44;
             if (shouldSearchFullText) {
                 [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
             }
-        }];
+        } width:CGRectGetWidth(self.view.frame)];
     }
 }
 
 - (void)updateWithRatio:(NSNumber *)ratio {
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
-        [self.postDataSource updatePostsWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self performTableViewUpdatesWithInserts:indexPathsToAdd reloads:indexPathsToReload deletes:indexPathsToRemove];
+        [self.postDataSource updateBookmarksWithSuccess:^{
+            [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
 
                 [self.pullToRefreshImageView stopAnimating];
                 kGenericPostViewControllerIsProcessingPosts = NO;
-            });
-        } failure:nil options:@{@"ratio": ratio}];
+            }
+                                              failure:nil width:CGRectGetWidth(self.tableView.frame)];
+        } failure:nil progress:nil options:@{@"ratio": ratio}];
     }
 }
 
@@ -786,9 +797,6 @@ static NSInteger kToolbarHeight = 44;
             [UIView animateWithDuration:0.25 animations:^{
                 UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
                 searchTextField.enabled = YES;
-                
-                CGRect bounds = [[UIScreen mainScreen] bounds];
-                CGRect frame = CGRectMake(0, CGRectGetHeight(bounds), CGRectGetWidth(bounds), 44);
             } completion:^(BOOL finished) {
                 self.indexPathsToDelete = nil;
             }];
@@ -1176,7 +1184,7 @@ static NSInteger kToolbarHeight = 44;
                     notification.alertBody = @"Bookmark marked as read.";
                 }
                 else {
-                    notification.alertBody = [NSString stringWithFormat:@"%d bookmarks marked as read.", posts.count];
+                    notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
                 }
             }
 
@@ -1544,14 +1552,13 @@ static NSInteger kToolbarHeight = 44;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
-        if ([self.postDataSource respondsToSelector:@selector(resetHeightsWithSuccess:)]) {
-            [self.postDataSource resetHeightsWithSuccess:^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView reloadData];
-                    kGenericPostViewControllerIsProcessingPosts = NO;
-                });
-            }];
+        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+                kGenericPostViewControllerIsProcessingPosts = NO;
+            });
         }
+                                          failure:nil width:CGRectGetWidth(self.view.frame)];;
     }
 }
 
@@ -1570,15 +1577,18 @@ static NSInteger kToolbarHeight = 44;
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
 
-        [self.postDataSource updatePostsFromDatabaseWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                [self performTableViewUpdatesWithInserts:nil reloads:[self.tableView indexPathsForVisibleRows] deletes:nil];
-                [self.view setNeedsLayout];
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+
                 kGenericPostViewControllerIsProcessingPosts = NO;
             });
         } failure:^(NSError *error) {
             kGenericPostViewControllerIsProcessingPosts = NO;
-        }];
+        } width:CGRectGetWidth(self.view.frame)];
     }
 }
 
@@ -1728,6 +1738,16 @@ static NSInteger kToolbarHeight = 44;
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
     return ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]);
+}
+
+#pragma mark - UIDynamicAnimatorDelegate
+
+- (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraint:self.tableViewPinnedToTopConstraint];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
+    [self.view lhs_addConstraints:@"H:|[table]|" views:@{@"table": self.tableView}];
+    [self.view layoutIfNeeded];
 }
 
 @end

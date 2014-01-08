@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+static dispatch_once_t dispatchOnceForWidth(CGFloat width);
+
 @interface PostMetadata : NSObject
 
 @property (nonatomic, strong) NSAttributedString *string;

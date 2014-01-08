@@ -64,10 +64,6 @@
     return self.notes[index];
 }
 
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
-    [self updatePostsWithSuccess:success failure:failure options:nil];
-}
-
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index {
     UIViewController *controller = [[UIViewController alloc] init];
     UIWebView *webView = [[UIWebView alloc] init];

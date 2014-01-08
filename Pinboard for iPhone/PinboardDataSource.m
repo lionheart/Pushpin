@@ -228,10 +228,11 @@ static BOOL kPinboardSyncInProgress = NO;
     return _totalNumberOfPosts;
 }
 
-- (void)updateLocalDatabaseFromRemoteAPIWithSuccess:(void (^)())success
-                                            failure:(void (^)())failure
-                                           progress:(void (^)(NSInteger current, NSInteger total))progress
-                                            options:(NSDictionary *)options {
+- (void)updateBookmarksWithSuccess:(void (^)())success
+                           failure:(void (^)(NSError *))failure
+                          progress:(void (^)(NSInteger, NSInteger))progress
+                           options:(NSDictionary *)options {
+
     if (!failure) {
         failure = ^(NSError *error) {};
     }
@@ -613,119 +614,9 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (void)updatePostsFromDatabase:(void (^)())success
-                        failure:(void (^)(NSError *))failure {
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self generateQueryAndParameters:^(NSString *query, NSArray *parameters) {
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-            [db open];
-            
-            FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
-
-            NSArray *oldPosts = [self.posts copy];
-            NSMutableArray *newPosts = [NSMutableArray array];
-            
-            NSMutableArray *oldHashes = [NSMutableArray array];
-            NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
-            for (NSDictionary *post in self.posts) {
-                [oldHashes addObject:post[@"hash"]];
-                oldMetas[post[@"hash"]] = post[@"meta"];
-            }
-            
-            NSInteger index = 0;
-            
-            // The index of the list that `index` corresponds to
-            NSInteger skipPivot = 0;
-            BOOL postFound = NO;
-            
-            while ([results next]) {
-                postFound = NO;
-                NSString *hash = [results stringForColumn:@"hash"];
-                NSString *meta = [results stringForColumn:@"meta"];
-                NSDictionary *post;
-                
-                // Go from the last found value to the end of the list.
-                // If you find something, break and set the pivot to the current skip index.
-                for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                    if ([oldHashes[i] isEqualToString:hash]) {
-                        post = oldPosts[i];
-                        
-                        // Reload the post if its meta value has changed.
-                        if (![meta isEqualToString:oldMetas[hash]]) {
-                            post = [PinboardDataSource postFromResultSet:results];
-                        }
-                        
-                        postFound = YES;
-                        skipPivot = i+1;
-                        break;
-                    }
-                }
-                
-                // If the post wasn't found by looping through, it's a new one
-                if (!postFound) {
-                    post = [PinboardDataSource postFromResultSet:results];
-                }
-                
-                [newPosts addObject:post];
-                index++;
-            }
-            
-            [self.tagsWithFrequency removeAllObjects];
-            
-            FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-            while ([tagResult next]) {
-                NSString *tag = [tagResult stringForColumnIndex:0];
-                NSNumber *count = [tagResult objectForColumnIndex:1];
-                self.tagsWithFrequency[tag] = count;
-            }
-            [db close];
-            
-            NSMutableArray *newStrings = [NSMutableArray array];
-            NSMutableArray *newHeights = [NSMutableArray array];
-            NSMutableArray *newLinks = [NSMutableArray array];
-            NSMutableArray *newBadges = [NSMutableArray array];
-            
-            NSMutableArray *newCompressedStrings = [NSMutableArray array];
-            NSMutableArray *newCompressedHeights = [NSMutableArray array];
-            NSMutableArray *newCompressedLinks = [NSMutableArray array];
-            NSMutableArray *newCompressedBadges = [NSMutableArray array];
-            
-            for (NSDictionary *post in newPosts) {
-                PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency];
-                [newHeights addObject:metadata.height];
-                [newStrings addObject:metadata.string];
-                [newLinks addObject:metadata.links];
-                [newBadges addObject:metadata.badges];
-
-                PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency];
-                [newCompressedHeights addObject:compressedMetadata.height];
-                [newCompressedStrings addObject:compressedMetadata.string];
-                [newCompressedLinks addObject:compressedMetadata.links];
-                [newCompressedBadges addObject:compressedMetadata.badges];
-            }
-            
-            self.posts = newPosts;
-            self.strings = newStrings;
-            self.heights = newHeights;
-            self.links = newLinks;
-            self.badges = newBadges;
-            
-            self.compressedStrings = newCompressedStrings;
-            self.compressedHeights = newCompressedHeights;
-            self.compressedLinks = newCompressedLinks;
-            self.compressedBadges = newCompressedBadges;
-            
-            if (success) {
-                success();
-            }
-        }];
-    });
-}
-
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                                   failure:(void (^)(NSError *))failure {
-
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
+                     failure:(void (^)(NSError *))failure
+                       width:(CGFloat)width {
     void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -741,8 +632,8 @@ static BOOL kPinboardSyncInProgress = NO;
             oldMetas[post[@"hash"]] = post[@"meta"];
         }
         
-        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+        NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         NSInteger index = 0;
         
@@ -763,7 +654,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 if ([oldHashes[i] isEqualToString:hash]) {
                     // Delete all posts that were skipped
                     for (NSInteger j=skipPivot; j<i; j++) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:j inSection:0]];
                     }
                     
                     post = oldPosts[i];
@@ -785,7 +676,7 @@ static BOOL kPinboardSyncInProgress = NO;
             // If the post wasn't found by looping through, it's a new one
             if (!postFound) {
                 post = [PinboardDataSource postFromResultSet:results];
-                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             
             [newPosts addObject:post];
@@ -804,7 +695,7 @@ static BOOL kPinboardSyncInProgress = NO;
         [db close];
         
         for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
         
         NSMutableArray *newStrings = [NSMutableArray array];
@@ -840,10 +731,10 @@ static BOOL kPinboardSyncInProgress = NO;
         self.compressedStrings = newCompressedStrings;
         self.compressedHeights = newCompressedHeights;
         self.compressedLinks = newCompressedLinks;
-        self.compressedBadges = newBadges;
+        self.compressedBadges = newCompressedBadges;
         
         if (success) {
-            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+            success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
         }
     };
 
@@ -876,15 +767,6 @@ static BOOL kPinboardSyncInProgress = NO;
             [self generateQueryAndParameters:HandleSearch];
         });
     }
-}
-
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                       failure:(void (^)(NSError *))failure
-                       options:(NSDictionary *)options {
-
-    [self updateLocalDatabaseFromRemoteAPIWithSuccess:^{
-        [self updatePostsFromDatabaseWithSuccess:success failure:failure];
-    } failure:failure progress:nil options:options];
 }
 
 - (BOOL)isPostAtIndexStarred:(NSInteger)index {
@@ -1164,28 +1046,6 @@ static BOOL kPinboardSyncInProgress = NO;
         [quotedTagComponents addObject:[NSString stringWithFormat:@"\"%@\"", tag]];
     }
     return quotedTagComponents;
-}
-
-- (void)resetHeightsWithSuccess:(void (^)())success {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-
-        for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency];
-            [newHeights addObject:metadata.height];
-
-            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency];
-            [newCompressedHeights addObject:compressedMetadata.height];
-        }
-        
-        self.heights = newHeights;
-        self.compressedHeights = newCompressedHeights;
-        
-        if (success) {
-            success();
-        }
-    });
 }
 
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback {

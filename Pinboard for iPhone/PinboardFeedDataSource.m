@@ -108,43 +108,14 @@
     return self.posts[index][@"url"];
 }
 
-- (void)updatePostsFromDatabaseWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure {
-    [self updatePostsWithSuccess:success failure:failure options:nil];
+- (void)updateBookmarksWithSuccess:(void (^)())success
+                           failure:(void (^)(NSError *))failure
+                          progress:(void (^)(NSInteger, NSInteger))progress
+                           options:(NSDictionary *)options {
+    success();
 }
 
-- (NSURL *)url {
-    NSMutableArray *escapedComponents = [NSMutableArray array];
-    for (NSString *component in self.components) {
-        NSString *substring = [component substringFromIndex:2];
-        if ([component hasPrefix:@"t:"]) {
-            substring = [NSString stringWithFormat:@"t:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-            [escapedComponents addObject:substring];
-        }
-        else if ([component hasPrefix:@"u:"]) {
-            substring = [NSString stringWithFormat:@"u:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-            [escapedComponents addObject:substring];
-        }
-        else {
-            [escapedComponents addObject:component];
-        }
-    }
-    
-    NSString *urlString;
-    
-    // If it's our username, we need to use the feed token to get any private tags
-    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-    if ([[escapedComponents objectAtIndex:0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
-        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
-    }
-    else {
-        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%ld", [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
-    }
-    
-    return [NSURL URLWithString:urlString];
-}
-
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure width:(CGFloat)width {
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
@@ -152,7 +123,7 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [delegate setNetworkActivityIndicatorVisible:NO];
-
+                               
                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                    if (!error) {
                                        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
@@ -166,7 +137,7 @@
                                        for (NSDictionary *post in self.posts) {
                                            [oldURLs addObject:post[@"url"]];
                                        }
-
+                                       
                                        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                                        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
@@ -175,7 +146,7 @@
                                        NSInteger index = 0;
                                        NSMutableArray *tags = [NSMutableArray array];
                                        NSDate *date;
-
+                                       
                                        // TODO: Should refactor to update / reload / delete more efficiently
                                        for (NSDictionary *element in payload) {
                                            [tags removeAllObjects];
@@ -191,14 +162,14 @@
                                                // https://rink.hockeyapp.net/manage/apps/33685/app_versions/4/crash_reasons/4734816
                                                date = [NSDate date];
                                            }
-
+                                           
                                            NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                @"title": element[@"d"],
-                                                @"description": element[@"n"],
-                                                @"url": element[@"u"],
-                                                @"tags": [tags componentsJoinedByString:@" "],
-                                                @"created_at": date
-                                            }];
+                                                                                                                       @"title": element[@"d"],
+                                                                                                                       @"description": element[@"n"],
+                                                                                                                       @"url": element[@"u"],
+                                                                                                                       @"tags": [tags componentsJoinedByString:@" "],
+                                                                                                                       @"created_at": date
+                                                                                                                       }];
                                            
                                            if (post[@"title"] == [NSNull null]) {
                                                post[@"title"] = @"";
@@ -235,7 +206,7 @@
                                        NSMutableArray *newHeights = [NSMutableArray array];
                                        NSMutableArray *newLinks = [NSMutableArray array];
                                        NSMutableArray *newBadges = [NSMutableArray array];
-
+                                       
                                        NSMutableArray *newCompressedStrings = [NSMutableArray array];
                                        NSMutableArray *newCompressedHeights = [NSMutableArray array];
                                        NSMutableArray *newCompressedLinks = [NSMutableArray array];
@@ -258,18 +229,50 @@
                                        self.heights = newHeights;
                                        self.links = newLinks;
                                        self.badges = newBadges;
-
+                                       
                                        self.compressedStrings = newCompressedStrings;
                                        self.compressedHeights = newCompressedHeights;
                                        self.compressedLinks = newCompressedLinks;
                                        self.compressedBadges = newCompressedBadges;
-
+                                       
                                        if (success != nil) {
                                            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
                                        }
                                    }
                                });
                            }];
+}
+
+- (NSURL *)url {
+    NSMutableArray *escapedComponents = [NSMutableArray array];
+    for (NSString *component in self.components) {
+        NSString *substring = [component substringFromIndex:2];
+        if ([component hasPrefix:@"t:"]) {
+            substring = [NSString stringWithFormat:@"t:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            [escapedComponents addObject:substring];
+        }
+        else if ([component hasPrefix:@"u:"]) {
+            substring = [NSString stringWithFormat:@"u:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            [escapedComponents addObject:substring];
+        }
+        else {
+            [escapedComponents addObject:component];
+        }
+    }
+    
+    NSString *urlString;
+    
+    // If it's our username, we need to use the feed token to get any private tags
+    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+    if ([[escapedComponents objectAtIndex:0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
+        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
+    }
+    else {
+        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%ld", [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
+    }
+    
+    return [NSURL URLWithString:urlString];
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
@@ -418,28 +421,6 @@
         }
 
         callback();
-    });
-}
-
-- (void)resetHeightsWithSuccess:(void (^)())success {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-
-        for (NSDictionary *post in self.posts) {
-            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
-            [newHeights addObject:metadata.height];
-            
-            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
-            [newCompressedHeights addObject:compressedMetadata.height];
-        }
-
-        self.heights = newHeights;
-        self.compressedHeights = newCompressedHeights;
-        
-        if (success) {
-            success();
-        }
     });
 }
 
