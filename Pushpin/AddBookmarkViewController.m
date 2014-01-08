@@ -222,7 +222,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
+    NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:url.host style:UIBarButtonItemStyleDone target:nil action:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     [self.tableView reloadData];
