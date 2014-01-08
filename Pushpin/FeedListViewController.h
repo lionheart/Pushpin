@@ -12,14 +12,16 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 
-@interface FeedListViewController : PPTableViewController {
+@interface FeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     NSString *postViewTitle;
 }
 
+@property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) NSObject <GenericPostDataSource> *postDataSource;
 @property (nonatomic, strong) UIBarButtonItem *notesBarButtonItem;
 @property (nonatomic, strong) NSTimer *updateTimer;
 @property (nonatomic, strong) NSMutableArray *bookmarkCounts;
+@property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic) CGFloat textSize;
 @property (nonatomic) CGFloat detailTextSize;

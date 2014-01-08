@@ -28,6 +28,7 @@
 #import "ScreenshotViewController.h"
 #import "PPStatusBarNotification.h"
 #import "PPMobilizerUtility.h"
+#import "PPSplitViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -47,6 +48,7 @@
 
 @implementation AppDelegate
 
+@synthesize splitViewController = _splitViewController;
 @synthesize readLater = _readLater;
 @synthesize token = _token;
 @synthesize browser = _browser;
@@ -298,16 +300,37 @@
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 }
 
+- (PPSplitViewController *)splitViewController {
+    if (!_splitViewController) {
+        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        pinboardDataSource.limit = 100;
+        pinboardDataSource.orderBy = @"created_at DESC";
+
+        PPNavigationController *feedNavigationController = [[PPNavigationController alloc] initWithRootViewController:self.feedListViewController];
+
+        _splitViewController = [[PPSplitViewController alloc] init];
+        _splitViewController.viewControllers = @[feedNavigationController, self.navigationController];
+        _splitViewController.delegate = self;
+    }
+    return _splitViewController;
+}
+
+- (FeedListViewController *)feedListViewController {
+    if (!_feedListViewController) {
+        _feedListViewController = [[FeedListViewController alloc] init];
+    }
+    return _feedListViewController;
+}
+
 - (PPNavigationController *)navigationController {
     if (!_navigationController) {
         PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
 
-        FeedListViewController *feedListViewController = [[FeedListViewController alloc] initWithStyle:UITableViewStyleGrouped];
         GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
         
-        _navigationController = [[PPNavigationController alloc] initWithRootViewController:feedListViewController];
+        _navigationController = [[PPNavigationController alloc] init];
         
         // Determine our default feed
         NSString *feedDetails;
@@ -386,7 +409,13 @@
             pinboardViewController.postDataSource = feedDataSource;
         }
 
-        _navigationController.viewControllers = @[feedListViewController, pinboardViewController];
+        if ([UIApplication isIPad]) {
+            _navigationController.viewControllers = @[pinboardViewController];
+        }
+        else {
+            _navigationController.viewControllers = @[self.feedListViewController, pinboardViewController];
+        }
+
         [_navigationController popToViewController:pinboardViewController animated:NO];
     }
     return _navigationController;
@@ -462,15 +491,18 @@
         [pinboard setToken:self.token];
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
-        [self.window setRootViewController:self.navigationController];
+        
+        if ([UIApplication isIPad]) {
+            [self.window setRootViewController:self.splitViewController];
+        }
+        else {
+            [self.window setRootViewController:self.navigationController];
+        }
     }
     else {
         [self.window setRootViewController:self.loginViewController];
     }
 
-//    ScreenshotViewController *screenshot = [[ScreenshotViewController alloc] init];
-//    UINavigationController *controller = [[UINavigationController alloc] initWithRootViewController:screenshot];
-//    self.window.rootViewController = controller;
     [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
@@ -1128,6 +1160,29 @@
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
     [keychain setObject:self.username forKey:(__bridge id)kSecAttrAccount];
     [keychain setObject:password forKey:(__bridge id)kSecValueData];
+}
+
+#pragma mark - UISplitViewControllerDelegate
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
+       forPopoverController:(UIPopoverController *)pc {
+    barButtonItem.image = [UIImage imageNamed:@"navigation-list"];
+    self.navigationController.topViewController.navigationItem.leftBarButtonItem = barButtonItem;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+          popoverController:(UIPopoverController *)pc
+  willPresentViewController:(UIViewController *)aViewController {
+    self.feedListViewController.popover = pc;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willShowViewController:(UIViewController *)aViewController
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
+    self.feedListViewController.popover = nil;
+    self.navigationController.topViewController.navigationItem.leftBarButtonItem = nil;
 }
 
 @end

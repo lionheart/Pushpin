@@ -42,6 +42,8 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
     
     // Check if we have any updates from iCloud
     NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
