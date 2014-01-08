@@ -18,6 +18,9 @@ static const NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
 static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
 static const NSString *PPBadgeFontColor = @"fontColor";
 
+static NSString *PPBookmarkDisplaySettingUpdated = @"PPBookmarkDisplaySetting";
+static NSString *PPBookmarkCompressSettingUpdate = @"PPBookmarkCompressSetting";
+
 typedef enum : NSInteger {
     PPMobilizerGoogle,
     PPMobilizerInstapaper,

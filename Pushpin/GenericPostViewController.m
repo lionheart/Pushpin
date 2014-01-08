@@ -62,6 +62,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)resetSearchTimer;
 - (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
+- (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
 
 @end
 
@@ -225,19 +226,12 @@ static NSInteger kToolbarHeight = 44;
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
 
-    // Register for Dynamic Type notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-
     // Initial database update
     [self.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    if (![self.view.constraints containsObject:self.tableViewPinnedToBottomConstraint] && ![self.view.constraints containsObject:self.tableViewPinnedToTopConstraint]) {
-//        [self.view addConstraint:self.tableViewPinnedToBottomConstraint];
-    }
 
     if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
         [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
@@ -291,33 +285,12 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    BOOL oldCompressPosts = self.compressPosts;
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
+
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
-    if (self.compressPosts != oldCompressPosts) {
-        if (!kGenericPostViewControllerIsProcessingPosts) {
-            kGenericPostViewControllerIsProcessingPosts = YES;
-            NSArray *indexPathsToReload = [self.tableView indexPathsForVisibleRows];
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
-            kGenericPostViewControllerIsProcessingPosts = NO;
-        }
-    }
-
-    BOOL oldDimReadPosts = self.dimReadPosts;
-    self.dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
-    if (oldDimReadPosts != self.dimReadPosts) {
-        if (!kGenericPostViewControllerDimmingReadPosts) {
-            kGenericPostViewControllerDimmingReadPosts = YES;
-            [self.tableView beginUpdates];
-            [self.tableView endUpdates];
-            kGenericPostViewControllerDimmingReadPosts = NO;
-        }
-    }
-
-    void (^BookmarkBlock)() = ^{
-        
-    };
 
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
@@ -328,7 +301,7 @@ static NSInteger kToolbarHeight = 44;
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
         else {
-            [self updateFromLocalDatabaseWithCallback:BookmarkBlock];
+            [self updateFromLocalDatabaseWithCallback:nil];
         }
     }
     else {
@@ -339,11 +312,20 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
 
 - (void)popViewController {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification {
+    [self updateFromLocalDatabaseWithCallback:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -601,20 +583,6 @@ static NSInteger kToolbarHeight = 44;
                 [self toggleCompressedPosts];
             }
         }
-    }
-    else if (recognizer == self.doubleTapGestureRecognizer) {
-        self.dimReadPosts = !self.dimReadPosts;
-        [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPosts];
-        
-        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *realIndexPathsToReload = self.tableView.indexPathsForVisibleRows;
-
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:realIndexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-            });
-        } failure:nil width:CGRectGetWidth(self.view.frame)];
     }
 }
 
@@ -1761,3 +1729,4 @@ static NSInteger kToolbarHeight = 44;
 }
 
 @end
+    

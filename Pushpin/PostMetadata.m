@@ -132,7 +132,17 @@
                        compressed:(BOOL)compressed
                             width:(CGFloat)width
                 tagsWithFrequency:(NSDictionary *)tagsWithFrequency {
-    PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed width:width];
+    BOOL read;
+    if (post[@"unread"]) {
+        read = ![post[@"unread"] boolValue];
+    }
+    else {
+        read = NO;
+    }
+
+    BOOL dimmed = [AppDelegate sharedDelegate].dimReadPosts && read;
+
+    PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed dimmed:dimmed width:width];
     if (result) {
         return result;
     }
@@ -146,16 +156,6 @@
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
     NSString *tags = post[@"tags"];
-
-    BOOL read;
-    if (post[@"unread"]) {
-        read = ![post[@"unread"] boolValue];
-    }
-    else {
-        read = NO;
-    }
-
-    BOOL dimReadPosts = [AppDelegate sharedDelegate].dimReadPosts;
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
     NSRange titleRange = NSMakeRange(0, title.length);
@@ -326,7 +326,7 @@
         }
     }
 
-    if (dimReadPosts && read) {
+    if (dimmed) {
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xb3b3b3ff) range:titleRange];
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xcdcdcdff) range:linkRange];
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x96989Dff) range:descriptionRange];
@@ -344,11 +344,10 @@
     NSNumber *height = @(size.height);
     
     NSMutableArray *badges = [NSMutableArray array];
-    BOOL shouldDimPost = read && dimReadPosts;
 
     UIColor *privateColor;
     UIColor *starredColor;
-    if (shouldDimPost) {
+    if (dimmed) {
         privateColor = HEX(0xddddddff);
         starredColor = HEX(0xddddddff);
     }
@@ -392,7 +391,7 @@
                 }
             }
             else {
-                if (shouldDimPost) {
+                if (dimmed) {
                     options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
                 }
             }
@@ -407,7 +406,7 @@
     metadata.string = attributedString;
     metadata.badges = badges;
     
-    [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed width:width];
+    [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed dimmed:dimmed width:width];
     return metadata;
 }
 

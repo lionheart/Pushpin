@@ -198,6 +198,13 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
     else if (sender == self.autoCapitalizationSwitch) {
         [[AppDelegate sharedDelegate] setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
     }
+    
+    if (sender == self.compressPostsSwitch) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkCompressSettingUpdate object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+    }
 }
 
 @end
