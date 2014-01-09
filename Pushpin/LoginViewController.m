@@ -211,10 +211,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    [dataSource updateBookmarksWithSuccess:^{
                                                        dispatch_async(dispatch_get_main_queue(), ^{
                                                            [self.messageUpdateTimer invalidate];
-                                                           delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                                           [self presentViewController:delegate.navigationController
-                                                                              animated:YES
-                                                                            completion:nil];
+
+                                                           if ([UIApplication isIPad]) {
+                                                               [delegate.window setRootViewController:delegate.splitViewController];
+                                                           }
+                                                           else {
+                                                               delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                                               [self presentViewController:delegate.navigationController
+                                                                                  animated:YES
+                                                                                completion:nil];
+                                                           }
                                                        });
                                                    }
                                                                                   failure:nil
@@ -489,7 +495,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 }
 
 - (BOOL)is1PasswordAvailable {
-    return YES;
     return [[UIApplication sharedApplication] canOpenURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
 }
 
