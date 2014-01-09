@@ -11,6 +11,7 @@
 #import "PPTheme.h"
 #import "AppDelegate.h"
 #import "PPPinboardMetadataCache.h"
+#import "PPBadgeWrapperView.h"
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <LHSCategoryCollection/NSAttributedString+Attributes.h>
@@ -337,12 +338,6 @@
         [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x585858ff) range:descriptionRange];
     }
     
-    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
-    CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
-                                                   withConstraints:CGSizeMake(width - 20, CGFLOAT_MAX)
-                                            limitedToNumberOfLines:0];
-    NSNumber *height = @(size.height);
-    
     NSMutableArray *badges = [NSMutableArray array];
 
     UIColor *privateColor;
@@ -399,6 +394,17 @@
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
         }
     }
+    
+    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
+    CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
+                                                   withConstraints:CGSizeMake(width - 20, CGFLOAT_MAX)
+                                            limitedToNumberOfLines:0];
+    
+    __block NSNumber *height;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) } compressed:compressed];
+        height = @(size.height + [badgeWrapperView calculateHeightForWidth:(width - 20)]);
+    });
     
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = height;
