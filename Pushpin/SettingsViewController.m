@@ -354,21 +354,15 @@ static NSString *CellIdentifier = @"Cell";
             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
             if ([UIApplication isIPad]) {
-                [self.parentViewController dismissViewControllerAnimated:YES completion:^{
-                    [(UIViewController *)self.parentViewController presentViewController:delegate.loginViewController
-                                                                                animated:YES
-                                                                              completion:nil];
-
-                    [[AppDelegate sharedDelegate] migrateDatabase];
-                }];
+                [delegate.window setRootViewController:delegate.loginViewController];
             }
             else {
                 [self presentViewController:delegate.loginViewController
                                    animated:YES
                                  completion:nil];
-                
-                [[AppDelegate sharedDelegate] migrateDatabase];
             }
+
+            [[AppDelegate sharedDelegate] migrateDatabase];
         }
     }
     else if (alertView == self.instapaperAlertView) {
