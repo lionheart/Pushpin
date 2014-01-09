@@ -813,6 +813,7 @@ static NSInteger kTitleHeight = 40;
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (self.toolbarConstraint.constant > kToolbarHeight / 2.) {
+        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
         [self showToolbarAnimated:YES];
     }
     else {
