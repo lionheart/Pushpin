@@ -202,38 +202,19 @@
                                        
                                        self.posts = newPosts;
                                        
-                                       NSMutableArray *newStrings = [NSMutableArray array];
-                                       NSMutableArray *newHeights = [NSMutableArray array];
-                                       NSMutableArray *newLinks = [NSMutableArray array];
-                                       NSMutableArray *newBadges = [NSMutableArray array];
-                                       
-                                       NSMutableArray *newCompressedStrings = [NSMutableArray array];
-                                       NSMutableArray *newCompressedHeights = [NSMutableArray array];
-                                       NSMutableArray *newCompressedLinks = [NSMutableArray array];
-                                       NSMutableArray *newCompressedBadges = [NSMutableArray array];
+                                       NSMutableArray *newMetadata = [NSMutableArray array];
+                                       NSMutableArray *newCompressedMetadata = [NSMutableArray array];
+
                                        for (NSDictionary *post in newPosts) {
                                            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
-                                           [newHeights addObject:metadata.height];
-                                           [newStrings addObject:metadata.string];
-                                           [newLinks addObject:metadata.links];
-                                           [newBadges addObject:metadata.badges];
+                                           [newMetadata addObject:metadata];
                                            
                                            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
-                                           [newCompressedHeights addObject:compressedMetadata.height];
-                                           [newCompressedStrings addObject:compressedMetadata.string];
-                                           [newCompressedLinks addObject:compressedMetadata.links];
-                                           [newCompressedBadges addObject:compressedMetadata.badges];
+                                           [newCompressedMetadata addObject:compressedMetadata];
                                        }
                                        
-                                       self.strings = newStrings;
-                                       self.heights = newHeights;
-                                       self.links = newLinks;
-                                       self.badges = newBadges;
-                                       
-                                       self.compressedStrings = newCompressedStrings;
-                                       self.compressedHeights = newCompressedHeights;
-                                       self.compressedLinks = newCompressedLinks;
-                                       self.compressedBadges = newCompressedBadges;
+                                       self.metadata = newMetadata;
+                                       self.compressedMetadata = newCompressedMetadata;
                                        
                                        if (success != nil) {
                                            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
@@ -276,31 +257,28 @@
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
-    return [self.compressedHeights[index] floatValue];
-}
-
-- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index {
-    return self.compressedLinks[index];
+    PostMetadata *metadata = self.compressedMetadata[index];
+    return [metadata.height floatValue];
 }
 
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
-    return self.compressedStrings[index];
+    PostMetadata *metadata = self.compressedMetadata[index];
+    return metadata.string;
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
-    return self.strings[index];
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.string;
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
-    return [self.heights[index] floatValue];
-}
-
-- (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    return self.links[index];
+    PostMetadata *metadata = self.metadata[index];
+    return [metadata.height floatValue];
 }
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index {
-    return self.badges[index];
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.badges;
 }
 
 - (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index {

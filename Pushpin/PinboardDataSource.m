@@ -38,13 +38,12 @@ static BOOL kPinboardSyncInProgress = NO;
     self = [super init];
     if (self) {
         self.totalNumberOfPosts = 0;
-        self.posts = [NSMutableArray array];
-        self.strings = [NSMutableArray array];
-        self.heights = [NSMutableArray array];
-        self.links = [NSMutableArray array];
         
         // Keys are hash:meta pairs
         self.cache = [PPPinboardMetadataCache sharedCache];
+        self.metadata = [NSMutableArray array];
+        self.compressedMetadata = [NSMutableArray array];
+        self.posts = [NSMutableArray array];
 
         self.tags = @[];
         self.untagged = kPinboardFilterNone;
@@ -212,7 +211,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSInteger)numberOfPosts {
-    return self.posts.count;
+    return self.metadata.count;
 }
 
 - (NSInteger)totalNumberOfPosts {
@@ -705,30 +704,17 @@ static BOOL kPinboardSyncInProgress = NO;
             [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:0]];
         }
         
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        NSMutableArray *newLinks = [NSMutableArray array];
-        NSMutableArray *newBadges = [NSMutableArray array];
-        
-        NSMutableArray *newCompressedStrings = [NSMutableArray array];
-        NSMutableArray *newCompressedHeights = [NSMutableArray array];
-        NSMutableArray *newCompressedLinks = [NSMutableArray array];
-        NSMutableArray *newCompressedBadges = [NSMutableArray array];
+        NSMutableArray *newMetadata = [NSMutableArray array];
+        NSMutableArray *newCompressedMetadata = [NSMutableArray array];
 
         for (NSDictionary *post in newPosts) {
             PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency];
-            [newHeights addObject:metadata.height];
-            [newStrings addObject:metadata.string];
-            [newLinks addObject:metadata.links];
-            [newBadges addObject:metadata.badges];
-            
+            [newMetadata addObject:metadata];
+
             PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency];
-            [newCompressedHeights addObject:compressedMetadata.height];
-            [newCompressedStrings addObject:compressedMetadata.string];
-            [newCompressedLinks addObject:compressedMetadata.links];
-            [newCompressedBadges addObject:compressedMetadata.badges];
+            [newCompressedMetadata addObject:compressedMetadata];
         }
-        
+
         // We run this block to make sure that these results should be the latest on "file"
         BOOL stop = NO;
         
@@ -742,15 +728,9 @@ static BOOL kPinboardSyncInProgress = NO;
         }
         else {
             self.posts = newPosts;
-            self.strings = newStrings;
-            self.heights = newHeights;
-            self.links = newLinks;
-            self.badges = newBadges;
             
-            self.compressedStrings = newCompressedStrings;
-            self.compressedHeights = newCompressedHeights;
-            self.compressedLinks = newCompressedLinks;
-            self.compressedBadges = newCompressedBadges;
+            self.metadata = newMetadata;
+            self.compressedMetadata = newCompressedMetadata;
 
             if (success) {
                 success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
@@ -932,9 +912,6 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [self.posts removeObjectAtIndex:index];
-                [self.heights removeObjectAtIndex:index];
-                [self.strings removeObjectAtIndex:index];
-                [self.links removeObjectAtIndex:index];
                 callback(indexPath);
             });
         };
@@ -1003,31 +980,28 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
-    return self.strings[index];
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.string;
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
-    return [self.heights[index] floatValue];
-}
-
-- (NSArray *)linksForPostAtIndex:(NSInteger)index {
-    return self.links[index];
+    PostMetadata *metadata = self.metadata[index];
+    return [metadata.height floatValue];
 }
 
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
-    return [self.compressedHeights[index] floatValue];
-}
-
-- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index {
-    return self.compressedLinks[index];
+    PostMetadata *metadata = self.compressedMetadata[index];
+    return [metadata.height floatValue];
 }
 
 - (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
-    return self.compressedStrings[index];
+    PostMetadata *metadata = self.compressedMetadata[index];
+    return metadata.string;
 }
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index {
-    return self.badges[index];
+    PostMetadata *metadata = self.compressedMetadata[index];
+    return metadata.badges;
 }
 
 - (BOOL)supportsTagDrilldown {

@@ -61,20 +61,20 @@
         CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes:linkAttributes];
         CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes:descriptionAttributes];
 
-        self.titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 10, CGFLOAT_MAX)];
-        self.linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 10, CGFLOAT_MAX)];
-        self.descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 10, CGFLOAT_MAX)];
+        self.titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 20, CGFLOAT_MAX)];
+        self.linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 20, CGFLOAT_MAX)];
+        self.descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 20, CGFLOAT_MAX)];
         
         self.titleLayoutManager = [[NSLayoutManager alloc] init];
-        self.titleLayoutManager.hyphenationFactor = 1.0;
+        self.titleLayoutManager.hyphenationFactor = 0;
         [self.titleLayoutManager addTextContainer:self.titleTextContainer];
         
         self.linkLayoutManager = [[NSLayoutManager alloc] init];
-        self.linkLayoutManager.hyphenationFactor = 1.0;
+        self.linkLayoutManager.hyphenationFactor = 0;
         [self.linkLayoutManager addTextContainer:self.linkTextContainer];
-        
+
         self.descriptionLayoutManager = [[NSLayoutManager alloc] init];
-        self.descriptionLayoutManager.hyphenationFactor = 1.0;
+        self.descriptionLayoutManager.hyphenationFactor = 0;
         [self.descriptionLayoutManager addTextContainer:self.descriptionTextContainer];
         
         self.titleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
@@ -402,16 +402,15 @@
     
     __block NSNumber *height;
     dispatch_sync(dispatch_get_main_queue(), ^{
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) } compressed:compressed];
-        height = @(size.height + [badgeWrapperView calculateHeightForWidth:(width - 20)]);
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
+        height = @(size.height + [badgeWrapperView calculateHeightForWidth:(width - 20)] + 10);
     });
     
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = height;
-    metadata.links = @[];
     metadata.string = attributedString;
     metadata.badges = badges;
-    
+
     [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed dimmed:dimmed width:width];
     return metadata;
 }

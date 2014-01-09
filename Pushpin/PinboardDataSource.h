@@ -24,19 +24,13 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;
-@property (nonatomic, strong) NSArray *compressedBadges;
-@property (nonatomic, strong) NSArray *compressedHeights;
-@property (nonatomic, strong) NSArray *compressedLinks;
-@property (nonatomic, strong) NSArray *compressedStrings;
 @property (nonatomic, strong) NSArray *urls;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *enUSPOSIXDateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
-@property (nonatomic, strong) NSMutableArray *badges;
-@property (nonatomic, strong) NSMutableArray *heights;
-@property (nonatomic, strong) NSMutableArray *links;
 @property (nonatomic, strong) NSMutableArray *posts;
-@property (nonatomic, strong) NSMutableArray *strings;
+@property (nonatomic, strong) NSMutableArray *metadata;
+@property (nonatomic, strong) NSMutableArray *compressedMetadata;
 @property (nonatomic) BOOL shouldSearchFullText;
 
 #pragma mark Query
