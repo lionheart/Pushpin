@@ -64,7 +64,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
 - (void)updateTitleViewText;
 
-- (void)updateSearchResultsForSearchPerformedWithTimer:(NSTimer *)timer;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
 @end
@@ -620,13 +619,9 @@ static NSInteger kToolbarHeight = 44;
                         callback();
                     }
                 });
-            } failure:nil width:CGRectGetWidth(self.view.frame)];
+            } failure:nil width:CGRectGetWidth(self.tableView.frame)];
         });
     }
-}
-
-- (void)updateSearchResultsForSearchPerformedWithTimer:(NSTimer *)timer {
-    [self updateSearchResultsForSearchPerformedAtTime:timer.userInfo[@"time"]];
 }
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
@@ -659,7 +654,7 @@ static NSInteger kToolbarHeight = 44;
             }
         } cancel:^(BOOL *stop) {
             *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
-        } width:CGRectGetWidth(self.view.frame)];
+        } width:CGRectGetWidth(self.tableView.frame)];
     }
 }
 
@@ -845,15 +840,16 @@ static NSInteger kToolbarHeight = 44;
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
     if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row] + 10;
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
     }
 
-    return [dataSource heightForPostAtIndex:indexPath.row] + 10;
+    return [dataSource heightForPostAtIndex:indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
     cell.delegate = self;
+
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
     [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
@@ -1393,8 +1389,14 @@ static NSInteger kToolbarHeight = 44;
             if (self.fullTextSearchTimer) {
                 [self.fullTextSearchTimer invalidate];
             }
+            
+            NSMethodSignature *signature = [self methodSignatureForSelector:@selector(updateSearchResultsForSearchPerformedAtTime:)];
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+            invocation.selector = @selector(updateSearchResultsForSearchPerformedAtTime:);
+            invocation.target = self;
+            [invocation setArgument:(__bridge void *)(self.latestSearchTime) atIndex:0];
 
-            self.fullTextSearchTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(updateSearchResultsForSearchPerformedWithTimer:) userInfo:@{@"time": [self.latestSearchTime copy]} repeats:NO];
+            self.fullTextSearchTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 invocation:invocation repeats:NO];
         }
         else {
             [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
@@ -1477,11 +1479,12 @@ static NSInteger kToolbarHeight = 44;
         kGenericPostViewControllerIsProcessingPosts = YES;
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+                [self.tableView beginUpdates];
+                [self.tableView endUpdates];
                 kGenericPostViewControllerIsProcessingPosts = NO;
             });
         }
-                                          failure:nil width:CGRectGetWidth(self.view.frame)];;
+                                          failure:nil width:CGRectGetWidth(self.tableView.frame)];;
     }
 }
 
@@ -1511,7 +1514,7 @@ static NSInteger kToolbarHeight = 44;
             });
         } failure:^(NSError *error) {
             kGenericPostViewControllerIsProcessingPosts = NO;
-        } width:CGRectGetWidth(self.view.frame)];
+        } width:CGRectGetWidth(self.tableView.frame)];
     }
 }
 

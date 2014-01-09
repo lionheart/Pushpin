@@ -23,11 +23,14 @@
 
 @protocol GenericPostDataSource <NSObject>
 
-- (NSInteger)numberOfPosts;
-- (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSArray *)actionsForPost:(NSDictionary *)post;
-- (NSArray *)linksForPostAtIndex:(NSInteger)index;
+- (NSInteger)numberOfPosts;
+
+- (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
+
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
 
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
@@ -57,9 +60,6 @@
                       cancel:(void (^)(BOOL *))cancel
                        width:(CGFloat)width;
 
-- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
-- (NSArray *)compressedLinksForPostAtIndex:(NSInteger)index;
-- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index;

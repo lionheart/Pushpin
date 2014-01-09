@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-static dispatch_once_t dispatchOnceForWidth(CGFloat width);
+@class PPBadgeWrapperView;
 
 @interface PostMetadata : NSObject
 
 @property (nonatomic, strong) NSAttributedString *string;
 @property (nonatomic, strong) NSNumber *height;
-@property (nonatomic, strong) NSArray *links;
 @property (nonatomic, strong) NSArray *badges;
+@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
                        compressed:(BOOL)compressed

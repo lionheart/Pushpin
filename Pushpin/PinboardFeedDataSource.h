@@ -15,14 +15,8 @@
 
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSArray *components;
-@property (nonatomic, strong) NSArray *heights;
-@property (nonatomic, strong) NSArray *strings;
-@property (nonatomic, strong) NSArray *links;
-@property (nonatomic, strong) NSArray *badges;
-@property (nonatomic, strong) NSArray *compressedStrings;
-@property (nonatomic, strong) NSArray *compressedHeights;
-@property (nonatomic, strong) NSArray *compressedLinks;
-@property (nonatomic, strong) NSArray *compressedBadges;
+@property (nonatomic, strong) NSArray *metadata;
+@property (nonatomic, strong) NSArray *compressedMetadata;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
 @property (nonatomic, strong) NSMutableArray *expandedIndices;
