@@ -52,6 +52,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - UIViewController
 
+
+- (BOOL)disablesAutomaticKeyboardDismissal {
+    return NO;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return YES;
 }
@@ -83,16 +88,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    self.tableView.backgroundColor = [UIColor blackColor];
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
     
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     [self.view addConstraint:self.bottomConstraint];
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.autocompleteInProgress = NO;
     self.unfilteredPopularTags = [NSMutableArray array];
     self.unfilteredRecommendedTags = [NSMutableArray array];
@@ -227,9 +231,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (section == 1) {
         return @"Current Tags";
     }
-    else {
-        return self.bookmarkData[@"title"];
-    }
+    return nil;
 }
 
 #pragma mark - UITableViewDelegate
@@ -765,21 +767,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - Notification Handlers
 
 - (void)keyboardDidShow:(NSNotification *)sender {
-    if (![UIApplication isIPad]) {
-        CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-        self.bottomConstraint.constant = -CGRectGetHeight(frame);
-        [self.view layoutIfNeeded];
-    }
+    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect newFrame = [self.view convertRect:frame fromView:[AppDelegate sharedDelegate].window];
+    self.bottomConstraint.constant = newFrame.origin.y - CGRectGetHeight(self.view.frame);
+    [self.view layoutIfNeeded];
 }
 
 - (void)keyboardDidHide:(NSNotification *)sender {
     self.autocompleteInProgress = NO;
-    if (![UIApplication isIPad]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.bottomConstraint.constant = 0;
-            [self.view layoutIfNeeded];
-        });
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.bottomConstraint.constant = 0;
+        [self.view layoutIfNeeded];
+    });
 }
 
 - (NSInteger)maxTagsToAutocomplete {
