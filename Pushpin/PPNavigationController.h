@@ -11,4 +11,6 @@
 
 @interface PPNavigationController : UINavigationController <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
+@property (nonatomic, strong) UIBarButtonItem *splitViewControllerBarButtonItem;
+
 @end
