@@ -21,7 +21,10 @@ static NSInteger kEditButtonOuterMargin = 20;
 
 @interface PPBookmarkCell ()
 
-@property (nonatomic, strong) TTTAttributedLabel *textView;
+@property (nonatomic, strong) TTTAttributedLabel *titleLabel;
+@property (nonatomic, strong) TTTAttributedLabel *linkLabel;
+@property (nonatomic, strong) TTTAttributedLabel *descriptionLabel;
+
 @property (nonatomic, weak) id<GenericPostDataSource> dataSource;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIButton *editButton;
@@ -37,19 +40,38 @@ static NSInteger kEditButtonOuterMargin = 20;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
++ (TTTAttributedLabel *)bookmarkAttributedLabelForWidth:(CGFloat)width;
+
 @end
 
 @implementation PPBookmarkCell
 
 #pragma mark - Debugging Helpers
 
++ (TTTAttributedLabel *)bookmarkAttributedLabelForWidth:(CGFloat)width {
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.preferredMaxLayoutWidth = width;
+    label.opaque = YES;
+    label.backgroundColor = [PPTheme bookmarkBackgroundColor];
+    label.userInteractionEnabled = NO;
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    return label;
+}
+
 - (id)debugQuickLookObject {
-    if (self.compressed && [self.dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
-        return [self.dataSource compressedAttributedStringForPostAtIndex:self.index];
-    }
-    else {
-        return [self.dataSource attributedStringForPostAtIndex:self.index];
-    }
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@""];
+    NSAttributedString *title = [self.dataSource titleForPostAtIndex:self.index];
+    NSAttributedString *link = [self.dataSource linkForPostAtIndex:self.index];
+    NSAttributedString *description = [self.dataSource descriptionForPostAtIndex:self.index];
+    [string appendAttributedString:title];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+    [string appendAttributedString:link];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+    [string appendAttributedString:description];
+    return string;
 }
 
 - (void)didTransitionToState:(UITableViewCellStateMask)state {
@@ -75,6 +97,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     
     [self.contentView lhs_removeSubviews];
     self.contentView.clipsToBounds = YES;
+    self.clipsToBounds = YES;
 
     self.index = index;
     self.didReachDeleteThreshold = NO;
@@ -84,14 +107,6 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizer.delegate = self;
     [self.contentView addGestureRecognizer:self.panGestureRecognizer];
-
-    NSAttributedString *string;
-    if (compressed && [dataSource respondsToSelector:@selector(compressedAttributedStringForPostAtIndex:)]) {
-        string = [dataSource compressedAttributedStringForPostAtIndex:index];
-    }
-    else {
-        string = [dataSource attributedStringForPostAtIndex:index];
-    }
     
     self.backgroundColor = [PPTheme bookmarkBackgroundColor];
     self.contentView.backgroundColor = [PPTheme bookmarkBackgroundColor];
@@ -106,17 +121,26 @@ static NSInteger kEditButtonOuterMargin = 20;
                                  (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(5)};
     });
     
-    self.textView = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
-    self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.textView.numberOfLines = 0;
-    self.textView.preferredMaxLayoutWidth = [UIApplication currentSize].width - 20;
-    self.textView.opaque = YES;
-    self.textView.backgroundColor = [PPTheme bookmarkBackgroundColor];
-    self.textView.userInteractionEnabled = NO;
-    self.textView.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    self.textView.linkAttributes = linkAttributes;
-    self.textView.activeLinkAttributes = activeLinkAttributes;
-    self.textView.text = string;
+    CGFloat width = CGRectGetWidth(self.frame) - 20;
+    NSMutableAttributedString *title = [[dataSource titleForPostAtIndex:index] mutableCopy];
+    NSMutableAttributedString *link = [[dataSource linkForPostAtIndex:index] mutableCopy];
+    NSMutableAttributedString *description = [[dataSource descriptionForPostAtIndex:index] mutableCopy];
+    
+    self.titleLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
+    self.titleLabel.text = title;
+    
+    self.linkLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
+    self.linkLabel.text = link;
+    self.linkLabel.numberOfLines = 1;
+    self.linkLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    
+    self.descriptionLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
+    self.descriptionLabel.text = description;
+    
+    if (compressed) {
+        self.titleLabel.numberOfLines = 1;
+        self.descriptionLabel.numberOfLines = 2;
+    }
 
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);
 
@@ -136,18 +160,24 @@ static NSInteger kEditButtonOuterMargin = 20;
     mainContentView.translatesAutoresizingMaskIntoConstraints = NO;
     mainContentView.backgroundColor = [UIColor whiteColor];
 
-    [mainContentView addSubview:self.textView];
+    [mainContentView addSubview:self.titleLabel];
+    [mainContentView addSubview:self.linkLabel];
+    [mainContentView addSubview:self.descriptionLabel];
+
     [self.contentView addSubview:mainContentView];
     [self.contentView addSubview:self.deleteButton];
     [self.contentView addSubview:self.editButton];
     
-    NSDictionary *views = @{@"main": mainContentView,
-                            @"edit": self.editButton,
-                            @"delete": self.deleteButton,
-                            @"text": self.textView };
+    NSMutableDictionary *views = [@{@"main": mainContentView,
+                                    @"edit": self.editButton,
+                                    @"delete": self.deleteButton,
+                                    @"title": self.titleLabel,
+                                    @"description": self.descriptionLabel,
+                                    @"link": self.linkLabel } mutableCopy];
     
     NSDictionary *metrics = @{@"innerMargin": @(kEditButtonInnerMargin),
                               @"outerMargin": @(kEditButtonOuterMargin) };
+
     [self.contentView lhs_centerVerticallyForView:self.deleteButton height:23];
     [self.contentView lhs_centerVerticallyForView:self.editButton height:20];
     [self.contentView lhs_addConstraints:@"H:[edit(16)]-(>=innerMargin)-[main]" metrics:metrics views:views];
@@ -161,7 +191,9 @@ static NSInteger kEditButtonOuterMargin = 20;
     
     [self.contentView addConstraints:@[self.mainWidthConstraint, self.leftPositionConstraint]];
 
-    [mainContentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:views];
+    [mainContentView lhs_addConstraints:@"H:|-10-[title]-10-|" views:views];
+    [mainContentView lhs_addConstraints:@"H:|-10-[link]-10-|" views:views];
+    [mainContentView lhs_addConstraints:@"H:|-10-[description]-10-|" views:views];
     
     NSArray *badges = [dataSource badgesForPostAtIndex:index];
     if (badges.count > 0) {
@@ -171,18 +203,19 @@ static NSInteger kEditButtonOuterMargin = 20;
         else {
             self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
         }
+        views[@"badges"] = self.badgeWrapperView;
 
         self.badgeWrapperView.tag = index;
         self.badgeWrapperView.delegate = badgeDelegate;
-        CGFloat height = [self.badgeWrapperView calculateHeightForWidth:CGRectGetWidth(self.contentView.bounds)];
+        CGFloat height = [self.badgeWrapperView calculateHeightForWidth:width];
         self.badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
         
         [mainContentView addSubview:self.badgeWrapperView];
-        [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
-        [mainContentView lhs_addConstraints:@"V:|-5-[text]-3-[badges(height)]" metrics:@{@"height": @(height)} views:@{@"text": self.textView, @"badges": self.badgeWrapperView }];
+        [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title][link][description]-3-[badges(height)]" metrics:@{@"height": @(height)} views:views];
     }
     else {
-        [mainContentView lhs_addConstraints:@"V:|-5-[text]" views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title][link][description]" views:views];
     }
 }
 

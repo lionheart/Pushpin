@@ -261,14 +261,19 @@
     return [metadata.height floatValue];
 }
 
-- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
-    PostMetadata *metadata = self.compressedMetadata[index];
-    return metadata.string;
+- (NSAttributedString *)titleForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.titleString;
 }
 
-- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+- (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index {
     PostMetadata *metadata = self.metadata[index];
-    return metadata.string;
+    return metadata.descriptionString;
+}
+
+- (NSAttributedString *)linkForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.linkString;
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {

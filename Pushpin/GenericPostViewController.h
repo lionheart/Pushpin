@@ -26,11 +26,12 @@
 - (NSArray *)actionsForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;
 
-- (CGFloat)heightForPostAtIndex:(NSInteger)index;
-- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)titleForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index;
+- (NSAttributedString *)linkForPostAtIndex:(NSInteger)index;
 
+- (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
-- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index;
 
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
