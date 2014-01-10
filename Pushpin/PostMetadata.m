@@ -12,9 +12,9 @@
 #import "AppDelegate.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPBadgeWrapperView.h"
+#import "PPBookmarkCell.h"
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
-#import <LHSCategoryCollection/NSAttributedString+Attributes.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPBookmarkLayoutItem : NSObject <NSCopying>
@@ -149,7 +149,7 @@
     }
     
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    
+
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
     if ([title isEqualToString:@""]) {
         title = @"Untitled";
@@ -166,7 +166,8 @@
     if ([linkHost hasPrefix:@"www."]) {
         linkHost = [linkHost stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
     }
-    NSRange linkRange = NSMakeRange((titleRange.location + titleRange.length) + 1, linkHost.length);
+
+    NSRange linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkHost.length);
     [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
     
     NSRange descriptionRange;
@@ -174,168 +175,76 @@
         descriptionRange = NSMakeRange(NSNotFound, 0);
     }
     else {
-        descriptionRange = NSMakeRange((linkRange.location + linkRange.length) + 1, [description length]);
+        descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
-    
-    NSRange tagRange;
-    if ([tags isEqualToString:emptyString]) {
-        tagRange = NSMakeRange(NSNotFound, 0);
-    }
-    else {
-        // Set the offset to one because of the line break between the title and tags
-        NSInteger offset = 1;
-        if (descriptionRange.location != NSNotFound) {
-            // Another line break is included if the description isn't empty
-            offset++;
-        }
-        tagRange = NSMakeRange(titleRange.length + descriptionRange.length + offset, tags.length);
-    }
-    
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    
-    NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
-    NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme descriptionFont]};
-    
+
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.paragraphSpacingBefore = 3;
     paragraphStyle.paragraphSpacing = 0;
     paragraphStyle.lineHeightMultiple = 0.7;
-    NSDictionary *linkAttributes = @{NSFontAttributeName: [PPTheme urlFont],
-                                     NSParagraphStyleAttributeName: paragraphStyle
-                                     };
     
-    [attributedString addAttributes:titleAttributes range:titleRange];
-    [attributedString addAttributes:descriptionAttributes range:descriptionRange];
-    [attributedString addAttributes:linkAttributes range:linkRange];
-    
-    [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x33353Bff) range:attributedString.fullRange];
-    
-    // Calculate our shorter strings if we're compressed
-    if (compressed) {
-        PPBookmarkLayoutItem *layout = [self layoutObjectCache][@(width)];
-        if (!layout) {
-            layout = [PPBookmarkLayoutItem layoutItemForWidth:width];
-            [self layoutObjectCache][@(width)] = layout;
-        };
-        
-        NSRange titleLineRange, descriptionLineRange, linkLineRange;
+    NSMutableParagraphStyle *defaultParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    defaultParagraphStyle.paragraphSpacingBefore = 0;
+    defaultParagraphStyle.headIndent = 0;
+    defaultParagraphStyle.tailIndent = 0;
+    defaultParagraphStyle.lineHeightMultiple = 1;
+    defaultParagraphStyle.hyphenationFactor = 0;
+    defaultParagraphStyle.lineSpacing = 1;
+    defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
-        // Get the compressed substrings
-        NSAttributedString *titleAttributedString, *descriptionAttributedString, *linkAttributedString;
-        
-        titleAttributedString = [attributedString attributedSubstringFromRange:titleRange];
-        [layout.titleTextStorage setAttributedString:titleAttributedString];
+    NSMutableDictionary *linkAttributes = [@{NSFontAttributeName: [PPTheme urlFont],
+                                             NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
+    
+    NSMutableDictionary *titleAttributes = [@{NSFontAttributeName: [PPTheme titleFont],
+                                              NSParagraphStyleAttributeName: defaultParagraphStyle } mutableCopy];
 
-        // Throws _NSLayoutTreeLineFragmentRectForGlyphAtIndex invalid glyph index 0 when title is of length 0
-        [layout.titleLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&titleLineRange];
-        
-        if (descriptionRange.location != NSNotFound) {
-            descriptionAttributedString = [attributedString attributedSubstringFromRange:descriptionRange];
-            [layout.descriptionTextStorage setAttributedString:descriptionAttributedString];
-            
-            descriptionLineRange = NSMakeRange(0, 0);
-            NSUInteger index, numberOfLines, numberOfGlyphs = [layout.descriptionLayoutManager numberOfGlyphs];
-            NSRange tempLineRange;
-            for (numberOfLines=0, index=0; index < numberOfGlyphs; numberOfLines++){
-                [layout.descriptionLayoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&tempLineRange];
-                descriptionLineRange.length += tempLineRange.length;
-                if (numberOfLines >= [PPTheme maxNumberOfLinesForCompressedDescriptions] - 1) {
-                    break;
-                }
-                index = NSMaxRange(tempLineRange);
-            }
-            descriptionLineRange.length = MIN(descriptionLineRange.length, descriptionAttributedString.length);
-        }
-        
-        // Set this to hide links
-        // linkRange = NSMakeRange(NSNotFound, 0);
-        if (linkRange.location != NSNotFound) {
-            linkAttributedString = [attributedString attributedSubstringFromRange:linkRange];
-            [layout.linkTextStorage setAttributedString:linkAttributedString];
-            [layout.linkLayoutManager lineFragmentRectForGlyphAtIndex:0 effectiveRange:&linkLineRange];
-        }
-        
-        // Re-create the main string
-        NSAttributedString *tempAttributedString;
-        NSString *tempString;
-        NSString *trimmedString;
-        NSInteger characterOffset = 0;
-        
-        if (titleAttributedString && titleLineRange.location != NSNotFound) {
-            tempString = [[titleAttributedString attributedSubstringFromRange:titleLineRange] string];
-            trimmedString = [tempString stringByTrimmingCharactersInSet:whitespace];
-            characterOffset = trimmedString.length - tempString.length;
-            
-            tempAttributedString = [[NSAttributedString alloc] initWithString:trimmedString attributes:titleAttributes];
-            if (titleLineRange.length < titleRange.length) {
-                tempAttributedString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempAttributedString offset:&characterOffset];
-                attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempAttributedString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
-                characterOffset++;
-            }
-            else {
-                attributedString = [NSMutableAttributedString attributedStringWithAttributedString:tempAttributedString];
-            }
-            
-            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:newLine]];
-            characterOffset++;
-            
-            titleRange = NSMakeRange(0, titleLineRange.length + characterOffset);
-        }
-        
-        if (linkAttributedString && linkLineRange.location != NSNotFound) {
-            tempString = [[[linkAttributedString attributedSubstringFromRange:linkLineRange] string] stringByTrimmingCharactersInSet:whitespace];
-            trimmedString = [tempString stringByTrimmingCharactersInSet:whitespace];
-            characterOffset = trimmedString.length - tempString.length;
-            
-            tempAttributedString = [[NSAttributedString alloc] initWithString:trimmedString attributes:linkAttributes];
-            if (linkLineRange.length < linkRange.length) {
-                tempAttributedString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempAttributedString offset:&characterOffset];
-                [attributedString appendAttributedString:tempAttributedString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
-                characterOffset++;
-            }
-            else {
-                [attributedString appendAttributedString:tempAttributedString];
-            }
-            
-            [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:newLine]];
-            characterOffset++;
-            
-            linkRange = NSMakeRange(titleRange.length, linkLineRange.length + characterOffset);
-        }
-        
-        if (descriptionAttributedString && descriptionLineRange.location != NSNotFound) {
-            tempString = [[[descriptionAttributedString attributedSubstringFromRange:descriptionLineRange] string] stringByTrimmingCharactersInSet:whitespace];
-            trimmedString = [tempString stringByTrimmingCharactersInSet:whitespace];
-            characterOffset = trimmedString.length - tempString.length;
-            
-            tempAttributedString = [[NSAttributedString alloc] initWithString:trimmedString attributes:descriptionAttributes];
-            
-            if (descriptionLineRange.length < descriptionRange.length) {
-                tempAttributedString = [self stringByTrimmingTrailingPunctuationFromAttributedString:tempAttributedString offset:&characterOffset];
-                [attributedString appendAttributedString:tempAttributedString];
-                [attributedString appendAttributedString:[NSAttributedString attributedStringWithString:ellipsis]];
-                characterOffset++;
-            }
-            else {
-                [attributedString appendAttributedString:tempAttributedString];
-            }
-            
-            descriptionRange = NSMakeRange(titleRange.length + linkRange.length, attributedString.fullRange.length - titleRange.length - linkRange.length);
-        }
-    }
+    NSMutableDictionary *descriptionAttributes = [@{NSFontAttributeName: [PPTheme descriptionFont],
+                                                    NSParagraphStyleAttributeName: defaultParagraphStyle} mutableCopy];
 
     if (dimmed) {
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xb3b3b3ff) range:titleRange];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xcdcdcdff) range:linkRange];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x96989Dff) range:descriptionRange];
+        titleAttributes[NSForegroundColorAttributeName] = HEX(0xb3b3b3ff);
+        linkAttributes[NSForegroundColorAttributeName] = HEX(0xcdcdcdff);
+        descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
     }
     else {
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x000000ff) range:titleRange];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0xb4b6b9ff) range:linkRange];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:HEX(0x585858ff) range:descriptionRange];
+        titleAttributes[NSForegroundColorAttributeName] = HEX(0x000000ff);
+        linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
+        descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
+    }
+
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
+    NSAttributedString *linkString = [[NSAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
+    NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
+    
+    CGSize titleSize;
+    CGSize linkSize;
+    CGSize descriptionSize;
+    CGSize constraintSize = CGSizeMake(width - 22, CGFLOAT_MAX);
+
+    // Calculate our shorter strings if we're compressed
+    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
+    if (compressed) {
+        titleSize = [TTTAttributedLabel sizeThatFitsAttributedString:titleString
+                                                     withConstraints:constraintSize
+                                              limitedToNumberOfLines:1];
+        linkSize = [TTTAttributedLabel sizeThatFitsAttributedString:linkString
+                                                    withConstraints:constraintSize
+                                             limitedToNumberOfLines:1];
+        descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
+                                                           withConstraints:constraintSize
+                                                    limitedToNumberOfLines:2];
+    }
+    else {
+        titleSize = [TTTAttributedLabel sizeThatFitsAttributedString:titleString
+                                                     withConstraints:constraintSize
+                                              limitedToNumberOfLines:0];
+        linkSize = [TTTAttributedLabel sizeThatFitsAttributedString:linkString
+                                                    withConstraints:constraintSize
+                                             limitedToNumberOfLines:1];
+        descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
+                                                           withConstraints:constraintSize
+                                                    limitedToNumberOfLines:0];
     }
     
     NSMutableArray *badges = [NSMutableArray array];
@@ -394,21 +303,19 @@
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
         }
     }
-    
-    // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
-    CGSize size = [TTTAttributedLabel sizeThatFitsAttributedString:attributedString
-                                                   withConstraints:CGSizeMake(width - 20, CGFLOAT_MAX)
-                                            limitedToNumberOfLines:0];
-    
+
     __block NSNumber *height;
     dispatch_sync(dispatch_get_main_queue(), ^{
         PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
-        height = @(size.height + [badgeWrapperView calculateHeightForWidth:(width - 20)] + 10);
+        CGFloat badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
+        height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 10);
     });
-    
+
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = height;
-    metadata.string = attributedString;
+    metadata.titleString = titleString;
+    metadata.descriptionString = descriptionString;
+    metadata.linkString = linkString;
     metadata.badges = badges;
 
     [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed dimmed:dimmed width:width];
@@ -419,7 +326,7 @@
     NSRange punctuationRange = [string.string rangeOfCharacterFromSet:[NSCharacterSet punctuationCharacterSet] options:NSBackwardsSearch];
     if (punctuationRange.location != NSNotFound && (punctuationRange.location + punctuationRange.length) >= string.length) {
         *offset += punctuationRange.location - string.length;
-        return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
+        return [[NSAttributedString alloc] initWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
     }
     
     return string;

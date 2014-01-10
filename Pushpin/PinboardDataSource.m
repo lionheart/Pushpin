@@ -979,9 +979,19 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
+- (NSAttributedString *)titleForPostAtIndex:(NSInteger)index {
     PostMetadata *metadata = self.metadata[index];
-    return metadata.string;
+    return metadata.titleString;
+}
+
+- (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.descriptionString;
+}
+
+- (NSAttributedString *)linkForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.linkString;
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
@@ -992,11 +1002,6 @@ static BOOL kPinboardSyncInProgress = NO;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
     PostMetadata *metadata = self.compressedMetadata[index];
     return [metadata.height floatValue];
-}
-
-- (NSAttributedString *)compressedAttributedStringForPostAtIndex:(NSInteger)index {
-    PostMetadata *metadata = self.compressedMetadata[index];
-    return metadata.string;
 }
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index {

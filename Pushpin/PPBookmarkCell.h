@@ -12,6 +12,7 @@
 @protocol PPBadgeWrapperDelegate;
 
 @class PPBookmarkCell;
+@class TTTAttributedLabel;
 
 @protocol PPBookmarkCellDelegate <NSObject>
 
