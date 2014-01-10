@@ -1479,13 +1479,10 @@ static NSInteger kToolbarHeight = 44;
         kGenericPostViewControllerIsProcessingPosts = YES;
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                [self.tableView reloadData];
                 kGenericPostViewControllerIsProcessingPosts = NO;
             });
-        }
-                                          failure:nil width:CGRectGetWidth(self.tableView.frame)];;
+        } failure:nil width:CGRectGetWidth(self.tableView.frame)];;
     }
 }
 
