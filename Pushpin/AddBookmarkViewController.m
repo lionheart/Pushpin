@@ -223,7 +223,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewDidAppear:animated];
 
     NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:url.host style:UIBarButtonItemStyleDone target:nil action:nil];
+    NSString *host;
+    if ([url.host hasPrefix:@"www"]) {
+        host = [url.host stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
+    }
+    else {
+        host = url.host;
+    }
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:host style:UIBarButtonItemStyleDone target:nil action:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
     [self.tableView reloadData];
