@@ -1480,6 +1480,7 @@ static NSInteger kToolbarHeight = 44;
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
                 kGenericPostViewControllerIsProcessingPosts = NO;
             });
