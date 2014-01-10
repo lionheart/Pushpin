@@ -17,100 +17,6 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
-@interface PPBookmarkLayoutItem : NSObject <NSCopying>
-
-@property (nonatomic, strong) NSTextContainer *titleTextContainer;
-@property (nonatomic, strong) NSTextContainer *linkTextContainer;
-@property (nonatomic, strong) NSTextContainer *descriptionTextContainer;
-
-@property (nonatomic, strong) NSLayoutManager *titleLayoutManager;
-@property (nonatomic, strong) NSLayoutManager *linkLayoutManager;
-@property (nonatomic, strong) NSLayoutManager *descriptionLayoutManager;
-
-@property (nonatomic, strong) NSTextStorage *titleTextStorage;
-@property (nonatomic, strong) NSTextStorage *linkTextStorage;
-@property (nonatomic, strong) NSTextStorage *descriptionTextStorage;
-
-+ (PPBookmarkLayoutItem *)layoutItemForWidth:(CGFloat)width;
-- (instancetype)initWithWidth:(CGFloat)width;
-
-@end
-
-@implementation PPBookmarkLayoutItem
-
-+ (PPBookmarkLayoutItem *)layoutItemForWidth:(CGFloat)width {
-    return [[PPBookmarkLayoutItem alloc] initWithWidth:width];
-}
-
-- (instancetype)initWithWidth:(CGFloat)width {
-    self = [super init];
-    if (self) {
-        NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme titleFont]};
-        NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme descriptionFont]};
-        
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.paragraphSpacingBefore = 3;
-        paragraphStyle.paragraphSpacing = 0;
-        paragraphStyle.lineHeightMultiple = 0.7;
-        NSDictionary *linkAttributes = @{NSFontAttributeName: [PPTheme urlFont],
-                                         NSParagraphStyleAttributeName: paragraphStyle
-                                         };
-
-        // Calculate ellipsis size for each element
-        CGSize ellipsisSizeTitle = [ellipsis sizeWithAttributes:titleAttributes];
-        CGSize ellipsisSizeLink = [ellipsis sizeWithAttributes:linkAttributes];
-        CGSize ellipsisSizeDescription = [ellipsis sizeWithAttributes:descriptionAttributes];
-
-        self.titleTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeTitle.width - 20, CGFLOAT_MAX)];
-        self.linkTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeLink.width - 20, CGFLOAT_MAX)];
-        self.descriptionTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width - ellipsisSizeDescription.width - 20, CGFLOAT_MAX)];
-        
-        self.titleLayoutManager = [[NSLayoutManager alloc] init];
-        self.titleLayoutManager.hyphenationFactor = 0;
-        [self.titleLayoutManager addTextContainer:self.titleTextContainer];
-        
-        self.linkLayoutManager = [[NSLayoutManager alloc] init];
-        self.linkLayoutManager.hyphenationFactor = 0;
-        [self.linkLayoutManager addTextContainer:self.linkTextContainer];
-
-        self.descriptionLayoutManager = [[NSLayoutManager alloc] init];
-        self.descriptionLayoutManager.hyphenationFactor = 0;
-        [self.descriptionLayoutManager addTextContainer:self.descriptionTextContainer];
-        
-        self.titleTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-        [self.titleTextStorage addLayoutManager:self.titleLayoutManager];
-        
-        self.linkTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-        [self.linkTextStorage addLayoutManager:self.linkLayoutManager];
-        
-        self.descriptionTextStorage = [[NSTextStorage alloc] initWithString:emptyString];
-        [self.descriptionTextStorage addLayoutManager:self.descriptionLayoutManager];
-        
-        [self.titleLayoutManager glyphRangeForTextContainer:self.titleTextContainer];
-        [self.linkLayoutManager glyphRangeForTextContainer:self.linkTextContainer];
-        [self.descriptionLayoutManager glyphRangeForTextContainer:self.descriptionTextContainer];
-    }
-    return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    PPBookmarkLayoutItem *copy = [[[self class] alloc] init];
-    if (copy) {
-        copy.titleTextContainer = self.titleTextContainer;
-        copy.linkTextContainer = self.linkTextContainer;
-        copy.descriptionTextContainer = self.descriptionTextContainer;
-        copy.titleLayoutManager = self.titleLayoutManager;
-        copy.linkLayoutManager = self.linkLayoutManager;
-        copy.descriptionLayoutManager = self.descriptionLayoutManager;
-        copy.titleTextStorage = self.titleTextStorage;
-        copy.linkTextStorage = self.linkTextStorage;
-        copy.descriptionTextStorage = self.descriptionTextStorage;
-    }
-    return copy;
-}
-
-@end
-
 @interface PostMetadata ()
 
 + (NSMutableDictionary *)layoutObjectCache;
@@ -180,9 +86,8 @@
     }
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacingBefore = 3;
     paragraphStyle.paragraphSpacing = 0;
-    paragraphStyle.lineHeightMultiple = 0.7;
+    paragraphStyle.lineHeightMultiple = 1;
     
     NSMutableParagraphStyle *defaultParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     defaultParagraphStyle.paragraphSpacingBefore = 0;
@@ -190,8 +95,8 @@
     defaultParagraphStyle.tailIndent = 0;
     defaultParagraphStyle.lineHeightMultiple = 1;
     defaultParagraphStyle.hyphenationFactor = 0;
-    defaultParagraphStyle.lineSpacing = 1;
-    defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+//    defaultParagraphStyle.lineSpacing = 1;
+//    defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
     NSMutableDictionary *linkAttributes = [@{NSFontAttributeName: [PPTheme urlFont],
                                              NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
@@ -220,7 +125,7 @@
     CGSize titleSize;
     CGSize linkSize;
     CGSize descriptionSize;
-    CGSize constraintSize = CGSizeMake(width - 22, CGFLOAT_MAX);
+    CGSize constraintSize = CGSizeMake(width - 20, CGFLOAT_MAX);
 
     // Calculate our shorter strings if we're compressed
     // We use TTTAttributedLabel's method here because it sizes strings a tiny bit differently than NSAttributedString does
@@ -272,6 +177,7 @@
         }
     }
 
+    __block CGFloat badgeHeight = 0;
     if (tags && ![tags isEqualToString:emptyString]) {
         // Order tags in the badges by frequency
         NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
@@ -302,17 +208,17 @@
             
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
         }
+        
+        if (badges.count > 0) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
+                badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
+            });
+        }
     }
 
-    __block NSNumber *height;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
-        CGFloat badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
-        height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 10);
-    });
-
     PostMetadata *metadata = [[PostMetadata alloc] init];
-    metadata.height = height;
+    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 10);
     metadata.titleString = titleString;
     metadata.descriptionString = descriptionString;
     metadata.linkString = linkString;

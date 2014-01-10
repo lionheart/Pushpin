@@ -63,6 +63,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
 - (void)updateTitleViewText;
+- (CGFloat)currentWidth;
+- (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation;
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
@@ -271,7 +273,9 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else {
-        [self.tableView reloadData];
+        [self updateFromLocalDatabaseWithCallback:^{
+            [self.tableView reloadData];
+        }];
     }
 }
 
@@ -558,6 +562,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
+        CGFloat width = [self currentWidth];
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -577,8 +583,8 @@ static NSInteger kToolbarHeight = 44;
                         
                         UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:@[self.tableView]];
                         collision.collisionMode = UICollisionBehaviorModeBoundaries;
-                        [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, -1) toPoint:CGPointMake(CGRectGetWidth(self.view.frame), -1)];
-                        
+                        [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, -1) toPoint:CGPointMake(width, -1)];
+
                         UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.tableView]];
                         gravity.gravityDirection = CGVectorMake(0, -4);
                         
@@ -593,7 +599,7 @@ static NSInteger kToolbarHeight = 44;
                     if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                         self.searchPostDataSource = [self.postDataSource searchDataSource];
                         
-                        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 44)];
+                        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
                         self.searchBar.delegate = self;
                         self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
                         self.searchBar.showsScopeBar = YES;
@@ -619,7 +625,7 @@ static NSInteger kToolbarHeight = 44;
                         callback();
                     }
                 });
-            } failure:nil width:CGRectGetWidth(self.tableView.frame)];
+            } failure:nil width:width];
         });
     }
 }
@@ -654,7 +660,7 @@ static NSInteger kToolbarHeight = 44;
             }
         } cancel:^(BOOL *stop) {
             *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
-        } width:CGRectGetWidth(self.tableView.frame)];
+        } width:[self currentWidth]];
     }
 }
 
@@ -671,7 +677,7 @@ static NSInteger kToolbarHeight = 44;
 
                 [self.pullToRefreshImageView stopAnimating];
                 kGenericPostViewControllerIsProcessingPosts = NO;
-            } failure:nil width:CGRectGetWidth(self.tableView.frame)];
+            } failure:nil width:[self currentWidth]];
         } failure:nil progress:nil options:@{@"ratio": ratio}];
     }
 }
@@ -837,13 +843,11 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-
-    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
-        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
+    if (self.compressPosts && [self.currentDataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
+        return [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
     }
 
-    return [dataSource heightForPostAtIndex:indexPath.row];
+    return [self.currentDataSource heightForPostAtIndex:indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1479,10 +1483,12 @@ static NSInteger kToolbarHeight = 44;
         kGenericPostViewControllerIsProcessingPosts = YES;
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
                 kGenericPostViewControllerIsProcessingPosts = NO;
             });
-        } failure:nil width:CGRectGetWidth(self.tableView.frame)];;
+        } failure:nil width:[self currentWidth]];
     }
 }
 
@@ -1512,7 +1518,7 @@ static NSInteger kToolbarHeight = 44;
             });
         } failure:^(NSError *error) {
             kGenericPostViewControllerIsProcessingPosts = NO;
-        } width:CGRectGetWidth(self.tableView.frame)];
+        } width:[self currentWidth]];
     }
 }
 
@@ -1708,6 +1714,21 @@ static NSInteger kToolbarHeight = 44;
     
     [button setTitle:title imageName:nil];
     self.navigationItem.titleView = button;
+}
+
+- (CGFloat)currentWidth {
+    return [self currentWidthForOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
+}
+
+- (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation {
+    CGFloat width;
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        width = MIN(CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
+    }
+    else {
+        width = MAX(CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
+    }
+    return width;
 }
 
 @end

@@ -51,7 +51,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 + (TTTAttributedLabel *)bookmarkAttributedLabelForWidth:(CGFloat)width {
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.preferredMaxLayoutWidth = width;
+//    label.preferredMaxLayoutWidth = width;
     label.opaque = YES;
     label.backgroundColor = [PPTheme bookmarkBackgroundColor];
     label.userInteractionEnabled = NO;
@@ -121,14 +121,15 @@ static NSInteger kEditButtonOuterMargin = 20;
                                  (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(5)};
     });
     
+    // Keeps returning invalid values. Have to hardcode.
     CGFloat width = CGRectGetWidth(self.frame) - 20;
-    NSMutableAttributedString *title = [[dataSource titleForPostAtIndex:index] mutableCopy];
-    NSMutableAttributedString *link = [[dataSource linkForPostAtIndex:index] mutableCopy];
-    NSMutableAttributedString *description = [[dataSource descriptionForPostAtIndex:index] mutableCopy];
+    NSAttributedString *title = [dataSource titleForPostAtIndex:index];
+    NSAttributedString *link = [dataSource linkForPostAtIndex:index];
+    NSAttributedString *description = [dataSource descriptionForPostAtIndex:index];
     
     self.titleLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.titleLabel.text = title;
-    
+
     self.linkLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.linkLabel.text = link;
     self.linkLabel.numberOfLines = 1;
@@ -136,7 +137,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     
     self.descriptionLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.descriptionLabel.text = description;
-    
+
     if (compressed) {
         self.titleLabel.numberOfLines = 1;
         self.descriptionLabel.numberOfLines = 2;
