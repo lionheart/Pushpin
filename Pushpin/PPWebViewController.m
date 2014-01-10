@@ -812,12 +812,14 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (self.toolbarConstraint.constant > kToolbarHeight / 2.) {
-        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
-        [self showToolbarAnimated:YES];
-    }
-    else {
-        [self hideToolbarAnimated:NO];
+    if (![UIApplication isIPad]) {
+        if (self.toolbarConstraint.constant > kToolbarHeight / 2.) {
+            self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
+            [self showToolbarAnimated:YES];
+        }
+        else {
+            [self hideToolbarAnimated:NO];
+        }
     }
 }
 
@@ -825,22 +827,24 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
-        self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
-    }
-    else {
-        self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = YES;
-    }
+    if (![UIApplication isIPad]) {
+        if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+            self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
+        }
+        else {
+            self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = YES;
+        }
 
-    CGPoint currentContentOffset = scrollView.contentOffset;
-    self.previousContentOffset = currentContentOffset;
+        CGPoint currentContentOffset = scrollView.contentOffset;
+        self.previousContentOffset = currentContentOffset;
 
-    CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
-    self.toolbarConstraint.constant = MAX(0, height);
-    [self.view layoutIfNeeded];
-    
-    if (self.toolbarConstraint.constant <= 0) {
-        self.yOffsetToStartShowingToolbar = 0;
+        CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
+        self.toolbarConstraint.constant = MAX(0, height);
+        [self.view layoutIfNeeded];
+        
+        if (self.toolbarConstraint.constant <= 0) {
+            self.yOffsetToStartShowingToolbar = 0;
+        }
     }
 }
 

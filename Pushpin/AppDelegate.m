@@ -1169,7 +1169,11 @@
           withBarButtonItem:(UIBarButtonItem *)barButtonItem
        forPopoverController:(UIPopoverController *)pc {
     barButtonItem.image = [UIImage imageNamed:@"navigation-list"];
-    self.navigationController.topViewController.navigationItem.leftBarButtonItem = barButtonItem;
+    self.navigationController.splitViewControllerBarButtonItem = barButtonItem;
+    
+    if (self.navigationController.viewControllers.count == 1) {
+        self.navigationController.topViewController.navigationItem.leftBarButtonItem = barButtonItem;
+    }
 }
 
 - (void)splitViewController:(UISplitViewController *)svc

@@ -66,8 +66,12 @@
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     UIBarButtonItem *backButton;
+    
     if ([UIApplication isIPad]) {
         backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:nil action:nil];
+        if ([[viewController class] isSubclassOfClass:[GenericPostViewController class]] && navigationController.viewControllers.count == 1) {
+            viewController.navigationItem.leftBarButtonItem = self.splitViewControllerBarButtonItem;
+        }
     }
     else {
         backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
