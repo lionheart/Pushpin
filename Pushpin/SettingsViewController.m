@@ -58,7 +58,8 @@ static NSString *CellIdentifier = @"Cell";
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self
                                                                      action:@selector(showAboutPage)];
-//    self.navigationItem.rightBarButtonItem = barButtonItem;
+    self.navigationItem.rightBarButtonItem = barButtonItem;
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
 

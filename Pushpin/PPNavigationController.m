@@ -10,6 +10,8 @@
 #import "PPNavigationBar.h"
 #import "PPWebViewController.h"
 #import "GenericPostViewController.h"
+#import "FeedListViewController.h"
+#import "SettingsViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -64,20 +66,30 @@
     }
 }
 
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    UIBarButtonItem *backButton;
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated {
+
+    UIBarButtonItem *backButton = nil;
     
     if ([UIApplication isIPad]) {
         backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:nil action:nil];
-        if ([[viewController class] isSubclassOfClass:[GenericPostViewController class]] && navigationController.viewControllers.count == 1) {
+        if ([[viewController class] isEqual:[GenericPostViewController class]] && navigationController.viewControllers.count == 1) {
             viewController.navigationItem.leftBarButtonItem = self.splitViewControllerBarButtonItem;
         }
     }
     else {
-        backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
+        if ([[viewController class] isEqual:[FeedListViewController class]]) {
+            backButton = [[UIBarButtonItem alloc] initWithTitle:@"Browse" style:UIBarButtonItemStylePlain target:nil action:nil];
+        }
+        else {
+            backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStylePlain target:nil action:nil];
+        }
     }
 
-    viewController.navigationItem.backBarButtonItem = backButton;
+    if (backButton) {
+        viewController.navigationItem.backBarButtonItem = backButton;
+    }
 }
 
 #pragma mark Status Bar Styles
