@@ -22,6 +22,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <MWFeedParser/NSString+HTML.h>
 
 @interface PinboardFeedDataSource ()
 
@@ -153,7 +154,7 @@
                                            [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
                                            for (NSString *tag in element[@"t"]) {
                                                if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
-                                                   [tags addObject:tag];
+                                                   [tags addObject:[tag stringByDecodingHTMLEntities]];
                                                }
                                            }
                                            
