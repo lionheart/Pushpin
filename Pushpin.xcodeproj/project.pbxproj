@@ -178,6 +178,14 @@
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
 		37C611EB16377D5D008DB30B /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E816377D5D008DB30B /* Default@2x~iphone.png */; };
 		37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */; };
+		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
+		37CBB74A1881B568000F9C36 /* cabinet@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7431881B568000F9C36 /* cabinet@2x.png */; };
+		37CBB74B1881B568000F9C36 /* mobilize-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7441881B568000F9C36 /* mobilize-active.png */; };
+		37CBB74C1881B568000F9C36 /* mobilize-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7451881B568000F9C36 /* mobilize-active@2x.png */; };
+		37CBB74D1881B568000F9C36 /* IC-Wrench-65@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7461881B568000F9C36 /* IC-Wrench-65@2x.png */; };
+		37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */; };
+		37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7481881B568000F9C36 /* IC-Wrench-65.png */; };
+		37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7491881B568000F9C36 /* IC-Star-5.png */; };
 		37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37D0D0C116B8E2310062C27E /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 37D0D0C016B8E2310062C27E /* about.html */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
@@ -705,6 +713,14 @@
 		37C611E816377D5D008DB30B /* Default@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~iphone.png"; path = "Assets/Default@2x~iphone.png"; sourceTree = "<group>"; };
 		37C6D61E186B99820096FA88 /* PPStatusBarNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBarNotification.h; sourceTree = "<group>"; };
 		37C6D61F186B99820096FA88 /* PPStatusBarNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPStatusBarNotification.m; sourceTree = "<group>"; };
+		37CBB7401881B44B000F9C36 /* About.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = About.plist; path = Assets/About.plist; sourceTree = SOURCE_ROOT; };
+		37CBB7431881B568000F9C36 /* cabinet@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cabinet@2x.png"; sourceTree = "<group>"; };
+		37CBB7441881B568000F9C36 /* mobilize-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize-active.png"; path = "Assets/mobilize-active.png"; sourceTree = "<group>"; };
+		37CBB7451881B568000F9C36 /* mobilize-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize-active@2x.png"; path = "Assets/mobilize-active@2x.png"; sourceTree = "<group>"; };
+		37CBB7461881B568000F9C36 /* IC-Wrench-65@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Wrench-65@2x.png"; path = "Assets/IC-Wrench-65@2x.png"; sourceTree = "<group>"; };
+		37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5@2x.png"; path = "Assets/IC-Star-5@2x.png"; sourceTree = "<group>"; };
+		37CBB7481881B568000F9C36 /* IC-Wrench-65.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Wrench-65.png"; path = "Assets/IC-Wrench-65.png"; sourceTree = "<group>"; };
+		37CBB7491881B568000F9C36 /* IC-Star-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5.png"; path = "Assets/IC-Star-5.png"; sourceTree = "<group>"; };
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
@@ -1433,6 +1449,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		37CBB7421881B568000F9C36 /* Navigation Bar */ = {
+			isa = PBXGroup;
+			children = (
+				37CBB7431881B568000F9C36 /* cabinet@2x.png */,
+			);
+			name = "Navigation Bar";
+			path = "Assets/Navigation Bar";
+			sourceTree = "<group>";
+		};
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
@@ -1493,6 +1518,7 @@
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				378482CD186C965700DF7A74 /* Activities */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
+				37CBB7401881B44B000F9C36 /* About.plist */,
 				3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */,
 				3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
@@ -1559,6 +1585,13 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				37CBB7421881B568000F9C36 /* Navigation Bar */,
+				37CBB7441881B568000F9C36 /* mobilize-active.png */,
+				37CBB7451881B568000F9C36 /* mobilize-active@2x.png */,
+				37CBB7461881B568000F9C36 /* IC-Wrench-65@2x.png */,
+				37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */,
+				37CBB7481881B568000F9C36 /* IC-Wrench-65.png */,
+				37CBB7491881B568000F9C36 /* IC-Star-5.png */,
 				37FF412D187D954D00F2D481 /* readability.js */,
 				3798B08A18767DAB002D684B /* navigation-edit-blue.png */,
 				3798B08B18767DAB002D684B /* navigation-edit-darker.png */,
@@ -1827,6 +1860,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37CBB7411881B44B000F9C36 /* About.plist in Resources */,
 				E8900200183EB90100C1F969 /* bookmark-private.png in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				3715EEC715787CAA00FD21EE /* main.css in Resources */,
@@ -1865,6 +1899,7 @@
 				E80EEF81185A4AD900979AA3 /* toolbar-description.png in Resources */,
 				373C82C816F81C6900A7D7C8 /* ptr_06@2x.png in Resources */,
 				373C82C916F81C6900A7D7C8 /* ptr_07.png in Resources */,
+				37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */,
 				E890022F1840173600C1F969 /* navigation-fandom@2x.png in Resources */,
 				373C82CA16F81C6900A7D7C8 /* ptr_07@2x.png in Resources */,
 				372C84091870E3B300BF520D /* Delete-Button.png in Resources */,
@@ -1941,6 +1976,7 @@
 				37EAB9C5173F01DA00B2684B /* loading_01@2x.png in Resources */,
 				37EAB9C6173F01DA00B2684B /* loading_02.png in Resources */,
 				37EAB9C7173F01DA00B2684B /* loading_02@2x.png in Resources */,
+				37CBB74A1881B568000F9C36 /* cabinet@2x.png in Resources */,
 				37EAB9C8173F01DA00B2684B /* loading_03.png in Resources */,
 				37EAB9C9173F01DA00B2684B /* loading_03@2x.png in Resources */,
 				E8F987EA183E796900EF976D /* browse-untagged.png in Resources */,
@@ -1968,6 +2004,7 @@
 				37EAB9DB173F01DA00B2684B /* loading_12@2x.png in Resources */,
 				37EAB9DC173F01DA00B2684B /* loading_13.png in Resources */,
 				37EAB9DD173F01DA00B2684B /* loading_13@2x.png in Resources */,
+				37CBB74C1881B568000F9C36 /* mobilize-active@2x.png in Resources */,
 				37EAB9DE173F01DA00B2684B /* loading_14.png in Resources */,
 				37EAB9DF173F01DA00B2684B /* loading_14@2x.png in Resources */,
 				37EAB9E0173F01DA00B2684B /* loading_15.png in Resources */,
@@ -1985,12 +2022,14 @@
 				37EAB9EB173F01DA00B2684B /* loading_20@2x.png in Resources */,
 				37EAB9EC173F01DA00B2684B /* loading_21.png in Resources */,
 				37EAB9ED173F01DA00B2684B /* loading_21@2x.png in Resources */,
+				37CBB74B1881B568000F9C36 /* mobilize-active.png in Resources */,
 				3751D18818346EED00E0A42A /* mobilized-active.png in Resources */,
 				37EAB9EE173F01DA00B2684B /* loading_22.png in Resources */,
 				37EAB9EF173F01DA00B2684B /* loading_22@2x.png in Resources */,
 				37EAB9F0173F01DA00B2684B /* loading_23.png in Resources */,
 				37EAB9F1173F01DA00B2684B /* loading_23@2x.png in Resources */,
 				3751D18418346C0200E0A42A /* mobilized.png in Resources */,
+				37CBB74D1881B568000F9C36 /* IC-Wrench-65@2x.png in Resources */,
 				37EAB9F2173F01DA00B2684B /* loading_24.png in Resources */,
 				3798AD7A18766DA3002D684B /* Delete-Button-Light.png in Resources */,
 				37EAB9F3173F01DA00B2684B /* loading_24@2x.png in Resources */,
@@ -2070,6 +2109,7 @@
 				E80EEF7F185A4AD900979AA3 /* toolbar-bookmark.png in Resources */,
 				37EABA27173F01DA00B2684B /* loading_50@2x.png in Resources */,
 				37EABA28173F01DA00B2684B /* loading_51.png in Resources */,
+				37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */,
 				37EABA29173F01DA00B2684B /* loading_51@2x.png in Resources */,
 				37EABA2A173F01DA00B2684B /* loading_52.png in Resources */,
 				E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */,
@@ -2194,6 +2234,7 @@
 				E80EEF8F185B6A1300979AA3 /* roundbutton-private.png in Resources */,
 				E8900208183FA8F600C1F969 /* navigation-edit.png in Resources */,
 				3798B08E18767DAB002D684B /* navigation-edit-blue.png in Resources */,
+				37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */,
 				E80EEF80185A4AD900979AA3 /* toolbar-bookmark@2x.png in Resources */,
 				378482D8186CB9ED00DF7A74 /* single-person@2x.png in Resources */,
 				E8F987E5183E796900EF976D /* browse-private.png in Resources */,
