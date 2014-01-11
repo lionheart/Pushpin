@@ -18,3 +18,4 @@ pod 'RPSTPasswordManagementAppService', :podspec => 'Specs/RPSTPasswordManagemen
 pod 'HTMLParser', :podspec => 'Specs/HTMLParser.podspec'
 pod 'TextExpanderTouchSDK', :podspec => 'Specs/TextExpanderTouchSDK.podspec'
 # pod 'hpple', :podspec => 'Specs/hpple.podspec'
+pod 'MWFeedParser', '1.0.0'
