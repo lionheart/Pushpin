@@ -56,7 +56,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Browse", nil) imageName:nil];
 
-    self.title = @"";
+    self.title = @"Browse";
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;

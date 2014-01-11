@@ -29,6 +29,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface PPAboutViewController ()
 
+@property (nonatomic, strong) NSDictionary *data;
+
 @end
 
 @implementation PPAboutViewController
@@ -45,7 +47,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewDidLoad];
     
     PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:NSLocalizedString(@"Pushpin 2.1.1", nil) imageName:nil];
+    [titleView setTitle:@"Pushpin 3.0" imageName:nil];
     self.navigationItem.titleView = titleView;
 
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];

@@ -147,7 +147,7 @@
                                        NSInteger index = 0;
                                        NSMutableArray *tags = [NSMutableArray array];
                                        NSDate *date;
-                                       
+
                                        // TODO: Should refactor to update / reload / delete more efficiently
                                        for (NSDictionary *element in payload) {
                                            [tags removeAllObjects];
