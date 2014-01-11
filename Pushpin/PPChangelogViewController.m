@@ -158,10 +158,10 @@ static NSString *CellIdentifier = @"Cell";
     NSString *type = info[indexPath.row][0];
     
     if ([type isEqualToString:@"FIX"]) {
-        cell.imageView.image = [UIImage imageNamed:@"caution-dash"];
+        cell.imageView.image = [UIImage imageNamed:@"IC-Wrench-65"];
     }
     else {
-        cell.imageView.image = [UIImage imageNamed:@"star-table"];
+        cell.imageView.image = [UIImage imageNamed:@"IC-Star-5"];
     }
     
     NSString *description = info[indexPath.row][1];

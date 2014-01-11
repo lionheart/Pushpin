@@ -29,8 +29,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface PPAboutViewController ()
 
-@property (nonatomic, strong) NSDictionary *data;
-
 @end
 
 @implementation PPAboutViewController
