@@ -629,7 +629,8 @@ static NSInteger kTitleHeight = 40;
             if (error) {
                 notification.alertBody = @"Error adding to Reading List";
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-            } else {
+            }
+            else {
                 notification.alertBody = @"Added to Reading List";
                 notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             }
@@ -644,29 +645,26 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)toggleMobilizer {
-    if ([self.mobilizerUtility canMobilizeURL:self.url]) {
-        self.mobilized = !self.mobilized;
-        self.mobilizeButton.selected = self.mobilized;
+    self.mobilized = !self.mobilized;
+    self.mobilizeButton.selected = self.mobilized;
 
-        NSURL *url;
-        if (self.mobilized) {
-            url = [NSURL URLWithString:[self.mobilizerUtility urlStringForMobilizerForURL:self.url]];
-        }
-        else {
-            url = [NSURL URLWithString:[self.mobilizerUtility originalURLStringForURL:self.url]];
-        }
+    if (self.mobilized) {
+        NSString *readabilityJSFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"js"];
+        NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityJSFile encoding:NSUTF8StringEncoding error:nil];
+        [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
+        
+        NSString *cssPath = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"css"];
 
-        self.title = self.urlString;
+        NSString *addCSSJS = [NSString stringWithFormat:@"var custom_css = document.createElement('link');"
+            "custom_css.type = 'text/css';"
+            "custom_css.rel = 'stylesheet';"
+            "custom_css.href = '%@';"
+            "document.getElementsByTagName('head')[0].appendChild(custom_css);", cssPath];
+        NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:addCSSJS];
 
-        NSString *previousURLString = [self.history lastObject][@"url"];
-        if ([previousURLString isEqualToString:url.absoluteString]) {
-            [self.history removeLastObject];
-            [self.webView goBack];
-        }
-        else {
-            NSURLRequest *request = [NSURLRequest requestWithURL:url];
-            [self.webView loadRequest:request];
-        }
+    }
+    else {
+        [self.webView reload];
     }
 }
 

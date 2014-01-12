@@ -1671,4 +1671,3 @@ var readability = {
 };
 
 readability.init();
-
