@@ -42,16 +42,42 @@
 - (void)displayText:(NSString *)text
       withAnimation:(PPStatusBarNotificationAnimation)animation
            duration:(CGFloat)duration {
-    self.notificationWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 20)];
+    
+    CGSize size = [UIApplication currentSize];
+    CGRect frame = CGRectMake(0, 0, size.width, 20);
+
+    self.notificationWindow = [[UIWindow alloc] initWithFrame:frame];
     self.notificationWindow.clipsToBounds = YES;
 
-    UIView *notificationContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, 20)];
+    CGAffineTransform transform;
+    switch ([UIApplication sharedApplication].statusBarOrientation) {
+        case UIInterfaceOrientationLandscapeLeft:
+            // Home button on left
+            transform = CGAffineTransformMakeRotation(-M_PI / 2);
+            transform = CGAffineTransformTranslate(transform, -(size.width - 20)/2, -(size.width - 20)/2);
+            break;
+            
+        case UIInterfaceOrientationLandscapeRight:
+            // Home button on right
+            transform = CGAffineTransformMakeRotation(M_PI / 2);
+            transform = CGAffineTransformTranslate(transform, (size.width - 20)/2, 10 + size.height - size.width);
+            break;
+            
+        default:
+            transform = CGAffineTransformIdentity;
+            break;
+    }
+
+    self.notificationWindow.transform = transform;
+
+    UIView *notificationContainer = [[UIView alloc] initWithFrame:frame];
     notificationContainer.clipsToBounds = YES;
     notificationContainer.backgroundColor = [UIColor darkGrayColor];
     [self.notificationWindow addSubview:notificationContainer];
     
     UIView *statusBarView = [UIScreen lhs_snapshotContainingStatusBar];
     statusBarView.translatesAutoresizingMaskIntoConstraints = NO;
+    statusBarView.hidden = YES;
     [notificationContainer addSubview:statusBarView];
     
     UILabel *label = [[UILabel alloc] init];
