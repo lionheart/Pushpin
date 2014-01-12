@@ -99,6 +99,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.contentView.clipsToBounds = YES;
     self.clipsToBounds = YES;
 
+    self.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.index = index;
     self.didReachDeleteThreshold = NO;
     self.didReachEditThreshold = NO;
