@@ -58,6 +58,7 @@ static const CGFloat PADDING_Y = 6;
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
+            [badgeView layoutIfNeeded];
             badgeSize = badgeView.frame.size;
             offsetX += badgeSize.width + PADDING_X;
 

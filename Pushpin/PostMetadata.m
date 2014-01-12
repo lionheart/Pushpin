@@ -205,17 +205,16 @@
                     options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
                 }
             }
-            
+
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
         }
-        
-        if (badges.count > 0) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
-                badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
-            });
-        }
     }
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
+        [badgeWrapperView layoutIfNeeded];
+        badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
+    });
 
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 10);
