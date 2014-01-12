@@ -18,8 +18,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
 
 - (void)fixTextView:(UITextView *)textView;
-- (void)keyboardDidHide:(id)sender;
-- (void)keyboardDidShow:(id)sender;
+- (void)keyboardWillHide:(NSNotification *)sender;
+- (void)keyboardDidShow:(NSNotification *)sender;
 
 @end
 
@@ -78,7 +78,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,18 +88,16 @@
 }
 
 - (void)keyboardDidShow:(NSNotification *)sender {
-    if (![UIApplication isIPad]) {
-        CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-        self.bottomConstraint.constant = -CGRectGetHeight(frame);
-        [self.view layoutIfNeeded];
-    }
+    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect newFrame = [self.view convertRect:frame fromView:[AppDelegate sharedDelegate].window];
+    
+    self.bottomConstraint.constant = newFrame.origin.y - CGRectGetHeight(self.view.frame);
+    [self.view layoutIfNeeded];
 }
 
-- (void)keyboardDidHide:(id)sender {
-    if (![UIApplication isIPad]) {
-        self.bottomConstraint.constant = 0;
-        [self.view layoutIfNeeded];
-    }
+- (void)keyboardWillHide:(NSNotification *)sender {
+    self.bottomConstraint.constant = 0;
+    [self.view layoutIfNeeded];
 }
 
 #pragma mark - UITextViewDelegate
