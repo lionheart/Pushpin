@@ -669,14 +669,16 @@ static NSInteger kToolbarHeight = 44;
         kGenericPostViewControllerIsProcessingPosts = YES;
         [self.postDataSource updateBookmarksWithSuccess:^{
             [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
 
-                [self.pullToRefreshImageView stopAnimating];
-                kGenericPostViewControllerIsProcessingPosts = NO;
+                    [self.pullToRefreshImageView stopAnimating];
+                    kGenericPostViewControllerIsProcessingPosts = NO;
+                });
             } failure:nil width:[self currentWidth]];
         } failure:nil progress:nil options:@{@"ratio": ratio}];
     }
