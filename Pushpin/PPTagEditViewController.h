@@ -10,13 +10,15 @@
 
 @class PPTagEditViewController;
 
+@protocol PPBadgeWrapperDelegate;
+
 @protocol PPTagEditing <NSObject>
 
 - (void)tagEditViewControllerDidUpdateTags:(PPTagEditViewController *)tagEditViewController;
 
 @end
 
-@interface PPTagEditViewController : UIViewController <UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate, UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
