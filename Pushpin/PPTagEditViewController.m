@@ -25,6 +25,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
 @property (nonatomic, strong) NSString *searchString;
+@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
@@ -45,6 +46,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)keyboardDidShow:(NSNotification *)sender;
 
 - (void)searchUpdatedWithString:(NSString *)string;
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 
 @end
 
@@ -67,6 +69,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self setNeedsStatusBarAppearanceUpdate];
     [self.tagTextField becomeFirstResponder];
 }
@@ -133,6 +137,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - UITableViewDataSource
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.existingTags.count > 0 && [indexPath isEqual:[NSIndexPath indexPathForRow:0 inSection:0]]) {
+        return 20 + [self.badgeWrapperView calculateHeightForWidth:(CGRectGetWidth(self.tableView.frame) - 20)];
+    }
+    return 44;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
@@ -164,29 +175,39 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
         else {
-            UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
-            topImageView.frame = CGRectMake(14, 12, 20, 20);
-            [cell.contentView addSubview:topImageView];
-            
-            if (self.loadingTags) {
-                UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                [activity startAnimating];
-                cell.accessoryView = activity;
-                cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
-                cell.textLabel.enabled = NO;
+            // This is the tag entry row
+            if (index == -1) {
+                UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                topImageView.frame = CGRectMake(14, 12, 20, 20);
+                [cell.contentView addSubview:topImageView];
+                
+                if (self.loadingTags) {
+                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    [activity startAnimating];
+                    cell.accessoryView = activity;
+                    cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
+                    cell.textLabel.enabled = NO;
+                }
+
+                [cell.contentView addSubview:self.tagTextField];
+
+                NSDictionary *views = @{@"view": self.tagTextField};
+                [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
+                [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
             }
-
-            [cell.contentView addSubview:self.tagTextField];
-
-            NSDictionary *views = @{@"view": self.tagTextField};
-            [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
-            [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
+            else {
+                // If it's -2, it's the badge row
+                [cell.contentView addSubview:self.badgeWrapperView];
+                [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
+                [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
+            }
         }
     }
     else {
         NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
         cell.textLabel.text = tag;
         
+        // We set this up as an image view so that the image can be centered in a large tap area.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -247,25 +268,25 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
             
             // Add the row to the bookmark list below
             
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
             else {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
             
             NSInteger index = row - [self tagOffset];
             
-            BOOL shouldRefreshAutocompletion = NO;
             if (self.tagCompletions.count > 0) {
-                shouldRefreshAutocompletion = YES;
-                
                 completion = self.tagCompletions[index];
-                [indexPathsToDelete addObject:indexPath];
-                [self.tagCompletions removeObjectAtIndex:index];
+                [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
+                [self.tagCompletions removeAllObjects];
                 [self.existingTags addObject:completion];
             }
             else if (self.filteredPopularAndRecommendedTagsVisible) {
@@ -285,16 +306,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
                 self.tagTextField.text = @"";
                 [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                
-                if (shouldRefreshAutocompletion) {
-                    [self searchUpdatedWithString:self.searchString];
-                }
                 
                 [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
             });
@@ -307,6 +326,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.removeTagActionSheet) {
         if (buttonIndex == 0) {
+            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+            
+            NSIndexPath *indexPathToReload;
+            indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
+            
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+            
             [self deleteTagWithName:self.currentlySelectedTag];
         }
     }
@@ -366,13 +394,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
             
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
             else {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
             
             if (self.filteredPopularAndRecommendedTagsVisible) {
@@ -386,8 +417,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             
             [self.existingTags addObject:tag];
+            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
             
             [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -669,13 +702,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSInteger index = [self.existingTags indexOfObject:name];
     
     if (self.existingTags.count > 1) {
+        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
     }
     else {
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [sectionIndicesToDelete addIndex:1];
     }
     
     [self.existingTags removeObject:name];
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     
     [indexPathsToDelete addObjectsFromArray:self.indexPathsForAutocompletedRows];
     self.tagTextField.text = @"";
@@ -744,6 +780,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSInteger)tagOffset {
+    if (self.existingTags.count > 0) {
+        return 2;
+    }
     return 1;
 }
 
@@ -792,11 +831,37 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSInteger)minTagsToAutocomplete {
     if ([UIApplication isIPad]) {
-        return 6;
+        return 8;
     }
     else {
-        return 2;
+        return 4;
     }
+}
+
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags {
+    NSMutableArray *badges = [NSMutableArray array];
+    NSArray *existingTags = [self existingTags];
+    for (NSString *tag in existingTags) {
+        if (![tag isEqualToString:@""]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": tag }];
+        }
+    }
+    
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme tagFontSize]) }];
+    wrapper.translatesAutoresizingMaskIntoConstraints = NO;
+    wrapper.delegate = self;
+    return wrapper;
+}
+
+#pragma mark - PPBadgeWrapperDelegate
+
+- (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
+    NSString *tag = badge.textLabel.text;
+    self.currentlySelectedTag = tag;
+    
+    NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
+    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
+    [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
 }
 
 @end
