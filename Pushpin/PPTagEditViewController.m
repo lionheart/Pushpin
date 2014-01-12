@@ -42,7 +42,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSArray *)filteredPopularAndRecommendedTags;
 - (BOOL)filteredPopularAndRecommendedTagsVisible;
 
-- (void)keyboardDidHide:(NSNotification *)sender;
+- (void)keyboardWillHide:(NSNotification *)sender;
 - (void)keyboardDidShow:(NSNotification *)sender;
 
 - (void)searchUpdatedWithString:(NSString *)string;
@@ -128,9 +128,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tagTextField.text = @"";
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
@@ -812,12 +812,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.view layoutIfNeeded];
 }
 
-- (void)keyboardDidHide:(NSNotification *)sender {
+- (void)keyboardWillHide:(NSNotification *)sender {
     self.autocompleteInProgress = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.bottomConstraint.constant = 0;
-        [self.view layoutIfNeeded];
-    });
+
+    self.bottomConstraint.constant = 0;
+    [self.view layoutIfNeeded];
 }
 
 - (NSInteger)maxTagsToAutocomplete {
