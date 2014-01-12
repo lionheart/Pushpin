@@ -36,7 +36,7 @@ static const CGFloat PADDING_Y = 2;
                                                PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
                                                PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
                                                PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
-                                               } mutableCopy];
+                                           } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
         
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
@@ -48,16 +48,15 @@ static const CGFloat PADDING_Y = 2;
         self.imageView = [[UIImageView alloc] initWithImage:image];
         self.imageView.backgroundColor = self.normalColor;
         [self addSubview:self.imageView];
-        
+
         UILabel *label = [[UILabel alloc] init];
         label.text = @"label";
         label.font = [PPTheme tagFont];
         label.lineBreakMode = NSLineBreakByTruncatingTail;
-
-        // Calculate our frame
         CGSize size = [label textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
-        self.frame = CGRectMake(0, 0, size.height + (PADDING_X * 2), size.height + (PADDING_Y * 2));
-        self.imageView.frame = CGRectMake(PADDING_X, PADDING_Y, size.height, size.height);
+        
+        self.frame = CGRectMake(0, 0, size.height + PADDING_X * 2, size.height + PADDING_Y * 2);
+        self.imageView.frame = CGRectInset(self.frame, PADDING_X, PADDING_Y);
     }
     return self;
 }
@@ -92,10 +91,6 @@ static const CGFloat PADDING_Y = 2;
         self.textLabel.backgroundColor = self.normalColor;
         self.textLabel.textColor = badgeOptions[PPBadgeFontColor];
 
-        // Calculate our frame
-        CGSize size = [self.textLabel textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
-        self.frame = CGRectMake(0, 0, size.width + (PADDING_X * 2), size.height + (PADDING_Y * 2));
-        self.textLabel.frame = CGRectMake(PADDING_X, PADDING_Y, size.width, size.height);
         [self addSubview:self.textLabel];
         
         self.enabled = YES;
@@ -107,6 +102,10 @@ static const CGFloat PADDING_Y = 2;
 
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self addGestureRecognizer:self.longPressGestureRecognizer];
+        
+        CGSize size = [self.textLabel textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
+        self.frame = CGRectMake(0, 0, size.width + PADDING_X * 2, size.height + PADDING_Y * 2);
+        self.textLabel.frame = CGRectInset(self.frame, PADDING_X, PADDING_Y);
     }
     return self;
 }
