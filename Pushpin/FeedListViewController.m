@@ -182,7 +182,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
     
-    cell.textLabel.font = [PPTheme textLabelFont];
+    cell.textLabel.font = [PPTheme boldTextLabelFont];
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
 

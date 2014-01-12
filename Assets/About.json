@@ -1,0 +1,132 @@
+[
+  {
+    "rows": [
+      {
+        "detail": "Designed and developed by Lionheart Software.\n\nTip: tap and hold people listed below to follow on Twitter."
+      },
+      {
+        "title": "View changelog"
+      },
+      {
+        "title": "Follow @Pushpin_app on Twitter"
+      }
+    ]
+  },
+  {
+    "rows": [
+      {
+        "title": "Dan Loewenherz",
+        "detail": "Product design and development",
+        "username": "dwlz",
+        "website": "http://dlo.me/"
+      },
+      {
+        "title": "Andy Muldowney",
+        "detail": "Product development"
+      }
+    ],
+    "title": "Team"
+  },
+  {
+    "title": "Credits",
+    "rows": [
+      {
+        "title": "Rachel",
+        "detail": "For always believing in me."
+      },
+      {
+        "title": "Dante and Isabelle",
+        "detail": "For inspiring me and for making me laugh."
+      },
+      {
+        "title": "Maciej Ceglowski",
+        "detail": "For making Pinboard."
+      }
+    ]
+  },
+  {
+    "title": "Acknowledgements",
+    "rows": [
+      {
+        "title": "Michael Solis",
+        "username": "morphorod"
+      },
+      {
+        "title": "JB Bryant",
+        "username": "jb_bryant"
+      },
+      {
+        "title": "Phil Havens",
+        "username": "philhavens"
+      },
+      {
+        "title": "Chase McCoy",
+        "username": "chase_mccoy"
+      },
+      {
+        "title": "Sam Cohen",
+        "detail": "For donating the getpushpin.com domain name.",
+        "username": "Samography"
+      },
+      {
+        "title": "Riccardo Mori",
+        "detail": "Italian translation.",
+        "username": "morrick",
+        "website": "http://morrick.me/"
+      },
+      {
+        "title": "James Lepthien",
+        "detail": "German translation.",
+        "username": "0x86DD"
+      },
+      {
+        "title": "Jérôme Tomasini",
+        "detail": "French translation.",
+        "username": "c0wb0yz"
+      },
+      {
+        "title": "Vítor Galvão",
+        "detail": "Portuguese translation.",
+        "username": "vhgalvao"
+      }
+    ]
+  },
+  {
+    "title": "Attributions",
+    "rows": [
+      {
+        "title": "TTTAttributedLabel",
+        "license": "Copyright (c) 2011 Mattt Thompson (http://mattt.me/)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+        "website": "https://github.com/mattt/TTTAttributedLabel"
+      },
+      {
+        "title": "KeychainItemWrapper",
+        "license": "Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple Inc. (\"Apple\") in consideration of your agreement to the following terms, and your use, installation, modification or redistribution of this Apple software constitutes acceptance of these terms.  If you do not agree with these terms, please do not use, install, modify or redistribute this Apple software.\n\nIn consideration of your agreement to abide by the following terms, and subject to these terms, Apple grants you a personal, non-exclusive license, under Apple's copyrights in this original Apple software (the \"Apple Software\"), to use, reproduce, modify and redistribute the Apple Software, with or without modifications, in source and/or binary forms; provided that if you redistribute the Apple Software in its entirety and without modifications, you must retain this notice and the following text and disclaimers in all such redistributions of the Apple Software.  Neither the name, trademarks, service marks or logos of Apple Inc. may be used to endorse or promote products derived from the Apple Software without specific prior written permission from Apple.  Except as expressly stated in this notice, no other rights or licenses, express or implied, are granted by Apple herein, including but not limited to any patent rights that may be infringed by your derivative works or by other works in which the Apple Software may be incorporated.\n\nThe Apple Software is provided by Apple on an \"AS IS\" basis.  APPLE MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.\n\nIN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nCopyright (C) 2010 Apple Inc. All Rights Reserved.",
+        "website": "http://developer.apple.com/library/ios/#samplecode/GenericKeychain/Listings/Classes_KeychainItemWrapper_m.html"
+      },
+      {
+        "title": "ASPinboard",
+        "license": "Copyright 2012-2014 Lionheart Software LLC\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at\n\n  http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
+        "website": "https://github.com/lionheart/ASPinboard"
+      },
+      {
+        "title": "fmdb",
+        "license": "Copyright (c) 2008 Flying Meat Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+        "website": "https://github.com/ccgus/fmdb"
+      },
+      {
+        "title": "Reachability",
+        "license": "Copyright (c) 2011-2013, Tony Million.\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+        "website": "https://github.com/tonymillion/Reachability"
+      },
+      {
+        "title": "oauthconsumer",
+        "website": "https://github.com/jdg/oauthconsumer"
+      },
+      {
+        "title": "RPSTPasswordManagementAppService",
+        "website": "https://github.com/Riposte/RPSTPasswordManagementAppService"
+      }
+    ]
+  }
+]

@@ -2,117 +2,151 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<array>
-		<string></string>
+	<dict>
+		<key>rows</key>
 		<array>
-			<array>
-				<string></string>
-				<string>Designed and developed by Lionheart Software.
-
-Tip: tap and hold people listed below to follow on Twitter.</string>
-			</array>
-			<array>
+			<dict>
+				<key>title</key>
+				<string>Pushpin is designed and developed by Lionheart, a software studio based in Austin, TX.</string>
+				<key>detail</key>
+				<string>Tap and hold people listed below to follow them on Twitter.</string>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>View changelog</string>
-				<string></string>
-			</array>
-			<array>
-				<string>Follow @Pushpin_app on Twitter</string>
-				<string></string>
-			</array>
-			<array>
-				<string>Review Pushpin on iTunes</string>
-				<string></string>
-			</array>
+			</dict>
+			<dict>
+				<key>title</key>
+				<string>Follow us on Twitter for updates</string>
+			</dict>
 		</array>
-	</array>
-	<array>
-		<string>Team</string>
+	</dict>
+	<dict>
+		<key>rows</key>
 		<array>
-			<array>
-				<string>Dan Loewenherz</string>
+			<dict>
+				<key>detail</key>
 				<string>Product design and development</string>
+				<key>title</key>
+				<string>Dan Loewenherz</string>
+				<key>username</key>
 				<string>dwlz</string>
+				<key>website</key>
 				<string>http://dlo.me/</string>
-			</array>
-			<array>
-				<string>Andy Muldowney</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>Product development</string>
-			</array>
+				<key>title</key>
+				<string>Andy Muldowney</string>
+			</dict>
 		</array>
-	</array>
-	<array>
-		<string>Credits</string>
+		<key>title</key>
+		<string>Team</string>
+	</dict>
+	<dict>
+		<key>rows</key>
 		<array>
-			<array>
-				<string>Rachel</string>
+			<dict>
+				<key>detail</key>
 				<string>For always believing in me.</string>
-			</array>
-			<array>
-				<string>Dante and Isabelle</string>
+				<key>title</key>
+				<string>Rachel</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>For inspiring me and for making me laugh.</string>
-			</array>
-			<array>
-				<string>Maciej Ceglowski</string>
+				<key>title</key>
+				<string>Dante and Isabelle</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>For making Pinboard.</string>
-			</array>
+				<key>title</key>
+				<string>Maciej Ceglowski</string>
+			</dict>
 		</array>
-	</array>
-	<array>
-		<string>Acknowledgements</string>
+		<key>title</key>
+		<string>Thank Yous</string>
+	</dict>
+	<dict>
+		<key>rows</key>
 		<array>
-			<array>
+			<dict>
+				<key>title</key>
 				<string>Michael Solis</string>
-				<string></string>
+				<key>username</key>
 				<string>morphorod</string>
-			</array>
-			<array>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>JB Bryant</string>
-				<string></string>
+				<key>username</key>
 				<string>jb_bryant</string>
-			</array>
-			<array>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>Phil Havens</string>
-				<string></string>
+				<key>username</key>
 				<string>philhavens</string>
-			</array>
-			<array>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>Chase McCoy</string>
-				<string></string>
+				<key>username</key>
 				<string>chase_mccoy</string>
-			</array>
-			<array>
-				<string>Sam Cohen</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>For donating the getpushpin.com domain name.</string>
+				<key>title</key>
+				<string>Sam Cohen</string>
+				<key>username</key>
 				<string>Samography</string>
-			</array>
-			<array>
-				<string>Riccardo Mori</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>Italian translation.</string>
+				<key>title</key>
+				<string>Riccardo Mori</string>
+				<key>username</key>
 				<string>morrick</string>
+				<key>website</key>
 				<string>http://morrick.me/</string>
-			</array>
-			<array>
-				<string>James Lepthien</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>German translation.</string>
+				<key>title</key>
+				<string>James Lepthien</string>
+				<key>username</key>
 				<string>0x86DD</string>
-			</array>
-			<array>
-				<string>Jérôme Tomasini</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>French translation.</string>
+				<key>title</key>
+				<string>Jérôme Tomasini</string>
+				<key>username</key>
 				<string>c0wb0yz</string>
-			</array>
-			<array>
-				<string>Vítor Galvão</string>
+			</dict>
+			<dict>
+				<key>detail</key>
 				<string>Portuguese translation.</string>
+				<key>title</key>
+				<string>Vítor Galvão</string>
+				<key>username</key>
 				<string>vhgalvao</string>
-			</array>
+			</dict>
 		</array>
-	</array>
-	<array>
-		<string>Attributions</string>
+		<key>title</key>
+		<string>Acknowledgements</string>
+	</dict>
+	<dict>
+		<key>rows</key>
 		<array>
-			<array>
-				<string>TTTAttributedLabel</string>
+			<dict>
+				<key>license</key>
 				<string>Copyright (c) 2011 Mattt Thompson (http://mattt.me/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -120,10 +154,13 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+				<key>title</key>
+				<string>TTTAttributedLabel</string>
+				<key>website</key>
 				<string>https://github.com/mattt/TTTAttributedLabel</string>
-			</array>
-			<array>
-				<string>KeychainItemWrapper</string>
+			</dict>
+			<dict>
+				<key>license</key>
 				<string>Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple Inc. (&quot;Apple&quot;) in consideration of your agreement to the following terms, and your use, installation, modification or redistribution of this Apple software constitutes acceptance of these terms.  If you do not agree with these terms, please do not use, install, modify or redistribute this Apple software.
 
 In consideration of your agreement to abide by the following terms, and subject to these terms, Apple grants you a personal, non-exclusive license, under Apple&apos;s copyrights in this original Apple software (the &quot;Apple Software&quot;), to use, reproduce, modify and redistribute the Apple Software, with or without modifications, in source and/or binary forms; provided that if you redistribute the Apple Software in its entirety and without modifications, you must retain this notice and the following text and disclaimers in all such redistributions of the Apple Software.  Neither the name, trademarks, service marks or logos of Apple Inc. may be used to endorse or promote products derived from the Apple Software without specific prior written permission from Apple.  Except as expressly stated in this notice, no other rights or licenses, express or implied, are granted by Apple herein, including but not limited to any patent rights that may be infringed by your derivative works or by other works in which the Apple Software may be incorporated.
@@ -133,21 +170,27 @@ The Apple Software is provided by Apple on an &quot;AS IS&quot; basis.  APPLE MA
 IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Copyright (C) 2010 Apple Inc. All Rights Reserved.</string>
+				<key>title</key>
+				<string>KeychainItemWrapper</string>
+				<key>website</key>
 				<string>http://developer.apple.com/library/ios/#samplecode/GenericKeychain/Listings/Classes_KeychainItemWrapper_m.html</string>
-			</array>
-			<array>
-				<string>ASPinboard</string>
-				<string>Copyright 2012-2013 Aurora Software LLC
+			</dict>
+			<dict>
+				<key>license</key>
+				<string>Copyright 2012-2014 Lionheart Software LLC
 
 Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</string>
-				<string>https://github.com/aurorasoftware/ASPinboard</string>
-			</array>
-			<array>
-				<string>fmdb</string>
+				<key>title</key>
+				<string>ASPinboard</string>
+				<key>website</key>
+				<string>https://github.com/lionheart/ASPinboard</string>
+			</dict>
+			<dict>
+				<key>license</key>
 				<string>Copyright (c) 2008 Flying Meat Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -155,10 +198,13 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+				<key>title</key>
+				<string>fmdb</string>
+				<key>website</key>
 				<string>https://github.com/ccgus/fmdb</string>
-			</array>
-			<array>
-				<string>Reachability</string>
+			</dict>
+			<dict>
+				<key>license</key>
 				<string>Copyright (c) 2011-2013, Tony Million.
 All rights reserved.
 
@@ -169,19 +215,26 @@ Redistribution and use in source and binary forms, with or without modification,
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</string>
+				<key>title</key>
+				<string>Reachability</string>
+				<key>website</key>
 				<string>https://github.com/tonymillion/Reachability</string>
-			</array>
-			<array>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>oauthconsumer</string>
-				<string></string>
+				<key>website</key>
 				<string>https://github.com/jdg/oauthconsumer</string>
-			</array>
-			<array>
+			</dict>
+			<dict>
+				<key>title</key>
 				<string>RPSTPasswordManagementAppService</string>
-				<string></string>
+				<key>website</key>
 				<string>https://github.com/Riposte/RPSTPasswordManagementAppService</string>
-			</array>
+			</dict>
 		</array>
-	</array>
+		<key>title</key>
+		<string>Attributions</string>
+	</dict>
 </array>
 </plist>

@@ -19,6 +19,8 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellSubtitle.h"
 #import "PPTableViewTitleView.h"
+#import "PPTheme.h"
+#import "PPLicenseViewController.h"
 
 #import "UITableView+Additions.h"
 
@@ -28,6 +30,9 @@
 static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface PPAboutViewController ()
+
+@property (nonatomic, strong) NSDictionary *titleAttributes;
+@property (nonatomic, strong) NSDictionary *detailAttributes;
 
 @end
 
@@ -48,173 +53,156 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [titleView setTitle:@"Pushpin 3.0" imageName:nil];
     self.navigationItem.titleView = titleView;
 
-    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
-    self.data = [NSArray arrayWithContentsOfFile:plistPath];
-    self.expandedIndexPaths = [NSMutableArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
+    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
+    self.sections = [NSArray arrayWithContentsOfFile:aboutPlist];
+
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    self.heights = [NSMutableDictionary dictionary];
-    self.titles = [NSMutableArray array];
-    NSInteger index = 0;
-    CGFloat width = CGRectGetWidth(self.tableView.frame) - 2 * self.tableView.groupedCellMargin - 40;
-    CGFloat descriptionHeight;
-    NSUInteger emptyLines;
-    NSArray *lines;
-    CGSize maxSize = CGSizeMake(width, CGFLOAT_MAX);
-
-    UITableViewCell *testCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@""];
-    NSDictionary *titleAttributes = @{NSFontAttributeName: testCell.textLabel.font};
-    NSDictionary *detailAttributes = @{NSFontAttributeName: testCell.detailTextLabel.font};
-    for (NSArray *list in self.data) {
-        [self.titles addObject:NSLocalizedString(list[0], nil)];
-        for (NSArray *pair in list[1]) {
-            NSString *title = NSLocalizedString(pair[0], nil);
-            NSString *description = NSLocalizedString(pair[1], nil);
-
-            if ([title isEqualToString:@""]) {
-                self.heights[title] = @(0);
-            }
-            else {
-                self.heights[title] = @(MIN(22, [title boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:titleAttributes context:nil].size.height));
-            }
-
-            if ([description isEqualToString:@""]) {
-                descriptionHeight = 0;
-            }
-            else {
-                emptyLines = 0;
-                lines = [description componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-                for (NSString *line in lines) {
-                    if ([line isEqualToString:@""]) {
-                        emptyLines++;
-                    }
-                }
-
-                if (index == 4) {
-                    descriptionHeight = [description boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:detailAttributes context:nil].size.height;
-                }
-                else {
-                    descriptionHeight = [description boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:detailAttributes context:nil].size.height;
-                }
-            }
-
-            self.heights[description] = @(descriptionHeight);
-        }
-        index++;
-    }
+    self.heights = [NSMutableArray array];
 
     self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.frame) - 20, CGFLOAT_MAX);
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+
+    self.titleAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
+                             NSParagraphStyleAttributeName: paragraphStyle };
+    self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1],
+                              NSParagraphStyleAttributeName: paragraphStyle,
+                              NSForegroundColorAttributeName: [PPTheme detailLabelFontColor]};
+    
+    [self.sections enumerateObjectsUsingBlock:^(NSDictionary *sectionData, NSUInteger section, BOOL *stop) {
+        NSArray *rows = sectionData[@"rows"];
+        
+        self.heights[section] = [NSMutableArray array];
+        
+        [rows enumerateObjectsUsingBlock:^(NSDictionary *rowData, NSUInteger row, BOOL *stop) {
+            CGFloat height = 0;
+            
+            NSString *title = rowData[@"title"];
+            NSString *detail = rowData[@"detail"];
+            
+            if (title) {
+                height += CGRectGetHeight([title boundingRectWithSize:maxSize
+                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                           attributes:self.titleAttributes
+                                                              context:nil]);
+            }
+            
+            if (detail) {
+                height += CGRectGetHeight([detail boundingRectWithSize:maxSize
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                            attributes:self.detailAttributes
+                                                               context:nil]);
+            }
+            
+            self.heights[section][row] = @(height);
+        }];
+    }];
+
     [[Mixpanel sharedInstance] track:@"Opened about page"];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.data.count;
+    return self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.data[section][1] count];
+    return [self.sections[section][@"rows"] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.titles[section];
+    return self.sections[section][@"title"];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat topHeight = [self.heights[self.data[indexPath.section][1][indexPath.row][0]] floatValue];
-    CGFloat bottomHeight = [self.heights[self.data[indexPath.section][1][indexPath.row][1]] floatValue];
-    if (bottomHeight > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        bottomHeight = 22;
-    }
-
-    return topHeight + bottomHeight + 20;
+    return [self.heights[indexPath.section][indexPath.row] floatValue] + 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.accessoryView = nil;
 
-    if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
-        cell.detailTextLabel.font = [UIFont fontWithName:@"Courier" size:12];
-    }
-
+    cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.numberOfLines = 0;
-    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
-    cell.imageView.image = nil;
+    cell.clipsToBounds = YES;
+    cell.accessoryType = UITableViewCellAccessoryNone;;
+
+    NSDictionary *info = self.sections[indexPath.section][@"rows"][indexPath.row];
+    NSString *title = info[@"title"];
+    NSString *detail = info[@"detail"];
+
+    if (title) {
+        cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
+    }
     
-    if (indexPath.section == 0 && indexPath.row == 1) {
+    if (detail) {
+        cell.detailTextLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
+    }
+    
+    if (info[@"license"]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.section == 0 && indexPath.row == 2) {
-        cell.imageView.image = [UIImage imageNamed:@"twitter"];
-    }
-    else if (indexPath.section == 0 && indexPath.row == 3) {
-        cell.imageView.image = [UIImage imageNamed:@"apple"];
-    }
-    
-    NSArray *info = self.data[indexPath.section][1];
-    NSString *title = info[indexPath.row][0];
-    NSString *detail = info[indexPath.row][1];
-    
-    if ([info[indexPath.row] count] > 3) {
+    else if (indexPath.section == 0 && indexPath.row == 1) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 
-    if (![title isEqualToString:@""]) {
-        cell.textLabel.text = title;
-    }
-    if ([self.heights[detail] floatValue] > 80 && ![self.expandedIndexPaths containsObject:indexPath]) {
-        cell.detailTextLabel.font = [PPTheme detailLabelFont];
-        if (indexPath.section == [self.titles indexOfObject:NSLocalizedString(@"Attributions", nil)]) {
-            cell.detailTextLabel.text = NSLocalizedString(@"Tap to view license.", nil);
-        }
-        else {
-            cell.detailTextLabel.text = NSLocalizedString(@"Tap to expand.", nil);
-        }
-    }
-    else {
-        if (![detail isEqualToString:@""]) {
-            cell.detailTextLabel.text = detail;
-        }
-    }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.section == 0 && indexPath.row == 1) {
-        PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] init];
-        [self.navigationController pushViewController:changelogViewController animated:YES];
-    }
-    else if (indexPath.section == 0 && indexPath.row == 2) {
-        [self followScreenName:@"pushpin_app"];
-    }
-    else if (indexPath.section == 0 && indexPath.row == 3) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
-    }
-    else if ([self.data[indexPath.section][1][indexPath.row] count] > 3) {
-        NSURL *url = [NSURL URLWithString:self.data[indexPath.section][1][indexPath.row][3]];
-        [[UIApplication sharedApplication] openURL:url];
-    }
-    else {
-        if ([self.expandedIndexPaths containsObject:indexPath]) {
-            [self.expandedIndexPaths removeObject:indexPath];
-        }
-        else {
-            [self.expandedIndexPaths addObject:indexPath];
-        }
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    break;
+                    
+                case 1: {
+                    PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] init];
+                    [self.navigationController pushViewController:changelogViewController animated:YES];
+                    break;
+                }
+                    
+                case 2:
+                    [self followScreenName:@"pushpin_app"];
+                    break;
 
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
+                default:
+                    break;
+            }
+            break;
+            
+        case 4: {
+            NSDictionary *row = self.sections[indexPath.section][@"rows"][indexPath.row];
+            
+            NSString *license = row[@"license"];
+            if (license) {
+                PPLicenseViewController *licenseViewController = [PPLicenseViewController licenseViewControllerWithLicense:license];
+                licenseViewController.title = row[@"title"];
+                [self.navigationController pushViewController:licenseViewController animated:YES];
+            }
+            break;
+        }
+            
+        default:
+            break;
     }
+
+//    else if (indexPath.section == 0 && indexPath.row == 3) {
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+//    }
 }
 
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
@@ -339,30 +327,25 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (!self.actionSheet) {
             self.selectedPoint = [recognizer locationInView:self.tableView];
             NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
-            self.selectedItem = self.data[indexPath.section][1][indexPath.row];
-
-            if (indexPath.section == [self.titles indexOfObject:@"Attributions"] || indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
-
+            self.selectedItem = self.sections[indexPath.section][@"rows"][indexPath.row];
+            
+            NSString *title = self.sections[indexPath.section][@"title"];
+            if ([@[@"Acknowledgements", @"Team"] containsObject:title] && self.selectedItem[@"username"]) {
                 self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
-                if (indexPath.section == [self.titles indexOfObject:@"Attributions"]) {
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:@"Copy Project URL"];
-                }
-                else if (indexPath.section == [self.titles indexOfObject:@"Acknowledgements"] || indexPath.section == [self.titles indexOfObject:@"Team"]) {
-                    NSString *screenName = self.selectedItem[2];
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
-                }
+                NSString *screenName = self.selectedItem[@"username"];
+                [self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
 
                 // Properly set the cancel button index
                 [self.actionSheet addButtonWithTitle:@"Cancel"];
                 self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-
+                
                 [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
             }
         }
         else {
             if ([self.actionSheet respondsToSelector:@selector(dismissWithClickedButtonIndex:animated:)]) {
-                [(UIActionSheet *)self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+                [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
                 self.actionSheet = nil;
             }
         }
@@ -378,14 +361,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.actionSheet && buttonIndex >= 0) {
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if ([buttonTitle isEqualToString:@"Copy Project URL"]) {
-            [[UIPasteboard generalPasteboard] setString:self.selectedItem[2]];
-        }
-        else if ([buttonTitle hasPrefix:@"Follow"]) {
-            [self followScreenName:self.selectedItem[2]];
+
+        if ([buttonTitle hasPrefix:@"Follow"]) {
+            [self followScreenName:self.selectedItem[@"username"]];
         }
         else if ([[(UIActionSheet *)actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
-            [self followScreenName:self.selectedItem[2] withAccountScreenName:buttonTitle];
+            [self followScreenName:self.selectedItem[@"username"] withAccountScreenName:buttonTitle];
         }
     }
     self.actionSheet = nil;
