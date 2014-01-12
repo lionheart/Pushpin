@@ -29,6 +29,7 @@
 #import "PPStatusBarNotification.h"
 #import "PPMobilizerUtility.h"
 #import "PPSplitViewController.h"
+#import "PPStatusBar.h"
 
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -89,12 +90,12 @@
         
         if ([notification.userInfo[@"success"] isEqual:@(YES)]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[PPStatusBarNotification sharedNotification] showWithText:text];
+                [[PPStatusBar status] showWithText:text];
             });
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[PPStatusBarNotification sharedNotification] showWithText:text];
+                [[PPStatusBar status] showWithText:text];
             });
         }
     }

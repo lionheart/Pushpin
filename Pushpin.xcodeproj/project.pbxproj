@@ -190,6 +190,7 @@
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
 		37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37D0D0C116B8E2310062C27E /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 37D0D0C016B8E2310062C27E /* about.html */; };
+		37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D4B001188325B000E07EB3 /* PPStatusBar.m */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
 		37DE5AB9174F2A2F0073A2F4 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */; };
@@ -729,6 +730,8 @@
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
+		37D4B000188325B000E07EB3 /* PPStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBar.h; sourceTree = "<group>"; };
+		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPStatusBar.m; sourceTree = "<group>"; };
 		37DE5AA0174EF8AE0073A2F4 /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back_icon.png; path = Assets/back_icon.png; sourceTree = "<group>"; };
 		37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back_icon@2x.png"; path = "Assets/back_icon@2x.png"; sourceTree = "<group>"; };
 		37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -1567,6 +1570,8 @@
 				3769A5781879C50D00AC8C44 /* PPConstants.m */,
 				37FF412F187D95CF00F2D481 /* PPSplitViewController.h */,
 				37FF4130187D95CF00F2D481 /* PPSplitViewController.m */,
+				37D4B000188325B000E07EB3 /* PPStatusBar.h */,
+				37D4B001188325B000E07EB3 /* PPStatusBar.m */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";
@@ -2347,6 +2352,7 @@
 				E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */,
 				371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */,
 				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
+				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				37FF412E187D954D00F2D481 /* readability.js in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
