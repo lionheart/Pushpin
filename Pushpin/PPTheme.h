@@ -20,6 +20,7 @@
 + (UIFont *)boldTextLabelFont;
 + (UIFont *)textLabelFont;
 + (UIFont *)detailLabelFont;
++ (UIFont *)detailLabelFontAlternate1;
 + (NSString *)fontName;
 + (NSString *)boldFontName;
 
@@ -31,6 +32,7 @@
 
 + (CGFloat)staticBadgeFontSize;
 
++ (UIColor *)detailLabelFontColor;
 + (UIColor *)bookmarkBackgroundColor;
 
 + (NSInteger)maxNumberOfLinesForCompressedDescriptions;

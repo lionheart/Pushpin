@@ -51,6 +51,10 @@
     return [UIFont fontWithName:[PPTheme fontName] size:15];
 }
 
++ (UIFont *)detailLabelFontAlternate1 {
+    return [UIFont fontWithName:[PPTheme fontName] size:13];
+}
+
 + (CGFloat)fontSize {
     return [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
 }
@@ -79,6 +83,10 @@
 
 + (UIColor *)bookmarkBackgroundColor {
     return [UIColor whiteColor];
+}
+
++ (UIColor *)detailLabelFontColor {
+    return [UIColor darkGrayColor];
 }
 
 + (NSInteger)maxNumberOfLinesForCompressedDescriptions {

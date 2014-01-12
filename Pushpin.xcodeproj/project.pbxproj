@@ -186,6 +186,8 @@
 		37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */; };
 		37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7481881B568000F9C36 /* IC-Wrench-65.png */; };
 		37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7491881B568000F9C36 /* IC-Star-5.png */; };
+		37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */; };
+		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
 		37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37D0D0C116B8E2310062C27E /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 37D0D0C016B8E2310062C27E /* about.html */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
@@ -721,6 +723,9 @@
 		37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5@2x.png"; path = "Assets/IC-Star-5@2x.png"; sourceTree = "<group>"; };
 		37CBB7481881B568000F9C36 /* IC-Wrench-65.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Wrench-65.png"; path = "Assets/IC-Wrench-65.png"; sourceTree = "<group>"; };
 		37CBB7491881B568000F9C36 /* IC-Star-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5.png"; path = "Assets/IC-Star-5.png"; sourceTree = "<group>"; };
+		37CBB7511881F31C000F9C36 /* PPLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPLicenseViewController.h; path = Pushpin/PPLicenseViewController.h; sourceTree = "<group>"; };
+		37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPLicenseViewController.m; path = Pushpin/PPLicenseViewController.m; sourceTree = "<group>"; };
+		37CBB7541881FFBC000F9C36 /* About.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = About.json; path = Assets/About.json; sourceTree = SOURCE_ROOT; };
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
@@ -1517,6 +1522,7 @@
 				37405C1418614FF50052213A /* Categories */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				378482CD186C965700DF7A74 /* Activities */,
+				37CBB7541881FFBC000F9C36 /* About.json */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				37CBB7401881B44B000F9C36 /* About.plist */,
 				3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */,
@@ -1638,6 +1644,8 @@
 				3714DB901757DFFD00B23F4F /* user.png */,
 				3714DB911757DFFD00B23F4F /* user@2x.png */,
 				E804950C180EF20800C5CA8B /* webview-helpers.js */,
+				37CBB7511881F31C000F9C36 /* PPLicenseViewController.h */,
+				37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -2157,6 +2165,7 @@
 				E80EEF90185B6A1300979AA3 /* roundbutton-private@2x.png in Resources */,
 				37EABA4A173F01DA00B2684B /* loading_68.png in Resources */,
 				37EABA4B173F01DA00B2684B /* loading_68@2x.png in Resources */,
+				37CBB7551881FFBC000F9C36 /* About.json in Resources */,
 				3751D18218346C0200E0A42A /* mobilize.png in Resources */,
 				37EABA4C173F01DA00B2684B /* loading_69.png in Resources */,
 				37EABA4D173F01DA00B2684B /* loading_69@2x.png in Resources */,
@@ -2331,6 +2340,7 @@
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
 				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
+				37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */,
 				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
