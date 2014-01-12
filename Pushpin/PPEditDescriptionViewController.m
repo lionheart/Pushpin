@@ -36,14 +36,6 @@
         self.title = NSLocalizedString(@"Description", nil);
         
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
-        BOOL isIPad = [UIApplication isIPad];
-        CGFloat offset;
-        if (isIPad) {
-            offset = 75;
-        }
-        else {
-            offset = 225;
-        }
         
         // TextExpander SDK
         self.textExpander = [[SMTEDelegateController alloc] init];
