@@ -52,9 +52,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSString *formattedSearchString;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 
-@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshBottomConstraint;
 @property (nonatomic, strong) NSInvocation *invocation;
 
 - (void)showConfirmDeletionActionSheet;
@@ -94,7 +92,6 @@ static NSInteger kToolbarHeight = 44;
     self.latestSearchTime = [NSDate date];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.tableView.translatesAutoresizingMaskIntoConstraints = YES;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
@@ -110,7 +107,7 @@ static NSInteger kToolbarHeight = 44;
 
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     self.pullToRefreshImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
+    self.pullToRefreshImageView.backgroundColor = [UIColor whiteColor];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
@@ -185,18 +182,9 @@ static NSInteger kToolbarHeight = 44;
                             @"top": self.topLayoutGuide,
                             @"bottom": self.bottomLayoutGuide };
     
+    [self.pullToRefreshView lhs_addConstraints:@"V:|-10-[image(40)]" views:views];
     [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
-    [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
-    
-    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.tableView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [self.view addConstraint:self.pullToRefreshTopConstraint];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    
-    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
- toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
 
-    [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
     [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
     [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
@@ -567,7 +555,7 @@ static NSInteger kToolbarHeight = 44;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
+                    BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.pullToRefreshBottomConstraint];
                     if (alreadyContainsBookmarks) {
                         [self.tableView beginUpdates];
                         [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -677,6 +665,13 @@ static NSInteger kToolbarHeight = 44;
                     [self.tableView endUpdates];
 
                     [self.pullToRefreshImageView stopAnimating];
+                    [UIView animateWithDuration:0.3 animations:^{
+                        self.pullToRefreshBottomConstraint.constant = 0;
+                        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                        [self.view layoutIfNeeded];
+                    } completion:^(BOOL finished) {
+                        [self.pullToRefreshImageView stopAnimating];
+                    }];
                     kGenericPostViewControllerIsProcessingPosts = NO;
                 });
             } failure:nil width:[self currentWidth]];
@@ -1321,26 +1316,31 @@ static NSInteger kToolbarHeight = 44;
 
 #pragma mark - Scroll View delegate
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts) {
         CGFloat offset = scrollView.contentOffset.y;
-        if (offset < -60) {
+        if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
+            
+            [UIView animateWithDuration:0.3 animations:^{
+                self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+            }];
+            
+            [self updateWithRatio:@(0.2)];
         }
     }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        CGFloat offset = scrollView.contentOffset.y;
-        self.pullToRefreshTopConstraint.constant = -offset;
+    CGFloat offset = scrollView.contentOffset.y;
+    
+    if (offset <= 0) {
+        self.pullToRefreshBottomConstraint.constant = -offset;
         [self.view layoutIfNeeded];
-        
-        if (offset < 0) {
+
+        if (!kGenericPostViewControllerIsProcessingPosts) {
             NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
             NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
-
-            [self.pullToRefreshImageView stopAnimating];
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         }
     }
@@ -1405,6 +1405,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    [self.view layoutIfNeeded];
+}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
@@ -1679,11 +1683,21 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UIDynamicAnimatorDelegate
 
 - (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraint:self.tableViewPinnedToTopConstraint];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
-    [self.view lhs_addConstraints:@"H:|[table]|" views:@{@"table": self.tableView}];
-    [self.view layoutIfNeeded];
+    if (animator == self.animator && ![self.view.constraints containsObject:self.pullToRefreshBottomConstraint]) {
+        self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+
+        NSDictionary *views = @{@"ptr": self.pullToRefreshView,
+                                @"table": self.tableView,
+                                @"top": self.topLayoutGuide,
+                                @"bottom": self.bottomLayoutGuide };
+
+        self.pullToRefreshBottomConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        [self.view addConstraint:self.pullToRefreshBottomConstraint];
+        [self.view lhs_addConstraints:@"V:[top]-(<=0)-[ptr(>=60)]" views:views];
+        [self.view lhs_addConstraints:@"V:[top][table][bottom]" views:views];
+        [self.view lhs_addConstraints:@"H:|[table]|" views:views];
+        [self.view layoutIfNeeded];
+    }
 }
 
 - (void)updateTitleViewText {
