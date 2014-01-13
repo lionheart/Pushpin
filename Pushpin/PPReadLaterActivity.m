@@ -66,7 +66,11 @@
 
 - (void)performActivity {
     if ([self.delegate respondsToSelector:@selector(sendToReadLater:)]) {
-        [self.delegate performSelector:@selector(sendToReadLater:) withObject:@(self.service)];
+        [self.delegate sendToReadLater:self.service];
+        [self activityDidFinish:YES];
+    }
+    else {
+        [self activityDidFinish:YES];
     }
 }
 

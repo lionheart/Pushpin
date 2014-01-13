@@ -38,6 +38,7 @@ static NSInteger kTitleHeight = 40;
 @property (nonatomic, strong) PPMobilizerUtility *mobilizerUtility;
 @property (nonatomic) CGFloat yOffsetToStartShowingToolbar;
 @property (nonatomic) CGPoint previousContentOffset;
+@property (nonatomic, strong) UIPopoverController *popover;
 
 @end
 
@@ -150,7 +151,6 @@ static NSInteger kTitleHeight = 40;
     [self.actionButton setImage:actionButtonImage forState:UIControlStateNormal];
     [self.actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.actionButton.enabled = NO;
     [self.toolbar addSubview:self.actionButton];
     
     UIImage *editButtonImage = [[UIImage imageNamed:@"edit"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -158,7 +158,6 @@ static NSInteger kTitleHeight = 40;
     [self.editButton setImage:editButtonImage forState:UIControlStateNormal];
     [self.editButton addTarget:self action:@selector(showEditViewController) forControlEvents:UIControlEventTouchUpInside];
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.editButton.enabled = NO;
     [self.toolbar addSubview:self.editButton];
     
     UIImage *addButtonImage = [[UIImage imageNamed:@"add"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -167,7 +166,6 @@ static NSInteger kTitleHeight = 40;
     [self.addButton addTarget:self action:@selector(showAddViewController) forControlEvents:UIControlEventTouchUpInside];
     self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.addButton.hidden = YES;
-    self.addButton.enabled = NO;
     [self.toolbar addSubview:self.addButton];
     
     UIView *toolbarBorderView = [[UIView alloc] init];
@@ -363,10 +361,6 @@ static NSInteger kTitleHeight = 40;
 
     if (self.numberOfRequestsInProgress <= 0) {
         self.alreadyLoaded = YES;
-        
-        self.addButton.enabled = YES;
-        self.editButton.enabled = YES;
-        self.actionButton.enabled = YES;
         self.mobilizeButton.enabled = YES;
 
         NSString *theURLString = [self.mobilizerUtility originalURLStringForURL:self.url];
@@ -419,6 +413,7 @@ static NSInteger kTitleHeight = 40;
     PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
     [browserActivity setUrlString:[self.mobilizerUtility originalURLStringForURL:self.url]];
     [browserActivites addObject:browserActivity];
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
         browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"icabmobile" browser:@"iCab Mobile"];
         [browserActivites addObject:browserActivity];
@@ -443,7 +438,6 @@ static NSInteger kTitleHeight = 40;
         browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"cyber" browser:@"Cyberspace"];
         [browserActivites addObject:browserActivity];
     }
-
     
     // Read later
     NSMutableArray *readLaterActivities = [NSMutableArray array];
@@ -461,23 +455,33 @@ static NSInteger kTitleHeight = 40;
         [readLaterActivities addObject:readLaterActivity];
     }
     
-    NSString *title = NSLocalizedString(@"\r\nShared via Pinboard", nil);
+    NSString *title = self.title;
     NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
     NSURL *url = [NSURL URLWithString:tempUrl];
-    
-    NSMutableArray *allActivities = [NSMutableArray arrayWithArray:readLaterActivities];
+
+    NSMutableArray *allActivities = [readLaterActivities mutableCopy];
     [allActivities addObjectsFromArray:browserActivites];
-    
-    NSArray *activityItems = [NSArray arrayWithObjects:url, title, nil];
+
+    NSArray *activityItems = @[url, title];
     self.activityView = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:allActivities];
     self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo, UIActivityTypeAddToReadingList];
-    
-    __weak id weakself = self;
+
+    __weak PPWebViewController *weakself = self;
     self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
         [weakself setNeedsStatusBarAppearanceUpdate];
+
+        if (weakself.popover) {
+            [weakself.popover dismissPopoverAnimated:YES];
+        }
     };
     
-    [self presentViewController:self.activityView animated:YES completion:nil];
+    if ([UIApplication isIPad]) {
+        self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
+        [self.popover presentPopoverFromRect:self.actionButton.frame inView:self.toolbar permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    }
+    else {
+        [self presentViewController:self.activityView animated:YES completion:nil];
+    }
 }
 
 - (void)actionSheetCancel:(UIActionSheet *)actionSheet {
@@ -574,7 +578,7 @@ static NSInteger kTitleHeight = 40;
             OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
-            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:_urlString]]];
+            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:tempUrl]]];
             [request prepare];
             
             [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
@@ -605,7 +609,7 @@ static NSInteger kTitleHeight = 40;
         }
             
         case PPReadLaterPocket:
-            [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:_urlString]
+            [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:tempUrl]
                                  withTitle:self.title
                                    handler:^(PocketAPI *api, NSURL *url, NSError *error) {
                                        if (!error) {
@@ -621,11 +625,13 @@ static NSInteger kTitleHeight = 40;
             
         case PPReadLaterNative: {
             UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertAction = @"Open Pushpin";
             
             // Add to the native Reading List
             NSError *error;
-            [[SSReadingList defaultReadingList] addReadingListItemWithURL:self.url title:[self.webView stringByEvaluatingJavaScriptFromString:@"document.title"] previewText:nil error:&error];
+            [[SSReadingList defaultReadingList] addReadingListItemWithURL:[NSURL URLWithString:tempUrl]
+                                                                    title:self.title
+                                                              previewText:nil
+                                                                    error:&error];
             if (error) {
                 notification.alertBody = @"Error adding to Reading List";
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
@@ -637,10 +643,8 @@ static NSInteger kTitleHeight = 40;
             [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
             break;
         }
-            
-        default:
-            break;
     }
+    
 }
 
 - (void)toggleMobilizer {
@@ -866,11 +870,6 @@ static NSInteger kTitleHeight = 40;
     if ([@[@"http", @"https"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
         self.numberOfRequestsCompleted = 0;
         self.numberOfRequests = 0;
-
-        self.markAsReadButton.enabled = NO;
-        self.addButton.enabled = NO;
-        self.editButton.enabled = NO;
-        self.actionButton.enabled = NO;
         self.mobilizeButton.enabled = NO;
         
         switch (navigationType) {

@@ -112,9 +112,8 @@ static NSString *CellIdentifier = @"TagCell";
     self.sortedTitles = newSortedTitlesWithSearch;
     self.filteredTags = [NSMutableArray array];
 
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 44)];
     self.searchBar.delegate = self;
-    self.searchBar.barTintColor = HEX(0x0096FFFF);
 
     self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
     self.searchDisplayController.searchResultsDataSource = self;
