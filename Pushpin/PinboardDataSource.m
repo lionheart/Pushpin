@@ -900,7 +900,6 @@ static BOOL kPinboardSyncInProgress = NO;
             dispatch_group_async(group, queue, ^{
                 FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                 [db open];
-
                 [db beginTransaction];
                 [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
@@ -912,6 +911,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [self.posts removeObjectAtIndex:index];
+                [self.metadata removeObjectAtIndex:index];
+                [self.compressedMetadata removeObjectAtIndex:index];
+
                 callback(indexPath);
             });
         };

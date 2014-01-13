@@ -738,15 +738,15 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
-    void (^DeletePostCallback)(NSArray *, NSArray *) = ^(NSArray *indexPathsToRemove, NSArray *indexPathsToAdd) {
+    void (^DeletePostCallback)(NSArray *, NSArray *) = ^(NSArray *indexPathsToDelete, NSArray *indexPathsToInsert) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-        
+
             [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
             
             [UIView animateWithDuration:0.25 animations:^{
@@ -1026,6 +1026,8 @@ static NSInteger kToolbarHeight = 44;
                         [self.tableView endUpdates];
                     });
                 }];
+
+                [self deletePostsAtIndexPaths:self.indexPathsToDelete];
             }
         }
     }
@@ -1282,7 +1284,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
     if (alertView == self.confirmDeletionAlertView) {
-        if ([title isEqualToString:NSLocalizedString(@"Yes", nil)]) {
+        if ([title isEqualToString:NSLocalizedString(@"Delete", nil)]) {
             // We're only deleting one bookmark in this case.
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
