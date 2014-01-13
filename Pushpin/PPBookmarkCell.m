@@ -51,12 +51,11 @@ static NSInteger kEditButtonOuterMargin = 20;
 + (TTTAttributedLabel *)bookmarkAttributedLabelForWidth:(CGFloat)width {
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
     label.translatesAutoresizingMaskIntoConstraints = NO;
-//    label.preferredMaxLayoutWidth = width;
+    label.truncationTokenStringAttributes = @{NSForegroundColorAttributeName: [UIColor darkGrayColor]};
     label.opaque = YES;
     label.backgroundColor = [PPTheme bookmarkBackgroundColor];
     label.userInteractionEnabled = NO;
     label.numberOfLines = 0;
-    label.lineBreakMode = NSLineBreakByWordWrapping;
     label.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
     return label;
 }
@@ -141,7 +140,10 @@ static NSInteger kEditButtonOuterMargin = 20;
 
     if (compressed) {
         self.titleLabel.numberOfLines = 1;
+        self.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+
         self.descriptionLabel.numberOfLines = 2;
+        self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
 
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);

@@ -7,6 +7,9 @@
 //
 
 #import "PPStatusBar.h"
+#import "AddBookmarkViewController.h"
+#import "PPNavigationController.h"
+
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
@@ -27,6 +30,9 @@
 
 - (void)showWithText:(NSString *)text {
     UIViewController *controller = [UIViewController lhs_topViewController];
+    if ([[controller class] isEqual:[AddBookmarkViewController class]]) {
+        controller = (UIViewController *)[[AppDelegate sharedDelegate].navigationController topViewController];
+    }
     
     self.view = [[UIView alloc] init];
     self.view.translatesAutoresizingMaskIntoConstraints = NO;
