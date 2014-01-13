@@ -96,7 +96,7 @@
     defaultParagraphStyle.lineHeightMultiple = 1;
     defaultParagraphStyle.hyphenationFactor = 0;
 //    defaultParagraphStyle.lineSpacing = 1;
-//    defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
     NSMutableDictionary *linkAttributes = [@{NSFontAttributeName: [PPTheme urlFont],
                                              NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
@@ -151,7 +151,7 @@
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:0];
     }
-    
+
     NSMutableArray *badges = [NSMutableArray array];
 
     UIColor *privateColor;
