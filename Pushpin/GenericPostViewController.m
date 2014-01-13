@@ -1324,23 +1324,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        CGFloat navigationHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
-        CGFloat searchHeight = CGRectGetHeight(self.searchBar.frame);
-        CGFloat minimumOffset = statusBarHeight + navigationHeight;
-        if (offset < -(minimumOffset + CGRectGetHeight(self.pullToRefreshImageView.frame) + 20)) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView animateWithDuration:0.5 animations:^{
-                    [self.pullToRefreshImageView startAnimating];
-                } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        // Calculate the update ratio
-                        CGFloat updateBasis = (minimumOffset + searchHeight);
-                        NSNumber *updateRatio = @(MIN((-offset - updateBasis) / 80, 1));
-                        [self updateWithRatio:updateRatio];
-                    }];
-                }];
-            });
+        if (offset < -60) {
+            [self.pullToRefreshImageView startAnimating];
         }
     }
 }
@@ -1350,13 +1335,12 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         self.pullToRefreshTopConstraint.constant = -offset;
         [self.view layoutIfNeeded];
-
-        NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
-        NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
         
         if (offset < 0) {
-            offset = -60;
+            NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
+            NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
 
+            [self.pullToRefreshImageView stopAnimating];
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
         }
     }
