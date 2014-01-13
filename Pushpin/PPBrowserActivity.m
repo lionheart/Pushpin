@@ -78,6 +78,7 @@
         url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
     }
     
+    [self activityDidFinish:YES];
     [[UIApplication sharedApplication] openURL:url];
 }
 

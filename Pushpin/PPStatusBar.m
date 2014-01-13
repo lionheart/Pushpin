@@ -56,7 +56,14 @@
                             @"border": border };
 
     [self.view lhs_addConstraints:@"H:|-10-[label]-10-|" views:views];
-    [self.view lhs_addConstraints:@"V:|-10-[label]-10-|" views:views];
+    
+    if (controller.navigationController.navigationBarHidden) {
+        [self.view lhs_addConstraints:@"V:|-52-[label]-10-|" views:views];
+    }
+    else {
+        [self.view lhs_addConstraints:@"V:|-30-[label]-10-|" views:views];
+    }
+
     [self.view lhs_addConstraints:@"H:|[border]|" views:views];
     [self.view lhs_addConstraints:@"V:[border(1)]|" views:views];
 
@@ -64,7 +71,8 @@
     [controller.view lhs_addConstraints:@"H:|[view]|" views:views];
     [controller.view layoutIfNeeded];
 
-    self.topConstraint = [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:controller.view attribute:NSLayoutAttributeTop multiplier:1 constant:-CGRectGetHeight(self.view.frame)];
+    CGFloat height = CGRectGetHeight(self.view.frame) + 20;
+    self.topConstraint = [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:controller.view attribute:NSLayoutAttributeTop multiplier:1 constant:-height];
     [controller.view addConstraint:self.topConstraint];
     [controller.view layoutIfNeeded];
 
@@ -74,17 +82,23 @@
           initialSpringVelocity:0
                         options:0
                      animations:^{
-                         self.topConstraint.constant = 0;
+                         self.topConstraint.constant = -20;
                          [controller.view layoutIfNeeded];
                      }
                      completion:^(BOOL finished) {
                          double delayInSeconds = 1.5;
                          dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                          dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                             [UIView animateWithDuration:0.3
+                             [UIView animateWithDuration:0.1
                                               animations:^{
-                                                  self.topConstraint.constant = -CGRectGetHeight(self.view.frame);
+                                                  self.topConstraint.constant = -10;
                                                   [controller.view layoutIfNeeded];
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  [UIView animateWithDuration:0.2 animations:^{
+                                                      self.topConstraint.constant = -height;
+                                                      [controller.view layoutIfNeeded];
+                                                  }];
                                               }];
                          });
                      }];

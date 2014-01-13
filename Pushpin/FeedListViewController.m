@@ -108,7 +108,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
+    // On the iPad, the navigation bar changes color based on the view controller last pushed
+    if (![UIApplication isIPad]) {
+        self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
+    }
 
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (![delegate feedToken]) {
@@ -394,8 +397,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
             }
         }
-        
+
         [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
+         
+        if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
+            [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+        }
         
         UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
         if (popover) {
