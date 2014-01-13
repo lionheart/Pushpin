@@ -1268,7 +1268,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionAlert {
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
     [self.confirmDeletionAlertView show];
 }
 
