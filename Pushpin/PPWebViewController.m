@@ -818,7 +818,7 @@ static NSInteger kTitleHeight = 40;
             [self showToolbarAnimated:YES];
         }
         else {
-            [self hideToolbarAnimated:NO];
+            [self hideToolbarAnimated:YES];
         }
     }
 }
