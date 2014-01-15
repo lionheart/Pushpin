@@ -16,6 +16,7 @@ pod 'LHSCustomTransitionCollection', :local => '../LHSCustomTransitionCollection
 pod 'oauthconsumer', :podspec => 'Specs/oauthconsumer.podspec'
 pod 'RPSTPasswordManagementAppService', :podspec => 'Specs/RPSTPasswordManagementAppService.podspec'
 pod 'HTMLParser', :podspec => 'Specs/HTMLParser.podspec'
-pod 'TextExpanderTouchSDK', :podspec => 'Specs/TextExpanderTouchSDK.podspec'
+pod 'TextExpander', '2.3'
 # pod 'hpple', :podspec => 'Specs/hpple.podspec'
 pod 'MWFeedParser', '1.0.0'
+# pod 'PLCrashReporter', :podspec => 'Specs/PLCrashReporter.podspec'
