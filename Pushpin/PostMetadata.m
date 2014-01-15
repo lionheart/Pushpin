@@ -117,6 +117,18 @@
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
     }
+    
+    if (!title) {
+        title = @"";
+    }
+    
+    if (!linkHost) {
+        linkHost = @"";
+    }
+    
+    if (!description) {
+        description = @"";
+    }
 
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     NSAttributedString *linkString = [[NSAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
