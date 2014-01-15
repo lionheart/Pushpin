@@ -39,7 +39,7 @@
 @property (nonatomic) PPMobilizerType mobilizer;
 @property (nonatomic) PPReadLaterType readLater;
 
-@property (nonatomic, strong) NSNumber *connectionAvailable;
+@property (nonatomic) BOOL connectionAvailable;
 @property (nonatomic, strong) NSNumber *openLinksInApp;
 @property (nonatomic, strong) NSNumber *privateByDefault;
 @property (nonatomic, strong) NSNumber *readByDefault;

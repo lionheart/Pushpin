@@ -601,7 +601,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+        if (![[AppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UILocalNotification *notification = [[UILocalNotification alloc] init];
                 notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);

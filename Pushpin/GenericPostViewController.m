@@ -260,10 +260,11 @@ static NSInteger kToolbarHeight = 44;
 
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
 
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
-        if ([AppDelegate sharedDelegate].bookmarksNeedUpdate) {
-            [AppDelegate sharedDelegate].bookmarksNeedUpdate = NO;
+        if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
+            delegate.bookmarksNeedUpdate = NO;
             [self.postDataSource updateBookmarksWithSuccess:^{
                 [self updateFromLocalDatabaseWithCallback:nil];
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
@@ -1096,7 +1097,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
-    if (![[delegate connectionAvailable] boolValue]) {
+    if (!delegate.connectionAvailable) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = @"Connection unavailable.";
         notification.userInfo = @{@"success": @(NO), @"updated": @(YES)};

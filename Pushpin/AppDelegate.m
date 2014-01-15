@@ -468,14 +468,14 @@
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold"
      }];
 
-    Reachability *reach = [Reachability reachabilityWithHostname:@"google.com"];
-    self.connectionAvailable = @([reach isReachable]);
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    self.connectionAvailable = [reach isReachable];
     reach.reachableBlock = ^(Reachability *reach) {
-        self.connectionAvailable = @(YES);
+        self.connectionAvailable = YES;
     };
 
     reach.unreachableBlock = ^(Reachability *reach) {
-        self.connectionAvailable = @(NO);
+        self.connectionAvailable = NO;
     };
     [reach startNotifier];
     
