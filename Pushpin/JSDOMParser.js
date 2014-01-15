@@ -850,7 +850,8 @@
       if (result === null)
         return null;
 
-      var [node, closed] = result;
+      var node = result[0];
+      var closed = result[1];
       var localName = node.localName;
 
       // If this isn't a void Element, read its child nodes

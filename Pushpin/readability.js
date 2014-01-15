@@ -20,7 +20,7 @@
  */
 
 var Readability = function(uri, doc) {
-  const ENABLE_LOGGING = false;
+  const ENABLE_LOGGING = true;
 
   this._uri = uri;
   this._doc = doc;
@@ -47,7 +47,7 @@ var Readability = function(uri, doc) {
   // Control whether log messages are sent to the console
   if (ENABLE_LOGGING) {
     this.log = function (msg) {
-      dump("Reader: (Readability) " + msg);
+      console.log("Reader: (Readability) " + msg);
     };
   } else {
     this.log = function () {};
@@ -61,7 +61,7 @@ Readability.prototype = {
 
   // The number of top candidates to consider when analysing how
   // tight the competition is among candidates.
-  N_TOP_CANDIDATES: 5,
+  N_TOP_CANDIDATES: 20,
 
   // The maximum number of pages to loop through before we call
   // it quits and just show a link.
@@ -555,6 +555,8 @@ Readability.prototype = {
           grandParentNode.readability.contentScore += contentScore / 2;
       }
 
+      console.log(candidates);
+
       // After we've calculated scores, loop through all of the possible
       // candidate nodes we found and find the one with the highest score.
       var topCandidates = [];
@@ -609,6 +611,8 @@ Readability.prototype = {
 
       var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
       var siblingNodes = topCandidate.parentNode.childNodes;
+
+      // TODO Problem happens above here for http://firstround.com/article/30-Best-Pieces
 
       for (var s = 0, sl = siblingNodes.length; s < sl; s += 1) {
         var siblingNode = siblingNodes[s];
@@ -708,6 +712,8 @@ Readability.prototype = {
           // a list or directory of links with summaries. It takes the score of the last top candidate
           // (see N_TOP_CANDIDATES) and checks how it compares to the top candidate's. On pages that are not
           // actual articles, there will likely be many candidates with similar score (i.e. higher contrast ratio).
+
+          // Cancelled until we figured out http://firstround.com/article/30-Best-Pieces
           var contrastRatio = lastTopCandidate.readability.contentScore / topCandidate.readability.contentScore;
           if (contrastRatio > 0.45)
             return null;
