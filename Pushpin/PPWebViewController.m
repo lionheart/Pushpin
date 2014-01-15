@@ -635,7 +635,8 @@ static NSInteger kTitleHeight = 40;
             if (error) {
                 notification.alertBody = @"Error adding to Reading List";
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-            } else {
+            }
+            else {
                 notification.alertBody = @"Added to Reading List";
                 notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             }
@@ -648,29 +649,33 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)toggleMobilizer {
-    if ([self.mobilizerUtility canMobilizeURL:self.url]) {
-        self.mobilized = !self.mobilized;
-        self.mobilizeButton.selected = self.mobilized;
+    self.mobilized = !self.mobilized;
+    self.mobilizeButton.selected = self.mobilized;
 
-        NSURL *url;
-        if (self.mobilized) {
-            url = [NSURL URLWithString:[self.mobilizerUtility urlStringForMobilizerForURL:self.url]];
-        }
-        else {
-            url = [NSURL URLWithString:[self.mobilizerUtility originalURLStringForURL:self.url]];
-        }
-
-        self.title = self.urlString;
-
-        NSString *previousURLString = [self.history lastObject][@"url"];
-        if ([previousURLString isEqualToString:url.absoluteString]) {
-            [self.history removeLastObject];
-            [self.webView goBack];
-        }
-        else {
-            NSURLRequest *request = [NSURLRequest requestWithURL:url];
-            [self.webView loadRequest:request];
-        }
+    if (self.mobilized) {
+        NSString *JSDOMParserFile = [[NSBundle mainBundle] pathForResource:@"JSDOMParser" ofType:@"js"];
+        NSString *readabilityFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"js"];
+        NSString *readabilityInitializerFile = [[NSBundle mainBundle] pathForResource:@"readabilityInitializer" ofType:@"js"];
+        
+        NSString *JSDOMParserJS = [NSString stringWithContentsOfFile:JSDOMParserFile encoding:NSUTF8StringEncoding error:nil];
+        NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityFile encoding:NSUTF8StringEncoding error:nil];
+        NSString *readabilityInitializerJS = [NSString stringWithContentsOfFile:readabilityInitializerFile encoding:NSUTF8StringEncoding error:nil];
+        
+        [self.webView stringByEvaluatingJavaScriptFromString:JSDOMParserJS];
+        [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
+        
+//        NSString *cssFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"css"];
+//        NSString *css = [NSString stringWithContentsOfFile:cssFile encoding:NSUTF8StringEncoding error:nil];
+//        NSString *addCSSJS = [NSString stringWithFormat:
+//                              @"var CSS = document.createElement('style');"
+//                              "CSS.type = 'text/css';"
+//                              "var styles = document.createTextNode(\"%@\");"
+//                              "CSS.appendChild(styles);", css];
+//        [self.webView stringByEvaluatingJavaScriptFromString:addCSSJS];
+        [self.webView stringByEvaluatingJavaScriptFromString:readabilityInitializerJS];
+    }
+    else {
+        [self.webView reload];
     }
 }
 
