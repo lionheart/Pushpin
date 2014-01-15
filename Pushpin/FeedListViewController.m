@@ -331,7 +331,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             postViewController.postDataSource = feedDataSource;
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-            if (![[[AppDelegate sharedDelegate] connectionAvailable] boolValue]) {
+            if (![AppDelegate sharedDelegate].connectionAvailable) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
             }
             else {
