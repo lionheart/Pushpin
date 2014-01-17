@@ -42,7 +42,11 @@ static NSString *CellIdentifier = @"Cell";
     [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
-    self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Open links with:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                          delegate:self
+                                                 cancelButtonTitle:nil
+                                            destructiveButtonTitle:nil
+                                                 otherButtonTitles:nil];
     
     [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
     
