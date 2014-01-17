@@ -644,6 +644,9 @@ static NSInteger kTitleHeight = 40;
             [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
             break;
         }
+            
+        case PPReadLaterNone:
+            break;
     }
     
 }

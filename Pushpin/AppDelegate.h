@@ -33,16 +33,16 @@
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSDate *lastUpdated;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) NSNumber *bookmarksUpdated;
+@property (nonatomic) BOOL bookmarksUpdated;
 
 @property (nonatomic) PPBrowserType browser;
 @property (nonatomic) PPMobilizerType mobilizer;
 @property (nonatomic) PPReadLaterType readLater;
 
 @property (nonatomic) BOOL connectionAvailable;
-@property (nonatomic, strong) NSNumber *openLinksInApp;
-@property (nonatomic, strong) NSNumber *privateByDefault;
-@property (nonatomic, strong) NSNumber *readByDefault;
+@property (nonatomic) BOOL openLinksInApp;
+@property (nonatomic) BOOL privateByDefault;
+@property (nonatomic) BOOL readByDefault;
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;

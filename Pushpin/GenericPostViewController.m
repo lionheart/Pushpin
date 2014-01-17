@@ -384,7 +384,7 @@ static NSInteger kToolbarHeight = 44;
 #warning TODO Check outside links
                         // Check for App Store link
                         
-                        if ([[[AppDelegate sharedDelegate] openLinksInApp] boolValue]) {
+                        if ([AppDelegate sharedDelegate].openLinksInApp) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
                             if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
                                 self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];

@@ -41,8 +41,8 @@ typedef enum BookmarkSections {
 @property (nonatomic, copy) void (^callback)();
 
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
-@property (nonatomic, strong) NSNumber *markAsRead;
-@property (nonatomic, strong) NSNumber *setAsPrivate;
+@property (nonatomic) BOOL markAsRead;
+@property (nonatomic) BOOL setAsPrivate;
 @property (nonatomic, strong) NSString *previousURLContents;
 @property (nonatomic, strong) UIButton *privateButton;
 @property (nonatomic, strong) UIButton *readButton;
