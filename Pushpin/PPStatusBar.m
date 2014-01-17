@@ -33,16 +33,30 @@
     if ([[controller class] isEqual:[AddBookmarkViewController class]]) {
         controller = (UIViewController *)[[AppDelegate sharedDelegate].navigationController topViewController];
     }
-    
+
+    UIView *view = controller.view;
+    CGFloat verticalOffset = 0;
+    if ([[view class] isSubclassOfClass:[UITableView class]]) {
+        view = [AppDelegate sharedDelegate].window;
+
+
+    }
+
     self.view = [[UIView alloc] init];
     self.view.translatesAutoresizingMaskIntoConstraints = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+
+    NSInteger numWords = [[text componentsSeparatedByString:@" "] count];
+    NSInteger averageWordsPerMinute = 225;
+    CGFloat minutesNeededToRead = (CGFloat)numWords / (CGFloat)averageWordsPerMinute;
+    CGFloat secondsNeededToRead = minutesNeededToRead * 60;
     
     UILabel *label = [[UILabel alloc] init];
     label.text = text;
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor whiteColor];
     label.textColor = HEX(0x777777FF);
+    label.numberOfLines = 0;
     label.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:label];
     

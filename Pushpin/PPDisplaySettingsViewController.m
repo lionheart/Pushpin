@@ -13,13 +13,19 @@
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+#import <TextExpander/SMTEDelegateController.h>
 
 #import "UITableViewCellValue1.h"
+#import "UITableViewCellSubtitle.h"
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
+static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 @interface PPDisplaySettingsViewController ()
+
+@property (nonatomic) NSUInteger TESnippetCount;
+@property (nonatomic) BOOL TEAvailable;
 
 @end
 
@@ -39,17 +45,32 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
+    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    NSUInteger count = self.TESnippetCount;
+    self.TEAvailable = [SMTEDelegateController textExpanderTouchHasGetSnippetsCallbackURL];
+
+    [SMTEDelegateController expansionStatusForceLoad:NO
+                                        snippetCount:&count
+                                            loadDate:nil
+                                               error:nil];
+
+    self.TESnippetCount = count;
     [self.tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.TEAvailable) {
+        return 3;
+    }
     return 2;
 }
 
@@ -60,22 +81,47 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
 
         case 1:
             return 1;
+
+        case 2:
+            return 1;
     }
     return 0;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.accessoryView = nil;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGSize size = CGSizeMake(CGRectGetWidth(self.tableView.frame), CGFLOAT_MAX);
+
+    NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme textLabelFont]};
+    NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont]};
+    CGFloat titleHeight = [@"" boundingRectWithSize:size
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:titleAttributes
+                                            context:nil].size.height;
+    if (![indexPath isEqual:[NSIndexPath indexPathForRow:0 inSection:2]]) {
+        return titleHeight + 20;
+    }
     
+    CGFloat detailHeight = [@"" boundingRectWithSize:size
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:descriptionAttributes
+                                             context:nil].size.height;
+
+    return titleHeight + detailHeight + 20;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell;
     CGSize size;
     CGSize switchSize;
     
-    cell.textLabel.font = [PPTheme textLabelFont];
-    cell.detailTextLabel.font = [PPTheme detailLabelFont];
-    
     switch (indexPath.section) {
         case 0:
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.accessoryView = nil;
+
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
@@ -151,10 +197,39 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
             break;
 
         case 1:
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.accessoryView = nil;
+
             cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
             cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
+
+        case 2: {
+            cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.accessoryView = nil;
+
+            cell.textLabel.text = @"Update TextExpander Snippets";
+
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            formatter.dateStyle = NSDateFormatterShortStyle;
+
+            if (self.TESnippetCount == 1) {
+                cell.detailTextLabel.text = @"1 snippet";
+            }
+            else {
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld snippets", (long)self.TESnippetCount];
+            }
+
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            break;
+        }
 
         default:
             break;
@@ -164,11 +239,26 @@ static NSString *ChoiceCellIdentifier = @"ChoiceCell";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
-            // Show the default feed selection
-            PPDefaultFeedViewController *vc = [[PPDefaultFeedViewController alloc] initWithStyle:UITableViewStyleGrouped];
-            [self.navigationController pushViewController:vc animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0: {
+                    // Show the default feed selection
+                    PPDefaultFeedViewController *vc = [[PPDefaultFeedViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                    [self.navigationController pushViewController:vc animated:YES];
+                    break;
+                }
+            }
+            break;
+
+        case 2: {
+            SMTEDelegateController *teDelegate = [[SMTEDelegateController alloc] init];
+            teDelegate.getSnippetsScheme = @"pushpin";
+            teDelegate.clientAppName = @"Pushpin";
+            [teDelegate getSnippets];
+            break;
         }
     }
 }
