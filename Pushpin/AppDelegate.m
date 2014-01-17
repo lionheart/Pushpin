@@ -154,7 +154,35 @@
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
-        if ([url.path isEqualToString:@"/add"]) {
+
+        // Sync TextExpander snippets
+        if ([url.path hasPrefix:@"/TextExpanderSettings"]) {
+            SMTEDelegateController *teDelegetController = [[SMTEDelegateController alloc] init];
+            BOOL cancel;
+            NSError *error;
+            BOOL response = [teDelegetController handleGetSnippetsURL:url
+                                                                error:&error
+                                                           cancelFlag:&cancel];
+
+            NSString *message;
+            if (error) {
+                message = @"TextExpander snippet sync failed.";
+            }
+            else if (cancel) {
+                message = @"TextExpander snippet sync cancelled.";
+            }
+            else {
+                message = @"TextExpander snippets successfully updated.";
+            }
+
+            [[[UIAlertView alloc] initWithTitle:nil
+                                        message:message
+                                       delegate:nil
+                              cancelButtonTitle:nil
+                              otherButtonTitles:@"OK", nil] show];
+            return response;
+        }
+        else if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
             [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
                 if (queryParameters[@"url"]) {
