@@ -606,8 +606,9 @@ Readability.prototype = {
       // that might also be related. Things like preambles, content split by ads
       // that we removed, etc.
       var articleContent = doc.createElement("DIV");
-      if (isPaging)
+      if (isPaging) {
         articleContent.id = "readability-content";
+      }
 
       var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
       var siblingNodes = topCandidate.parentNode.childNodes;
