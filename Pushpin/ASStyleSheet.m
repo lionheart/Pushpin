@@ -12,7 +12,6 @@
 @implementation ASStyleSheet
 
 + (void)applyStyles {
-    [UVStyleSheet instance].tintColor = [UIColor whiteColor];
     [UVStyleSheet instance].navigationBarBackgroundColor = [UIColor whiteColor];
     [UVStyleSheet instance].navigationBarTextColor = [UIColor whiteColor];
 }
