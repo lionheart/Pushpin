@@ -48,4 +48,9 @@ for (var i=0; i<childrenToAppend.length; i++) {
 }
 
 var htmlString = html.outerHTML;
+// document.innerHTML = htmlString;
+document.body.innerHTML = "";
+document.body.appendChild(readabilityElement);
+document.head.innerHTML = "";
+document.head.appendChild(link);
 
