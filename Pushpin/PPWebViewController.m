@@ -673,6 +673,10 @@ static NSInteger kTitleHeight = 40;
 //                              "CSS.appendChild(styles);", css];
 //        [self.webView stringByEvaluatingJavaScriptFromString:addCSSJS];
         [self.webView stringByEvaluatingJavaScriptFromString:readabilityInitializerJS];
+        NSString *content = [self.webView stringByEvaluatingJavaScriptFromString:@"htmlString"];
+
+        NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
+        [self.webView loadHTMLString:content baseURL:baseURL];
     }
     else {
         [self.webView reload];
@@ -871,8 +875,7 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    
-    if ([@[@"http", @"https"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
+    if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
         self.numberOfRequestsCompleted = 0;
         self.numberOfRequests = 0;
         self.mobilizeButton.enabled = NO;
@@ -919,47 +922,50 @@ static NSInteger kTitleHeight = 40;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsCompleted++;
-    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     
-    if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-        self.titleLabel.text = self.url.host;
-    }
-    else {
-        self.titleLabel.text = self.title;
-    }
-
-    if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
-        NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
-        NSMutableArray *finalTitleComponents = [NSMutableArray array];
-        for (NSString *component in titleComponents) {
-            if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
-                [finalTitleComponents addObject:component];
-            }
-            else {
-                break;
-            }
-        }
-
-        [self.history addObject:@{@"url": self.url.absoluteString,
-                                  @"host": self.url.host,
-                                  @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
-    }
-
     [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
 
-    // Disable the default action sheet
-    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
-    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
-    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+    // Only run the following when this is an actual web URL.
+    if (![self.url.scheme isEqualToString:@"file"]) {
+        self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+            self.titleLabel.text = self.url.host;
+        }
+        else {
+            self.titleLabel.text = self.title;
+        }
 
-    if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
-        self.webView.scrollView.scrollEnabled = YES;
-        self.webView.scrollView.scrollsToTop = YES;
-    }
+        if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
+            NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
+            NSMutableArray *finalTitleComponents = [NSMutableArray array];
+            for (NSString *component in titleComponents) {
+                if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
+                    [finalTitleComponents addObject:component];
+                }
+                else {
+                    break;
+                }
+            }
 
-    if (self.numberOfRequestsInProgress == 0) {
-        [self updateInterfaceWithComputedWebPageBackgroundColor];
+            [self.history addObject:@{@"url": self.url.absoluteString,
+                                      @"host": self.url.host,
+                                      @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+        }
+
+        // Disable the default action sheet
+        [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+        [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+        [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+
+        if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
+            self.webView.scrollView.scrollEnabled = YES;
+            self.webView.scrollView.scrollsToTop = YES;
+        }
+
+        if (self.numberOfRequestsInProgress == 0) {
+            [self updateInterfaceWithComputedWebPageBackgroundColor];
+        }
     }
 }
 
