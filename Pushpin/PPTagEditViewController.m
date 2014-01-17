@@ -860,7 +860,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
     self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
-    [self.removeTagActionSheet showFromRect:CGRectMake(0, 0, 0, 0) inView:self.view animated:YES];
+
+    CGPoint point = CGPointMake(badge.center.x - 2, badge.frame.origin.y);
+    [self.removeTagActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
 }
 
 @end
