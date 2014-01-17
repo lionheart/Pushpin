@@ -260,7 +260,12 @@
 
             if (alreadyExistsInBookmarks) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.updateBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Edit", nil), nil];
+                    NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
+                    self.updateBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                              message:message
+                                                                             delegate:self
+                                                                    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                                    otherButtonTitles:NSLocalizedString(@"Edit", nil), nil];
                     [self.updateBookmarkAlertView show];
                 });
             }
@@ -279,7 +284,13 @@
                                                            callback:^(NSString *title, NSString *description) {
                                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                                    self.clipboardBookmarkTitle = title;
-                                                                   self.addBookmarkAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Add Bookmark?", nil) message:NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Add", nil), nil];
+
+                                                                   NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
+                                                                   self.addBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                                                                          message:message
+                                                                                                                         delegate:self
+                                                                                                                cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                                                otherButtonTitles:NSLocalizedString(@"Add", nil), nil];
                                                                    [self.addBookmarkAlertView show];
                                                                });
                                                                [mixpanel track:@"Prompted to add bookmark from clipboard"];
