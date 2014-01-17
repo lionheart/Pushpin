@@ -29,6 +29,7 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPOtherFeedback,
     PPOtherLogout,
+    PPOtherClearCache
 } PPOtherSettingsRowType;
 
 enum : NSInteger {

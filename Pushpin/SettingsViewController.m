@@ -65,9 +65,17 @@ static NSString *CellIdentifier = @"Cell";
 
     self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
 
-    self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"For stripping text, CSS, and Javascript from webpages.", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
+    self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                              destructiveButtonTitle:nil
+                                                   otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
-    self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Set Read Later service to:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                            delegate:self
+                                                   cancelButtonTitle:nil
+                                              destructiveButtonTitle:nil
+                                                   otherButtonTitles:nil];
 
     self.readLaterServices = [NSMutableArray array];
     [self.readLaterServices addObject:@[@(PPReadLaterInstapaper)]];
@@ -361,11 +369,11 @@ static NSString *CellIdentifier = @"Cell";
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
-                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
                                                                    message:@"We couldn't log you into Instapaper with those credentials."
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"Shucks", nil), nil] show];
+                                                         otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                                    }
                                    else {
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
@@ -592,14 +600,19 @@ static NSString *CellIdentifier = @"Cell";
                     break;
                 }
                     
-                case PPOtherLogout: {
+                case PPOtherLogout:
+                    [self.logOutAlertView show];
+                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                    break;
+
+                case PPOtherClearCache: {
                     UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
                     self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
                     [self.loadingIndicator startAnimating];
                     [loadingAlertView addSubview:self.loadingIndicator];
-
+                    
                     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                     [db open];
                     [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
@@ -609,7 +622,7 @@ static NSString *CellIdentifier = @"Cell";
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-
+                        
                         UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
@@ -620,20 +633,9 @@ static NSString *CellIdentifier = @"Cell";
                     });
                     break;
                 }
-                    
-                case 2:
-                    [self.logOutAlertView show];
-                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                    break;
-                    
-                default:
-                    break;
             }
             break;
         }
-            
-        default:
-            break;
     }
 }
 

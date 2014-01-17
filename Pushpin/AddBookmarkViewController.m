@@ -94,9 +94,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagTextField.userInteractionEnabled = NO;
         self.tagTextField.text = @"";
 
-        self.markAsRead = @(NO);
+        self.markAsRead = NO;
         self.loadingTitle = NO;
-        self.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        self.setAsPrivate = [AppDelegate sharedDelegate].privateByDefault;
         self.existingTags = [NSMutableArray array];
         
         self.callback = ^(void) {};
@@ -194,22 +194,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
     
     if (bookmark[@"private"]) {
-        addBookmarkViewController.setAsPrivate = bookmark[@"private"];
+        addBookmarkViewController.setAsPrivate = [bookmark[@"private"] boolValue];
     }
     else {
-        addBookmarkViewController.setAsPrivate = [[AppDelegate sharedDelegate] privateByDefault];
+        addBookmarkViewController.setAsPrivate = [AppDelegate sharedDelegate].privateByDefault;
     }
     
     if (bookmark[@"unread"]) {
         BOOL isRead = !([bookmark[@"unread"] boolValue]);
-        addBookmarkViewController.markAsRead = @(isRead);
+        addBookmarkViewController.markAsRead = isRead;
     }
     else {
-        addBookmarkViewController.markAsRead = [[AppDelegate sharedDelegate] readByDefault];
+        addBookmarkViewController.markAsRead = [AppDelegate sharedDelegate].readByDefault;
     }
     
-    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate.boolValue;
-    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead.boolValue;
+    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate;
+    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead;
     return addBookmarkViewNavigationController;
 }
 
@@ -403,9 +403,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case kBookmarkBottomSection: {
             switch (indexPath.row) {
                 case kBookmarkPrivateRow: {
-                    self.privateButton.selected = self.setAsPrivate.boolValue;
+                    self.privateButton.selected = self.setAsPrivate;
                     
-                    if (self.setAsPrivate.boolValue) {
+                    if (self.setAsPrivate) {
                         cell.textLabel.text = NSLocalizedString(@"Private", nil);
                     }
                     else {
@@ -420,9 +420,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                     
                 case kBookmarkReadRow:
-                    self.readButton.selected = self.markAsRead.boolValue;
+                    self.readButton.selected = self.markAsRead;
                     
-                    if (self.markAsRead.boolValue) {
+                    if (self.markAsRead) {
                         cell.textLabel.text = NSLocalizedString(@"Read", nil);
                     }
                     else {
@@ -546,7 +546,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - Everything Else
 
 - (void)togglePrivate:(id)sender {
-    self.setAsPrivate = @(!self.setAsPrivate.boolValue);
+    self.setAsPrivate = !self.setAsPrivate;
     
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkPrivateRow inSection:kBookmarkBottomSection]] withRowAnimation:UITableViewRowAnimationNone];
@@ -554,7 +554,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)toggleRead:(id)sender {
-    self.markAsRead = @(!self.markAsRead.boolValue);
+    self.markAsRead = !self.markAsRead;
     
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkReadRow inSection:kBookmarkBottomSection]] withRowAnimation:UITableViewRowAnimationNone];
@@ -640,8 +640,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
         NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
         NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
-        BOOL private = self.setAsPrivate.boolValue;
-        BOOL unread = !(self.markAsRead.boolValue);
+        BOOL private = self.setAsPrivate;
+        BOOL unread = !self.markAsRead;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];

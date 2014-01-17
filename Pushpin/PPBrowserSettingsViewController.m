@@ -151,7 +151,7 @@ static NSString *CellIdentifier = @"Cell";
                     self.openLinksInAppSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.openLinksInAppSwitch.on = [[AppDelegate sharedDelegate] openLinksInApp].boolValue;
+                    self.openLinksInAppSwitch.on = [AppDelegate sharedDelegate].openLinksInApp;
                     [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.openLinksInAppSwitch;
                     break;
@@ -246,7 +246,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setOpenLinksInApp:@(self.openLinksInAppSwitch.on)];
+    [[AppDelegate sharedDelegate] setOpenLinksInApp:self.openLinksInAppSwitch.on];
 }
 
 @end

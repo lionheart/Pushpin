@@ -136,7 +136,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     self.privateByDefaultSwitch = [[UISwitch alloc] init];
                     switchSize = self.privateByDefaultSwitch.frame.size;
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
+                    self.privateByDefaultSwitch.on = [AppDelegate sharedDelegate].privateByDefault;
                     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.privateByDefaultSwitch;
                     break;
@@ -148,7 +148,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     self.readByDefaultSwitch = [[UISwitch alloc] init];
                     switchSize = self.readByDefaultSwitch.frame.size;
                     self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.readByDefaultSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
+                    self.readByDefaultSwitch.on = [AppDelegate sharedDelegate].readByDefault;
                     [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.readByDefaultSwitch;
                     break;
@@ -361,11 +361,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
+    [[AppDelegate sharedDelegate] setPrivateByDefault:self.privateByDefaultSwitch.on];
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setReadByDefault:@(self.readByDefaultSwitch.on)];
+    [[AppDelegate sharedDelegate] setReadByDefault:self.readByDefaultSwitch.on];
 }
 
 @end

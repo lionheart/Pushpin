@@ -89,7 +89,7 @@
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     [application cancelAllLocalNotifications];
     if (application.applicationState == UIApplicationStateActive) {
-        self.bookmarksUpdated = notification.userInfo[@"updated"];
+        self.bookmarksUpdated = [notification.userInfo[@"updated"] boolValue];
         NSString *text = notification.alertBody;
         
         if ([notification.userInfo[@"success"] isEqual:@(YES)]) {
@@ -309,7 +309,7 @@
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
     // Parse the individual parameters
     // parameters = @"hello=world&foo=bar";
-    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": [self privateByDefault], @"unread": @(![[self readByDefault] boolValue]) }];
+    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": @(self.privateByDefault), @"unread": @(!self.readByDefault) }];
     NSArray *arrParameters = [query componentsSeparatedByString:@"&"];
     for (int i = 0; i < [arrParameters count]; i++) {
         NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
@@ -483,7 +483,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     application.applicationSupportsShakeToEdit = YES;
     [self becomeFirstResponder];
-    self.bookmarksUpdated = @(NO);
+    self.bookmarksUpdated = NO;
     self.bookmarksUpdatedMessage = nil;
     self.addBookmarkAlertView = nil;
     self.updateBookmarkAlertView = nil;
@@ -811,33 +811,33 @@
     return _lastUpdated;
 }
 
-- (void)setPrivateByDefault:(NSNumber *)privateByDefault {
+- (void)setPrivateByDefault:(BOOL)privateByDefault {
     _privateByDefault = privateByDefault;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:privateByDefault forKey:@"io.aurora.pinboard.PrivateByDefault"];
+    [defaults setObject:@(privateByDefault) forKey:@"io.aurora.pinboard.PrivateByDefault"];
     [defaults synchronize];
 }
 
-- (NSNumber *)privateByDefault {
+- (BOOL)privateByDefault {
     if (!_privateByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _privateByDefault = [defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"];
+        _privateByDefault = [[defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"] boolValue];
     }
     return _privateByDefault;
 }
 
-- (NSNumber *)openLinksInApp {
+- (BOOL)openLinksInApp {
     if (!_openLinksInApp) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksInApp = [defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"];
+        _openLinksInApp = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"] boolValue];
     }
     return _openLinksInApp;
 }
 
-- (void)setOpenLinksInApp:(NSNumber *)openLinksInApp {
+- (void)setOpenLinksInApp:(BOOL)openLinksInApp {
     _openLinksInApp = openLinksInApp;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:openLinksInApp forKey:@"io.aurora.pinboard.OpenLinksInApp"];
+    [defaults setObject:@(openLinksInApp) forKey:@"io.aurora.pinboard.OpenLinksInApp"];
     [defaults synchronize];
 }
 
@@ -856,17 +856,17 @@
     return _doubleTapToEdit;
 }
 
-- (void)setReadByDefault:(NSNumber *)readByDefault {
+- (void)setReadByDefault:(BOOL)readByDefault {
     _readByDefault = readByDefault;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:readByDefault forKey:@"io.aurora.pinboard.ReadByDefault"];
+    [defaults setObject:@(readByDefault) forKey:@"io.aurora.pinboard.ReadByDefault"];
     [defaults synchronize];
 }
 
-- (NSNumber *)readByDefault {
+- (BOOL)readByDefault {
     if (!_readByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readByDefault = [defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"];
+        _readByDefault = [[defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"] boolValue];
     }
     return _readByDefault;
 }
