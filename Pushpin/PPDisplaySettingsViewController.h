@@ -8,6 +8,32 @@
 
 #import "PPTableViewController.h"
 
+typedef enum : NSInteger {
+    PPSectionDisplaySettings,
+    PPSectionBrowseSettings,
+    PPSectionTextExpanderSettings
+} PPDisplaySettingsSectionType;
+
+typedef enum : NSInteger {
+    PPEditDefaultToPrivate,
+    PPEditDefaultToRead,
+    PPEditDimReadRow,
+    PPEditDoubleTapRow,
+    PPEditAutoMarkAsReadRow,
+    PPEditAutocorrecTextRow,
+    PPEditAutocapitalizeRow,
+} PPEditSettingsRowType;
+
+typedef enum : NSInteger {
+    PPBrowseCompressRow,
+    PPBrowseDefaultFeedRow,
+} PPBrowseSettingsRowType;
+
+enum : NSInteger {
+    PPRowCountBrowse = PPBrowseDefaultFeedRow + 1,
+    PPRowCountDisplaySettings = PPEditAutocapitalizeRow + 1
+};
+
 @interface PPDisplaySettingsViewController : PPTableViewController
 
 @property (nonatomic, retain) UISwitch *dimReadPostsSwitch;

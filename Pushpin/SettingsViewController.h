@@ -14,6 +14,28 @@
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
 
+typedef enum : NSInteger {
+    PPSectionMainSettings,
+    PPSectionOtherSettings
+} PPSectionType;
+
+typedef enum : NSInteger {
+    PPMainReadLater,
+    PPMainMobilizer,
+    PPMainAdvanced,
+    PPMainBrowser
+} PPMainSettingsRowType;
+
+typedef enum : NSInteger {
+    PPOtherFeedback,
+    PPOtherLogout,
+} PPOtherSettingsRowType;
+
+enum : NSInteger {
+    PPRowCountMain = PPMainBrowser + 1,
+    PPRowCountOther = PPOtherLogout + 1
+};
+
 @interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
@@ -30,13 +52,8 @@
 @property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
-@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
-@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
-
 @property (nonatomic, strong) id actionSheet;
 
-- (void)privateByDefaultSwitchChangedValue:(id)sender;
-- (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)showAboutPage;
 - (void)closeAboutPage;
 
