@@ -44,6 +44,7 @@
 
 @property (nonatomic, strong) UIAlertView *updateBookmarkAlertView;
 @property (nonatomic, strong) UIAlertView *addBookmarkAlertView;
+@property (nonatomic, strong) NSURLCache *urlCache;
 
 @end
 
@@ -80,6 +81,9 @@
         return @"/pinboard.db";
     }
 #endif
+}
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -483,6 +487,12 @@
     self.bookmarksUpdatedMessage = nil;
     self.addBookmarkAlertView = nil;
     self.updateBookmarkAlertView = nil;
+    
+    // 4 MB memory, 100 MB disk
+    self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
+                                                  diskCapacity:100 * 1024 * 1024
+                                                      diskPath:@"urlcache"];
+    [NSURLCache setSharedURLCache:self.urlCache];
 
     [self migrateDatabase];
 

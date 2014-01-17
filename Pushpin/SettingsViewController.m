@@ -160,14 +160,6 @@ static NSString *CellIdentifier = @"Cell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)privateByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
-}
-
-- (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setReadByDefault:@(self.readByDefaultSwitch.on)];
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -175,28 +167,17 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return 6;
-            break;
+    switch ((PPSectionType)section) {
+        case PPSectionMainSettings:
+            return 4;
 
-        case 1:
-            return 3;
-            break;
-            
-        default:
-            break;
+        case PPSectionOtherSettings:
+            return 2;
     }
-    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    cell.accessoryView = nil;
-    
-    CGSize size;
-    CGSize switchSize;
 
     cell.textLabel.font = [PPTheme textLabelFont];
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
@@ -204,34 +185,10 @@ static NSString *CellIdentifier = @"Cell";
     cell.textLabel.text = nil;
     cell.accessoryView = nil;
 
-    switch (indexPath.section) {
-        case 0: {
-            switch (indexPath.row) {
-                case 0:
-                    cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    size = cell.frame.size;
-                    self.privateByDefaultSwitch = [[UISwitch alloc] init];
-                    switchSize = self.privateByDefaultSwitch.frame.size;
-                    self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
-                    [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
-                    cell.accessoryView = self.privateByDefaultSwitch;
-                    break;
-
-                case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    size = cell.frame.size;
-                    self.readByDefaultSwitch = [[UISwitch alloc] init];
-                    switchSize = self.readByDefaultSwitch.frame.size;
-                    self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.readByDefaultSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
-                    [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
-                    cell.accessoryView = self.readByDefaultSwitch;
-                    break;
-                    
-                case 2:
+    switch ((PPSectionType)indexPath.section) {
+        case PPSectionMainSettings: {
+            switch ((PPMainSettingsRowType)indexPath.row) {
+                case PPMainReadLater:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
@@ -260,7 +217,7 @@ static NSString *CellIdentifier = @"Cell";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
-                case 3:
+                case PPMainMobilizer:
                     cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -282,14 +239,13 @@ static NSString *CellIdentifier = @"Cell";
                     
                     break;
 
-
-                case 4:
+                case PPMainAdvanced:
                     cell.textLabel.text = NSLocalizedString(@"Advanced Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
 
-                case 5:
+                case PPMainBrowser:
                     cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -300,20 +256,24 @@ static NSString *CellIdentifier = @"Cell";
             }
             break;
         }
-        case 1: {
-            switch (indexPath.row) {
-                case 0:
+
+        case PPSectionOtherSettings: {
+            switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherFeedback:
                     cell.textLabel.text = NSLocalizedString(@"Feedback & Support", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     break;
-                case 1:
-                    cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    break;
-                case 2:
+
+                case PPOtherLogout:
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     break;
+
+                case 2:
+                    cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+                    break;
+
                 default:
                     break;
             }
@@ -328,10 +288,9 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    switch (section) {
-        case 1:
+    switch ((PPSectionType)section) {
+        case PPSectionOtherSettings:
             return NSLocalizedString(@"Logging out of the application will reset the bookmark database on this device.", nil);
-            break;
             
         default:
             break;
@@ -580,44 +539,51 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    switch (indexPath.section) {
-        case 0: {
+    switch ((PPSectionType)indexPath.section) {
+        case PPSectionMainSettings: {
             BOOL isIPad = [UIApplication isIPad];
             CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-            if (indexPath.row == 2) {
-                if (isIPad) {
-                    if (!self.actionSheet) {
-                        [self.readLaterActionSheet showFromRect:rect inView:tableView animated:YES];
-                        self.actionSheet = self.readLaterActionSheet;
+            
+            switch ((PPMainSettingsRowType)indexPath.row) {
+                case PPMainReadLater:
+                    if (isIPad) {
+                        if (!self.actionSheet) {
+                            [self.readLaterActionSheet showFromRect:rect inView:tableView animated:YES];
+                            self.actionSheet = self.readLaterActionSheet;
+                        }
                     }
-                }
-                else {
-                    [self.readLaterActionSheet showInView:self.navigationController.view];
-                }
-            }
-            else if (indexPath.row == 3) {
-                if (isIPad) {
-                    if (!self.actionSheet) {
-                        [self.mobilizerActionSheet showFromRect:rect inView:tableView animated:YES];
-                        self.actionSheet = self.mobilizerActionSheet;
+                    else {
+                        [self.readLaterActionSheet showInView:self.navigationController.view];
                     }
-                }
-                else {
-                    [self.mobilizerActionSheet showInView:self.navigationController.view];
-                }
+                    break;
+                    
+                case PPMainMobilizer:
+                    if (isIPad) {
+                        if (!self.actionSheet) {
+                            [self.mobilizerActionSheet showFromRect:rect inView:tableView animated:YES];
+                            self.actionSheet = self.mobilizerActionSheet;
+                        }
+                    }
+                    else {
+                        [self.mobilizerActionSheet showInView:self.navigationController.view];
+                    }
+                    break;
+                    
+                case PPMainAdvanced:
+                    [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
+                    break;
+                    
+                case PPMainBrowser:
+                    [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
+                    break;
             }
-            else if (indexPath.row == 4) {
-                [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
-            }
-            else if (indexPath.row == 5) {
-                [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
-            }
+
             break;
         }
 
-        case 1: {
-            switch (indexPath.row) {
-                case 0: {
+        case PPSectionOtherSettings: {
+            switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherFeedback: {
                     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
@@ -626,7 +592,7 @@ static NSString *CellIdentifier = @"Cell";
                     break;
                 }
                     
-                case 1: {
+                case PPOtherLogout: {
                     UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
@@ -672,12 +638,18 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        if (indexPath.row == 4) {
-            [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
-        }
-        else if (indexPath.row == 5) {
-            [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
+    if (indexPath.section == PPSectionMainSettings) {
+        switch ((PPMainSettingsRowType)indexPath.row) {
+            case PPMainAdvanced:
+                [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
+                break;
+                
+            case PPMainBrowser:
+                [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
+                break;
+                
+            default:
+                break;
         }
     }
 }

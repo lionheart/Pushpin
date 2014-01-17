@@ -27,6 +27,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic) NSUInteger TESnippetCount;
 @property (nonatomic) BOOL TEAvailable;
 
+@property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *readByDefaultSwitch;
+
+- (void)privateByDefaultSwitchChangedValue:(id)sender;
+- (void)readByDefaultSwitchChangedValue:(id)sender;
+
 @end
 
 @implementation PPDisplaySettingsViewController
@@ -71,21 +77,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     if (self.TEAvailable) {
         return 3;
     }
+
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return 6;
+    switch ((PPDisplaySettingsSectionType)section) {
+        case PPSectionDisplaySettings:
+            return PPRowCountDisplaySettings;
 
-        case 1:
-            return 1;
+        case PPSectionBrowseSettings:
+            return PPRowCountBrowse;
 
-        case 2:
+        case PPSectionTextExpanderSettings:
             return 1;
     }
-    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -114,16 +120,40 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     CGSize size;
     CGSize switchSize;
     
-    switch (indexPath.section) {
-        case 0:
+    switch ((PPDisplaySettingsSectionType)indexPath.section) {
+        case PPSectionDisplaySettings:
             cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
             cell.accessoryView = nil;
 
-            switch (indexPath.row) {
-                case 0:
+            switch ((PPEditSettingsRowType)indexPath.row) {
+                case PPEditDefaultToPrivate:
+                    cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    self.privateByDefaultSwitch = [[UISwitch alloc] init];
+                    switchSize = self.privateByDefaultSwitch.frame.size;
+                    self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.privateByDefaultSwitch.on = [[AppDelegate sharedDelegate] privateByDefault].boolValue;
+                    [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+                    cell.accessoryView = self.privateByDefaultSwitch;
+                    break;
+                    
+                case PPEditDefaultToRead:
+                    cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    self.readByDefaultSwitch = [[UISwitch alloc] init];
+                    switchSize = self.readByDefaultSwitch.frame.size;
+                    self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    self.readByDefaultSwitch.on = [[AppDelegate sharedDelegate] readByDefault].boolValue;
+                    [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+                    cell.accessoryView = self.readByDefaultSwitch;
+                    break;
+
+                case PPEditDimReadRow:
                     cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -135,7 +165,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.dimReadPostsSwitch;
                     break;
 
-                case 1:
+                case PPEditDoubleTapRow:
                     cell.textLabel.text = NSLocalizedString(@"Double tap to edit", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -146,7 +176,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.doubleTapToEditSwitch;
                     break;
-                case 2:
+
+                case PPEditAutoMarkAsReadRow:
                     cell.textLabel.text = NSLocalizedString(@"Auto mark as read", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -157,7 +188,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.markReadSwitch;
                     break;
-                case 3:
+
+                case PPEditAutocorrecTextRow:
                     cell.textLabel.text = NSLocalizedString(@"Autocorrect text", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -168,7 +200,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.autoCorrectionSwitch;
                     break;
-                case 4:
+
+                case PPEditAutocapitalizeRow:
                     cell.textLabel.text = NSLocalizedString(@"Autocapitalize text", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -179,7 +212,17 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.autoCapitalizationSwitch;
                     break;
-                case 5:
+            }
+            break;
+
+        case PPSectionBrowseSettings:
+            switch ((PPBrowseSettingsRowType)indexPath.row) {
+                case PPBrowseCompressRow:
+                    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+
                     cell.textLabel.text = NSLocalizedString(@"Compress bookmark list", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
@@ -190,25 +233,22 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.compressPostsSwitch;
                     break;
-
-                default:
+                    
+                case PPBrowseDefaultFeedRow:
+                    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+                    cell.accessoryView = nil;
+                    
+                    cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
+                    cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
             }
             break;
 
-        case 1:
-            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-                                                   forIndexPath:indexPath];
-            cell.textLabel.font = [PPTheme textLabelFont];
-            cell.detailTextLabel.font = [PPTheme detailLabelFont];
-            cell.accessoryView = nil;
-
-            cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
-            cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            break;
-
-        case 2: {
+        case PPSectionTextExpanderSettings: {
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
@@ -230,9 +270,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             cell.accessoryType = UITableViewCellAccessoryNone;
             break;
         }
-
-        default:
-            break;
     }
     
     return cell;
@@ -241,37 +278,58 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    switch (indexPath.section) {
-        case 0:
-            switch (indexPath.row) {
-                case 0: {
+    switch ((PPDisplaySettingsSectionType)indexPath.section) {
+        case PPSectionBrowseSettings:
+            switch ((PPBrowseSettingsRowType)indexPath.row) {
+                case PPBrowseDefaultFeedRow: {
                     // Show the default feed selection
                     PPDefaultFeedViewController *vc = [[PPDefaultFeedViewController alloc] initWithStyle:UITableViewStyleGrouped];
                     [self.navigationController pushViewController:vc animated:YES];
                     break;
                 }
+                    
+                default:
+                    break;
             }
             break;
 
-        case 2: {
+        case PPSectionTextExpanderSettings: {
             SMTEDelegateController *teDelegate = [[SMTEDelegateController alloc] init];
             teDelegate.getSnippetsScheme = @"pushpin";
             teDelegate.clientAppName = @"Pushpin";
             [teDelegate getSnippets];
             break;
         }
+            
+        case PPSectionDisplaySettings:
+            break;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    switch ((PPDisplaySettingsSectionType)section) {
+        case PPSectionBrowseSettings:
+            return @"Browsing";
+            
+        case PPSectionDisplaySettings:
+            return @"Editing";
+            
+        case PPSectionTextExpanderSettings:
+            return nil;
     }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        return NSLocalizedString(@"You can also toggle this by pinching in or out when viewing bookmarks.", nil);
+    switch ((PPDisplaySettingsSectionType)section) {
+        case PPSectionDisplaySettings:
+            return nil;
+            
+        case PPSectionBrowseSettings:
+            return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
+            
+        case PPSectionTextExpanderSettings:
+            return nil;
     }
-    else if (section == 1) {
-        return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
-    }
-    
-    return @"";
 }
 
 - (void)switchChangedValue:(id)sender {
@@ -300,6 +358,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     else {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
     }
+}
+
+- (void)privateByDefaultSwitchChangedValue:(id)sender {
+    [[AppDelegate sharedDelegate] setPrivateByDefault:@(self.privateByDefaultSwitch.on)];
+}
+
+- (void)readByDefaultSwitchChangedValue:(id)sender {
+    [[AppDelegate sharedDelegate] setReadByDefault:@(self.readByDefaultSwitch.on)];
 }
 
 @end
