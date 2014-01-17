@@ -70,6 +70,9 @@ static NSString *CellIdentifier = @"Cell";
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
     }
     
+    [self.browserActionSheet addButtonWithTitle:@"Cancel"];
+    self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
+
     self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
     self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
     
@@ -176,11 +179,6 @@ static NSString *CellIdentifier = @"Cell";
         if (indexPath.row == 0) {
             if (!self.actionSheet) {
                 CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-
-                // Properly set the cancel button index
-                [self.browserActionSheet addButtonWithTitle:@"Cancel"];
-                self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
-
                 [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
             }
         }
