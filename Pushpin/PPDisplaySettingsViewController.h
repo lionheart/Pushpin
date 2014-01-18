@@ -18,10 +18,12 @@ typedef enum : NSInteger {
     PPEditDefaultToPrivate,
     PPEditDefaultToRead,
     PPEditDimReadRow,
-    PPEditDoubleTapRow,
     PPEditAutoMarkAsReadRow,
     PPEditAutocorrecTextRow,
     PPEditAutocapitalizeRow,
+
+    // Unused
+    PPEditDoubleTapRow,
 } PPEditSettingsRowType;
 
 typedef enum : NSInteger {

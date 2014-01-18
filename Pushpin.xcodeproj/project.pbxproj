@@ -175,6 +175,7 @@
 		37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD3188641D80022020A /* readabilityInitializer.js */; };
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
+		37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
 		37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
@@ -713,6 +714,8 @@
 		37BC1BD3188641D80022020A /* readabilityInitializer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readabilityInitializer.js; path = Pushpin/readabilityInitializer.js; sourceTree = "<group>"; };
 		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; };
 		37BC1BD7188642F90022020A /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
+		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
+		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
 		37C012B81765423A00938D81 /* PPMultipleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMultipleEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37C611E616377D5D008DB30B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Assets/Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -1577,6 +1580,8 @@
 				37D4B000188325B000E07EB3 /* PPStatusBar.h */,
 				37D4B001188325B000E07EB3 /* PPStatusBar.m */,
 				37D4B00318833BC800E07EB3 /* readability.css */,
+				37BC1BD91889C6730022020A /* PPTwitter.h */,
+				37BC1BDA1889C6740022020A /* PPTwitter.m */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";
@@ -2346,6 +2351,7 @@
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
 				E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */,
+				37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
 				3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */,
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,

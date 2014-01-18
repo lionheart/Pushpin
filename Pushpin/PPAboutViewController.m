@@ -21,6 +21,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPTheme.h"
 #import "PPLicenseViewController.h"
+#import "PPTwitter.h"
 
 #import "UITableView+Additions.h"
 
@@ -175,9 +176,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                 }
                     
-                case 2:
-                    [self followScreenName:@"pushpin_app"];
+                case 2: {
+                    [[PPTwitter sharedInstance] followScreenName:@"pushpin_app"
+                                                           point:self.selectedPoint
+                                                            view:self.view
+                                                        callback:^{
+                                                            self.selectedItem = nil;
+                                                            self.selectedPoint = CGPointZero;
+                                                            self.selectedIndexPath = nil;
+                                                        }];
                     break;
+                }
 
                 default:
                     break;
@@ -199,128 +208,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         default:
             break;
     }
-
-//    else if (indexPath.section == 0 && indexPath.row == 3) {
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
-//    }
 }
 
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)followScreenName:(NSString *)screenName withAccountScreenName:(NSString *)accountScreenName {
-    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-    ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    NSString *identifier;
-    for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
-        if ([account.username isEqualToString:accountScreenName]) {
-            identifier = account.identifier;
-            break;
-        }
-    }
-    
-    if (identifier) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            ACAccount *account = [accountStore accountWithIdentifier:identifier];
-            SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                                    requestMethod:SLRequestMethodPOST
-                                                              URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"]
-                                                       parameters:@{@"screen_name": screenName, @"follow": @"true"}];
-            [request setAccount:account];
-
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-            [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-
-                NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (response[@"errors"]) {
-                        NSString *code = [NSString stringWithFormat:@"Error #%@", response[@"errors"][0][@"code"]];
-                        NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                        [[[UIAlertView alloc] initWithTitle:code message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Uh oh.", nil) otherButtonTitles:nil] show];
-                    }
-                    else {
-                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:[NSString stringWithFormat:@"You are now following @%@!", screenName] delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                    }
-                });
-
-                self.actionSheet = nil;
-                self.selectedItem = nil;
-                self.selectedPoint = CGPointZero;
-                self.selectedIndexPath = nil;
-            }];
-        });
-    }
-}
-
-- (void)followScreenName:(NSString *)screenName {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-        ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-        
-        void (^AccessGrantedBlock)(UIAlertView *) = ^(UIAlertView *loadingAlertView) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                
-                NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
-                NSString *accountScreenName;
-                for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
-                    accountScreenName = account.username;
-                    [(UIActionSheet *)self.actionSheet addButtonWithTitle:accountScreenName];
-                    [accounts setObject:account.identifier forKey:accountScreenName];
-                }
-                
-                if (loadingAlertView) {
-                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                }
-
-                // Properly set the cancel button index
-                [self.actionSheet addButtonWithTitle:@"Cancel"];
-                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-
-                if ([accounts count] > 1) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([self.actionSheet respondsToSelector:@selector(showFromRect:inView:animated:)]) {
-                            [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:NO];
-                        }
-                    });
-                }
-                else if ([accounts count] == 1) {
-                    [self followScreenName:screenName withAccountScreenName:accountScreenName];
-                }
-            });
-        };
-        
-        if (twitter.accessGranted) {
-            AccessGrantedBlock(nil);
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading" message:@"Requesting access to your Twitter accounts." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-                [loadingAlertView show];
-
-                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
-                [self.loadingIndicator startAnimating];
-                [loadingAlertView addSubview:self.loadingIndicator];
-
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [accountStore requestAccessToAccountsWithType:twitter
-                                                          options:nil
-                                                       completion:^(BOOL granted, NSError *error) {
-                                                           if (granted) {
-                                                               AccessGrantedBlock(loadingAlertView);
-                                                           }
-                                                           else {
-                                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-                                                           }
-                                                       }];
-                });
-            });
-        }
-    });
-}
 
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {
@@ -339,15 +232,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 // Properly set the cancel button index
                 [self.actionSheet addButtonWithTitle:@"Cancel"];
                 self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
-                
-                [(UIActionSheet *)self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
+
+                [self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
             }
         }
         else {
-            if ([self.actionSheet respondsToSelector:@selector(dismissWithClickedButtonIndex:animated:)]) {
-                [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-                self.actionSheet = nil;
-            }
+            [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            self.actionSheet = nil;
         }
     }
 }
@@ -363,10 +254,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
         if ([buttonTitle hasPrefix:@"Follow"]) {
-            [self followScreenName:self.selectedItem[@"username"]];
-        }
-        else if ([[(UIActionSheet *)actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
-            [self followScreenName:self.selectedItem[@"username"] withAccountScreenName:buttonTitle];
+            [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
+                                                   point:self.selectedPoint
+                                                    view:self.view
+                                                callback:^{
+                                                    self.selectedItem = nil;
+                                                    self.selectedPoint = CGPointZero;
+                                                    self.selectedIndexPath = nil;
+                                                }];
         }
     }
     self.actionSheet = nil;
