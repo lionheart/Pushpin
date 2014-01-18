@@ -52,6 +52,34 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
+    self.privateByDefaultSwitch = [[UISwitch alloc] init];
+    self.privateByDefaultSwitch.on = [AppDelegate sharedDelegate].privateByDefault;
+    [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.readByDefaultSwitch = [[UISwitch alloc] init];
+    self.readByDefaultSwitch.on = [AppDelegate sharedDelegate].readByDefault;
+    [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.autoCapitalizationSwitch = [[UISwitch alloc] init];
+    self.autoCapitalizationSwitch.on = [AppDelegate sharedDelegate].enableAutoCapitalize;
+    [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.compressPostsSwitch = [[UISwitch alloc] init];
+    self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
+    [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.markReadSwitch = [[UISwitch alloc] init];
+    self.markReadSwitch.on = [AppDelegate sharedDelegate].markReadPosts;
+    [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.doubleTapToEditSwitch = [[UISwitch alloc] init];
+    self.doubleTapToEditSwitch.on = [AppDelegate sharedDelegate].doubleTapToEdit;
+    [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+    
+    self.autoCorrectionSwitch = [[UISwitch alloc] init];
+    self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
+    [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
@@ -60,16 +88,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    NSUInteger count = self.TESnippetCount;
-    self.TEAvailable = [SMTEDelegateController textExpanderTouchHasGetSnippetsCallbackURL];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSUInteger count = self.TESnippetCount;
+        self.TEAvailable = [SMTEDelegateController textExpanderTouchHasGetSnippetsCallbackURL];
+        
+        [SMTEDelegateController expansionStatusForceLoad:NO
+                                            snippetCount:&count
+                                                loadDate:nil
+                                                   error:nil];
 
-    [SMTEDelegateController expansionStatusForceLoad:NO
-                                        snippetCount:&count
-                                            loadDate:nil
-                                               error:nil];
-
-    self.TESnippetCount = count;
-    [self.tableView reloadData];
+        self.TESnippetCount = count;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -93,27 +126,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize size = CGSizeMake(CGRectGetWidth(self.tableView.frame), CGFLOAT_MAX);
-
-    NSDictionary *titleAttributes = @{NSFontAttributeName: [PPTheme textLabelFont]};
-    NSDictionary *descriptionAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont]};
-    CGFloat titleHeight = [@"" boundingRectWithSize:size
-                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:titleAttributes
-                                            context:nil].size.height;
-    if (![indexPath isEqual:[NSIndexPath indexPathForRow:0 inSection:2]]) {
-        return titleHeight + 20;
-    }
-    
-    CGFloat detailHeight = [@"" boundingRectWithSize:size
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:descriptionAttributes
-                                             context:nil].size.height;
-
-    return titleHeight + detailHeight + 20;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
     CGSize size;
@@ -132,11 +144,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.privateByDefaultSwitch = [[UISwitch alloc] init];
+
                     switchSize = self.privateByDefaultSwitch.frame.size;
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.privateByDefaultSwitch.on = [AppDelegate sharedDelegate].privateByDefault;
-                    [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.privateByDefaultSwitch;
                     break;
                     
@@ -144,11 +154,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.readByDefaultSwitch = [[UISwitch alloc] init];
                     switchSize = self.readByDefaultSwitch.frame.size;
+
                     self.readByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.readByDefaultSwitch.on = [AppDelegate sharedDelegate].readByDefault;
-                    [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.readByDefaultSwitch;
                     break;
 
@@ -168,11 +176,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Double tap to edit", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.doubleTapToEditSwitch = [[UISwitch alloc] init];
                     switchSize = self.doubleTapToEditSwitch.frame.size;
                     self.doubleTapToEditSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.doubleTapToEditSwitch.on = [AppDelegate sharedDelegate].doubleTapToEdit;
-                    [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.doubleTapToEditSwitch;
                     break;
 
@@ -180,11 +185,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Auto mark as read", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.markReadSwitch = [[UISwitch alloc] init];
                     switchSize = self.markReadSwitch.frame.size;
                     self.markReadSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.markReadSwitch.on = [AppDelegate sharedDelegate].markReadPosts;
-                    [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.markReadSwitch;
                     break;
 
@@ -192,11 +194,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Autocorrect text", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.autoCorrectionSwitch = [[UISwitch alloc] init];
                     switchSize = self.autoCorrectionSwitch.frame.size;
                     self.autoCorrectionSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
-                    [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.autoCorrectionSwitch;
                     break;
 
@@ -204,11 +203,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Autocapitalize text", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.autoCapitalizationSwitch = [[UISwitch alloc] init];
                     switchSize = self.autoCapitalizationSwitch.frame.size;
                     self.autoCapitalizationSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.autoCapitalizationSwitch.on = [AppDelegate sharedDelegate].enableAutoCapitalize;
-                    [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.autoCapitalizationSwitch;
                     break;
             }
@@ -225,11 +221,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Compress bookmark list", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.compressPostsSwitch = [[UISwitch alloc] init];
                     switchSize = self.compressPostsSwitch.frame.size;
                     self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
-                    [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.compressPostsSwitch;
                     break;
                     
