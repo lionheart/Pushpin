@@ -495,7 +495,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
-                // BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
+                BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
                 NSInteger count;
                 if (options[@"ratio"]) {
                     count = (NSInteger)(MAX([self totalNumberOfPosts] * [options[@"ratio"] floatValue] - 200, 0) + 200);
@@ -504,7 +504,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     count = [options[@"count"] integerValue];
                 }
 
-                if (neverUpdated || outOfSyncWithAPI) {
+                if (neverUpdated || (lastUpdatedMoreThanFiveMinutesAgo && outOfSyncWithAPI)) {
                     [pinboard bookmarksWithTags:nil
                                          offset:-1
                                           count:count

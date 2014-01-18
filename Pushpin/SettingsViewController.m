@@ -23,6 +23,7 @@
 #import "UITableViewCellValue1.h"
 #import "PPMobilizerUtility.h"
 #import "PPConstants.h"
+#import "PPTwitter.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
@@ -177,10 +178,10 @@ static NSString *CellIdentifier = @"Cell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch ((PPSectionType)section) {
         case PPSectionMainSettings:
-            return 4;
+            return PPRowCountMain;
 
         case PPSectionOtherSettings:
-            return 2;
+            return PPRowCountOther;
     }
 }
 
@@ -221,14 +222,11 @@ static NSString *CellIdentifier = @"Cell";
                         default:
                             break;
                     }
-
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
                 case PPMainMobilizer:
                     cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
                     PPMobilizerType mobilizer = [AppDelegate sharedDelegate].mobilizer;
                     switch (mobilizer) {
@@ -266,20 +264,27 @@ static NSString *CellIdentifier = @"Cell";
         }
 
         case PPSectionOtherSettings: {
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+
             switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherRatePushpin:
+                    cell.textLabel.text = @"Rate Pushpin on the App Store";
+                    break;
+                    
+                case PPOtherFollow:
+                    cell.textLabel.text = @"Follow @Pushpin_app on Twitter";
+                    break;
+
                 case PPOtherFeedback:
                     cell.textLabel.text = NSLocalizedString(@"Feedback & Support", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     break;
 
                 case PPOtherLogout:
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     break;
 
-                case 2:
+                case PPOtherClearCache:
                     cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     break;
 
                 default:
@@ -591,6 +596,17 @@ static NSString *CellIdentifier = @"Cell";
 
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherRatePushpin:
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+                    break;
+                    
+                case PPOtherFollow: {
+                    UIView *view = [tableView cellForRowAtIndexPath:indexPath];
+                    CGPoint point = view.center;
+                    [[PPTwitter sharedInstance] followScreenName:@"pushpin_app" point:point view:view callback:nil];
+                    break;
+                }
+
                 case PPOtherFeedback: {
                     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"

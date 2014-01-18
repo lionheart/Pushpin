@@ -51,7 +51,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];

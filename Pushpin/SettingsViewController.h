@@ -27,6 +27,8 @@ typedef enum : NSInteger {
 } PPMainSettingsRowType;
 
 typedef enum : NSInteger {
+    PPOtherRatePushpin,
+    PPOtherFollow,
     PPOtherFeedback,
     PPOtherLogout,
     PPOtherClearCache

@@ -22,8 +22,6 @@
 @property (nonatomic) NSDictionary *selectedItem;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
 
-- (void)followScreenName:(NSString *)screenName withAccountScreenName:(NSString *)accountScreenName;
-- (void)followScreenName:(NSString *)screenName;
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer;
 
 @end
