@@ -61,7 +61,6 @@
 @property (nonatomic, strong) UIActionSheet *backActionSheet;
 @property (nonatomic, strong) UIActionSheet *actionSheet;
 @property (nonatomic, strong) UIActionSheet *selectedActionSheet;
-@property (nonatomic, strong) UIActivityViewController *activityView;
 @property (nonatomic, strong) UIAlertView *openLinkExternallyAlertView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UIView *toolbar;

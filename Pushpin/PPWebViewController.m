@@ -19,6 +19,7 @@
 #import "PPNavigationController.h"
 #import "GenericPostViewController.h"
 #import "PPMobilizerUtility.h"
+#import "PPActivityViewController.h"
 
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -39,6 +40,7 @@ static NSInteger kTitleHeight = 40;
 @property (nonatomic) CGFloat yOffsetToStartShowingToolbar;
 @property (nonatomic) CGPoint previousContentOffset;
 @property (nonatomic, strong) UIPopoverController *popover;
+@property (nonatomic, strong) PPActivityViewController *activityView;
 
 @end
 
@@ -408,63 +410,12 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)actionButtonTouchUp:(id)sender {
-    // Browsers
-    NSMutableArray *browserActivites = [NSMutableArray array];
-    PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
-    [browserActivity setUrlString:[self.mobilizerUtility originalURLStringForURL:self.url]];
-    [browserActivites addObject:browserActivity];
-
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
-        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"icabmobile" browser:@"iCab Mobile"];
-        [browserActivites addObject:browserActivity];
-    }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
-        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"googlechrome" browser:@"Chrome"];
-        [browserActivites addObject:browserActivity];
-    }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"ohttp" browser:@"Opera"];
-        [browserActivites addObject:browserActivity];
-    }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"dolphin" browser:@"Dolphin"];
-        [browserActivites addObject:browserActivity];
-    }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"cyber" browser:@"Cyberspace"];
-        [browserActivites addObject:browserActivity];
-    }
-    
-    // Read later
-    NSMutableArray *readLaterActivities = [NSMutableArray array];
-    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
-    
-    // Always include the native Reading List
-    PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:PPReadLaterNative];
-    nativeReadLaterActivity.delegate = self;
-    [readLaterActivities addObject:nativeReadLaterActivity];
-
-    // If they have a third-party read later service configured, add it too
-    if (readLater != PPReadLaterNone) {
-        PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLater];
-        readLaterActivity.delegate = self;
-        [readLaterActivities addObject:readLaterActivity];
-    }
-    
     NSString *title = self.title;
     NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
     NSURL *url = [NSURL URLWithString:tempUrl];
 
-    NSMutableArray *allActivities = [readLaterActivities mutableCopy];
-    [allActivities addObjectsFromArray:browserActivites];
-
     NSArray *activityItems = @[url, title];
-    self.activityView = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:allActivities];
-    self.activityView.excludedActivityTypes = @[UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypePostToVimeo, UIActivityTypeAddToReadingList];
+    self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
     __weak PPWebViewController *weakself = self;
     self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
@@ -477,7 +428,10 @@ static NSInteger kTitleHeight = 40;
     
     if ([UIApplication isIPad]) {
         self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
-        [self.popover presentPopoverFromRect:self.actionButton.frame inView:self.toolbar permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [self.popover presentPopoverFromRect:self.actionButton.frame
+                                      inView:self.toolbar
+                    permittedArrowDirections:UIPopoverArrowDirectionAny
+                                    animated:YES];
     }
     else {
         [self presentViewController:self.activityView animated:YES completion:nil];

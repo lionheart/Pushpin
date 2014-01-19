@@ -25,14 +25,6 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.readitlater</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>pocketapp11122</string>
-			</array>
-		</dict>
-		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLIconFile</key>
@@ -42,6 +34,14 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pushpin</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.readitlater</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pocketapp11122</string>
 			</array>
 		</dict>
 	</array>
