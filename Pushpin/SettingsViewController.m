@@ -549,8 +549,8 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)pocketStartedLogin {
     [self.pocketVerificationAlertView show];
-    
-    if (self.pocketVerificationAlertView != nil) {
+
+    if (self.pocketVerificationAlertView) {
         self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.pocketVerificationAlertView.bounds)/2, CGRectGetHeight(self.pocketVerificationAlertView.bounds)-45);
         [self.loadingIndicator startAnimating];
         [self.pocketVerificationAlertView addSubview:self.loadingIndicator];

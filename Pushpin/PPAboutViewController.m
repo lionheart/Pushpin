@@ -50,8 +50,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSDictionary *info = [bundle infoDictionary];
+    NSString *title = [NSString stringWithFormat:@"Pushpin %@ (%@)", info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"]];
+
     PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:@"Pushpin 3.0" imageName:nil];
+    [titleView setTitle:title imageName:nil];
     self.navigationItem.titleView = titleView;
 
     NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
