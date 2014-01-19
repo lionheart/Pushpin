@@ -168,12 +168,6 @@
                                                                 error:&error
                                                            cancelFlag:&cancel];
 
-            NSUInteger count;
-            
-            [SMTEDelegateController expansionStatusForceLoad:NO
-                                                snippetCount:&count
-                                                    loadDate:nil
-                                                       error:nil];
             NSString *message;
             if (error) {
                 message = @"TextExpander snippet sync failed.";
