@@ -939,13 +939,14 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post {
-    PPPostActionType actions = PPPostActionDelete | PPPostActionEdit | PPPostActionCopyURL | PPPostActionShare;
+    PPPostActionType actions = PPPostActionDelete | PPPostActionEdit | PPPostActionShare;
 
     if ([post[@"unread"] boolValue]) {
         actions |= PPPostActionMarkAsRead;
     }
 
-    if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    BOOL shareToReadLater = NO;
+    if (shareToReadLater && [AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
 
