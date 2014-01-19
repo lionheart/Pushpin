@@ -649,24 +649,30 @@ static NSInteger kToolbarHeight = 44;
         }
 
         __weak GenericPostViewController *weakself = self;
-        [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            if (weakself.searchPostDataSource.shouldSearchFullText) {
-                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-            }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+                if (weakself.searchPostDataSource.shouldSearchFullText) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                    });
+                }
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakself.searchDisplayController.searchResultsTableView reloadData];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakself.searchDisplayController.searchResultsTableView reloadData];
+                    weakself.searchLoading = NO;
+                });
+            } failure:^(NSError *error) {
                 weakself.searchLoading = NO;
-            });
-        } failure:^(NSError *error) {
-            weakself.searchLoading = NO;
-            
-            if (weakself.searchPostDataSource.shouldSearchFullText) {
-                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-            }
-        } cancel:^(BOOL *stop) {
-            *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
-        } width:[self currentWidth]];
+
+                if (weakself.searchPostDataSource.shouldSearchFullText) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                    });
+                }
+            } cancel:^(BOOL *stop) {
+                *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
+            } width:[self currentWidth]];
+        });
     }
 }
 
@@ -1436,10 +1442,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
-
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-    [self.view layoutIfNeeded];
-}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;

@@ -49,7 +49,7 @@ static NSString *CellIdentifier = @"Cell";
     self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont],
                               NSParagraphStyleAttributeName: paragraphStyle };
 
-    [self calculateHeightsForWidth:CGRectGetWidth(self.view.frame) - 20];
+    [self calculateHeightsForWidth:CGRectGetWidth(self.tableView.frame) - 20];
 }
 
 - (void)viewDidLoad {
