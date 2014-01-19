@@ -19,6 +19,8 @@
 #import "PPMultipleEditViewController.h"
 #import "FeedListViewController.h"
 #import "PPTheme.h"
+#import "PPReadLaterActivity.h"
+#import "PPActivityViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -56,6 +58,8 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
 @property (nonatomic, strong) NSInvocation *invocation;
+@property (nonatomic, strong) UIPopoverController *popover;
+@property (nonatomic, strong) PPActivityViewController *activityView;
 
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
@@ -904,6 +908,10 @@ static NSInteger kToolbarHeight = 44;
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
         }
         
+        if (actions & PPPostActionShare) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share", nil)];
+        }
+        
         if (actions & PPPostActionReadLater) {
             PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
             
@@ -1059,6 +1067,38 @@ static NSInteger kToolbarHeight = 44;
             }
             else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
                 [self copyURL];
+            }
+            else if ([title isEqualToString:NSLocalizedString(@"Share", nil)]) {
+                NSString *urlString = [self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row];
+                NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
+            
+                CGRect rect;
+                if (self.searchDisplayController.isActive) {
+                    rect = [self.searchDisplayController.searchResultsTableView rectForRowAtIndexPath:self.selectedIndexPath];
+                }
+                else {
+                    rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+                }
+
+                NSArray *activityItems = @[urlString, title];
+                self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
+
+                __weak GenericPostViewController *weakself = self;
+                self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
+                    [weakself setNeedsStatusBarAppearanceUpdate];
+                    
+                    if (weakself.popover) {
+                        [weakself.popover dismissPopoverAnimated:YES];
+                    }
+                };
+                
+                if ([UIApplication isIPad]) {
+                    self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
+                    [self.popover presentPopoverFromRect:rect inView:self.toolbar permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                }
+                else {
+                    [self presentViewController:self.activityView animated:YES completion:nil];
+                }
             }
             else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
                 UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
@@ -1396,6 +1436,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    [self.view layoutIfNeeded];
+}
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;

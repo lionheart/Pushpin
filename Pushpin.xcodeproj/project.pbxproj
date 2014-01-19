@@ -363,6 +363,7 @@
 		37EABA63173F01DA00B2684B /* loading_80@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37EAB9C3173F01DA00B2684B /* loading_80@2x.png */; };
 		37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
 		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
+		37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */; };
 		37ED8D321878D8960010CDA8 /* libPython.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37ED8D311878D8960010CDA8 /* libPython.a */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
@@ -910,6 +911,8 @@
 		37EAB9C3173F01DA00B2684B /* loading_80@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_80@2x.png"; sourceTree = "<group>"; };
 		37ECBC5617739C24005AE740 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~ipad.png"; path = "Assets/Default@2x~ipad.png"; sourceTree = "<group>"; };
 		37ECBC5717739C24005AE740 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~ipad.png"; path = "Assets/Default~ipad.png"; sourceTree = "<group>"; };
+		37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPActivityViewController.h; sourceTree = "<group>"; };
+		37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPActivityViewController.m; sourceTree = "<group>"; };
 		37ED8D311878D8960010CDA8 /* libPython.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPython.a; path = "../libPython 1-4-14, 5.58 PM/usr/local/lib/libPython.a"; sourceTree = "<group>"; };
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
@@ -1394,6 +1397,8 @@
 				37B348CB175FF9D500929E2E /* PPChangelogViewController.m */,
 				37C012B71765423900938D81 /* PPMultipleEditViewController.h */,
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
+				37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */,
+				37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -2346,6 +2351,7 @@
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
+				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,
 				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,

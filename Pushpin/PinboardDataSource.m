@@ -939,7 +939,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post {
-    NSInteger actions = PPPostActionDelete | PPPostActionEdit | PPPostActionCopyURL;
+    PPPostActionType actions = PPPostActionDelete | PPPostActionEdit | PPPostActionCopyURL | PPPostActionShare;
 
     if ([post[@"unread"] boolValue]) {
         actions |= PPPostActionMarkAsRead;

@@ -143,6 +143,60 @@
 		<array>
 			<dict>
 				<key>license</key>
+				<string>Copyright (c) 2010 Michael Waterfall
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+1. The above copyright notice and this permission notice shall be included
+   in all copies or substantial portions of the Software.
+
+2. This Software cannot be used to archive or collect data such as (but not
+   limited to) that of events, news, experiences and activities, for the 
+   purpose of any concept relating to diary/journal keeping.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</string>
+				<key>title</key>
+				<string>MWFeedParser</string>
+			</dict>
+			<dict>
+				<key>title</key>
+				<string>Objective-C-HMTL-Parser</string>
+			</dict>
+			<dict>
+				<key>license</key>
+				<string>ADNActivityCollection by Brennan Stehling
+https://alpha.app.net/smallsharptools
+
+Copyright (c) 2013 SmallSharpTools LLC.
+All rights reserved.
+
+Redistribution and use in source and binary forms are permitted
+provided that the above copyright notice and this paragraph are
+duplicated in all such forms and that any documentation,
+advertising materials, and other materials related to such
+distribution and use acknowledge that the software was developed
+by the &lt;organization&gt;.  The name of the
+&lt;organization&gt; may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED ``AS IS&apos;&apos; AND WITHOUT ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</string>
+				<key>title</key>
+				<string>ADNActivityCollection</string>
+			</dict>
+			<dict>
+				<key>license</key>
 				<string>Copyright (c) 2011 Mattt Thompson (http://mattt.me/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

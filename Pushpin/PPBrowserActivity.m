@@ -11,6 +11,10 @@
 
 @implementation PPBrowserActivity
 
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryAction;
+}
+
 - (id)initWithUrlScheme:(NSString *)scheme {
     if (self = [super init]) {
         self.urlScheme = scheme;

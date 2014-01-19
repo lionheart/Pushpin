@@ -14,6 +14,10 @@
 
 @synthesize service, serviceName;
 
++ (UIActivityCategory)activityCategory {
+    return UIActivityCategoryAction;
+}
+
 - (id)initWithService:(PPReadLaterType)type {
     if (self = [super init]) {
         self.service = type;
