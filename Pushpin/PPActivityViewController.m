@@ -26,7 +26,9 @@
 
     NSMutableArray *browserActivites = [NSMutableArray array];
     PPBrowserActivity *browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"http" browser:@"Safari"];
-    [browserActivity setUrlString:[utility originalURLStringForURL:activityItems[0]]];
+    
+    NSURL *url = activityItems[1];
+    [browserActivity setUrlString:[utility originalURLStringForURL:url]];
     [browserActivites addObject:browserActivity];
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {

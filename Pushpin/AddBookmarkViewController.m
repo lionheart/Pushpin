@@ -80,6 +80,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.titleTextField = [[UITextField alloc] init];
         self.titleTextField.translatesAutoresizingMaskIntoConstraints = NO;
         self.titleTextField.font = font;
+        self.titleTextField.returnKeyType = UIReturnKeyDone;
         self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.titleTextField.delegate = self;
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
