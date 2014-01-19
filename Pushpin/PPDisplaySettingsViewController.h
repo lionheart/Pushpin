@@ -17,10 +17,9 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPEditDefaultToPrivate,
     PPEditDefaultToRead,
-    PPEditDimReadRow,
-    PPEditAutoMarkAsReadRow,
     PPEditAutocorrecTextRow,
     PPEditAutocapitalizeRow,
+    PPEditAutoMarkAsReadRow,
 
     // Unused
     PPEditDoubleTapRow,
@@ -28,12 +27,13 @@ typedef enum : NSInteger {
 
 typedef enum : NSInteger {
     PPBrowseCompressRow,
+    PPBrowseDimReadRow,
     PPBrowseDefaultFeedRow,
 } PPBrowseSettingsRowType;
 
 enum : NSInteger {
     PPRowCountBrowse = PPBrowseDefaultFeedRow + 1,
-    PPRowCountDisplaySettings = PPEditAutocapitalizeRow + 1
+    PPRowCountDisplaySettings = PPEditAutoMarkAsReadRow + 1
 };
 
 @interface PPDisplaySettingsViewController : PPTableViewController

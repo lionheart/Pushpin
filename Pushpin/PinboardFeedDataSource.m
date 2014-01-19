@@ -73,7 +73,7 @@
 
 #pragma mark - Delegate Methods
 
-- (NSInteger)actionsForPost:(NSDictionary *)post {
+- (PPPostActionType)actionsForPost:(NSDictionary *)post {
     NSInteger actions = PPPostActionCopyToMine | PPPostActionCopyURL;
     
     if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
