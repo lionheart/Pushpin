@@ -144,6 +144,31 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch ((PPDisplaySettingsSectionType)indexPath.section) {
+        case PPSectionDisplaySettings:
+            switch ((PPEditSettingsRowType)indexPath.row) {
+                case PPEditAutoMarkAsReadRow:
+                    return 54;
+                    
+                default:
+                    return 44;
+            }
+            
+        case PPSectionBrowseSettings:
+            switch ((PPBrowseSettingsRowType)indexPath.row) {
+                case PPBrowseCompressRow:
+                    return 68;
+                    
+                default:
+                    return 44;
+            }
+            
+        default:
+            return 44;
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
     CGSize size;
@@ -151,16 +176,17 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     
     switch ((PPDisplaySettingsSectionType)indexPath.section) {
         case PPSectionDisplaySettings:
-            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+            cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
-            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.accessoryView = nil;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
             switch ((PPEditSettingsRowType)indexPath.row) {
                 case PPEditDefaultToPrivate:
                     cell.textLabel.text = NSLocalizedString(@"Private by default?", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
 
                     switchSize = self.privateByDefaultSwitch.frame.size;
@@ -170,7 +196,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     
                 case PPEditDefaultToRead:
                     cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.readByDefaultSwitch.frame.size;
 
@@ -178,18 +203,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.readByDefaultSwitch;
                     break;
 
-                case PPEditDimReadRow:
-                    cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    size = cell.frame.size;
-                    switchSize = self.dimReadPostsSwitch.frame.size;
-                    self.dimReadPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    cell.accessoryView = self.dimReadPostsSwitch;
-                    break;
-
                 case PPEditDoubleTapRow:
                     cell.textLabel.text = NSLocalizedString(@"Double tap to edit", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.doubleTapToEditSwitch.frame.size;
                     self.doubleTapToEditSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -197,8 +212,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPEditAutoMarkAsReadRow:
-                    cell.textLabel.text = NSLocalizedString(@"Auto mark as read", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    cell.textLabel.text = @"Auto mark as read";
+                    cell.detailTextLabel.text = @"When opening unread bookmarks.";
+
                     size = cell.frame.size;
                     switchSize = self.markReadSwitch.frame.size;
                     self.markReadSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -207,7 +223,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
                 case PPEditAutocorrecTextRow:
                     cell.textLabel.text = NSLocalizedString(@"Autocorrect text", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.autoCorrectionSwitch.frame.size;
                     self.autoCorrectionSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -216,7 +231,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
                 case PPEditAutocapitalizeRow:
                     cell.textLabel.text = NSLocalizedString(@"Autocapitalize text", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.autoCapitalizationSwitch.frame.size;
                     self.autoCapitalizationSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -228,26 +242,50 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionBrowseSettings:
             switch ((PPBrowseSettingsRowType)indexPath.row) {
                 case PPBrowseCompressRow:
-                    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                    cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
-                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
+                    cell.detailTextLabel.numberOfLines = 0;
+                    cell.accessoryView = nil;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
                     cell.textLabel.text = NSLocalizedString(@"Compress bookmark list", nil);
+                    cell.detailTextLabel.text = @"Limit descriptions to two lines and tags to one line.";
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.compressPostsSwitch.frame.size;
                     self.compressPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     cell.accessoryView = self.compressPostsSwitch;
                     break;
+
+                case PPBrowseDimReadRow:
+                    cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
+                    cell.detailTextLabel.numberOfLines = 0;
+                    cell.accessoryView = nil;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+                    cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    switchSize = self.dimReadPostsSwitch.frame.size;
+                    self.dimReadPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.dimReadPostsSwitch;
+                    break;
                     
                 case PPBrowseDefaultFeedRow:
-                    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                    cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
                     cell.detailTextLabel.font = [PPTheme detailLabelFont];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.accessoryView = nil;
-                    
+
                     cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
                     cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

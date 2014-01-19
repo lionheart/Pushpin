@@ -938,7 +938,7 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (NSInteger)actionsForPost:(NSDictionary *)post {
+- (PPPostActionType)actionsForPost:(NSDictionary *)post {
     NSInteger actions = PPPostActionDelete | PPPostActionEdit | PPPostActionCopyURL;
 
     if ([post[@"unread"] boolValue]) {

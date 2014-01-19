@@ -169,7 +169,17 @@ static NSString *CellIdentifier = @"Cell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    switch ((PPSectionType)section) {
+        case PPSectionMainSettings:
+            return @"Main Settings";
+
+        default:
+            return nil;
+    }
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;

@@ -35,8 +35,8 @@
 
 #pragma mark - Delegate Methods
 
-- (NSArray *)actionsForPost:(NSDictionary *)post {
-    return @[@(PPPostActionCopyURL)];
+- (PPPostActionType)actionsForPost:(NSDictionary *)post {
+    return PPPostActionCopyURL;
 }
 
 - (NSInteger)numberOfPosts {

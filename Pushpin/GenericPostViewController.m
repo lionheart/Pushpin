@@ -881,13 +881,13 @@ static NSInteger kToolbarHeight = 44;
         self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
         id <GenericPostDataSource> dataSource = [self currentDataSource];
-        NSInteger actions = [dataSource actionsForPost:self.selectedPost];
+        PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
         
         if (actions & PPPostActionDelete) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
             self.longPressActionSheet.destructiveButtonIndex = 0;
         }
-        
+
         if (actions & PPPostActionEdit) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
         }
