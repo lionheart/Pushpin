@@ -164,8 +164,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     return 44;
             }
             
-        default:
-            return 44;
+        case PPSectionTextExpanderSettings:
+            return 54;
     }
 }
 
@@ -297,7 +297,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
-            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.accessoryView = nil;
 
             cell.textLabel.text = @"Update TextExpander Snippets";

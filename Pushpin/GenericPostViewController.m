@@ -911,7 +911,7 @@ static NSInteger kToolbarHeight = 44;
         if (actions & PPPostActionShare) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share Bookmark", nil)];
         }
-        
+
         if (actions & PPPostActionReadLater) {
             PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
             
@@ -1080,7 +1080,7 @@ static NSInteger kToolbarHeight = 44;
                     rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                 }
 
-                NSArray *activityItems = @[url, title];
+                NSArray *activityItems = @[title, url];
                 self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
                 __weak GenericPostViewController *weakself = self;

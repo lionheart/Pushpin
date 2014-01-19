@@ -414,7 +414,7 @@ static NSInteger kTitleHeight = 40;
     NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
     NSURL *url = [NSURL URLWithString:tempUrl];
 
-    NSArray *activityItems = @[url, title];
+    NSArray *activityItems = @[title, url];
     self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
     __weak PPWebViewController *weakself = self;
