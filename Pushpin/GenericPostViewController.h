@@ -23,7 +23,7 @@
 
 @protocol GenericPostDataSource <NSObject>
 
-- (NSArray *)actionsForPost:(NSDictionary *)post;
+- (NSInteger)actionsForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;
 
 - (NSAttributedString *)titleForPostAtIndex:(NSInteger)index;

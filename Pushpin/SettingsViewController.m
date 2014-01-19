@@ -399,7 +399,8 @@ static NSString *CellIdentifier = @"Cell";
                                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                            [alert dismissWithClickedButtonIndex:0 animated:YES];
-                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                                 withRowAnimation:UITableViewRowAnimationFade];
                                        });
                                    }
                                }];
@@ -446,7 +447,8 @@ static NSString *CellIdentifier = @"Cell";
                                        
                                        [AppDelegate sharedDelegate].readLater = PPReadLaterReadability;
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                             withRowAnimation:UITableViewRowAnimationFade];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
@@ -505,7 +507,8 @@ static NSString *CellIdentifier = @"Cell";
                 delegate.mobilizer = PPMobilizerReadability;
             }
 
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainMobilizer inSection:PPSectionMainSettings]]
+                                  withRowAnimation:UITableViewRowAnimationFade];
         }
         else if (actionSheet == self.readLaterActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
@@ -522,7 +525,8 @@ static NSString *CellIdentifier = @"Cell";
             else if ([buttonTitle isEqualToString:@"None"]) {
                 [AppDelegate sharedDelegate].readLater = PPReadLaterNone;
                 [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                      withRowAnimation:UITableViewRowAnimationFade];
             }
         }
 
@@ -547,7 +551,8 @@ static NSString *CellIdentifier = @"Cell";
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [AppDelegate sharedDelegate].readLater = PPReadLaterPocket;
     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                          withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
