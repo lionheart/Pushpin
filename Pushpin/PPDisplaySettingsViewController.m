@@ -13,10 +13,11 @@
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import <TextExpander/SMTEDelegateController.h>
 
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
+
+#import <TextExpander/SMTEDelegateController.h>
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
@@ -29,9 +30,18 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
+@property (nonatomic, retain) UISwitch *dimReadPostsSwitch;
+@property (nonatomic, retain) UISwitch *compressPostsSwitch;
+@property (nonatomic, retain) UISwitch *doubleTapToEditSwitch;
+@property (nonatomic, retain) UISwitch *markReadSwitch;
+@property (nonatomic, retain) UISwitch *autoCorrectionSwitch;
+@property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
+- (void)switchChangedValue:(id)sender;
+
+- (void)updateSnippetData;
 
 @end
 
@@ -79,6 +89,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
     self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.dimReadPostsSwitch = [[UISwitch alloc] init];
+    self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
+    [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
@@ -87,7 +101,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self updateSnippetData];
+}
 
+- (void)updateSnippetData {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSUInteger count = self.TESnippetCount;
         self.TEAvailable = [SMTEDelegateController textExpanderTouchHasGetSnippetsCallbackURL];
@@ -96,7 +114,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                             snippetCount:&count
                                                 loadDate:nil
                                                    error:nil];
-
+        
         self.TESnippetCount = count;
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -164,11 +182,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Dim read bookmarks", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
-                    self.dimReadPostsSwitch = [[UISwitch alloc] init];
                     switchSize = self.dimReadPostsSwitch.frame.size;
                     self.dimReadPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
-                    [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.dimReadPostsSwitch;
                     break;
 
@@ -290,6 +305,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             teDelegate.getSnippetsScheme = @"pushpin";
             teDelegate.clientAppName = @"Pushpin";
             [teDelegate getSnippets];
+            
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self updateSnippetData];
+            });
             break;
         }
             
@@ -325,8 +346,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)switchChangedValue:(id)sender {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
     if (sender == self.compressPostsSwitch) {
-        [[AppDelegate sharedDelegate] setCompressPosts:self.compressPostsSwitch.on];
+        [delegate setCompressPosts:self.compressPostsSwitch.on];
     }
     else if (sender == self.doubleTapToEditSwitch) {
         [[AppDelegate sharedDelegate] setDoubleTapToEdit:self.doubleTapToEditSwitch.on];

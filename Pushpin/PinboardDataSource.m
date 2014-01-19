@@ -938,19 +938,15 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (NSArray *)actionsForPost:(NSDictionary *)post {
-    NSMutableArray *actions = [NSMutableArray array];
-    [actions addObject:@(PPPostActionDelete)];
-    [actions addObject:@(PPPostActionEdit)];
-    
+- (NSInteger)actionsForPost:(NSDictionary *)post {
+    NSInteger actions = PPPostActionDelete | PPPostActionEdit | PPPostActionCopyURL;
+
     if ([post[@"unread"] boolValue]) {
-        [actions addObject:@(PPPostActionMarkAsRead)];
+        actions |= PPPostActionMarkAsRead;
     }
-    
-    [actions addObject:@(PPPostActionCopyURL)];
-    
+
     if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
-        [actions addObject:@(PPPostActionReadLater)];
+        actions |= PPPostActionReadLater;
     }
 
     return actions;

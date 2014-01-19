@@ -73,13 +73,11 @@
 
 #pragma mark - Delegate Methods
 
-- (NSArray *)actionsForPost:(NSDictionary *)post {
-    NSMutableArray *actions = [NSMutableArray array];
-    [actions addObject:@(PPPostActionCopyToMine)];
-    [actions addObject:@(PPPostActionCopyURL)];
+- (NSInteger)actionsForPost:(NSDictionary *)post {
+    NSInteger actions = PPPostActionCopyToMine | PPPostActionCopyURL;
     
     if ([AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
-        [actions addObject:@(PPPostActionReadLater)];
+        actions |= PPPostActionReadLater;
     }
 
     return actions;

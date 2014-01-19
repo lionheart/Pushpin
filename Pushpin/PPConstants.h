@@ -55,12 +55,13 @@ typedef enum : NSInteger {
 } PPPostSourceType;
 
 typedef enum : NSInteger {
-    PPPostActionCopyToMine,
-    PPPostActionCopyURL,
-    PPPostActionDelete,
-    PPPostActionEdit,
-    PPPostActionReadLater,
-    PPPostActionMarkAsRead
+    PPPostActionCopyToMine = 1 << 0,
+    PPPostActionCopyURL = 1 << 1,
+    PPPostActionDelete = 1 << 2,
+    PPPostActionEdit = 1 << 3,
+    PPPostActionReadLater = 1 << 4,
+    PPPostActionMarkAsRead = 1 << 5,
+    PPPostActionShare = 1 << 6
 } PPPostActionType;
 
 typedef enum : NSInteger {

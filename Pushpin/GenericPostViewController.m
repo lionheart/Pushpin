@@ -880,60 +880,49 @@ static NSInteger kToolbarHeight = 44;
 
         self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 
-        PPPostActionType action;
         id <GenericPostDataSource> dataSource = [self currentDataSource];
-        NSInteger count = 0;
+        NSInteger actions = [dataSource actionsForPost:self.selectedPost];
+        
+        if (actions & PPPostActionDelete) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
+            self.longPressActionSheet.destructiveButtonIndex = 0;
+        }
+        
+        if (actions & PPPostActionEdit) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+        }
+        
+        if (actions & PPPostActionMarkAsRead) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+        }
 
-        for (id PPPAction in [dataSource actionsForPost:self.selectedPost]) {
-            action = [PPPAction integerValue];
-
-            switch (action) {
-                case PPPostActionCopyToMine:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+        if (actions & PPPostActionCopyToMine) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+        }
+        
+        if (actions & PPPostActionCopyURL) {
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+        }
+        
+        if (actions & PPPostActionReadLater) {
+            PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
+            
+            switch (readLater) {
+                case PPReadLaterInstapaper:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
                     break;
                     
-                case PPPostActionCopyURL:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+                case PPReadLaterReadability:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
                     break;
                     
-                case PPPostActionDelete:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
-                    self.longPressActionSheet.destructiveButtonIndex = count;
+                case PPReadLaterPocket:
+                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
                     break;
                     
-                case PPPostActionEdit:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+                default:
                     break;
-                    
-                case PPPostActionMarkAsRead:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
-                    break;
-                    
-                case PPPostActionReadLater: {
-                    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
-
-                    switch (readLater) {
-                        case PPReadLaterInstapaper:
-                            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
-                            break;
-
-                        case PPReadLaterReadability:
-                            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
-                            break;
-                            
-                        case PPReadLaterPocket:
-                            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
-                            break;
-                            
-                        default:
-                            break;
-                    }
-
-                    break;
-                }
             }
-
-            count++;
         }
 
         // Properly set the cancel button index
