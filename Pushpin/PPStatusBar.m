@@ -15,8 +15,10 @@
 
 @interface PPStatusBar ()
 
+@property (nonatomic, strong) UIView *superview;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 - (void)hide;
 
@@ -29,22 +31,23 @@
 }
 
 - (void)showWithText:(NSString *)text {
+    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+    self.tapGestureRecognizer.numberOfTapsRequired = 1;
+
     UIViewController *controller = [UIViewController lhs_topViewController];
     if ([[controller class] isEqual:[AddBookmarkViewController class]]) {
         controller = (UIViewController *)[[AppDelegate sharedDelegate].navigationController topViewController];
     }
 
-    UIView *view = controller.view;
-    CGFloat verticalOffset = 0;
-    if ([[view class] isSubclassOfClass:[UITableView class]]) {
-        view = [AppDelegate sharedDelegate].window;
-
-
+    self.superview = controller.view;
+    if ([[self.superview class] isSubclassOfClass:[UITableView class]]) {
+        self.superview = [AppDelegate sharedDelegate].window;
     }
 
     self.view = [[UIView alloc] init];
     self.view.translatesAutoresizingMaskIntoConstraints = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+    [self.view addGestureRecognizer:self.tapGestureRecognizer];
 
     NSInteger numWords = [[text componentsSeparatedByString:@" "] count];
     NSInteger averageWordsPerMinute = 225;
@@ -81,14 +84,14 @@
     [self.view lhs_addConstraints:@"H:|[border]|" views:views];
     [self.view lhs_addConstraints:@"V:[border(1)]|" views:views];
 
-    [view addSubview:self.view];
-    [view lhs_addConstraints:@"H:|[view]|" views:views];
-    [view layoutIfNeeded];
+    [self.superview addSubview:self.view];
+    [self.superview lhs_addConstraints:@"H:|[view]|" views:views];
+    [self.superview layoutIfNeeded];
 
     CGFloat height = CGRectGetHeight(self.view.frame) + 20;
     self.topConstraint = [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:controller.view attribute:NSLayoutAttributeTop multiplier:1 constant:-height];
-    [view addConstraint:self.topConstraint];
-    [view layoutIfNeeded];
+    [self.superview addConstraint:self.topConstraint];
+    [self.superview layoutIfNeeded];
 
     [UIView animateWithDuration:0.5
                           delay:0
@@ -97,7 +100,7 @@
                         options:0
                      animations:^{
                          self.topConstraint.constant = -20;
-                         [view layoutIfNeeded];
+                         [self.superview layoutIfNeeded];
                      }
                      completion:^(BOOL finished) {
                          double delayInSeconds = secondsNeededToRead;
@@ -106,15 +109,30 @@
                              [UIView animateWithDuration:0.1
                                               animations:^{
                                                   self.topConstraint.constant = -10;
-                                                  [view layoutIfNeeded];
+                                                  [self.superview layoutIfNeeded];
                                               }
                                               completion:^(BOOL finished) {
                                                   [UIView animateWithDuration:0.2 animations:^{
                                                       self.topConstraint.constant = -height;
-                                                      [view layoutIfNeeded];
+                                                      [self.superview layoutIfNeeded];
                                                   }];
                                               }];
                          });
+                     }];
+}
+
+- (void)hide {
+    CGFloat height = CGRectGetHeight(self.view.frame) + 20;
+    [UIView animateWithDuration:0.1
+                     animations:^{
+                         self.topConstraint.constant = -10;
+                         [self.superview layoutIfNeeded];
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.2 animations:^{
+                             self.topConstraint.constant = -height;
+                             [self.superview layoutIfNeeded];
+                         }];
                      }];
 }
 

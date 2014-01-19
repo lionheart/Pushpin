@@ -909,7 +909,7 @@ static NSInteger kToolbarHeight = 44;
         }
         
         if (actions & PPPostActionShare) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share", nil)];
+            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share Bookmark", nil)];
         }
         
         if (actions & PPPostActionReadLater) {
@@ -1068,8 +1068,8 @@ static NSInteger kToolbarHeight = 44;
             else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
                 [self copyURL];
             }
-            else if ([title isEqualToString:NSLocalizedString(@"Share", nil)]) {
-                NSString *urlString = [self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row];
+            else if ([title isEqualToString:NSLocalizedString(@"Share Bookmark", nil)]) {
+                NSString *url = [NSURL URLWithString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
                 NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
             
                 CGRect rect;
@@ -1080,7 +1080,7 @@ static NSInteger kToolbarHeight = 44;
                     rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                 }
 
-                NSArray *activityItems = @[urlString, title];
+                NSArray *activityItems = @[url, title];
                 self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
                 __weak GenericPostViewController *weakself = self;
