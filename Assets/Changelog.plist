@@ -3,6 +3,67 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.0</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Brand-new, iOS 7 interface.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add proper split pane interface to iPad version.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Swipe right to edit and swipe left to delete.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add options to search by all fields, full text (for those of you with Pinboard archival accounts), titles, descriptions, or tags.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Significantly expand tap areas for tags (you can tap on them to filter bookmarks by that tag).</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Enable or disable autocorrect and autocapitalization when editing bookmark descriptions.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add ability to set the default bookmark feed when starting up the app.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add the option to automatically mark unread bookmarks as read when opening them.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Started work on bulk-editing mode. At the moment you can mark multiple bookmarks as read in the main bookmark list.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>You can now mark bookmarks as read when viewing a bookmark in the in-app browser.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Tap title bars to enable or disable compressed mode.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Share to Riposte, Netbot, Happy, or Felix (for those ADN users out there).</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Sync saved feeds with iCloud.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Significantly speed up searches.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>2.1.1</string>
 		<array>
 			<array>
