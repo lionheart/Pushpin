@@ -342,21 +342,8 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfTapsSinceTapReset++;
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;
-    
-    if ([AppDelegate sharedDelegate].doubleTapToEdit) {
-        if (!self.singleTapTimer) {
-            self.singleTapTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(handleCellTap) userInfo:nil repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.singleTapTimer forMode:NSRunLoopCommonModes];
-        }
-        else {
-            [self.singleTapTimer invalidate];
-            self.singleTapTimer = nil;
-            [self handleCellTap];
-        }
-    }
-    else {
-        [self handleCellTap];
-    }
+
+    [self handleCellTap];
 }
 
 - (void)handleCellTap {
@@ -956,7 +943,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UITableViewDelegate
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
+    return YES;
 }
 
 - (void)closeModal:(UIViewController *)sender {

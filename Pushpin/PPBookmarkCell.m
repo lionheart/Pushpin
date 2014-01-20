@@ -159,6 +159,15 @@ static NSInteger kEditButtonOuterMargin = 20;
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-blue"] forState:UIControlStateDisabled];
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-darker"] forState:UIControlStateNormal];
     self.editButton.enabled = NO;
+    
+    if (self.isEditing) {
+        self.editButton.hidden = YES;
+        self.deleteButton.hidden = YES;
+    }
+    else {
+        self.editButton.hidden = NO;
+        self.deleteButton.hidden = NO;
+    }
 
     UIView *mainContentView = [[UIView alloc] initWithFrame:self.bounds];
     mainContentView.translatesAutoresizingMaskIntoConstraints = NO;
