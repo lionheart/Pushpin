@@ -21,6 +21,15 @@
 
 @class PPNavigationController;
 
+typedef enum : NSInteger {
+    PPSearchScopeAllField,
+    PPSearchScopeTitles,
+    PPSearchScopeDescriptions,
+    PPSearchScopeTags,
+    PPSearchScopeFullText,
+    PPSearchScopePublic,
+} PPSearchScopeType;
+
 @protocol GenericPostDataSource <NSObject>
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post;

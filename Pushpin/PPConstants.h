@@ -65,14 +65,6 @@ typedef enum : NSInteger {
 } PPPostActionType;
 
 typedef enum : NSInteger {
-    PPSearchAllField,
-    PPSearchFullText,
-    PPSearchTitles,
-    PPSearchDescriptions,
-    PPSearchTags,
-} PPSearchType;
-
-typedef enum : NSInteger {
     PPBrowserWebview,
     PPBrowserSafari,
     PPBrowserChrome,

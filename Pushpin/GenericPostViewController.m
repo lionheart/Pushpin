@@ -608,7 +608,7 @@ static NSInteger kToolbarHeight = 44;
                         
                         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
                         self.searchBar.delegate = self;
-                        self.searchBar.scopeButtonTitles = @[@"All", @"Full Text", @"Title", @"Desc.", @"Tags"];
+                        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
                         self.searchBar.showsScopeBar = YES;
                         
                         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
@@ -645,7 +645,7 @@ static NSInteger kToolbarHeight = 44;
     if (!self.searchLoading) {
         self.searchLoading = YES;
 
-        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText && [self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)];
+        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText && [self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)];
 
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
 
@@ -799,7 +799,7 @@ static NSInteger kToolbarHeight = 44;
         NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
         NSArray *tags = [bookmark[@"tags"] componentsSeparatedByString:@" "];
         [tags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if (![bookmarksToUpdate containsObject:obj] && ![obj isEqualToString:@""]) {
+            if (![bookmarksToUpdate containsObject:obj] && ![obj isEqualToString:emptyString]) {
                 [bookmarksToUpdate addObject:obj];
             }
         }];
@@ -1390,17 +1390,17 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if (![searchText isEqualToString:@""]) {
+    if (![searchText isEqualToString:emptyString]) {
         switch (self.searchBar.selectedScopeButtonIndex) {
-            case PPSearchTitles:
+            case PPSearchScopeTitles:
                 self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
                 break;
                 
-            case PPSearchDescriptions:
+            case PPSearchScopeDescriptions:
                 self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
                 break;
                 
-            case PPSearchTags:
+            case PPSearchScopeTags:
                 self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
                 break;
                 
@@ -1411,7 +1411,7 @@ static NSInteger kToolbarHeight = 44;
 
         BOOL shouldSearchFullText = NO;
         if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
-            shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchFullText;
+            shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
         }
 
         self.latestSearchTime = [NSDate date];
@@ -1432,17 +1432,17 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     NSString *searchText = searchBar.text;
-    if (![searchText isEqualToString:@""]) {
+    if (![searchText isEqualToString:emptyString]) {
         switch (self.searchBar.selectedScopeButtonIndex) {
-            case PPSearchTitles:
+            case PPSearchScopeTitles:
                 self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
                 break;
                 
-            case PPSearchDescriptions:
+            case PPSearchScopeDescriptions:
                 self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
                 break;
                 
-            case PPSearchTags:
+            case PPSearchScopeTags:
                 self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
                 break;
                 
