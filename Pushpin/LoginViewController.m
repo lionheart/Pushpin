@@ -225,6 +225,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    }
                                                                                   failure:nil
                                                                                  progress:^(NSInteger current, NSInteger total) {
+                                                                                     
                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
                                                                                          if (total == current) {
                                                                                              [self.messageUpdateTimer invalidate];

@@ -314,7 +314,7 @@ static NSString *CellIdentifier = @"Cell";
     switch ((PPSectionType)section) {
         case PPSectionOtherSettings:
             return NSLocalizedString(@"Logging out of the application will reset the bookmark database on this device.", nil);
-            
+
         default:
             break;
     }

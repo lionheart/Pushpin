@@ -70,6 +70,7 @@ static NSInteger kToolbarHeight = 44;
 - (CGFloat)currentWidth;
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation;
 
+- (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
 @end
@@ -636,6 +637,10 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification {
+    [self updateSearchResultsForSearchPerformedAtTime:notification.userInfo[@"time"]];
+}
+
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
     if (!self.searchLoading) {
         self.searchLoading = YES;
@@ -649,30 +654,29 @@ static NSInteger kToolbarHeight = 44;
         }
 
         __weak GenericPostViewController *weakself = self;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-                if (weakself.searchPostDataSource.shouldSearchFullText) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                    });
-                }
 
+        [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
+            if (weakself.searchPostDataSource.shouldSearchFullText) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakself.searchDisplayController.searchResultsTableView reloadData];
-                    weakself.searchLoading = NO;
+                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                 });
-            } failure:^(NSError *error) {
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakself.searchDisplayController.searchResultsTableView reloadData];
                 weakself.searchLoading = NO;
-
-                if (weakself.searchPostDataSource.shouldSearchFullText) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                    });
-                }
-            } cancel:^(BOOL *stop) {
-                *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
-            } width:[self currentWidth]];
-        });
+            });
+        } failure:^(NSError *error) {
+            weakself.searchLoading = NO;
+            
+            if (weakself.searchPostDataSource.shouldSearchFullText) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                });
+            }
+        } cancel:^(BOOL *stop) {
+            *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
+        } width:[self currentWidth]];
     }
 }
 
@@ -1356,7 +1360,7 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-#pragma mark - Scroll View delegate
+#pragma mark - UIScrollView
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
@@ -1416,14 +1420,9 @@ static NSInteger kToolbarHeight = 44;
             if (self.fullTextSearchTimer) {
                 [self.fullTextSearchTimer invalidate];
             }
-            
-            NSMethodSignature *signature = [self methodSignatureForSelector:@selector(updateSearchResultsForSearchPerformedAtTime:)];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-            invocation.selector = @selector(updateSearchResultsForSearchPerformedAtTime:);
-            invocation.target = self;
-            [invocation setArgument:(__bridge void *)(self.latestSearchTime) atIndex:0];
 
-            self.fullTextSearchTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 invocation:invocation repeats:NO];
+            self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4 target:self selector:@selector(updateSearchResultsForSearchPerformed:) userInfo:@{@"time": self.latestSearchTime} repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
         }
         else {
             [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
@@ -1432,7 +1431,26 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
-    if (![searchBar.text isEqualToString:@""]) {
+    NSString *searchText = searchBar.text;
+    if (![searchText isEqualToString:@""]) {
+        switch (self.searchBar.selectedScopeButtonIndex) {
+            case PPSearchTitles:
+                self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
+                break;
+                
+            case PPSearchDescriptions:
+                self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
+                break;
+                
+            case PPSearchTags:
+                self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
+                break;
+                
+            default:
+                self.formattedSearchString = searchText;
+                break;
+        }
+
         [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
     }
 }
