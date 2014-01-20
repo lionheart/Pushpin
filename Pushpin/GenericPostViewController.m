@@ -738,7 +738,7 @@ static NSInteger kToolbarHeight = 44;
         [self.tableView setEditing:YES animated:YES];
 
         self.navigationItem.leftBarButtonItem.enabled = NO;
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
         
         [self updateTitleViewText];
 
