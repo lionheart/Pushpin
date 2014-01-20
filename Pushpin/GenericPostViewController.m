@@ -129,8 +129,29 @@ static NSInteger kToolbarHeight = 44;
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-    
-    self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+
+    if ([self.postDataSource respondsToSelector:@selector(searchDataSource)]) {
+        self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+
+        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 40)];
+        self.searchBar.delegate = self;
+        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
+        self.searchBar.showsScopeBar = YES;
+        self.tableView.tableHeaderView = self.searchBar;
+        
+        if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
+            self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
+        }
+        
+        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
+        self.searchDisplayController.searchResultsDataSource = self;
+        self.searchDisplayController.searchResultsDelegate = self;
+        self.searchDisplayController.delegate = self;
+        [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
+        [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+        
+        self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
+    }
 
     self.searchLoading = NO;
     
@@ -193,7 +214,7 @@ static NSInteger kToolbarHeight = 44;
     [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
     [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
     
-    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.tableView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.searchBar attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     [self.view addConstraint:self.pullToRefreshTopConstraint];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
@@ -592,25 +613,6 @@ static NSInteger kToolbarHeight = 44;
                     
                     if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                         self.searchPostDataSource = [self.postDataSource searchDataSource];
-                        
-                        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
-                        self.searchBar.delegate = self;
-                        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
-                        self.searchBar.showsScopeBar = YES;
-                        
-                        if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
-                            self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
-                        }
-                        
-                        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-                        self.searchDisplayController.searchResultsDataSource = self;
-                        self.searchDisplayController.searchResultsDelegate = self;
-                        self.searchDisplayController.delegate = self;
-                        [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
-                        
-                        self.tableView.tableHeaderView = self.searchBar;
-                        self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
-                        [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
                     }
                     
                     kGenericPostViewControllerIsProcessingPosts = NO;
@@ -1448,6 +1450,11 @@ static NSInteger kToolbarHeight = 44;
 
 #pragma mark - UISearchDisplayControllerDelegate
 
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    self.pullToRefreshTopConstraint.constant = 0;
+    [self.view layoutIfNeeded];
+}
+
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
 }
@@ -1715,7 +1722,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
-    return ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]);
+    return [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
 }
 
 #pragma mark - UIDynamicAnimatorDelegate
@@ -1724,7 +1731,10 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraint:self.tableViewPinnedToTopConstraint];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
-    [self.view lhs_addConstraints:@"H:|[table]|" views:@{@"table": self.tableView}];
+    
+    NSDictionary *views = @{@"table": self.tableView };
+    
+    [self.view lhs_addConstraints:@"H:|[table]|" views:views];
     [self.view layoutIfNeeded];
 }
 
