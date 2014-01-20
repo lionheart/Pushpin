@@ -1067,6 +1067,7 @@ static BOOL kPinboardSyncInProgress = NO;
         [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
 
         NSError *error;
+        // Both of these regex searches comprise the form 'tag:programming' or 'tag:"programming python"'. The only difference are the capture groups.
         NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|(\\w+:\"[^\"]+\"))" options:0 error:&error];
         NSRegularExpression *subExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\w+):\"?([^\"]+)\"?" options:0 error:&error];
         NSArray *fieldMatches = [expression matchesInString:self.searchQuery options:0 range:NSMakeRange(0, self.searchQuery.length)];
@@ -1089,11 +1090,14 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
 
                 if (isValidField) {
-                    NSString *value = [matchString substringWithRange:[subresult rangeAtIndex:2]];
+                    NSString *value = [[matchString substringWithRange:[subresult rangeAtIndex:2]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     NSArray *words = [value componentsSeparatedByString:@" "];
                     NSMutableArray *wordsWithWildcards = [NSMutableArray array];
                     for (NSString *word in words) {
                         if ([word hasSuffix:@"*"]) {
+                            [wordsWithWildcards addObject:word];
+                        }
+                        else if ([@[@"AND", @"OR", @"NOT"] containsObject:word]) {
                             [wordsWithWildcards addObject:word];
                         }
                         else {
@@ -1130,7 +1134,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [parameters addObject:@""];
             break;
             
-        default:
+        case kPinboardFilterNone:
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
                 for (NSString *tag in self.tags) {
