@@ -759,7 +759,10 @@ static BOOL kPinboardSyncInProgress = NO;
                                           [components addObject:@")"];
                                           
                                           NSString *query = [components componentsJoinedByString:@" "];
-                                          HandleSearch(query, parameters);
+                                          
+                                          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                              HandleSearch(query, parameters);
+                                          });
                                       }];
     }
     else {
