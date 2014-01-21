@@ -12,6 +12,8 @@
 #import "GenericPostViewController.h"
 #import "FeedListViewController.h"
 #import "SettingsViewController.h"
+#import "PPAboutViewController.h"
+#import "PPChangelogViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -102,6 +104,18 @@
 
 -(UIViewController *)childViewControllerForStatusBarHidden {
     return self.visibleViewController;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    if ([[self.topViewController class] isSubclassOfClass:[PPAboutViewController class]]) {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+
+    if ([[self.topViewController class] isSubclassOfClass:[PPChangelogViewController class]]) {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+
+    return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait;
 }
 
 @end

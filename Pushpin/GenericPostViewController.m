@@ -1756,7 +1756,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (CGFloat)currentWidth {
-    return [self currentWidthForOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
+    return [self currentWidthForOrientation:[[UIApplication sharedApplication] statusBarOrientation]] - 20;
 }
 
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation {
