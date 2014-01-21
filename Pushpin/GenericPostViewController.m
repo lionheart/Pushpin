@@ -303,7 +303,12 @@ static NSInteger kToolbarHeight = 44;
     }
     else {
         [self updateFromLocalDatabaseWithCallback:^{
-            [self.tableView reloadData];
+            if (self.searchDisplayController.isActive) {
+                [self.searchDisplayController.searchResultsTableView reloadData];
+            }
+            else {
+                [self.tableView reloadData];
+            }
         }];
     }
 }
@@ -585,11 +590,18 @@ static NSInteger kToolbarHeight = 44;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
                     if (alreadyContainsBookmarks) {
-                        [self.tableView beginUpdates];
-                        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
+                        UITableView *tableView;
+                        if (self.searchDisplayController.isActive) {
+                            tableView = self.searchDisplayController.searchResultsTableView;
+                        }
+                        else {
+                            tableView = self.tableView;
+                        }
+                        [tableView beginUpdates];
+                        [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView endUpdates];
                     }
                     else {
                         [self.tableView reloadData];
@@ -946,7 +958,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UITableViewDelegate
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return NO;
 }
 
 - (void)closeModal:(UIViewController *)sender {
@@ -1756,7 +1768,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (CGFloat)currentWidth {
-    return [self currentWidthForOrientation:[[UIApplication sharedApplication] statusBarOrientation]] - 20;
+    return [self currentWidthForOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
 }
 
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation {

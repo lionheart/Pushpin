@@ -363,7 +363,6 @@ static NSInteger kTitleHeight = 40;
 
     if (self.numberOfRequestsInProgress <= 0) {
         self.alreadyLoaded = YES;
-        self.mobilizeButton.enabled = YES;
 
         NSString *theURLString = [self.mobilizerUtility originalURLStringForURL:self.url];
 
@@ -858,7 +857,6 @@ static NSInteger kTitleHeight = 40;
     if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
         self.numberOfRequestsCompleted = 0;
         self.numberOfRequests = 0;
-        self.mobilizeButton.enabled = NO;
         
         switch (navigationType) {
             case UIWebViewNavigationTypeOther:
@@ -1022,7 +1020,7 @@ static NSInteger kTitleHeight = 40;
         CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
         CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
         CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 125;
+        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 150;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3 animations:^{
