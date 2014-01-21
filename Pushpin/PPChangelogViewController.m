@@ -20,6 +20,7 @@ static NSString *CellIdentifier = @"Cell";
 
 @interface PPChangelogViewController ()
 
+@property (nonatomic, strong) NSMutableArray *heights;
 @property (nonatomic, strong) NSDictionary *detailAttributes;
 
 @end
@@ -34,52 +35,50 @@ static NSString *CellIdentifier = @"Cell";
     return UIStatusBarStyleLightContent;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.heights = [NSMutableArray array];
+    
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.title = @"Changelog";
-    self.heights = [NSMutableDictionary dictionary];
     self.titles = [NSMutableArray array];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-
+    
     self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont],
                               NSParagraphStyleAttributeName: paragraphStyle };
+    
+    [self calculateHeightsForWidth:CGRectGetWidth(self.tableView.frame) - 30];
 
-    [self calculateHeightsForWidth:CGRectGetWidth(self.tableView.frame) - 20];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)calculateHeightsForWidth:(CGFloat)w {
     [self.titles removeAllObjects];
 
-    CGFloat descriptionHeight;
+    UILabel *fakeLabel = [[UILabel alloc] init];
+    fakeLabel.preferredMaxLayoutWidth = w;
 
-    for (NSArray *list in self.data) {
+    [self.data enumerateObjectsUsingBlock:^(NSArray *list, NSUInteger section, BOOL *stop) {
         [self.titles addObject:list[0]];
-        for (NSArray *pair in list[1]) {
-            NSString *description = pair[1];
-            
-            UILabel *label = [[UILabel alloc] init];
-            label.attributedText = [[NSAttributedString alloc] initWithString:description attributes:self.detailAttributes];
+        self.heights[section] = [NSMutableArray array];
 
-            if ([description isEqualToString:@""]) {
-                descriptionHeight = 0;
+        [list[1] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger row, BOOL *stop) {
+            NSString *description = pair[1];
+            CGFloat height = 0;
+
+            fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:description attributes:self.detailAttributes];
+
+            if (![description isEqualToString:@""]) {
+                height += CGRectGetHeight([fakeLabel textRectForBounds:CGRectMake(0, 0, w, CGFLOAT_MAX) limitedToNumberOfLines:0]);
             }
-            else {
-                descriptionHeight = CGRectGetHeight([label textRectForBounds:CGRectMake(0, 0, w, CGFLOAT_MAX) limitedToNumberOfLines:0]);
-            }
-            
-            self.heights[description] = @(descriptionHeight);
-        }
-    }
+
+            self.heights[section][row] = @(height);
+        }];
+    }];
     
     [self.tableView reloadData];
 }
@@ -97,10 +96,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *info = self.data[indexPath.section][1];
-    NSString *description = info[indexPath.row][1];
-    CGFloat topHeight = [self.heights[description] floatValue];
-    return topHeight + 20;
+    return [self.heights[indexPath.section][indexPath.row] floatValue] + 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
