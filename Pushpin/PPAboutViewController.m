@@ -47,6 +47,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return UIStatusBarStyleLightContent;
 }
 
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationPortrait;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -73,7 +77,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.frame) - 20, CGFLOAT_MAX);
+    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.tableView.frame) - 30, CGFLOAT_MAX);
+    CGRect maxRect = (CGRect){{0, 0}, maxSize};
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -83,6 +88,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1],
                               NSParagraphStyleAttributeName: paragraphStyle,
                               NSForegroundColorAttributeName: [PPTheme detailLabelFontColor]};
+    UILabel *fakeLabel = [[UILabel alloc] init];
+    fakeLabel.preferredMaxLayoutWidth = maxSize.width;
     
     [self.sections enumerateObjectsUsingBlock:^(NSDictionary *sectionData, NSUInteger section, BOOL *stop) {
         NSArray *rows = sectionData[@"rows"];
@@ -96,17 +103,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSString *detail = rowData[@"detail"];
             
             if (title) {
-                height += CGRectGetHeight([title boundingRectWithSize:maxSize
-                                                              options:NSStringDrawingUsesLineFragmentOrigin
-                                                           attributes:self.titleAttributes
-                                                              context:nil]);
+                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
+                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
             
             if (detail) {
-                height += CGRectGetHeight([detail boundingRectWithSize:maxSize
-                                                               options:NSStringDrawingUsesLineFragmentOrigin
-                                                            attributes:self.detailAttributes
-                                                               context:nil]);
+                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
+                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
             
             self.heights[section][row] = @(height);
@@ -136,7 +139,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
     cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
