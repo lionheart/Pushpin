@@ -505,21 +505,22 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
 
                 if (neverUpdated || (lastUpdatedMoreThanFiveMinutesAgo && outOfSyncWithAPI)) {
-                    [pinboard bookmarksWithTags:nil
-                                         offset:-1
-                                          count:count
-                                       fromDate:nil
-                                         toDate:nil
-                                    includeMeta:YES
-                                        success:^(NSArray *bookmarks, NSDictionary *parameters) {
-                                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                BookmarksSuccessBlock(bookmarks, parameters);
-                                            });
-                                        }
-                                        failure:^(NSError *error) {
-                                            BookmarksFailureBlock(error);
-                                        }];
-                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [pinboard bookmarksWithTags:nil
+                                             offset:-1
+                                              count:count
+                                           fromDate:nil
+                                             toDate:nil
+                                        includeMeta:YES
+                                            success:^(NSArray *bookmarks, NSDictionary *parameters) {
+                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                    BookmarksSuccessBlock(bookmarks, parameters);
+                                                });
+                                            }
+                                            failure:^(NSError *error) {
+                                                BookmarksFailureBlock(error);
+                                            }];
+                    });
                 }
                 else {
                     kPinboardSyncInProgress = NO;
@@ -1094,10 +1095,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSArray *words = [value componentsSeparatedByString:@" "];
                     NSMutableArray *wordsWithWildcards = [NSMutableArray array];
                     for (NSString *word in words) {
-                        if ([word hasSuffix:@"*"]) {
-                            [wordsWithWildcards addObject:word];
-                        }
-                        else if ([@[@"AND", @"OR", @"NOT"] containsObject:word]) {
+                        if ([word hasSuffix:@"*"] || [@[@"AND", @"OR", @"NOT"] containsObject:word]) {
                             [wordsWithWildcards addObject:word];
                         }
                         else {

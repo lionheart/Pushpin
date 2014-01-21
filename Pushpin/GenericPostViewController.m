@@ -261,6 +261,7 @@ static NSInteger kToolbarHeight = 44;
 
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[FeedListViewController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+        self.navigationItem.accessibilityLabel = @"Back";
 
         __weak id weakself = self;
         self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
