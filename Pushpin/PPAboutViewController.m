@@ -48,7 +48,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)viewDidLoad {
