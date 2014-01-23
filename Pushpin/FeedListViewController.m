@@ -399,9 +399,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }
 
         [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
-         
-        if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
-            [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+        
+        if ([viewControllerToPush respondsToSelector:@selector(postDataSource)]) {
+            if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
+                [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+            }
         }
         
         UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
