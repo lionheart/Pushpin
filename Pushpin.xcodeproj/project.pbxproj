@@ -626,7 +626,7 @@
 		3751D18118346C0200E0A42A /* mobilized@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilized@2x.png"; path = "Assets/mobilized@2x.png"; sourceTree = "<group>"; };
 		3751D18618346EED00E0A42A /* mobilized-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilized-active.png"; path = "Assets/mobilized-active.png"; sourceTree = "<group>"; };
 		3751D18718346EED00E0A42A /* mobilized-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilized-active@2x.png"; path = "Assets/mobilized-active@2x.png"; sourceTree = "<group>"; };
-		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Pushpin.entitlements; path = ../Pushpin.entitlements; sourceTree = "<group>"; };
+		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Pushpin.entitlements; sourceTree = SOURCE_ROOT; };
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
 		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; };
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -1429,6 +1429,29 @@
 			name = "Table View Cells";
 			sourceTree = "<group>";
 		};
+		376ABBBD189588F100132CFF /* Info Dictionaries */ = {
+			isa = PBXGroup;
+			children = (
+				372F8886167429DA0073D0B6 /* Beta-Info.plist */,
+				372F8887167429DA0073D0B6 /* Dev-Info.plist */,
+				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
+				370935481894BF6100E3588E /* DeliciousDebug.plist */,
+				370935461894BF4F00E3588E /* DeliciousBeta.plist */,
+				379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */,
+			);
+			name = "Info Dictionaries";
+			sourceTree = "<group>";
+		};
+		376ABBBE1895892300132CFF /* Entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				37561D8816ADFEC400D69CDE /* Pushpin.entitlements */,
+				37DF2CC116C4B80600CFCA81 /* Dev.entitlements */,
+				37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */,
+			);
+			name = Entitlements;
+			sourceTree = "<group>";
+		};
 		378482CD186C965700DF7A74 /* Activities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1527,6 +1550,8 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				376ABBBE1895892300132CFF /* Entitlements */,
+				376ABBBD189588F100132CFF /* Info Dictionaries */,
 				37516A03186C8AE200AEF7A6 /* Table View Cells */,
 				37405C18186152F70052213A /* View Controllers */,
 				37405C1418614FF50052213A /* Categories */,
@@ -1584,15 +1609,6 @@
 			children = (
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
-				37561D8816ADFEC400D69CDE /* Pushpin.entitlements */,
-				37DF2CC116C4B80600CFCA81 /* Dev.entitlements */,
-				37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */,
-				372F8886167429DA0073D0B6 /* Beta-Info.plist */,
-				372F8887167429DA0073D0B6 /* Dev-Info.plist */,
-				37FEEB9A15745488003F2B77 /* Pushpin for Pinboard-Info.plist */,
-				370935481894BF6100E3588E /* DeliciousDebug.plist */,
-				370935461894BF4F00E3588E /* DeliciousBeta.plist */,
-				379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */,
 				37FEEB9E15745488003F2B77 /* main.m */,
 				37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */,
 			);
