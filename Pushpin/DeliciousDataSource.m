@@ -38,10 +38,9 @@ static BOOL kPinboardSyncInProgress = NO;
         self.posts = [NSMutableArray array];
         
         self.tags = @[];
-        self.untagged = kPinboardFilterNone;
-        self.isPrivate = kPinboardFilterNone;
-        self.unread = kPinboardFilterNone;
-        self.starred = kPinboardFilterNone;
+        self.untagged = kPushpinFilterNone;
+        self.isPrivate = kPushpinFilterNone;
+        self.unread = kPushpinFilterNone;
         self.offset = 0;
         self.limit = 50;
         self.orderBy = @"created_at DESC";
@@ -66,22 +65,17 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
-    kPinboardFilterType isPrivate = kPinboardFilterNone;
+    kPushpinFilterType isPrivate = kPushpinFilterNone;
     if (parameters[@"private"]) {
         isPrivate = [parameters[@"private"] boolValue];
     }
     
-    kPinboardFilterType unread = kPinboardFilterNone;
+    kPushpinFilterType unread = kPushpinFilterNone;
     if (parameters[@"unread"]) {
         unread = [parameters[@"unread"] boolValue];
     }
     
-    kPinboardFilterType starred = kPinboardFilterNone;
-    if (parameters[@"starred"]) {
-        starred = [parameters[@"starred"] boolValue];
-    }
-    
-    kPinboardFilterType untagged = kPinboardFilterNone;
+    kPushpinFilterType untagged = kPushpinFilterNone;
     if (parameters[@"tagged"]) {
         untagged = ![parameters[@"tagged"] boolValue];
     }
@@ -89,12 +83,13 @@ static BOOL kPinboardSyncInProgress = NO;
     NSArray *tags = parameters[@"tags"];
     NSInteger offset = [parameters[@"offset"] integerValue];
     NSInteger limit = [parameters[@"limit"] integerValue];
-    
-    [self filterByUnread:unread
-                untagged:untagged
-                    tags:tags
-                  offset:offset
-                   limit:limit];
+
+    [self filterByPrivate:isPrivate
+                 isUnread:unread
+                 untagged:untagged
+                     tags:tags
+                   offset:offset
+                    limit:limit];
 }
 
 - (void)filterWithQuery:(NSString *)query {
@@ -170,13 +165,15 @@ static BOOL kPinboardSyncInProgress = NO;
     return dataSource;
 }
 
-- (void)filterByUnread:(kPinboardFilterType)isUnread
-              untagged:(kPinboardFilterType)untagged
-                  tags:(NSArray *)tags
-                offset:(NSInteger)offset
-                 limit:(NSInteger)limit {
+- (void)filterByPrivate:(kPushpinFilterType)isPrivate
+               isUnread:(kPushpinFilterType)isUnread
+               untagged:(kPushpinFilterType)untagged
+                   tags:(NSArray *)tags
+                 offset:(NSInteger)offset
+                  limit:(NSInteger)limit {
     self.limit = limit;
     self.untagged = untagged;
+    self.isPrivate = isPrivate;
     self.unread = isUnread;
     self.tags = tags;
     self.offset = offset;
@@ -357,8 +354,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 
                 NSString *hash = post[@"hash"];
                 NSString *meta = post[@"meta"];
-                
+
                 NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSArray *tagList = [postTags componentsSeparatedByString:@" "];
                 NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
@@ -378,8 +376,8 @@ static BOOL kPinboardSyncInProgress = NO;
                                @"meta": meta,
                                @"hash": hash,
                                @"tags": postTags,
-                               @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                               @"unread": @([tagList containsObject:@"toread"]),
+                               @"private": @([post[@"private"] isEqualToString:@"yes"]),
                                @"created_at": date
                                };
                     
@@ -399,9 +397,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                    @"meta": meta,
                                    @"hash": hash,
                                    @"tags": postTags,
-                                   @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                   @"private": @([post[@"shared"] isEqualToString:@"no"])
-                                   };
+                                   @"unread": @([tagList containsObject:@"toread"]),
+                                   @"private": @([post[@"private"] isEqualToString:@"yes"]),
+                               };
                         
                         // Update this bookmark
                         [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
@@ -458,7 +456,6 @@ static BOOL kPinboardSyncInProgress = NO;
             progress(total, total);
             
             [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
-            [self updateStarredPostsWithSuccess:success failure:nil];
         };
         
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -502,7 +499,6 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 else {
                     kPinboardSyncInProgress = NO;
-                    [self updateStarredPostsWithSuccess:success failure:nil];
                 }
             });
         };
@@ -514,82 +510,6 @@ static BOOL kPinboardSyncInProgress = NO;
     else {
         failure([NSError errorWithDomain:DeliciousDataSourceErrorDomain code:kPinboardSyncInProgress userInfo:nil]);
     }
-}
-
-- (void)updateStarredPostsWithSuccess:(void (^)())success failure:(void (^)())failure {
-    void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSMutableArray *oldURLs = [NSMutableArray array];
-            NSUInteger index = 0;
-            NSUInteger offset = 0;
-            BOOL postFound = NO;
-            NSString *url;
-            
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-            [db open];
-            [db beginTransaction];
-            
-            FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1 ORDER BY created_at DESC"];
-            while ([results next]) {
-                url = [results stringForColumnIndex:0];
-                [oldURLs addObject:url];
-            }
-            
-            for (NSDictionary *post in posts) {
-                postFound = NO;
-                url = post[@"u"];
-                
-                for (NSInteger i=offset; i<oldURLs.count - offset; i++) {
-                    if ([oldURLs[i] isEqualToString:url]) {
-                        // Delete all posts that were skipped
-                        for (NSInteger j=offset; j<i; j++) {
-                            [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
-                        }
-                        
-                        offset = i - 1;
-                        postFound = YES;
-                        break;
-                    }
-                }
-                
-                if (!postFound && ![oldURLs containsObject:url]) {
-                    [db executeUpdate:@"UPDATE bookmark SET starred=1, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
-                }
-                
-                index++;
-            }
-            [db commit];
-            [db close];
-            
-            success();
-        });
-    };
-    
-    if (!failure) {
-        failure = ^{};
-    }
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-        NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
-        NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
-        AppDelegate *delegate = [AppDelegate sharedDelegate];
-        [delegate setNetworkActivityIndicatorVisible:YES];
-        
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [delegate setNetworkActivityIndicatorVisible:NO];
-                                   if (error) {
-                                       failure(error);
-                                   }
-                                   else {
-                                       NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       BookmarksSuccessBlock(posts, nil);
-                                   }
-                               }];
-    });
 }
 
 - (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
@@ -720,10 +640,6 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self generateQueryAndParameters:HandleSearch];
     });
-}
-
-- (BOOL)isPostAtIndexStarred:(NSInteger)index {
-    return [self.posts[index][@"starred"] boolValue];
 }
 
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index {
@@ -1069,17 +985,17 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     
     switch (self.untagged) {
-        case kPinboardFilterFalse:
+        case kPushpinFilterFalse:
             [whereComponents addObject:@"bookmark.tags != ?"];
             [parameters addObject:@""];
             break;
             
-        case kPinboardFilterTrue:
+        case kPushpinFilterTrue:
             [whereComponents addObject:@"bookmark.tags = ?"];
             [parameters addObject:@""];
             break;
             
-        case kPinboardFilterNone:
+        case kPushpinFilterNone:
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
                 for (NSString *tag in self.tags) {
@@ -1090,7 +1006,7 @@ static BOOL kPinboardSyncInProgress = NO;
             break;
     }
     
-    if (self.unread != kPinboardFilterNone) {
+    if (self.unread != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.unread = ?"];
         [parameters addObject:@(self.unread)];
     }
@@ -1133,11 +1049,11 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)searchPlaceholder {
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         return @"Search Unread";
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return @"Search Untagged";
     }
     
@@ -1145,11 +1061,11 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (UIColor *)barTintColor {
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         return HEX(0xEF6034FF);
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return HEX(0xACB3BBFF);
     }
     
@@ -1157,15 +1073,23 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)title {
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.isPrivate == kPushpinFilterTrue) {
+        return NSLocalizedString(@"Private Bookmarks", nil);
+    }
+    
+    if (self.isPrivate == kPushpinFilterFalse) {
+        return NSLocalizedString(@"Public", nil);
+    }
+
+    if (self.unread == kPushpinFilterTrue) {
         return NSLocalizedString(@"Unread", nil);
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return NSLocalizedString(@"Untagged", nil);
     }
     
-    if (self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+    if (self.isPrivate == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
         return NSLocalizedString(@"All Bookmarks", nil);
     }
     
@@ -1175,15 +1099,23 @@ static BOOL kPinboardSyncInProgress = NO;
 - (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate {
     PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:delegate];
     
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.isPrivate == kPushpinFilterTrue) {
+        [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
+    }
+    
+    if (self.isPrivate == kPushpinFilterFalse) {
+        [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
+    }
+
+    if (self.unread == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
     }
     
-    if (self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+    if (self.isPrivate == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
         [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
     }
     

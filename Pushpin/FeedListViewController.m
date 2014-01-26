@@ -23,6 +23,7 @@
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
+#import "DeliciousDataSource.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -62,7 +63,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
 
+#ifdef DELICIOUS
+    self.bookmarkCounts = [@[@"", @"", @""] mutableCopy];
+#else
     self.bookmarkCounts = [@[@"", @"", @"", @"", @"", @""] mutableCopy];
+#endif
 
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
@@ -127,6 +132,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
+        
+#ifdef DELICIOUS
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"]
+                                ];
+#else
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
@@ -135,6 +148,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
                                 ];
+#endif
         
         NSInteger i = 0;
         for (FMResultSet *resultSet in resultSets) {
@@ -163,11 +177,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+#ifdef DELICIOUS
+    return PPProviderDeliciousSections;
+#else
+    return PPProviderPinboardSections;
+#endif
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+#ifdef DELICIOUS
+    return PPDeliciousPersonalRows;
+#else
+    switch ((PPPinboardSectionType)section) {
+        case PPPinboardSectionPersonal:
+            return PPPinboardPersonalRows;
+
+        case PPPinboardSectionCommunity:
+            return PPPinboardCommunityRows;
+    }
+#endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -192,35 +220,35 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSString *badgeCount;
     switch (indexPath.section) {
         case 0: {
-            PPPersonalFeedType feedType = (PPPersonalFeedType)indexPath.row;
+            PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)indexPath.row;
             badgeCount = self.bookmarkCounts[feedType];
             switch (feedType) {
-                case PPPersonalFeedAll:
+                case PPPinboardPersonalFeedAll:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-all"];
                     break;
 
-                case PPPersonalFeedPrivate:
+                case PPPinboardPersonalFeedPrivate:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-private"];
                     break;
 
-                case PPPersonalFeedPublic:
+                case PPPinboardPersonalFeedPublic:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-public"];
                     break;
 
-                case PPPersonalFeedUnread:
+                case PPPinboardPersonalFeedUnread:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-unread"];
                     break;
 
-                case PPPersonalFeedUntagged:
+                case PPPinboardPersonalFeedUntagged:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-untagged"];
                     break;
 
-                case PPPersonalFeedStarred:
+                case PPPinboardPersonalFeedStarred:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-starred"];
                     break;
@@ -233,30 +261,30 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         case 1: {
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            PPCommunityFeedType feedType = (PPCommunityFeedType)indexPath.row;
+            PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)indexPath.row;
 
             switch (feedType) {
-                case PPCommunityFeedNetwork:
+                case PPPinboardCommunityFeedNetwork:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-network"];
                     break;
 
-                case PPCommunityFeedPopular:
+                case PPPinboardCommunityFeedPopular:
                     cell.textLabel.text = NSLocalizedString(@"Popular", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
                     break;
 
-                case PPCommunityFeedWikipedia:
+                case PPPinboardCommunityFeedWikipedia:
                     cell.textLabel.text = @"Wikipedia";
                     cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
                     break;
 
-                case PPCommunityFeedFandom:
+                case PPPinboardCommunityFeedFandom:
                     cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
                     break;
 
-                case PPCommunityFeedJapan:
+                case PPPinboardCommunityFeedJapan:
                     cell.textLabel.text = @"日本語";
                     cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
                     break;
@@ -283,39 +311,80 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     UIViewController *viewControllerToPush;
 
-    switch (indexPath.section) {
-        case 0: {
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)indexPath.section) {
+        case PPDeliciousSectionPersonal: {
+            DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+            dataSource.limit = 100;
+
+            PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
+
+            switch (feedType) {
+                case PPDeliciousPersonalFeedAll:
+                    [mixpanel track:@"Browsed all bookmarks"];
+                    break;
+                    
+                case PPPinboardPersonalFeedPrivate:
+                    dataSource.isPrivate = YES;
+                    [mixpanel track:@"Browsed private bookmarks"];
+                    break;
+                    
+                case PPPinboardPersonalFeedPublic:
+                    dataSource.isPrivate = NO;
+                    [mixpanel track:@"Browsed public bookmarks"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedUnread:
+                    dataSource.unread = YES;
+                    [mixpanel track:@"Browsed unread bookmarks"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedUntagged:
+                    dataSource.untagged = YES;
+                    [mixpanel track:@"Browsed untagged bookmarks"];
+                    break;
+            }
+            
+            postViewController.postDataSource = dataSource;
+            // Can we just use self.navigationController instead?
+            viewControllerToPush = postViewController;
+            break;
+        }
+    }
+#else
+    switch ((PPPinboardSectionType)indexPath.section) {
+        case PPPinboardSectionPersonal: {
             PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
             dataSource.limit = 100;
             
-            PPPersonalFeedType feedType = (PPPersonalFeedType)indexPath.row;
+            PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)indexPath.row;
 
             switch (feedType) {
-                case PPPersonalFeedAll:
+                case PPPinboardPersonalFeedAll:
                     [mixpanel track:@"Browsed all bookmarks"];
                     break;
 
-                case PPPersonalFeedPrivate:
+                case PPPinboardPersonalFeedPrivate:
                     dataSource.isPrivate = YES;
                     [mixpanel track:@"Browsed private bookmarks"];
                     break;
 
-                case PPPersonalFeedPublic:
+                case PPPinboardPersonalFeedPublic:
                     dataSource.isPrivate = NO;
                     [mixpanel track:@"Browsed public bookmarks"];
                     break;
 
-                case PPPersonalFeedUnread:
+                case PPPinboardPersonalFeedUnread:
                     dataSource.unread = YES;
                     [mixpanel track:@"Browsed unread bookmarks"];
                     break;
 
-                case PPPersonalFeedUntagged:
+                case PPPinboardPersonalFeedUntagged:
                     dataSource.untagged = YES;
                     [mixpanel track:@"Browsed untagged bookmarks"];
                     break;
 
-                case PPPersonalFeedStarred:
+                case PPPinboardPersonalFeedStarred:
                     dataSource.starred = YES;
                     [mixpanel track:@"Browsed starred bookmarks"];
                     break;
@@ -326,7 +395,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             viewControllerToPush = postViewController;
             break;
         }
-        case 1: {
+        case PPPinboardSectionCommunity: {
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
             postViewController.postDataSource = feedDataSource;
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -335,10 +404,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
             }
             else {
-                PPCommunityFeedType feedType = (PPCommunityFeedType)indexPath.row;
+                PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)indexPath.row;
 
                 switch (feedType) {
-                    case PPCommunityFeedNetwork: {
+                    case PPPinboardCommunityFeedNetwork: {
                         NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                         NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                         feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
@@ -346,25 +415,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         break;
                     }
 
-                    case PPCommunityFeedPopular: {
+                    case PPPinboardCommunityFeedPopular: {
                         feedDataSource.components = @[@"popular?count=100"];
                         [mixpanel track:@"Browsed popular bookmarks"];
                         break;
                     }
 
-                    case PPCommunityFeedWikipedia: {
+                    case PPPinboardCommunityFeedWikipedia: {
                         feedDataSource.components = @[@"popular", @"wikipedia"];
                         [mixpanel track:@"Browsed wikipedia bookmarks"];
                         break;
                     }
 
-                    case PPCommunityFeedFandom: {
+                    case PPPinboardCommunityFeedFandom: {
                         feedDataSource.components = @[@"popular", @"fandom"];
                         [mixpanel track:@"Browsed fandom bookmarks"];
                         break;
                     }
 
-                    case PPCommunityFeedJapan: {
+                    case PPPinboardCommunityFeedJapan: {
                         feedDataSource.components = @[@"popular", @"japanese"];
                         [mixpanel track:@"Browsed 日本語 bookmarks"];
                         break;
@@ -387,6 +456,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
         }
     }
+#endif
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {

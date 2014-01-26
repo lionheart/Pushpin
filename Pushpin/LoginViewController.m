@@ -15,6 +15,7 @@
 #import "PPNavigationController.h"
 #import "ASStyleSheet.h"
 #import "PPTableViewTitleView.h"
+#import "DeliciousDataSource.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
@@ -22,6 +23,7 @@
 #import <LHSCategoryCollection/NSData+Base64.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
+#import <LHDelicious/LHDelicious.h>
 
 @interface LoginViewController ()
 
@@ -173,73 +175,137 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [self.tableView endUpdates];
             }
             
+            void (^LoginSuccessBlock)() = ^{
+                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
+                self.textView.hidden = NO;
+                
+                self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
+                
+                self.progressView.hidden = NO;
+                
+                [CATransaction begin];
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView endUpdates];
+                
+                [CATransaction setCompletionBlock:^{
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                }];
+                [CATransaction begin];
+            };
+            
+            void (^LoginFailureBlock)(NSError *) = ^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    switch (error.code) {
+                        case PinboardErrorInvalidCredentials: {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                            [alert show];
+                            [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                            break;
+                        }
+                            
+                        case PinboardErrorTimeout: {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                            [alert show];
+                            [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                            break;
+                        }
+                    }
+                    
+                    [self resetLoginScreen];
+                    
+                    if ([self is1PasswordAvailable]) {
+                        [self.tableView beginUpdates];
+                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    }
+                });
+            };
+            
+            void (^UpdateProgressBlock)(NSInteger, NSInteger) = ^(NSInteger current, NSInteger total) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (total == current) {
+                        [self.messageUpdateTimer invalidate];
+                        self.activityIndicator.frame = self.activityIndicatorFrameTop;
+                        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
+                    }
+                    else {
+                        CGFloat f = current / (float)total;
+                        [self.progressView setProgress:f animated:YES];
+                    }
+                });
+            };
+            
+            void (^SyncCompletedBlock)() = ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.messageUpdateTimer invalidate];
+                    
+                    if ([UIApplication isIPad]) {
+                        [delegate.window setRootViewController:delegate.splitViewController];
+                    }
+                    else {
+                        delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                        [self presentViewController:delegate.navigationController
+                                           animated:YES
+                                         completion:nil];
+                    }
+                });
+            };
+
+#ifdef DELICIOUS
+            LHDelicious *delicious = [LHDelicious sharedInstance];
+            [delicious authenticateWithUsername:self.usernameTextField.text
+                                       password:self.passwordTextField.text
+                                        success:^(NSString *username) {
+                                            self.loginInProgress = NO;
+                                            delegate.username = username;
+                                            
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                LoginSuccessBlock();
+                                                
+                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+                                                    
+                                                    [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
+                                                                                   failure:nil
+                                                                                  progress:UpdateProgressBlock
+                                                                                   options:@{@"count": @(-1)}];
+
+                                                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                    [mixpanel identify:delegate.username];
+                                                    [mixpanel.people set:@"$created" to:[NSDate date]];
+                                                    [mixpanel.people set:@"$username" to:[delegate username]];
+                                                    [mixpanel.people set:@"Browser" to:@"Webview"];
+                                                });
+                                            });
+                                        }
+                                        failure:LoginFailureBlock];
+#else
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:self.usernameTextField.text
                                       password:self.passwordTextField.text
                                        success:^(NSString *token) {
                                            self.loginInProgress = NO;
                                            delegate.password = self.passwordTextField.text;
-
+                                           
                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                               self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
-                                               self.textView.hidden = NO;
-
-                                               self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
-                                               [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
-                                               
-                                               self.progressView.hidden = NO;
-                                               
-                                               [CATransaction begin];
-                                               [self.tableView beginUpdates];
-                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0]]
-                                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
-                                               [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]]
-                                                                     withRowAnimation:UITableViewRowAnimationAutomatic];
-                                               [self.tableView endUpdates];
-                                               
-                                               [CATransaction setCompletionBlock:^{
-                                                   [self.tableView beginUpdates];
-                                                   [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView endUpdates];
-                                               }];
-                                               [CATransaction begin];
+                                               LoginSuccessBlock();
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    [delegate setToken:token];
                                                    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-                                                   
-                                                   [dataSource updateBookmarksWithSuccess:^{
-                                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                                           [self.messageUpdateTimer invalidate];
 
-                                                           if ([UIApplication isIPad]) {
-                                                               [delegate.window setRootViewController:delegate.splitViewController];
-                                                           }
-                                                           else {
-                                                               delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                                               [self presentViewController:delegate.navigationController
-                                                                                  animated:YES
-                                                                                completion:nil];
-                                                           }
-                                                       });
-                                                   }
+                                                   [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
                                                                                   failure:nil
-                                                                                 progress:^(NSInteger current, NSInteger total) {
-                                                                                     
-                                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                         if (total == current) {
-                                                                                             [self.messageUpdateTimer invalidate];
-                                                                                             self.activityIndicator.frame = self.activityIndicatorFrameTop;
-                                                                                             self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
-                                                                                         }
-                                                                                         else {
-                                                                                             CGFloat f = current / (float)total;
-                                                                                             [self.progressView setProgress:f animated:YES];
-                                                                                         }
-                                                                                     });
-                                                                                 }
+                                                                                 progress:UpdateProgressBlock
                                                                                   options:@{@"count": @(-1)}];
-                                                   
+
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                                        [delegate setFeedToken:feedToken];
                                                    }];
@@ -252,33 +318,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                });
                                            });
                                        }
-                                       failure:^(NSError *error) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               switch (error.code) {
-                                                   case PinboardErrorInvalidCredentials: {
-                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                       [alert show];
-                                                       [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                                                       break;
-                                                   }
-                                                       
-                                                   case PinboardErrorTimeout: {
-                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                                       [alert show];
-                                                       [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                                                       break;
-                                                   }
-                                               }
-
-                                               [self resetLoginScreen];
-                                               
-                                               if ([self is1PasswordAvailable]) {
-                                                   [self.tableView beginUpdates];
-                                                   [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView endUpdates];
-                                               }
-                                           });
-                                       }];
+                                       failure:LoginFailureBlock];
+#endif
         });
     }
 }

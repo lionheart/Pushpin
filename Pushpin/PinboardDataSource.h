@@ -35,12 +35,12 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 #pragma mark Query
 
-@property (nonatomic) kPinboardFilterType untagged;
-@property (nonatomic) kPinboardFilterType starred;
-@property (nonatomic) kPinboardFilterType unread;
+@property (nonatomic) kPushpinFilterType untagged;
+@property (nonatomic) kPushpinFilterType starred;
+@property (nonatomic) kPushpinFilterType unread;
 
 // private is a protected word in Objective-C
-@property (nonatomic) kPinboardFilterType isPrivate;
+@property (nonatomic) kPushpinFilterType isPrivate;
 
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic) NSInteger offset;
@@ -53,10 +53,10 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
-- (void)filterByPrivate:(kPinboardFilterType)isPrivate
-               isUnread:(kPinboardFilterType)isUnread
-              isStarred:(kPinboardFilterType)starred
-               untagged:(kPinboardFilterType)untagged
+- (void)filterByPrivate:(kPushpinFilterType)isPrivate
+               isUnread:(kPushpinFilterType)isUnread
+              isStarred:(kPushpinFilterType)starred
+               untagged:(kPushpinFilterType)untagged
                    tags:(NSArray *)tags
                  offset:(NSInteger)offset
                   limit:(NSInteger)limit;
