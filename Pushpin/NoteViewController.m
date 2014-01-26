@@ -9,7 +9,7 @@
 #import "NoteViewController.h"
 #import "AppDelegate.h"
 
-#import <ASPinboard/ASPinboard.h>
+#import <ASPinboard.h>
 
 @interface NoteViewController ()
 
