@@ -6,10 +6,17 @@
 	<dict>
 		<key>Pushpin App Store.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>Pushpin for Delicious.xcscheme</key>
+		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
-		<key>Pushpin Beta.xcscheme</key>
+		<key>Pushpin for Pinboard.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>

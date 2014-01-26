@@ -7,7 +7,6 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-#import <ASPinboard/ASPinboard.h>
 
 #import "AppDelegate.h"
 #import "NoteViewController.h"
@@ -31,6 +30,7 @@
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
 
+#import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
 #import <Reachability/Reachability.h>
@@ -585,6 +585,80 @@
 
     FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
 
+#ifdef DELICIOUS
+    if ([s next]) {
+        int version = [s intForColumnIndex:0];
+        [db beginTransaction];
+
+        switch (version) {
+            case 0:
+                [db executeUpdate:
+                 @"CREATE TABLE feeds("
+                     "components TEXT UNIQUE,"
+                     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+                 ");"];
+                
+                [db executeUpdate:
+                 @"CREATE TABLE rejected_bookmark("
+                     "url TEXT UNIQUE CHECK(length(url) < 2000),"
+                     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+                 ");"];
+                [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
+
+                [db executeUpdate:
+                 @"CREATE TABLE bookmark("
+                     "title TEXT,"
+                     "description TEXT,"
+                     "tags TEXT,"
+                     "url TEXT,"
+                     "count INTEGER,"
+                     "unread BOOL,"
+                     "hash VARCHAR(32) UNIQUE,"
+                     "meta VARCHAR(32),"
+                     "created_at DATETIME"
+                 ");" ];
+
+                [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];
+                [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
+
+                [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
+                [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
+
+                // Tagging
+                [db executeUpdate:
+                 @"CREATE TABLE tag("
+                     "name TEXT UNIQUE,"
+                     "count INTEGER"
+                 ");" ];
+
+                [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
+
+                [db executeUpdate:
+                 @"CREATE TABLE tagging("
+                     "tag_name TEXT,"
+                     "bookmark_hash TEXT"
+                 ");" ];
+
+                [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
+                [db executeUpdate:@"CREATE INDEX tagging_bookmark_hash_idx ON tagging (bookmark_hash);"];
+                
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (name) VALUES(new.name); END;"];
+                [db executeUpdate:@"CREATE TRIGGER tag_fts_delete_trigger AFTER DELETE ON tag BEGIN DELETE FROM tag_fts WHERE name=old.name; END;"];
+
+                [db executeUpdate:@"PRAGMA user_version=1;"];
+                
+            default:
+                break;
+        }
+        [db commit];
+    }
+#else
     if ([s next]) {
         int version = [s intForColumnIndex:0];
         [db beginTransaction];
@@ -788,6 +862,7 @@
         }
         [db commit];
     }
+#endif
     
     [db close];
 }
