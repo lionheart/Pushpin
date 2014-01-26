@@ -37,12 +37,11 @@ static NSString *DeliciousDataSourceErrorDomain __unused = @"DeliciousDataSource
 
 #pragma mark Query
 
-@property (nonatomic) kPinboardFilterType untagged;
-@property (nonatomic) kPinboardFilterType starred;
-@property (nonatomic) kPinboardFilterType unread;
+@property (nonatomic) kPushpinFilterType untagged;
+@property (nonatomic) kPushpinFilterType unread;
 
 // private is a protected word in Objective-C
-@property (nonatomic) kPinboardFilterType isPrivate;
+@property (nonatomic) kPushpinFilterType isPrivate;
 
 @property (nonatomic, strong) NSArray *tags;
 @property (nonatomic) NSInteger offset;
@@ -52,11 +51,12 @@ static NSString *DeliciousDataSourceErrorDomain __unused = @"DeliciousDataSource
 
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
-- (void)filterByUnread:(kPinboardFilterType)isUnread
-              untagged:(kPinboardFilterType)untagged
-                  tags:(NSArray *)tags
-                offset:(NSInteger)offset
-                 limit:(NSInteger)limit;
+- (void)filterByPrivate:(kPushpinFilterType)isPrivate
+               isUnread:(kPushpinFilterType)isUnread
+               untagged:(kPushpinFilterType)untagged
+                   tags:(NSArray *)tags
+                 offset:(NSInteger)offset
+                  limit:(NSInteger)limit;
 
 - (DeliciousDataSource *)searchDataSource;
 - (DeliciousDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;

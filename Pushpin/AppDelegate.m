@@ -29,7 +29,9 @@
 #import "PPMobilizerUtility.h"
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
+#import "DeliciousDataSource.h"
 
+#import <LHDelicious/LHDelicious.h>
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -70,15 +72,21 @@
 @synthesize doubleTapToEdit = _doubleTapToEdit;
 
 + (NSString *)databasePath {
+#ifdef DELICIOUS
+    NSString *pathComponent = @"/delicious.db";
+#else
+    NSString *pathComponent = @"/pinboard.db";
+#endif
+
 #if TARGET_IPHONE_SIMULATOR
-    return @"/tmp/pinboard.db";
+    return [@"/tmp" stringByAppendingString:pathComponent];
 #else
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     if (paths.count > 0) {
-        return [paths[0] stringByAppendingPathComponent:@"/pinboard.db"];
+        return [paths[0] stringByAppendingPathComponent:pathComponent];
     }
     else {
-        return @"/pinboard.db";
+        return pathComponent;
     }
 #endif
 }
@@ -349,10 +357,6 @@
 
 - (PPSplitViewController *)splitViewController {
     if (!_splitViewController) {
-        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-        pinboardDataSource.limit = 100;
-        pinboardDataSource.orderBy = @"created_at DESC";
-
         PPNavigationController *feedNavigationController = [[PPNavigationController alloc] initWithRootViewController:self.feedListViewController];
 
         _splitViewController = [[PPSplitViewController alloc] init];
@@ -371,6 +375,25 @@
 
 - (PPNavigationController *)navigationController {
     if (!_navigationController) {
+#ifdef DELICIOUS
+        DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
+        deliciousDataSource.limit = 100;
+        deliciousDataSource.orderBy = @"created_at DESC";
+        
+        GenericPostViewController *deliciousViewController = [[GenericPostViewController alloc] init];
+        deliciousViewController.postDataSource = deliciousDataSource;
+
+        _navigationController = [[PPNavigationController alloc] init];
+        
+        if ([UIApplication isIPad]) {
+            _navigationController.viewControllers = @[deliciousViewController];
+        }
+        else {
+            _navigationController.viewControllers = @[self.feedListViewController, deliciousViewController];
+        }
+        
+        [_navigationController popToViewController:deliciousViewController animated:NO];
+#else
         PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
@@ -383,29 +406,28 @@
         NSString *feedDetails;
         if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
             feedDetails = [self.defaultFeed substringFromIndex:9];
-            pinboardDataSource.limit = 100;
             
-            PPPersonalFeedType feedType = [PPPersonalFeeds() indexOfObject:feedDetails];
+            PPPinboardPersonalFeedType feedType = [PPPinboardPersonalFeeds() indexOfObject:feedDetails];
             
             switch (feedType) {
-                case PPPersonalFeedPrivate:
-                    pinboardDataSource.isPrivate = kPinboardFilterTrue;
+                case PPPinboardPersonalFeedPrivate:
+                    pinboardDataSource.isPrivate = kPushpinFilterTrue;
                     break;
                     
-                case PPPersonalFeedPublic:
-                    pinboardDataSource.isPrivate = kPinboardFilterFalse;
+                case PPPinboardPersonalFeedPublic:
+                    pinboardDataSource.isPrivate = kPushpinFilterFalse;
                     break;
                     
-                case PPPersonalFeedUnread:
-                    pinboardDataSource.unread = kPinboardFilterTrue;
+                case PPPinboardPersonalFeedUnread:
+                    pinboardDataSource.unread = kPushpinFilterTrue;
                     break;
                     
-                case PPPersonalFeedUntagged:
+                case PPPinboardPersonalFeedUntagged:
                     pinboardDataSource.untagged = YES;
                     break;
                     
-                case PPPersonalFeedStarred:
-                    pinboardDataSource.starred = kPinboardFilterTrue;
+                case PPPinboardPersonalFeedStarred:
+                    pinboardDataSource.starred = kPushpinFilterTrue;
                     break;
                     
                 default:
@@ -419,29 +441,29 @@
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
-            PPCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
+            PPPinboardCommunityFeedType feedType = [PPPinboardCommunityFeeds() indexOfObject:feedDetails];
             
             switch (feedType) {
-                case PPCommunityFeedNetwork: {
+                case PPPinboardCommunityFeedNetwork: {
                     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
                     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
                     feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
                     break;
                 }
                     
-                case PPCommunityFeedPopular:
+                case PPPinboardCommunityFeedPopular:
                     feedDataSource.components = @[@"popular?count=100"];
                     break;
                     
-                case PPCommunityFeedWikipedia:
+                case PPPinboardCommunityFeedWikipedia:
                     feedDataSource.components = @[@"popular", @"wikipedia"];
                     break;
                     
-                case PPCommunityFeedFandom:
+                case PPPinboardCommunityFeedFandom:
                     feedDataSource.components = @[@"popular", @"fandom"];
                     break;
                     
-                case PPCommunityFeedJapan:
+                case PPPinboardCommunityFeedJapan:
                     feedDataSource.components = @[@"popular", @"japanese"];
                     break;
                     
@@ -464,6 +486,7 @@
         }
 
         [_navigationController popToViewController:pinboardViewController animated:NO];
+#endif
     }
     return _navigationController;
 }
@@ -500,11 +523,15 @@
     self.window.backgroundColor = [UIColor whiteColor];
 
     [self customizeUIElements];
-
-    [TestFlight takeOff:@"575d650a-43d5-4e99-a3bb-2b7bbae29a6c"];
+    [TestFlight takeOff:PPTestFlightToken];
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     
-    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:@"045e859e70632363c4809784b13c5e98"];
-    [[PocketAPI sharedAPI] setConsumerKey:@"11122-03068da9a8951bec2dcc93f3"];
+    if ([UIApplication isIPad]) {
+        [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPadToken];
+    }
+    else {
+        [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPhoneToken];
+    }
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{
@@ -531,6 +558,18 @@
     };
     [reach startNotifier];
     
+#ifdef DELICIOUS
+    LHDelicious *delicious = [LHDelicious sharedInstance];
+    [delicious setRequestCompletedCallback:^{
+        [self setNetworkActivityIndicatorVisible:NO];
+    }];
+
+    [delicious setRequestStartedCallback:^{
+        [self setNetworkActivityIndicatorVisible:NO];
+    }];
+#endif
+
+#ifdef PINBOARD
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
         [self setNetworkActivityIndicatorVisible:NO];
@@ -538,10 +577,13 @@
     [pinboard setRequestStartedCallback:^{
         [self setNetworkActivityIndicatorVisible:YES];
     }];
+#endif
 
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     if (self.token) {
+#ifdef PINBOARD
         [pinboard setToken:self.token];
+#endif
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
         
@@ -1176,7 +1218,11 @@
 }
 
 - (NSString *)username {
+#ifdef DELICIOUS
+    return _username;
+#else
     return [[[self token] componentsSeparatedByString:@":"] objectAtIndex:0];
+#endif
 }
 
 #pragma mark - Helpers

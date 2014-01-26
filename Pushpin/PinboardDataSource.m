@@ -46,10 +46,10 @@ static BOOL kPinboardSyncInProgress = NO;
         self.posts = [NSMutableArray array];
 
         self.tags = @[];
-        self.untagged = kPinboardFilterNone;
-        self.isPrivate = kPinboardFilterNone;
-        self.unread = kPinboardFilterNone;
-        self.starred = kPinboardFilterNone;
+        self.untagged = kPushpinFilterNone;
+        self.isPrivate = kPushpinFilterNone;
+        self.unread = kPushpinFilterNone;
+        self.starred = kPushpinFilterNone;
         self.offset = 0;
         self.limit = 50;
         self.orderBy = @"created_at DESC";
@@ -74,22 +74,22 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)filterWithParameters:(NSDictionary *)parameters {
-    kPinboardFilterType isPrivate = kPinboardFilterNone;
+    kPushpinFilterType isPrivate = kPushpinFilterNone;
     if (parameters[@"private"]) {
         isPrivate = [parameters[@"private"] boolValue];
     }
 
-    kPinboardFilterType unread = kPinboardFilterNone;
+    kPushpinFilterType unread = kPushpinFilterNone;
     if (parameters[@"unread"]) {
         unread = [parameters[@"unread"] boolValue];
     }
 
-    kPinboardFilterType starred = kPinboardFilterNone;
+    kPushpinFilterType starred = kPushpinFilterNone;
     if (parameters[@"starred"]) {
         starred = [parameters[@"starred"] boolValue];
     }
     
-    kPinboardFilterType untagged = kPinboardFilterNone;
+    kPushpinFilterType untagged = kPushpinFilterNone;
     if (parameters[@"tagged"]) {
         untagged = ![parameters[@"tagged"] boolValue];
     }
@@ -180,10 +180,10 @@ static BOOL kPinboardSyncInProgress = NO;
     return dataSource;
 }
 
-- (void)filterByPrivate:(kPinboardFilterType)isPrivate
-               isUnread:(kPinboardFilterType)isUnread
-              isStarred:(kPinboardFilterType)starred
-               untagged:(kPinboardFilterType)untagged
+- (void)filterByPrivate:(kPushpinFilterType)isPrivate
+               isUnread:(kPushpinFilterType)isUnread
+              isStarred:(kPushpinFilterType)starred
+               untagged:(kPushpinFilterType)untagged
                    tags:(NSArray *)tags
                  offset:(NSInteger)offset
                   limit:(NSInteger)limit {
@@ -1122,17 +1122,17 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     switch (self.untagged) {
-        case kPinboardFilterFalse:
+        case kPushpinFilterFalse:
             [whereComponents addObject:@"bookmark.tags != ?"];
             [parameters addObject:@""];
             break;
             
-        case kPinboardFilterTrue:
+        case kPushpinFilterTrue:
             [whereComponents addObject:@"bookmark.tags = ?"];
             [parameters addObject:@""];
             break;
             
-        case kPinboardFilterNone:
+        case kPushpinFilterNone:
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
                 for (NSString *tag in self.tags) {
@@ -1143,17 +1143,17 @@ static BOOL kPinboardSyncInProgress = NO;
             break;
     }
     
-    if (self.starred != kPinboardFilterNone) {
+    if (self.starred != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.starred = ?"];
         [parameters addObject:@(self.starred)];
     }
     
-    if (self.isPrivate != kPinboardFilterNone) {
+    if (self.isPrivate != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.private = ?"];
         [parameters addObject:@(self.isPrivate)];
     }
         
-    if (self.unread != kPinboardFilterNone) {
+    if (self.unread != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.unread = ?"];
         [parameters addObject:@(self.unread)];
     }
@@ -1198,23 +1198,23 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)searchPlaceholder {
-    if (self.isPrivate == kPinboardFilterTrue) {
+    if (self.isPrivate == kPushpinFilterTrue) {
         return @"Search Private";
     }
     
-    if (self.isPrivate == kPinboardFilterFalse) {
+    if (self.isPrivate == kPushpinFilterFalse) {
         return @"Search Public";
     }
     
-    if (self.starred == kPinboardFilterTrue) {
+    if (self.starred == kPushpinFilterTrue) {
         return @"Search Starred";
     }
     
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         return @"Search Unread";
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return @"Search Untagged";
     }
 
@@ -1222,26 +1222,26 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (UIColor *)barTintColor {
-    if (self.starred == kPinboardFilterTrue) {
+    if (self.starred == kPushpinFilterTrue) {
         return HEX(0x8361F4FF);
     }
     
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         return HEX(0xEF6034FF);
     }
     
     switch (self.isPrivate) {
-        case kPinboardFilterTrue:
+        case kPushpinFilterTrue:
             return HEX(0xFFAE46FF);
             
-        case kPinboardFilterFalse:
+        case kPushpinFilterFalse:
             return HEX(0x7BB839FF);
             
         default:
             break;
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return HEX(0xACB3BBFF);
     }
     
@@ -1249,27 +1249,27 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)title {
-    if (self.isPrivate == kPinboardFilterTrue) {
+    if (self.isPrivate == kPushpinFilterTrue) {
         return NSLocalizedString(@"Private Bookmarks", nil);
     }
     
-    if (self.isPrivate == kPinboardFilterFalse) {
+    if (self.isPrivate == kPushpinFilterFalse) {
         return NSLocalizedString(@"Public", nil);
     }
     
-    if (self.starred == kPinboardFilterTrue) {
+    if (self.starred == kPushpinFilterTrue) {
         return NSLocalizedString(@"Starred", nil);
     }
     
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         return NSLocalizedString(@"Unread", nil);
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         return NSLocalizedString(@"Untagged", nil);
     }
     
-    if (self.isPrivate == kPinboardFilterNone && self.starred == kPinboardFilterNone && self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+    if (self.isPrivate == kPushpinFilterNone && self.starred == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
         return NSLocalizedString(@"All Bookmarks", nil);
     }
     
@@ -1279,27 +1279,27 @@ static BOOL kPinboardSyncInProgress = NO;
 - (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate {
     PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:delegate];
 
-    if (self.isPrivate == kPinboardFilterTrue) {
+    if (self.isPrivate == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
     }
     
-    if (self.isPrivate == kPinboardFilterFalse) {
+    if (self.isPrivate == kPushpinFilterFalse) {
         [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
     }
     
-    if (self.starred == kPinboardFilterTrue) {
+    if (self.starred == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Starred", nil) imageName:@"navigation-starred"];
     }
     
-    if (self.unread == kPinboardFilterTrue) {
+    if (self.unread == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
     }
     
-    if (self.untagged == kPinboardFilterTrue) {
+    if (self.untagged == kPushpinFilterTrue) {
         [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
     }
 
-    if (self.isPrivate == kPinboardFilterNone && self.starred == kPinboardFilterNone && self.unread == kPinboardFilterNone && self.untagged == kPinboardFilterNone && self.searchQuery == nil && self.tags.count == 0) {
+    if (self.isPrivate == kPushpinFilterNone && self.starred == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
         [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
     }
     
