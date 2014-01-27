@@ -11,6 +11,7 @@
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "PPTableViewTitleView.h"
+#import "PPConstants.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -46,12 +47,12 @@ static NSString *CellIdentifier = @"Cell";
     NSInteger section = 0;
     if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"personal"]) {
         feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:9];
-        row = [@[@"all", @"private", @"public", @"unread", @"untagged", @"starred"] indexOfObject:feedDetails];
+        row = [PPPersonalFeeds() indexOfObject:feedDetails];
         section = 0;
     }
     else if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"community"]) {
         feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:10];
-        row = [@[@"network", @"popular", @"wikipedia", @"fandom", @"japanese"] indexOfObject:feedDetails];
+        row = [PPCommunityFeeds() indexOfObject:feedDetails];
         section = 1;
     }
     
@@ -60,6 +61,9 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+#ifdef PINBOARD
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -91,87 +95,164 @@ static NSString *CellIdentifier = @"Cell";
             [self.tableView reloadData];
         });
     });
+#endif
 }
 
 #pragma mark - UITableView data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+#ifdef DELICIOUS
+    return PPProviderDeliciousSections;
+#endif
+    
+#ifdef PINBOARD
     if (self.savedFeeds.count > 0) {
-        return 3;
+        return PPProviderPinboardSections + 1;
     }
     
-    return 2;
+    return PPProviderPinboardSections;
+#endif
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return 6;
-            break;
-        case 1:
-            return 5;
-            break;
-        case 2:
-            return [self.savedFeeds count];
-            break;
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)section) {
+        case PPDeliciousSectionPersonal:
+            return PPDeliciousPersonalRows;
+            
         default:
             return 0;
     }
+#endif
     
-    return 0;
+#ifdef PINBOARD
+    switch ((PPPinboardSectionType)section) {
+        case PPPinboardSectionPersonal:
+            return PPPinboardPersonalRows;
+            
+        case PPPinboardSectionCommunity:
+            return PPPinboardCommunityRows;
+            
+        case PPPinboardSectionSavedFeeds:
+            return [self.savedFeeds count];
+            
+        default:
+            return 0;
+    }
+#endif
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)section) {
+        case PPDeliciousSectionPersonal:
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 10;
+            
+        default:
+            return 0;
+    }
+#endif
+
+#ifdef PINBOARD
+    switch ((PPPinboardSectionType)section) {
+        case PPPinboardSectionPersonal:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 10;
 
-        case 1:
+        case PPPinboardSectionCommunity:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Community", nil)];
 
-        case 2:
+        case PPPinboardSectionSavedFeeds:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Saved Feeds", nil)];
-
     }
     return 0;
+#endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)section) {
+        case PPDeliciousSectionPersonal:
             return NSLocalizedString(@"Personal", nil);
             
-        case 1:
+        default:
+            return nil;
+    }
+#endif
+    
+#ifdef PINBOARD
+    switch ((PPPinboardSectionType)section) {
+        case PPPinboardSectionPersonal:
+            return NSLocalizedString(@"Personal", nil);
+            
+        case PPPinboardSectionCommunity:
             return NSLocalizedString(@"Community", nil);
             
-        case 2:
+        case PPPinboardSectionSavedFeeds:
             return NSLocalizedString(@"Saved Feeds", nil);
-            
+
+        default:
+            return nil;
     }
-    return nil;
+#endif
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.textLabel.font = [PPTheme textLabelFont];
+    
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)indexPath.section) {
+        case PPDeliciousSectionPersonal: {
+            switch ((PPDeliciousPersonalFeedType)indexPath.row) {
+                case PPDeliciousPersonalFeedAll:
+                    cell.textLabel.text = NSLocalizedString(@"All", nil);
+                    break;
 
-    switch (indexPath.section) {
-        case 0: {
+                case PPDeliciousPersonalFeedPrivate:
+                    cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
+                    break;
+
+                case PPDeliciousPersonalFeedPublic:
+                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    break;
+
+                case PPDeliciousPersonalFeedUnread:
+                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                    break;
+
+                case PPDeliciousPersonalFeedUntagged:
+                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    break;
+            }
+            
+            break;
+        }
+    }
+#endif
+
+#ifdef PINBOARD
+    switch ((PPPinboardSectionType)indexPath.section) {
+        case PPPinboardSectionPersonal: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     break;
+
                 case 1:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     break;
+
                 case 2:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     break;
+
                 case 3:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     break;
+
                 case 4:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     break;
+
                 case 5:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     break;
@@ -179,7 +260,8 @@ static NSString *CellIdentifier = @"Cell";
             
             break;
         }
-        case 1: {
+
+        case PPPinboardSectionCommunity: {
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);
@@ -200,13 +282,12 @@ static NSString *CellIdentifier = @"Cell";
             
             break;
         }
-        case 2: {
 
+        case PPPinboardSectionSavedFeeds:
             cell.textLabel.text = self.savedFeeds[indexPath.row][@"title"];
-            
             break;
-        }
     }
+#endif
     
     if ([indexPath isEqual:self.defaultIndexPath]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -235,46 +316,64 @@ static NSString *CellIdentifier = @"Cell";
         
         // Build our new default view string
         NSString *defaultFeed = @"personal-all";
+        switch ((PPPinboardSectionType)indexPath.section) {
+            case PPPinboardSectionPersonal:
+                switch ((PPPinboardPersonalFeedType)indexPath.row) {
+                    case PPPinboardPersonalFeedAll:
+                        defaultFeed = @"personal-all";
+                        break;
+
+                    case PPPinboardPersonalFeedPrivate:
+                        defaultFeed = @"personal-private";
+                        break;
+
+                    case PPPinboardPersonalFeedPublic:
+                        defaultFeed = @"personal-public";
+                        break;
+
+                    case PPPinboardPersonalFeedUnread:
+                        defaultFeed = @"personal-unread";
+                        break;
+
+                    case PPPinboardPersonalFeedUntagged:
+                        defaultFeed = @"personal-untagged";
+                        break;
+
+                    case PPPinboardPersonalFeedStarred:
+                        defaultFeed = @"personal-starred";
+                        break;
+                }
+                break;
+                
+            case PPPinboardSectionCommunity:
+                switch ((PPPinboardCommunityFeedType)indexPath.row) {
+                    case PPPinboardCommunityFeedNetwork:
+                        defaultFeed = @"community-network";
+                        break;
+
+                    case PPPinboardCommunityFeedPopular:
+                        defaultFeed = @"community-popular";
+                        break;
+
+                    case PPPinboardCommunityFeedWikipedia:
+                        defaultFeed = @"community-wikipedia";
+                        break;
+
+                    case PPPinboardCommunityFeedFandom:
+                        defaultFeed = @"community-fandom";
+                        break;
+
+                    case PPPinboardCommunityFeedJapan:
+                        defaultFeed = @"community-japanese";
+                        break;
+                }
+                
+            default:
+                break;
+        }
         if (indexPath.section == 0) {
-            switch (indexPath.row) {
-                case 0:
-                    defaultFeed = @"personal-all";
-                    break;
-                case 1:
-                    defaultFeed = @"personal-private";
-                    break;
-                case 2:
-                    defaultFeed = @"personal-public";
-                    break;
-                case 3:
-                    defaultFeed = @"personal-unread";
-                    break;
-                case 4:
-                    defaultFeed = @"personal-untagged";
-                    break;
-                case 5:
-                    defaultFeed = @"personal-starred";
-                    break;
-            }
         }
         else if (indexPath.section == 1) {
-            switch (indexPath.row) {
-                case 0:
-                    defaultFeed = @"community-network";
-                    break;
-                case 1:
-                    defaultFeed = @"community-popular";
-                    break;
-                case 2:
-                    defaultFeed = @"community-wikipedia";
-                    break;
-                case 3:
-                    defaultFeed = @"community-fandom";
-                    break;
-                case 4:
-                    defaultFeed = @"community-japanese";
-                    break;
-            }
         }
         else if (indexPath.section == 2) {
             defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];

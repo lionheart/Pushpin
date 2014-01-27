@@ -8,33 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-static NSString *emptyString = @"";
-static NSString *newLine = @"\n";
-static NSString *ellipsis = @"…";
-
-static const NSString *PPBadgeFontSize = @"fontSize";
-static const NSString *PPBadgeNormalBackgroundColor = @"normalBackgroundColor";
-static const NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
-static const NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
-static const NSString *PPBadgeFontColor = @"fontColor";
-
-static NSString *PPBookmarkDisplaySettingUpdated = @"PPBookmarkDisplaySetting";
-static NSString *PPBookmarkCompressSettingUpdate = @"PPBookmarkCompressSetting";
-
-#ifdef DELICIOUS
-static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";
-static NSString *PPMixpanelToken = @"c9c119f24aa8b5d17311be35ecf2310e";
-static NSString *PPPocketIPhoneToken = @"23110-401de8502cbf573a2e115c2a";
-static NSString *PPPocketIPadToken = @"23110-86247a432b99945a85a44846";
-#endif
-
-#ifdef PINBOARD
-static NSString *PPTestFlightToken = @"575d650a-43d5-4e99-a3bb-2b7bbae29a6c";
-static NSString *PPMixpanelToken = @"045e859e70632363c4809784b13c5e98";
-static NSString *PPPocketIPhoneToken = @"11122-03068da9a8951bec2dcc93f3";
-static NSString *PPPocketIPadToken = @"11122-03068da9a8951bec2dcc93f3";
-#endif
-
 typedef enum : NSInteger {
     PPMobilizerGoogle,
     PPMobilizerInstapaper,
@@ -66,7 +39,7 @@ typedef enum : NSInteger {
     PPPinboardCommunityFeedJapan
 } PPPinboardCommunityFeedType;
 
-typedef enum : NSInteger {
+typedef enum PPProviders : NSInteger {
     PPProviderPinboard,
     PPProviderDelicious
 } PPProviderType;
@@ -78,6 +51,7 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPPinboardSectionPersonal,
     PPPinboardSectionCommunity,
+    PPPinboardSectionSavedFeeds
 } PPPinboardSectionType;
 
 typedef enum : NSInteger {
@@ -148,13 +122,50 @@ static dispatch_queue_t PPSerialQueue() {
     return dispatch_queue_create("Pushpin Serial Queue", DISPATCH_QUEUE_SERIAL);
 }
 
-static NSArray *PPPinboardPersonalFeeds() {
+static NSString *emptyString = @"";
+static NSString *newLine = @"\n";
+static NSString *ellipsis = @"…";
+
+static NSString *PPBadgeFontSize = @"fontSize";
+static NSString *PPBadgeNormalBackgroundColor = @"normalBackgroundColor";
+static NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
+static NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
+static NSString *PPBadgeFontColor = @"fontColor";
+
+static NSString *PPBookmarkDisplaySettingUpdated = @"PPBookmarkDisplaySetting";
+static NSString *PPBookmarkCompressSettingUpdate = @"PPBookmarkCompressSetting";
+
+#ifdef DELICIOUS
+static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";
+static NSString *PPMixpanelToken = @"c9c119f24aa8b5d17311be35ecf2310e";
+static NSString *PPPocketIPhoneToken = @"23110-401de8502cbf573a2e115c2a";
+static NSString *PPPocketIPadToken = @"23110-86247a432b99945a85a44846";
+static PPProviderType PPProvider __unused = PPProviderDelicious;
+
+static NSArray *PPPersonalFeeds() {
+    return @[@"all", @"private", @"public", @"unread", @"untagged"];
+}
+
+static NSArray *PPCommunityFeeds() {
+    return @[];
+}
+#endif
+
+#ifdef PINBOARD
+static NSString *PPTestFlightToken = @"575d650a-43d5-4e99-a3bb-2b7bbae29a6c";
+static NSString *PPMixpanelToken = @"045e859e70632363c4809784b13c5e98";
+static NSString *PPPocketIPhoneToken = @"11122-03068da9a8951bec2dcc93f3";
+static NSString *PPPocketIPadToken = @"11122-03068da9a8951bec2dcc93f3";
+static PPProviderType PPProvider __unused = PPProviderDelicious;
+
+static NSArray *PPPersonalFeeds() {
     return @[@"all", @"private", @"public", @"unread", @"untagged", @"starred"];
 }
 
-static NSArray *PPPinboardCommunityFeeds() {
+static NSArray *PPCommunityFeeds() {
     return @[@"network", @"popular", @"wikipedia", @"fandom", @"japan"];
 }
+#endif
 
 @interface PPConstants : NSObject
 

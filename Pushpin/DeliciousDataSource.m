@@ -238,6 +238,7 @@ static BOOL kPinboardSyncInProgress = NO;
             NSDate *startDate = [NSDate date];
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
+            db.logsErrors = YES;
             
             [db beginTransaction];
             [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
@@ -355,7 +356,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *hash = post[@"hash"];
                 NSString *meta = post[@"meta"];
 
-                NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *postTags = ([post[@"tag"] isEqual:[NSNull null]]) ? @"" : [post[@"tag"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSArray *tagList = [postTags componentsSeparatedByString:@" "];
                 NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -379,7 +380,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                @"unread": @([tagList containsObject:@"toread"]),
                                @"private": @([post[@"private"] isEqualToString:@"yes"]),
                                @"created_at": date
-                               };
+                           };
                     
                     [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                     
@@ -413,7 +414,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                     tagDeleteCount++;
                     
-                    for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
+                    for (NSString *tagName in tagList) {
                         [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                         [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
                         tagAddCount++;
@@ -426,7 +427,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             DLog(@"%@ - Updating tags", [NSDate date]);
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+//            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
             DLog(@"%@ - Deleting bookmarks", [NSDate date]);
             for (NSString *hash in deletionBookmarksSet) {
@@ -456,6 +457,7 @@ static BOOL kPinboardSyncInProgress = NO;
             progress(total, total);
             
             [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
+            success();
         };
         
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
@@ -483,7 +485,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [delicious bookmarksWithTag:nil
                                              offset:-1
-                                              count:count
+                                              count:100000
                                            fromDate:nil
                                              toDate:nil
                                         includeMeta:YES
@@ -499,6 +501,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 else {
                     kPinboardSyncInProgress = NO;
+                    success();
                 }
             });
         };
@@ -1004,6 +1007,11 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
             }
             break;
+    }
+    
+    if (self.isPrivate != kPushpinFilterNone) {
+        [whereComponents addObject:@"bookmark.private = ?"];
+        [parameters addObject:@(self.isPrivate)];
     }
     
     if (self.unread != kPushpinFilterNone) {
