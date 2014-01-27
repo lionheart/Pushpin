@@ -2474,7 +2474,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2550,7 +2550,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2623,7 +2623,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Delicious;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2701,7 +2701,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2826,7 +2826,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2853,7 +2853,7 @@
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
