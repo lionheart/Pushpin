@@ -365,7 +365,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.progressView.hidden && section == 0) {
-        return @"Pinboard Login";
+#ifdef DELICIOUS
+    return @"Delicious Login";
+#endif
+        
+#ifdef PINBOARD
+    return @"Pinboard Login";
+#endif
     }
     return nil;
 }

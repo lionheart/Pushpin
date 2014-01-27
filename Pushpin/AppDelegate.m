@@ -393,7 +393,9 @@
         }
         
         [_navigationController popToViewController:deliciousViewController animated:NO];
-#else
+#endif
+        
+#ifdef PINBOARD
         PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
@@ -654,6 +656,7 @@
                      "tags TEXT,"
                      "url TEXT,"
                      "count INTEGER,"
+                     "private BOOL,"
                      "unread BOOL,"
                      "hash VARCHAR(32) UNIQUE,"
                      "meta VARCHAR(32),"
@@ -668,6 +671,8 @@
                 [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
 
                 [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
+                [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts4(id, name, prefix='2,3,4,5');"];
+
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
                 [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];

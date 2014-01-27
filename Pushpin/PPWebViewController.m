@@ -734,7 +734,10 @@ static NSInteger kTitleHeight = 40;
                 @"private": @([results boolForColumn:@"private"]),
                 @"tags": [results stringForColumn:@"tags"],
                 @"created_at": [results dateForColumn:@"created_at"],
+
+#ifdef PINBOARD
                 @"starred": @([results boolForColumn:@"starred"])
+#endif
             };
             [db close];
 

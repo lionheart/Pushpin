@@ -63,11 +63,19 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
 
+    self.bookmarkCounts = [NSMutableArray array];
+
 #ifdef DELICIOUS
-    self.bookmarkCounts = [@[@"", @"", @""] mutableCopy];
-#else
-    self.bookmarkCounts = [@[@"", @"", @"", @"", @"", @""] mutableCopy];
+    NSInteger rows = PPDeliciousPersonalRows;
 #endif
+    
+#ifdef PINBOARD
+    NSInteger rows = PPPinboardPersonalRows;
+#endif
+    
+    for (NSInteger i=0; i<rows; i++) {
+        [self.bookmarkCounts addObject:@""];
+    }
 
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
@@ -136,10 +144,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"]
                                 ];
-#else
+#endif
+        
+#ifdef PINBOARD
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
@@ -175,6 +187,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 #pragma mark - UITableViewDataSource
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
+        return 0;
+    }
+    return 44;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 #ifdef DELICIOUS
@@ -218,8 +237,49 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
 
     NSString *badgeCount;
-    switch (indexPath.section) {
-        case 0: {
+    
+#ifdef DELICIOUS
+    switch ((PPDeliciousSectionType)indexPath.section) {
+        case PPDeliciousSectionPersonal: {
+            PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
+            badgeCount = self.bookmarkCounts[feedType];
+            switch (feedType) {
+                case PPDeliciousPersonalFeedAll:
+                    cell.textLabel.text = NSLocalizedString(@"All", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-all"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedPrivate:
+                    cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-private"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedPublic:
+                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-public"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedUnread:
+                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-unread"];
+                    break;
+                    
+                case PPDeliciousPersonalFeedUntagged:
+                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-untagged"];
+                    break;
+            }
+            
+            cell.detailTextLabel.text = badgeCount;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+        }
+    }
+#endif
+    
+#ifdef PINBOARD
+    switch ((PPPinboardSectionType)indexPath.section) {
+        case PPPinboardSectionPersonal: {
             PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)indexPath.row;
             badgeCount = self.bookmarkCounts[feedType];
             switch (feedType) {
@@ -258,7 +318,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
-        case 1: {
+
+        case PPPinboardSectionCommunity: {
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)indexPath.row;
@@ -298,6 +359,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             break;
         }
     }
+#endif
 
     return cell;
 }
