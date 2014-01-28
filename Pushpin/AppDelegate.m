@@ -548,7 +548,7 @@
         @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
         @"io.aurora.pinboard.FontName": @"HelveticaNeue-Medium",
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold",
-
+        
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO)
      }];

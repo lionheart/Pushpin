@@ -11,7 +11,7 @@
 typedef enum : NSInteger {
     PPSectionDisplaySettings,
     PPSectionBrowseSettings,
-
+    
     // Where we put the clear cache button.
     PPSectionOtherDisplaySettings,
     PPSectionTextExpanderSettings
