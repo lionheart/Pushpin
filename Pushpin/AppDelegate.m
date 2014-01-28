@@ -1097,7 +1097,7 @@
 }
 
 - (BOOL)onlyPromptToAddOnce {
-    if (_onlyPromptToAddOnce) {
+    if (!_onlyPromptToAddOnce) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
     }

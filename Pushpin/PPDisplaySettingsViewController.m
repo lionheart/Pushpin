@@ -202,6 +202,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.text = nil;
             cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
             cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.accessoryView = nil;
@@ -504,7 +505,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
         [delegate setOnlyPromptToAddOnce:self.onlyPromptToAddOnceSwitch.on];
-        
+
         [self.tableView beginUpdates];
         
         if (self.onlyPromptToAddOnceSwitch.on) {
