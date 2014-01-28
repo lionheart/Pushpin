@@ -198,7 +198,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 #ifdef DELICIOUS
     return PPProviderDeliciousSections;
-#else
+#endif
+
+#ifdef PINBOARD
     return PPProviderPinboardSections;
 #endif
 }
@@ -206,13 +208,18 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #ifdef DELICIOUS
     return PPDeliciousPersonalRows;
-#else
+#endif
+
+#ifdef PINBOARD
     switch ((PPPinboardSectionType)section) {
         case PPPinboardSectionPersonal:
             return PPPinboardPersonalRows;
 
         case PPPinboardSectionCommunity:
-            return PPPinboardCommunityRows;
+            return PPPinboardCommunityRows + 1;
+
+        case PPPinboardSectionSavedFeeds:
+            return 0;
     }
 #endif
 }
