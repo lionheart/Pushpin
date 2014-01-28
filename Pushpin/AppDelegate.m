@@ -285,7 +285,7 @@
             else if (alreadyRejected && self.onlyPromptToAddOnce) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UILocalNotification *notification = [[UILocalNotification alloc] init];
-                    notification.alertBody = @"'Reset URL Cache' in advanced settings to add this bookmark.";
+                    notification.alertBody = @"Reset URL Cache in advanced settings to add this bookmark.";
                     notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 });
