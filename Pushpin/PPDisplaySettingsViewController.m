@@ -91,7 +91,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
     self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-
+    
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
     self.onlyPromptToAddOnceSwitch.on = [AppDelegate sharedDelegate].onlyPromptToAddOnce;
     [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -144,7 +144,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
         case PPSectionBrowseSettings:
             return PPRowCountBrowse;
-
+            
         case PPSectionOtherDisplaySettings:
             if (self.onlyPromptToAddOnceSwitch.on) {
                 return PPRowCountOtherSettings;
@@ -182,11 +182,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
                     return 88;
-
+                    
                 case PPOtherDisplayClearCache:
                     return 72;
             }
-
+            
         case PPSectionTextExpanderSettings:
             return 56;
     }
@@ -315,7 +315,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
             }
             break;
-
+            
         case PPSectionOtherDisplaySettings:
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
@@ -407,7 +407,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
-
+                    
                 case PPOtherDisplayClearCache: {
                     UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache"
                                                                                message:nil
@@ -415,22 +415,22 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                                      cancelButtonTitle:nil
                                                                      otherButtonTitles:nil];
                     [loadingAlertView show];
-
+                    
                     UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                     activity.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
                     [activity startAnimating];
                     [loadingAlertView addSubview:activity];
-
+                    
                     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
                     [db open];
                     [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                     [db close];
-
+                    
                     double delayInSeconds = 1.0;
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-
+                        
                         UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
@@ -444,7 +444,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             }
             break;
         }
-
+            
         case PPSectionDisplaySettings:
             break;
     }
@@ -460,7 +460,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings:
             return @"Clipboard URL Detection";
-
+            
         case PPSectionTextExpanderSettings:
             return nil;
     }
@@ -476,7 +476,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings:
             return nil;
-
+            
         case PPSectionTextExpanderSettings:
             return nil;
     }
@@ -504,18 +504,18 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
         [delegate setOnlyPromptToAddOnce:self.onlyPromptToAddOnceSwitch.on];
-
+        
         [self.tableView beginUpdates];
-
+        
         if (self.onlyPromptToAddOnceSwitch.on) {
             [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
         }
-
+        
         [self.tableView endUpdates];
-
+        
         if (self.onlyPromptToAddOnceSwitch.on) {
             [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         }
