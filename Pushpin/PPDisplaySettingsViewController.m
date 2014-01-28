@@ -339,7 +339,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPOtherDisplayClearCache:
-                    cell.textLabel.text = @"Clear Cache";
+                    cell.textLabel.text = @"Reset URL Cache";
                     cell.detailTextLabel.text = @"Resets the stored list of URLs that you've previously chosen not to add to your bookmarks.";
                     break;
             }
