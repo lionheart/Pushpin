@@ -57,6 +57,7 @@
 @synthesize token = _token;
 @synthesize browser = _browser;
 @synthesize mobilizer = _mobilizer;
+@synthesize onlyPromptToAddOnce = _onlyPromptToAddOnce;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize privateByDefault = _privateByDefault;
 @synthesize dimReadPosts = _dimReadPosts;
@@ -281,10 +282,10 @@
                     [self.updateBookmarkAlertView show];
                 });
             }
-            else if (alreadyRejected) {
+            else if (alreadyRejected && self.onlyPromptToAddOnce) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UILocalNotification *notification = [[UILocalNotification alloc] init];
-                    notification.alertBody = @"\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+                    notification.alertBody = @"Clear your bookmark detection cache to add this bookmark.";
                     notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 });
@@ -546,7 +547,10 @@
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
         @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
         @"io.aurora.pinboard.FontName": @"HelveticaNeue-Medium",
-        @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold"
+        @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold",
+
+        // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
+        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO)
      }];
 
     Reachability *reach = [Reachability reachabilityForInternetConnection];
@@ -1089,6 +1093,21 @@
     _markReadPosts = markReadPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)onlyPromptToAddOnce {
+    if (_onlyPromptToAddOnce) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
+    }
+    return _onlyPromptToAddOnce;
+}
+
+- (void)setOnlyPromptToAddOnce:(BOOL)onlyPromptToAddOnce {
+    _onlyPromptToAddOnce = onlyPromptToAddOnce;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(onlyPromptToAddOnce) forKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"];
     [defaults synchronize];
 }
 
