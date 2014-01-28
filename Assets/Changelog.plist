@@ -32,7 +32,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add options to search by all fields, full text (for those of you with Pinboard archival accounts), titles, descriptions, or tags.</string>
+				<string>Add options to search by all fields, full text (for those of you with Pinboard archival accounts), titles, descriptions, or tags. If you have updated Pushpin from a previous version, you will need to log out and then log back in to enable full text searches.</string>
 			</array>
 			<array>
 				<string>NEW</string>
