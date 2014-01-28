@@ -17,6 +17,7 @@
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
 
+#import <FMDB/FMDatabase.h>
 #import <TextExpander/SMTEDelegateController.h>
 
 static NSString *CellIdentifier = @"Cell";
@@ -36,6 +37,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *markReadSwitch;
 @property (nonatomic, retain) UISwitch *autoCorrectionSwitch;
 @property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
+@property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
@@ -90,6 +92,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
+    self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
+    self.onlyPromptToAddOnceSwitch.on = [AppDelegate sharedDelegate].onlyPromptToAddOnce;
+    [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
     self.dimReadPostsSwitch = [[UISwitch alloc] init];
     self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
     [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -125,10 +131,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.TEAvailable) {
-        return 3;
+        return 4;
     }
 
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -138,6 +144,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
         case PPSectionBrowseSettings:
             return PPRowCountBrowse;
+
+        case PPSectionOtherDisplaySettings:
+            if (self.onlyPromptToAddOnceSwitch.on) {
+                return PPRowCountOtherSettings;
+            }
+            else {
+                return PPRowCountOtherSettings - 1;
+            }
 
         case PPSectionTextExpanderSettings:
             return 1;
@@ -149,7 +163,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionDisplaySettings:
             switch ((PPEditSettingsRowType)indexPath.row) {
                 case PPEditAutoMarkAsReadRow:
-                    return 54;
+                    return 56;
                     
                 default:
                     return 44;
@@ -158,14 +172,23 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionBrowseSettings:
             switch ((PPBrowseSettingsRowType)indexPath.row) {
                 case PPBrowseCompressRow:
-                    return 68;
+                    return 72;
                     
                 default:
                     return 44;
             }
             
+        case PPSectionOtherDisplaySettings:
+            switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
+                case PPOtherOnlyPromptToAddBookmarksOnce:
+                    return 88;
+
+                case PPOtherDisplayClearCache:
+                    return 72;
+            }
+
         case PPSectionTextExpanderSettings:
-            return 54;
+            return 56;
     }
 }
 
@@ -293,6 +316,35 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             }
             break;
 
+        case PPSectionOtherDisplaySettings:
+            cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            cell.detailTextLabel.textColor = [UIColor grayColor];
+            cell.detailTextLabel.text = nil;
+            cell.accessoryView = nil;
+            cell.detailTextLabel.numberOfLines = 0;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+            switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
+                case PPOtherOnlyPromptToAddBookmarksOnce:
+                    cell.textLabel.text = @"Only prompt to add new URLs";
+                    cell.detailTextLabel.text = @"Pushpin will only show the add bookmark prompt for URLs it hasn't seen before.";
+
+                    size = cell.frame.size;
+                    switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
+                    self.onlyPromptToAddOnceSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.onlyPromptToAddOnceSwitch;
+                    break;
+
+                case PPOtherDisplayClearCache:
+                    cell.textLabel.text = @"Clear Cache";
+                    cell.detailTextLabel.text = @"Resets the stored list of URLs that you've previously chosen not to add to your bookmarks.";
+                    break;
+            }
+            break;
+
         case PPSectionTextExpanderSettings: {
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
@@ -353,6 +405,46 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             break;
         }
             
+        case PPSectionOtherDisplaySettings: {
+            switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
+
+                case PPOtherDisplayClearCache: {
+                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache"
+                                                                               message:nil
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:nil
+                                                                     otherButtonTitles:nil];
+                    [loadingAlertView show];
+
+                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    activity.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
+                    [activity startAnimating];
+                    [loadingAlertView addSubview:activity];
+
+                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    [db open];
+                    [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
+                    [db close];
+
+                    double delayInSeconds = 1.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        [successAlertView show];
+                        double delayInSeconds = 1.0;
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                            [successAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                        });
+                    });
+                    break;
+                }
+            }
+            break;
+        }
+
         case PPSectionDisplaySettings:
             break;
     }
@@ -366,6 +458,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionDisplaySettings:
             return @"Editing";
             
+        case PPSectionOtherDisplaySettings:
+            return @"Clipboard URL Detection";
+
         case PPSectionTextExpanderSettings:
             return nil;
     }
@@ -379,6 +474,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionBrowseSettings:
             return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
             
+        case PPSectionOtherDisplaySettings:
+            return nil;
+
         case PPSectionTextExpanderSettings:
             return nil;
     }
@@ -390,19 +488,37 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         [delegate setCompressPosts:self.compressPostsSwitch.on];
     }
     else if (sender == self.doubleTapToEditSwitch) {
-        [[AppDelegate sharedDelegate] setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
+        [delegate setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
     }
     else if (sender == self.dimReadPostsSwitch) {
-        [[AppDelegate sharedDelegate] setDimReadPosts:self.dimReadPostsSwitch.on];
+        [delegate setDimReadPosts:self.dimReadPostsSwitch.on];
     }
     else if (sender == self.markReadSwitch) {
-        [[AppDelegate sharedDelegate] setMarkReadPosts:self.markReadSwitch.on];
+        [delegate setMarkReadPosts:self.markReadSwitch.on];
     }
     else if (sender == self.autoCorrectionSwitch) {
-        [[AppDelegate sharedDelegate] setEnableAutoCorrect:self.autoCorrectionSwitch.on];
+        [delegate setEnableAutoCorrect:self.autoCorrectionSwitch.on];
     }
     else if (sender == self.autoCapitalizationSwitch) {
-        [[AppDelegate sharedDelegate] setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
+        [delegate setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
+    }
+    else if (sender == self.onlyPromptToAddOnceSwitch) {
+        [delegate setOnlyPromptToAddOnce:self.onlyPromptToAddOnceSwitch.on];
+
+        [self.tableView beginUpdates];
+
+        if (self.onlyPromptToAddOnceSwitch.on) {
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
+        }
+
+        [self.tableView endUpdates];
+
+        if (self.onlyPromptToAddOnceSwitch.on) {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        }
     }
     
     if (sender == self.compressPostsSwitch) {

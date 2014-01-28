@@ -43,6 +43,7 @@
 @property (nonatomic) BOOL openLinksInApp;
 @property (nonatomic) BOOL privateByDefault;
 @property (nonatomic) BOOL readByDefault;
+@property (nonatomic) BOOL onlyPromptToAddOnce;
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;
