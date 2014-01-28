@@ -3,11 +3,24 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.0.1</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Add an advanced setting to only show the add bookmark prompt for URLs that Pushpin hasn&apos;t seen before.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a bug affecting bookmark deletions when using the swipe-to-delete interaction.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.0</string>
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>Brand-new, iOS 7 interface.</string>
+				<string>Gorgeous, brand-new, built-for-iOS 7 interface.</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -47,7 +60,7 @@
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add a "compressed mode" that limits descriptions to two lines and tags to one line. You can enable it in settings or by tapping the title bars. You can tap the ellipsis when tags are limited to one line to view additional tags.</string>
+				<string>Add a &quot;compressed mode&quot; that limits descriptions to two lines and tags to one line. You can enable it in settings or by tapping the title bars. You can tap the ellipsis when tags are limited to one line to view additional tags.</string>
 			</array>
 			<array>
 				<string>NEW</string>
