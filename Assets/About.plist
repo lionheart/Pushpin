@@ -31,10 +31,12 @@
 				<string>http://dlo.me/</string>
 			</dict>
 			<dict>
+				<key>username</key>
+				<string>iconfactory</string>
 				<key>detail</key>
-				<string>Product development</string>
+				<string>Icon and interface design</string>
 				<key>title</key>
-				<string>Andy Muldowney</string>
+				<string>The Iconfactory</string>
 			</dict>
 		</array>
 		<key>title</key>
