@@ -409,7 +409,7 @@
         if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
             feedDetails = [self.defaultFeed substringFromIndex:9];
             
-            PPPinboardPersonalFeedType feedType = [PPPinboardPersonalFeeds() indexOfObject:feedDetails];
+            PPPinboardPersonalFeedType feedType = [PPPersonalFeeds() indexOfObject:feedDetails];
             
             switch (feedType) {
                 case PPPinboardPersonalFeedPrivate:
@@ -443,7 +443,7 @@
             PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
-            PPPinboardCommunityFeedType feedType = [PPPinboardCommunityFeeds() indexOfObject:feedDetails];
+            PPPinboardCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
             
             switch (feedType) {
                 case PPPinboardCommunityFeedNetwork: {
