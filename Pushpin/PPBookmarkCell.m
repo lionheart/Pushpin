@@ -37,6 +37,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 @property (nonatomic) BOOL compressed;
 @property (nonatomic, strong) NSLayoutConstraint *mainWidthConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *leftPositionConstraint;
+@property (nonatomic, strong) NSDictionary *post;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
@@ -103,6 +104,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.didReachDeleteThreshold = NO;
     self.didReachEditThreshold = NO;
     self.compressed = compressed;
+    self.post = [dataSource postAtIndex:self.index];
     
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizer.delegate = self;
@@ -263,13 +265,13 @@ static NSInteger kEditButtonOuterMargin = 20;
         }
         else if (recognizer.state == UIGestureRecognizerStateEnded) {
             if (self.deleteButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forIndex:)]) {
-                    [self.delegate bookmarkCellDidActivateDeleteButton:self forIndex:self.index];
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:)]) {
+                    [self.delegate bookmarkCellDidActivateDeleteButton:self forPost:self.post];
                 }
             }
             else if (self.editButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forIndex:)]) {
-                    [self.delegate bookmarkCellDidActivateEditButton:self forIndex:self.index];
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:)]) {
+                    [self.delegate bookmarkCellDidActivateEditButton:self forPost:self.post];
                 }
             }
 

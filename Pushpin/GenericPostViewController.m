@@ -21,6 +21,7 @@
 #import "PPTheme.h"
 #import "PPReadLaterActivity.h"
 #import "PPActivityViewController.h"
+#import "AddBookmarkViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -1313,7 +1314,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionAlert {
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
+    NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
+    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
     [self.confirmDeletionAlertView show];
 }
 
@@ -1720,13 +1722,13 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index {
-    self.selectedPost = [self.postDataSource postAtIndex:index];
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
+    self.selectedPost = post;
     [self showConfirmDeletionAlert];
 }
 
-- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forIndex:(NSInteger)index {
-    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:index];
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
+    UIViewController *vc = (UIViewController *)[AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
