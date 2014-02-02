@@ -1107,7 +1107,7 @@ static NSInteger kToolbarHeight = 44;
                 
                 if ([UIApplication isIPad]) {
                     self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
-                    [self.popover presentPopoverFromRect:rect inView:self.toolbar permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                    [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
                 }
                 else {
                     [self presentViewController:self.activityView animated:YES completion:nil];
