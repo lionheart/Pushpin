@@ -298,7 +298,14 @@ static NSInteger kTitleHeight = 40;
             [self.backActionSheet addButtonWithTitle:@"← Back"];
             [self.backActionSheet addButtonWithTitle:@"Cancel"];
             self.backActionSheet.cancelButtonIndex = self.backActionSheet.numberOfButtons - 1;
-            [self.backActionSheet showInView:self.toolbar];
+
+            CGPoint point = [self.backButtonLongPressGestureRecognizer locationInView:self.backButton];
+            if ([UIApplication isIPad]) {
+                [self.backActionSheet showFromRect:(CGRect){point, {1, 1}} inView:self.backButton animated:YES];
+            }
+            else {
+                [self.backActionSheet showInView:self.toolbar];
+            }
         }
     }
     else if (recognizer == self.tapGestureRecognizer || recognizer == self.bottomTapGestureRecognizer) {
