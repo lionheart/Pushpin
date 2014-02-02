@@ -1099,7 +1099,7 @@ static NSInteger kToolbarHeight = 44;
                 __weak GenericPostViewController *weakself = self;
                 self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
                     [weakself setNeedsStatusBarAppearanceUpdate];
-                    
+
                     if (weakself.popover) {
                         [weakself.popover dismissPopoverAnimated:YES];
                     }
