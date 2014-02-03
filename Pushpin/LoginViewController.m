@@ -206,14 +206,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         case PinboardErrorInvalidCredentials: {
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                             [alert show];
-                            [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                            [[MixpanelProxy sharedInstance] track:@"Failed to log in"];
                             break;
                         }
                             
                         case PinboardErrorTimeout: {
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                             [alert show];
-                            [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                            [[MixpanelProxy sharedInstance] track:@"Cancelled log in"];
                             break;
                         }
                     }
@@ -257,7 +257,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     }
                 });
 
-                Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
                 [mixpanel identify:[delegate username]];
                 [mixpanel.people set:@"$created" to:[NSDate date]];
                 [mixpanel.people set:@"$username" to:[delegate username]];
@@ -283,7 +283,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                                   progress:UpdateProgressBlock
                                                                                    options:@{@"count": @(-1)}];
 
-                                                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
                                                     [mixpanel identify:delegate.username];
                                                     [mixpanel.people set:@"$created" to:[NSDate date]];
                                                     [mixpanel.people set:@"$username" to:[delegate username]];

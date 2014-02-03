@@ -26,7 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
 
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
         self.notes = notes;
@@ -46,7 +46,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
     [mixpanel track:@"Opened notes"];
 }
 
@@ -84,7 +84,7 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
 
     if (![[AppDelegate sharedDelegate] connectionAvailable]) {
         return;

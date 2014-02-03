@@ -25,7 +25,6 @@
 
 #import "UITableView+Additions.h"
 
-#import <Mixpanel/Mixpanel.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
@@ -116,7 +115,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }];
     }];
 
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
+    [[MixpanelProxy sharedInstance] track:@"Opened about page"];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
