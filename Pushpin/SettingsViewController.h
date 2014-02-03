@@ -31,6 +31,8 @@ typedef enum : NSInteger {
     PPOtherFollow,
     PPOtherFeedback,
     PPOtherLogout,
+
+    // Unused
     PPOtherClearCache
 } PPOtherSettingsRowType;
 
