@@ -172,7 +172,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionBrowseSettings:
             switch ((PPBrowseSettingsRowType)indexPath.row) {
                 case PPBrowseCompressRow:
-                    return 72;
+                    return 74;
                     
                 default:
                     return 44;
@@ -181,10 +181,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionOtherDisplaySettings:
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    return 88;
+                    return 92;
                     
                 case PPOtherDisplayClearCache:
-                    return 72;
+                    return 74;
             }
             
         case PPSectionTextExpanderSettings:
@@ -331,7 +331,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
                     cell.textLabel.text = @"Only prompt to add new URLs";
-                    cell.detailTextLabel.text = @"Pushpin will only show the add bookmark prompt for URLs it hasn't seen before.";
+                    cell.detailTextLabel.text = @"Turn on to show the add bookmark prompt only for URLs that Pushpin hasn't seen before.";
 
                     size = cell.frame.size;
                     switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
