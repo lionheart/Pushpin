@@ -75,7 +75,9 @@
 + (NSString *)databasePath {
 #ifdef DELICIOUS
     NSString *pathComponent = @"/delicious.db";
-#else
+#endif
+
+#ifdef PINBOARD
     NSString *pathComponent = @"/pinboard.db";
 #endif
 
