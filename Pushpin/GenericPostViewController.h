@@ -42,7 +42,6 @@ typedef enum : NSInteger {
 - (CGFloat)heightForPostAtIndex:(NSInteger)index;
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
 
-- (BOOL)isPostAtIndexStarred:(NSInteger)index;
 - (BOOL)isPostAtIndexPrivate:(NSInteger)index;
 - (BOOL)supportsTagDrilldown;
 
@@ -53,6 +52,8 @@ typedef enum : NSInteger {
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic) BOOL shouldSearchFullText;
+
+- (BOOL)isPostAtIndexStarred:(NSInteger)index;
 
 - (NSString *)searchPlaceholder;
 
