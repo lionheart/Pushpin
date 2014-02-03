@@ -222,7 +222,7 @@ static BOOL kPinboardSyncInProgress = NO;
     if (!kPinboardSyncInProgress) {
         kPinboardSyncInProgress = YES;
         
-        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
         LHDelicious *delicious = [LHDelicious sharedInstance];
         
         if (!progress) {
@@ -366,7 +366,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                     if (!dateError && !date) {
                         date = [NSDate dateWithTimeIntervalSince1970:0];
-                        [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                        [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                         dateError = YES;
                     }
                     
@@ -456,7 +456,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             progress(total, total);
             
-            [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
+            [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
             success();
         };
         
@@ -724,7 +724,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db commit];
             [db close];
             
-            [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+            [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
             
             [self.posts removeObjectAtIndex:indexPath.row];
             
@@ -778,7 +778,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [db commit];
                 [db close];
                 
-                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+                [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
                 
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];

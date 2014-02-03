@@ -375,7 +375,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     

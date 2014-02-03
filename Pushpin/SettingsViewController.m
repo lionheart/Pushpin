@@ -142,7 +142,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[Mixpanel sharedInstance] track:@"Opened settings"];
+    [[MixpanelProxy sharedInstance] track:@"Opened settings"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -158,7 +158,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)showAboutPage {
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
+    [[MixpanelProxy sharedInstance] track:@"Opened about page"];
     dispatch_async(dispatch_get_main_queue(), ^{
         PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
         [self.navigationController pushViewController:aboutViewController animated:YES];
@@ -397,7 +397,7 @@ static NSString *CellIdentifier = @"Cell";
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        
                                        [AppDelegate sharedDelegate].readLater = PPReadLaterInstapaper;
-                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
+                                       [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:@"You've successfully logged in."
@@ -456,7 +456,7 @@ static NSString *CellIdentifier = @"Cell";
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        
                                        [AppDelegate sharedDelegate].readLater = PPReadLaterReadability;
-                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+                                       [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                                              withRowAnimation:UITableViewRowAnimationFade];
 
@@ -534,7 +534,7 @@ static NSString *CellIdentifier = @"Cell";
             }
             else if ([buttonTitle isEqualToString:@"None"]) {
                 [AppDelegate sharedDelegate].readLater = PPReadLaterNone;
-                [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
+                [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"None"];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                       withRowAnimation:UITableViewRowAnimationFade];
             }
@@ -560,7 +560,7 @@ static NSString *CellIdentifier = @"Cell";
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [AppDelegate sharedDelegate].readLater = PPReadLaterPocket;
-    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
+    [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                           withRowAnimation:UITableViewRowAnimationFade];
 }

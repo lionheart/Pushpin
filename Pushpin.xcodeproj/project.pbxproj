@@ -201,7 +201,6 @@
 		37D4B00418833BC800E07EB3 /* readability.css in Resources */ = {isa = PBXBuildFile; fileRef = 37D4B00318833BC800E07EB3 /* readability.css */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
-		37DE5AB9174F2A2F0073A2F4 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */; };
 		37E312E51868CCD600B944F1 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
 		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -368,6 +367,7 @@
 		37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
 		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
 		37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */; };
+		37F79E1218A03A5E00EE8A5F /* MixpanelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F79E1118A03A5E00EE8A5F /* MixpanelProxy.m */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
@@ -903,6 +903,8 @@
 		37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPActivityViewController.h; sourceTree = "<group>"; };
 		37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPActivityViewController.m; sourceTree = "<group>"; };
 		37ED8D311878D8960010CDA8 /* libPython.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPython.a; path = "../libPython 1-4-14, 5.58 PM/usr/local/lib/libPython.a"; sourceTree = "<group>"; };
+		37F79E1018A03A5E00EE8A5F /* MixpanelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MixpanelProxy.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		37F79E1118A03A5E00EE8A5F /* MixpanelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MixpanelProxy.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
 		37F91F3C177AB1D500683D46 /* PPNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationController.h; sourceTree = "<group>"; };
@@ -1041,7 +1043,6 @@
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
-				37DE5AB9174F2A2F0073A2F4 /* AdSupport.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
 				377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */,
@@ -1607,6 +1608,8 @@
 		37FEEB9915745488003F2B77 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				37F79E1018A03A5E00EE8A5F /* MixpanelProxy.h */,
+				37F79E1118A03A5E00EE8A5F /* MixpanelProxy.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
 				37FEEB9E15745488003F2B77 /* main.m */,
@@ -2384,6 +2387,7 @@
 				37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */,
 				378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */,
 				37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */,
+				37F79E1218A03A5E00EE8A5F /* MixpanelProxy.m in Sources */,
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
