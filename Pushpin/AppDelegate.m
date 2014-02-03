@@ -159,13 +159,41 @@
         postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
+        void (^PresentView)() = ^{
+            if ([UIApplication isIPad]) {
+                UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+                if (navigationController.viewControllers.count == 1) {
+                    UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+                    if (showPopoverBarButtonItem) {
+                        postViewController.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+                    }
+                }
+
+                [navigationController setViewControllers:@[postViewController] animated:YES];
+
+                if ([postViewController respondsToSelector:@selector(postDataSource)]) {
+                    if ([[postViewController postDataSource] respondsToSelector:@selector(barTintColor)]) {
+                        [self.navigationController.navigationBar setBarTintColor:[[postViewController postDataSource] barTintColor]];
+                    }
+                }
+
+                UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+                if (popover) {
+                    [popover dismissPopoverAnimated:YES];
+                }
+            }
+            else {
+                [self.navigationController presentViewController:navController animated:NO completion:nil];
+            }
+        };
+
         if (self.navigationController.presentedViewController) {
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                [self.navigationController presentViewController:navController animated:NO completion:nil];
+                PresentView();
             }];
         }
         else {
-            [self.navigationController presentViewController:navController animated:NO completion:nil];
+            PresentView();
         }
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
