@@ -421,7 +421,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             break;
         }
     }
-#else
+#endif
+
+#ifdef PINBOARD
     switch ((PPPinboardSectionType)indexPath.section) {
         case PPPinboardSectionPersonal: {
             PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
