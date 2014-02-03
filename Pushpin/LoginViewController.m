@@ -256,6 +256,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                          completion:nil];
                     }
                 });
+
+                Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                [mixpanel identify:[delegate username]];
+                [mixpanel.people set:@"$created" to:[NSDate date]];
+                [mixpanel.people set:@"$username" to:[delegate username]];
+                [mixpanel.people set:@"Browser" to:@"Webview"];
             };
 
 #ifdef DELICIOUS
@@ -286,7 +292,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                             });
                                         }
                                         failure:LoginFailureBlock];
-#else
+#endif
+
+#ifdef PINBOARD
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:self.usernameTextField.text
                                       password:self.passwordTextField.text
@@ -298,23 +306,21 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                LoginSuccessBlock();
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                   [delegate setToken:token];
+                                                   delegate.token = token;
                                                    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
 
                                                    [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
-                                                                                  failure:nil
+                                                                                  failure:^(NSError *error) {
+                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                          [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+                                                                                      });
+                                                                                  }
                                                                                  progress:UpdateProgressBlock
                                                                                   options:@{@"count": @(-1)}];
 
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                                        [delegate setFeedToken:feedToken];
                                                    }];
-                                                   
-                                                   Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                                   [mixpanel identify:[delegate username]];
-                                                   [mixpanel.people set:@"$created" to:[NSDate date]];
-                                                   [mixpanel.people set:@"$username" to:[delegate username]];
-                                                   [mixpanel.people set:@"Browser" to:@"Webview"];
                                                });
                                            });
                                        }
