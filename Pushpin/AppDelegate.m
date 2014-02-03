@@ -76,7 +76,7 @@
 #ifdef DELICIOUS
     NSString *pathComponent = @"/delicious.db";
 #endif
-
+    
 #ifdef PINBOARD
     NSString *pathComponent = @"/pinboard.db";
 #endif
@@ -924,6 +924,8 @@
 + (AppDelegate *)sharedDelegate {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
+
+#pragma mark - Properties
 
 - (void)setLastUpdated:(NSDate *)lastUpdated {
     _lastUpdated = lastUpdated;

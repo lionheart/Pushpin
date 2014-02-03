@@ -242,6 +242,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.textLabel.font = [PPTheme boldTextLabelFont];
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
+    cell.clipsToBounds = YES;
 
     NSString *badgeCount;
     
