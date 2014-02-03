@@ -44,6 +44,7 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIAlertView *updateBookmarkAlertView;
 @property (nonatomic, strong) UIAlertView *addBookmarkAlertView;
 @property (nonatomic, strong) NSURLCache *urlCache;
@@ -389,13 +390,18 @@
 
 - (PPSplitViewController *)splitViewController {
     if (!_splitViewController) {
-        PPNavigationController *feedNavigationController = [[PPNavigationController alloc] initWithRootViewController:self.feedListViewController];
-
         _splitViewController = [[PPSplitViewController alloc] init];
-        _splitViewController.viewControllers = @[feedNavigationController, self.navigationController];
+        _splitViewController.viewControllers = @[self.feedListNavigationController, self.navigationController];
         _splitViewController.delegate = self;
     }
     return _splitViewController;
+}
+
+- (PPNavigationController *)feedListNavigationController {
+    if (!_feedListNavigationController) {
+        _feedListNavigationController = [[PPNavigationController alloc] initWithRootViewController:self.feedListViewController];
+    }
+    return _feedListNavigationController;
 }
 
 - (FeedListViewController *)feedListViewController {
@@ -455,9 +461,9 @@
                 case PPPinboardPersonalFeedUnread:
                     pinboardDataSource.unread = kPushpinFilterTrue;
                     break;
-                    
+
                 case PPPinboardPersonalFeedUntagged:
-                    pinboardDataSource.untagged = YES;
+                    pinboardDataSource.untagged = kPushpinFilterTrue;
                     break;
                     
                 case PPPinboardPersonalFeedStarred:
@@ -514,6 +520,12 @@
 
         if ([UIApplication isIPad]) {
             _navigationController.viewControllers = @[pinboardViewController];
+
+            if ([pinboardViewController respondsToSelector:@selector(postDataSource)]) {
+                if ([pinboardViewController.postDataSource respondsToSelector:@selector(barTintColor)]) {
+                    [self.feedListNavigationController.navigationBar setBarTintColor:[pinboardViewController.postDataSource barTintColor]];
+                }
+            }
         }
         else {
             _navigationController.viewControllers = @[self.feedListViewController, pinboardViewController];
