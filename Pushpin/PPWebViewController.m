@@ -407,7 +407,12 @@ static NSInteger kTitleHeight = 40;
         [self.webView goBack];
     }
     else {
-        [self.navigationController popViewControllerAnimated:YES];
+        if (self.navigationController.viewControllers.count == 1) {
+            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+        }
+        else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 
@@ -470,7 +475,12 @@ static NSInteger kTitleHeight = 40;
             }
         }
         else if (buttonIndex == actionSheet.numberOfButtons - 2) {
-            [self.navigationController popViewControllerAnimated:YES];
+            if (self.navigationController.viewControllers.count == 1) {
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+            }
+            else {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
         }
     }
 }
