@@ -116,6 +116,7 @@
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
     PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+
     if (self.navigationController.presentedViewController) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
             [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
@@ -215,7 +216,7 @@
             }];
         }
     }
-    else {
+    else if (url.host && ![url.host isEqualToString:@""]) {
         NSRange range = [url.absoluteString rangeOfString:@"pushpin"];
         NSString *urlString = [url.absoluteString stringByReplacingCharactersInRange:range withString:@"http"];
         PPWebViewController *webViewController;

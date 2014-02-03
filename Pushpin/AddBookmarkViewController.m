@@ -157,6 +157,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonTouchUpInside:)];
         addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
     }
+
     addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(leftBarButtonTouchUpInside:)];
     
     if (bookmark[@"title"]) {
@@ -181,7 +182,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     addBookmarkViewController.badgeWrapperView = [addBookmarkViewController badgeWrapperViewForCurrentTags];
     addBookmarkViewController.badgeWrapperView.userInteractionEnabled = NO;
-    
+
     if (bookmark[@"description"]) {
         addBookmarkViewController.postDescription = [bookmark[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
