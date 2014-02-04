@@ -175,7 +175,7 @@
 
                 if ([postViewController respondsToSelector:@selector(postDataSource)]) {
                     if ([[postViewController postDataSource] respondsToSelector:@selector(barTintColor)]) {
-                        [self.navigationController.navigationBar setBarTintColor:[[postViewController postDataSource] barTintColor]];
+                        [self.feedListNavigationController.navigationBar setBarTintColor:[postViewController.postDataSource barTintColor]];
                     }
                 }
 
