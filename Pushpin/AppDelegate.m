@@ -73,6 +73,7 @@
 @synthesize compressPosts = _compressPosts;
 @synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
 @synthesize doubleTapToEdit = _doubleTapToEdit;
+@synthesize alwaysShowClipboardNotification = _alwaysShowClipboardNotification;
 
 + (NSString *)databasePath {
 #ifdef DELICIOUS
@@ -327,12 +328,14 @@
                 });
             }
             else if (alreadyRejected && self.onlyPromptToAddOnce) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    UILocalNotification *notification = [[UILocalNotification alloc] init];
-                    notification.alertBody = @"Reset URL cache in advanced settings to add this bookmark.";
-                    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                });
+                if (self.alwaysShowClipboardNotification) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UILocalNotification *notification = [[UILocalNotification alloc] init];
+                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add this bookmark.";
+                        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                    });
+                }
             }
             else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
@@ -617,7 +620,8 @@
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold",
         
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
-        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO)
+        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO),
+        @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
      }];
 
     Reachability *reach = [Reachability reachabilityForInternetConnection];
@@ -1177,6 +1181,21 @@
     _onlyPromptToAddOnce = onlyPromptToAddOnce;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(onlyPromptToAddOnce) forKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"];
+    [defaults synchronize];
+}
+
+- (BOOL)alwaysShowClipboardNotification {
+    if (!_alwaysShowClipboardNotification) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _alwaysShowClipboardNotification = [[defaults objectForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"] boolValue];
+    }
+    return _alwaysShowClipboardNotification;
+}
+
+- (void)setAlwaysShowClipboardNotification:(BOOL)alwaysShowClipboardNotification {
+    _alwaysShowClipboardNotification = alwaysShowClipboardNotification;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(alwaysShowClipboardNotification) forKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"];
     [defaults synchronize];
 }
 

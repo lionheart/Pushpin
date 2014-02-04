@@ -38,6 +38,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *autoCorrectionSwitch;
 @property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
 @property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
+@property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
@@ -99,6 +100,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.dimReadPostsSwitch = [[UISwitch alloc] init];
     self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
     [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.alwaysShowAlertSwitch = [[UISwitch alloc] init];
+    self.alwaysShowAlertSwitch.on = [AppDelegate sharedDelegate].alwaysShowClipboardNotification;
+    [self.alwaysShowAlertSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
@@ -150,7 +155,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 return PPRowCountOtherSettings;
             }
             else {
-                return PPRowCountOtherSettings - 1;
+                return PPRowCountOtherSettings - 2;
             }
 
         case PPSectionTextExpanderSettings:
@@ -185,6 +190,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     
                 case PPOtherDisplayClearCache:
                     return 74;
+                    
+                case PPOtherAlwaysShowAlert:
+                    return 92;
             }
             
         case PPSectionTextExpanderSettings:
@@ -330,8 +338,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    cell.textLabel.text = @"Only prompt to add new URLs";
-                    cell.detailTextLabel.text = @"Turn on to show the add bookmark prompt only for URLs that Pushpin hasn't seen before.";
+                    cell.textLabel.text = @"Only prompt for \"new\" URLs";
+                    cell.detailTextLabel.text = @"Turn on to only show the add bookmark prompt for URLs that Pushpin hasn't seen before.";
 
                     size = cell.frame.size;
                     switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
@@ -340,8 +348,19 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPOtherDisplayClearCache:
-                    cell.textLabel.text = @"Reset URL cache";
-                    cell.detailTextLabel.text = @"Resets the stored list of URLs that you've previously chosen not to add to your bookmarks.";
+                    cell.textLabel.text = @"Reset the list of stored URLs";
+                    cell.detailTextLabel.text = @"Resets the list of URLs that you've decided not to add from the clipboard.";
+                    break;
+                    
+                case PPOtherAlwaysShowAlert:
+                    cell.textLabel.text = @"Notify when a URL isn't added";
+                    cell.detailTextLabel.text = @"Display a notification when you've previously decided not to add the URL currently on the clipboard.";
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+                    size = cell.frame.size;
+                    switchSize = self.alwaysShowAlertSwitch.frame.size;
+                    self.alwaysShowAlertSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.alwaysShowAlertSwitch;
                     break;
             }
             break;
@@ -408,9 +427,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
-                    
                 case PPOtherDisplayClearCache: {
-                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache"
+                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting stored URL list"
                                                                                message:nil
                                                                               delegate:nil
                                                                      cancelButtonTitle:nil
@@ -432,7 +450,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"The URL list was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -503,16 +521,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     else if (sender == self.autoCapitalizationSwitch) {
         [delegate setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
     }
+    else if (sender == self.alwaysShowAlertSwitch) {
+        [delegate setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
+    }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
         [delegate setOnlyPromptToAddOnce:self.onlyPromptToAddOnceSwitch.on];
 
         [self.tableView beginUpdates];
         
+        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings],
+                                [NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
         if (self.onlyPromptToAddOnceSwitch.on) {
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         }
         
         [self.tableView endUpdates];

@@ -36,6 +36,7 @@ typedef enum : NSInteger {
 
 typedef enum : NSInteger {
     PPOtherOnlyPromptToAddBookmarksOnce,
+    PPOtherAlwaysShowAlert,
     PPOtherDisplayClearCache
 } PPOtherDisplaySettingsRowType;
 
