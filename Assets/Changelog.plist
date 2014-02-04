@@ -13,6 +13,50 @@
 				<string>FIX</string>
 				<string>Fix a bug affecting bookmark deletions when using the swipe-to-delete interaction.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a bug preventing opening links using Chrome, Safari, and other browsers in the main bookmark list.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where the web view couldn&apos;t be closed when opened via URL scheme.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where using the default URL scheme (pushpin://) would just open Pushpin with a blank page.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where TextExpander snippets wouldn&apos;t sync correctly.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where users with large amounts of bookmarks (over 30,000) experienced unpredictability in syncing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where opening a custom feed on iPad would not show the same color in the split pane.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where there was no way to dismiss a search launched via URL scheme on iPad.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Move the alert view appearing when tapping and holding in the web view to the button&apos;s location from the middle of the screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where saving to Instapaper or Pocket was unreliable for some users.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash that would occur when sharing on iPad.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where x-callback-url support was not working for Chrome for iOS.</string>
+			</array>
 		</array>
 	</array>
 	<array>
