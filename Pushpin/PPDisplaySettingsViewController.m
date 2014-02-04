@@ -94,7 +94,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
-    self.onlyPromptToAddOnceSwitch.on = [AppDelegate sharedDelegate].onlyPromptToAddOnce;
+    self.onlyPromptToAddOnceSwitch.on = ![AppDelegate sharedDelegate].onlyPromptToAddOnce;
     [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.dimReadPostsSwitch = [[UISwitch alloc] init];
@@ -151,7 +151,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             return PPRowCountBrowse;
             
         case PPSectionOtherDisplaySettings:
-            if (self.onlyPromptToAddOnceSwitch.on) {
+            if (!self.onlyPromptToAddOnceSwitch.on) {
                 return PPRowCountOtherSettings;
             }
             else {
@@ -338,8 +338,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    cell.textLabel.text = @"Show prompt for \"new\" URLs";
-                    cell.detailTextLabel.text = @"Only show the add bookmark prompt for URLs that Pushpin hasn't seen before.";
+                    cell.textLabel.text = @"Always show add prompt";
+                    cell.detailTextLabel.text = @"Always show the add bookmark prompt, even for URLs that Pushpin has seen before.";
 
                     size = cell.frame.size;
                     switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
@@ -525,13 +525,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         [delegate setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
     }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
-        [delegate setOnlyPromptToAddOnce:self.onlyPromptToAddOnceSwitch.on];
+        [delegate setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];
 
         [self.tableView beginUpdates];
         
         NSArray *indexPaths = @[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings],
                                 [NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
-        if (self.onlyPromptToAddOnceSwitch.on) {
+        if (!self.onlyPromptToAddOnceSwitch.on) {
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
@@ -540,7 +540,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         
         [self.tableView endUpdates];
         
-        if (self.onlyPromptToAddOnceSwitch.on) {
+        if (!self.onlyPromptToAddOnceSwitch.on) {
             [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         }
     }
