@@ -136,7 +136,14 @@ static NSInteger kToolbarHeight = 44;
 
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 40)];
         self.searchBar.delegate = self;
+        
+#ifdef DELICIOUS
+        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
+#endif
+
+#ifdef PINBOARD
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
+#endif
         self.searchBar.showsScopeBar = YES;
         self.tableView.tableHeaderView = self.searchBar;
         
@@ -648,7 +655,9 @@ static NSInteger kToolbarHeight = 44;
     if (!self.searchLoading) {
         self.searchLoading = YES;
 
+#ifdef PINBOARD
         self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText && [self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)];
+#endif
 
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
 
@@ -1414,9 +1423,12 @@ static NSInteger kToolbarHeight = 44;
         }
 
         BOOL shouldSearchFullText = NO;
+
+#ifdef PINBOARD
         if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
             shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
         }
+#endif
 
         self.latestSearchTime = [NSDate date];
         if (shouldSearchFullText) {
