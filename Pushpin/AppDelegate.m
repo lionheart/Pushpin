@@ -657,7 +657,18 @@
 #endif
 
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    if (self.token) {
+    
+    BOOL isAuthenticated;
+    
+#ifdef DELICIOUS
+    isAuthenticated = NO;
+#endif
+    
+#ifdef PINBOARD
+    isAuthenticated = self.token != nil;
+#endif
+
+    if (isAuthenticated) {
 #ifdef PINBOARD
         [pinboard setToken:self.token];
 #endif

@@ -168,6 +168,8 @@
 		37A7B5D018345F140038677E /* edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5CE18345F140038677E /* edit@2x.png */; };
 		37A7B5D3183463410038677E /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D1183463410038677E /* add@2x.png */; };
 		37A7B5D4183463410038677E /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D2183463410038677E /* add.png */; };
+		37AD159518A13365005813CC /* About-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159418A13365005813CC /* About-Delicious.plist */; };
+		37AD159718A1352B005813CC /* Changelog-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159618A1352B005813CC /* Changelog-Delicious.plist */; };
 		37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
 		37B348CC175FF9D600929E2E /* PPChangelogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348CB175FF9D500929E2E /* PPChangelogViewController.m */; };
 		37B348CE175FFDCD00929E2E /* Changelog.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37B348CD175FFDCD00929E2E /* Changelog.plist */; };
@@ -691,6 +693,8 @@
 		37A7B5CE18345F140038677E /* edit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "edit@2x.png"; path = "Assets/edit@2x.png"; sourceTree = "<group>"; };
 		37A7B5D1183463410038677E /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "add@2x.png"; path = "Assets/add@2x.png"; sourceTree = "<group>"; };
 		37A7B5D2183463410038677E /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add.png; path = Assets/add.png; sourceTree = "<group>"; };
+		37AD159418A13365005813CC /* About-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "About-Delicious.plist"; path = "Assets/About-Delicious.plist"; sourceTree = SOURCE_ROOT; };
+		37AD159618A1352B005813CC /* Changelog-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Changelog-Delicious.plist"; path = "Assets/Changelog-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
@@ -1562,6 +1566,8 @@
 				37CBB7541881FFBC000F9C36 /* About.json */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				37CBB7401881B44B000F9C36 /* About.plist */,
+				37AD159418A13365005813CC /* About-Delicious.plist */,
+				37AD159618A1352B005813CC /* Changelog-Delicious.plist */,
 				3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */,
 				3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */,
 				37FEEBA115745488003F2B77 /* AppDelegate.h */,
@@ -2054,6 +2060,7 @@
 				37EAB9EE173F01DA00B2684B /* loading_22.png in Resources */,
 				37EAB9EF173F01DA00B2684B /* loading_22@2x.png in Resources */,
 				37EAB9F0173F01DA00B2684B /* loading_23.png in Resources */,
+				37AD159518A13365005813CC /* About-Delicious.plist in Resources */,
 				37EAB9F1173F01DA00B2684B /* loading_23@2x.png in Resources */,
 				3751D18418346C0200E0A42A /* mobilized.png in Resources */,
 				37CBB74D1881B568000F9C36 /* IC-Wrench-65@2x.png in Resources */,
@@ -2115,6 +2122,7 @@
 				37EABA15173F01DA00B2684B /* loading_41@2x.png in Resources */,
 				37EABA16173F01DA00B2684B /* loading_42.png in Resources */,
 				E8F987E6183E796900EF976D /* browse-public.png in Resources */,
+				37AD159718A1352B005813CC /* Changelog-Delicious.plist in Resources */,
 				37EABA17173F01DA00B2684B /* loading_42@2x.png in Resources */,
 				37EABA18173F01DA00B2684B /* loading_43.png in Resources */,
 				37EABA19173F01DA00B2684B /* loading_43@2x.png in Resources */,

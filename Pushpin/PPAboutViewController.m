@@ -53,15 +53,28 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+#ifdef DELICIOUS
+    NSString *title = @"Pushpin for Delicious";
+#endif
+    
+#ifdef PINBOARD
     NSBundle *bundle = [NSBundle mainBundle];
     NSDictionary *info = [bundle infoDictionary];
     NSString *title = [NSString stringWithFormat:@"Pushpin %@ (%@)", info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"]];
+#endif
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:title imageName:nil];
     self.navigationItem.titleView = titleView;
 
+#ifdef DELICIOUS
+    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About-Delicious" ofType:@"plist"];
+#endif
+
+#ifdef PINBOARD
     NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
+#endif
+
     self.sections = [NSArray arrayWithContentsOfFile:aboutPlist];
 
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];

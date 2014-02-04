@@ -46,7 +46,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+#ifdef DELICIOUS
+    self.title = @"Pushpin for Delicious";
+#endif
+    
+#ifdef PINBOARD
     self.title = @"Pushpin";
+#endif
     self.loginInProgress = NO;
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
@@ -147,7 +153,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         self.loginInProgress = YES;
 
         if ([self.usernameTextField.text isEqualToString:@""] || [self.passwordTextField.text isEqualToString:@""]) {
+#ifdef DELICIOUS
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Please enter both a username and password to sign into Delicious." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+#endif
+
+#ifdef PINBOARD
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Please enter both a username and password to sign into Pinboard." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+#endif
             [alert show];
             self.loginInProgress = NO;
             return;
@@ -211,7 +223,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         }
                             
                         case PinboardErrorTimeout: {
+#ifdef DELICIOUS
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+#endif
+                            
+#ifdef PINBOARD
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+#endif
                             [alert show];
                             [[MixpanelProxy sharedInstance] track:@"Cancelled log in"];
                             break;

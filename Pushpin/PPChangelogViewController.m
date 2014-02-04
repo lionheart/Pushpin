@@ -44,7 +44,14 @@ static NSString *CellIdentifier = @"Cell";
     
     self.heights = [NSMutableArray array];
     
+#ifdef DELICIOUS
+    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog-Delicious" ofType:@"plist"];
+#endif
+    
+#ifdef PINBOARD
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
+#endif 
+
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.title = @"Changelog";
     self.titles = [NSMutableArray array];
