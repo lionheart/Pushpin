@@ -362,19 +362,30 @@
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
     // Parse the individual parameters
     // parameters = @"hello=world&foo=bar";
-    NSMutableDictionary *dictParameters = [[NSMutableDictionary alloc] initWithDictionary:@{@"url": @"", @"title": @"", @"description": @"", @"tags": @"", @"private": @(self.privateByDefault), @"unread": @(!self.readByDefault) }];
+    NSMutableDictionary *params = [@{@"url": @"",
+                                     @"title": @"",
+                                     @"description": @"",
+                                     @"tags": @"",
+                                     @"private": @(self.privateByDefault),
+                                     @"unread": @(!self.readByDefault) } mutableCopy];
+
     NSArray *arrParameters = [query componentsSeparatedByString:@"&"];
-    for (int i = 0; i < [arrParameters count]; i++) {
-        NSArray *arrKeyValue = [[arrParameters objectAtIndex:i] componentsSeparatedByString:@"="];
+    for (NSInteger i=0; i<[arrParameters count]; i++) {
+        NSArray *arrKeyValue = [arrParameters[i] componentsSeparatedByString:@"="];
+
         if ([arrKeyValue count] >= 2) {
-            NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
+            NSMutableString *strKey = [NSMutableString string];
             [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-            NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
+
+            NSMutableString *strValue   = [NSMutableString string];
             [strValue setString:[[[arrKeyValue objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-            if (strKey.length > 0) [dictParameters setObject:strValue forKey:strKey];
+
+            if (strKey.length > 0) {
+                params[strKey] = strValue;
+            }
         }
     }
-    return dictParameters;
+    return params;
 }
 
 - (void)openSettings {
