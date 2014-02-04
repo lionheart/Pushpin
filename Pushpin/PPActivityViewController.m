@@ -87,4 +87,12 @@
     return self;
 }
 
+- (UIActivityViewControllerCompletionHandler)completionHandler {
+    return ^(NSString *activityType, BOOL completed) {
+        if ([activityType isEqualToString:PPInstapaperActivity]) {
+
+        }
+    };
+}
+
 @end
