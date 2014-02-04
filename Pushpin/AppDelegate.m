@@ -661,7 +661,7 @@
     BOOL isAuthenticated;
     
 #ifdef DELICIOUS
-    isAuthenticated = NO;
+    isAuthenticated = self.username != nil;
 #endif
     
 #ifdef PINBOARD

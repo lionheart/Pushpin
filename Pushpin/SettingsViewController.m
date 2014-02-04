@@ -31,6 +31,7 @@
 #import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHDelicious/LHDelicious.h>
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -327,9 +328,20 @@ static NSString *CellIdentifier = @"Cell";
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
             AppDelegate *delegate = [AppDelegate sharedDelegate];
+            delegate.lastUpdated = nil;
+
+#ifdef DELICIOUS
+            delegate.username = nil;
+            
+            [[LHDelicious sharedInstance] resetAuthentication];
+#endif
+
+#ifdef PINBOARD
+            delegate.token = nil;
+
             [[ASPinboard sharedInstance] resetAuthentication];
-            [delegate setToken:nil];
-            [delegate setLastUpdated:nil];
+#endif
+
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:[AppDelegate databasePath] error:nil];
             [delegate setLoginViewController:nil];
@@ -350,8 +362,9 @@ static NSString *CellIdentifier = @"Cell";
     }
     else if (alertView == self.instapaperAlertView) {
         // Check for cancel
-        if (buttonIndex == 0)
+        if (buttonIndex == 0) {
             return;
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.instapaperVerificationAlertView show];
