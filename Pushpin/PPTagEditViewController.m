@@ -87,7 +87,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewDidLoad];
 
     self.title = @"Edit Tags";
+    
+#ifdef PINBOARD
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Suggest" style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonItemTouchUpInside:)];
+#endif
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.dataSource = self;
