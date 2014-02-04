@@ -25,7 +25,15 @@
 #import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
+#ifdef PINBOARD
 #import <ASPinboard/ASPinboard.h>
+#endif
+
+#ifdef DELICIOUS
+#import <LHDelicious/LHDelicious.h>
+#endif
+
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
@@ -278,7 +286,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             return kBookmarkTagRow + 1;
             
         case kBookmarkBottomSection:
+#ifdef DELICIOUS
+            return 1;
+#endif
+            
+#ifdef PINBOARD
             return 2;
+#endif
             
         default:
             return 0;
@@ -644,8 +658,125 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
         BOOL private = self.setAsPrivate;
         BOOL unread = !self.markAsRead;
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            void (^BookmarkSuccessBlock)() = ^{
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    BOOL bookmarkAdded;
+                    
+                    [db open];
+                    [db beginTransaction];
+                    
+                    FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlTextField.text]];
+                    [results next];
+                    
+                    NSString *hash = [results stringForColumnIndex:0];
+                    NSInteger count = [results intForColumnIndex:1];
+                    
+                    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                  @"url": url,
+                                                                                                  @"title": title,
+                                                                                                  @"description": description,
+                                                                                                  @"tags": tags,
+                                                                                                  @"unread": @(unread),
+                                                                                                  @"private": @(private),
+                                                                                                  
+#ifdef PINBOARD
+                                                                                                  @"starred": @(NO)
+#endif
+                                                                                                  }];
+                    
+                    if (count > 0) {
+                        [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+                        
+                        if (hash && ![hash isEqual:[NSNull null]]) {
+                            params[@"hash"] = hash;
+                            
+#ifdef DELICIOUS
+                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+#endif
+                            
+#ifdef PINBOARD
+                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+#endif
+                            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                            for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
+                                [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                            }
+                        }
+                        else {
+#warning The bookmark doesn't yet have a hash
+                            
+#ifdef DELICIOUS
+                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE url=:url" withParameterDictionary:params];
+#endif
+                            
+#ifdef PINBOARD
+                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
+#endif
+                        }
+                        bookmarkAdded = NO;
+                    }
+                    else {
+                        params[@"created_at"] = [NSDate date];
+                        [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+                        
+#ifdef DELICIOUS
+                        [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
+#endif
+                        
+#ifdef PINBOARD
+                        [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
+#endif
+                        
+                        bookmarkAdded = YES;
+                    }
+                    
+                    [db commit];
+                    [db close];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UILocalNotification *notification = [[UILocalNotification alloc] init];
+                        if (bookmarkAdded) {
+                            notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
+                        }
+                        else {
+                            notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
+                        }
+                        
+                        notification.alertAction = @"Open Pushpin";
+                        notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
+                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                        [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                    });
+                });
+            };
+            
+            void (^BookmarkFailureBlock)(NSError *) = ^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.navigationItem.leftBarButtonItem.enabled = YES;
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                    [alert show];
+                });
+            };
+            
+#ifdef DELICIOUS
+            LHDelicious *delicious = [LHDelicious sharedInstance];
+            
+            [delicious addBookmarkWithURL:url
+                                    title:title
+                              description:description
+                                     tags:tags
+                                   shared:!private
+                                  success:BookmarkSuccessBlock
+                                  failure:BookmarkFailureBlock];
+#endif
+
+#ifdef PINBOARD
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard addBookmarkWithURL:url
                                    title:title
@@ -653,84 +784,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                     tags:tags
                                   shared:!private
                                   unread:unread
-                                 success:^{
-                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                         MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-                                         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                         BOOL bookmarkAdded;
-                                         
-                                         [db open];
-                                         [db beginTransaction];
-                                         
-                                         FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.urlTextField.text]];
-                                         [results next];
-                                         
-                                         NSString *hash = [results stringForColumnIndex:0];
-                                         NSInteger count = [results intForColumnIndex:1];
-                                         
-                                         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                       @"url": url,
-                                                                                                                       @"title": title,
-                                                                                                                       @"description": description,
-                                                                                                                       @"tags": tags,
-                                                                                                                       @"unread": @(unread),
-                                                                                                                       @"private": @(private),
-                                                                                                                       @"starred": @(NO)
-                                                                                                                       }];
-                                         
-                                         if (count > 0) {
-                                             [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
-                                             
-                                             if (hash && ![hash isEqual:[NSNull null]]) {
-                                                 params[@"hash"] = hash;
-                                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
-                                                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                                                 for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
-                                                     [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                                     [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                                                 }
-                                             }
-                                             else {
-#warning The bookmark doesn't yet have a hash
-                                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
-                                             }
-                                             bookmarkAdded = NO;
-                                         }
-                                         else {
-                                             params[@"created_at"] = [NSDate date];
-                                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
-                                             [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
-                                             
-                                             bookmarkAdded = YES;
-                                         }
-                                         
-                                         [db commit];
-                                         [db close];
-                                         
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                             UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                             if (bookmarkAdded) {
-                                                 notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
-                                             }
-                                             else {
-                                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
-                                             }
-                                             
-                                             notification.alertAction = @"Open Pushpin";
-                                             notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
-                                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                             [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-                                         });
-                                     });
-                                 }
-                                 failure:^(NSError *error) {
-                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                         self.navigationItem.leftBarButtonItem.enabled = YES;
-                                         self.navigationItem.rightBarButtonItem.enabled = YES;
-                                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                                         [alert show];
-                                     });
-                                 }];
+                                 success:BookmarkSuccessBlock
+                                 failure:BookmarkFailureBlock];
+#endif
+
         });
     });
 }
