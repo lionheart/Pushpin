@@ -17,6 +17,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 
+#import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
@@ -53,8 +54,9 @@ static NSString *CellIdentifier = @"Cell";
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
     }
-    
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]]) {
+
+    OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
+    if ([openInChromeController isChromeInstalled]) {
         [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
     }
     

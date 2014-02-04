@@ -41,6 +41,7 @@
 #import <TestFlightSDK/TestFlight.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import <OpenInChrome/OpenInChromeController.h>
 
 @interface AppDelegate ()
 
@@ -234,15 +235,12 @@
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
                     if ([sourceApplication isEqualToString:@"com.google.chrome.ios"]) {
-                        if ([url.scheme isEqualToString:@"http"]) {
-                            url = [NSURL URLWithString:@"googlechrome://"];
-                        }
-                        else if ([url.scheme isEqualToString:@"https"]) {
-                            url = [NSURL URLWithString:@"googlechromes://"];
-                        }
+                        OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
+                        [openInChromeController openInChrome:url];
                     }
-
-                    [[UIApplication sharedApplication] openURL:url];
+                    else {
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
                 }
             }];
         }

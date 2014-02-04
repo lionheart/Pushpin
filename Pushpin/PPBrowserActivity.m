@@ -8,6 +8,7 @@
 
 #import "PPBrowserActivity.h"
 #import "NSString+URLEncoding2.h"
+#import <OpenInChrome/OpenInChromeController.h>
 
 @implementation PPBrowserActivity
 
@@ -65,20 +66,19 @@
     NSURL *url = [NSURL URLWithString:tempUrl];
     NSRange range = [tempUrl rangeOfString:self.urlScheme];
     if ([self.browserName isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
-        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
-        
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-            url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [tempUrl urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-        } else {
-            url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"googlechrome"]];
-        }
-    } else if ([self.browserName isEqualToString:NSLocalizedString(@"Opera", nil)]) {
+        OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
+        [openInChromeController openInChrome:url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
+    }
+    else if ([self.browserName isEqualToString:NSLocalizedString(@"Opera", nil)]) {
         url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"ohttp"]];
-    } else if ([self.browserName isEqualToString:NSLocalizedString(@"Dolphin", nil)]) {
+    }
+    else if ([self.browserName isEqualToString:NSLocalizedString(@"Dolphin", nil)]) {
         url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"dolphin"]];
-    } else if ([self.browserName isEqualToString:NSLocalizedString(@"Cyberspace", nil)]) {
+    }
+    else if ([self.browserName isEqualToString:NSLocalizedString(@"Cyberspace", nil)]) {
         url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"cyber"]];
-    } else if ([self.browserName isEqualToString:NSLocalizedString(@"iCab Mobile", nil)]) {
+    }
+    else if ([self.browserName isEqualToString:NSLocalizedString(@"iCab Mobile", nil)]) {
         url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
     }
     
