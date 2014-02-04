@@ -642,7 +642,7 @@
     }];
 
     [delicious setRequestStartedCallback:^{
-        [self setNetworkActivityIndicatorVisible:NO];
+        [self setNetworkActivityIndicatorVisible:YES];
     }];
 #endif
 
