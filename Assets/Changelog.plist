@@ -31,7 +31,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix an issue where users with large amounts of bookmarks (over 30,000) experienced unpredictability in syncing bookmarks.</string>
+				<string>Fix an issue where users with large amounts of bookmarks (over 30,000) experienced unpredictability in syncing.</string>
 			</array>
 			<array>
 				<string>FIX</string>
