@@ -135,6 +135,12 @@ static NSString *PPBadgeFontColor = @"fontColor";
 static NSString *PPBookmarkDisplaySettingUpdated = @"PPBookmarkDisplaySetting";
 static NSString *PPBookmarkCompressSettingUpdate = @"PPBookmarkCompressSetting";
 
+static NSString *PPInstapaperActivity = @"PPInstapaperActivity";
+static NSString *PPReadabilityActivity = @"PPReadabilityActivity";
+static NSString *PPReadingListActivity = @"PPReadingListActivity";
+static NSString *PPPocketActivity = @"PPPocketActivity";
+static NSString *PPNoActivity = @"PPNoActivity";
+
 #ifdef DELICIOUS
 static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";
 static NSString *PPMixpanelToken = @"c9c119f24aa8b5d17311be35ecf2310e";
