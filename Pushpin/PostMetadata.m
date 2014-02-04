@@ -229,7 +229,7 @@
     });
 
     PostMetadata *metadata = [[PostMetadata alloc] init];
-    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 10);
+    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 12);
     metadata.titleString = titleString;
     metadata.descriptionString = descriptionString;
     metadata.linkString = linkString;
