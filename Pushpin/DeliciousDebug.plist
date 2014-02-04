@@ -30,10 +30,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>Icon~iphone</string>
 			<key>CFBundleURLName</key>
-			<string>io.aurora.pushpin</string>
+			<string>com.lionheartsw.pushpindelicious</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>pushpin</string>
+				<string>pushpindelicious</string>
 			</array>
 		</dict>
 		<dict>
