@@ -126,7 +126,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
     }
 
+#ifdef PINBOARD
     AppDelegate *delegate = [AppDelegate sharedDelegate];
+
     if (![delegate feedToken]) {
         [delegate setNetworkActivityIndicatorVisible:YES];
         [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
@@ -134,6 +136,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             [self.tableView reloadData];
         }];
     }
+#endif
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];

@@ -329,16 +329,13 @@ static NSString *CellIdentifier = @"Cell";
         if (buttonIndex == 1) {
             AppDelegate *delegate = [AppDelegate sharedDelegate];
             delegate.lastUpdated = nil;
+            [delegate resetCredentials];
 
 #ifdef DELICIOUS
-            delegate.username = nil;
-            
             [[LHDelicious sharedInstance] resetAuthentication];
 #endif
 
 #ifdef PINBOARD
-            delegate.token = nil;
-
             [[ASPinboard sharedInstance] resetAuthentication];
 #endif
 
@@ -625,7 +622,13 @@ static NSString *CellIdentifier = @"Cell";
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
+#ifdef DELICIOUS
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=806918542&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+#endif
+                    
+#ifdef PINBOARD
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+#endif
                     break;
                     
                 case PPOtherFollow: {

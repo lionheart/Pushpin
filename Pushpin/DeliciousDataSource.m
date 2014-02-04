@@ -459,7 +459,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
             success();
         };
-        
+
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
             if (failure) {
                 failure(error);
