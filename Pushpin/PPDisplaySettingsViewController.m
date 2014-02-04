@@ -393,7 +393,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             break;
 
         case PPSectionTextExpanderSettings: {
-            SMTEDelegateController *teDelegate = [[SMTEDelegateController alloc] init];
+            SMTEDelegateController *teDelegate = [AppDelegate sharedDelegate].textExpander;
             teDelegate.getSnippetsScheme = @"pushpin";
             teDelegate.clientAppName = @"Pushpin";
             [teDelegate getSnippets];

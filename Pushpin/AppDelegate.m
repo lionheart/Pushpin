@@ -138,6 +138,20 @@
     if ([[PocketAPI sharedAPI] handleOpenURL:url]) {
         return YES;
     }
+    if ([@"/TextExpanderSettings" isEqualToString:url.path]) {
+        NSError *error;
+        BOOL cancel;
+
+        if (![self.textExpander handleGetSnippetsURL:url error:&error cancelFlag:&cancel]) {
+            // User cancelled request.
+        }
+        else {
+            if (cancel) {
+                // User cancelled get snippets
+                return NO;
+            }
+        }
+    }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
@@ -554,6 +568,7 @@
     self.bookmarksUpdatedMessage = nil;
     self.addBookmarkAlertView = nil;
     self.updateBookmarkAlertView = nil;
+    self.textExpander = [[SMTEDelegateController alloc] init];
     
     // 4 MB memory, 100 MB disk
     self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
