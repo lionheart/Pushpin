@@ -10,6 +10,8 @@
 #import "LoginViewController.h"
 #import "PPConstants.h"
 
+#import <TextExpander/SMTEDelegateController.h>
+
 @class FMDatabaseQueue;
 @class PPNavigationController;
 @class PPSplitViewController;
@@ -58,6 +60,8 @@
 @property (nonatomic, strong) PPNavigationController *navigationController;
 @property (nonatomic, strong) PPSplitViewController *splitViewController;
 @property (nonatomic, strong) FeedListViewController *feedListViewController;
+
+@property (nonatomic, strong) SMTEDelegateController *textExpander;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
