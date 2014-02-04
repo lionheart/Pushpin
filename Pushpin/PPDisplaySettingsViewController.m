@@ -338,8 +338,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    cell.textLabel.text = @"Only prompt for \"new\" URLs";
-                    cell.detailTextLabel.text = @"Turn on to only show the add bookmark prompt for URLs that Pushpin hasn't seen before.";
+                    cell.textLabel.text = @"Show prompt for \"new\" URLs";
+                    cell.detailTextLabel.text = @"Only show the add bookmark prompt for URLs that Pushpin hasn't seen before.";
 
                     size = cell.frame.size;
                     switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
@@ -350,12 +350,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 case PPOtherDisplayClearCache:
                     cell.textLabel.text = @"Reset the list of stored URLs";
                     cell.detailTextLabel.text = @"Resets the list of URLs that you've decided not to add from the clipboard.";
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
                 case PPOtherAlwaysShowAlert:
                     cell.textLabel.text = @"Notify when a URL isn't added";
-                    cell.detailTextLabel.text = @"Display a notification when you've previously decided not to add the URL currently on the clipboard.";
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.detailTextLabel.text = @"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.";
 
                     size = cell.frame.size;
                     switchSize = self.alwaysShowAlertSwitch.frame.size;
