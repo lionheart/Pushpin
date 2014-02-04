@@ -46,6 +46,7 @@
 @property (nonatomic) BOOL privateByDefault;
 @property (nonatomic) BOOL readByDefault;
 @property (nonatomic) BOOL onlyPromptToAddOnce;
+@property (nonatomic) BOOL alwaysShowClipboardNotification;
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;
