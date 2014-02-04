@@ -289,6 +289,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                         success:^(NSString *username) {
                                             self.loginInProgress = NO;
                                             delegate.username = username;
+                                            delegate.password = self.passwordTextField.text;
                                             
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 LoginSuccessBlock();

@@ -74,6 +74,7 @@
 @synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
 @synthesize doubleTapToEdit = _doubleTapToEdit;
 @synthesize alwaysShowClipboardNotification = _alwaysShowClipboardNotification;
+@synthesize username = _username;
 
 + (NSString *)databasePath {
 #ifdef DELICIOUS
@@ -670,7 +671,12 @@
 
     if (isAuthenticated) {
 #ifdef PINBOARD
-        [pinboard setToken:self.token];
+        pinboard.token = self.token;
+#endif
+        
+#ifdef DELICIOUS
+        delicious.username = self.username;
+        delicious.password = self.password;
 #endif
         [mixpanel identify:self.username];
         [mixpanel.people set:@"$username" to:self.username];
@@ -1340,14 +1346,6 @@
     return _token;
 }
 
-- (NSString *)username {
-#ifdef DELICIOUS
-    return _username;
-#else
-    return [[[self token] componentsSeparatedByString:@":"] objectAtIndex:0];
-#endif
-}
-
 #pragma mark - Helpers
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {
@@ -1448,15 +1446,74 @@
     }
 }
 
+- (NSString *)username {
+#ifdef DELICIOUS
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
+    NSString *key = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+    if ([key isEqualToString:@""]) {
+        return nil;
+    }
+    return key;
+#endif
+    
+#ifdef PINBOARD
+    return [[[self token] componentsSeparatedByString:@":"] objectAtIndex:0];
+#endif
+}
+
+- (void)setUsername:(NSString *)username {
+    [self setUsername:username password:nil];
+}
+
 - (NSString *)password {
+#ifdef DELICIOUS
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
+#endif
+
+#ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-    return [keychain objectForKey:(__bridge id)kSecValueData];
+#endif
+
+    NSString *key = [keychain objectForKey:(__bridge id)kSecValueData];
+    if ([key isEqualToString:@""]) {
+        return nil;
+    }
+    return key;
 }
 
 - (void)setPassword:(NSString *)password {
+    [self setUsername:nil password:password];
+}
+
+- (void)setUsername:(NSString *)username password:(NSString *)password {
+#ifdef DELICIOUS
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
+#endif
+    
+#ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-    [keychain setObject:self.username forKey:(__bridge id)kSecAttrAccount];
-    [keychain setObject:password forKey:(__bridge id)kSecValueData];
+#endif
+    
+    if (username) {
+        [keychain setObject:username forKey:(__bridge id)kSecAttrAccount];
+    }
+    
+    if (password) {
+        [keychain setObject:password forKey:(__bridge id)kSecValueData];
+    }
+}
+
+- (void)resetCredentials {
+#ifdef DELICIOUS
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
+#endif
+    
+#ifdef PINBOARD
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
+#endif
+    
+    [keychain resetKeychainItem];
+    self.token = nil;
 }
 
 #pragma mark - UISplitViewControllerDelegate

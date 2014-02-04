@@ -64,6 +64,8 @@
 
 @property (nonatomic, strong) SMTEDelegateController *textExpander;
 
+- (void)setUsername:(NSString *)username password:(NSString *)password;
+- (void)resetCredentials;
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
