@@ -16,6 +16,5 @@
 
 - (id)initWithUrlScheme:(NSString *)scheme;
 - (id)initWithUrlScheme:(NSString *)scheme browser:(NSString *)browser;
-- (id)initWithUrlScheme:(NSString *)scheme url:(NSString *)url browser:(NSString *)browser;
 
 @end

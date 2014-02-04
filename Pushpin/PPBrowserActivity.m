@@ -10,10 +10,35 @@
 #import "NSString+URLEncoding2.h"
 #import <OpenInChrome/OpenInChromeController.h>
 
+@interface PPBrowserActivity ()
+
+@property (nonatomic, strong) NSURL *url;
+
+@end
+
 @implementation PPBrowserActivity
 
 + (UIActivityCategory)activityCategory {
     return UIActivityCategoryAction;
+}
+
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSURL class]]) {
+            self.url = (NSURL *)item;
+            break;
+        }
+    }
+}
+
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSURL class]]) {
+            return YES;
+        }
+    }
+
+    return NO;
 }
 
 - (id)initWithUrlScheme:(NSString *)scheme {
@@ -26,15 +51,6 @@
 
 - (id)initWithUrlScheme:(NSString *)scheme browser:(NSString *)browser {
     if (self = [self initWithUrlScheme:scheme]) {
-        self.browserName = browser;
-    }
-    
-    return self;
-}
-
-- (id)initWithUrlScheme:(NSString *)scheme url:(NSString *)url browser:(NSString *)browser {
-    if (self = [self initWithUrlScheme:scheme]) {
-        self.urlString = url;
         self.browserName = browser;
     }
     
@@ -57,33 +73,18 @@
     return image;
 }
 
-- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
-    return YES;
-}
-
 - (void)performActivity {
-    NSString *tempUrl = self.urlString;
-    NSURL *url = [NSURL URLWithString:tempUrl];
-    NSRange range = [tempUrl rangeOfString:self.urlScheme];
+    NSRange range = [self.url.absoluteString rangeOfString:self.urlScheme];
+
     if ([self.browserName isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
-        [openInChromeController openInChrome:url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
+        [openInChromeController openInChrome:self.url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
     }
-    else if ([self.browserName isEqualToString:NSLocalizedString(@"Opera", nil)]) {
-        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"ohttp"]];
-    }
-    else if ([self.browserName isEqualToString:NSLocalizedString(@"Dolphin", nil)]) {
-        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"dolphin"]];
-    }
-    else if ([self.browserName isEqualToString:NSLocalizedString(@"Cyberspace", nil)]) {
-        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"cyber"]];
-    }
-    else if ([self.browserName isEqualToString:NSLocalizedString(@"iCab Mobile", nil)]) {
-        url = [NSURL URLWithString:[tempUrl stringByReplacingCharactersInRange:range withString:@"icabmobile"]];
+    else {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]]];
     }
     
     [self activityDidFinish:YES];
-    [[UIApplication sharedApplication] openURL:url];
 }
 
 @end
