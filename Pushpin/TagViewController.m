@@ -18,6 +18,7 @@
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "FeedListViewController.h"
+#import "DeliciousDataSource.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -294,11 +295,20 @@ static NSString *CellIdentifier = @"TagCell";
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
-    
+
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    
+#ifdef DELICIOUS
+    DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
+    deliciousDataSource.tags = @[tag[@"name"]];
+    postViewController.postDataSource = deliciousDataSource;
+#endif
+    
+#ifdef PINBOARD
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag[@"name"]];
     postViewController.postDataSource = pinboardDataSource;
+#endif
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
