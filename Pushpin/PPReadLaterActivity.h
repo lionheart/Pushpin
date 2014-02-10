@@ -6,7 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 #import "PPConstants.h"
 
 @interface PPReadLaterActivity : UIActivity
