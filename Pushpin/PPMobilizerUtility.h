@@ -6,7 +6,8 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
 #import "PPConstants.h"
 
 @interface PPMobilizerUtility : NSObject

@@ -405,7 +405,6 @@
 		E80EEF96185F5BD000979AA3 /* badge-favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF92185F5BCF00979AA3 /* badge-favorite@2x.png */; };
 		E80EEF97185F5BD000979AA3 /* badge-private.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF93185F5BCF00979AA3 /* badge-private.png */; };
 		E80EEF98185F5BD000979AA3 /* badge-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF94185F5BCF00979AA3 /* badge-private@2x.png */; };
-		E84A8D2717F9CE0A003B4F50 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */; };
 		E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */; };
 		E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */; };
@@ -2177,7 +2176,6 @@
 				37EABA3E173F01DA00B2684B /* loading_62.png in Resources */,
 				37EABA3F173F01DA00B2684B /* loading_62@2x.png in Resources */,
 				E8734234180DAC3400CF9E5F /* activity-instapaper@2x.png in Resources */,
-				E84A8D2717F9CE0A003B4F50 /* (null) in Resources */,
 				37EABA40173F01DA00B2684B /* loading_63.png in Resources */,
 				37EABA41173F01DA00B2684B /* loading_63@2x.png in Resources */,
 				37EABA42173F01DA00B2684B /* loading_64.png in Resources */,
@@ -2438,6 +2436,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2474,7 +2473,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "95672B4F-7046-4570-8B97-D444C806700C";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2485,7 +2484,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
@@ -2494,12 +2493,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Beta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -2514,6 +2508,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2550,7 +2545,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "082A1E51-C373-4E9F-B3B6-D8C4CCBFA1A3";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2561,7 +2556,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
@@ -2570,12 +2565,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/DeliciousBeta.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -2590,6 +2580,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2623,7 +2614,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "36037BA2-7D1C-4FD8-BB63-4D6FA5D78A54";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2634,7 +2625,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Delicious;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
@@ -2643,12 +2634,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/DeliciousAppStore.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2662,6 +2648,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2701,7 +2688,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "D3F796BF-1DA0-4238-A189-BDED5B560521";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2712,7 +2699,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
@@ -2721,12 +2708,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/DeliciousDebug.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -2741,6 +2723,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2780,7 +2763,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "AE05D9EC-AACB-4026-B2B8-C45B3F62604A";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2793,6 +2776,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2826,7 +2810,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "8AE228A5-FB56-471A-B4D0-41DEC02A4226";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2837,7 +2821,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
@@ -2846,12 +2830,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Dev-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -2864,7 +2843,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5D046C0A53164C1681C534DD /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
@@ -2873,12 +2852,7 @@
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Pushpin for Pinboard-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.49\\ PM/usr/local/lib",
-					"/Users/dan/Documents/Projects/libPython\\ 1-4-14,\\ 5.58\\ PM/usr/local/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

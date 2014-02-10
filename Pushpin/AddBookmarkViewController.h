@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
 #import "AppDelegate.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTagEditViewController.h"

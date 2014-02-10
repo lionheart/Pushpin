@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
 #import "PPTableViewController.h"
 
 @interface BookmarkletInstallationViewController : PPTableViewController

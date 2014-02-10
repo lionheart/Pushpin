@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
 #import "PPTableViewController.h"
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
