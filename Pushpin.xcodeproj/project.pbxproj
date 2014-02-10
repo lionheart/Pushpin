@@ -524,10 +524,6 @@
 		3714DB911757DFFD00B23F4F /* user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "user@2x.png"; path = "Assets/user@2x.png"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		3717966618A8857F004B2D08 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		3717966C18A88580004B2D08 /* \-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "\\-Info.plist"; sourceTree = "<group>"; };
-		3717966E18A88580004B2D08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		3717967018A88580004B2D08 /* _.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _.m; sourceTree = "<group>"; };
-		3717967218A88580004B2D08 /* \-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "\\-Prefix.pch"; sourceTree = "<group>"; };
 		3717968018A885F7004B2D08 /* Pushpin Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Pushpin Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3717968618A885FE004B2D08 /* Pushpin Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pushpin Tests-Info.plist"; sourceTree = "<group>"; };
 		3717968818A885FE004B2D08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1137,25 +1133,6 @@
 			name = Stylesheets;
 			sourceTree = "<group>";
 		};
-		3717966A18A8857F004B2D08 /* \ */ = {
-			isa = PBXGroup;
-			children = (
-				3717967018A88580004B2D08 /* _.m */,
-				3717966B18A88580004B2D08 /* Supporting Files */,
-			);
-			path = "\\";
-			sourceTree = "<group>";
-		};
-		3717966B18A88580004B2D08 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				3717966C18A88580004B2D08 /* \-Info.plist */,
-				3717966D18A88580004B2D08 /* InfoPlist.strings */,
-				3717967218A88580004B2D08 /* \-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		3717968418A885FE004B2D08 /* Pushpin Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1580,7 +1557,6 @@
 				370859F817F329D400270A9D /* Images.xcassets */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
-				3717966A18A8857F004B2D08 /* \ */,
 				3717968418A885FE004B2D08 /* Pushpin Tests */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				37FEEB8F15745488003F2B77 /* Products */,
@@ -2529,14 +2505,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		3717966D18A88580004B2D08 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3717966E18A88580004B2D08 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		3717968718A885FE004B2D08 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

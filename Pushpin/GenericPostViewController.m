@@ -1380,6 +1380,9 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         if (offset < -60) {
             [self.pullToRefreshImageView startAnimating];
+            [self.postDataSource updateBookmarksWithSuccess:^{
+                [self updateFromLocalDatabaseWithCallback:nil];
+            } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
     }
 }

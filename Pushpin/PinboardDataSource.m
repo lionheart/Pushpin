@@ -276,10 +276,36 @@ static BOOL kPinboardSyncInProgress = NO;
             // Create an NSSet of the local data for filtering
             NSMutableArray *localHashTable = [NSMutableArray array];
             NSMutableArray *localMetaTable = [NSMutableArray array];
+
+            // Three things we want to do here:
+            //
+            // 1. Add new bookmarks.
+            // 2. Update existing bookmarks.
+            // 3. Delete removed bookmarks.
+            //
+            // Let's call "before update" A, and "after update" B.
+            // For 1, we want all bookmarks in B but not in A. So [B minusSet:A]
+            // For 3, we want all bookmarks in A but not in B. So [A minusSet:B]
+            // For 2, we do [B minusSet:A], but with hashes + meta instead of just hashes as keys.
+            NSMutableSet *A = [NSMutableSet set];
+            NSMutableSet *B = [NSMutableSet set];
+            NSMutableSet *APlusMeta = [NSMutableSet set];
+            NSMutableSet *BPlusMeta = [NSMutableSet set];
+            
+            NSMutableSet *insertedBookmarkSet = [NSMutableSet set];
+            NSMutableSet *deletedBookmarkSet = [NSMutableSet set];
+            NSMutableSet *updatedBookmarkSet = [NSMutableSet set];
             
             DLog(@"%@ - Getting local data", [NSDate date]);
 
-            NSString *firstHash = (posts.count > 0) ? posts[0][@"hash"] : @"";
+            NSString *firstHash;
+            if (posts.count > 0) {
+                firstHash = posts[0][@"hash"];
+            }
+            else {
+                firstHash = @"";
+            }
+
             NSUInteger firstBookmarkIndex = NSNotFound;
             NSUInteger total = posts.count;
             NSUInteger deleteOffset;
@@ -287,10 +313,14 @@ static BOOL kPinboardSyncInProgress = NO;
             NSUInteger resultIndex = 0;
             while ([results next]) {
                 NSString *hash = [results stringForColumn:@"hash"];
-                
+                NSString *meta = [results stringForColumn:@"meta"];
+
+                [A addObject:hash];
+                [APlusMeta addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
+
                 // Update our NSSets
                 [localHashTable addObject:hash];
-                [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, [results stringForColumn:@"meta"]]];
+                [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, meta]];
                 
                 // If our local first hash doesn't equal the remote first hash, get the offset for deletion
                 if (firstBookmarkIndex == NSNotFound) {
@@ -322,30 +352,6 @@ static BOOL kPinboardSyncInProgress = NO;
             
             DLog(@"%@ - Calculating changes", [NSDate date]);
             
-            // Find the additions
-            NSMutableSet *additionBookmarksSet = [remoteHashSet mutableCopy];
-            [additionBookmarksSet minusSet:localHashSet];
-            
-            // Find the removals
-            NSUInteger rangeEnd = 0;
-            if (firstBookmarkIndex == NSNotFound) {
-                rangeEnd = count > localCount ? localCount - 1 : count;
-            }
-            else {
-                rangeEnd = (count + deleteOffset) > localCount ? localCount - 1 : (count + deleteOffset);
-            }
-
-            // MIN is needed as localCount - 1 => very large number when localCount is 0
-            rangeEnd = MIN(0, rangeEnd);
-            NSRange deleteRange = NSMakeRange(offset, rangeEnd);
-            
-            NSMutableSet *deletionBookmarksSet = [[NSSet setWithArray:[localHashTable subarrayWithRange:deleteRange]] mutableCopy];
-            [deletionBookmarksSet minusSet:remoteHashSet];
-            
-            // Find the modifications
-            NSMutableSet *updateBookmarksSet = [remoteMetaSet mutableCopy];
-            [updateBookmarksSet minusSet:localMetaSet];
-            
             NSDictionary *params;
             NSUInteger index = 0;
             NSUInteger skipped = 0;
@@ -365,81 +371,126 @@ static BOOL kPinboardSyncInProgress = NO;
             
             // Only track one date error per update
             BOOL dateError = NO;
-            
-            for (NSDictionary *post in posts) {
-                if (index > 0 && (index % 1000) == 0) {
-                    DLog(@"%@ - Index %ld of %ld", [NSDate date], (long)index, (long)total);
-                }
-                BOOL updated_or_created = NO;
 
+            NSMutableDictionary *bookmarks = [NSMutableDictionary dictionary];
+            // Go through the posts once to fill out the B & BPlusMeta sets
+            for (NSDictionary *post in posts) {
                 NSString *hash = post[@"hash"];
                 NSString *meta = post[@"meta"];
+                
+                [B addObject:hash];
+                [BPlusMeta addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
+                bookmarks[hash] = post;
+            }
+            
+            // Now we figure out our syncing.
+            [insertedBookmarkSet setSet:B];
+            [insertedBookmarkSet minusSet:A];
+            
+            [updatedBookmarkSet setSet:BPlusMeta];
+            [updatedBookmarkSet minusSet:APlusMeta];
+            
+            [deletedBookmarkSet setSet:A];
+            [deletedBookmarkSet minusSet:B];
+            
+            NSInteger amountToAdd = insertedBookmarkSet.count / posts.count;
+            for (NSString *hash in insertedBookmarkSet) {
+                NSDictionary *post = bookmarks[hash];
+                NSString *meta = post[@"meta"];
 
+                NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
+                if (!dateError && !date) {
+                    date = [NSDate dateWithTimeIntervalSince1970:0];
+                    [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                    dateError = YES;
+                }
+                
                 NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
-                // Add if necessary
-                if ([additionBookmarksSet containsObject:hash]) {
-                    NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
-                    if (!dateError && !date) {
-                        date = [NSDate dateWithTimeIntervalSince1970:0];
-                        [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
-                        dateError = YES;
-                    }
-                    
-                    params = @{
-                               @"url": post[@"href"],
-                               @"title": title,
-                               @"description": description,
-                               @"meta": meta,
-                               @"hash": hash,
-                               @"tags": postTags,
-                               @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                               @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                               @"created_at": date
-                               };
-                    
-                    [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                    
-                    updated_or_created = YES;
-                    addCount++;
+                params = @{
+                           @"url": post[@"href"],
+                           @"title": title,
+                           @"description": description,
+                           @"meta": meta,
+                           @"hash": hash,
+                           @"tags": postTags,
+                           @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                           @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                           @"created_at": date
+                           };
+                
+                [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                addCount++;
+                
+                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                tagDeleteCount++;
+                
+                for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
+                    [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                    [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                    tagAddCount++;
                 }
                 
-                // Update if necessary
-                if (!updated_or_created) {
-                    if ([updateBookmarksSet containsObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]]) {
-                        params = @{
-                                   @"url": post[@"href"],
-                                   @"title": title,
-                                   @"description": description,
-                                   @"meta": meta,
-                                   @"hash": hash,
-                                   @"tags": postTags,
-                                   @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                   @"private": @([post[@"shared"] isEqualToString:@"no"])
-                                   };
-                        
-                        // Update this bookmark
-                        [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                        updated_or_created = YES;
-                        updateCount++;
-                    }
+                index += amountToAdd;
+                progress(index, total);
+                NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
+                [queue enqueueNotification:note postingStyle:NSPostASAP];
+            }
+            
+            amountToAdd = updatedBookmarkSet.count / posts.count;
+            for (NSString *hashPlusMeta in updatedBookmarkSet) {
+                NSString *hash = [hashPlusMeta componentsSeparatedByString:@"_"][0];
+                NSDictionary *post = bookmarks[hash];
+                NSString *meta = post[@"meta"];
+
+                NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
+                if (!dateError && !date) {
+                    date = [NSDate dateWithTimeIntervalSince1970:0];
+                    [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                    dateError = YES;
                 }
                 
-                // Update tags
-                if (updated_or_created && postTags.length > 0) {
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                    tagDeleteCount++;
-
-                    for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                        tagAddCount++;
-                    }
+                NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                
+                params = @{
+                           @"url": post[@"href"],
+                           @"title": title,
+                           @"description": description,
+                           @"meta": meta,
+                           @"hash": hash,
+                           @"tags": postTags,
+                           @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                           @"private": @([post[@"shared"] isEqualToString:@"no"])
+                           };
+                
+                // Update this bookmark
+                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                updateCount++;
+                
+                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                tagDeleteCount++;
+                
+                for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
+                    [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                    [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                    tagAddCount++;
                 }
+                
+                index += amountToAdd;
+                progress(index, total);
+                NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
+                [queue enqueueNotification:note postingStyle:NSPostASAP];
+            }
 
-                index++;
+            amountToAdd = deletedBookmarkSet.count / posts.count;
+            for (NSString *hash in deletedBookmarkSet) {
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
+                deleteCount++;
+                index += amountToAdd;
                 progress(index, total);
                 NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                 [queue enqueueNotification:note postingStyle:NSPostASAP];
@@ -448,12 +499,6 @@ static BOOL kPinboardSyncInProgress = NO;
             DLog(@"%@ - Updating tags", [NSDate date]);
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-            
-            DLog(@"%@ - Deleting bookmarks", [NSDate date]);
-            for (NSString *hash in deletionBookmarksSet) {
-                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
-                deleteCount++;
-            }
             
             DLog(@"%@ - Starting DB commit", [NSDate date]);
             [db commit];
@@ -504,7 +549,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     count = [options[@"count"] integerValue];
                 }
 
-                if (neverUpdated || (lastUpdatedMoreThanFiveMinutesAgo && outOfSyncWithAPI)) {
+                if (neverUpdated || outOfSyncWithAPI) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [pinboard bookmarksWithTags:nil
                                              offset:-1
