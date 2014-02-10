@@ -2473,7 +2473,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "95672B4F-7046-4570-8B97-D444C806700C";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2545,7 +2545,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "082A1E51-C373-4E9F-B3B6-D8C4CCBFA1A3";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2614,7 +2614,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "36037BA2-7D1C-4FD8-BB63-4D6FA5D78A54";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2688,7 +2688,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "D3F796BF-1DA0-4238-A189-BDED5B560521";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2763,7 +2763,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "AE05D9EC-AACB-4026-B2B8-C45B3F62604A";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
@@ -2810,7 +2810,7 @@
 					"-all_load",
 				);
 				PROVISIONING_PROFILE = "8AE228A5-FB56-471A-B4D0-41DEC02A4226";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "";
