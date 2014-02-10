@@ -4,15 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pushpin for Delicious.xcscheme</key>
+		<key>Pushpin Tests.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>25</integer>
 		</dict>
-		<key>Pushpin for Pinboard.xcscheme</key>
+		<key>Pushpin for Delicious.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>24</integer>
+		</dict>
+		<key>Pushpin for Pinboard.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>23</integer>
 		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
@@ -22,6 +27,16 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>3717966418A88578004B2D08</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3717967F18A885F7004B2D08</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>37E329B01629EEAF00A6BC18</key>
 		<dict>
 			<key>primary</key>
