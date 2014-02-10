@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Andy Muldowney. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+@import Foundation;
+
+@import UIKit;
 
 @interface FluidTableviewBehaviorManager : NSObject
 

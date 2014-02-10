@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Andy Muldowney. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 #import "FluidTableviewBehaviorManager.h"
 
 @interface FluidTableviewFlowLayout : UICollectionViewFlowLayout
