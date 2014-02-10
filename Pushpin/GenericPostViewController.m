@@ -6,7 +6,7 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "GenericPostViewController.h"
 #import "NSAttributedString+Attributes.h"

@@ -6,11 +6,11 @@
 //
 //
 
-#import <MessageUI/MessageUI.h>
-#import <Social/Social.h>
-#import <QuartzCore/QuartzCore.h>
-#import <Twitter/Twitter.h>
-#import <SafariServices/SafariServices.h>
+@import MessageUI;
+@import Social;
+@import QuartzCore;
+@import Twitter;
+@import SafariServices;
 
 #import "PPWebViewController.h"
 #import "AddBookmarkViewController.h"

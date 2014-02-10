@@ -5,7 +5,7 @@
 //  Created by Dan Loewenherz on 5/24/13.
 //
 //
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "PPToolbar.h"
 

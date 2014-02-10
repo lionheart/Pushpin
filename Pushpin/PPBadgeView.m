@@ -6,7 +6,7 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"

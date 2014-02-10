@@ -7,7 +7,7 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "AddBookmarkViewController.h"
 #import "FMDatabase.h"

@@ -7,9 +7,10 @@
 //
 
 @import UIKit;
+@import MessageUI;
+@import MessageUI.MFMessageComposeViewController;
+
 #import "AppDelegate.h"
-#import <MessageUI/MessageUI.h>
-#import <MessageUI/MFMessageComposeViewController.h>
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
