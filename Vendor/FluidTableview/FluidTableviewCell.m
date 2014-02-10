@@ -7,7 +7,7 @@
 //
 
 #import "FluidTableviewCell.h"
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 @implementation FluidTableviewCell
 

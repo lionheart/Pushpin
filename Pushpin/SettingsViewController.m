@@ -6,8 +6,7 @@
 //
 //
 
-#import <ASPinboard/ASPinboard.h>
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "AppDelegate.h"
 #import "SettingsViewController.h"
@@ -25,6 +24,7 @@
 #import "PPConstants.h"
 #import "PPTwitter.h"
 
+#import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
 #import <FMDB/FMDatabase.h>

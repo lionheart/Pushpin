@@ -7,7 +7,7 @@
 //
 
 #import "LoginViewController.h"
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 #import "AppDelegate.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"

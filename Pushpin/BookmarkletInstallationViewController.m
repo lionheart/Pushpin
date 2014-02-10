@@ -6,7 +6,7 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 #import "AppDelegate.h"
 #import "BookmarkletInstallationViewController.h"

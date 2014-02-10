@@ -6,10 +6,10 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
-#import <Accounts/Accounts.h>
-#import <Social/Social.h>
-#import <StoreKit/StoreKit.h>
+@import QuartzCore;
+@import Accounts;
+@import Social;
+@import StoreKit;
 
 #import "AppDelegate.h"
 #import "PPAboutViewController.h"
