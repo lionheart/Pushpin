@@ -17,6 +17,14 @@
 				<string>FIX</string>
 				<string>Fix an issue where various community feeds would not appear.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix x-callback-url issues with Chrome and Safari.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Make a bunch of minor look-and-feel improvements.</string>
+			</array>
 		</array>
 	</array>
 	<array>
