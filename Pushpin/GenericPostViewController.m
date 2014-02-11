@@ -259,11 +259,8 @@ static NSInteger kToolbarHeight = 44;
         [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
     }
     
-    [UIView animateWithDuration:0.2
-                     animations:^{
-                         [self setNeedsStatusBarAppearanceUpdate];
-                     }];
-    
+    [self setNeedsStatusBarAppearanceUpdate];
+
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
 
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[FeedListViewController class]]) {
@@ -313,6 +310,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [self setNeedsStatusBarAppearanceUpdate];
     
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];

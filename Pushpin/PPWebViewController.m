@@ -408,7 +408,13 @@ static NSInteger kTitleHeight = 40;
     }
     else {
         if (self.navigationController.viewControllers.count == 1) {
-            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+            if (self.callback) {
+                self.callback();
+                [self.parentViewController dismissViewControllerAnimated:NO completion:nil];
+            }
+            else {
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+            }
         }
         else {
             [self.navigationController popViewControllerAnimated:YES];

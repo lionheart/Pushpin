@@ -66,6 +66,8 @@
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *webViewTimeoutTimer;
 
+@property (nonatomic, copy) void (^callback)();
+
 - (void)showToolbarAnimated:(BOOL)animated;
 - (void)hideToolbarAnimated:(BOOL)animated;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;

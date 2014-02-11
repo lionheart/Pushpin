@@ -738,20 +738,29 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [db commit];
                     [db close];
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UILocalNotification *notification = [[UILocalNotification alloc] init];
-                        if (bookmarkAdded) {
-                            notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
-                        }
-                        else {
-                            notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
-                        }
+                    if (self.callback) {
+                        self.callback();
                         
-                        notification.alertAction = @"Open Pushpin";
-                        notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
-                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                        [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-                    });
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.parentViewController dismissViewControllerAnimated:NO completion:nil];
+                        });
+                    }
+                    else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UILocalNotification *notification = [[UILocalNotification alloc] init];
+                            if (bookmarkAdded) {
+                                notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
+                            }
+                            else {
+                                notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
+                            }
+                            
+                            notification.alertAction = @"Open Pushpin";
+                            notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
+                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                        });
+                    }
                 });
             };
             
