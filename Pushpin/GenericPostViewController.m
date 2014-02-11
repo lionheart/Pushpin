@@ -56,6 +56,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
 @property (nonatomic, strong) NSInvocation *invocation;
@@ -95,12 +96,12 @@ static NSInteger kToolbarHeight = 44;
     self.view.backgroundColor = [UIColor whiteColor];
     self.prefersStatusBarHidden = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.extendedLayoutIncludesOpaqueBars = YES;
+    self.extendedLayoutIncludesOpaqueBars = NO;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.tableView.translatesAutoresizingMaskIntoConstraints = YES;
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
@@ -134,7 +135,7 @@ static NSInteger kToolbarHeight = 44;
     if ([self.postDataSource respondsToSelector:@selector(searchDataSource)]) {
         self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
-        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 40)];
+        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
         
 #ifdef DELICIOUS
@@ -222,17 +223,15 @@ static NSInteger kToolbarHeight = 44;
     [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
     [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
     
-    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.searchBar attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
     [self.view addConstraint:self.pullToRefreshTopConstraint];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    
-    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
- toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+
+    [self.tableView lhs_fillHeightOfSuperview];
+    [self.tableView lhs_fillWidthOfSuperview];
+    [self.pullToRefreshView lhs_fillWidthOfSuperview];
+    [self.multiToolbarView lhs_fillWidthOfSuperview];
 
     [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
-    [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[toolbarView]|" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
 
     // Initial database update
@@ -284,18 +283,9 @@ static NSInteger kToolbarHeight = 44;
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
-    // Register for Dynamic Type notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
-
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
-
+    
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
@@ -319,6 +309,17 @@ static NSInteger kToolbarHeight = 44;
             }
         }];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
+
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -596,51 +597,46 @@ static NSInteger kToolbarHeight = 44;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
-                    if (alreadyContainsBookmarks) {
-                        UITableView *tableView;
-                        if (self.searchDisplayController.isActive) {
-                            tableView = self.searchDisplayController.searchResultsTableView;
-                        }
-                        else {
-                            tableView = self.tableView;
-                        }
-                        [tableView beginUpdates];
-                        [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView endUpdates];
-                    }
-                    else {
-                        [self.tableView reloadData];
+                    [UIView animateWithDuration:0.3
+                                     animations:^{
+                                         self.tableView.contentInset = UIEdgeInsetsZero;
+                                         self.pullToRefreshTopConstraint.constant = 0;
+                                         [self.view layoutIfNeeded];
+                                     }
+                                     completion:^(BOOL finished) {
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
+                                             if (alreadyContainsBookmarks) {
+                                                 UITableView *tableView;
+                                                 if (self.searchDisplayController.isActive) {
+                                                     tableView = self.searchDisplayController.searchResultsTableView;
+                                                 }
+                                                 else {
+                                                     tableView = self.tableView;
+                                                 }
 
-                        self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-                        self.animator.delegate = self;
-                        
-                        UICollisionBehavior *collision = [[UICollisionBehavior alloc] initWithItems:@[self.tableView]];
-                        collision.collisionMode = UICollisionBehaviorModeBoundaries;
-                        [collision addBoundaryWithIdentifier:@"top" fromPoint:CGPointMake(0, -1) toPoint:CGPointMake(width, -1)];
-
-                        UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.tableView]];
-                        gravity.gravityDirection = CGVectorMake(0, -4);
-                        
-                        UIPushBehavior *push = [[UIPushBehavior alloc] initWithItems:@[self.tableView] mode:UIPushBehaviorModeInstantaneous];
-                        push.pushDirection = CGVectorMake(0, -200);
-                        
-                        [self.animator addBehavior:collision];
-                        [self.animator addBehavior:gravity];
-                        [self.animator addBehavior:push];
-                    }
-                    
-                    if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                        self.searchPostDataSource = [self.postDataSource searchDataSource];
-                    }
-                    
-                    kGenericPostViewControllerIsProcessingPosts = NO;
-                    
-                    if (callback) {
-                        callback();
-                    }
+                                                 [tableView beginUpdates];
+                                                 [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView endUpdates];
+                                             }
+                                             else {
+                                                 [self.tableView reloadData];
+                                             }
+                                             
+                                             
+                                             if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                                                 self.searchPostDataSource = [self.postDataSource searchDataSource];
+                                             }
+                                             
+                                             kGenericPostViewControllerIsProcessingPosts = NO;
+                                             
+                                             if (callback) {
+                                                 callback();
+                                             }
+                                         });
+                                     }];
                 });
             } failure:nil width:width];
         });
@@ -1378,24 +1374,49 @@ static NSInteger kToolbarHeight = 44;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
-        if (offset < -60) {
+        if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
+            [self.postDataSource updateBookmarksWithSuccess:^{
+                [self updateFromLocalDatabaseWithCallback:nil];
+            } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
+        else {
+            [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+            /*
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 self.tableView.contentOffset = CGPointMake(0, 0);
+                                 self.tableView.contentInset = UIEdgeInsetsZero;
+                                 self.pullToRefreshTopConstraint.constant = 0;
+                                 [self.view layoutIfNeeded];
+                             }];
+             */
+        }
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        [self.pullToRefreshImageView stopAnimating];
     }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!kGenericPostViewControllerIsProcessingPosts) {
-        CGFloat offset = scrollView.contentOffset.y;
-        self.pullToRefreshTopConstraint.constant = -offset;
-        [self.view layoutIfNeeded];
-        
-        if (offset < 0) {
+        if (scrollView.contentOffset.y > 0) {
+            self.tableView.contentInset = UIEdgeInsetsZero;
+        }
+        else {
+            CGFloat offset = MAX(-60, scrollView.contentOffset.y);
+
             NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
             NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
+            
+            self.tableView.contentInset = UIEdgeInsetsMake(-offset, 0, 0, 0);
 
-            [self.pullToRefreshImageView stopAnimating];
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
+            self.pullToRefreshTopConstraint.constant = -offset;
+            [self.view layoutIfNeeded];
         }
     }
 }
@@ -1750,19 +1771,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
     return [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
-}
-
-#pragma mark - UIDynamicAnimatorDelegate
-
-- (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraint:self.tableViewPinnedToTopConstraint];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
-    
-    NSDictionary *views = @{@"table": self.tableView };
-    
-    [self.view lhs_addConstraints:@"H:|[table]|" views:views];
-    [self.view layoutIfNeeded];
 }
 
 - (void)updateTitleViewText {
