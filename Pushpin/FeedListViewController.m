@@ -192,9 +192,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
+    if (indexPath.section == 0 && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
         return 0;
     }
+
     return 44;
 }
 
