@@ -91,6 +91,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Pinboard App Store"
+      customArchiveName = "Pushpin"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
