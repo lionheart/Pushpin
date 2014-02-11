@@ -2,7 +2,7 @@ platform :ios, '7'
 
 inhibit_all_warnings!
 
-pod 'TestFlightSDK', '2.2.0-beta'
+pod 'TestFlightSDK', '2.2.1'
 pod 'Reachability', '3.0.0'
 pod 'PocketAPI', '1.0.2'
 pod 'FMDB', '2.1'
