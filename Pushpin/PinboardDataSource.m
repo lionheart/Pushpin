@@ -370,7 +370,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}] postingStyle:NSPostASAP];
             
             // Only track one date error per update
-            BOOL dateError = NO;
+            __block BOOL dateError = NO;
 
             NSMutableDictionary *bookmarks = [NSMutableDictionary dictionary];
             // Go through the posts once to fill out the B & BPlusMeta sets
@@ -393,23 +393,22 @@ static BOOL kPinboardSyncInProgress = NO;
             [deletedBookmarkSet setSet:A];
             [deletedBookmarkSet minusSet:B];
             
-            NSInteger amountToAdd = insertedBookmarkSet.count / posts.count;
-            for (NSString *hash in insertedBookmarkSet) {
-                NSDictionary *post = bookmarks[hash];
-                NSString *meta = post[@"meta"];
-
+            NSDictionary* (^ParamsForPost)(NSDictionary *) = ^NSDictionary*(NSDictionary *post) {
                 NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                 if (!dateError && !date) {
                     date = [NSDate dateWithTimeIntervalSince1970:0];
                     [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                     dateError = YES;
                 }
-                
+
+                NSString *hash = post[@"hash"];
+                NSString *meta = post[@"meta"];
+
                 NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
-                params = @{
+                return @{
                            @"url": post[@"href"],
                            @"title": title,
                            @"description": description,
@@ -419,7 +418,15 @@ static BOOL kPinboardSyncInProgress = NO;
                            @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
                            @"private": @([post[@"shared"] isEqualToString:@"no"]),
                            @"created_at": date
-                           };
+                       };
+            };
+
+            NSInteger amountToAdd = insertedBookmarkSet.count / posts.count;
+            for (NSString *hash in insertedBookmarkSet) {
+                NSDictionary *post = bookmarks[hash];
+                
+                NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                params = ParamsForPost(post);
                 
                 [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
                 addCount++;
@@ -443,7 +450,6 @@ static BOOL kPinboardSyncInProgress = NO;
             for (NSString *hashPlusMeta in updatedBookmarkSet) {
                 NSString *hash = [hashPlusMeta componentsSeparatedByString:@"_"][0];
                 NSDictionary *post = bookmarks[hash];
-                NSString *meta = post[@"meta"];
 
                 NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                 if (!dateError && !date) {
@@ -453,19 +459,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                NSString *title = ([post[@"description"] isEqual:[NSNull null]]) ? @"" : [post[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                NSString *description = ([post[@"extended"] isEqual:[NSNull null]]) ? @"" : [post[@"extended"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
-                params = @{
-                           @"url": post[@"href"],
-                           @"title": title,
-                           @"description": description,
-                           @"meta": meta,
-                           @"hash": hash,
-                           @"tags": postTags,
-                           @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                           @"private": @([post[@"shared"] isEqualToString:@"no"])
-                           };
+                params = ParamsForPost(post);
                 
                 // Update this bookmark
                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
