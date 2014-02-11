@@ -3,6 +3,23 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.0.2</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Significantly speed up bookmark loading and syncing.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where syncs would fail in certain situations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where various community feeds would not appear.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.0.1</string>
 		<array>
 			<array>

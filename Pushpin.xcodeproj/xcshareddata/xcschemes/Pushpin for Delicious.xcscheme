@@ -101,6 +101,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Delicious App Store"
+      customArchiveName = "Pushpin"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
