@@ -56,6 +56,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
 @property (nonatomic, strong) NSInvocation *invocation;
@@ -95,7 +96,7 @@ static NSInteger kToolbarHeight = 44;
     self.view.backgroundColor = [UIColor whiteColor];
     self.prefersStatusBarHidden = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.extendedLayoutIncludesOpaqueBars = YES;
+    self.extendedLayoutIncludesOpaqueBars = NO;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
 
@@ -222,13 +223,12 @@ static NSInteger kToolbarHeight = 44;
     [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
     [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
     
-    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.searchBar attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [self.view addConstraint:self.pullToRefreshTopConstraint];
+    self.pullToRefreshPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    [self.view addConstraint:self.pullToRefreshPinnedToTopConstraint];
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    
-    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
- toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    self.tableViewPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
 
     [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
     [self.view lhs_addConstraints:@"H:|[ptr]|" views:views];
@@ -1758,12 +1758,15 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UIDynamicAnimatorDelegate
 
 - (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator {
+    [self.view removeConstraint:self.pullToRefreshPinnedToTopConstraint];
+
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraint:self.tableViewPinnedToTopConstraint];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.tableView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1 constant:0]];
     
     NSDictionary *views = @{@"table": self.tableView };
-    
+
     [self.view lhs_addConstraints:@"H:|[table]|" views:views];
     [self.view layoutIfNeeded];
 }
