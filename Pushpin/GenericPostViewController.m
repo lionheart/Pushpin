@@ -605,25 +605,19 @@ static NSInteger kToolbarHeight = 44;
                                      }
                                      completion:^(BOOL finished) {
                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                             BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
-                                             if (alreadyContainsBookmarks) {
-                                                 UITableView *tableView;
-                                                 if (self.searchDisplayController.isActive) {
-                                                     tableView = self.searchDisplayController.searchResultsTableView;
-                                                 }
-                                                 else {
-                                                     tableView = self.tableView;
-                                                 }
-
-                                                 [tableView beginUpdates];
-                                                 [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView endUpdates];
+                                             UITableView *tableView;
+                                             if (self.searchDisplayController.isActive) {
+                                                 tableView = self.searchDisplayController.searchResultsTableView;
                                              }
                                              else {
-                                                 [self.tableView reloadData];
+                                                 tableView = self.tableView;
                                              }
+
+                                             [tableView beginUpdates];
+                                             [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                             [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                             [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                             [tableView endUpdates];
                                              
                                              
                                              if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
@@ -1380,17 +1374,8 @@ static NSInteger kToolbarHeight = 44;
                 [self updateFromLocalDatabaseWithCallback:nil];
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
-        else {
+        else if (offset < 0) {
             [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-            /*
-            [UIView animateWithDuration:0.3
-                             animations:^{
-                                 self.tableView.contentOffset = CGPointMake(0, 0);
-                                 self.tableView.contentInset = UIEdgeInsetsZero;
-                                 self.pullToRefreshTopConstraint.constant = 0;
-                                 [self.view layoutIfNeeded];
-                             }];
-             */
         }
     }
 }

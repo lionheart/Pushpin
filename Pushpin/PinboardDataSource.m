@@ -430,10 +430,6 @@ static BOOL kPinboardSyncInProgress = NO;
 
             amountToAdd = (CGFloat)deletedBookmarkSet.count / posts.count;
             for (NSString *hash in deletedBookmarkSet) {
-                NSDictionary *post = bookmarks[hash];
-                NSString *meta = post[@"meta"];
-                [insertedBookmarkPlusMetaSet addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
-
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
                 deleteCount++;
                 index += amountToAdd;
@@ -445,7 +441,6 @@ static BOOL kPinboardSyncInProgress = NO;
             [updatedBookmarkSet setSet:BPlusMeta];
             [updatedBookmarkSet minusSet:APlusMeta];
             [updatedBookmarkSet minusSet:insertedBookmarkPlusMetaSet];
-            [updatedBookmarkSet minusSet:deletedBookmarkPlusMetaSet];
             
             amountToAdd = (CGFloat)updatedBookmarkSet.count / posts.count;
             for (NSString *hashPlusMeta in updatedBookmarkSet) {
