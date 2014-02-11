@@ -135,7 +135,7 @@ static NSInteger kToolbarHeight = 44;
     if ([self.postDataSource respondsToSelector:@selector(searchDataSource)]) {
         self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
-        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 40)];
+        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
         
 #ifdef DELICIOUS
@@ -283,18 +283,9 @@ static NSInteger kToolbarHeight = 44;
         self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
     
-    // Register for Dynamic Type notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
-
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
-
+    
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
@@ -318,6 +309,17 @@ static NSInteger kToolbarHeight = 44;
             }
         }];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // Register for Dynamic Type notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
+
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -602,35 +604,38 @@ static NSInteger kToolbarHeight = 44;
                                          [self.view layoutIfNeeded];
                                      }
                                      completion:^(BOOL finished) {
-                                         BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
-                                         if (alreadyContainsBookmarks) {
-                                             UITableView *tableView;
-                                             if (self.searchDisplayController.isActive) {
-                                                 tableView = self.searchDisplayController.searchResultsTableView;
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             BOOL alreadyContainsBookmarks = [self.view.constraints containsObject:self.tableViewPinnedToTopConstraint];
+                                             if (alreadyContainsBookmarks) {
+                                                 UITableView *tableView;
+                                                 if (self.searchDisplayController.isActive) {
+                                                     tableView = self.searchDisplayController.searchResultsTableView;
+                                                 }
+                                                 else {
+                                                     tableView = self.tableView;
+                                                 }
+
+                                                 [tableView beginUpdates];
+                                                 [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView endUpdates];
                                              }
                                              else {
-                                                 tableView = self.tableView;
+                                                 [self.tableView reloadData];
                                              }
-                                             [tableView beginUpdates];
-                                             [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView endUpdates];
-                                         }
-                                         else {
-                                             [self.tableView reloadData];
-                                         }
-                                         
-                                         
-                                         if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                                             self.searchPostDataSource = [self.postDataSource searchDataSource];
-                                         }
-                                         
-                                         kGenericPostViewControllerIsProcessingPosts = NO;
-                                         
-                                         if (callback) {
-                                             callback();
-                                         }
+                                             
+                                             
+                                             if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                                                 self.searchPostDataSource = [self.postDataSource searchDataSource];
+                                             }
+                                             
+                                             kGenericPostViewControllerIsProcessingPosts = NO;
+                                             
+                                             if (callback) {
+                                                 callback();
+                                             }
+                                         });
                                      }];
                 });
             } failure:nil width:width];
@@ -1376,13 +1381,23 @@ static NSInteger kToolbarHeight = 44;
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
         else {
-            self.tableView.contentInset = UIEdgeInsetsZero;
+            [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+            /*
             [UIView animateWithDuration:0.3
                              animations:^{
+                                 self.tableView.contentOffset = CGPointMake(0, 0);
+                                 self.tableView.contentInset = UIEdgeInsetsZero;
                                  self.pullToRefreshTopConstraint.constant = 0;
                                  [self.view layoutIfNeeded];
                              }];
+             */
         }
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (!kGenericPostViewControllerIsProcessingPosts) {
+        [self.pullToRefreshImageView stopAnimating];
     }
 }
 
@@ -1399,7 +1414,6 @@ static NSInteger kToolbarHeight = 44;
             
             self.tableView.contentInset = UIEdgeInsetsMake(-offset, 0, 0, 0);
 
-            [self.pullToRefreshImageView stopAnimating];
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
             self.pullToRefreshTopConstraint.constant = -offset;
             [self.view layoutIfNeeded];
