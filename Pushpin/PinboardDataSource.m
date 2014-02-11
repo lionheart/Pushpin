@@ -295,6 +295,9 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableSet *insertedBookmarkSet = [NSMutableSet set];
             NSMutableSet *deletedBookmarkSet = [NSMutableSet set];
             NSMutableSet *updatedBookmarkSet = [NSMutableSet set];
+
+            NSMutableSet *deletedBookmarkPlusMetaSet = [NSMutableSet set];
+            NSMutableSet *insertedBookmarkPlusMetaSet = [NSMutableSet set];
             
             DLog(@"%@ - Getting local data", [NSDate date]);
 
@@ -306,11 +309,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 firstHash = @"";
             }
 
-            NSUInteger firstBookmarkIndex = NSNotFound;
             NSUInteger total = posts.count;
-            NSUInteger deleteOffset;
             results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
-            NSUInteger resultIndex = 0;
             while ([results next]) {
                 NSString *hash = [results stringForColumn:@"hash"];
                 NSString *meta = [results stringForColumn:@"meta"];
@@ -321,17 +321,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 // Update our NSSets
                 [localHashTable addObject:hash];
                 [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, meta]];
-                
-                // If our local first hash doesn't equal the remote first hash, get the offset for deletion
-                if (firstBookmarkIndex == NSNotFound) {
-                    if ([hash isEqualToString:firstHash]) {
-                        deleteOffset = resultIndex;
-                        firstBookmarkIndex = resultIndex;
-                    }
-                }
-                resultIndex++;
             }
-            NSUInteger localCount = [localHashTable count];
             
             DLog(@"%@ - Creating NSSets", [NSDate date]);
             
@@ -343,17 +333,10 @@ static BOOL kPinboardSyncInProgress = NO;
                 [remoteMetaTable addObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
             }
             
-            // We convert to NSSet directly from NSArray to avoid hash lookups on each addObject on NSMutableSet
-            NSSet *localHashSet = [NSSet setWithArray:localHashTable];
-            NSSet *localMetaSet = [NSSet setWithArray:localMetaTable];
-            
-            NSSet *remoteHashSet = [NSSet setWithArray:remoteHashTable];
-            NSSet *remoteMetaSet = [NSSet setWithArray:remoteMetaTable];
-            
             DLog(@"%@ - Calculating changes", [NSDate date]);
             
             NSDictionary *params;
-            NSUInteger index = 0;
+            CGFloat index = 0;
             NSUInteger skipped = 0;
             NSUInteger updateCount = 0;
             NSUInteger addCount = 0;
@@ -383,16 +366,6 @@ static BOOL kPinboardSyncInProgress = NO;
                 bookmarks[hash] = post;
             }
             
-            // Now we figure out our syncing.
-            [insertedBookmarkSet setSet:B];
-            [insertedBookmarkSet minusSet:A];
-            
-            [updatedBookmarkSet setSet:BPlusMeta];
-            [updatedBookmarkSet minusSet:APlusMeta];
-            
-            [deletedBookmarkSet setSet:A];
-            [deletedBookmarkSet minusSet:B];
-            
             NSDictionary* (^ParamsForPost)(NSDictionary *) = ^NSDictionary*(NSDictionary *post) {
                 NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                 if (!dateError && !date) {
@@ -420,10 +393,16 @@ static BOOL kPinboardSyncInProgress = NO;
                            @"created_at": date
                        };
             };
+            
+            // Now we figure out our syncing.
+            [insertedBookmarkSet setSet:B];
+            [insertedBookmarkSet minusSet:A];
 
-            NSInteger amountToAdd = insertedBookmarkSet.count / posts.count;
+            CGFloat amountToAdd = (CGFloat)insertedBookmarkSet.count / posts.count;
             for (NSString *hash in insertedBookmarkSet) {
                 NSDictionary *post = bookmarks[hash];
+                NSString *meta = post[@"meta"];
+                [insertedBookmarkPlusMetaSet addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
                 
                 NSString *postTags = ([post[@"tags"] isEqual:[NSNull null]]) ? @"" : [post[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 params = ParamsForPost(post);
@@ -441,16 +420,38 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 index += amountToAdd;
-                progress(index, total);
+                progress((NSInteger)index, total);
                 NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                 [queue enqueueNotification:note postingStyle:NSPostASAP];
             }
             
-            amountToAdd = updatedBookmarkSet.count / posts.count;
+            [deletedBookmarkSet setSet:A];
+            [deletedBookmarkSet minusSet:B];
+
+            amountToAdd = (CGFloat)deletedBookmarkSet.count / posts.count;
+            for (NSString *hash in deletedBookmarkSet) {
+                NSDictionary *post = bookmarks[hash];
+                NSString *meta = post[@"meta"];
+                [insertedBookmarkPlusMetaSet addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
+
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
+                deleteCount++;
+                index += amountToAdd;
+                progress((NSInteger)index, total);
+                NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
+                [queue enqueueNotification:note postingStyle:NSPostASAP];
+            }
+            
+            [updatedBookmarkSet setSet:BPlusMeta];
+            [updatedBookmarkSet minusSet:APlusMeta];
+            [updatedBookmarkSet minusSet:insertedBookmarkPlusMetaSet];
+            [updatedBookmarkSet minusSet:deletedBookmarkPlusMetaSet];
+            
+            amountToAdd = (CGFloat)updatedBookmarkSet.count / posts.count;
             for (NSString *hashPlusMeta in updatedBookmarkSet) {
                 NSString *hash = [hashPlusMeta componentsSeparatedByString:@"_"][0];
                 NSDictionary *post = bookmarks[hash];
-
+                
                 NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                 if (!dateError && !date) {
                     date = [NSDate dateWithTimeIntervalSince1970:0];
@@ -463,7 +464,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 params = ParamsForPost(post);
                 
                 // Update this bookmark
-                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta, created_at=:created_at WHERE hash=:hash" withParameterDictionary:params];
                 updateCount++;
                 
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
@@ -476,17 +477,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 index += amountToAdd;
-                progress(index, total);
-                NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
-                [queue enqueueNotification:note postingStyle:NSPostASAP];
-            }
-
-            amountToAdd = deletedBookmarkSet.count / posts.count;
-            for (NSString *hash in deletedBookmarkSet) {
-                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
-                deleteCount++;
-                index += amountToAdd;
-                progress(index, total);
+                progress((NSInteger)index, total);
                 NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                 [queue enqueueNotification:note postingStyle:NSPostASAP];
             }
@@ -581,45 +572,51 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)updateStarredPostsWithSuccess:(void (^)())success failure:(void (^)())failure {
     void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSMutableArray *oldURLs = [NSMutableArray array];
-            NSUInteger index = 0;
-            NSUInteger offset = 0;
-            BOOL postFound = NO;
-            NSString *url;
-            
             FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
             [db open];
             [db beginTransaction];
+
+            NSMutableDictionary *bookmarks = [NSMutableDictionary dictionary];
+            
+            // Two things we want to do here:
+            //
+            // 1. Add new bookmarks.
+            // 2. Delete removed bookmarks.
+            //
+            // Let's call "before update" A, and "after update" B.
+            // For 1, we want all bookmarks in B but not in A. So [B minusSet:A]
+            // For 2, we want all bookmarks in A but not in B. So [A minusSet:B]
+            NSMutableSet *A = [NSMutableSet set];
+            NSMutableSet *B = [NSMutableSet set];
+            
+            NSMutableSet *insertedBookmarkSet = [NSMutableSet set];
+            NSMutableSet *deletedBookmarkSet = [NSMutableSet set];
             
             FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1 ORDER BY created_at DESC"];
             while ([results next]) {
-                url = [results stringForColumnIndex:0];
-                [oldURLs addObject:url];
+                NSString *url = [results stringForColumnIndex:0];
+                [A addObject:url];
             }
             
             for (NSDictionary *post in posts) {
-                postFound = NO;
-                url = post[@"u"];
-                
-                for (NSInteger i=offset; i<oldURLs.count - offset; i++) {
-                    if ([oldURLs[i] isEqualToString:url]) {
-                        // Delete all posts that were skipped
-                        for (NSInteger j=offset; j<i; j++) {
-                            [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[oldURLs[j]]];
-                        }
-                        
-                        offset = i - 1;
-                        postFound = YES;
-                        break;
-                    }
-                }
-                
-                if (!postFound && ![oldURLs containsObject:url]) {
-                    [db executeUpdate:@"UPDATE bookmark SET starred=1, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
-                }
-
-                index++;
+                [B addObject:post[@"u"]];
+                bookmarks[post[@"u"]] = post;
             }
+            
+            [insertedBookmarkSet setSet:B];
+            [insertedBookmarkSet minusSet:A];
+
+            [deletedBookmarkSet setSet:A];
+            [deletedBookmarkSet minusSet:B];
+            
+            for (NSString *url in deletedBookmarkSet) {
+                [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
+            }
+            
+            for (NSString *url in insertedBookmarkSet) {
+                [db executeUpdate:@"UPDATE bookmark SET starred=1, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
+            }
+
             [db commit];
             [db close];
             
