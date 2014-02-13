@@ -149,6 +149,7 @@ static NSInteger kToolbarHeight = 44;
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
 #endif
         self.searchBar.showsScopeBar = YES;
+
         self.tableView.tableHeaderView = self.searchBar;
         
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
@@ -1473,8 +1474,12 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
     self.pullToRefreshTopConstraint.constant = 0;
-    self.tableView.contentOffset = CGPointMake(0, 0);
     [self.view layoutIfNeeded];
+    self.searchBar.hidden = NO;
+    self.tableView.tableHeaderView = self.searchBar;
+    
+    // Would like not to set the content offset to hide the search bar, but there seems to be a bug in UISearchDisplayController where the search bar is hidden when it's used as a header view.
+    [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchBar.frame)) animated:NO];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
