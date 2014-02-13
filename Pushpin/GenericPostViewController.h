@@ -54,6 +54,7 @@ typedef enum : NSInteger {
 
 @optional
 
+@property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic) BOOL shouldSearchFullText;
 
@@ -157,7 +158,6 @@ typedef enum : NSInteger {
 - (void)markPostsAsRead:(NSArray *)posts;
 - (void)copyURL;
 - (void)sendToReadLater;
-- (void)updateWithRatio:(NSNumber *)ratio;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;

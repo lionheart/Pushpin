@@ -54,6 +54,8 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIDynamicAnimator *animator;
 @property (nonatomic, strong) NSString *formattedSearchString;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
+@property (nonatomic, strong) NSArray *posts;
+@property (nonatomic, strong) NSArray *searchPosts;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshPinnedToTopConstraint;
@@ -92,13 +94,15 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.prefersStatusBarHidden = NO;
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.prefersStatusBarHidden = NO;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
+    self.posts = @[];
+    self.searchPosts = @[];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -107,9 +111,8 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
-    self.tableView.separatorColor = HEX(0xE0E0E0ff);
-    self.tableView.frame = CGRectOffset(self.view.frame, 0, CGRectGetHeight(self.view.frame));
-    
+    self.tableView.separatorColor = HEX(0xE0E0E0FF);
+
     self.pullToRefreshView = [[UIView alloc] init];
     self.pullToRefreshView.translatesAutoresizingMaskIntoConstraints = NO;
     self.pullToRefreshView.clipsToBounds = YES;
@@ -283,6 +286,7 @@ static NSInteger kToolbarHeight = 44;
     
     self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
     
+    self.postDataSource.posts = [self.posts mutableCopy];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     if ([self.postDataSource numberOfPosts] == 0) {
         [self.pullToRefreshImageView startAnimating];
@@ -297,14 +301,7 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else {
-        [self updateFromLocalDatabaseWithCallback:^{
-            if (self.searchDisplayController.isActive) {
-                [self.searchDisplayController.searchResultsTableView reloadData];
-            }
-            else {
-                [self.tableView reloadData];
-            }
-        }];
+        [self updateFromLocalDatabaseWithCallback:nil];
     }
 }
 
@@ -604,21 +601,28 @@ static NSInteger kToolbarHeight = 44;
                                      }
                                      completion:^(BOOL finished) {
                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                             BOOL firstLoad = self.posts.count == 0;
                                              UITableView *tableView;
                                              if (self.searchDisplayController.isActive) {
                                                  tableView = self.searchDisplayController.searchResultsTableView;
+                                                 self.searchPosts = [self.searchPostDataSource.posts copy];
                                              }
                                              else {
                                                  tableView = self.tableView;
+                                                 self.posts = [self.postDataSource.posts copy];
                                              }
 
-                                             [tableView beginUpdates];
-                                             [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView endUpdates];
-                                             
-                                             
+                                             if (firstLoad) {
+                                                 [tableView reloadData];
+                                             }
+                                             else {
+                                                 [tableView beginUpdates];
+                                                 [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                                 [tableView endUpdates];
+                                             }
+
                                              if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                                                  self.searchPostDataSource = [self.postDataSource searchDataSource];
                                              }
@@ -664,6 +668,7 @@ static NSInteger kToolbarHeight = 44;
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                weakself.searchPosts = [self.searchPostDataSource.posts copy];
                 [weakself.searchDisplayController.searchResultsTableView reloadData];
                 weakself.searchLoading = NO;
             });
@@ -678,26 +683,6 @@ static NSInteger kToolbarHeight = 44;
         } cancel:^(BOOL *stop) {
             *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
         } width:[self currentWidth]];
-    }
-}
-
-- (void)updateWithRatio:(NSNumber *)ratio {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        kGenericPostViewControllerIsProcessingPosts = YES;
-        [self.postDataSource updateBookmarksWithSuccess:^{
-            [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-
-                    [self.pullToRefreshImageView stopAnimating];
-                    kGenericPostViewControllerIsProcessingPosts = NO;
-                });
-            } failure:nil width:[self currentWidth]];
-        } failure:nil progress:nil options:@{@"ratio": ratio}];
     }
 }
 
@@ -854,10 +839,10 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-        return [self.postDataSource numberOfPosts];
+        return self.posts.count;
     }
     else {
-        return [self.searchPostDataSource numberOfPosts];
+        return self.searchPosts.count;
     }
 }
 
@@ -1484,6 +1469,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
     self.pullToRefreshTopConstraint.constant = 0;
+    self.tableView.contentOffset = CGPointMake(0, 0);
     [self.view layoutIfNeeded];
 }
 
