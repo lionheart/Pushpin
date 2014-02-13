@@ -1317,6 +1317,8 @@ static NSInteger kToolbarHeight = 44;
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        self.searchPosts = [self.searchPostDataSource.posts copy];
+                        
                         [self.searchDisplayController.searchResultsTableView beginUpdates];
                         [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.searchDisplayController.searchResultsTableView endUpdates];
@@ -1326,6 +1328,8 @@ static NSInteger kToolbarHeight = 44;
             else {
                 [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        self.posts = [self.postDataSource.posts copy];
+
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];

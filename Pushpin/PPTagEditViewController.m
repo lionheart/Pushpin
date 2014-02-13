@@ -827,7 +827,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         return 8;
     }
     else {
-        return 4;
+        return 6;
     }
 }
 
