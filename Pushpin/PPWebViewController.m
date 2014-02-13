@@ -1046,7 +1046,7 @@ static NSInteger kTitleHeight = 40;
         CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
         CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
         CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 150;
+        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3 animations:^{
