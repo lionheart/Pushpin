@@ -199,7 +199,7 @@
                                                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
                                            }
                                        }
-                                       
+
                                        self.posts = newPosts;
                                        
                                        NSMutableArray *newMetadata = [NSMutableArray array];

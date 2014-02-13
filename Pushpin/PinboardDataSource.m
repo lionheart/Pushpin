@@ -211,7 +211,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSInteger)numberOfPosts {
-    return self.metadata.count;
+    return self.posts.count;
 }
 
 - (NSInteger)totalNumberOfPosts {
@@ -761,7 +761,7 @@ static BOOL kPinboardSyncInProgress = NO;
         }
         else {
             self.posts = newPosts;
-            
+
             self.metadata = newMetadata;
             self.compressedMetadata = newCompressedMetadata;
 
