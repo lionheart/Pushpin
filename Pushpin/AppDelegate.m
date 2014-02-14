@@ -401,9 +401,11 @@
     //[self.window setTintColor:[UIColor whiteColor]];
     //[[UIView appearance] setTintColor:[UIColor whiteColor]];
     
-    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont]};
+    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
+                                       NSForegroundColorAttributeName: [UIColor whiteColor] };
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
                                                 forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor whiteColor]];
     
     // UIToolbar items
     UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
