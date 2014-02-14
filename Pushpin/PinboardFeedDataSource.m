@@ -451,11 +451,13 @@
             }
             
         case 3:
+            if ([self.components containsObject:@"network"]) {
             // Network Feed
-            return HEX(0x30A1C1FF);
+                return HEX(0x30A1C1FF);
+            }
 
         default:
-            return HEX(0x30A1C1FF);
+            return HEX(0xD5A470FF);
     }
 }
 

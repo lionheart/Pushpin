@@ -55,7 +55,7 @@ typedef enum : NSInteger {
 } PPPinboardSectionType;
 
 typedef enum : NSInteger {
-    PPProviderPinboardSections = PPPinboardSectionCommunity + 1,
+    PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1,
     PPProviderDeliciousSections = PPDeliciousSectionPersonal + 1
 } PPProviderSectionCounts;
 
