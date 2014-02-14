@@ -7,6 +7,7 @@
 //
 
 @import UIKit;
+@import MessageUI.MFMailComposeViewController;
 
 #import "LoginViewController.h"
 #import "PPConstants.h"
@@ -18,7 +19,7 @@
 @class PPSplitViewController;
 @class FeedListViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
