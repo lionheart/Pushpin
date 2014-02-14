@@ -26,6 +26,7 @@
 		3717968318A885FE004B2D08 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		3717968918A885FE004B2D08 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3717968718A885FE004B2D08 /* InfoPlist.strings */; };
 		3717968B18A885FE004B2D08 /* Pushpin_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3717968A18A885FE004B2D08 /* Pushpin_Tests.m */; };
+		371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
@@ -529,6 +530,8 @@
 		3717968818A885FE004B2D08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3717968A18A885FE004B2D08 /* Pushpin_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Pushpin_Tests.m; sourceTree = "<group>"; };
 		3717968C18A885FE004B2D08 /* Pushpin Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pushpin Tests-Prefix.pch"; sourceTree = "<group>"; };
+		371A48E518ADB516009D7533 /* MFMailComposeViewController+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MFMailComposeViewController+Theme.h"; sourceTree = "<group>"; };
+		371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MFMailComposeViewController+Theme.m"; sourceTree = "<group>"; };
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		371EE5C6185B49FE005DB908 /* PPTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTheme.h; sourceTree = "<group>"; };
 		371EE5C7185B49FE005DB908 /* PPTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTheme.m; sourceTree = "<group>"; };
@@ -1406,6 +1409,8 @@
 			children = (
 				37F91F36177A91A500683D46 /* UITableView+Additions.h */,
 				37F91F37177A91A500683D46 /* UITableView+Additions.m */,
+				371A48E518ADB516009D7533 /* MFMailComposeViewController+Theme.h */,
+				371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -2442,6 +2447,7 @@
 				3743B73B18763D1D00B97E6D /* PPTableViewTitleView.m in Sources */,
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
 				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
+				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
 				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
@@ -3251,6 +3257,7 @@
 				3717969518A885FE004B2D08 /* Delicious Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Pinboard Debug";
 		};
 		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */ = {
 			isa = XCConfigurationList;
