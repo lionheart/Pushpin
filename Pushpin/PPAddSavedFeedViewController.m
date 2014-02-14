@@ -61,8 +61,18 @@ static NSString *CellIdentifier = @"Cell";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(addButtonTouchUpInside:)];
 
     self.title = NSLocalizedString(@"Add Feed", nil);
+
+    PPTitleButton *titleView = [PPTitleButton button];
+    [titleView setTitle:NSLocalizedString(@"Add Feed", nil) imageName:nil];
+    self.navigationItem.titleView = titleView;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self.navigationController.navigationBar setBarTintColor:HEX(0xD5A470FF)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

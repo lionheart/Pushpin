@@ -293,6 +293,7 @@ static NSInteger kToolbarHeight = 44;
         [self.pullToRefreshImageView startAnimating];
         if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
             delegate.bookmarksNeedUpdate = NO;
+
             [self.postDataSource updateBookmarksWithSuccess:^{
                 [self updateFromLocalDatabaseWithCallback:nil];
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
@@ -315,8 +316,6 @@ static NSInteger kToolbarHeight = 44;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
-
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -590,53 +589,70 @@ static NSInteger kToolbarHeight = 44;
     if (!kGenericPostViewControllerIsProcessingPosts) {
         kGenericPostViewControllerIsProcessingPosts = YES;
         CGFloat width = [self currentWidth];
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [UIView animateWithDuration:0.3
-                                     animations:^{
-                                         self.tableView.contentInset = UIEdgeInsetsZero;
-                                         self.pullToRefreshTopConstraint.constant = 0;
-                                         [self.view layoutIfNeeded];
-                                     }
-                                     completion:^(BOOL finished) {
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                             BOOL firstLoad = self.posts.count == 0;
-                                             UITableView *tableView;
-                                             if (self.searchDisplayController.isActive) {
-                                                 tableView = self.searchDisplayController.searchResultsTableView;
-                                                 self.searchPosts = [self.searchPostDataSource.posts copy];
-                                             }
-                                             else {
-                                                 tableView = self.tableView;
-                                                 self.posts = [self.postDataSource.posts copy];
-                                             }
-
-                                             if (firstLoad) {
-                                                 [tableView reloadData];
-                                             }
-                                             else {
-                                                 [tableView beginUpdates];
-                                                 [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                                 [tableView endUpdates];
+        BOOL firstLoad = self.posts.count == 0;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            
+            if (firstLoad) {
+                activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+                [activityIndicator startAnimating];
+                
+                [self.view addSubview:activityIndicator];
+                [self.view lhs_centerHorizontallyForView:activityIndicator];
+                [self.view lhs_centerVerticallyForView:activityIndicator];
+            }
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIView animateWithDuration:0.3
+                                         animations:^{
+                                             if (self.tableView.contentInset.top != 0) {
+                                                 self.tableView.contentInset = UIEdgeInsetsZero;
                                              }
 
-                                             if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                                                 self.searchPostDataSource = [self.postDataSource searchDataSource];
-                                             }
-                                             
-                                             kGenericPostViewControllerIsProcessingPosts = NO;
-                                             
-                                             if (callback) {
-                                                 callback();
-                                             }
-                                         });
-                                     }];
-                });
-            } failure:nil width:width];
+                                             self.pullToRefreshTopConstraint.constant = 0;
+                                             [self.view layoutIfNeeded];
+                                         }
+                                         completion:^(BOOL finished) {
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 UITableView *tableView;
+                                                 if (self.searchDisplayController.isActive) {
+                                                     tableView = self.searchDisplayController.searchResultsTableView;
+                                                     self.searchPosts = [self.searchPostDataSource.posts copy];
+                                                 }
+                                                 else {
+                                                     tableView = self.tableView;
+                                                     self.posts = [self.postDataSource.posts copy];
+                                                 }
+                                                 
+                                                 if (firstLoad) {
+                                                     [activityIndicator removeFromSuperview];
+                                                     [tableView reloadData];
+                                                 }
+                                                 else {
+                                                     [tableView beginUpdates];
+                                                     [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                                                     [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                                                     [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                                                     [tableView endUpdates];
+                                                 }
+                                                 
+                                                 if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                                                     self.searchPostDataSource = [self.postDataSource searchDataSource];
+                                                 }
+                                                 
+                                                 kGenericPostViewControllerIsProcessingPosts = NO;
+                                                 
+                                                 if (callback) {
+                                                     callback();
+                                                 }
+                                             });
+                                         }];
+                    });
+                } failure:nil width:width];
+            });
         });
     }
 }
@@ -711,7 +727,6 @@ static NSInteger kToolbarHeight = 44;
         }
 
         [UIView animateWithDuration:0.25 animations:^{
-
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;

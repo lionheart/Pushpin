@@ -24,6 +24,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "DeliciousDataSource.h"
+#import "PPAddSavedFeedViewController.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -33,6 +34,8 @@
 static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @interface FeedListViewController ()
+
+@property (nonatomic, strong) NSMutableArray *feeds;
 
 @end
 
@@ -76,7 +79,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     for (NSInteger i=0; i<rows; i++) {
         [self.bookmarkCounts addObject:@""];
     }
-
+    
+    self.feeds = [NSMutableArray array];
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
     UIImage *settingsImage = [[UIImage imageNamed:@"navigation-settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -138,6 +142,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
 #endif
     
+#ifdef PINBOARD
+    // Check if we have any updates from iCloud
+    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+    [store synchronize];
+    NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
+#endif
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         
@@ -155,6 +166,33 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
         
 #ifdef PINBOARD
+        NSMutableSet *rowsForDeletedFeeds = [NSMutableSet set];
+
+        [db beginTransaction];
+        for (NSString *components in iCloudFeeds) {
+            [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
+        }
+        [db commit];
+
+        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+        [self.feeds removeAllObjects];
+
+        NSInteger index = 0;
+        while ([result next]) {
+            NSString *componentString = [result stringForColumnIndex:0];
+            NSArray *components = [componentString componentsSeparatedByString:@" "];
+
+            [iCloudFeeds addObject:componentString];
+            [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+            index++;
+        }
+        
+        // Remove duplicates from the array
+        NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
+        
+        // Sync the new saved feed list with iCloud
+        [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
@@ -164,7 +202,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
                                 ];
 #endif
-        
+
         NSInteger i = 0;
         for (FMResultSet *resultSet in resultSets) {
             [resultSet next];
@@ -184,6 +222,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+
+#ifdef PINBOARD
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds] withRowAnimation:UITableViewRowAnimationFade];
+#endif
             [self.tableView endUpdates];
         });
     });
@@ -192,9 +234,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
+#ifdef PINBOARD
+    if ((PPPinboardSectionType)indexPath.section == PPPinboardSectionPersonal && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
         return 0;
     }
+#endif
+    
+#ifdef DELICIOUS
+    if ((PPDeliciousSectionType)indexPath.section == PPDeliciousSectionPersonal && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
+        return 0;
+    }
+#endif
 
     return 44;
 }
@@ -220,21 +270,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             return PPPinboardPersonalRows;
 
         case PPPinboardSectionCommunity:
-            return PPPinboardCommunityRows + 1;
+            return PPPinboardCommunityRows;
             
         case PPPinboardSectionSavedFeeds:
-            return 0;
+            return self.feeds.count + 1;
     }
 #endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
-        case 0:
+        case PPPinboardSectionPersonal:
             return NSLocalizedString(@"Personal", nil);
             
-        case 1:
+        case PPPinboardSectionCommunity:
             return NSLocalizedString(@"Community", nil);
+            
+        case PPPinboardSectionSavedFeeds:
+            return NSLocalizedString(@"Feeds", nil);
     }
     
     return nil;
@@ -361,14 +414,26 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     cell.textLabel.text = @"日本語";
                     cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
                     break;
-
-                default:
-                    cell.textLabel.text = NSLocalizedString(@"Saved Feeds", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
-                    break;
             }
 
             break;
+        }
+            
+        case PPPinboardSectionSavedFeeds: {
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            cell.textLabel.adjustsFontSizeToFitWidth = YES;
+            cell.textLabel.font = [PPTheme textLabelFont];
+
+            if (indexPath.row == self.feeds.count) {
+                cell.textLabel.text = @"Add Feed";
+                cell.imageView.image = nil;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }
+            else {
+                cell.textLabel.text = self.feeds[indexPath.row][@"title"];
+                cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
+                cell.accessoryType = UITableViewCellAccessoryNone;
+            }
         }
     }
 #endif
@@ -516,20 +581,21 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     }
                 }
                 
-                if (indexPath.row == 5) {
-                    PPSavedFeedsViewController *controller = [[PPSavedFeedsViewController alloc] init];
-                    PPTitleButton *titleButton = [PPTitleButton button];
-                    [titleButton setTitle:NSLocalizedString(@"Saved Feeds", nil) imageName:@"navigation-saved"];
-
-                    controller.navigationItem.titleView = titleButton;
-                    viewControllerToPush = controller;
-                }
-                else {
-                    viewControllerToPush = postViewController;
-                }
-
+                viewControllerToPush = postViewController;
                 break;
             }
+        }
+            
+        case PPPinboardSectionSavedFeeds: {
+            if (indexPath.row == self.feeds.count) {
+                PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+                PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+                [self presentViewController:navigationController animated:YES completion:nil];
+            }
+            else {
+                viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+            }
+            break;
         }
     }
 #endif

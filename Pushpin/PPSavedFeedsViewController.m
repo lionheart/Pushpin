@@ -173,12 +173,4 @@ static NSString *CellIdentifier = @"Cell";
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
-    [self dismissViewControllerAnimated:YES completion:success];
-}
-
-- (void)closeModal:(UIViewController *)sender {
-    [self closeModal:sender success:nil];
-}
-
 @end
