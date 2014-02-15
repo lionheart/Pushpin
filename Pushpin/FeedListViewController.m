@@ -44,6 +44,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)openTags;
 - (void)toggleEditing:(UIBarButtonItem *)sender;
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
+- (NSArray *)indexPathsForHiddenFeeds;
+- (NSArray *)indexPathsForVisibleFeeds;
 
 @end
 
@@ -501,39 +503,29 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             switch (feedType) {
                 case PPPinboardCommunityFeedNetwork:
-                    if (![delegate.hiddenFeedNames containsObject:@"community-network"]) {
-                        cell.textLabel.text = NSLocalizedString(@"Network", nil);
-                        cell.imageView.image = [UIImage imageNamed:@"browse-network"];
-                        break;
-                    }
+                    cell.textLabel.text = NSLocalizedString(@"Network", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-network"];
+                    break;
 
                 case PPPinboardCommunityFeedPopular:
-                    if (![delegate.hiddenFeedNames containsObject:@"community-popular"]) {
-                        cell.textLabel.text = NSLocalizedString(@"Popular", nil);
-                        cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
-                        break;
-                    }
+                    cell.textLabel.text = NSLocalizedString(@"Popular", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
+                    break;
 
                 case PPPinboardCommunityFeedWikipedia:
-                    if (![delegate.hiddenFeedNames containsObject:@"community-wikipedia"]) {
-                        cell.textLabel.text = @"Wikipedia";
-                        cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
-                        break;
-                    }
+                    cell.textLabel.text = @"Wikipedia";
+                    cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
+                    break;
 
                 case PPPinboardCommunityFeedFandom:
-                    if (![delegate.hiddenFeedNames containsObject:@"community-fandom"]) {
-                        cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
-                        cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
-                        break;
-                    }
+                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
+                    cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
+                    break;
 
                 case PPPinboardCommunityFeedJapan:
-                    if (![delegate.hiddenFeedNames containsObject:@"community-japan"]) {
-                        cell.textLabel.text = @"日本語";
-                        cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
-                        break;
-                    }
+                    cell.textLabel.text = @"日本語";
+                    cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
+                    break;
             }
 
             break;
@@ -564,191 +556,257 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.tableView.editing) {
-        return;
-    }
-
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     
     UIViewController *viewControllerToPush;
 
+    if (tableView.editing) {
 #ifdef DELICIOUS
-    switch ((PPDeliciousSectionType)indexPath.section) {
-        case PPDeliciousSectionPersonal: {
-            DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
-            dataSource.limit = 100;
-
-            PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
-
-            switch (feedType) {
-                case PPDeliciousPersonalFeedAll:
-                    [mixpanel track:@"Browsed all bookmarks"];
-                    break;
-                    
-                case PPPinboardPersonalFeedPrivate:
-                    dataSource.isPrivate = YES;
-                    [mixpanel track:@"Browsed private bookmarks"];
-                    break;
-                    
-                case PPPinboardPersonalFeedPublic:
-                    dataSource.isPrivate = NO;
-                    [mixpanel track:@"Browsed public bookmarks"];
-                    break;
-                    
-                case PPDeliciousPersonalFeedUnread:
-                    dataSource.unread = YES;
-                    [mixpanel track:@"Browsed unread bookmarks"];
-                    break;
-                    
-                case PPDeliciousPersonalFeedUntagged:
-                    dataSource.untagged = YES;
-                    [mixpanel track:@"Browsed untagged bookmarks"];
-                    break;
-            }
-            
-            postViewController.postDataSource = dataSource;
-            // Can we just use self.navigationController instead?
-            viewControllerToPush = postViewController;
-            break;
-        }
-    }
 #endif
-
+        
 #ifdef PINBOARD
-    switch ((PPPinboardSectionType)indexPath.section) {
-        case PPPinboardSectionPersonal: {
-            PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
-            dataSource.limit = 100;
-            
-            PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)indexPath.row;
+        NSString *feedName;
 
-            switch (feedType) {
-                case PPPinboardPersonalFeedAll:
-                    [mixpanel track:@"Browsed all bookmarks"];
-                    break;
-
-                case PPPinboardPersonalFeedPrivate:
-                    dataSource.isPrivate = YES;
-                    [mixpanel track:@"Browsed private bookmarks"];
-                    break;
-
-                case PPPinboardPersonalFeedPublic:
-                    dataSource.isPrivate = NO;
-                    [mixpanel track:@"Browsed public bookmarks"];
-                    break;
-
-                case PPPinboardPersonalFeedUnread:
-                    dataSource.unread = YES;
-                    [mixpanel track:@"Browsed unread bookmarks"];
-                    break;
-
-                case PPPinboardPersonalFeedUntagged:
-                    dataSource.untagged = YES;
-                    [mixpanel track:@"Browsed untagged bookmarks"];
-                    break;
-
-                case PPPinboardPersonalFeedStarred:
-                    dataSource.starred = YES;
-                    [mixpanel track:@"Browsed starred bookmarks"];
-                    break;
-            }
-
-            postViewController.postDataSource = dataSource;
-            // Can we just use self.navigationController instead?
-            viewControllerToPush = postViewController;
-            break;
+        switch ((PPPinboardSectionType)indexPath.section) {
+            case PPPinboardSectionPersonal:
+                feedName = [@[@"personal", PPPersonalFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                break;
+                
+            case PPPinboardSectionCommunity:
+                feedName = [@[@"community", PPCommunityFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                break;
+                
+            case PPPinboardSectionSavedFeeds:
+                break;
         }
-        case PPPinboardSectionCommunity: {
-            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
-            postViewController.postDataSource = feedDataSource;
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        NSMutableArray *hiddenFeedNames = [delegate.hiddenFeedNames mutableCopy];
+        if ([hiddenFeedNames containsObject:feedName]) {
+            [hiddenFeedNames removeObject:feedName];
+        }
+        else {
+            [hiddenFeedNames addObject:feedName];
+        }
 
-            if (![AppDelegate sharedDelegate].connectionAvailable) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-            }
-            else {
-                PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)indexPath.row;
+        delegate.hiddenFeedNames = [hiddenFeedNames copy];
+#endif
+    }
+    else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+#ifdef DELICIOUS
+        switch ((PPDeliciousSectionType)indexPath.section) {
+            case PPDeliciousSectionPersonal: {
+                DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+                dataSource.limit = 100;
+
+                PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
 
                 switch (feedType) {
-                    case PPPinboardCommunityFeedNetwork: {
-                        NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                        NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-                        feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
-                        [mixpanel track:@"Browsed network bookmarks"];
+                    case PPDeliciousPersonalFeedAll:
+                        [mixpanel track:@"Browsed all bookmarks"];
                         break;
-                    }
-
-                    case PPPinboardCommunityFeedPopular: {
-                        feedDataSource.components = @[@"popular?count=100"];
-                        [mixpanel track:@"Browsed popular bookmarks"];
+                        
+                    case PPPinboardPersonalFeedPrivate:
+                        dataSource.isPrivate = YES;
+                        [mixpanel track:@"Browsed private bookmarks"];
                         break;
-                    }
-
-                    case PPPinboardCommunityFeedWikipedia: {
-                        feedDataSource.components = @[@"popular", @"wikipedia"];
-                        [mixpanel track:@"Browsed wikipedia bookmarks"];
+                        
+                    case PPPinboardPersonalFeedPublic:
+                        dataSource.isPrivate = NO;
+                        [mixpanel track:@"Browsed public bookmarks"];
                         break;
-                    }
-
-                    case PPPinboardCommunityFeedFandom: {
-                        feedDataSource.components = @[@"popular", @"fandom"];
-                        [mixpanel track:@"Browsed fandom bookmarks"];
+                        
+                    case PPDeliciousPersonalFeedUnread:
+                        dataSource.unread = YES;
+                        [mixpanel track:@"Browsed unread bookmarks"];
                         break;
-                    }
-
-                    case PPPinboardCommunityFeedJapan: {
-                        feedDataSource.components = @[@"popular", @"japanese"];
-                        [mixpanel track:@"Browsed 日本語 bookmarks"];
+                        
+                    case PPDeliciousPersonalFeedUntagged:
+                        dataSource.untagged = YES;
+                        [mixpanel track:@"Browsed untagged bookmarks"];
                         break;
-                    }
                 }
                 
+                postViewController.postDataSource = dataSource;
+                // Can we just use self.navigationController instead?
                 viewControllerToPush = postViewController;
                 break;
             }
         }
-            
-        case PPPinboardSectionSavedFeeds: {
-            if (indexPath.row == self.feeds.count) {
-                PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
-                PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
-                [self presentViewController:navigationController animated:YES completion:nil];
+#endif
+
+#ifdef PINBOARD
+        AppDelegate *delegate = [AppDelegate sharedDelegate];
+        switch ((PPPinboardSectionType)indexPath.section) {
+            case PPPinboardSectionPersonal: {
+                NSInteger numFeedsSkipped = 0;
+                NSInteger numFeedsNotSkipped = 0;
+                
+                if (!tableView.editing) {
+                    for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
+                        if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+                            numFeedsSkipped++;
+                        }
+                        else {
+                            if (numFeedsNotSkipped == indexPath.row) {
+                                break;
+                            }
+                            numFeedsNotSkipped++;
+                        }
+                    }
+                }
+                
+                PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)(indexPath.row + numFeedsSkipped);
+
+                PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                dataSource.limit = 100;
+
+                switch (feedType) {
+                    case PPPinboardPersonalFeedAll:
+                        [mixpanel track:@"Browsed all bookmarks"];
+                        break;
+
+                    case PPPinboardPersonalFeedPrivate:
+                        dataSource.isPrivate = YES;
+                        [mixpanel track:@"Browsed private bookmarks"];
+                        break;
+
+                    case PPPinboardPersonalFeedPublic:
+                        dataSource.isPrivate = NO;
+                        [mixpanel track:@"Browsed public bookmarks"];
+                        break;
+
+                    case PPPinboardPersonalFeedUnread:
+                        dataSource.unread = YES;
+                        [mixpanel track:@"Browsed unread bookmarks"];
+                        break;
+
+                    case PPPinboardPersonalFeedUntagged:
+                        dataSource.untagged = YES;
+                        [mixpanel track:@"Browsed untagged bookmarks"];
+                        break;
+
+                    case PPPinboardPersonalFeedStarred:
+                        dataSource.starred = YES;
+                        [mixpanel track:@"Browsed starred bookmarks"];
+                        break;
+                }
+
+                postViewController.postDataSource = dataSource;
+                // Can we just use self.navigationController instead?
+                viewControllerToPush = postViewController;
+                break;
             }
-            else {
-                viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+            case PPPinboardSectionCommunity: {
+                PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+                postViewController.postDataSource = feedDataSource;
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+                if (![AppDelegate sharedDelegate].connectionAvailable) {
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                }
+                else {
+                    NSInteger numFeedsSkipped = 0;
+                    NSInteger numFeedsNotSkipped = 0;
+                    
+                    if (!tableView.editing) {
+                        for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
+                            if ([delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
+                                numFeedsSkipped++;
+                            }
+                            else {
+                                if (numFeedsNotSkipped == indexPath.row) {
+                                    break;
+                                }
+                                numFeedsNotSkipped++;
+                            }
+                        }
+                    }
+                    
+                    PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)(indexPath.row + numFeedsSkipped);
+
+                    switch (feedType) {
+                        case PPPinboardCommunityFeedNetwork: {
+                            NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                            NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                            feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
+                            [mixpanel track:@"Browsed network bookmarks"];
+                            break;
+                        }
+
+                        case PPPinboardCommunityFeedPopular: {
+                            feedDataSource.components = @[@"popular?count=100"];
+                            [mixpanel track:@"Browsed popular bookmarks"];
+                            break;
+                        }
+
+                        case PPPinboardCommunityFeedWikipedia: {
+                            feedDataSource.components = @[@"popular", @"wikipedia"];
+                            [mixpanel track:@"Browsed wikipedia bookmarks"];
+                            break;
+                        }
+
+                        case PPPinboardCommunityFeedFandom: {
+                            feedDataSource.components = @[@"popular", @"fandom"];
+                            [mixpanel track:@"Browsed fandom bookmarks"];
+                            break;
+                        }
+
+                        case PPPinboardCommunityFeedJapan: {
+                            feedDataSource.components = @[@"popular", @"japanese"];
+                            [mixpanel track:@"Browsed 日本語 bookmarks"];
+                            break;
+                        }
+                    }
+                    
+                    viewControllerToPush = postViewController;
+                    break;
+                }
             }
-            break;
+                
+            case PPPinboardSectionSavedFeeds: {
+                if (indexPath.row == self.feeds.count) {
+                    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+                    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+                    [self presentViewController:navigationController animated:YES completion:nil];
+                }
+                else {
+                    viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+                }
+                break;
+            }
         }
-    }
 #endif
     
-    // We need to switch this based on whether the user is on an iPad, due to the split view controller.
-    if ([UIApplication isIPad]) {
-        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
-        if (navigationController.viewControllers.count == 1) {
-            UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
-            if (showPopoverBarButtonItem) {
-                viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+        // We need to switch this based on whether the user is on an iPad, due to the split view controller.
+        if ([UIApplication isIPad]) {
+            UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+            if (navigationController.viewControllers.count == 1) {
+                UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+                if (showPopoverBarButtonItem) {
+                    viewControllerToPush.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+                }
             }
-        }
 
-        [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
-        
-        if ([viewControllerToPush respondsToSelector:@selector(postDataSource)]) {
-            if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
-                [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+            [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
+            
+            if ([viewControllerToPush respondsToSelector:@selector(postDataSource)]) {
+                if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
+                    [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+                }
+            }
+            
+            UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+            if (popover) {
+                [popover dismissPopoverAnimated:YES];
             }
         }
-        
-        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
-        if (popover) {
-            [popover dismissPopoverAnimated:YES];
+        else {
+            [self.navigationController pushViewController:viewControllerToPush animated:YES];
         }
-    }
-    else {
-        [self.navigationController pushViewController:viewControllerToPush animated:YES];
     }
 }
 
@@ -793,16 +851,72 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
     if (self.tableView.editing) {
+        self.navigationItem.leftBarButtonItem.title = @"Settings";
+        self.navigationItem.rightBarButtonItem.title = @"Edit";
+
+        NSArray *indexPathsForSelectedRows = [self.tableView indexPathsForSelectedRows];
+        
+        [self.tableView setEditing:NO animated:YES];
+
         if (sender == self.navigationItem.leftBarButtonItem) {
             // Don't commit updates. User pressed Cancel.
         }
         else {
             // Commit updates. User pressed Done.
+            NSMutableArray *visibleFeedNames = [NSMutableArray array];
+            NSMutableArray *hiddenFeedNames = [NSMutableArray array];
+            
+            for (NSIndexPath *indexPath in indexPathsForSelectedRows) {
+                PPPinboardSectionType sectionType = (PPPinboardSectionType)indexPath.section;
+                NSString *feedName;
+                
+                switch (sectionType) {
+                    case PPPinboardSectionPersonal: {
+                        feedName = [@[@"personal", PPPersonalFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                        break;
+                    }
+                        
+                    case PPPinboardSectionCommunity: {
+                        feedName = [@[@"community", PPCommunityFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                        break;
+                    }
+                        
+                    default:
+                        continue;
+                }
+                
+                [visibleFeedNames addObject:feedName];
+            }
+            
+            for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]-1; section++) {
+                for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
+                    PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
+                    
+                    NSString *feedName;
+                    switch (sectionType) {
+                        case PPPinboardSectionPersonal: {
+                            feedName = [@[PPSections()[section], PPPersonalFeeds()[row]] componentsJoinedByString:@"-"];
+                            break;
+                        }
+                            
+                        case PPPinboardSectionCommunity: {
+                            feedName = [@[PPSections()[section], PPCommunityFeeds()[row]] componentsJoinedByString:@"-"];
+                            break;
+                        }
+                            
+                        default:
+                            break;
+                    }
+                    
+                    if (feedName && ![visibleFeedNames containsObject:feedName]) {
+                        [hiddenFeedNames addObject:feedName];
+                    }
+                }
+            }
+            
+            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            delegate.hiddenFeedNames = [hiddenFeedNames copy];
         }
-
-        self.navigationItem.leftBarButtonItem.title = @"Settings";
-        self.navigationItem.rightBarButtonItem.title = @"Edit";
-        [self.tableView setEditing:NO animated:YES];
         
         [UIView animateWithDuration:0.3
                          animations:^{
@@ -810,11 +924,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                              [self.view layoutIfNeeded];
                          }];
         
+        [CATransaction begin];
         [self.tableView beginUpdates];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds] withRowAnimation:UITableViewRowAnimationFade];
+        [CATransaction setCompletionBlock:^{
+            NSMutableArray *allIndexPaths = [NSMutableArray array];
+            for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
+                for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
+                    [allIndexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                }
+            }
+
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView endUpdates];
+        }];
         [self.tableView endUpdates];
+        [CATransaction commit];
     }
     else {
         self.navigationItem.leftBarButtonItem.title = @"Cancel";
@@ -822,8 +949,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self.tableView setEditing:YES animated:YES];
         
         [self.tableView beginUpdates];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
 
@@ -833,12 +959,46 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                              [self.view layoutIfNeeded];
                          }];
         
-        for (NSInteger i = 0; i < [self.tableView numberOfSections]; i++) {
-            for (NSInteger j = 0; j < [self.tableView numberOfRowsInSection:i]; j++) {
-                [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i] animated:YES scrollPosition:UITableViewScrollPositionNone];
-            }
+        for (NSIndexPath *indexPath in [self indexPathsForVisibleFeeds]) {
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
         }
     }
+}
+
+- (NSArray *)indexPathsForHiddenFeeds {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
+        if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+        }
+    }
+    
+    for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
+        if ([delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionCommunity]];
+        }
+    }
+
+    return [indexPaths copy];
+}
+
+- (NSArray *)indexPathsForVisibleFeeds {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
+        if (![delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+        }
+    }
+    
+    for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
+        if (![delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionCommunity]];
+        }
+    }
+    
+    return [indexPaths copy];
 }
 
 @end
