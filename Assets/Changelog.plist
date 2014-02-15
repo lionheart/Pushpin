@@ -7,6 +7,14 @@
 		<array>
 			<array>
 				<string>NEW</string>
+				<string>Add back notes and reorganize main feed list.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add ability to hide or show personal or community feeds based on preference.</string>
+			</array>
+			<array>
+				<string>NEW</string>
 				<string>Significantly speed up bookmark loading and syncing.</string>
 			</array>
 			<array>

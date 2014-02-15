@@ -214,15 +214,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
 
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.translatesAutoresizingMaskIntoConstraints = NO;
         [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
         button.clipsToBounds = YES;
         [button addSubview:imageView];
 
-        [button lhs_addConstraints:@"H:[imageView(23)]|" views:NSDictionaryOfVariableBindings(imageView)];
+        [button lhs_addConstraints:@"H:[imageView(23)]-15-|" views:NSDictionaryOfVariableBindings(imageView)];
         [button lhs_centerVerticallyForView:imageView height:23];
         self.deleteTagButtons[tag] = button;
-        cell.accessoryView = button;
+
+        [cell.contentView addSubview:button];
+        [cell lhs_addConstraints:@"H:[button(70)]|" views:NSDictionaryOfVariableBindings(button)];
+        [cell lhs_addConstraints:@"V:|[button]|" views:NSDictionaryOfVariableBindings(button)];
     }
     return cell;
 }
