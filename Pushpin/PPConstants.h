@@ -148,6 +148,10 @@ static NSString *PPPocketIPhoneToken = @"23110-401de8502cbf573a2e115c2a";
 static NSString *PPPocketIPadToken = @"23110-86247a432b99945a85a44846";
 static PPProviderType PPProvider __unused = PPProviderDelicious;
 
+static NSArray *PPSections() {
+    return @[@"personal", @"community", @"feeds"];
+}
+
 static NSArray *PPPersonalFeeds() {
     return @[@"all", @"private", @"public", @"unread", @"untagged"];
 }
@@ -163,6 +167,10 @@ static NSString *PPMixpanelToken = @"045e859e70632363c4809784b13c5e98";
 static NSString *PPPocketIPhoneToken = @"11122-03068da9a8951bec2dcc93f3";
 static NSString *PPPocketIPadToken = @"11122-03068da9a8951bec2dcc93f3";
 static PPProviderType PPProvider __unused = PPProviderDelicious;
+
+static NSArray *PPSections() {
+    return @[@"personal", @"community", @"feeds"];
+}
 
 static NSArray *PPPersonalFeeds() {
     return @[@"all", @"private", @"public", @"unread", @"untagged", @"starred"];

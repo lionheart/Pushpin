@@ -12,12 +12,9 @@
 
 @interface PinboardNotesDataSource : NSObject <GenericPostDataSource>
 
-@property (nonatomic, strong) NSArray *notes;
-@property (nonatomic, strong) NSArray *strings;
-@property (nonatomic, strong) NSArray *heights;
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) NSLocale *locale;
+@property (nonatomic, strong) NSMutableArray *posts;
+@property (nonatomic, strong) NSMutableArray *metadata;
 
-- (void)metadataForNote:(NSDictionary *)note callback:(void (^)(NSAttributedString *string, NSNumber *height))callback;
+- (void)metadataForNote:(NSDictionary *)not callback:(void (^)(NSAttributedString *string, NSNumber *height))callback;
 
 @end

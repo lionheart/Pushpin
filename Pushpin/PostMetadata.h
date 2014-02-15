@@ -22,6 +22,12 @@
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
                        compressed:(BOOL)compressed
                             width:(CGFloat)width
+                tagsWithFrequency:(NSDictionary *)tagsWithFrequency
+                            cache:(BOOL)cache;
+
++ (PostMetadata *)metadataForPost:(NSDictionary *)post
+                       compressed:(BOOL)compressed
+                            width:(CGFloat)width
                 tagsWithFrequency:(NSDictionary *)tagsWithFrequency;
 
 @end

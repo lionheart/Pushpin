@@ -87,6 +87,7 @@
 @synthesize doubleTapToEdit = _doubleTapToEdit;
 @synthesize alwaysShowClipboardNotification = _alwaysShowClipboardNotification;
 @synthesize username = _username;
+@synthesize hiddenFeedNames = _hiddenFeedNames;
 
 #pragma mark - PLCrashReporter
 
@@ -452,9 +453,6 @@ static void save_crash_report (PLCrashReporter *reporter) {
 }
 
 - (void)customizeUIElements {
-    //[self.window setTintColor:[UIColor whiteColor]];
-    //[[UIView appearance] setTintColor:[UIColor whiteColor]];
-    
     NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
                                        NSForegroundColorAttributeName: [UIColor whiteColor] };
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
@@ -469,9 +467,6 @@ static void save_crash_report (PLCrashReporter *reporter) {
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    
-//    [[UINavigationBar appearanceWhenContainedIn:[MFMailComposeViewController class], nil] setBarTintColor:[UIColor whiteColor]];
-//    [[UINavigationBar appearanceWhenContainedIn:[MFMailComposeViewController class], nil] setTintColor:[UIColor blackColor]];
 }
 
 - (PPSplitViewController *)splitViewController {
@@ -721,6 +716,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
+        @"io.aurora.pinboard.HiddenFeedNames": @[]
      }];
 
     Reachability *reach = [Reachability reachabilityForInternetConnection];
@@ -1453,6 +1449,22 @@ static void save_crash_report (PLCrashReporter *reporter) {
         }
     }
     return _mobilizer;
+}
+
+- (NSArray *)hiddenFeedNames {
+    return @[@"personal-all", @"personal-private", @"personal-untagged", @"personal-starred", @"community-fandom"];
+    if (!_hiddenFeedNames) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _hiddenFeedNames = [defaults objectForKey:@"io.aurora.pinboard.HiddenFeedNames"];
+    }
+    return _hiddenFeedNames;
+}
+
+- (void)setHiddenFeedNames:(NSArray *)hiddenFeedNames {
+    _hiddenFeedNames = hiddenFeedNames;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:hiddenFeedNames forKey:@"io.aurora.pinboard.HiddenFeedNames"];
+    [defaults synchronize];
 }
 
 - (void)setToken:(NSString *)token {
