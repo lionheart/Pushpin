@@ -44,6 +44,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)openTags;
 - (void)toggleEditing:(UIBarButtonItem *)sender;
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
+
 - (NSArray *)indexPathsForHiddenFeeds;
 - (NSArray *)indexPathsForVisibleFeeds;
 
