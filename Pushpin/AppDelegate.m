@@ -1452,7 +1452,6 @@ static void save_crash_report (PLCrashReporter *reporter) {
 }
 
 - (NSArray *)hiddenFeedNames {
-    return @[@"personal-all", @"personal-private", @"personal-untagged", @"personal-starred", @"community-fandom"];
     if (!_hiddenFeedNames) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _hiddenFeedNames = [defaults objectForKey:@"io.aurora.pinboard.HiddenFeedNames"];
