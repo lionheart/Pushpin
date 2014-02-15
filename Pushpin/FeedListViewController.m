@@ -240,7 +240,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-                                ];
+                            ];
 #endif
         
         NSString *sectionName = PPSections()[0];
@@ -253,16 +253,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
             
             [resultSet next];
+            
+            NSString *count = [resultSet stringForColumnIndex:0];
+            NSString *previousCount = self.bookmarkCounts[i];
+            self.bookmarkCounts[i] = count;
 
             if (!feedHiddenByUser) {
-                NSString *count = [resultSet stringForColumnIndex:0];
-                NSString *previousCount = self.bookmarkCounts[i];
-
                 if (![count isEqualToString:previousCount]) {
-                    self.bookmarkCounts[i] = count;
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:j inSection:0]];
                 }
-                
                 j++;
             }
 
@@ -439,7 +438,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
 
             PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)(indexPath.row + numFeedsSkipped);
-            badgeCount = self.bookmarkCounts[feedType];
 
             switch (feedType) {
                 case PPPinboardPersonalFeedAll:
@@ -473,7 +471,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
             }
             
-            cell.detailTextLabel.text = badgeCount;
+            cell.detailTextLabel.text = self.bookmarkCounts[feedType];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
