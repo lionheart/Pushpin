@@ -934,9 +934,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
             }
 
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView endUpdates];
+            if (allIndexPaths.count < PPPersonalFeeds().count + PPCommunityFeeds().count) {
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+            }
         }];
         [self.tableView endUpdates];
         [CATransaction commit];
