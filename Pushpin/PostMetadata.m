@@ -39,6 +39,18 @@
                        compressed:(BOOL)compressed
                             width:(CGFloat)width
                 tagsWithFrequency:(NSDictionary *)tagsWithFrequency {
+    return [PostMetadata metadataForPost:post
+                              compressed:compressed
+                                   width:width
+                       tagsWithFrequency:tagsWithFrequency
+                                   cache:YES];
+}
+
++ (PostMetadata *)metadataForPost:(NSDictionary *)post
+                       compressed:(BOOL)compressed
+                            width:(CGFloat)width
+                tagsWithFrequency:(NSDictionary *)tagsWithFrequency
+                            cache:(BOOL)cache {
     BOOL read;
     if (post[@"unread"]) {
         read = ![post[@"unread"] boolValue];
@@ -49,9 +61,11 @@
 
     BOOL dimmed = [AppDelegate sharedDelegate].dimReadPosts && read;
 
-    PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed dimmed:dimmed width:width];
-    if (result) {
-        return result;
+    if (cache) {
+        PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed dimmed:dimmed width:width];
+        if (result) {
+            return result;
+        }
     }
     
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
@@ -222,11 +236,13 @@
         }
     }
     
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
-        [badgeWrapperView layoutIfNeeded];
-        badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
-    });
+    if (badges.count > 0) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
+            [badgeWrapperView layoutIfNeeded];
+            badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
+        });
+    }
 
     PostMetadata *metadata = [[PostMetadata alloc] init];
     metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 12);
@@ -235,7 +251,9 @@
     metadata.linkString = linkString;
     metadata.badges = badges;
 
-    [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed dimmed:dimmed width:width];
+    if (cache) {
+        [[PPPinboardMetadataCache sharedCache] cacheMetadata:metadata forPost:post compressed:compressed dimmed:dimmed width:width];
+    }
     return metadata;
 }
 

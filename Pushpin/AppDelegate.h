@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL enableAutoCorrect;
 @property (nonatomic) BOOL markReadPosts;
 @property (nonatomic) BOOL openLinksWithMobilizer;
+@property (nonatomic, strong) NSArray *hiddenFeedNames;
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSDate *lastUpdated;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;

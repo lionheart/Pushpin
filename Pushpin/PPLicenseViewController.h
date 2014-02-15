@@ -10,6 +10,8 @@
 
 @interface PPLicenseViewController : UIViewController
 
+@property (nonatomic, strong) NSString *text;
+
 + (instancetype)licenseViewControllerWithLicense:(NSString *)license;
 
 @end

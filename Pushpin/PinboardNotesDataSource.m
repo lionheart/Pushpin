@@ -9,24 +9,34 @@
 #import "PinboardNotesDataSource.h"
 #import "PPTheme.h"
 #import "PPConstants.h"
+#import "PostMetadata.h"
+#import "PPLicenseViewController.h"
 
 #import "NSAttributedString+Attributes.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 
+@interface PinboardNotesDataSource ()
+
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSLocale *locale;
+
+@end
+
 @implementation PinboardNotesDataSource
 
 - (id)init {
     self = [super init];
     if (self) {
-        self.notes = [NSArray array];
-        self.strings = [NSArray array];
-        self.heights = [NSArray array];
+        self.posts = [NSMutableArray array];
+        self.metadata = [NSMutableArray array];
+        
+        self.locale = [NSLocale currentLocale];
+        
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        self.locale = [NSLocale currentLocale];
         [self.dateFormatter setLocale:self.locale];
         [self.dateFormatter setDoesRelativeDateFormatting:YES];
     }
@@ -40,7 +50,7 @@
 }
 
 - (NSInteger)numberOfPosts {
-    return self.notes.count;
+    return self.posts.count;
 }
 
 - (NSInteger)totalNumberOfPosts {
@@ -57,34 +67,31 @@
 
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
-    return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.notes[index][@"id"]];
+    return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.posts[index][@"id"]];
 }
 
 - (NSDictionary *)postAtIndex:(NSInteger)index {
-    return self.notes[index];
+    return self.posts[index];
 }
 
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index {
-    UIViewController *controller = [[UIViewController alloc] init];
-    UIWebView *webView = [[UIWebView alloc] init];
-    controller.title = [self.notes[index][@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    webView.frame = controller.view.frame;
-    controller.view = webView;
+    __block PPLicenseViewController *license = [[PPLicenseViewController alloc] init];
     
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     
     [delegate setNetworkActivityIndicatorVisible:YES];
-    [pinboard noteWithId:self.notes[index][@"id"]
+    [pinboard noteWithId:self.posts[index][@"id"]
                  success:^(NSString *title, NSString *text) {
+                     license.text = text;
                      [delegate setNetworkActivityIndicatorVisible:NO];
-                     [webView loadHTMLString:[NSString stringWithFormat:@"<body><div style='white-space:pre-wrap;font-family:Helvetica;font-size:12px;'>%@</div></body>", text]
-                                     baseURL:nil];
     }];
-    return controller;
+
+    license.title = self.posts[index][@"title"];
+    return license;
 }
 
-- (void)updatePostsWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure options:(NSDictionary *)options {
+- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure width:(CGFloat)width {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
@@ -92,10 +99,10 @@
     NSMutableArray *newNotesUnsorted = [NSMutableArray array];
     NSMutableArray *newIDs = [NSMutableArray array];
     NSMutableArray *oldIDs = [NSMutableArray array];
-    for (NSDictionary *post in self.notes) {
+    for (NSDictionary *post in self.posts) {
         [oldIDs addObject:post[@"id"]];
     }
-
+    
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
@@ -103,31 +110,36 @@
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-
+        
         NSInteger index = 0;
         for (NSDictionary *note in notes) {
             NSString *noteID = note[@"id"];
+            NSDate *date = [dateFormatter dateFromString:note[@"updated_at"]];
             [newNotesUnsorted addObject:@{
-                @"updated_at": [dateFormatter dateFromString:note[@"updated_at"]],
-                @"title": note[@"title"],
-                @"id": noteID,
-             }];
+                                          @"updated_at": date,
+                                          @"description": [self.dateFormatter stringFromDate:date],
+                                          @"title": note[@"title"],
+                                          @"id": noteID,
+                                          }];
         }
-
+        
         NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return [obj2[@"updated_at"] compare:obj1[@"updated_at"]];
         }];
-
+        
+        [self.metadata removeAllObjects];
         for (NSDictionary *note in newNotes) {
             [newIDs addObject:note[@"id"]];
-
+            
             if (![oldIDs containsObject:note[@"id"]]) {
                 [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             else {
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
             }
-
+            
+            PostMetadata *metadata = [PostMetadata metadataForPost:note compressed:NO width:width tagsWithFrequency:@{} cache:NO];
+            [self.metadata addObject:metadata];
             index++;
         }
         
@@ -137,20 +149,8 @@
                 [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
         }
-        
-        self.notes = [newNotes copy];
 
-        NSMutableArray *newStrings = [NSMutableArray array];
-        NSMutableArray *newHeights = [NSMutableArray array];
-        for (NSDictionary *note in newNotes) {
-            [self metadataForNote:note callback:^(NSAttributedString *string, NSNumber *height) {
-                [newHeights addObject:height];
-                [newStrings addObject:string];
-            }];
-        }
-        
-        self.strings = newStrings;
-        self.heights = newHeights;
+        self.posts = [newNotes copy];
         
         if (success) {
             success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
@@ -158,49 +158,41 @@
     }];
 }
 
-- (NSArray *)linksForPostAtIndex:(NSInteger)index {
+- (void)updateBookmarksWithSuccess:(void (^)())success failure:(void (^)(NSError *))failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
+    success();
+}
+
+- (NSArray *)badgesForPostAtIndex:(NSInteger)index {
     return @[];
 }
 
-- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
-    return [self heightForPostAtIndex:index];
+- (NSAttributedString *)titleForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.titleString;
+}
+
+- (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.descriptionString;
+}
+
+- (NSAttributedString *)linkForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return metadata.linkString;
 }
 
 - (CGFloat)heightForPostAtIndex:(NSInteger)index {
-    return [self.heights[index] floatValue];
+    PostMetadata *metadata = self.metadata[index];
+    return [metadata.height floatValue];
 }
 
-- (NSAttributedString *)attributedStringForPostAtIndex:(NSInteger)index {
-    return self.strings[index];
+- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
+    PostMetadata *metadata = self.metadata[index];
+    return [metadata.height floatValue];
 }
 
 - (BOOL)supportsTagDrilldown {
     return NO;
-}
-
-- (void)metadataForNote:(NSDictionary *)note callback:(void (^)(NSAttributedString *, NSNumber *))callback {
-    UIFont *titleFont = [UIFont fontWithName:[PPTheme boldFontName] size:16];
-    UIFont *dateFont = [UIFont fontWithName:[PPTheme fontName] size:10];
-    
-    NSString *title = [note[@"title"] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    NSString *dateString = [self.dateFormatter stringFromDate:note[@"updated_at"]];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
-    NSRange titleRange = NSMakeRange(0, title.length);
-
-    [content appendFormat:@"\n%@", dateString];
-    NSRange dateRange = NSMakeRange(content.length - dateString.length, dateString.length);
-    
-    NSMutableAttributedString *attributedString = [NSMutableAttributedString attributedStringWithString:content];
-    [attributedString setFont:titleFont range:titleRange];
-    [attributedString setTextColor:HEX(0x33353Bff)];
-    [attributedString setTextColor:HEX(0x353840ff) range:titleRange];
-    [attributedString setTextColor:HEX(0xA5A9B2ff) range:dateRange];
-    [attributedString setFont:dateFont range:dateRange];
-    [attributedString setTextAlignment:kCTLeftTextAlignment lineBreakMode:kCTLineBreakByWordWrapping];
-    
-    NSNumber *height = @([attributedString sizeConstrainedToSize:CGSizeMake([UIApplication currentSize].width - 20, CGFLOAT_MAX)].height);
-    callback(attributedString, height);
 }
 
 @end

@@ -28,9 +28,6 @@
 @property (nonatomic) CGFloat detailTextSize;
 @property (nonatomic) CGFloat rowHeight;
 
-- (void)openNotes;
-- (void)openSettings;
-- (void)openTags;
 - (void)dismissViewController;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;

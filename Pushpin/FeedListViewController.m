@@ -36,6 +36,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @interface FeedListViewController ()
 
 @property (nonatomic, strong) NSMutableArray *feeds;
+@property (nonatomic, strong) UIToolbar *bottomBar;
+@property (nonatomic, strong) NSLayoutConstraint *bottomBarBottomConstraint;
+
+- (void)openNotes;
+- (void)openSettings;
+- (void)openTags;
+- (void)toggleEditing:(UIBarButtonItem *)sender;
+- (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
 
 @end
 
@@ -89,7 +97,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleDone target:self action:@selector(openSettings)];
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
+    settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Settings", @"Cancel", nil];
 
     UIImage *tagImage = [[UIImage imageNamed:@"navigation-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -97,7 +106,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [tagButton setImage:[tagImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
+    tagBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Edit", @"Done", nil];
 
     self.navigationItem.rightBarButtonItem = tagBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
@@ -106,15 +116,45 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.opaque = YES;
-    
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 44, 0);
     [self.view addSubview:self.tableView];
     
-    NSDictionary *views = @{@"table": self.tableView,
-                            @"top": self.topLayoutGuide };
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+
+    NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
+                                                   NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
+    UIBarButtonItem *noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStyleDone target:self action:@selector(openNotes)];
+    [noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+
+    UIBarButtonItem *tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    [tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+
+    self.bottomBar = [[UIToolbar alloc] init];
+    self.bottomBar.barTintColor = [UIColor whiteColor];
+    self.bottomBar.tintColor = [UIColor darkGrayColor];
+    self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, tagsBarButtonItem];
+    self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.bottomBar];
     
-    [self.view lhs_addConstraints:@"H:|[table]|" views:views];
+    NSDictionary *views = @{@"table": self.tableView,
+                            @"top": self.topLayoutGuide,
+                            @"bar": self.bottomBar };
+    
+    self.bottomBarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.bottomBar
+                                                                  attribute:NSLayoutAttributeBottom
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeBottom
+                                                                 multiplier:1
+                                                                   constant:0];
+    
+    [self.view addConstraint:self.bottomBarBottomConstraint];
+    [self.view lhs_addConstraints:@"V:[bar(44)]" views:views];
+    [self.bottomBar lhs_fillWidthOfSuperview];
+    [self.tableView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[top][table]|" views:views];
 
     // Register for Dynamic Type notifications
@@ -166,11 +206,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
         
 #ifdef PINBOARD
-        NSMutableSet *rowsForDeletedFeeds = [NSMutableSet set];
-
         [db beginTransaction];
         for (NSString *components in iCloudFeeds) {
-            [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
+            [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
         }
         [db commit];
 
@@ -202,16 +240,28 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
                                 ];
 #endif
+        
+        NSString *sectionName = PPSections()[0];
 
         NSInteger i = 0;
+        NSInteger j = 0;
         for (FMResultSet *resultSet in resultSets) {
+            NSString *feedName = PPPersonalFeeds()[i];
+            NSString *fullName = [@[sectionName, feedName] componentsJoinedByString:@"-"];
+            BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
+            
             [resultSet next];
-            NSString *count = [resultSet stringForColumnIndex:0];
-            NSString *previousCount = self.bookmarkCounts[i];
 
-            if (![count isEqualToString:previousCount]) {
-                self.bookmarkCounts[i] = count;
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            if (!feedHiddenByUser) {
+                NSString *count = [resultSet stringForColumnIndex:0];
+                NSString *previousCount = self.bookmarkCounts[i];
+
+                if (![count isEqualToString:previousCount]) {
+                    self.bookmarkCounts[i] = count;
+                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                }
+                
+                j++;
             }
 
             i++;
@@ -234,12 +284,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-#ifdef PINBOARD
-    if ((PPPinboardSectionType)indexPath.section == PPPinboardSectionPersonal && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
-        return 0;
-    }
-#endif
-    
 #ifdef DELICIOUS
     if ((PPDeliciousSectionType)indexPath.section == PPDeliciousSectionPersonal && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
         return 0;
@@ -255,7 +299,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
     
 #ifdef PINBOARD
-    return PPProviderPinboardSections;
+    if (self.tableView.editing) {
+        return PPProviderPinboardSections - 1;
+    }
+    else {
+        return PPProviderPinboardSections;
+    }
 #endif
 }
 
@@ -265,12 +314,27 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
     
 #ifdef PINBOARD
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
     switch ((PPPinboardSectionType)section) {
-        case PPPinboardSectionPersonal:
-            return PPPinboardPersonalRows;
+        case PPPinboardSectionPersonal: {
+            if (tableView.editing) {
+                return PPPinboardPersonalRows;
+            }
+            else {
+                NSArray *filteredRows = [delegate.hiddenFeedNames filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", @"personal"]];
+                return PPPinboardPersonalRows - filteredRows.count;
+            }
+        }
 
-        case PPPinboardSectionCommunity:
-            return PPPinboardCommunityRows;
+        case PPPinboardSectionCommunity: {
+            if (tableView.editing) {
+                return PPPinboardCommunityRows;
+            }
+            else {
+                NSArray *filteredRows = [delegate.hiddenFeedNames filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", @"community"]];
+                return PPPinboardCommunityRows - filteredRows.count;
+            }
+        }
             
         case PPPinboardSectionSavedFeeds:
             return self.feeds.count + 1;
@@ -291,6 +355,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
     
     return nil;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == PPPinboardSectionSavedFeeds) {
+        return UITableViewCellEditingStyleDelete;
+    }
+
+    return UITableViewCellEditingStyleNone;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -343,10 +415,30 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
     
 #ifdef PINBOARD
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+
     switch ((PPPinboardSectionType)indexPath.section) {
         case PPPinboardSectionPersonal: {
-            PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)indexPath.row;
+            NSInteger numFeedsSkipped = 0;
+            NSInteger numFeedsNotSkipped = 0;
+
+            if (!tableView.editing) {
+                for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
+                    if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+                        numFeedsSkipped++;
+                    }
+                    else {
+                        if (numFeedsNotSkipped == indexPath.row) {
+                            break;
+                        }
+                        numFeedsNotSkipped++;
+                    }
+                }
+            }
+
+            PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)(indexPath.row + numFeedsSkipped);
             badgeCount = self.bookmarkCounts[feedType];
+
             switch (feedType) {
                 case PPPinboardPersonalFeedAll:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
@@ -387,33 +479,61 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         case PPPinboardSectionCommunity: {
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)indexPath.row;
+
+            NSInteger numFeedsSkipped = 0;
+            NSInteger numFeedsNotSkipped = 0;
+            
+            if (!tableView.editing) {
+                for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
+                    if ([delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
+                        numFeedsSkipped++;
+                    }
+                    else {
+                        if (numFeedsNotSkipped == indexPath.row) {
+                            break;
+                        }
+                        numFeedsNotSkipped++;
+                    }
+                }
+            }
+
+            PPPinboardCommunityFeedType feedType = (PPPinboardCommunityFeedType)(indexPath.row + numFeedsSkipped);
 
             switch (feedType) {
                 case PPPinboardCommunityFeedNetwork:
-                    cell.textLabel.text = NSLocalizedString(@"Network", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"browse-network"];
-                    break;
+                    if (![delegate.hiddenFeedNames containsObject:@"community-network"]) {
+                        cell.textLabel.text = NSLocalizedString(@"Network", nil);
+                        cell.imageView.image = [UIImage imageNamed:@"browse-network"];
+                        break;
+                    }
 
                 case PPPinboardCommunityFeedPopular:
-                    cell.textLabel.text = NSLocalizedString(@"Popular", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
-                    break;
+                    if (![delegate.hiddenFeedNames containsObject:@"community-popular"]) {
+                        cell.textLabel.text = NSLocalizedString(@"Popular", nil);
+                        cell.imageView.image = [UIImage imageNamed:@"browse-popular"];
+                        break;
+                    }
 
                 case PPPinboardCommunityFeedWikipedia:
-                    cell.textLabel.text = @"Wikipedia";
-                    cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
-                    break;
+                    if (![delegate.hiddenFeedNames containsObject:@"community-wikipedia"]) {
+                        cell.textLabel.text = @"Wikipedia";
+                        cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
+                        break;
+                    }
 
                 case PPPinboardCommunityFeedFandom:
-                    cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
-                    cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
-                    break;
+                    if (![delegate.hiddenFeedNames containsObject:@"community-fandom"]) {
+                        cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
+                        cell.imageView.image = [UIImage imageNamed:@"browse-fandom"];
+                        break;
+                    }
 
                 case PPPinboardCommunityFeedJapan:
-                    cell.textLabel.text = @"日本語";
-                    cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
-                    break;
+                    if (![delegate.hiddenFeedNames containsObject:@"community-japan"]) {
+                        cell.textLabel.text = @"日本語";
+                        cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
+                        break;
+                    }
             }
 
             break;
@@ -444,9 +564,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.tableView.editing) {
+        return;
+    }
+
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     UIViewController *viewControllerToPush;
 
@@ -632,9 +756,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)openSettings {
-    SettingsViewController *svc = [[SettingsViewController alloc] init];
-    [self.navigationController pushViewController:svc animated:YES];
+- (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
+    if (self.tableView.editing) {
+        [self toggleEditing:sender];
+    }
+    else {
+        SettingsViewController *svc = [[SettingsViewController alloc] init];
+        [self.navigationController pushViewController:svc animated:YES];
+    }
 }
 
 - (void)openNotes {
@@ -660,6 +789,56 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     [self.tableView reloadData];
+}
+
+- (void)toggleEditing:(UIBarButtonItem *)sender {
+    if (self.tableView.editing) {
+        if (sender == self.navigationItem.leftBarButtonItem) {
+            // Don't commit updates. User pressed Cancel.
+        }
+        else {
+            // Commit updates. User pressed Done.
+        }
+
+        self.navigationItem.leftBarButtonItem.title = @"Settings";
+        self.navigationItem.rightBarButtonItem.title = @"Edit";
+        [self.tableView setEditing:NO animated:YES];
+        
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             self.bottomBarBottomConstraint.constant = 0;
+                             [self.view layoutIfNeeded];
+                         }];
+        
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    }
+    else {
+        self.navigationItem.leftBarButtonItem.title = @"Cancel";
+        self.navigationItem.rightBarButtonItem.title = @"Done";
+        [self.tableView setEditing:YES animated:YES];
+        
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             self.bottomBarBottomConstraint.constant = 44;
+                             [self.view layoutIfNeeded];
+                         }];
+        
+        for (NSInteger i = 0; i < [self.tableView numberOfSections]; i++) {
+            for (NSInteger j = 0; j < [self.tableView numberOfRowsInSection:i]; j++) {
+                [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i] animated:YES scrollPosition:UITableViewScrollPositionNone];
+            }
+        }
+    }
 }
 
 @end

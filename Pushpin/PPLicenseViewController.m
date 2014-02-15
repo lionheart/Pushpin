@@ -60,4 +60,8 @@
     [self.view lhs_addConstraints:@"V:[top][text][bottom]" views:views];
 }
 
+- (void)setText:(NSString *)text {
+    self.textView.text = text;
+}
+
 @end
