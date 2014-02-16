@@ -591,7 +591,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 #ifdef PINBOARD
         AppDelegate *delegate = [AppDelegate sharedDelegate];
-        switch ((PPPinboardSectionType)indexPath.section) {
+        PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+        switch (sectionType) {
             case PPPinboardSectionPersonal: {
                 NSInteger numFeedsSkipped = 0;
                 NSInteger numFeedsNotSkipped = 0;
@@ -822,8 +823,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [visibleFeedNames addObject:feedName];
             }
             
-            for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]-1; section++) {
-                for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
+            for (NSInteger section=0; section<[PPSections() count]; section++) {
+                PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
+                NSInteger numberOfRows;
+                switch (sectionType) {
+                    case PPPinboardSectionPersonal:
+                        numberOfRows = [PPPersonalFeeds() count];
+                        break;
+                        
+                    case PPPinboardSectionCommunity:
+                        numberOfRows = [PPCommunityFeeds() count];
+                        break;
+                        
+                    case PPPinboardSectionSavedFeeds:
+                        numberOfRows = 0;
+                        break;
+                }
+
+                for (NSInteger row=0; row<numberOfRows; row++) {
                     PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
                     
                     NSString *feedName;
