@@ -414,9 +414,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 tagDeleteCount++;
                 
                 for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                    [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                    [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                    tagAddCount++;
+                    NSString *cleanedTagName = [tagName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    if (![cleanedTagName isEqualToString:@""]) {
+                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                        tagAddCount++;
+                    }
                 }
                 
                 index += amountToAdd;
@@ -466,9 +469,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 tagDeleteCount++;
                 
                 for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                    [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                    [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                    tagAddCount++;
+                    NSString *cleanedTagName = [tagName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    if (![cleanedTagName isEqualToString:@""]) {
+                        [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                        tagAddCount++;
+                    }
                 }
                 
                 index += amountToAdd;

@@ -1116,6 +1116,10 @@ static void save_crash_report (PLCrashReporter *reporter) {
                 [db executeUpdate:@"INSERT INTO bookmark_fts (hash, title, description, tags, url) SELECT hash, title, description, tags, url FROM bookmark;"];
                 [db executeUpdate:@"PRAGMA user_version=8;"];
 
+            case 8:
+                [db executeUpdate:@"DELETE FROM tagging WHERE tag_name='';"];
+                [db executeUpdate:@"PRAGMA user_version=9;"];
+
             default:
                 break;
         }
