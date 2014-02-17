@@ -7,19 +7,23 @@
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>Add back access notes view to main feed list.</string>
+				<string>Add ability to customize which feeds appear on the main feed list.</string>
 			</array>
 			<array>
 				<string>NEW</string>
-				<string>Add ability to hide or show feeds based on preference.</string>
+				<string>Add direct access to advanced searches. Just tap the magnifying glass on the feed list.</string>
 			</array>
 			<array>
-				<string>FIX</string>
-				<string>Fix an issue where counts for untagged bookmarks were wrong.</string>
+				<string>NEW</string>
+				<string>Add back ability to browse Pinboard notes (it was previously removed).</string>
 			</array>
 			<array>
 				<string>NEW</string>
 				<string>Significantly speed up bookmark loading and syncing.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where counts for untagged bookmarks were wrong.</string>
 			</array>
 			<array>
 				<string>FIX</string>
