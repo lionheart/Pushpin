@@ -15,6 +15,7 @@
 
 @interface PPStatusBar ()
 
+@property (nonatomic) BOOL hidden;
 @property (nonatomic, strong) UIView *superview;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, strong) NSLayoutConstraint *topConstraint;
@@ -106,34 +107,28 @@
                          double delayInSeconds = secondsNeededToRead;
                          dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                          dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                             [UIView animateWithDuration:0.1
-                                              animations:^{
-                                                  self.topConstraint.constant = -10;
-                                                  [self.superview layoutIfNeeded];
-                                              }
-                                              completion:^(BOOL finished) {
-                                                  [UIView animateWithDuration:0.2 animations:^{
-                                                      self.topConstraint.constant = -height;
-                                                      [self.superview layoutIfNeeded];
-                                                  }];
-                                              }];
+                             [self hide];
                          });
                      }];
 }
 
 - (void)hide {
-    CGFloat height = CGRectGetHeight(self.view.frame) + 20;
-    [UIView animateWithDuration:0.1
-                     animations:^{
-                         self.topConstraint.constant = -10;
-                         [self.superview layoutIfNeeded];
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.2 animations:^{
-                             self.topConstraint.constant = -height;
+    if (!self.hidden) {
+        self.hidden = YES;
+
+        CGFloat height = CGRectGetHeight(self.view.frame) + 20;
+        [UIView animateWithDuration:0.1
+                         animations:^{
+                             self.topConstraint.constant = -10;
                              [self.superview layoutIfNeeded];
+                         }
+                         completion:^(BOOL finished) {
+                             [UIView animateWithDuration:0.2 animations:^{
+                                 self.topConstraint.constant = -height;
+                                 [self.superview layoutIfNeeded];
+                             }];
                          }];
-                     }];
+    }
 }
 
 @end
