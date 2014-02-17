@@ -1141,4 +1141,8 @@ static BOOL kPinboardSyncInProgress = NO;
     return [self titleViewWithDelegate:nil];
 }
 
+- (BOOL)searchSupported {
+    return YES;
+}
+
 @end

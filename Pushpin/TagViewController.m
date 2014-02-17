@@ -296,6 +296,8 @@ static NSString *CellIdentifier = @"TagCell";
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
+    
+    [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
 
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     

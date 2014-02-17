@@ -25,6 +25,7 @@
 #import "PPConstants.h"
 #import "DeliciousDataSource.h"
 #import "PPAddSavedFeedViewController.h"
+#import "PPSearchViewController.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -44,6 +45,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)openTags;
 - (void)toggleEditing:(UIBarButtonItem *)sender;
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
+- (void)searchBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
 
 - (NSArray *)indexPathsForHiddenFeeds;
 - (NSArray *)indexPathsForVisibleFeeds;
@@ -128,7 +130,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.opaque = YES;
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 44, 0);
@@ -138,16 +140,22 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
-    UIBarButtonItem *noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStyleDone target:self action:@selector(openNotes)];
+    
+    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchBarButtonItemTouchUpInside:)];
+    searchBarButtonItem.tintColor = [UIColor darkGrayColor];
+//    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStyleDone target:nil action:nil];
+    [searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+
+    UIBarButtonItem *noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
     [noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
-    UIBarButtonItem *tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
     [tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
     self.bottomBar = [[UIToolbar alloc] init];
     self.bottomBar.barTintColor = [UIColor whiteColor];
     self.bottomBar.tintColor = [UIColor darkGrayColor];
-    self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, tagsBarButtonItem];
+    self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.bottomBar];
     
@@ -314,7 +322,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
     
 #ifdef PINBOARD
-    if (self.tableView.editing) {
+    if (self.tableView.allowsMultipleSelectionDuringEditing) {
         return PPProviderPinboardSections - 1;
     }
     else {
@@ -332,7 +340,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     PPPinboardSectionType sectionType = [self sectionTypeForSection:section];
     
-    if (tableView.editing) {
+    if (tableView.allowsMultipleSelectionDuringEditing) {
         switch (sectionType) {
             case PPPinboardSectionPersonal:
                 return PPPinboardPersonalRows;
@@ -379,13 +387,42 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return nil;
 }
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self sectionTypeForSection:indexPath.section] == PPPinboardSectionSavedFeeds) {
-        return UITableViewCellEditingStyleDelete;
+#ifdef PINBOARD
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (!tableView.allowsMultipleSelectionDuringEditing) {
+        PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+        switch (sectionType) {
+            case PPPinboardSectionCommunity:
+                return NO;
+                
+            case PPPinboardSectionPersonal:
+                return NO;
+                
+            case PPPinboardSectionSavedFeeds:
+                return YES;
+        }
     }
-
-    return UITableViewCellEditingStyleNone;
+    return YES;
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *feed = self.feeds[indexPath.row];
+    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+    [dataSource removeDataSource:^{
+        [self.feeds removeObjectAtIndex:indexPath.row];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [tableView beginUpdates];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView endUpdates];
+        });
+    }];
+}
+#endif
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
@@ -544,7 +581,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     UIViewController *viewControllerToPush;
 
-    if (!tableView.editing) {
+    if (!tableView.allowsMultipleSelectionDuringEditing) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 #ifdef DELICIOUS
@@ -597,7 +634,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 NSInteger numFeedsSkipped = 0;
                 NSInteger numFeedsNotSkipped = 0;
                 
-                if (!tableView.editing) {
+                if (!tableView.allowsMultipleSelectionDuringEditing) {
                     for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
                         if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
                             numFeedsSkipped++;
@@ -750,7 +787,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
-    if (self.tableView.editing) {
+    if (self.tableView.allowsMultipleSelectionDuringEditing) {
         [self toggleEditing:sender];
     }
     else {
@@ -785,12 +822,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
-    if (self.tableView.editing) {
+    if (self.tableView.allowsMultipleSelectionDuringEditing) {
         self.navigationItem.leftBarButtonItem.title = @"Settings";
         self.navigationItem.rightBarButtonItem.title = @"Edit";
 
         NSArray *indexPathsForSelectedRows = [self.tableView indexPathsForSelectedRows];
         
+        self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
 
         if (sender == self.navigationItem.leftBarButtonItem) {
@@ -909,6 +947,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     else {
         self.navigationItem.leftBarButtonItem.title = @"Cancel";
         self.navigationItem.rightBarButtonItem.title = @"Done";
+        
+        self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
         
         [self.tableView beginUpdates];
@@ -1012,7 +1052,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSInteger numSectionsSkipped = 0;
     NSInteger numSectionsNotSkipped = 0;
 
-    if (!self.tableView.editing) {
+    if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         while (YES) {
             if ([self personalSectionIsHidden]) {
                 numSectionsSkipped++;
@@ -1049,7 +1089,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     AppDelegate *delegate = [AppDelegate sharedDelegate];
 
-    if (!self.tableView.editing) {
+    if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
             if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
                 numFeedsSkipped++;
@@ -1071,7 +1111,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSInteger numFeedsNotSkipped = 0;
     
     AppDelegate *delegate = [AppDelegate sharedDelegate];
-    if (!self.tableView.editing) {
+    if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
             if ([delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
                 numFeedsSkipped++;
@@ -1088,5 +1128,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return (PPPinboardCommunityFeedType)(indexPath.row + numFeedsSkipped);
 }
 #endif
+
+- (void)searchBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
+    PPSearchViewController *search = [[PPSearchViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    PPNavigationController *nav = [[PPNavigationController alloc] initWithRootViewController:search];
+    [self presentViewController:nav animated:YES completion:nil];
+}
 
 @end

@@ -135,7 +135,7 @@ static NSInteger kToolbarHeight = 44;
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    if ([self.postDataSource respondsToSelector:@selector(searchDataSource)]) {
+    if ([self.postDataSource respondsToSelector:@selector(searchSupported)] && [self.postDataSource searchSupported]) {
         self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
 
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
@@ -639,7 +639,7 @@ static NSInteger kToolbarHeight = 44;
                                                      [tableView endUpdates];
                                                  }
                                                  
-                                                 if ([self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                                                 if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
                                                  
