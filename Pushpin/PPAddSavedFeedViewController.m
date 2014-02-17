@@ -75,11 +75,6 @@ static NSString *CellIdentifier = @"Cell";
     [self.navigationController.navigationBar setBarTintColor:HEX(0xD5A470FF)];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self.userTextField becomeFirstResponder];
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -186,7 +181,11 @@ static NSString *CellIdentifier = @"Cell";
         PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
         [dataSource addDataSource:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+                    if (self.SuccessCallback) {
+                        self.SuccessCallback();
+                    }
+                }];
             });
         }];
     }

@@ -62,36 +62,53 @@
     return [PPTitleButton buttonWithDelegate:nil];
 }
 
-- (void)setImageNames:(NSArray *)imageNames {
+- (void)setImageNames:(NSArray *)imageNames title:(NSString *)title {
     NSMutableArray *formatComponents = [NSMutableArray array];
     NSMutableDictionary *views = [NSMutableDictionary dictionary];
     NSInteger i = 0;
 
-    self.titleLabel.hidden = YES;
     self.imageView.hidden = YES;
-
+    
     [self.containerView removeConstraints:self.containerView.constraints];
-
-    NSDictionary *metrics = @{@"width": @(20)};
+    
+    NSDictionary *metrics = @{@"width": @(20),
+                              @"textWidth": @([UIApplication currentSize].width - 120)};
     for (NSString *imageName in imageNames) {
         NSString *formatName = [NSString stringWithFormat:@"image%d", i];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.containerView addSubview:imageView];
-
+        
         views[formatName] = imageView;
         [formatComponents addObject:[NSString stringWithFormat:@"[%@(width)]", formatName]];
-        [self.containerView lhs_addConstraints:[NSString stringWithFormat:@"V:|[%@(width)]|", formatName] metrics:metrics views:views];
-
+        
+        if (title) {
+            [self.containerView lhs_centerVerticallyForView:imageView height:20];
+        }
+        else {
+            [self.containerView lhs_addConstraints:[NSString stringWithFormat:@"V:|[%@(width)]|", formatName] metrics:metrics views:views];
+        }
+        
         i++;
     }
-
+    
+    if (title) {
+        self.titleLabel.text = title;
+        views[@"title"] = self.titleLabel;
+        [formatComponents addObject:@"[title(<=textWidth)]"];
+        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    }
+    
     NSString *format = [NSString stringWithFormat:@"H:|%@|", [formatComponents componentsJoinedByString:@"-5-"]];
     
     [self.containerView lhs_addConstraints:format metrics:metrics views:views];
-
+    
     [self layoutIfNeeded];
     self.frame = (CGRect){{0, 0}, self.containerView.frame.size};
+}
+
+- (void)setImageNames:(NSArray *)imageNames {
+    [self setImageNames:imageNames title:nil];
 }
 
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {

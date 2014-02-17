@@ -51,6 +51,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (NSArray *)indexPathsForVisibleFeeds;
 
 #ifdef PINBOARD
+- (void)updateSavedFeeds:(FMDatabase *)db;
 - (BOOL)personalSectionIsHidden;
 - (BOOL)communitySectionIsHidden;
 - (NSInteger)numberOfHiddenSections;
@@ -201,13 +202,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }];
     }
 #endif
-    
-#ifdef PINBOARD
-    // Check if we have any updates from iCloud
-    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
-    [store synchronize];
-    NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
-#endif
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
@@ -226,30 +220,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
         
 #ifdef PINBOARD
-        [db beginTransaction];
-        for (NSString *components in iCloudFeeds) {
-            [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
-        }
-        [db commit];
-
-        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-        [self.feeds removeAllObjects];
-
-        NSInteger index = 0;
-        while ([result next]) {
-            NSString *componentString = [result stringForColumnIndex:0];
-            NSArray *components = [componentString componentsSeparatedByString:@" "];
-
-            [iCloudFeeds addObject:componentString];
-            [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
-            index++;
-        }
-        
-        // Remove duplicates from the array
-        NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
-        
-        // Sync the new saved feed list with iCloud
-        [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+        [self updateSavedFeeds:db];
 
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
@@ -259,8 +230,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
                             ];
-#endif
-        
+
         NSString *sectionName = PPSections()[0];
 
         NSInteger i = 0;
@@ -285,6 +255,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             i++;
         }
+#endif
         
         [db close];
 
@@ -738,12 +709,31 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
             }
-                
+
             case PPPinboardSectionSavedFeeds: {
                 if (indexPath.row == self.feeds.count) {
                     PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
                     PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+                    if ([UIApplication isIPad]) {
+                        addSavedFeedViewController.SuccessCallback = ^{
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                [db open];
+                                [self updateSavedFeeds:db];
+                                [db close];
+
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self.tableView beginUpdates];
+                                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                                                  withRowAnimation:UITableViewRowAnimationFade];
+                                    [self.tableView endUpdates];
+                                });
+                            });
+                        };
+                        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                    }
                     [self presentViewController:navigationController animated:YES completion:nil];
+                    return;
                 }
                 else {
                     viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
@@ -1131,8 +1121,46 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)searchBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
     PPSearchViewController *search = [[PPSearchViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    PPNavigationController *nav = [[PPNavigationController alloc] initWithRootViewController:search];
-    [self presentViewController:nav animated:YES completion:nil];
+
+    if ([UIApplication isIPad]) {
+        [self.navigationController pushViewController:search animated:YES];
+    }
+    else {
+        PPNavigationController *nav = [[PPNavigationController alloc] initWithRootViewController:search];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (void)updateSavedFeeds:(FMDatabase *)db {
+    // Check if we have any updates from iCloud
+    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+    [store synchronize];
+    NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
+    
+    [db beginTransaction];
+    for (NSString *components in iCloudFeeds) {
+        [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
+    }
+    [db commit];
+    
+    FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+    [self.feeds removeAllObjects];
+    
+    NSInteger index = 0;
+    while ([result next]) {
+        NSString *componentString = [result stringForColumnIndex:0];
+        NSArray *components = [componentString componentsSeparatedByString:@" "];
+        
+        [iCloudFeeds addObject:componentString];
+        [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+        index++;
+    }
+    
+    // Remove duplicates from the array
+    NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
+    
+    // Sync the new saved feed list with iCloud
+    [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
 }
 
 @end

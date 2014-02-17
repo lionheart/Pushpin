@@ -61,32 +61,37 @@ static NSString *CellIdentifier = @"Cell";
     
     self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont],
                               NSParagraphStyleAttributeName: paragraphStyle };
-    
-    [self calculateHeightsForWidth:CGRectGetWidth(self.tableView.frame) - 30];
+
+    if ([UIApplication isIPad]) {
+        [self calculateHeightsForWidth:290];
+    }
+    else {
+        [self calculateHeightsForWidth:CGRectGetWidth(self.view.frame) - 30];
+    }
 
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)calculateHeightsForWidth:(CGFloat)w {
     [self.titles removeAllObjects];
-
+    
     UILabel *fakeLabel = [[UILabel alloc] init];
     fakeLabel.preferredMaxLayoutWidth = w;
-
+    
     [self.data enumerateObjectsUsingBlock:^(NSArray *list, NSUInteger section, BOOL *stop) {
         [self.titles addObject:list[0]];
         self.heights[section] = [NSMutableArray array];
-
+        
         [list[1] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger row, BOOL *stop) {
             NSString *description = pair[1];
             CGFloat height = 0;
-
+            
             fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:description attributes:self.detailAttributes];
-
+            
             if (![description isEqualToString:@""]) {
                 height += CGRectGetHeight([fakeLabel textRectForBounds:CGRectMake(0, 0, w, CGFLOAT_MAX) limitedToNumberOfLines:0]);
             }
-
+            
             self.heights[section][row] = @(height);
         }];
     }];
@@ -95,11 +100,11 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.data.count;
+    return self.heights.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.data[section][1] count];
+    return [self.heights[section] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -128,13 +133,6 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [self calculateHeightsForWidth:[UIApplication currentSize].width];
-
-    [self.tableView beginUpdates];
-    [self.tableView endUpdates];
 }
 
 @end

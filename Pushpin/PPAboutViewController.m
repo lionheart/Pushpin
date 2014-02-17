@@ -55,25 +55,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
 #ifdef DELICIOUS
     NSString *title = @"Pushpin for Delicious";
+    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About-Delicious" ofType:@"plist"];
 #endif
     
 #ifdef PINBOARD
     NSBundle *bundle = [NSBundle mainBundle];
     NSDictionary *info = [bundle infoDictionary];
     NSString *title = [NSString stringWithFormat:@"Pushpin %@ (%@)", info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"]];
+    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
 #endif
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:title imageName:nil];
     self.navigationItem.titleView = titleView;
-
-#ifdef DELICIOUS
-    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About-Delicious" ofType:@"plist"];
-#endif
-
-#ifdef PINBOARD
-    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
-#endif
 
     self.sections = [NSArray arrayWithContentsOfFile:aboutPlist];
 
@@ -88,8 +82,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.tableView.frame) - 30, CGFLOAT_MAX);
+
+    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX);
     CGRect maxRect = (CGRect){{0, 0}, maxSize};
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -102,11 +96,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                               NSForegroundColorAttributeName: [PPTheme detailLabelFontColor]};
     UILabel *fakeLabel = [[UILabel alloc] init];
     fakeLabel.preferredMaxLayoutWidth = maxSize.width;
-    
+
+    __block NSMutableArray *heights = [NSMutableArray array];
+
     [self.sections enumerateObjectsUsingBlock:^(NSDictionary *sectionData, NSUInteger section, BOOL *stop) {
         NSArray *rows = sectionData[@"rows"];
         
-        self.heights[section] = [NSMutableArray array];
+        heights[section] = [NSMutableArray array];
         
         [rows enumerateObjectsUsingBlock:^(NSDictionary *rowData, NSUInteger row, BOOL *stop) {
             CGFloat height = 0;
@@ -115,34 +111,31 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSString *detail = rowData[@"detail"];
             
             if (title) {
-                NSAttributedString *string = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
-                CGRect rect = [string boundingRectWithSize:maxSize
-                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                   context:nil];
-                height += CGRectGetHeight(rect);
+                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
+                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
             
             if (detail) {
-                NSAttributedString *string = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
-                CGRect rect = [string boundingRectWithSize:maxSize
-                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                   context:nil];
-                height += CGRectGetHeight(rect);
+                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
+                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
             
-            self.heights[section][row] = @(height);
+            heights[section][row] = @(height);
         }];
     }];
-
+    
+    self.heights = [heights mutableCopy];
+    
     [[MixpanelProxy sharedInstance] track:@"Opened about page"];
+    [self.tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sections.count;
+    return self.heights.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.sections[section][@"rows"] count];
+    return [self.heights[section] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -157,7 +150,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
     cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
@@ -196,7 +192,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                     
                 case 1: {
-                    PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] init];
+                    PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] initWithStyle:UITableViewStyleGrouped];
                     [self.navigationController pushViewController:changelogViewController animated:YES];
                     break;
                 }
@@ -238,7 +234,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {

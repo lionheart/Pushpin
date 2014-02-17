@@ -1383,7 +1383,7 @@ static BOOL kPinboardSyncInProgress = NO;
     
     if (title) {
         if (imageNames.count > 1) {
-            [titleButton setImageNames:imageNames];
+            [titleButton setImageNames:imageNames title:[@"+" stringByAppendingString:title]];
         }
         else if (imageNames.count == 1) {
             [titleButton setTitle:title imageName:imageNames[0]];

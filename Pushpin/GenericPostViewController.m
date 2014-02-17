@@ -289,22 +289,17 @@ static NSInteger kToolbarHeight = 44;
     
     self.postDataSource.posts = [self.posts mutableCopy];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
-    if ([self.postDataSource numberOfPosts] == 0) {
-        [self.pullToRefreshImageView startAnimating];
+    
+    [self updateFromLocalDatabaseWithCallback:^{
         if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
             delegate.bookmarksNeedUpdate = NO;
-
+            
+            [self.pullToRefreshImageView startAnimating];
             [self.postDataSource updateBookmarksWithSuccess:^{
                 [self updateFromLocalDatabaseWithCallback:nil];
             } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
         }
-        else {
-            [self updateFromLocalDatabaseWithCallback:nil];
-        }
-    }
-    else {
-        [self updateFromLocalDatabaseWithCallback:nil];
-    }
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
