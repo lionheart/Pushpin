@@ -1383,7 +1383,12 @@ static BOOL kPinboardSyncInProgress = NO;
     
     if (title) {
         if (imageNames.count > 1) {
-            [titleButton setImageNames:imageNames title:[@"+" stringByAppendingString:title]];
+            if (self.searchQuery) {
+                [titleButton setImageNames:imageNames title:[NSString stringWithFormat:@"+\"%@\"", self.searchQuery]];
+            }
+            else {
+                [titleButton setImageNames:imageNames title:nil];
+            }
         }
         else if (imageNames.count == 1) {
             [titleButton setTitle:title imageName:imageNames[0]];
