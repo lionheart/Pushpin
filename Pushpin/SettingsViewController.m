@@ -33,7 +33,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHDelicious/LHDelicious.h>
 
-static NSString *CellIdentifier = @"Cell";
+static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface SettingsViewController ()
 
@@ -86,8 +86,9 @@ static NSString *CellIdentifier = @"Cell";
     [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
     [self.readLaterServices addObject:@[@(PPReadLaterPocket)]];
     [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
-    [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"None", nil)];
+    [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
     [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    self.readLaterActionSheet.destructiveButtonIndex = self.readLaterActionSheet.numberOfButtons - 2;
     self.readLaterActionSheet.cancelButtonIndex = self.readLaterActionSheet.numberOfButtons - 1;
 
     self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@"Log In", nil];

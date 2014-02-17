@@ -13,8 +13,11 @@
 #import "PinboardDataSource.h"
 #import "UITableViewCellValue1.h"
 #import "PPTitleButton.h"
+#import "AppDelegate.h"
+#import "FeedListViewController.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -50,11 +53,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [button setTitle:@"Advanced Search" imageName:nil];
     self.navigationItem.titleView = button;
 
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelBarButtonItemTouchUpInside:)];
+    if ([UIApplication isIPad]) {
+        
+    }
+    else {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelBarButtonItemTouchUpInside:)];
+        
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
+        [self.navigationItem setBackBarButtonItem:backButton];
+    }
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchBarButtonItemTouchUpInside:)];
-    
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButton];
     
     self.starred = kPushpinFilterNone;
     self.isPrivate = kPushpinFilterNone;
@@ -74,16 +83,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.searchTextField.placeholder = NSLocalizedString(@"Search query", nil);
     
-    self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Private", @"Public", @"N/A", nil];
+    self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Private", @"Public", @"Clear", nil];
     self.isPrivateActionSheet.destructiveButtonIndex = 2;
     
-    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Starred", @"Unstarred", @"N/A", nil];
+    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Starred", @"Unstarred", @"Clear", nil];
     self.starredActionSheet.destructiveButtonIndex = 2;
 
-    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Unread", @"Read", @"N/A", nil];
+    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Unread", @"Read", @"Clear", nil];
     self.unreadActionSheet.destructiveButtonIndex = 2;
 
-    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Untagged", @"Tagged", @"N/A", nil];
+    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Untagged", @"Tagged", @"Clear", nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
@@ -123,12 +132,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
                                                             forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.font = [PPTheme textLabelFont];
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
 
     switch ((PPSearchSectionType)indexPath.section) {
         case PPSearchSectionQuery: {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.hidden = YES;
             cell.detailTextLabel.text = nil;
             cell.accessoryType = UITableViewCellAccessoryDetailButton;
@@ -141,6 +150,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
 
         case PPSearchSectionFilters: {
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             cell.textLabel.hidden = NO;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             
@@ -170,15 +180,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             switch (filter) {
                 case kPushpinFilterTrue:
-                    cell.detailTextLabel.text = @"True";
+                    cell.detailTextLabel.text = @"Yes";
                     break;
                     
                 case kPushpinFilterFalse:
-                    cell.detailTextLabel.text = @"False";
+                    cell.detailTextLabel.text = @"No";
                     break;
                     
                 case kPushpinFilterNone:
-                    cell.detailTextLabel.text = @"N/A";
+                    cell.detailTextLabel.text = @"";
                     break;
             }
             break;
@@ -259,7 +269,31 @@ static NSString *CellIdentifier = @"CellIdentifier";
     pinboardDataSource.untagged = self.untagged;
     pinboardDataSource.unread = self.unread;
     genericPostViewController.postDataSource = pinboardDataSource;
-    [self.navigationController pushViewController:genericPostViewController animated:YES];
+    
+    // We need to switch this based on whether the user is on an iPad, due to the split view controller.
+    if ([UIApplication isIPad]) {
+        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+        if (navigationController.viewControllers.count == 1) {
+            UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+            if (showPopoverBarButtonItem) {
+                genericPostViewController.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+            }
+        }
+        
+        [navigationController setViewControllers:@[genericPostViewController] animated:YES];
+        
+        if ([pinboardDataSource respondsToSelector:@selector(barTintColor)]) {
+            [self.navigationController.navigationBar setBarTintColor:[pinboardDataSource barTintColor]];
+        }
+        
+        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+        if (popover) {
+            [popover dismissPopoverAnimated:YES];
+        }
+    }
+    else {
+        [self.navigationController pushViewController:genericPostViewController animated:YES];
+    }
 }
 
 - (void)cancelBarButtonItemTouchUpInside:(id)sender {
@@ -277,10 +311,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
             filter = kPushpinFilterFalse;
             break;
             
-        default:
+        case 2:
             filter = kPushpinFilterNone;
             break;
+
+        case 3:
+            return;
     }
+
     PPSearchFilterRowType rowType;
     if (actionSheet == self.starredActionSheet) {
         self.starred = filter;

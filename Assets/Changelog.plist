@@ -3,6 +3,31 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Add ability to customize which feeds appear on the main feed list.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add direct access to advanced searches. Just tap the magnifying glass on the feed list.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Add back ability to browse Pinboard notes (it was previously removed).</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where counts for untagged bookmarks were wrong.</string>
+			</array>
+			<array>
+				<string>NEW</string>
+				<string>Change number of autocompleted tags on iPhone from 4 to 6.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.0.2</string>
 		<array>
 			<array>
@@ -40,10 +65,6 @@
 			<array>
 				<string>FIX</string>
 				<string>Make a bunch of minor look-and-feel improvements.</string>
-			</array>
-			<array>
-				<string>NEW</string>
-				<string>Change number of autocompleted tags on iPhone from 4 to 6.</string>
 			</array>
 		</array>
 	</array>

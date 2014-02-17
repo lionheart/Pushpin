@@ -23,6 +23,10 @@
     return UIStatusBarStyleLightContent;
 }
 
+- (id)init {
+    return [self initWithStyle:UITableViewStyleGrouped];
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super init];
     if (self) {
