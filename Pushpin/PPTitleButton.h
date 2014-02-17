@@ -26,5 +26,6 @@
 + (instancetype)button;
 + (instancetype)buttonWithDelegate:(id<PPTitleButtonDelegate>)delegate;
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName;
+- (void)setImageNames:(NSArray *)imageNames;
 
 @end

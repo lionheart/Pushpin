@@ -62,6 +62,38 @@
     return [PPTitleButton buttonWithDelegate:nil];
 }
 
+- (void)setImageNames:(NSArray *)imageNames {
+    NSMutableArray *formatComponents = [NSMutableArray array];
+    NSMutableDictionary *views = [NSMutableDictionary dictionary];
+    NSInteger i = 0;
+
+    self.titleLabel.hidden = YES;
+    self.imageView.hidden = YES;
+
+    [self.containerView removeConstraints:self.containerView.constraints];
+
+    NSDictionary *metrics = @{@"width": @(20)};
+    for (NSString *imageName in imageNames) {
+        NSString *formatName = [NSString stringWithFormat:@"image%d", i];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.containerView addSubview:imageView];
+
+        views[formatName] = imageView;
+        [formatComponents addObject:[NSString stringWithFormat:@"[%@(width)]", formatName]];
+        [self.containerView lhs_addConstraints:[NSString stringWithFormat:@"V:|[%@(width)]|", formatName] metrics:metrics views:views];
+
+        i++;
+    }
+
+    NSString *format = [NSString stringWithFormat:@"H:|%@|", [formatComponents componentsJoinedByString:@"-5-"]];
+    
+    [self.containerView lhs_addConstraints:format metrics:metrics views:views];
+
+    [self layoutIfNeeded];
+    self.frame = (CGRect){{0, 0}, self.containerView.frame.size};
+}
+
 - (void)setTitle:(NSString *)title imageName:(NSString *)imageName {
     if (imageName) {
         self.imageView.image = [UIImage imageNamed:imageName];

@@ -14,6 +14,10 @@
 				<string>Add ability to hide or show feeds based on preference.</string>
 			</array>
 			<array>
+				<string>FIX</string>
+				<string>Fix an issue where counts for untagged bookmarks were wrong.</string>
+			</array>
+			<array>
 				<string>NEW</string>
 				<string>Significantly speed up bookmark loading and syncing.</string>
 			</array>

@@ -546,4 +546,8 @@
     return titleButton;
 }
 
+- (BOOL)searchSupported {
+    return NO;
+}
+
 @end

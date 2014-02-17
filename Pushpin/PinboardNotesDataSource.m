@@ -195,4 +195,8 @@
     return NO;
 }
 
+- (BOOL)searchSupported {
+    return NO;
+}
+
 @end

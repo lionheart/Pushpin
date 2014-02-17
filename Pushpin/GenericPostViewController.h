@@ -38,6 +38,7 @@ typedef enum : NSInteger {
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;
+- (BOOL)searchSupported;
 
 - (NSAttributedString *)titleForPostAtIndex:(NSInteger)index;
 - (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index;

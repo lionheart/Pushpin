@@ -113,6 +113,8 @@ static BOOL kPinboardSyncInProgress = NO;
         self.searchQuery = query;
     }
     else {
+#warning Make this recursive to handle queries like (url:anand OR url:wire) title:mac. Parse out parentheses and feed back in.
+
         NSError *error;
         NSRegularExpression *complexExpression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:\"[^\\\\\"]+\")|(\"[^ ]+\"))" options:0 error:&error];
         NSArray *complexExpressions = [complexExpression matchesInString:query options:0 range:NSMakeRange(0, query.length)];
@@ -149,7 +151,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [components addObject:[value uppercaseString]];
             }
             else {
-                if (![value hasSuffix:@"*"]) {
+                if (![value hasSuffix:@"*"] && ![value hasSuffix:@")"]) {
                     value = [value stringByAppendingString:@"*"];
                 }
                 
@@ -1091,11 +1093,13 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback {
     NSMutableArray *components = [NSMutableArray array];
     NSMutableArray *parameters = [NSMutableArray array];
-    
+
     [components addObject:@"SELECT bookmark.* FROM"];
     
+    // Use only one match query with the FTS4 syntax.
+    BOOL singleMatch = YES;
     NSMutableArray *tables = [NSMutableArray arrayWithObject:@"bookmark"];
-    if (self.searchQuery) {
+    if (self.searchQuery && singleMatch) {
         [tables addObject:@"bookmark_fts"];
     }
 
@@ -1103,59 +1107,68 @@ static BOOL kPinboardSyncInProgress = NO;
     
     NSMutableArray *whereComponents = [NSMutableArray array];
     if (self.searchQuery) {
-        [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
-
-        NSError *error;
-        // Both of these regex searches comprise the form 'tag:programming' or 'tag:"programming python"'. The only difference are the capture groups.
-        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|(\\w+:\"[^\"]+\"))" options:0 error:&error];
-        NSRegularExpression *subExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\w+):\"?([^\"]+)\"?" options:0 error:&error];
-        NSArray *fieldMatches = [expression matchesInString:self.searchQuery options:0 range:NSMakeRange(0, self.searchQuery.length)];
-        NSMutableArray *valuesForRanges = [NSMutableArray array];
-        for (NSTextCheckingResult *result in fieldMatches) {
-            [valuesForRanges addObject:[NSValue valueWithRange:result.range]];
+        if (singleMatch) {
+            [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
+            [whereComponents addObject:@"bookmark_fts MATCH ?"];
+            [parameters addObject:self.searchQuery];
+        }
+        else {
+            NSMutableArray *subqueries = [NSMutableArray array];
             
-            NSString *matchString = [self.searchQuery substringWithRange:result.range];
-            NSTextCheckingResult *subresult = [subExpression firstMatchInString:matchString options:0 range:NSMakeRange(0, matchString.length)];
-
-            if (subresult.numberOfRanges == 3) {
-                NSString *field = [[matchString substringWithRange:[subresult rangeAtIndex:1]] lowercaseString];
+            NSError *error;
+            // Both of these regex searches comprise the form 'tag:programming' or 'tag:"programming python"'. The only difference are the capture groups.
+            NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|(\\w+:\"[^\"]+\"))" options:0 error:&error];
+            NSRegularExpression *subExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\w+):\"?([^\"]+)\"?" options:0 error:&error];
+            NSArray *fieldMatches = [expression matchesInString:self.searchQuery options:0 range:NSMakeRange(0, self.searchQuery.length)];
+            NSMutableArray *valuesForRanges = [NSMutableArray array];
+            for (NSTextCheckingResult *result in fieldMatches) {
+                [valuesForRanges addObject:[NSValue valueWithRange:result.range]];
                 
-                BOOL isValidField = NO;
-                for (NSString *validField in @[@"title", @"description", @"url", @"tags"]) {
-                    if ([validField isEqualToString:field]) {
-                        isValidField = YES;
-                        break;
-                    }
-                }
-
-                if (isValidField) {
-                    NSString *value = [[matchString substringWithRange:[subresult rangeAtIndex:2]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    NSArray *words = [value componentsSeparatedByString:@" "];
-                    NSMutableArray *wordsWithWildcards = [NSMutableArray array];
-                    for (NSString *word in words) {
-                        if ([word hasSuffix:@"*"] || [@[@"AND", @"OR", @"NOT"] containsObject:word]) {
-                            [wordsWithWildcards addObject:word];
-                        }
-                        else {
-                            [wordsWithWildcards addObject:[word stringByAppendingString:@"*"]];
+                NSString *matchString = [self.searchQuery substringWithRange:result.range];
+                NSTextCheckingResult *subresult = [subExpression firstMatchInString:matchString options:0 range:NSMakeRange(0, matchString.length)];
+                
+                if (subresult.numberOfRanges == 3) {
+                    NSString *field = [[matchString substringWithRange:[subresult rangeAtIndex:1]] lowercaseString];
+                    
+                    BOOL isValidField = NO;
+                    for (NSString *validField in @[@"title", @"description", @"url", @"tags"]) {
+                        if ([validField isEqualToString:field]) {
+                            isValidField = YES;
+                            break;
                         }
                     }
-                    [whereComponents addObject:[NSString stringWithFormat:@"bookmark_fts.%@ MATCH ?", field]];
-                    [parameters addObject:[wordsWithWildcards componentsJoinedByString:@" "]];
+                    
+                    if (isValidField) {
+                        NSString *value = [[matchString substringWithRange:[subresult rangeAtIndex:2]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                        NSArray *words = [value componentsSeparatedByString:@" "];
+                        NSMutableArray *wordsWithWildcards = [NSMutableArray array];
+                        for (NSString *word in words) {
+                            if ([word hasSuffix:@"*"] || [@[@"AND", @"OR", @"NOT"] containsObject:word]) {
+                                [wordsWithWildcards addObject:word];
+                            }
+                            else {
+                                [wordsWithWildcards addObject:[word stringByAppendingString:@"*"]];
+                            }
+                        }
+                        
+                        [subqueries addObject:[NSString stringWithFormat:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts.%@ MATCH ?", field]];
+                        [parameters addObject:[wordsWithWildcards componentsJoinedByString:@" "]];
+                    }
                 }
             }
-        }
-
-        NSMutableString *remainingQuery = [NSMutableString stringWithString:self.searchQuery];
-        for (NSValue *value in [valuesForRanges reverseObjectEnumerator]) {
-            [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
-        }
-
-        NSString *trimmedQuery = [remainingQuery stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        if (![trimmedQuery isEqualToString:@""]) {
-            [whereComponents addObject:@"bookmark_fts MATCH ?"];
-            [parameters addObject:trimmedQuery];
+            
+            NSMutableString *remainingQuery = [NSMutableString stringWithString:self.searchQuery];
+            for (NSValue *value in [valuesForRanges reverseObjectEnumerator]) {
+                [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
+            }
+            
+            NSString *trimmedQuery = [remainingQuery stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if (![trimmedQuery isEqualToString:@""]) {
+                [subqueries addObject:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts MATCH ?"];
+                [parameters addObject:trimmedQuery];
+            }
+            
+            [whereComponents addObject:[NSString stringWithFormat:@"bookmark.hash IN (%@)", [subqueries componentsJoinedByString:@" INTERSECT "]]];
         }
     }
 
@@ -1181,11 +1194,20 @@ static BOOL kPinboardSyncInProgress = NO;
             break;
     }
     
-    if (self.starred != kPushpinFilterNone) {
-        [whereComponents addObject:@"bookmark.starred = ?"];
-        [parameters addObject:@(self.starred)];
+    switch (self.starred) {
+        case kPushpinFilterTrue:
+            [whereComponents addObject:@"bookmark.starred = ?"];
+            [parameters addObject:@(YES)];
+            break;
+            
+        case kPushpinFilterFalse:
+            [whereComponents addObject:@"(bookmark.starred IS NULL)"];
+            break;
+
+        default:
+            break;
     }
-    
+
     if (self.isPrivate != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.private = ?"];
         [parameters addObject:@(self.isPrivate)];
@@ -1317,32 +1339,66 @@ static BOOL kPinboardSyncInProgress = NO;
 - (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate {
     PPTitleButton *titleButton = [PPTitleButton buttonWithDelegate:delegate];
 
-    if (self.isPrivate == kPushpinFilterTrue) {
-        [titleButton setTitle:NSLocalizedString(@"Private Bookmarks", nil) imageName:@"navigation-private"];
+    NSMutableArray *imageNames = [NSMutableArray array];
+    NSString *title;
+
+    switch (self.isPrivate) {
+        case kPushpinFilterTrue:
+            [imageNames addObject:@"navigation-private"];
+            title = NSLocalizedString(@"Private Bookmarks", nil);
+            break;
+            
+        case kPushpinFilterFalse:
+            [imageNames addObject:@"navigation-public"];
+            title = NSLocalizedString(@"Public", nil);
+            break;
+
+        default:
+            break;
     }
-    
-    if (self.isPrivate == kPushpinFilterFalse) {
-        [titleButton setTitle:NSLocalizedString(@"Public", nil) imageName:@"navigation-public"];
-    }
-    
+
     if (self.starred == kPushpinFilterTrue) {
-        [titleButton setTitle:NSLocalizedString(@"Starred", nil) imageName:@"navigation-starred"];
+        [imageNames addObject:@"navigation-starred"];
+        title = NSLocalizedString(@"Starred", nil);
     }
     
     if (self.unread == kPushpinFilterTrue) {
-        [titleButton setTitle:NSLocalizedString(@"Unread", nil) imageName:@"navigation-unread"];
+        [imageNames addObject:@"navigation-unread"];
+        title = NSLocalizedString(@"Unread", nil);
     }
     
     if (self.untagged == kPushpinFilterTrue) {
-        [titleButton setTitle:NSLocalizedString(@"Untagged", nil) imageName:@"navigation-untagged"];
+        [imageNames addObject:@"navigation-untagged"];
+        title = NSLocalizedString(@"Untagged", nil);
     }
 
     if (self.isPrivate == kPushpinFilterNone && self.starred == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
-        [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
+        [imageNames addObject:@"navigation-all"];
+        title = NSLocalizedString(@"All Bookmarks", nil);
     }
     
-    if (!titleButton.titleLabel.text) {
-        [titleButton setTitle:[self.tags componentsJoinedByString:@"+"] imageName:nil];
+    if (self.searchQuery) {
+        title = [NSString stringWithFormat:@"\"%@\"", self.searchQuery];
+    }
+    
+    if (title) {
+        if (imageNames.count > 1) {
+            [titleButton setImageNames:imageNames];
+        }
+        else if (imageNames.count == 1) {
+            [titleButton setTitle:title imageName:imageNames[0]];
+        }
+        else {
+            [titleButton setTitle:title imageName:nil];
+        }
+    }
+    else {
+        if (self.tags.count > 0) {
+            [titleButton setTitle:[self.tags componentsJoinedByString:@"+"] imageName:nil];
+        }
+        else {
+            [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
+        }
     }
 
     return titleButton;
@@ -1350,6 +1406,15 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (UIView *)titleView {
     return [self titleViewWithDelegate:nil];
+}
+
+- (BOOL)searchSupported {
+    if (self.searchQuery) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
 }
 
 @end

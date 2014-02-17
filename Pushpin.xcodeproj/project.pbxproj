@@ -21,6 +21,8 @@
 		3714DB921757DFFD00B23F4F /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB901757DFFD00B23F4F /* user.png */; };
 		3714DB931757DFFD00B23F4F /* user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB911757DFFD00B23F4F /* user@2x.png */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
+		37171A2C18B16C77007FF164 /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
+		37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */; };
 		3717968118A885FE004B2D08 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3717966618A8857F004B2D08 /* XCTest.framework */; };
 		3717968218A885FE004B2D08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		3717968318A885FE004B2D08 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
@@ -136,6 +138,7 @@
 		376C9E8917488F2300A62CB5 /* NotificationX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 376C9E8717488F2300A62CB5 /* NotificationX@2x.png */; };
 		376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8E1749969200A62CB5 /* PPTableViewController.m */; };
 		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
+		3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
@@ -524,6 +527,10 @@
 		3714DB901757DFFD00B23F4F /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user.png; path = Assets/user.png; sourceTree = "<group>"; };
 		3714DB911757DFFD00B23F4F /* user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "user@2x.png"; path = "Assets/user@2x.png"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
+		37171A2A18B16C77007FF164 /* PPSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSearchViewController.h; sourceTree = "<group>"; };
+		37171A2B18B16C77007FF164 /* PPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSearchViewController.m; sourceTree = "<group>"; };
+		37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSBooleanTableViewCell.h; sourceTree = "<group>"; };
+		37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHSBooleanTableViewCell.m; sourceTree = "<group>"; };
 		3717966618A8857F004B2D08 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		3717968018A885F7004B2D08 /* Pushpin Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Pushpin Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3717968618A885FE004B2D08 /* Pushpin Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pushpin Tests-Info.plist"; sourceTree = "<group>"; };
@@ -671,6 +678,8 @@
 		376C9E8E1749969200A62CB5 /* PPTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewController.m; sourceTree = "<group>"; };
 		376E0A7D175AA245004CCDEE /* About.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = About.plist; path = ../About.plist; sourceTree = "<group>"; };
 		376E0A7F175AA9EC004CCDEE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSearchExamplesViewController.h; sourceTree = "<group>"; };
+		3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSearchExamplesViewController.m; sourceTree = "<group>"; };
 		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		377E46DA174C3A7500CE3813 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserSettingsViewController.h; sourceTree = "<group>"; };
@@ -1462,6 +1471,10 @@
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
 				37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */,
 				37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */,
+				37171A2A18B16C77007FF164 /* PPSearchViewController.h */,
+				37171A2B18B16C77007FF164 /* PPSearchViewController.m */,
+				3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */,
+				3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1484,6 +1497,8 @@
 				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
 				378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */,
 				378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */,
+				37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */,
+				37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -2456,6 +2471,7 @@
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,
+				37171A2C18B16C77007FF164 /* PPSearchViewController.m in Sources */,
 				E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */,
 				37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
@@ -2464,6 +2480,7 @@
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
+				37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */,
 				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
 				37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */,
@@ -2475,6 +2492,7 @@
 				376C9E8F1749969200A62CB5 /* PPTableViewController.m in Sources */,
 				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
+				3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,

@@ -9,21 +9,47 @@
 #import "PPTableViewController.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @interface PPTableViewController ()
+
+@property (nonatomic) UITableViewStyle style;
 
 @end
 
 @implementation PPTableViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
+    self = [super init];
     if (self) {
-        self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:(CGRect){{0, 0}, [UIApplication currentSize]}];
-        self.tableView.backgroundColor = HEX(0xF7F9FDff);
-        self.tableView.opaque = NO;
+        self.style = style;
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:self.style];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.opaque = NO;
+    [self.view addSubview:self.tableView];
+    
+    NSDictionary *views = @{@"table": self.tableView};
+    [self.tableView lhs_fillWidthOfSuperview];
+    [self.view lhs_addConstraints:@"V:|[table]" views:views];
+    
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    [self.view addConstraint:self.bottomConstraint];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
