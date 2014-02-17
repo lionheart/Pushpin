@@ -115,13 +115,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSString *detail = rowData[@"detail"];
             
             if (title) {
-                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
-                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
+                NSAttributedString *string = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
+                CGRect rect = [string boundingRectWithSize:maxSize
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                   context:nil];
+                height += CGRectGetHeight(rect);
             }
             
             if (detail) {
-                fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
-                height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
+                NSAttributedString *string = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
+                CGRect rect = [string boundingRectWithSize:maxSize
+                                                   options:NSStringDrawingUsesLineFragmentOrigin
+                                                   context:nil];
+                height += CGRectGetHeight(rect);
             }
             
             self.heights[section][row] = @(height);
@@ -151,10 +157,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.textLabel.numberOfLines = 0;
-    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-
     cell.detailTextLabel.numberOfLines = 0;
-    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
