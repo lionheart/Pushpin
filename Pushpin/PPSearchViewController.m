@@ -244,7 +244,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             switch (filter) {
                 case kPushpinFilterTrue: {
-                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
+                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0x53A93FFF)]];
                     cell.textLabel.textColor = [UIColor blackColor];
                     break;
                 }
@@ -334,8 +334,35 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     pinboardDataSource.isPrivate = self.isPrivate;
     pinboardDataSource.starred = self.starred;
-    pinboardDataSource.untagged = !self.tagged;
-    pinboardDataSource.unread = !self.read;
+    
+    switch (self.read) {
+        case kPushpinFilterTrue:
+            pinboardDataSource.unread = kPushpinFilterFalse;
+            break;
+            
+        case kPushpinFilterFalse:
+            pinboardDataSource.unread = kPushpinFilterTrue;
+            break;
+            
+        case kPushpinFilterNone:
+            pinboardDataSource.unread = kPushpinFilterNone;
+            break;
+    }
+    
+    switch (self.tagged) {
+        case kPushpinFilterTrue:
+            pinboardDataSource.untagged = kPushpinFilterFalse;
+            break;
+            
+        case kPushpinFilterFalse:
+            pinboardDataSource.untagged = kPushpinFilterTrue;
+            break;
+            
+        case kPushpinFilterNone:
+            pinboardDataSource.untagged = kPushpinFilterNone;
+            break;
+    }
+
     genericPostViewController.postDataSource = pinboardDataSource;
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.

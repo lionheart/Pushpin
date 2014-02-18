@@ -1418,6 +1418,9 @@ static BOOL kPinboardSyncInProgress = NO;
         return NO;
     }
     else {
+        if (self.posts.count < self.limit) {
+            return NO;
+        }
         return YES;
     }
 }

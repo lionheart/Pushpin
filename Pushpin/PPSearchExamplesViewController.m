@@ -33,16 +33,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
                       @{@"example": @"tags:programming tags:python",
                         @"description": @"Bookmarks tagged with both \"programming\" and \"python\"." },
                       @{@"example": @"tags:programming OR tags:python",
-                        @"description": @"Bookmarks tagged either \"programming\" or \"python\"." },
+                        @"description": @"Bookmarks tagged either \"programming\" or \"python\". Note that the \"OR\" must be capitalized." },
                       @{@"example": @"tags:programming NOT tags:python",
                         @"description": @"Bookmarks tagged with \"programming\" but NOT \"python\"." },
                       @{@"example": @"(url:wirecutter OR url:anand) title:mac",
                         @"description": @"Bookmarks from either the Wirecutter or AnandTech that have \"mac\" in the title." },
+                      @{@"example": @"((url:macstories OR url:macdrifter OR url:appstorm) AND title:pinboard) OR description:pushpin",
+                        @"description": @"Bookmarks from either Macdrifter, Macstories, or Appstorm that have \"pinboard\" in the title OR bookmarks with pushpin in the description." },
                       ];
     self.title = @"Advanced Searching";
     
-    self.text = @"Pushpin uses SQLite FTS (full-text search) to index bookmarks and to facilitate advanced searching. Indexed fields include 'title', 'description', 'tags', and 'url'. To search for text within a field, just type the field, a colon, and then the phrase you're looking for. If you don't specify a field, Pushpin will search within all fields.\n\n"
-    "Tap the action button in the top right to read more about SQLite FTS advanced query syntax, or check out the examples below.";
+    self.text = @"Pushpin uses SQLite FTS (full-text search) internally to index bookmarks and to facilitate advanced searching. Indexed fields include 'title', 'description', 'tags', and 'url'. To search for text within a field, just type the field, a colon, and then the phrase you're looking for. If you don't specify a field, Pushpin will search within all fields.\n\n"
+    "Tap the action button in the top right to read more about SQLite FTS advanced query syntax (pay attention to the examples with the MATCH keyword, since Pushpin feeds your input right into that), or check out the examples below.";
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openSQLiteFTSDocumentation)];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
@@ -58,10 +60,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        return CGRectGetHeight([self.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme descriptionFont]} context:nil]) + 40;
+        return CGRectGetHeight([self.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme descriptionFont]} context:nil]) + 40;
     }
     else {
-        return 44;
+        return CGRectGetHeight([self.examples[indexPath.section - 1][@"example"] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame)- 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme descriptionFont]} context:nil]) + 30;
     }
 }
 
@@ -74,7 +76,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
         cell.textLabel.font = [PPTheme descriptionFont];
-        cell.textLabel.adjustsFontSizeToFitWidth = NO;
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         cell.textLabel.text = self.text;
@@ -83,8 +84,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         cell.textLabel.font = [PPTheme textLabelFont];
-        cell.textLabel.adjustsFontSizeToFitWidth = YES;
-        cell.textLabel.numberOfLines = 1;
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         cell.textLabel.text = self.examples[indexPath.section - 1][@"example"];
     }
 
