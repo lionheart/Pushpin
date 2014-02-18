@@ -316,7 +316,39 @@ static NSString *CellIdentifier = @"Cell";
         
         // Build our new default view string
         NSString *defaultFeed = @"personal-all";
-        switch ((PPPinboardSectionType)indexPath.section) {
+
+#ifdef DELICIOUS
+        PPDeliciousSectionType sectionType = (PPDeliciousSectionType)indexPath.section;
+        
+        switch (sectionType) {
+            case PPDeliciousSectionPersonal:
+                switch ((PPDeliciousPersonalFeedType)indexPath.row) {
+                    case PPDeliciousPersonalFeedAll:
+                        defaultFeed = @"personal-all";
+                        break;
+                        
+                    case PPDeliciousPersonalFeedPrivate:
+                        defaultFeed = @"personal-private";
+                        break;
+                        
+                    case PPDeliciousPersonalFeedPublic:
+                        defaultFeed = @"personal-public";
+                        break;
+                        
+                    case PPDeliciousPersonalFeedUnread:
+                        defaultFeed = @"personal-unread";
+                        break;
+                        
+                    case PPDeliciousPersonalFeedUntagged:
+                        defaultFeed = @"personal-untagged";
+                        break;
+                }
+                break;
+        }
+#endif
+        
+#ifdef PINBOARD
+        switch (sectionType) {
             case PPPinboardSectionPersonal:
                 switch ((PPPinboardPersonalFeedType)indexPath.row) {
                     case PPPinboardPersonalFeedAll:
@@ -371,13 +403,11 @@ static NSString *CellIdentifier = @"Cell";
             default:
                 break;
         }
-        if (indexPath.section == 0) {
-        }
-        else if (indexPath.section == 1) {
-        }
-        else if (indexPath.section == 2) {
+
+        if (indexPath.section == 2) {
             defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
         }
+#endif
         
         // Update the default feed and pop the view
         [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
