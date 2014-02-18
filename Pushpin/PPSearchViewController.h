@@ -17,12 +17,22 @@ typedef enum : NSInteger {
     PPSearchQueryRow
 } PPSearchQueryRowType;
 
+#ifdef PINBOARD
 typedef enum : NSInteger {
     PPSearchFilterPrivate,
     PPSearchFilterUnread,
     PPSearchFilterStarred,
     PPSearchFilterUntagged
 } PPSearchFilterRowType;
+#endif
+
+#ifdef DELICIOUS
+typedef enum : NSInteger {
+    PPSearchFilterPrivate,
+    PPSearchFilterUnread,
+    PPSearchFilterUntagged
+} PPSearchFilterRowType;
+#endif
 
 typedef enum : NSInteger {
     PPSearchQueryRowCount = PPSearchQueryRow + 1,

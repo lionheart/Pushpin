@@ -50,13 +50,19 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (NSArray *)indexPathsForHiddenFeeds;
 - (NSArray *)indexPathsForVisibleFeeds;
 
-#ifdef PINBOARD
-- (void)updateSavedFeeds:(FMDatabase *)db;
 - (BOOL)personalSectionIsHidden;
-- (BOOL)communitySectionIsHidden;
 - (NSInteger)numberOfHiddenSections;
+
+#ifdef DELICIOUS
+- (PPDeliciousSectionType)sectionTypeForSection:(NSInteger)section;
+- (PPDeliciousPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
+#endif
+
+#ifdef PINBOARD
 - (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section;
 - (PPPinboardPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)communitySectionIsHidden;
+- (void)updateSavedFeeds:(FMDatabase *)db;
 - (PPPinboardCommunityFeedType)communityFeedForIndexPath:(NSIndexPath *)indexPath;
 #endif
 
@@ -141,10 +147,21 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
+
+#ifdef PINBOARD
+    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                         target:self
+                                                                                         action:@selector(searchBarButtonItemTouchUpInside:)];
+#endif
     
-    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchBarButtonItemTouchUpInside:)];
+#ifdef DELICIOUS
+    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+                                                                            style:UIBarButtonItemStyleDone
+                                                                           target:self
+                                                                           action:@selector(searchBarButtonItemTouchUpInside:)];
+#endif
+
     searchBarButtonItem.tintColor = [UIColor darkGrayColor];
-//    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStyleDone target:nil action:nil];
     [searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
     UIBarButtonItem *noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
@@ -156,7 +173,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.bottomBar = [[UIToolbar alloc] init];
     self.bottomBar.barTintColor = [UIColor whiteColor];
     self.bottomBar.tintColor = [UIColor darkGrayColor];
+#ifdef PINBOARD
     self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
+#endif
+    
+#ifdef DELICIOUS
+    self.bottomBar.items = @[searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
+#endif
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.bottomBar];
     
@@ -306,6 +329,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
     return PPDeliciousPersonalRows;
 #endif
+
     
 #ifdef PINBOARD
     AppDelegate *delegate = [AppDelegate sharedDelegate];
@@ -343,6 +367,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+#ifdef PINBOARD
     PPPinboardSectionType sectionType = [self sectionTypeForSection:section];
     switch (sectionType) {
         case PPPinboardSectionPersonal:
@@ -354,7 +379,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         case PPPinboardSectionSavedFeeds:
             return NSLocalizedString(@"Feeds", nil);
     }
+#endif
     
+#ifdef DELICIOUS
+    PPDeliciousSectionType sectionType = [self sectionTypeForSection:section];
+    switch (sectionType) {
+        case PPDeliciousSectionPersonal:
+            return NSLocalizedString(@"Personal", nil);
+    }
+#endif
     return nil;
 }
 
@@ -568,12 +601,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         [mixpanel track:@"Browsed all bookmarks"];
                         break;
                         
-                    case PPPinboardPersonalFeedPrivate:
+                    case PPDeliciousPersonalFeedPrivate:
                         dataSource.isPrivate = YES;
                         [mixpanel track:@"Browsed private bookmarks"];
                         break;
                         
-                    case PPPinboardPersonalFeedPublic:
+                    case PPDeliciousPersonalFeedPublic:
                         dataSource.isPrivate = NO;
                         [mixpanel track:@"Browsed public bookmarks"];
                         break;
@@ -830,6 +863,22 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             NSMutableArray *hiddenFeedNames = [NSMutableArray array];
             
             for (NSIndexPath *indexPath in indexPathsForSelectedRows) {
+#ifdef DELICIOUS
+                PPDeliciousSectionType sectionType = (PPDeliciousSectionType)indexPath.section;
+                NSString *feedName;
+                
+                switch (sectionType) {
+                    case PPDeliciousSectionPersonal: {
+                        feedName = [@[@"personal", PPPersonalFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                        break;
+                    }
+                        
+                    default:
+                        continue;
+                }
+#endif
+                
+#ifdef PINBOARD
                 PPPinboardSectionType sectionType = (PPPinboardSectionType)indexPath.section;
                 NSString *feedName;
                 
@@ -847,13 +896,43 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     default:
                         continue;
                 }
+#endif
                 
                 [visibleFeedNames addObject:feedName];
             }
             
             for (NSInteger section=0; section<[PPSections() count]; section++) {
-                PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
                 NSInteger numberOfRows;
+                
+#ifdef DELICIOUS
+                PPDeliciousSectionType sectionType = (PPDeliciousSectionType)section;
+                
+                switch (sectionType) {
+                    case PPDeliciousSectionPersonal:
+                        numberOfRows = [PPPersonalFeeds() count];
+                        break;
+                }
+                
+                for (NSInteger row=0; row<numberOfRows; row++) {
+                    PPDeliciousSectionType sectionType = (PPDeliciousSectionType)section;
+                    
+                    NSString *feedName;
+                    switch (sectionType) {
+                        case PPDeliciousSectionPersonal: {
+                            feedName = [@[PPSections()[section], PPPersonalFeeds()[row]] componentsJoinedByString:@"-"];
+                            break;
+                        }
+                    }
+                    
+                    if (feedName && ![visibleFeedNames containsObject:feedName]) {
+                        [hiddenFeedNames addObject:feedName];
+                    }
+                }
+#endif
+
+#ifdef PINBOARD
+                PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
+
                 switch (sectionType) {
                     case PPPinboardSectionPersonal:
                         numberOfRows = [PPPersonalFeeds() count];
@@ -891,6 +970,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         [hiddenFeedNames addObject:feedName];
                     }
                 }
+#endif
             }
             
             AppDelegate *delegate = [AppDelegate sharedDelegate];
@@ -908,15 +988,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self.tableView deleteRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         
         if ([self personalSectionIsHidden]) {
+#ifdef PINBOARD
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+#endif
+            
+#ifdef DELICIOUS
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPDeliciousSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+#endif
         }
 
+#ifdef PINBOARD
         if ([self communitySectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
         }
-
+        
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
                       withRowAnimation:UITableViewRowAnimationFade];
+#endif
+
         [CATransaction setCompletionBlock:^{
             NSMutableArray *allIndexPaths = [NSMutableArray array];
             for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
@@ -944,16 +1033,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self.tableView beginUpdates];
         
         if ([self personalSectionIsHidden]) {
+#ifdef PINBOARD
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+#endif
+            
+#ifdef DELICIOUS
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPDeliciousSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+#endif
         }
         
+#ifdef PINBOARD
         if ([self communitySectionIsHidden]) {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
         }
 
-        [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
                       withRowAnimation:UITableViewRowAnimationFade];
+#endif
+
+        [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
 
         [UIView animateWithDuration:0.3
@@ -975,11 +1073,18 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     if (![self personalSectionIsHidden]) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
             if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+#ifdef PINBOARD
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+#endif
+                
+#ifdef DELICIOUS
+                [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
+#endif
             }
         }
     }
 
+#ifdef PINBOARD
     if (![self communitySectionIsHidden]) {
         for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
             if ([delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
@@ -987,6 +1092,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
         }
     }
+#endif
 
     return [indexPaths copy];
 }
@@ -996,32 +1102,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
         if (![delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+#ifdef PINBOARD
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+#endif
+            
+#ifdef DELICIOUS
+            [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
+#endif
         }
     }
     
+#ifdef PINBOARD
     for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
         if (![delegate.hiddenFeedNames containsObject:[@[@"community", PPCommunityFeeds()[i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionCommunity]];
         }
     }
+#endif
     
     return [indexPaths copy];
-}
-
-#ifdef PINBOARD
-
-- (NSInteger)numberOfHiddenSections {
-    NSInteger numSectionsToHide = 0;
-    if ([self personalSectionIsHidden]) {
-        numSectionsToHide++;
-    }
-    
-    if ([self communitySectionIsHidden]) {
-        numSectionsToHide++;
-    }
-    
-    return numSectionsToHide;
 }
 
 - (BOOL)personalSectionIsHidden {
@@ -1031,14 +1130,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }].count == [PPPersonalFeeds() count];
 }
 
-- (BOOL)communitySectionIsHidden {
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
-    return [delegate.hiddenFeedNames indexesOfObjectsPassingTest:^(NSString *feed, NSUInteger idx, BOOL *stop) {
-        return [feed hasPrefix:@"community-"];
-    }].count == [PPCommunityFeeds() count];
+- (NSInteger)numberOfHiddenSections {
+    NSInteger numSectionsToHide = 0;
+    if ([self personalSectionIsHidden]) {
+        numSectionsToHide++;
+    }
+    
+#ifdef PINBOARD
+    if ([self communitySectionIsHidden]) {
+        numSectionsToHide++;
+    }
+#endif
+    
+    return numSectionsToHide;
 }
 
-- (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section {
+#ifdef DELICIOUS
+
+- (PPDeliciousSectionType)sectionTypeForSection:(NSInteger)section {
+    return (PPDeliciousSectionType)(section);
     NSInteger numSectionsSkipped = 0;
     NSInteger numSectionsNotSkipped = 0;
 
@@ -1051,7 +1161,64 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 if (numSectionsNotSkipped == section) {
                     break;
                 }
+                
+                numSectionsNotSkipped++;
+            }
+            
+            break;
+        }
+    }
+    
+    return (PPDeliciousSectionType)(section + numSectionsSkipped);
+}
 
+- (PPDeliciousPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath {
+    NSInteger numFeedsSkipped = 0;
+    NSInteger numFeedsNotSkipped = 0;
+    
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    
+    if (!self.tableView.allowsMultipleSelectionDuringEditing) {
+        for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
+            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", PPPersonalFeeds()[i]] componentsJoinedByString:@"-"]]) {
+                numFeedsSkipped++;
+            }
+            else {
+                if (numFeedsNotSkipped == indexPath.row) {
+                    break;
+                }
+                numFeedsNotSkipped++;
+            }
+        }
+    }
+
+    return (PPDeliciousPersonalFeedType)(indexPath.row + numFeedsSkipped);
+}
+#endif
+
+#ifdef PINBOARD
+- (BOOL)communitySectionIsHidden {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    return [delegate.hiddenFeedNames indexesOfObjectsPassingTest:^(NSString *feed, NSUInteger idx, BOOL *stop) {
+        return [feed hasPrefix:@"community-"];
+    }].count == [PPCommunityFeeds() count];
+}
+
+- (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section {
+    return (PPPinboardSectionType)(section);
+    NSInteger numSectionsSkipped = 0;
+    NSInteger numSectionsNotSkipped = 0;
+    
+    if (!self.tableView.allowsMultipleSelectionDuringEditing) {
+        while (YES) {
+            if ([self personalSectionIsHidden]) {
+                numSectionsSkipped++;
+            }
+            else {
+                if (numSectionsNotSkipped == section) {
+                    break;
+                }
+                
                 numSectionsNotSkipped++;
             }
             
@@ -1065,11 +1232,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
                 numSectionsNotSkipped++;
             }
-
+            
             break;
         }
     }
-
+    
     return (PPPinboardSectionType)(section + numSectionsSkipped);
 }
 
@@ -1095,7 +1262,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     return (PPPinboardPersonalFeedType)(indexPath.row + numFeedsSkipped);
 }
+#endif
 
+#ifdef PINBOARD
 - (PPPinboardCommunityFeedType)communityFeedForIndexPath:(NSIndexPath *)indexPath {
     NSInteger numFeedsSkipped = 0;
     NSInteger numFeedsNotSkipped = 0;

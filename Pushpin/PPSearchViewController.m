@@ -15,6 +15,7 @@
 #import "PPTitleButton.h"
 #import "AppDelegate.h"
 #import "FeedListViewController.h"
+#import "DeliciousDataSource.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -177,6 +178,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     break;
                     
+#ifdef PINBOARD
                 case PPSearchFilterStarred:
                     filter = self.starred;
                     
@@ -195,6 +197,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             break;
                     }
                     break;
+#endif
                     
                 case PPSearchFilterUnread:
                     filter = self.read;
@@ -306,10 +309,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.isPrivateActionSheet showInView:self.view];
                     break;
                     
-                case PPSearchFilterStarred:
-                    [self.starredActionSheet showInView:self.view];
-                    break;
-                    
                 case PPSearchFilterUnread:
                     [self.unreadActionSheet showInView:self.view];
                     break;
@@ -317,6 +316,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case PPSearchFilterUntagged:
                     [self.untaggedActionSheet showInView:self.view];
                     break;
+                    
+#ifdef PINBOARD
+                case PPSearchFilterStarred:
+                    [self.starredActionSheet showInView:self.view];
+                    break;
+#endif
             }
             break;
     }
@@ -326,44 +331,85 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender {
     GenericPostViewController *genericPostViewController = [[GenericPostViewController alloc] init];
-    PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+    
+#ifdef PINBOARD
+    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
     
     if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
-        pinboardDataSource.searchQuery = self.searchTextField.text;
+        dataSource.searchQuery = self.searchTextField.text;
     }
 
-    pinboardDataSource.isPrivate = self.isPrivate;
-    pinboardDataSource.starred = self.starred;
+    dataSource.isPrivate = self.isPrivate;
+    dataSource.starred = self.starred;
     
     switch (self.read) {
         case kPushpinFilterTrue:
-            pinboardDataSource.unread = kPushpinFilterFalse;
+            dataSource.unread = kPushpinFilterFalse;
             break;
             
         case kPushpinFilterFalse:
-            pinboardDataSource.unread = kPushpinFilterTrue;
+            dataSource.unread = kPushpinFilterTrue;
             break;
             
         case kPushpinFilterNone:
-            pinboardDataSource.unread = kPushpinFilterNone;
+            dataSource.unread = kPushpinFilterNone;
             break;
     }
     
     switch (self.tagged) {
         case kPushpinFilterTrue:
-            pinboardDataSource.untagged = kPushpinFilterFalse;
+            dataSource.untagged = kPushpinFilterFalse;
             break;
             
         case kPushpinFilterFalse:
-            pinboardDataSource.untagged = kPushpinFilterTrue;
+            dataSource.untagged = kPushpinFilterTrue;
             break;
             
         case kPushpinFilterNone:
-            pinboardDataSource.untagged = kPushpinFilterNone;
+            dataSource.untagged = kPushpinFilterNone;
             break;
     }
+#endif
+    
+#ifdef DELICIOUS
+    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+    
+    if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
+        dataSource.searchQuery = self.searchTextField.text;
+    }
+    
+    dataSource.isPrivate = self.isPrivate;
+    
+    switch (self.read) {
+        case kPushpinFilterTrue:
+            dataSource.unread = kPushpinFilterFalse;
+            break;
+            
+        case kPushpinFilterFalse:
+            dataSource.unread = kPushpinFilterTrue;
+            break;
+            
+        case kPushpinFilterNone:
+            dataSource.unread = kPushpinFilterNone;
+            break;
+    }
+    
+    switch (self.tagged) {
+        case kPushpinFilterTrue:
+            dataSource.untagged = kPushpinFilterFalse;
+            break;
+            
+        case kPushpinFilterFalse:
+            dataSource.untagged = kPushpinFilterTrue;
+            break;
+            
+        case kPushpinFilterNone:
+            dataSource.untagged = kPushpinFilterNone;
+            break;
+    }
+#endif
 
-    genericPostViewController.postDataSource = pinboardDataSource;
+    genericPostViewController.postDataSource = dataSource;
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
@@ -377,8 +423,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         [navigationController setViewControllers:@[genericPostViewController] animated:YES];
         
-        if ([pinboardDataSource respondsToSelector:@selector(barTintColor)]) {
-            [self.navigationController.navigationBar setBarTintColor:[pinboardDataSource barTintColor]];
+        if ([dataSource respondsToSelector:@selector(barTintColor)]) {
+            [self.navigationController.navigationBar setBarTintColor:[dataSource barTintColor]];
         }
         
         UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
@@ -415,11 +461,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     }
 
     PPSearchFilterRowType rowType;
-    if (actionSheet == self.starredActionSheet) {
-        self.starred = filter;
-        rowType = PPSearchFilterStarred;
-    }
-    else if (actionSheet == self.isPrivateActionSheet) {
+    if (actionSheet == self.isPrivateActionSheet) {
         self.isPrivate = filter;
         rowType = PPSearchFilterPrivate;
     }
@@ -431,6 +473,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tagged = filter;
         rowType = PPSearchFilterUntagged;
     }
+#ifdef PINBOARD
+    else if (actionSheet == self.starredActionSheet) {
+        self.starred = filter;
+        rowType = PPSearchFilterStarred;
+    }
+#endif
     else {
         return;
     }

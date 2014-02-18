@@ -14,6 +14,32 @@ typedef enum : NSInteger {
     PPMobilizerReadability
 } PPMobilizerType;
 
+typedef enum PPProviders : NSInteger {
+    PPProviderPinboard,
+    PPProviderDelicious
+} PPProviderType;
+
+#ifdef DELICIOUS
+typedef enum : NSInteger {
+    PPDeliciousPersonalFeedAll,
+    PPDeliciousPersonalFeedPrivate,
+    PPDeliciousPersonalFeedPublic,
+    PPDeliciousPersonalFeedUnread,
+    PPDeliciousPersonalFeedUntagged
+} PPDeliciousPersonalFeedType;
+
+typedef enum : NSInteger {
+    PPDeliciousSectionPersonal,
+} PPDeliciousSectionType;
+
+static NSInteger PPProviderDeliciousSections = PPDeliciousSectionPersonal + 1;
+
+typedef enum : NSInteger {
+    PPDeliciousPersonalRows = PPDeliciousPersonalFeedUntagged + 1,
+} PPDeliciousRowCounts;
+#endif
+
+#ifdef PINBOARD
 typedef enum : NSInteger {
     PPPinboardPersonalFeedAll,
     PPPinboardPersonalFeedPrivate,
@@ -24,29 +50,12 @@ typedef enum : NSInteger {
 } PPPinboardPersonalFeedType;
 
 typedef enum : NSInteger {
-    PPDeliciousPersonalFeedAll,
-    PPDeliciousPersonalFeedPrivate,
-    PPDeliciousPersonalFeedPublic,
-    PPDeliciousPersonalFeedUnread,
-    PPDeliciousPersonalFeedUntagged
-} PPDeliciousPersonalFeedType;
-
-typedef enum : NSInteger {
     PPPinboardCommunityFeedNetwork,
     PPPinboardCommunityFeedPopular,
     PPPinboardCommunityFeedWikipedia,
     PPPinboardCommunityFeedFandom,
     PPPinboardCommunityFeedJapan
 } PPPinboardCommunityFeedType;
-
-typedef enum PPProviders : NSInteger {
-    PPProviderPinboard,
-    PPProviderDelicious
-} PPProviderType;
-
-typedef enum : NSInteger {
-    PPDeliciousSectionPersonal,
-} PPDeliciousSectionType;
 
 typedef enum : NSInteger {
     PPPinboardSectionPersonal,
@@ -55,18 +64,12 @@ typedef enum : NSInteger {
 } PPPinboardSectionType;
 
 typedef enum : NSInteger {
-    PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1,
-    PPProviderDeliciousSections = PPDeliciousSectionPersonal + 1
-} PPProviderSectionCounts;
-
-typedef enum : NSInteger {
     PPPinboardPersonalRows = PPPinboardPersonalFeedStarred + 1,
     PPPinboardCommunityRows = PPPinboardCommunityFeedJapan + 1
 } PPPinboardRowCounts;
 
-typedef enum : NSInteger {
-    PPDeliciousPersonalRows = PPDeliciousPersonalFeedUntagged + 1,
-} PPDeliciousRowCounts;
+static NSInteger PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1;
+#endif
 
 typedef enum : NSInteger {
     PPPostSourceTwitter,
