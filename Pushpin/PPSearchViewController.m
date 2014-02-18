@@ -161,27 +161,57 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case PPSearchFilterPrivate:
                     filter = self.isPrivate;
 
-                    if (filter == kPushpinFilterTrue) {
-                        cell.textLabel.text = NSLocalizedString(@"Private", nil);
-                    }
-                    else {
-                        cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil)];
+                            break;
                     }
                     break;
                     
                 case PPSearchFilterStarred:
-                    cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     filter = self.starred;
+                    
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = NSLocalizedString(@"Starred", nil);
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = NSLocalizedString(@"Unstarred", nil);
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil)];
+                            break;
+                    }
                     break;
                     
                 case PPSearchFilterUnread:
                     filter = self.read;
-                    
-                    if (filter == kPushpinFilterTrue) {
-                        cell.textLabel.text = NSLocalizedString(@"Read", nil);
-                    }
-                    else {
-                        cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = NSLocalizedString(@"Read", nil);
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil)];
+                            break;
                     }
                     break;
 
@@ -193,6 +223,21 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     else {
                         cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    }
+                    
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil)];
+                            break;
                     }
                     break;
             }
