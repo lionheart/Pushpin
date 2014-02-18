@@ -18,6 +18,7 @@
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -32,8 +33,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic) kPushpinFilterType starred;
 @property (nonatomic) kPushpinFilterType isPrivate;
-@property (nonatomic) kPushpinFilterType unread;
-@property (nonatomic) kPushpinFilterType untagged;
+@property (nonatomic) kPushpinFilterType read;
+@property (nonatomic) kPushpinFilterType tagged;
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender;
 - (void)cancelBarButtonItemTouchUpInside:(id)sender;
@@ -67,8 +68,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     self.starred = kPushpinFilterNone;
     self.isPrivate = kPushpinFilterNone;
-    self.unread = kPushpinFilterNone;
-    self.untagged = kPushpinFilterNone;
+    self.read = kPushpinFilterNone;
+    self.tagged = kPushpinFilterNone;
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.searchTextField = [[UITextField alloc] init];
@@ -89,10 +90,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Starred", @"Unstarred", @"Clear", nil];
     self.starredActionSheet.destructiveButtonIndex = 2;
 
-    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Unread", @"Read", @"Clear", nil];
+    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Read", @"Unread", @"Clear", nil];
     self.unreadActionSheet.destructiveButtonIndex = 2;
 
-    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Untagged", @"Tagged", @"Clear", nil];
+    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tagged", @"Untagged", @"Clear", nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
@@ -158,8 +159,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             switch ((PPSearchFilterRowType)indexPath.row) {
                 case PPSearchFilterPrivate:
-                    cell.textLabel.text = NSLocalizedString(@"Private", nil);
                     filter = self.isPrivate;
+
+                    if (filter == kPushpinFilterTrue) {
+                        cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                    }
+                    else {
+                        cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                    }
                     break;
                     
                 case PPSearchFilterStarred:
@@ -168,27 +175,43 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                     
                 case PPSearchFilterUnread:
-                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                    filter = self.unread;
-                    break;
+                    filter = self.read;
                     
+                    if (filter == kPushpinFilterTrue) {
+                        cell.textLabel.text = NSLocalizedString(@"Read", nil);
+                    }
+                    else {
+                        cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                    }
+                    break;
+
                 case PPSearchFilterUntagged:
-                    cell.textLabel.text = @"Untagged";
-                    filter = self.untagged;
+                    filter = self.tagged;
+
+                    if (filter == kPushpinFilterTrue) {
+                        cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
+                    }
+                    else {
+                        cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                    }
                     break;
             }
             
             switch (filter) {
-                case kPushpinFilterTrue:
-                    cell.detailTextLabel.text = @"Yes";
+                case kPushpinFilterTrue: {
+                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
+                    cell.textLabel.textColor = [UIColor blackColor];
                     break;
+                }
                     
                 case kPushpinFilterFalse:
-                    cell.detailTextLabel.text = @"No";
+                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
+                    cell.textLabel.textColor = [UIColor blackColor];
                     break;
                     
                 case kPushpinFilterNone:
-                    cell.detailTextLabel.text = @"";
+                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                    cell.textLabel.textColor = [UIColor lightGrayColor];
                     break;
             }
             break;
@@ -266,8 +289,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     pinboardDataSource.isPrivate = self.isPrivate;
     pinboardDataSource.starred = self.starred;
-    pinboardDataSource.untagged = self.untagged;
-    pinboardDataSource.unread = self.unread;
+    pinboardDataSource.untagged = !self.tagged;
+    pinboardDataSource.unread = !self.read;
     genericPostViewController.postDataSource = pinboardDataSource;
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
@@ -329,11 +352,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
         rowType = PPSearchFilterPrivate;
     }
     else if (actionSheet == self.unreadActionSheet) {
-        self.unread = filter;
+        self.read = filter;
         rowType = PPSearchFilterUnread;
     }
     else if (actionSheet == self.untaggedActionSheet) {
-        self.untagged = filter;
+        self.tagged = filter;
         rowType = PPSearchFilterUntagged;
     }
     else {
