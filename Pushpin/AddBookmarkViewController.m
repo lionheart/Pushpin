@@ -31,7 +31,7 @@
 #endif
 
 #ifdef DELICIOUS
-#import <LHDelicious/LHDelicious.h>
+#import <LHSDelicious/LHSDelicious.h>
 #endif
 
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
@@ -774,7 +774,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             };
             
 #ifdef DELICIOUS
-            LHDelicious *delicious = [LHDelicious sharedInstance];
+            LHSDelicious *delicious = [LHSDelicious sharedInstance];
             
             [delicious addBookmarkWithURL:url
                                     title:title

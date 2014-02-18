@@ -333,7 +333,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [delegate resetCredentials];
 
 #ifdef DELICIOUS
-            [[LHDelicious sharedInstance] resetAuthentication];
+            [[LHSDelicious sharedInstance] resetAuthentication];
 #endif
 
 #ifdef PINBOARD

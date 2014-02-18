@@ -23,7 +23,7 @@
 #import <LHSCategoryCollection/NSData+Base64.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
-#import <LHDelicious/LHDelicious.h>
+#import <LHSDelicious/LHSDelicious.h>
 
 @interface LoginViewController ()
 
@@ -283,7 +283,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             };
 
 #ifdef DELICIOUS
-            LHDelicious *delicious = [LHDelicious sharedInstance];
+            LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
                                        password:self.passwordTextField.text
                                         success:^(NSString *username) {
