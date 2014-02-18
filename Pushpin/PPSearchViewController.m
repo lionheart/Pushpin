@@ -80,7 +80,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.searchTextField.userInteractionEnabled = YES;
     self.searchTextField.delegate = self;
     self.searchTextField.returnKeyType = UIReturnKeySearch;
-    self.searchTextField.clearButtonMode = UITextFieldViewModeNever;
+    self.searchTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.searchTextField.placeholder = NSLocalizedString(@"Search query", nil);
     
