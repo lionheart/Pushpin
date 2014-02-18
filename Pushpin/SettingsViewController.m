@@ -31,7 +31,7 @@
 #import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHDelicious/LHDelicious.h>
+#import <LHSDelicious/LHSDelicious.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
