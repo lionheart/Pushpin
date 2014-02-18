@@ -12,7 +12,7 @@
 #import "AddBookmarkViewController.h"
 
 #import <FMDB/FMDatabase.h>
-#import <LHDelicious/LHDelicious.h>
+#import <LHSDelicious/LHSDelicious.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 
@@ -223,7 +223,7 @@ static BOOL kPinboardSyncInProgress = NO;
         kPinboardSyncInProgress = YES;
         
         MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-        LHDelicious *delicious = [LHDelicious sharedInstance];
+        LHSDelicious *delicious = [LHSDelicious sharedInstance];
         
         if (!progress) {
             progress = ^(NSInteger current, NSInteger total) {};
@@ -661,7 +661,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
-    LHDelicious *delicious = [LHDelicious sharedInstance];
+    LHSDelicious *delicious = [LHSDelicious sharedInstance];
     [delicious bookmarkWithURL:url
                        success:^(NSDictionary *bookmark) {
                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -709,7 +709,7 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     
-    LHDelicious *delicious = [LHDelicious sharedInstance];
+    LHSDelicious *delicious = [LHSDelicious sharedInstance];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     __block NSInteger numberOfPostsDeleted = 0;
@@ -769,7 +769,7 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     
-    LHDelicious *delicious = [LHDelicious sharedInstance];
+    LHSDelicious *delicious = [LHSDelicious sharedInstance];
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{

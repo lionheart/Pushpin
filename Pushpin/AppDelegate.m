@@ -31,7 +31,7 @@
 #import "PPStatusBar.h"
 #import "DeliciousDataSource.h"
 
-#import <LHDelicious/LHDelicious.h>
+#import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
@@ -731,7 +731,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
     [reach startNotifier];
     
 #ifdef DELICIOUS
-    LHDelicious *delicious = [LHDelicious sharedInstance];
+    LHSDelicious *delicious = [LHSDelicious sharedInstance];
     [delicious setRequestCompletedCallback:^{
         [self setNetworkActivityIndicatorVisible:NO];
     }];
