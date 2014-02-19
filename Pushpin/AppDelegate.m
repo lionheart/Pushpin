@@ -109,7 +109,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
     NSError *error;
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = paths[0];
     if (![fm createDirectoryAtPath: documentsDirectory withIntermediateDirectories: YES attributes:nil error: &error]) {
         DLog(@"Could not create documents directory: %@", error);
         return;
@@ -434,10 +434,10 @@ static void save_crash_report (PLCrashReporter *reporter) {
 
         if ([arrKeyValue count] >= 2) {
             NSMutableString *strKey = [NSMutableString string];
-            [strKey setString:[[[arrKeyValue objectAtIndex:0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            [strKey setString:[[arrKeyValue[0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
 
             NSMutableString *strValue   = [NSMutableString string];
-            [strValue setString:[[[arrKeyValue objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            [strValue setString:[[arrKeyValue[1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
 
             if (strKey.length > 0) {
                 params[strKey] = strValue;
