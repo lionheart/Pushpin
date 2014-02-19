@@ -246,7 +246,7 @@
     // If it's our username, we need to use the feed token to get any private tags
     NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
     NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
-    if ([[escapedComponents objectAtIndex:0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
+    if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
     }
     else {
