@@ -1586,6 +1586,14 @@ static void save_crash_report (PLCrashReporter *reporter) {
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
             [[MixpanelProxy sharedInstance] track:@"Decided to edit bookmark from clipboard"];
         }
+        else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                [db open];
+                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                [db close];
+            });
+        }
     }
 }
 
