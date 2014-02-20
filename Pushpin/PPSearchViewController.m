@@ -306,23 +306,80 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case PPSearchSectionFilters:
             switch ((PPSearchFilterRowType)indexPath.row) {
                 case PPSearchFilterPrivate:
-                    [self.isPrivateActionSheet showInView:self.view];
+                    switch (self.isPrivate) {
+                        case kPushpinFilterTrue:
+                            self.isPrivate = kPushpinFilterFalse;
+                            break;
+
+                        case kPushpinFilterFalse:
+                            self.isPrivate = kPushpinFilterNone;
+                            break;
+
+                        case kPushpinFilterNone:
+                            self.isPrivate = kPushpinFilterTrue;
+                            break;
+                    }
+
                     break;
                     
                 case PPSearchFilterUnread:
-                    [self.unreadActionSheet showInView:self.view];
+                    switch (self.read) {
+                        case kPushpinFilterTrue:
+                            self.read = kPushpinFilterFalse;
+                            break;
+
+                        case kPushpinFilterFalse:
+                            self.read = kPushpinFilterNone;
+                            break;
+
+                        case kPushpinFilterNone:
+                            self.read = kPushpinFilterTrue;
+                            break;
+                    }
+
                     break;
                     
                 case PPSearchFilterUntagged:
-                    [self.untaggedActionSheet showInView:self.view];
+                    switch (self.tagged) {
+                        case kPushpinFilterTrue:
+                            self.tagged = kPushpinFilterFalse;
+                            break;
+
+                        case kPushpinFilterFalse:
+                            self.tagged = kPushpinFilterNone;
+                            break;
+
+                        case kPushpinFilterNone:
+                            self.tagged = kPushpinFilterTrue;
+                            break;
+                    }
+
                     break;
                     
 #ifdef PINBOARD
                 case PPSearchFilterStarred:
-                    [self.starredActionSheet showInView:self.view];
+                    switch (self.starred) {
+                        case kPushpinFilterTrue:
+                            self.starred = kPushpinFilterFalse;
+                            break;
+
+                        case kPushpinFilterFalse:
+                            self.starred = kPushpinFilterNone;
+                            break;
+
+                        case kPushpinFilterNone:
+                            self.starred = kPushpinFilterTrue;
+                            break;
+                    }
+
                     break;
 #endif
             }
+
+
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
             break;
     }
 }
