@@ -388,7 +388,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
                 if (self.alwaysShowClipboardNotification) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UILocalNotification *notification = [[UILocalNotification alloc] init];
-                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add this bookmark.";
+                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
                         notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                     });
