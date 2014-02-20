@@ -226,10 +226,9 @@
                     options[PPBadgeFontColor] = HEX(0x444444FF);
                 }
             }
-            else {
-                if (dimmed) {
-                    options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
-                }
+
+            if (dimmed) {
+                options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
             }
 
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
@@ -238,7 +237,15 @@
     
     if (badges.count > 0) {
         dispatch_sync(dispatch_get_main_queue(), ^{
-            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:compressed];
+            NSMutableDictionary *options = [NSMutableDictionary dictionary];
+            options[PPBadgeFontSize] = @([PPTheme badgeFontSize]);
+            if (dimmed) {
+                options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
+            }
+
+            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges
+                                                                                      options:options
+                                                                                   compressed:compressed];
             [badgeWrapperView layoutIfNeeded];
             badgeHeight = [badgeWrapperView calculateHeightForWidth:constraintSize.width];
         });
