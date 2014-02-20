@@ -7,12 +7,12 @@
 		<key>Pushpin for Delicious.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>24</integer>
+			<integer>1</integer>
 		</dict>
 		<key>Pushpin for Pinboard.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>23</integer>
+			<integer>0</integer>
 		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
@@ -28,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>3717967F18A885F7004B2D08</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>372A9D9818B59E0800AABE53</key>
 		<dict>
 			<key>primary</key>
 			<true/>

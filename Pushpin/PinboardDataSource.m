@@ -27,6 +27,7 @@ static BOOL kPinboardSyncInProgress = NO;
 @interface PinboardDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
+@property (nonatomic) CGFloat mostRecentWidth;
 
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
 
@@ -44,6 +45,7 @@ static BOOL kPinboardSyncInProgress = NO;
         self.metadata = [NSMutableArray array];
         self.compressedMetadata = [NSMutableArray array];
         self.posts = [NSMutableArray array];
+        self.mostRecentWidth = 0;
 
         self.tags = @[];
         self.untagged = kPushpinFilterNone;
@@ -664,6 +666,8 @@ static BOOL kPinboardSyncInProgress = NO;
                      failure:(void (^)(NSError *))failure
                       cancel:(void (^)(BOOL *))cancel
                        width:(CGFloat)width {
+    self.mostRecentWidth = width;
+
     void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
         FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
         [db open];
@@ -997,8 +1001,23 @@ static BOOL kPinboardSyncInProgress = NO;
     return actions;
 }
 
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
+    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
+#warning should really add a success parameter to this block;
+        if ([post count] > 0) {
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
+            
+            self.metadata[index] = metadata;
+            self.compressedMetadata[index] = compressedMetadata;
+        }
+
+        callback();
+    }];
+}
+
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:nil];
+    return [self editViewControllerForPostAtIndex:index callback:nil];
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {

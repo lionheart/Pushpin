@@ -108,7 +108,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.setAsPrivate = [AppDelegate sharedDelegate].privateByDefault;
         self.existingTags = [NSMutableArray array];
         
-        self.callback = ^(void) {};
+        self.callback = ^(NSDictionary *bookmark) {};
         self.titleGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self.titleGestureRecognizer setDirection:UISwipeGestureRecognizerDirectionRight];
         [self.titleTextField addGestureRecognizer:self.titleGestureRecognizer];
@@ -149,7 +149,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark
                                                            update:(NSNumber *)isUpdate
-                                                         callback:(void (^)())callback {
+                                                         callback:(void (^)(NSDictionary *))callback {
     AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
@@ -736,13 +736,26 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     
                     [db commit];
+                    
+#ifdef PINBOARD
+                    FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
+                    [resultSet next];
+                    NSDictionary *post = [PinboardDataSource postFromResultSet:resultSet];
+#endif
                     [db close];
                     
                     if (self.callback) {
-                        self.callback();
+#ifdef PINBOARD
+                        self.callback(post);
+#endif
+                        
+#ifdef DELICIOUS
+                        self.callback(@{});
+#endif
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.parentViewController dismissViewControllerAnimated:NO completion:nil];
+#warning This used to be "NO". Why?
+                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
                         });
                     }
                     else {
@@ -830,7 +843,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
-    [self.parentViewController dismissViewControllerAnimated:YES completion:self.callback];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+        self.callback(@{});
+    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate

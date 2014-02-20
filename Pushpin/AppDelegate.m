@@ -1478,11 +1478,15 @@ static void save_crash_report (PLCrashReporter *reporter) {
 }
 
 - (NSString *)token {
+#ifdef TOKEN
+    return TOKEN;
+#else
     if (!_token) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _token = [defaults objectForKey:@"io.aurora.pinboard.Token"];
     }
     return _token;
+#endif
 }
 
 #pragma mark - Helpers

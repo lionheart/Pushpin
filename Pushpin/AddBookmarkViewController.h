@@ -39,7 +39,7 @@ typedef enum BookmarkSections {
 
 @property (nonatomic) BOOL isUpdate;
 @property (nonatomic) BOOL loadingTitle;
-@property (nonatomic, copy) void (^callback)();
+@property (nonatomic, copy) void (^callback)(NSDictionary *);
 
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 @property (nonatomic) BOOL markAsRead;
@@ -73,7 +73,7 @@ typedef enum BookmarkSections {
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 
-+ (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString callback:(void (^)())callback;
-+ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
++ (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString callback:(void (^)(NSDictionary *))callback;
++ (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)(NSDictionary *))callback;
 
 @end
