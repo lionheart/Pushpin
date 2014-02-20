@@ -25,6 +25,14 @@
 				<string>NEW</string>
 				<string>Change number of autocompleted tags on iPhone from 4 to 6.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where clipboard prompt settings had no effect on the popup for existing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash when bulk-deleting unread bookmarks.</string>
+			</array>
 		</array>
 	</array>
 	<array>
