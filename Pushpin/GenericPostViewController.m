@@ -751,7 +751,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
-    void (^DeletePostCallback)(NSArray *, NSArray *) = ^(NSArray *indexPathsToDelete, NSArray *indexPathsToInsert) {
+    void (^DeletePostCallback)(NSArray *, NSArray *, NSArray *) = ^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -760,6 +760,7 @@ static NSInteger kToolbarHeight = 44;
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView endUpdates];
             
             [UIView animateWithDuration:0.25 animations:^{

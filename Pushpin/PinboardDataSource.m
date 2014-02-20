@@ -300,10 +300,8 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableSet *deletedBookmarkSet = [NSMutableSet set];
             NSMutableSet *updatedBookmarkSet = [NSMutableSet set];
 
-            NSMutableSet *deletedBookmarkPlusMetaSet = [NSMutableSet set];
+            // Used for filtering out bookmarks that have been added from the updated set.
             NSMutableSet *insertedBookmarkPlusMetaSet = [NSMutableSet set];
-            
-            DLog(@"%@ - Getting local data", [NSDate date]);
 
             NSString *firstHash;
             if (posts.count > 0) {
@@ -312,6 +310,8 @@ static BOOL kPinboardSyncInProgress = NO;
             else {
                 firstHash = @"";
             }
+            
+            DLog(@"Getting local data");
 
             NSUInteger total = posts.count;
             results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
@@ -327,8 +327,6 @@ static BOOL kPinboardSyncInProgress = NO;
                 [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, meta]];
             }
             
-            DLog(@"%@ - Creating NSSets", [NSDate date]);
-            
             // Create NSSets containing hashes and meta data
             NSMutableArray *remoteHashTable = [NSMutableArray array];
             NSMutableArray *remoteMetaTable = [NSMutableArray array];
@@ -337,7 +335,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [remoteMetaTable addObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
             }
             
-            DLog(@"%@ - Calculating changes", [NSDate date]);
+            DLog(@"Calculating changes");
             
             NSDictionary *params;
             CGFloat index = 0;
@@ -350,7 +348,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             [mixpanel.people set:@"Bookmarks" to:@(total)];
 
-            DLog(@"%@ - Iterating posts", [NSDate date]);
+            DLog(@"Iterating posts");
             progress(0, total);
 
             NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
@@ -376,6 +374,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     date = [NSDate dateWithTimeIntervalSince1970:0];
                     [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                     dateError = YES;
+                    DLog(@"Error parsing date: %@", post[@"time"]);
                 }
 
                 NSString *hash = post[@"hash"];
@@ -487,11 +486,11 @@ static BOOL kPinboardSyncInProgress = NO;
                 [queue enqueueNotification:note postingStyle:NSPostASAP];
             }
             
-            DLog(@"%@ - Updating tags", [NSDate date]);
+            DLog(@"Updating tags");
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
             
-            DLog(@"%@ - Starting DB commit", [NSDate date]);
+            DLog(@"Committing changes");
             [db commit];
             [db close];
 
@@ -499,10 +498,10 @@ static BOOL kPinboardSyncInProgress = NO;
             skipped = total - addCount - updateCount - deleteCount;
 
             DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
-            DLog(@"added %lu", (unsigned long)addCount);
-            DLog(@"updated %lu", (unsigned long)updateCount);
+            DLog(@"added %lu", (unsigned long)[insertedBookmarkSet count]);
+            DLog(@"updated %lu", (unsigned long)[updatedBookmarkSet count]);
             DLog(@"skipped %lu", (unsigned long)skipped);
-            DLog(@"removed %lu", (unsigned long)deleteCount);
+            DLog(@"removed %lu", (unsigned long)[deletedBookmarkSet count]);
             DLog(@"tags added %lu", (unsigned long)tagAddCount);
             
             self.totalNumberOfPosts = index;
@@ -875,7 +874,7 @@ static BOOL kPinboardSyncInProgress = NO;
                       }];
 }
 
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *))callback {
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
     void (^SuccessBlock)();
     void (^ErrorBlock)(NSError *);
 
@@ -883,9 +882,6 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     ASPinboard *pinboard = [ASPinboard sharedInstance];
-    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-    __block NSInteger numberOfPostsDeleted = 0;
     NSString *url;
 
     for (NSIndexPath *indexPath in indexPaths) {
@@ -901,11 +897,6 @@ static BOOL kPinboardSyncInProgress = NO;
             [db close];
 
             [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
-            
-            [self.posts removeObjectAtIndex:indexPath.row];
-
-            [indexPathsToDelete addObject:indexPath];
-            numberOfPostsDeleted++;
             dispatch_group_leave(group);
         };
 
@@ -924,14 +915,15 @@ static BOOL kPinboardSyncInProgress = NO;
         [db open];
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
         [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+        [db close];
 
         // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
-
-        if (callback) {
-            dispatch_group_notify(inner_group, queue, ^{
-                callback(indexPathsToDelete, indexPathsToAdd);
-            });
-        }
+        
+        dispatch_group_notify(inner_group, queue, ^{
+            if (callback) {
+                [self bookmarksWithSuccess:callback failure:nil width:self.mostRecentWidth];
+            }
+        });
     });
 }
 
