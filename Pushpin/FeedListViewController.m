@@ -1205,7 +1205,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section {
-    return (PPPinboardSectionType)(section);
     NSInteger numSectionsSkipped = 0;
     NSInteger numSectionsNotSkipped = 0;
     
