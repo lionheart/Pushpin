@@ -1052,7 +1052,13 @@ static NSInteger kToolbarHeight = 44;
                 [self showConfirmDeletionAlert];
             }
             else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row];
+                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    });
+                }];
                 
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;

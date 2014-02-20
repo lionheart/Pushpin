@@ -79,6 +79,7 @@ typedef enum : NSInteger {
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback;
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index;
 - (id <GenericPostDataSource>)searchDataSource;
 - (void)filterWithQuery:(NSString *)query;

@@ -348,6 +348,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
         
 #ifdef PINBOARD
+        PPPinboardSectionType sectionType = (PPPinboardSectionType)indexPath.section;
+
         switch (sectionType) {
             case PPPinboardSectionPersonal:
                 switch ((PPPinboardPersonalFeedType)indexPath.row) {
