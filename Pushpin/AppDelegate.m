@@ -43,6 +43,7 @@
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+#import <BugshotKit/BugshotKit.h>
 
 #ifdef APPSTORE
 #import <CrashReporter/CrashReporter.h>
@@ -669,6 +670,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
     }
 #else
     [TestFlight takeOff:PPTestFlightToken];
+    [BugshotKit enableWithNumberOfTouches:2 performingGestures:BSKInvocationGestureSwipeUp feedbackEmailAddress:@"dan@lionheartsw.com"];
 #endif
 
     [self becomeFirstResponder];
