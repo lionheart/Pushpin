@@ -89,6 +89,8 @@
 @synthesize alwaysShowClipboardNotification = _alwaysShowClipboardNotification;
 @synthesize username = _username;
 @synthesize hiddenFeedNames = _hiddenFeedNames;
+@synthesize personalFeedOrder = _personalFeedOrder;
+@synthesize communityFeedOrder = _communityFeedOrder;
 
 #pragma mark - PLCrashReporter
 
@@ -718,7 +720,24 @@ static void save_crash_report (PLCrashReporter *reporter) {
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
-        @"io.aurora.pinboard.HiddenFeedNames": @[]
+        @"io.aurora.pinboard.HiddenFeedNames": @[],
+        @"io.aurora.pinboard.PersonalFeedOrder": @[
+                @(PPPinboardPersonalFeedAll),
+                @(PPPinboardPersonalFeedPrivate),
+                @(PPPinboardPersonalFeedPublic),
+                @(PPPinboardPersonalFeedUnread),
+                @(PPPinboardPersonalFeedUntagged),
+                @(PPPinboardPersonalFeedStarred),
+            ],
+#ifdef PINBOARD
+        @"io.aurora.pinboard.CommunityFeedOrder": @[
+                @(PPPinboardCommunityFeedNetwork),
+                @(PPPinboardCommunityFeedPopular),
+                @(PPPinboardCommunityFeedWikipedia),
+                @(PPPinboardCommunityFeedFandom),
+                @(PPPinboardCommunityFeedJapan),
+            ],
+#endif
      }];
 
     Reachability *reach = [Reachability reachabilityForInternetConnection];
@@ -1469,6 +1488,36 @@ static void save_crash_report (PLCrashReporter *reporter) {
     _hiddenFeedNames = hiddenFeedNames;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:hiddenFeedNames forKey:@"io.aurora.pinboard.HiddenFeedNames"];
+    [defaults synchronize];
+}
+
+- (NSArray *)personalFeedOrder {
+    if (!_personalFeedOrder) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _personalFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.PersonalFeedOrder"];
+    }
+    return _personalFeedOrder;
+}
+
+- (void)setPersonalFeedOrder:(NSArray *)personalFeedOrder {
+    _personalFeedOrder = personalFeedOrder;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:personalFeedOrder forKey:@"io.aurora.pinboard.PersonalFeedOrder"];
+    [defaults synchronize];
+}
+
+- (NSArray *)communityFeedOrder {
+    if (!_communityFeedOrder) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _communityFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.CommunityFeedOrder"];
+    }
+    return _communityFeedOrder;
+}
+
+- (void)setCommunityFeedOrder:(NSArray *)communityFeedOrder {
+    _communityFeedOrder = communityFeedOrder;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:communityFeedOrder forKey:@"io.aurora.pinboard.CommunityFeedOrder"];
     [defaults synchronize];
 }
 

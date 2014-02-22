@@ -50,6 +50,11 @@
 @property (nonatomic) BOOL readByDefault;
 @property (nonatomic) BOOL onlyPromptToAddOnce;
 @property (nonatomic) BOOL alwaysShowClipboardNotification;
+@property (nonatomic, strong) NSArray *personalFeedOrder;
+
+#ifdef PINBOARD
+@property (nonatomic, strong) NSArray *communityFeedOrder;
+#endif
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;
