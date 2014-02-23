@@ -32,7 +32,7 @@ typedef enum : NSInteger {
 #endif
 
     PPSearchScopePublic,
-} PPSearchScopeType;
+} PPSearchBarScopeType;
 
 @protocol GenericPostDataSource <NSObject>
 
@@ -57,7 +57,6 @@ typedef enum : NSInteger {
 
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic) NSInteger totalNumberOfPosts;
-@property (nonatomic) BOOL shouldSearchFullText;
 
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 

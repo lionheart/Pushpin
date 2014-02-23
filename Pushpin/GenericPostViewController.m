@@ -34,7 +34,6 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
-static BOOL kGenericPostViewControllerIsProcessingPosts = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
 
@@ -56,6 +55,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 @property (nonatomic, strong) NSArray *posts;
 @property (nonatomic, strong) NSArray *searchPosts;
+@property (nonatomic) BOOL isProcessingPosts;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshPinnedToTopConstraint;
@@ -103,6 +103,7 @@ static NSInteger kToolbarHeight = 44;
     self.latestSearchTime = [NSDate date];
     self.posts = @[];
     self.searchPosts = @[];
+    self.isProcessingPosts = NO;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -581,8 +582,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        kGenericPostViewControllerIsProcessingPosts = YES;
+    if (!self.isProcessingPosts) {
+        self.isProcessingPosts = YES;
         CGFloat width = [self currentWidth];
         BOOL firstLoad = self.posts.count == 0;
         
@@ -638,7 +639,7 @@ static NSInteger kToolbarHeight = 44;
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
                                                  
-                                                 kGenericPostViewControllerIsProcessingPosts = NO;
+                                                 self.isProcessingPosts = NO;
                                                  
                                                  if (callback) {
                                                      callback();
@@ -661,24 +662,16 @@ static NSInteger kToolbarHeight = 44;
         self.searchLoading = YES;
 
 #ifdef PINBOARD
-        self.searchPostDataSource.shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText && [self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)];
+        if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
+            [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
+        }
 #endif
 
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
 
-        if (self.searchPostDataSource.shouldSearchFullText) {
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-        }
-
         __weak GenericPostViewController *weakself = self;
 
         [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            if (weakself.searchPostDataSource.shouldSearchFullText) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                });
-            }
-            
             dispatch_async(dispatch_get_main_queue(), ^{
                 weakself.searchPosts = [self.searchPostDataSource.posts copy];
                 [weakself.searchDisplayController.searchResultsTableView reloadData];
@@ -686,12 +679,6 @@ static NSInteger kToolbarHeight = 44;
             });
         } failure:^(NSError *error) {
             weakself.searchLoading = NO;
-            
-            if (weakself.searchPostDataSource.shouldSearchFullText) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                });
-            }
         } cancel:^(BOOL *stop) {
             *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
         } width:[self currentWidth]];
@@ -829,7 +816,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
 
-    if (!kGenericPostViewControllerIsProcessingPosts) {
+    if (!self.isProcessingPosts) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
@@ -1372,7 +1359,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UIScrollView
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (!self.tableView.editing && !kGenericPostViewControllerIsProcessingPosts && !self.searchDisplayController.isActive) {
+    if (!self.tableView.editing && !self.isProcessingPosts && !self.searchDisplayController.isActive) {
         CGFloat offset = scrollView.contentOffset.y;
         if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
@@ -1387,13 +1374,13 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
+    if (!self.isProcessingPosts) {
         [self.pullToRefreshImageView stopAnimating];
     }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
+    if (!self.isProcessingPosts) {
         if (scrollView.contentOffset.y > 0) {
             self.tableView.contentInset = UIEdgeInsetsZero;
         }
@@ -1558,14 +1545,14 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        kGenericPostViewControllerIsProcessingPosts = YES;
+    if (!self.isProcessingPosts) {
+        self.isProcessingPosts = YES;
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
                 [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                kGenericPostViewControllerIsProcessingPosts = NO;
+                self.isProcessingPosts = NO;
             });
         } failure:nil width:[self currentWidth]];
     }
@@ -1583,8 +1570,8 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark iOS 7 Updates
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        kGenericPostViewControllerIsProcessingPosts = YES;
+    if (!self.isProcessingPosts) {
+        self.isProcessingPosts = YES;
 
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
@@ -1593,10 +1580,10 @@ static NSInteger kToolbarHeight = 44;
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
 
-                kGenericPostViewControllerIsProcessingPosts = NO;
+                self.isProcessingPosts = NO;
             });
         } failure:^(NSError *error) {
-            kGenericPostViewControllerIsProcessingPosts = NO;
+            self.isProcessingPosts = NO;
         } width:[self currentWidth]];
     }
 }
@@ -1671,8 +1658,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)toggleCompressedPosts {
-    if (!kGenericPostViewControllerIsProcessingPosts) {
-        kGenericPostViewControllerIsProcessingPosts = YES;
+    if (!self.isProcessingPosts) {
+        self.isProcessingPosts = YES;
         
         NSArray *indexPathsForVisibleRows = [self.tableView indexPathsForVisibleRows];
         NSArray *indexPathsToReload = [indexPathsForVisibleRows filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
@@ -1704,11 +1691,11 @@ static NSInteger kToolbarHeight = 44;
                 if (self.tableView.contentOffset.y > 0) {
                     [self.tableView scrollToRowAtIndexPath:currentIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
                 }
-                kGenericPostViewControllerIsProcessingPosts = NO;
+                self.isProcessingPosts = NO;
             });
         }
         else {
-            kGenericPostViewControllerIsProcessingPosts = NO;
+            self.isProcessingPosts = NO;
         }
     }
 }
