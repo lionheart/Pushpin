@@ -10,6 +10,7 @@
 
 #import "GenericPostViewController.h"
 #import "PPConstants.h"
+#import <ASPinboard/ASPinboard.h>
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";
@@ -32,7 +33,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSMutableArray *metadata;
 @property (nonatomic, strong) NSMutableArray *compressedMetadata;
-@property (nonatomic) BOOL shouldSearchFullText;
+@property (nonatomic) ASPinboardSearchScopeType searchScope;
 
 #pragma mark Query
 
