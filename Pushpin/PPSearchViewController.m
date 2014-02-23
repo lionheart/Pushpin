@@ -12,6 +12,7 @@
 #import "GenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "UITableViewCellValue1.h"
+#import "UITableViewCellSubtitle.h"
 #import "PPTitleButton.h"
 #import "AppDelegate.h"
 #import "FeedListViewController.h"
@@ -21,7 +22,12 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 
+#ifdef PINBOARD
+#import <ASPinboard/ASPinboard.h>
+#endif
+
 static NSString *CellIdentifier = @"CellIdentifier";
+static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 @interface PPSearchViewController ()
 
@@ -31,11 +37,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) UIActionSheet *isPrivateActionSheet;
 @property (nonatomic, strong) UIActionSheet *unreadActionSheet;
 @property (nonatomic, strong) UIActionSheet *untaggedActionSheet;
+@property (nonatomic, strong) UIActionSheet *searchScopeActionSheet;
 
 @property (nonatomic) kPushpinFilterType starred;
 @property (nonatomic) kPushpinFilterType isPrivate;
 @property (nonatomic) kPushpinFilterType read;
 @property (nonatomic) kPushpinFilterType tagged;
+@property (nonatomic) PPSearchScopeType searchScope;
+
+#ifdef PINBOARD
+@property (nonatomic) ASPinboardSearchScopeType pinboardSearchScope;
+#endif
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender;
 - (void)cancelBarButtonItemTouchUpInside:(id)sender;
@@ -71,6 +83,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.isPrivate = kPushpinFilterNone;
     self.read = kPushpinFilterNone;
     self.tagged = kPushpinFilterNone;
+    self.pinboardSearchScope = ASPinboardSearchScopeNone;
+    self.searchScope = PPSearchScopeMine;
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.searchTextField = [[UITextField alloc] init];
@@ -97,10 +111,27 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tagged", @"Untagged", @"Clear", nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
     
+    self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                              delegate:self
+                                                     cancelButtonTitle:nil
+                                                destructiveButtonTitle:nil
+                                                     otherButtonTitles:nil];
+    for (NSString *scope in PPSearchScopes()) {
+        [self.searchScopeActionSheet addButtonWithTitle:scope];
+    }
+    [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
+    self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
+    
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
 }
 
 #pragma mark UITableViewDataSource
@@ -111,13 +142,37 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case PPSearchSectionQuery:
             return PPSearchQueryRowCount;
             
+        case PPSearchSectionScope:
+            return PPSearchScopeRowCount;
+
         case PPSearchSectionFilters:
-            return PPSearchFilterRowCount;
+            switch (self.searchScope) {
+                case PPSearchScopeMine:
+                    return PPSearchFilterRowCount;
+                    
+                case PPSearchScopePinboard:
+                    return 1;
+                    
+                default:
+                    return 0;
+            }
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    switch (self.searchScope) {
+        case PPSearchScopeMine:
+            return 3;
+            
+        case PPSearchScopeEveryone:
+            return 2;
+            
+        case PPSearchScopeNetwork:
+            return 2;
+            
+        case PPSearchScopePinboard:
+            return 3;
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -126,19 +181,34 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case PPSearchSectionQuery:
             return nil;
             
+        case PPSearchSectionScope:
+            return nil;
+            
         case PPSearchSectionFilters:
             return @"Filters";
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == PPSearchSectionFilters && indexPath.row == 0) {
+        if (self.searchScope == PPSearchScopePinboard) {
+            return 50;
+        }
+    }
+
+    return 44;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
-                                                            forIndexPath:indexPath];
-    cell.textLabel.font = [PPTheme textLabelFont];
-    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+    UITableViewCell *cell;
 
     switch ((PPSearchSectionType)indexPath.section) {
         case PPSearchSectionQuery: {
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.hidden = YES;
             cell.detailTextLabel.text = nil;
@@ -150,118 +220,178 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
             break;
         }
+            
+        case PPSearchSectionScope: {
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.textLabel.textColor = [UIColor blackColor];
+            cell.textLabel.hidden = NO;
+            cell.textLabel.text = @"Search scope";
+
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];
+
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryView = nil;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+        }
 
         case PPSearchSectionFilters: {
-            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-            cell.textLabel.hidden = NO;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            
-            kPushpinFilterType filter;
-
-            switch ((PPSearchFilterRowType)indexPath.row) {
-                case PPSearchFilterPrivate:
-                    filter = self.isPrivate;
-
-                    switch (filter) {
-                        case kPushpinFilterTrue: {
-                            cell.textLabel.text = NSLocalizedString(@"Private", nil);
-                            break;
-                        }
-                            
-                        case kPushpinFilterFalse:
-                            cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                            break;
-                            
-                        case kPushpinFilterNone:
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil)];
-                            break;
-                    }
-                    break;
-                    
-#ifdef PINBOARD
-                case PPSearchFilterStarred:
-                    filter = self.starred;
-                    
-                    switch (filter) {
-                        case kPushpinFilterTrue: {
-                            cell.textLabel.text = NSLocalizedString(@"Starred", nil);
-                            break;
-                        }
-                            
-                        case kPushpinFilterFalse:
-                            cell.textLabel.text = NSLocalizedString(@"Unstarred", nil);
-                            break;
-                            
-                        case kPushpinFilterNone:
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil)];
-                            break;
-                    }
-                    break;
-#endif
-                    
-                case PPSearchFilterUnread:
-                    filter = self.read;
-
-                    switch (filter) {
-                        case kPushpinFilterTrue: {
-                            cell.textLabel.text = NSLocalizedString(@"Read", nil);
-                            break;
-                        }
-                            
-                        case kPushpinFilterFalse:
-                            cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                            break;
-                            
-                        case kPushpinFilterNone:
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil)];
-                            break;
-                    }
-                    break;
-
-                case PPSearchFilterUntagged:
-                    filter = self.tagged;
-
-                    if (filter == kPushpinFilterTrue) {
-                        cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
-                    }
-                    else {
-                        cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                    }
-                    
-                    switch (filter) {
-                        case kPushpinFilterTrue: {
-                            cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
-                            break;
-                        }
-                            
-                        case kPushpinFilterFalse:
-                            cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                            break;
-                            
-                        case kPushpinFilterNone:
-                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil)];
-                            break;
-                    }
-                    break;
-            }
-            
-            switch (filter) {
-                case kPushpinFilterTrue: {
-                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0x53A93FFF)]];
+            switch (self.searchScope) {
+                case PPSearchScopePinboard: {
+                    cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
                     cell.textLabel.textColor = [UIColor blackColor];
+
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
+
+                    cell.textLabel.text = @"Search Full-Text";
+                    cell.detailTextLabel.text = @"For archival accounts only.";
+
+                    switch (self.pinboardSearchScope) {
+                        case ASPinboardSearchScopeFullText: {
+                            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                            break;
+                        }
+
+                        case ASPinboardSearchScopeMine:
+                            cell.accessoryType = UITableViewCellAccessoryNone;
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    break;
+                }
+
+                case PPSearchScopeMine: {
+                    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.textLabel.hidden = NO;
+                    cell.detailTextLabel.text = nil;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+                    kPushpinFilterType filter;
+                    
+                    switch ((PPSearchFilterRowType)indexPath.row) {
+                        case PPSearchFilterPrivate:
+                            filter = self.isPrivate;
+                            
+                            switch (filter) {
+                                case kPushpinFilterTrue: {
+                                    cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                                    break;
+                                }
+                                    
+                                case kPushpinFilterFalse:
+                                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil)];
+                                    break;
+                            }
+                            break;
+                            
+#ifdef PINBOARD
+                        case PPSearchFilterStarred:
+                            filter = self.starred;
+                            
+                            switch (filter) {
+                                case kPushpinFilterTrue: {
+                                    cell.textLabel.text = NSLocalizedString(@"Starred", nil);
+                                    break;
+                                }
+                                    
+                                case kPushpinFilterFalse:
+                                    cell.textLabel.text = NSLocalizedString(@"Unstarred", nil);
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil)];
+                                    break;
+                            }
+                            break;
+#endif
+                            
+                        case PPSearchFilterUnread:
+                            filter = self.read;
+                            
+                            switch (filter) {
+                                case kPushpinFilterTrue: {
+                                    cell.textLabel.text = NSLocalizedString(@"Read", nil);
+                                    break;
+                                }
+                                    
+                                case kPushpinFilterFalse:
+                                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil)];
+                                    break;
+                            }
+                            break;
+                            
+                        case PPSearchFilterUntagged:
+                            filter = self.tagged;
+                            
+                            if (filter == kPushpinFilterTrue) {
+                                cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
+                            }
+                            else {
+                                cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                            }
+                            
+                            switch (filter) {
+                                case kPushpinFilterTrue: {
+                                    cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
+                                    break;
+                                }
+                                    
+                                case kPushpinFilterFalse:
+                                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil)];
+                                    break;
+                            }
+                            break;
+                    }
+                    
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0x53A93FFF)]];
+                            cell.textLabel.textColor = [UIColor blackColor];
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
+                            cell.textLabel.textColor = [UIColor blackColor];
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                            cell.textLabel.textColor = [UIColor lightGrayColor];
+                            break;
+                    }
                     break;
                 }
                     
-                case kPushpinFilterFalse:
-                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
-                    cell.textLabel.textColor = [UIColor blackColor];
-                    break;
-                    
-                case kPushpinFilterNone:
-                    cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
-                    cell.textLabel.textColor = [UIColor lightGrayColor];
+                default:
                     break;
             }
+            
             break;
         }
     }
@@ -274,6 +404,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     switch (sectionType) {
         case PPSearchSectionQuery:
             return @"Tap the info button to read about advanced searches.";
+            
+        case PPSearchSectionScope:
+            return nil;
             
         case PPSearchSectionFilters:
             return nil;
@@ -303,80 +436,106 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.searchTextField becomeFirstResponder];
             break;
             
+        case PPSearchSectionScope:
+            [self.searchScopeActionSheet showInView:self.view];
+            break;
+            
         case PPSearchSectionFilters:
-            switch ((PPSearchFilterRowType)indexPath.row) {
-                case PPSearchFilterPrivate:
-                    switch (self.isPrivate) {
-                        case kPushpinFilterTrue:
-                            self.isPrivate = kPushpinFilterFalse;
+            switch (self.searchScope) {
+                case PPSearchScopePinboard:
+                    switch (self.pinboardSearchScope) {
+                        case ASPinboardSearchScopeFullText:
+                            self.pinboardSearchScope = ASPinboardSearchScopeMine;
                             break;
-
-                        case kPushpinFilterFalse:
-                            self.isPrivate = kPushpinFilterNone;
+                            
+                        case ASPinboardSearchScopeMine:
+                            self.pinboardSearchScope = ASPinboardSearchScopeFullText;
                             break;
-
-                        case kPushpinFilterNone:
-                            self.isPrivate = kPushpinFilterTrue;
-                            break;
-                    }
-
-                    break;
-                    
-                case PPSearchFilterUnread:
-                    switch (self.read) {
-                        case kPushpinFilterTrue:
-                            self.read = kPushpinFilterFalse;
-                            break;
-
-                        case kPushpinFilterFalse:
-                            self.read = kPushpinFilterNone;
-                            break;
-
-                        case kPushpinFilterNone:
-                            self.read = kPushpinFilterTrue;
+                            
+                        default:
                             break;
                     }
-
                     break;
-                    
-                case PPSearchFilterUntagged:
-                    switch (self.tagged) {
-                        case kPushpinFilterTrue:
-                            self.tagged = kPushpinFilterFalse;
-                            break;
 
-                        case kPushpinFilterFalse:
-                            self.tagged = kPushpinFilterNone;
+                case PPSearchScopeMine:
+                    switch ((PPSearchFilterRowType)indexPath.row) {
+                        case PPSearchFilterPrivate:
+                            switch (self.isPrivate) {
+                                case kPushpinFilterTrue:
+                                    self.isPrivate = kPushpinFilterFalse;
+                                    break;
+                                    
+                                case kPushpinFilterFalse:
+                                    self.isPrivate = kPushpinFilterNone;
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    self.isPrivate = kPushpinFilterTrue;
+                                    break;
+                            }
+                            
                             break;
-
-                        case kPushpinFilterNone:
-                            self.tagged = kPushpinFilterTrue;
+                            
+                        case PPSearchFilterUnread:
+                            switch (self.read) {
+                                case kPushpinFilterTrue:
+                                    self.read = kPushpinFilterFalse;
+                                    break;
+                                    
+                                case kPushpinFilterFalse:
+                                    self.read = kPushpinFilterNone;
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    self.read = kPushpinFilterTrue;
+                                    break;
+                            }
+                            
                             break;
-                    }
-
-                    break;
-                    
+                            
+                        case PPSearchFilterUntagged:
+                            switch (self.tagged) {
+                                case kPushpinFilterTrue:
+                                    self.tagged = kPushpinFilterFalse;
+                                    break;
+                                    
+                                case kPushpinFilterFalse:
+                                    self.tagged = kPushpinFilterNone;
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    self.tagged = kPushpinFilterTrue;
+                                    break;
+                            }
+                            
+                            break;
+                            
 #ifdef PINBOARD
-                case PPSearchFilterStarred:
-                    switch (self.starred) {
-                        case kPushpinFilterTrue:
-                            self.starred = kPushpinFilterFalse;
+                        case PPSearchFilterStarred:
+                            switch (self.starred) {
+                                case kPushpinFilterTrue:
+                                    self.starred = kPushpinFilterFalse;
+                                    break;
+                                    
+                                case kPushpinFilterFalse:
+                                    self.starred = kPushpinFilterNone;
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    self.starred = kPushpinFilterTrue;
+                                    break;
+                            }
+                            
                             break;
-
-                        case kPushpinFilterFalse:
-                            self.starred = kPushpinFilterNone;
-                            break;
-
-                        case kPushpinFilterNone:
-                            self.starred = kPushpinFilterTrue;
-                            break;
-                    }
-
-                    break;
 #endif
+                    }
+                    break;
+                    
+                default:
+                    break;
             }
-
-
+            
+            
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
@@ -398,7 +557,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     dataSource.isPrivate = self.isPrivate;
     dataSource.starred = self.starred;
-    
+    dataSource.searchScope = self.pinboardSearchScope;
+
     switch (self.read) {
         case kPushpinFilterTrue:
             dataSource.unread = kPushpinFilterFalse;
@@ -499,50 +659,108 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    kPushpinFilterType filter;
-    switch (buttonIndex) {
-        case 0:
-            filter = kPushpinFilterTrue;
-            break;
-            
-        case 1:
-            filter = kPushpinFilterFalse;
-            break;
-            
-        case 2:
-            filter = kPushpinFilterNone;
-            break;
-
-        case 3:
+    if (actionSheet == self.searchScopeActionSheet) {
+        if (buttonIndex == [PPSearchScopes() count]) {
             return;
-    }
+        }
+        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        PPSearchScopeType previousSearchScope = self.searchScope;
+        self.searchScope = (PPSearchScopeType)[PPSearchScopes() indexOfObject:title];
+        
+        if (self.searchScope == PPSearchScopePinboard) {
+            self.pinboardSearchScope = ASPinboardSearchScopeFullText;
+        }
+        else {
+            self.pinboardSearchScope = ASPinboardSearchScopeMine;
+        }
+        
+        [self.tableView beginUpdates];
+        
+        
+        if (self.searchScope != previousSearchScope) {
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPSearchScopeRow inSection:PPSearchSectionScope]] withRowAnimation:UITableViewRowAnimationFade];
 
-    PPSearchFilterRowType rowType;
-    if (actionSheet == self.isPrivateActionSheet) {
-        self.isPrivate = filter;
-        rowType = PPSearchFilterPrivate;
-    }
-    else if (actionSheet == self.unreadActionSheet) {
-        self.read = filter;
-        rowType = PPSearchFilterUnread;
-    }
-    else if (actionSheet == self.untaggedActionSheet) {
-        self.tagged = filter;
-        rowType = PPSearchFilterUntagged;
-    }
-#ifdef PINBOARD
-    else if (actionSheet == self.starredActionSheet) {
-        self.starred = filter;
-        rowType = PPSearchFilterStarred;
-    }
-#endif
-    else {
-        return;
+            switch (self.searchScope) {
+                case PPSearchScopeMine:
+                    self.pinboardSearchScope = ASPinboardSearchScopeNone;
+
+                    switch (previousSearchScope) {
+                        case PPSearchScopeMine:
+                            break;
+
+                        case PPSearchScopePinboard:
+                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        case PPSearchScopeEveryone:
+                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        case PPSearchScopeNetwork:
+                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                    }
+                    break;
+                    
+                case PPSearchScopeNetwork:
+                    self.pinboardSearchScope = ASPinboardSearchScopeNetwork;
+
+                    switch (previousSearchScope) {
+                        case PPSearchScopeMine:
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+
+                        case PPSearchScopePinboard:
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+                    
+                case PPSearchScopeEveryone:
+                    self.pinboardSearchScope = ASPinboardSearchScopeAll;
+
+                    switch (previousSearchScope) {
+                        case PPSearchScopeMine:
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        case PPSearchScopePinboard:
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    break;
+                    
+                case PPSearchScopePinboard:
+                    self.pinboardSearchScope = ASPinboardSearchScopeMine;
+
+                    switch (previousSearchScope) {
+                        case PPSearchScopeMine:
+                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        case PPSearchScopePinboard:
+                            break;
+                            
+                        case PPSearchScopeEveryone:
+                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                            
+                        case PPSearchScopeNetwork:
+                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                            break;
+                    }
+            }
+        }
+        [self.tableView endUpdates];
     }
     
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:rowType inSection:PPSearchSectionFilters]] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView endUpdates];
 }
 
 #pragma mark - UITextFieldDelegate
