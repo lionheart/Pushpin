@@ -24,7 +24,7 @@
 }
 
 + (UIFont *)titleFont {
-    return [UIFont fontWithName:[PPTheme boldFontName] size:[PPTheme fontSize] + 1];
+    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
 }
 
 + (UIFont *)descriptionFont {
