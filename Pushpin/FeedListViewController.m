@@ -39,6 +39,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @property (nonatomic, strong) NSMutableArray *feeds;
 @property (nonatomic, strong) UIToolbar *bottomBar;
 @property (nonatomic, strong) NSLayoutConstraint *bottomBarBottomConstraint;
+@property (nonatomic, strong) NSTimer *feedCountTimer;
 
 - (void)openNotes;
 - (void)openSettings;
@@ -68,6 +69,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (PPPinboardCommunityFeedType)communityFeedForIndexPath:(NSIndexPath *)indexPath;
 #endif
 
+- (void)updateFeedCounts;
+
 @end
 
 @implementation FeedListViewController
@@ -96,6 +99,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.feedCountTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(updateFeedCounts) userInfo:nil repeats:YES];
+    [self updateFeedCounts];
 
     self.bookmarkCounts = [NSMutableArray array];
 
@@ -184,7 +189,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.bottomBar];
-    
+
     NSDictionary *views = @{@"table": self.tableView,
                             @"top": self.topLayoutGuide,
                             @"bar": self.bottomBar };
@@ -227,77 +232,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }];
     }
 #endif
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-        [db open];
-        
-#ifdef DELICIOUS
-        NSArray *resultSets = @[
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags=?" withArgumentsInArray:@[@""]]
-                                ];
-#endif
-        
-#ifdef PINBOARD
-        [self updateSavedFeeds:db];
-
-        NSArray *resultSets = @[
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
-                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-                            ];
-
-        NSString *sectionName = PPSections()[0];
-
-        NSInteger i = 0;
-        NSInteger j = 0;
-        for (FMResultSet *resultSet in resultSets) {
-            NSString *feedName = [self personalFeedNameForIndex:i];
-            NSString *fullName = [@[sectionName, feedName] componentsJoinedByString:@"-"];
-            BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
-            
-            [resultSet next];
-            
-            NSString *count = [resultSet stringForColumnIndex:0];
-            NSString *previousCount = self.bookmarkCounts[i];
-            self.bookmarkCounts[i] = count;
-
-            if (!feedHiddenByUser) {
-                if (![count isEqualToString:previousCount]) {
-                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:j inSection:0]];
-                }
-                j++;
-            }
-
-            i++;
-        }
-#endif
-        
-        [db close];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView beginUpdates];
-            
-            if (![self personalSectionIsHidden]) {
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-            }
-
-#ifdef PINBOARD
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                          withRowAnimation:UITableViewRowAnimationFade];
-#endif
-            [self.tableView endUpdates];
-        });
-    });
 }
 
 #pragma mark - UITableViewDataSource
@@ -1399,6 +1333,81 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     // Sync the new saved feed list with iCloud
     [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+}
+
+- (void)updateFeedCounts {
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        
+        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        [db open];
+        
+#ifdef DELICIOUS
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE tags=?" withArgumentsInArray:@[@""]]
+                                ];
+#endif
+        
+#ifdef PINBOARD
+        [self updateSavedFeeds:db];
+        
+        NSArray *resultSets = @[
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
+                                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
+                                ];
+        
+        NSString *sectionName = PPSections()[0];
+        
+        NSInteger i = 0;
+        NSInteger j = 0;
+        for (FMResultSet *resultSet in resultSets) {
+            NSString *feedName = [self personalFeedNameForIndex:i];
+            NSString *fullName = [@[sectionName, feedName] componentsJoinedByString:@"-"];
+            BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
+            
+            [resultSet next];
+            
+            NSString *count = [resultSet stringForColumnIndex:0];
+            NSString *previousCount = self.bookmarkCounts[i];
+            self.bookmarkCounts[i] = count;
+            
+            if (!feedHiddenByUser) {
+                if (![count isEqualToString:previousCount]) {
+                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                }
+                j++;
+            }
+            
+            i++;
+        }
+#endif
+        
+        [db close];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            
+            if (![self personalSectionIsHidden]) {
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+            }
+            
+#ifdef PINBOARD
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                          withRowAnimation:UITableViewRowAnimationFade];
+#endif
+            [self.tableView endUpdates];
+        });
+    });
 }
 
 @end
