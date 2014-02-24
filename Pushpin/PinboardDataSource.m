@@ -332,14 +332,6 @@ static BOOL kPinboardSyncInProgress = NO;
                     [localMetaTable addObject:[NSString stringWithFormat:@"%@_%@", hash, meta]];
                 }
                 
-                // Create NSSets containing hashes and meta data
-                NSMutableArray *remoteHashTable = [NSMutableArray array];
-                NSMutableArray *remoteMetaTable = [NSMutableArray array];
-                for (NSDictionary *post in posts) {
-                    [remoteHashTable addObject:post[@"hash"]];
-                    [remoteMetaTable addObject:[NSString stringWithFormat:@"%@_%@", post[@"hash"], post[@"meta"]]];
-                }
-                
                 DLog(@"Calculating changes");
                 
                 NSDictionary *params;
@@ -436,6 +428,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     [queue enqueueNotification:note postingStyle:NSPostASAP];
                 }
                 
+                // This gives us all bookmarks in 'A' but not in 'B'.
                 [deletedBookmarkSet setSet:A];
                 [deletedBookmarkSet minusSet:B];
 
@@ -536,19 +529,12 @@ static BOOL kPinboardSyncInProgress = NO;
                     BOOL neverUpdated = lastLocalUpdate == nil;
                     BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
                     BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
-                    NSInteger count;
-                    if (options[@"ratio"]) {
-                        count = (NSInteger)(MAX([self totalNumberOfPosts] * [options[@"ratio"] floatValue] - 200, 0) + 200);
-                    }
-                    else {
-                        count = [options[@"count"] integerValue];
-                    }
 
                     if (neverUpdated || outOfSyncWithAPI) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [pinboard bookmarksWithTags:nil
                                                  offset:-1
-                                                  count:count
+                                                  count:-1
                                                fromDate:nil
                                                  toDate:nil
                                             includeMeta:YES
