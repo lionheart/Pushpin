@@ -1193,8 +1193,9 @@ static BOOL kPinboardSyncInProgress = NO;
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
                 for (NSString *tag in self.tags) {
-                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ?)"];
-                    [parameters addObject:tag];
+                    // Lowercase the database tag name and the parameter string so that searches for Programming and programming return the same results. We do this in order to act more similarly to the Pinboard website.
+                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE LOWER(tag_name) = ?)"];
+                    [parameters addObject:[tag lowercaseString]];
                 }
             }
             break;
