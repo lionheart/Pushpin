@@ -76,19 +76,21 @@ static NSString *CellIdentifier = @"TagCell";
     self.titleToTags = [NSMutableDictionary dictionary];
 
     FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
-    NSString *name, *count;
     while ([results next]) {
-        name = [results stringForColumnIndex:0];
-        count = [results stringForColumnIndex:1];
-        if (!name || name.length == 0) {
+        NSString *name = [results stringForColumnIndex:0];
+        NSMutableString *lossyName = [name mutableCopy];
+        CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
+        NSString *count = [results stringForColumnIndex:1];
+
+        if ([name length] == 0) {
             continue;
         }
 
-        if (!count || count.length == 0) {
+        if ([count length] == 0) {
             continue;
         }
 
-        NSString *firstLetter = [[name substringToIndex:1] uppercaseString];
+        NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
         if (![letters containsObject:firstLetter]) {
             firstLetter = @"#";
         }
