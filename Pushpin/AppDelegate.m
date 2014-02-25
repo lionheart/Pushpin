@@ -477,6 +477,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
         _splitViewController = [[PPSplitViewController alloc] init];
         _splitViewController.viewControllers = @[self.feedListNavigationController, self.navigationController];
         _splitViewController.delegate = self;
+        _splitViewController.presentsWithGesture = NO;
     }
     return _splitViewController;
 }
