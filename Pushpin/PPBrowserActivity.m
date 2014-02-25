@@ -74,7 +74,7 @@
 }
 
 - (void)performActivity {
-    NSRange range = [self.url.absoluteString rangeOfString:self.urlScheme];
+    NSRange range = [self.url.absoluteString rangeOfString:@"http"];
 
     if ([self.browserName isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
