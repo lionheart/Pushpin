@@ -446,9 +446,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 return 100;
             }
             else {
-                CGFloat width = [UIApplication currentSize].width - 20;
-                CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-                return CGRectGetHeight(rect) + 14;
+                CGFloat width = CGRectGetWidth(tableView.frame) - 20;
+                CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+                                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                                         context:nil];
+                return CGRectGetHeight(rect) + 30;
             }
         }
     }
