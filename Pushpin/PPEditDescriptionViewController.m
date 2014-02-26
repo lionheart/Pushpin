@@ -16,6 +16,9 @@
 @interface PPEditDescriptionViewController ()
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+@property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 - (void)fixTextView:(UITextView *)textView;
 - (void)keyboardWillHide:(NSNotification *)sender;
@@ -113,6 +116,35 @@
     }
 
     return YES;
+}
+
+
+
+#pragma mark - Key Commands
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    static NSArray *keyCommands;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                    modifierFlags:0
+                                                           action:@selector(handleKeyCommand:)];
+
+        keyCommands = @[self.goBackKeyCommand];
+    });
+
+    return keyCommands;
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.goBackKeyCommand) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end

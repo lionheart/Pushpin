@@ -42,6 +42,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @interface AddBookmarkViewController ()
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
+@property (nonatomic, strong) UIKeyCommand *focusTitleKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *focusDescriptionKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *focusTagsKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *togglePrivateKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *toggleReadKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *closeKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *saveKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
+- (void)openDescriptionViewController;
+- (void)openTagEditViewController;
 
 @end
 
@@ -501,18 +512,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case kBookmarkTopSection:
             switch (indexPath.row) {
                 case kBookmarkDescriptionRow: {
-                    PPEditDescriptionViewController *editDescriptionViewController = [[PPEditDescriptionViewController alloc] initWithDescription:self.postDescription];
-                    editDescriptionViewController.delegate = self;
-                    [self.navigationController pushViewController:editDescriptionViewController animated:YES];
+                    [self openDescriptionViewController];
                     break;
                 }
                     
                 case kBookmarkTagRow: {
-                    PPTagEditViewController *tagEditViewController = [[PPTagEditViewController alloc] init];
-                    tagEditViewController.tagDelegate = self;
-                    tagEditViewController.bookmarkData = self.bookmarkData;
-                    tagEditViewController.existingTags = [self.existingTags mutableCopy];
-                    [self.navigationController pushViewController:tagEditViewController animated:YES];
+                    [self openTagEditViewController];
                     break;
                 }
             }
@@ -875,6 +880,92 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
+}
+
+#pragma mark - Key Commands
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    static NSArray *keyCommands;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self.focusTitleKeyCommand = [UIKeyCommand keyCommandWithInput:@"1"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+
+        self.focusDescriptionKeyCommand = [UIKeyCommand keyCommandWithInput:@"2"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+
+        self.focusTagsKeyCommand = [UIKeyCommand keyCommandWithInput:@"3"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+
+        self.togglePrivateKeyCommand = [UIKeyCommand keyCommandWithInput:@"4"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+
+        self.toggleReadKeyCommand = [UIKeyCommand keyCommandWithInput:@"5"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+
+        self.saveKeyCommand = [UIKeyCommand keyCommandWithInput:@"s"
+                                                  modifierFlags:UIKeyModifierCommand
+                                                         action:@selector(handleKeyCommand:)];
+
+
+        self.closeKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                   modifierFlags:0
+                                                          action:@selector(handleKeyCommand:)];
+
+        keyCommands = @[self.focusTitleKeyCommand, self.focusDescriptionKeyCommand, self.focusTagsKeyCommand, self.togglePrivateKeyCommand, self.toggleReadKeyCommand, self.saveKeyCommand, self.closeKeyCommand];
+    });
+
+    return keyCommands;
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.focusTitleKeyCommand) {
+        [self.titleTextField becomeFirstResponder];
+    }
+    else if (keyCommand == self.focusDescriptionKeyCommand) {
+        [self openDescriptionViewController];
+    }
+    else if (keyCommand == self.focusTagsKeyCommand) {
+        [self openTagEditViewController];
+    }
+    else if (keyCommand == self.togglePrivateKeyCommand) {
+        [self togglePrivate:keyCommand];
+    }
+    else if (keyCommand == self.toggleReadKeyCommand) {
+        [self toggleRead:keyCommand];
+    }
+    else if (keyCommand == self.saveKeyCommand) {
+        [self addBookmark];
+    }
+    else if (keyCommand == self.closeKeyCommand) {
+        [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+#pragma mark - Other
+
+- (void)openDescriptionViewController {
+    PPEditDescriptionViewController *editDescriptionViewController = [[PPEditDescriptionViewController alloc] initWithDescription:self.postDescription];
+    editDescriptionViewController.delegate = self;
+    [self.navigationController pushViewController:editDescriptionViewController animated:YES];
+}
+
+- (void)openTagEditViewController {
+    PPTagEditViewController *tagEditViewController = [[PPTagEditViewController alloc] init];
+    tagEditViewController.tagDelegate = self;
+    tagEditViewController.bookmarkData = self.bookmarkData;
+    tagEditViewController.existingTags = [self.existingTags mutableCopy];
+    [self.navigationController pushViewController:tagEditViewController animated:YES];
 }
 
 @end

@@ -14,9 +14,18 @@
 #import "SettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
+#import "AddBookmarkViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
+@interface PPNavigationController ()
+
+@property (nonatomic, strong) UIKeyCommand *createBookmarkKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
+
+@end
 
 @implementation PPNavigationController
 
@@ -116,6 +125,34 @@
     }
 
     return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait;
+}
+
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    static NSArray *keyCommands;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"n"
+                                                            modifierFlags:UIKeyModifierCommand
+                                                                   action:@selector(handleKeyCommand:)];
+
+        keyCommands = @[self.createBookmarkKeyCommand];
+    });
+
+    return keyCommands;
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.createBookmarkKeyCommand) {
+        PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
+        }];
+        [self presentViewController:(UIViewController *)addBookmarkViewController animated:YES completion:nil];
+    }
 }
 
 @end
