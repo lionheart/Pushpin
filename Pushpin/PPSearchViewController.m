@@ -288,15 +288,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             switch (filter) {
                                 case kPushpinFilterTrue: {
                                     cell.textLabel.text = NSLocalizedString(@"Private", nil);
+                                    
+                                    // We invert this since public -> green, private -> red
+                                    filter = kPushpinFilterFalse;
                                     break;
                                 }
                                     
                                 case kPushpinFilterFalse:
                                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
+                                    
+                                    // We invert this since public -> green, private -> red
+                                    filter = kPushpinFilterTrue;
                                     break;
                                     
                                 case kPushpinFilterNone:
-                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil)];
+                                    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Public", nil), NSLocalizedString(@"Private", nil)];
                                     break;
                             }
                             break;
@@ -372,17 +378,20 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         case kPushpinFilterTrue: {
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0x53A93FFF)]];
                             cell.textLabel.textColor = [UIColor blackColor];
+//                            cell.accessoryType = UITableViewCellAccessoryCheckmark;
                             break;
                         }
                             
                         case kPushpinFilterFalse:
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
                             cell.textLabel.textColor = [UIColor blackColor];
+//                            cell.accessoryType = UITableViewCellAccessoryCheckmark;
                             break;
                             
                         case kPushpinFilterNone:
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                             cell.textLabel.textColor = [UIColor lightGrayColor];
+//                            cell.accessoryType = UITableViewCellAccessoryNone;
                             break;
                     }
                     break;
@@ -436,9 +445,16 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             [self.searchTextField becomeFirstResponder];
             break;
             
-        case PPSearchSectionScope:
-            [self.searchScopeActionSheet showInView:self.view];
+        case PPSearchSectionScope: {
+            if ([UIApplication isIPad]) {
+                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
+                [self.searchScopeActionSheet showFromRect:rect inView:tableView animated:YES];
+            }
+            else {
+                [self.searchScopeActionSheet showInView:tableView];
+            }
             break;
+        }
             
         case PPSearchSectionFilters:
             switch (self.searchScope) {
@@ -462,15 +478,15 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         case PPSearchFilterPrivate:
                             switch (self.isPrivate) {
                                 case kPushpinFilterTrue:
-                                    self.isPrivate = kPushpinFilterFalse;
-                                    break;
-                                    
-                                case kPushpinFilterFalse:
                                     self.isPrivate = kPushpinFilterNone;
                                     break;
                                     
-                                case kPushpinFilterNone:
+                                case kPushpinFilterFalse:
                                     self.isPrivate = kPushpinFilterTrue;
+                                    break;
+                                    
+                                case kPushpinFilterNone:
+                                    self.isPrivate = kPushpinFilterFalse;
                                     break;
                             }
                             
