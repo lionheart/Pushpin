@@ -70,9 +70,12 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIKeyCommand *escapeKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *moveUpKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *moveDownKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *openKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *editKeyCommand;
 
 @property (nonatomic, strong) UIView *circle;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
+@property (nonatomic, strong) NSTimer *circleHideTimer;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
@@ -89,6 +92,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position;
+- (void)hideCircle;
 
 @end
 
@@ -117,10 +121,18 @@ static NSInteger kToolbarHeight = 44;
     self.posts = @[];
     self.searchPosts = @[];
     self.isProcessingPosts = NO;
-
+    
     self.focusSearchKeyCommand = [UIKeyCommand keyCommandWithInput:@"/"
                                                      modifierFlags:0
                                                             action:@selector(handleKeyCommand:)];
+
+    self.openKeyCommand = [UIKeyCommand keyCommandWithInput:@"o"
+                                              modifierFlags:UIKeyModifierCommand
+                                                     action:@selector(handleKeyCommand:)];
+    
+    self.editKeyCommand = [UIKeyCommand keyCommandWithInput:@"e"
+                                              modifierFlags:UIKeyModifierCommand
+                                                     action:@selector(handleKeyCommand:)];
     
     self.moveUpKeyCommand = [UIKeyCommand keyCommandWithInput:@"k"
                                                 modifierFlags:0
@@ -140,9 +152,8 @@ static NSInteger kToolbarHeight = 44;
     
     self.circle = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMidX(self.view.frame), -100, 20, 20)];
     self.circle.layer.cornerRadius = 10;
-    self.circle.alpha = 1;
     self.circle.backgroundColor = [UIColor blackColor];
-
+    
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
@@ -151,44 +162,44 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.separatorColor = HEX(0xE0E0E0FF);
-
+    
     self.pullToRefreshView = [[UIView alloc] init];
     self.pullToRefreshView.translatesAutoresizingMaskIntoConstraints = NO;
     self.pullToRefreshView.clipsToBounds = YES;
     self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
-
+    
     self.pullToRefreshImageView = [[PPLoadingView alloc] init];
     self.pullToRefreshImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
     [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
-
+    
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.tableView addGestureRecognizer:self.rightSwipeGestureRecognizer];
-
+    
     self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.pinchGestureRecognizer];
-
+    
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-
+    
     if ([self.postDataSource respondsToSelector:@selector(searchSupported)] && [self.postDataSource searchSupported]) {
         self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-
+        
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
         
 #ifdef DELICIOUS
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
 #endif
-
+        
 #ifdef PINBOARD
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
 #endif
         self.searchBar.showsScopeBar = YES;
-
+        
         self.tableView.tableHeaderView = self.searchBar;
         
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
@@ -204,14 +215,14 @@ static NSInteger kToolbarHeight = 44;
         
         self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
     }
-
+    
     self.searchLoading = NO;
     
     // Setup the multi-edit toolbar
     self.multiToolbarView = [[UIView alloc] init];
     self.multiToolbarView.backgroundColor = HEX(0xEBF2F6FF);
     self.multiToolbarView.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     UIView *multiToolbarBorderView = [[UIView alloc] init];
     multiToolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
     multiToolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -232,14 +243,14 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView addSubview:self.multipleTagEditButton];
     self.multipleTagEditButton.enabled = NO;
     self.multipleTagEditButton.hidden = YES;
-
+    
     self.multipleDeleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.multipleDeleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.multipleDeleteButton setImage:[[UIImage imageNamed:@"toolbar-trash"] lhs_imageWithColor:HEX(0x808d96ff)] forState:UIControlStateNormal];
     [self.multipleDeleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:self.multipleDeleteButton];
     self.multipleDeleteButton.enabled = NO;
-
+    
     // Multi edit status and toolbar
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.pullToRefreshView];
@@ -250,18 +261,18 @@ static NSInteger kToolbarHeight = 44;
     
     self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:CGPointMake(0, -100)];
     [self.animator addBehavior:self.circleSnapBehavior];
-
+    
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
                                     @"read": self.multipleMarkAsReadButton,
                                     @"edit": self.multipleTagEditButton,
                                     @"delete": self.multipleDeleteButton };
-
+    
     [self.multiToolbarView lhs_addConstraints:@"H:|[read][delete(==read)]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[delete]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
-
+    
     NSDictionary *views = @{@"toolbarView": self.multiToolbarView,
                             @"ptr": self.pullToRefreshView,
                             @"image": self.pullToRefreshImageView,
@@ -274,22 +285,22 @@ static NSInteger kToolbarHeight = 44;
     
     self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
     [self.view addConstraint:self.pullToRefreshTopConstraint];
-
+    
     [self.tableView lhs_fillHeightOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];
     [self.pullToRefreshView lhs_fillWidthOfSuperview];
     [self.multiToolbarView lhs_fillWidthOfSuperview];
-
+    
     [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
-
+    
     // Initial database update
     [self.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    
     if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
         [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
     }
@@ -297,25 +308,25 @@ static NSInteger kToolbarHeight = 44;
     if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
         self.title = [self.postDataSource title];
     }
-
+    
     if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
         PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
         self.navigationItem.titleView = titleView;
     }
-
+    
     if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
         self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kToolbarHeight];
         [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
     }
     
     [self setNeedsStatusBarAppearanceUpdate];
-
+    
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
-
+    
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[FeedListViewController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
         self.navigationItem.accessibilityLabel = @"Back";
-
+        
         __weak id weakself = self;
         self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
     }
@@ -349,7 +360,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
+    
     [self setNeedsStatusBarAppearanceUpdate];
     
     // Register for Dynamic Type notifications
@@ -360,7 +371,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
@@ -405,7 +416,7 @@ static NSInteger kToolbarHeight = 44;
             self.multipleTagEditButton.enabled = NO;
             self.multipleMarkAsReadButton.enabled = NO;
         }
-
+        
         [self updateTitleViewText];
     }
 }
@@ -414,14 +425,14 @@ static NSInteger kToolbarHeight = 44;
     self.numberOfTapsSinceTapReset++;
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;
-
+    
     [self handleCellTap];
 }
 
 - (void)handleCellTap {
     if (self.numberOfTapsSinceTapReset > 0) {
         id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
-
+        
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
             [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
@@ -436,7 +447,7 @@ static NSInteger kToolbarHeight = 44;
             
             [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
             MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-
+            
             switch (self.numberOfTapsSinceTapReset) {
                 case 1:
                     if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
@@ -457,7 +468,7 @@ static NSInteger kToolbarHeight = 44;
                             else {
                                 self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                             }
-
+                            
                             [self.searchDisplayController.searchContentsController.navigationController setNavigationBarHidden:YES animated:NO];
                             [self.navigationController setNavigationBarHidden:YES animated:NO];
                             
@@ -555,7 +566,7 @@ static NSInteger kToolbarHeight = 44;
                     else {
                         // The post data source will provide a view controller to push.
                         UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
-
+                        
                         if ([self.navigationController topViewController] == self) {
                             [self.navigationController pushViewController:controller animated:YES];
                         }
@@ -570,12 +581,12 @@ static NSInteger kToolbarHeight = 44;
                     else if ([dataSource respondsToSelector:@selector(editViewControllerForPostAtIndex:withDelegate:)]) {
                         vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row];
                     }
-
+                    
                     if (vc) {
                         if ([UIApplication isIPad]) {
                             vc.modalPresentationStyle = UIModalPresentationFormSheet;
                         }
-
+                        
                         if ([self.navigationController topViewController] == self) {
                             [self.navigationController presentViewController:vc animated:YES completion:nil];
                         }
@@ -588,7 +599,7 @@ static NSInteger kToolbarHeight = 44;
             }
         }
     }
-
+    
     self.singleTapTimer = nil;
     self.doubleTapTimer = nil;
     self.numberOfTapsSinceTapReset = 0;
@@ -617,7 +628,7 @@ static NSInteger kToolbarHeight = 44;
             else {
                 needsReload = self.pinchGestureRecognizer.scale < 0.5;
             }
-
+            
             if (needsReload) {
                 [self toggleCompressedPosts];
             }
@@ -651,7 +662,7 @@ static NSInteger kToolbarHeight = 44;
                                              if (self.tableView.contentInset.top != 0) {
                                                  self.tableView.contentInset = UIEdgeInsetsZero;
                                              }
-
+                                             
                                              self.pullToRefreshTopConstraint.constant = 0;
                                              [self.view layoutIfNeeded];
                                          }
@@ -704,17 +715,17 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
     if (!self.searchLoading) {
         self.searchLoading = YES;
-
+        
 #ifdef PINBOARD
         if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
             [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
         }
 #endif
-
+        
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
-
+        
         __weak GenericPostViewController *weakself = self;
-
+        
         [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 weakself.searchPosts = [self.searchPostDataSource.posts copy];
@@ -735,12 +746,12 @@ static NSInteger kToolbarHeight = 44;
         for (NSIndexPath *indexPath in selectedIndexPaths) {
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
-
+        
         [self setMultipleEditButtonsEnabled:NO];
-
+        
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
-
+        
         self.navigationItem.leftBarButtonItem.enabled = YES;
         [self.navigationItem setRightBarButtonItem:self.editButton animated:YES];
         
@@ -751,12 +762,12 @@ static NSInteger kToolbarHeight = 44;
         else {
             self.navigationItem.titleView = nil;
         }
-
+        
         [UIView animateWithDuration:0.25 animations:^{
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-
+            
             self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
             [self.view layoutIfNeeded];
         }];
@@ -764,17 +775,17 @@ static NSInteger kToolbarHeight = 44;
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
-
+        
         self.navigationItem.leftBarButtonItem.enabled = NO;
         [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
         
         [self updateTitleViewText];
-
+        
         [UIView animateWithDuration:0.25 animations:^{
-
+            
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
-
+            
             self.multipleEditToolbarBottomConstraint.constant = 0;
             [self.view layoutIfNeeded];
         }];
@@ -787,7 +798,7 @@ static NSInteger kToolbarHeight = 44;
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-
+            
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
@@ -802,7 +813,7 @@ static NSInteger kToolbarHeight = 44;
             }];
         });
     };
-
+    
     [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
 }
 
@@ -813,7 +824,7 @@ static NSInteger kToolbarHeight = 44;
         NSDictionary *bookmark = [self.postDataSource postAtIndex:indexPath.row];
         [bookmarksToUpdate addObject:bookmark];
     }];
-
+    
     [self markPostsAsRead:bookmarksToUpdate];
     [self toggleEditingMode:nil];
 }
@@ -821,7 +832,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiEdit:(id)sender {
     [[[UIAlertView alloc] initWithTitle:nil message:@"Almost ready to go, but not quite functional yet." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
     return;
-
+    
     NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
     [[self.tableView indexPathsForSelectedRows] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSIndexPath *indexPath = (NSIndexPath *)obj;
@@ -844,7 +855,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
-
+    
     self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
     [self.confirmMultipleDeletionActionSheet showInView:self.view];
 }
@@ -859,7 +870,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
-
+    
     if (!self.isProcessingPosts) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
@@ -893,14 +904,14 @@ static NSInteger kToolbarHeight = 44;
     if (self.compressPosts && [self.currentDataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         return [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
     }
-
+    
     return [self.currentDataSource heightForPostAtIndex:indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
     cell.delegate = self;
-
+    
     id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
     [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
@@ -920,9 +931,9 @@ static NSInteger kToolbarHeight = 44;
         else {
             urlString = self.selectedPost[@"url"];
         }
-
+        
         self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
+        
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
         
@@ -930,7 +941,7 @@ static NSInteger kToolbarHeight = 44;
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
             self.longPressActionSheet.destructiveButtonIndex = 0;
         }
-
+        
         if (actions & PPPostActionEdit) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
         }
@@ -938,7 +949,7 @@ static NSInteger kToolbarHeight = 44;
         if (actions & PPPostActionMarkAsRead) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
         }
-
+        
         if (actions & PPPostActionCopyToMine) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
         }
@@ -950,7 +961,7 @@ static NSInteger kToolbarHeight = 44;
         if (actions & PPPostActionShare) {
             [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share Bookmark", nil)];
         }
-
+        
         if (actions & PPPostActionReadLater) {
             PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
             
@@ -971,11 +982,11 @@ static NSInteger kToolbarHeight = 44;
                     break;
             }
         }
-
+        
         // Properly set the cancel button index
         [self.longPressActionSheet addButtonWithTitle:@"Cancel"];
         self.longPressActionSheet.cancelButtonIndex = self.longPressActionSheet.numberOfButtons - 1;
-
+        
         self.actionSheetVisible = YES;
         [self.longPressActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
         self.tableView.scrollEnabled = NO;
@@ -998,7 +1009,7 @@ static NSInteger kToolbarHeight = 44;
             if (success) {
                 success();
             }
-
+            
             [self updateFromLocalDatabaseWithCallback:nil];
         }];
     });
@@ -1025,7 +1036,7 @@ static NSInteger kToolbarHeight = 44;
             self.additionalTagsActionSheet = nil;
             return;
         }
-
+        
         NSString *tag = [self.additionalTagsActionSheet buttonTitleAtIndex:buttonIndex];
         id <GenericPostDataSource> dataSource = [self currentDataSource];
         if (!self.tableView.editing) {
@@ -1038,7 +1049,7 @@ static NSInteger kToolbarHeight = 44;
                                           }];
             }
         }
-
+        
     }
     else if (actionSheet == self.confirmDeletionActionSheet) {
         NSString *title = [self.confirmDeletionActionSheet buttonTitleAtIndex:buttonIndex];
@@ -1058,13 +1069,13 @@ static NSInteger kToolbarHeight = 44;
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
-
+                        
                         [self.tableView beginUpdates];
                         [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
                     });
                 }];
-
+                
                 [self deletePostsAtIndexPaths:self.indexPathsToDelete];
             }
         }
@@ -1116,7 +1127,7 @@ static NSInteger kToolbarHeight = 44;
             else if ([title isEqualToString:NSLocalizedString(@"Share Bookmark", nil)]) {
                 NSString *url = [NSURL URLWithString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
                 NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
-            
+                
                 CGRect rect;
                 if (self.searchDisplayController.isActive) {
                     rect = [self.searchDisplayController.searchResultsTableView rectForRowAtIndexPath:self.selectedIndexPath];
@@ -1124,14 +1135,14 @@ static NSInteger kToolbarHeight = 44;
                 else {
                     rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                 }
-
+                
                 NSArray *activityItems = @[title, url];
                 self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
-
+                
                 __weak GenericPostViewController *weakself = self;
                 self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
                     [weakself setNeedsStatusBarAppearanceUpdate];
-
+                    
                     if (weakself.popover) {
                         [weakself.popover dismissPopoverAnimated:YES];
                     }
@@ -1151,7 +1162,7 @@ static NSInteger kToolbarHeight = 44;
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;
                 }
-
+                
                 [self.navigationController presentViewController:vc animated:YES completion:nil];
             }
             
@@ -1180,13 +1191,13 @@ static NSInteger kToolbarHeight = 44;
     }
     else {
         id <GenericPostDataSource> dataSource = [self currentDataSource];
-
+        
         if ([dataSource respondsToSelector:@selector(markPostAsRead:callback:)]) {
             BOOL __block hasError = NO;
             
             dispatch_group_t group = dispatch_group_create();
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
+            
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             
             // Enumerate all posts
@@ -1216,7 +1227,7 @@ static NSInteger kToolbarHeight = 44;
                     notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
                 }
             }
-
+            
             // Once all async tasks are done, present the notification and update the local database
             dispatch_group_notify(group, queue, ^{
                 if (notify) {
@@ -1378,7 +1389,7 @@ static NSInteger kToolbarHeight = 44;
                 [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.posts = [self.postDataSource.posts copy];
-
+                        
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
@@ -1430,12 +1441,12 @@ static NSInteger kToolbarHeight = 44;
         }
         else {
             CGFloat offset = MAX(-60, scrollView.contentOffset.y);
-
+            
             NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
             NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
             
             self.tableView.contentInset = UIEdgeInsetsMake(-offset, 0, 0, 0);
-
+            
             self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
             self.pullToRefreshTopConstraint.constant = -offset;
             [self.view layoutIfNeeded];
@@ -1464,22 +1475,22 @@ static NSInteger kToolbarHeight = 44;
                 self.formattedSearchString = searchText;
                 break;
         }
-
+        
         BOOL shouldSearchFullText = NO;
-
+        
 #ifdef PINBOARD
         if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
             shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
         }
 #endif
-
+        
         self.latestSearchTime = [NSDate date];
         if (shouldSearchFullText) {
             // Put this on a timer, since we don't want to kill Pinboard servers.
             if (self.fullTextSearchTimer) {
                 [self.fullTextSearchTimer invalidate];
             }
-
+            
             self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4 target:self selector:@selector(updateSearchResultsForSearchPerformed:) userInfo:@{@"time": self.latestSearchTime} repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
         }
@@ -1509,7 +1520,7 @@ static NSInteger kToolbarHeight = 44;
                 self.formattedSearchString = searchText;
                 break;
         }
-
+        
         [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
     }
 }
@@ -1546,7 +1557,7 @@ static NSInteger kToolbarHeight = 44;
             notification.alertBody = NSLocalizedString(@"Removed from saved feeds.", nil);
             notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-
+            
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
         });
     }];
@@ -1560,7 +1571,7 @@ static NSInteger kToolbarHeight = 44;
             notification.alertBody = NSLocalizedString(@"Added to saved feeds.", nil);
             notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-
+            
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
         });
     }];
@@ -1616,14 +1627,14 @@ static NSInteger kToolbarHeight = 44;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     if (!self.isProcessingPosts) {
         self.isProcessingPosts = YES;
-
+        
         [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
             dispatch_sync(dispatch_get_main_queue(), ^(void) {
                 [self.tableView beginUpdates];
                 [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-
+                
                 self.isProcessingPosts = NO;
             });
         } failure:^(NSError *error) {
@@ -1709,10 +1720,10 @@ static NSInteger kToolbarHeight = 44;
         NSArray *indexPathsToReload = [indexPathsForVisibleRows filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
             return [self.currentDataSource heightForPostAtIndex:indexPath.row] != [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
         }]];
-
+        
         if (indexPathsToReload.count > 0) {
             // For some reason, the first row is hidden, *unless* the first visible row is the one at the top of the table
-
+            
             NSInteger row;
             if ([(NSIndexPath *)indexPathsForVisibleRows[0] row] == 0 || ![indexPathsToReload isEqual:indexPathsForVisibleRows[0]]) {
                 row = 0;
@@ -1720,15 +1731,15 @@ static NSInteger kToolbarHeight = 44;
             else {
                 row = 1;
             }
-
+            
             NSIndexPath *currentIndexPath = indexPathsForVisibleRows[row];
-
+            
             self.compressPosts = !self.compressPosts;
-
+            
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
-
+            
             double delayInSeconds = 0.25;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -1774,7 +1785,7 @@ static NSInteger kToolbarHeight = 44;
         if (indexPathsToInsert) {
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
         }
-
+        
         [self.tableView endUpdates];
     }
     else {
@@ -1832,9 +1843,14 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position {
+    self.circle.alpha = 1;
+    
+    if (self.circleHideTimer) {
+        [self.circleHideTimer invalidate];
+    }
+    
     [UIView animateWithDuration:0.25
                      animations:^{
-                         self.circle.alpha = 1;
                          [self.tableView scrollToRowAtIndexPath:self.selectedIndexPath atScrollPosition:position animated:NO];
                      }
                      completion:^(BOOL finished) {
@@ -1847,12 +1863,17 @@ static NSInteger kToolbarHeight = 44;
                          self.circleSnapBehavior.damping = 0.7;
                          [self.animator addBehavior:self.circleSnapBehavior];
                          
-                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                             [UIView animateWithDuration:0.5
-                                              animations:^{
-                                                  self.circle.alpha = 0;
-                                              }];
-                         });
+                         if (self.circleHideTimer) {
+                             [self.circleHideTimer invalidate];
+                         }
+                         self.circleHideTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(hideCircle) userInfo:nil repeats:NO];
+                     }];
+}
+
+- (void)hideCircle {
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.circle.alpha = 0;
                      }];
 }
 
@@ -1863,7 +1884,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSArray *)keyCommands {
-    return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand];
+    return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand, self.openKeyCommand, self.editKeyCommand];
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
@@ -1894,6 +1915,27 @@ static NSInteger kToolbarHeight = 44;
             [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
     }
+    else if (keyCommand == self.openKeyCommand) {
+        self.numberOfTapsSinceTapReset = 1;
+        self.selectedTableView = self.tableView;
+        [self handleCellTap];
+    }
+    else if (keyCommand == self.editKeyCommand) {
+        UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+            });
+        }];
+        
+        if ([UIApplication isIPad]) {
+            vc.modalPresentationStyle = UIModalPresentationFormSheet;
+        }
+
+        [self.navigationController presentViewController:vc animated:YES completion:nil];
+    }
 }
 
 @end
+
