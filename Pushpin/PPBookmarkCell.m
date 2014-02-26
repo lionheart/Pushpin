@@ -148,6 +148,16 @@ static NSInteger kEditButtonOuterMargin = 20;
         self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
 
+    BOOL read;
+    if (self.post[@"unread"]) {
+        read = ![self.post[@"unread"] boolValue];
+    }
+    else {
+        read = NO;
+    }
+
+    BOOL dimmed = [AppDelegate sharedDelegate].dimReadPosts && read;
+
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);
 
     self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -212,12 +222,19 @@ static NSInteger kEditButtonOuterMargin = 20;
     
     NSArray *badges = [dataSource badgesForPostAtIndex:index];
     if (badges.count > 0) {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        options[PPBadgeFontSize] = @([PPTheme badgeFontSize]);
+        if (dimmed) {
+            options[PPBadgeNormalBackgroundColor] = HEX(0xDDDDDDFF);
+        }
+
         if (compressed) {
-            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) } compressed:YES];
+            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:options compressed:YES];
         }
         else {
-            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme badgeFontSize]) }];
+            self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:options];
         }
+
         views[@"badges"] = self.badgeWrapperView;
 
         self.badgeWrapperView.tag = index;
