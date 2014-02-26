@@ -7,8 +7,14 @@
 //
 
 #import "PPSplitViewController.h"
+#import "PPNavigationController.h"
+#import "AddBookmarkViewController.h"
 
 @interface PPSplitViewController ()
+
+@property (nonatomic, strong) UIKeyCommand *createBookmarkKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 @end
 
@@ -20,6 +26,33 @@
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
     return self.viewControllers[1];
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    static NSArray *keyCommands;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"c"
+                                                            modifierFlags:UIKeyModifierAlternate
+                                                                   action:@selector(composeShortcut:)];
+
+        keyCommands = @[self.createBookmarkKeyCommand];
+    });
+
+    return keyCommands;
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.createBookmarkKeyCommand) {
+        PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
+        }];
+        [self presentViewController:(UIViewController *)addBookmarkViewController animated:YES completion:nil];
+    }
 }
 
 @end

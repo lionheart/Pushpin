@@ -26,6 +26,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
 @property (nonatomic, strong) NSString *searchString;
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
+@property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
@@ -870,6 +873,33 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     CGPoint point = CGPointMake(badge.center.x - 2, badge.frame.origin.y);
     [self.removeTagActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
+}
+
+#pragma mark - UIKeyCommand
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    static NSArray *keyCommands;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                    modifierFlags:0
+                                                           action:@selector(handleKeyCommand:)];
+
+        keyCommands = @[self.goBackKeyCommand];
+    });
+
+    return keyCommands;
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.goBackKeyCommand) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end
