@@ -10,6 +10,8 @@
 #import "PPNavigationController.h"
 #import "AddBookmarkViewController.h"
 
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
 @interface PPSplitViewController ()
 
 @property (nonatomic, strong) UIKeyCommand *createBookmarkKeyCommand;
@@ -34,16 +36,16 @@
 
 - (NSArray *)keyCommands {
     static NSArray *keyCommands;
-
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"c"
                                                             modifierFlags:UIKeyModifierAlternate
-                                                                   action:@selector(composeShortcut:)];
+                                                                   action:@selector(handleKeyCommand:)];
 
         keyCommands = @[self.createBookmarkKeyCommand];
     });
-
+    
     return keyCommands;
 }
 
@@ -51,7 +53,14 @@
     if (keyCommand == self.createBookmarkKeyCommand) {
         PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
         }];
-        [self presentViewController:(UIViewController *)addBookmarkViewController animated:YES completion:nil];
+        
+        if ([UIApplication isIPad]) {
+            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        }
+
+        [[AppDelegate sharedDelegate].navigationController presentViewController:addBookmarkViewController
+                                                                        animated:YES
+                                                                      completion:nil];
     }
 }
 
