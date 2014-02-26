@@ -74,6 +74,10 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                modifierFlags:0
+                                                       action:@selector(handleKeyCommand:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -127,18 +131,7 @@
 }
 
 - (NSArray *)keyCommands {
-    static NSArray *keyCommands;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-                                                    modifierFlags:0
-                                                           action:@selector(handleKeyCommand:)];
-
-        keyCommands = @[self.goBackKeyCommand];
-    });
-
-    return keyCommands;
+    return @[self.goBackKeyCommand];
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
