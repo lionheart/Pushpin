@@ -47,6 +47,10 @@
     
     self.interactivePopGestureRecognizer.delegate = weakSelf;
     self.delegate = weakSelf;
+
+    self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"n"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -127,30 +131,25 @@
     return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait;
 }
 
+#pragma mark - Key Commands
 
 - (BOOL)canBecomeFirstResponder {
     return YES;
 }
 
 - (NSArray *)keyCommands {
-    static NSArray *keyCommands;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"n"
-                                                            modifierFlags:UIKeyModifierCommand
-                                                                   action:@selector(handleKeyCommand:)];
-
-        keyCommands = @[self.createBookmarkKeyCommand];
-    });
-
-    return keyCommands;
+    return @[self.createBookmarkKeyCommand];
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
     if (keyCommand == self.createBookmarkKeyCommand) {
         PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
         }];
+        
+        if ([UIApplication isIPad]) {
+            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        }
+
         [self presentViewController:(UIViewController *)addBookmarkViewController animated:YES completion:nil];
     }
 }
