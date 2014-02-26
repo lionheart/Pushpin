@@ -443,7 +443,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         }
         else {
             if (self.loginInProgress) {
-                return 100;
+                return 120;
             }
             else {
                 CGFloat width = CGRectGetWidth(tableView.frame) - 20;
