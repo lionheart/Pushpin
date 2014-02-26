@@ -128,6 +128,37 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         [self.descriptionTextLabel addGestureRecognizer:self.descriptionGestureRecognizer];
         
+        
+        self.focusTitleKeyCommand = [UIKeyCommand keyCommandWithInput:@"1"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+        
+        self.focusDescriptionKeyCommand = [UIKeyCommand keyCommandWithInput:@"2"
+                                                              modifierFlags:UIKeyModifierCommand
+                                                                     action:@selector(handleKeyCommand:)];
+        
+        self.focusTagsKeyCommand = [UIKeyCommand keyCommandWithInput:@"3"
+                                                       modifierFlags:UIKeyModifierCommand
+                                                              action:@selector(handleKeyCommand:)];
+        
+        self.togglePrivateKeyCommand = [UIKeyCommand keyCommandWithInput:@"4"
+                                                           modifierFlags:UIKeyModifierCommand
+                                                                  action:@selector(handleKeyCommand:)];
+        
+        self.toggleReadKeyCommand = [UIKeyCommand keyCommandWithInput:@"5"
+                                                        modifierFlags:UIKeyModifierCommand
+                                                               action:@selector(handleKeyCommand:)];
+        
+        self.saveKeyCommand = [UIKeyCommand keyCommandWithInput:@"s"
+                                                  modifierFlags:UIKeyModifierCommand
+                                                         action:@selector(handleKeyCommand:)];
+        
+        
+        self.closeKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                   modifierFlags:0
+                                                          action:@selector(handleKeyCommand:)];
+        
+        
         self.privateButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.privateButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.privateButton setImage:[[UIImage imageNamed:@"roundbutton-private"] lhs_imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
@@ -889,43 +920,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSArray *)keyCommands {
-    static NSArray *keyCommands;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        self.focusTitleKeyCommand = [UIKeyCommand keyCommandWithInput:@"1"
-                                                        modifierFlags:UIKeyModifierCommand
-                                                               action:@selector(handleKeyCommand:)];
-
-        self.focusDescriptionKeyCommand = [UIKeyCommand keyCommandWithInput:@"2"
-                                                        modifierFlags:UIKeyModifierCommand
-                                                               action:@selector(handleKeyCommand:)];
-
-        self.focusTagsKeyCommand = [UIKeyCommand keyCommandWithInput:@"3"
-                                                        modifierFlags:UIKeyModifierCommand
-                                                               action:@selector(handleKeyCommand:)];
-
-        self.togglePrivateKeyCommand = [UIKeyCommand keyCommandWithInput:@"4"
-                                                        modifierFlags:UIKeyModifierCommand
-                                                               action:@selector(handleKeyCommand:)];
-
-        self.toggleReadKeyCommand = [UIKeyCommand keyCommandWithInput:@"5"
-                                                        modifierFlags:UIKeyModifierCommand
-                                                               action:@selector(handleKeyCommand:)];
-
-        self.saveKeyCommand = [UIKeyCommand keyCommandWithInput:@"s"
-                                                  modifierFlags:UIKeyModifierCommand
-                                                         action:@selector(handleKeyCommand:)];
-
-
-        self.closeKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-                                                   modifierFlags:0
-                                                          action:@selector(handleKeyCommand:)];
-
-        keyCommands = @[self.focusTitleKeyCommand, self.focusDescriptionKeyCommand, self.focusTagsKeyCommand, self.togglePrivateKeyCommand, self.toggleReadKeyCommand, self.saveKeyCommand, self.closeKeyCommand];
-    });
-
-    return keyCommands;
+    return @[self.focusTitleKeyCommand, self.focusDescriptionKeyCommand, self.focusTagsKeyCommand, self.togglePrivateKeyCommand, self.toggleReadKeyCommand, self.saveKeyCommand, self.closeKeyCommand];
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
