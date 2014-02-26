@@ -118,6 +118,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagCompletions = [NSMutableArray array];
     self.loadingTags = NO;
     self.previousTagSuggestions = [NSMutableArray array];
+
+    self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                modifierFlags:0
+                                                       action:@selector(handleKeyCommand:)];
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.tagTextField = [[UITextField alloc] init];
@@ -882,18 +886,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSArray *)keyCommands {
-    static NSArray *keyCommands;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-                                                    modifierFlags:0
-                                                           action:@selector(handleKeyCommand:)];
-
-        keyCommands = @[self.goBackKeyCommand];
-    });
-
-    return keyCommands;
+    return @[self.goBackKeyCommand];
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
