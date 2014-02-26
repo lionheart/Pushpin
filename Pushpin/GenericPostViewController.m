@@ -22,6 +22,7 @@
 #import "PPReadLaterActivity.h"
 #import "PPActivityViewController.h"
 #import "AddBookmarkViewController.h"
+#import "PPNavigationController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -64,6 +65,16 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSInvocation *invocation;
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) PPActivityViewController *activityView;
+@property (nonatomic, strong) UIKeyCommand *focusSearchKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *toggleCompressKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *escapeKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *moveUpKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *moveDownKeyCommand;
+
+@property (nonatomic, strong) UIView *circle;
+@property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
@@ -76,6 +87,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
+
+- (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position;
 
 @end
 
@@ -104,6 +117,31 @@ static NSInteger kToolbarHeight = 44;
     self.posts = @[];
     self.searchPosts = @[];
     self.isProcessingPosts = NO;
+
+    self.focusSearchKeyCommand = [UIKeyCommand keyCommandWithInput:@"/"
+                                                     modifierFlags:0
+                                                            action:@selector(handleKeyCommand:)];
+    
+    self.moveUpKeyCommand = [UIKeyCommand keyCommandWithInput:@"k"
+                                                modifierFlags:0
+                                                       action:@selector(handleKeyCommand:)];
+    
+    self.moveDownKeyCommand = [UIKeyCommand keyCommandWithInput:@"j"
+                                                  modifierFlags:0
+                                                         action:@selector(handleKeyCommand:)];
+    
+    self.toggleCompressKeyCommand = [UIKeyCommand keyCommandWithInput:@"c"
+                                                        modifierFlags:UIKeyModifierCommand | UIKeyModifierAlternate
+                                                               action:@selector(handleKeyCommand:)];
+    
+    self.escapeKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                modifierFlags:0
+                                                       action:@selector(handleKeyCommand:)];
+    
+    self.circle = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMidX(self.view.frame), -100, 20, 20)];
+    self.circle.layer.cornerRadius = 10;
+    self.circle.alpha = 1;
+    self.circle.backgroundColor = [UIColor blackColor];
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -206,6 +244,12 @@ static NSInteger kToolbarHeight = 44;
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.pullToRefreshView];
     [self.view addSubview:self.multiToolbarView];
+    [self.view addSubview:self.circle];
+    
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    
+    self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:CGPointMake(0, -100)];
+    [self.animator addBehavior:self.circleSnapBehavior];
 
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
                                     @"read": self.multipleMarkAsReadButton,
@@ -1785,6 +1829,71 @@ static NSInteger kToolbarHeight = 44;
         width = MAX(CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
     }
     return width;
+}
+
+- (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position {
+    [UIView animateWithDuration:0.25
+                     animations:^{
+                         self.circle.alpha = 1;
+                         [self.tableView scrollToRowAtIndexPath:self.selectedIndexPath atScrollPosition:position animated:NO];
+                     }
+                     completion:^(BOOL finished) {
+                         CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+                         CGRect viewRect = [self.tableView convertRect:rect toView:self.view];
+                         CGPoint point = CGPointMake(CGRectGetMidX(viewRect), CGRectGetMidY(viewRect));
+                         
+                         [self.animator removeBehavior:self.circleSnapBehavior];
+                         self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:point];
+                         self.circleSnapBehavior.damping = 0.7;
+                         [self.animator addBehavior:self.circleSnapBehavior];
+                         
+                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                             [UIView animateWithDuration:0.5
+                                              animations:^{
+                                                  self.circle.alpha = 0;
+                                              }];
+                         });
+                     }];
+}
+
+#pragma mark - Key Commands
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand];
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.focusSearchKeyCommand) {
+        [self.searchBar becomeFirstResponder];
+    }
+    else if (keyCommand == self.toggleCompressKeyCommand) {
+        [self toggleCompressedPosts];
+    }
+    else if (keyCommand == self.escapeKeyCommand) {
+        [self.searchBar resignFirstResponder];
+    }
+    else if (keyCommand == self.moveUpKeyCommand) {
+        if (self.selectedIndexPath) {
+            NSInteger row = self.selectedIndexPath.row;
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+        }
+    }
+    else if (keyCommand == self.moveDownKeyCommand) {
+        if (self.selectedIndexPath) {
+            NSInteger row = self.selectedIndexPath.row;
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+        }
+        else {
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+        }
+    }
 }
 
 @end
