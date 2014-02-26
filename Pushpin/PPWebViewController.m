@@ -41,6 +41,9 @@ static NSInteger kTitleHeight = 40;
 @property (nonatomic) CGPoint previousContentOffset;
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) PPActivityViewController *activityView;
+@property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 @end
 
@@ -65,6 +68,10 @@ static NSInteger kTitleHeight = 40;
     self.alreadyLoaded = NO;
     self.stopped = NO;
     self.history = [NSMutableArray array];
+    
+    self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+                                                modifierFlags:0
+                                                       action:@selector(handleKeyCommand:)];
     
     self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.tapGestureRecognizer.numberOfTapsRequired = 1;
@@ -1130,6 +1137,23 @@ static NSInteger kTitleHeight = 40;
     }
     else {
         HideToolbarBlock();
+    }
+}
+
+
+#pragma mark - UIKeyCommand
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (NSArray *)keyCommands {
+    return @[self.goBackKeyCommand];
+}
+
+- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
+    if (keyCommand == self.goBackKeyCommand) {
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
