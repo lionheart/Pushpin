@@ -1194,8 +1194,8 @@ static BOOL kPinboardSyncInProgress = NO;
             if (!self.searchQuery) {
                 for (NSString *tag in self.tags) {
                     // Lowercase the database tag name and the parameter string so that searches for Programming and programming return the same results. We do this in order to act more similarly to the Pinboard website.
-                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE LOWER(tag_name) = ?)"];
-                    [parameters addObject:[tag lowercaseString]];
+                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ? COLLATE NOCASE)"];
+                    [parameters addObject:tag];
                 }
             }
             break;
