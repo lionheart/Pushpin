@@ -1717,6 +1717,8 @@ static void save_crash_report (PLCrashReporter *reporter) {
     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
     [db open];
     [db executeUpdate:@"DELETE FROM feeds WHERE 1=1;"];
+    [db executeUpdate:@"DELETE FROM tag WHERE 1=1;"];
+    [db executeUpdate:@"DELETE FROM tagging WHERE 1=1;"];
     [db close];
 
     /*
