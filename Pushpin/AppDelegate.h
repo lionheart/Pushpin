@@ -73,7 +73,6 @@
 @property (nonatomic, strong) SMTEDelegateController *textExpander;
 
 - (void)setUsername:(NSString *)username password:(NSString *)password;
-- (void)resetCredentials;
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
 + (AppDelegate *)sharedDelegate;
@@ -86,6 +85,7 @@
 - (void)customizeUIElements;
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 - (void)promptUserToAddBookmark;
+- (void)logout;
 
 - (NSString *)defaultFeedDescription;
 

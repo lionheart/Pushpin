@@ -1706,13 +1706,60 @@ static void save_crash_report (PLCrashReporter *reporter) {
     }
 }
 
-- (void)resetCredentials {
+- (void)logout {
 #ifdef DELICIOUS
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
 #endif
     
 #ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
+
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+    [db executeUpdate:@"DELETE FROM feeds WHERE 1=1;"];
+    [db close];
+
+    /*
+    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+    // Remove all saved feeds from iCloud
+    [store setArray:@[] forKey:kSavedFeedsKey];
+    [store synchronize];
+     */
+#endif
+
+    // Reset all values in settings
+#warning Need to decide which settings are reset and which ones aren't.
+    /*
+    self.openLinksInApp = YES;
+    self.privateByDefault = NO;
+    self.readByDefault = NO;
+    self.browser = PPBrowserSafari;
+    self.compressPosts = NO;
+    self.dimReadPosts = NO;
+    self.openLinksWithMobilizer = NO;
+    self.doubleTapToEdit = NO;
+    self.onlyPromptToAddOnce = NO;
+    self.alwaysShowClipboardNotification = YES;
+     */
+
+    self.hiddenFeedNames = @[];
+    self.personalFeedOrder = @[
+                               @(PPPinboardPersonalFeedAll),
+                               @(PPPinboardPersonalFeedPrivate),
+                               @(PPPinboardPersonalFeedPublic),
+                               @(PPPinboardPersonalFeedUnread),
+                               @(PPPinboardPersonalFeedUntagged),
+                               @(PPPinboardPersonalFeedStarred),
+                               ];
+
+#ifdef PINBOARD
+    self.communityFeedOrder = @[
+                                @(PPPinboardCommunityFeedNetwork),
+                                @(PPPinboardCommunityFeedPopular),
+                                @(PPPinboardCommunityFeedWikipedia),
+                                @(PPPinboardCommunityFeedFandom),
+                                @(PPPinboardCommunityFeedJapan),
+                                ];
 #endif
     
     [keychain resetKeychainItem];
