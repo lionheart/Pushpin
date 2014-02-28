@@ -99,8 +99,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
-    self.feedCountTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(updateFeedCounts) userInfo:nil repeats:YES];
-    [self updateFeedCounts];
 
     self.bookmarkCounts = [NSMutableArray array];
 
@@ -216,6 +214,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.feedCountTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(updateFeedCounts) userInfo:nil repeats:YES];
+    [self updateFeedCounts];
+
     // On the iPad, the navigation bar changes color based on the view controller last pushed
     if (![UIApplication isIPad]) {
         self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
@@ -232,6 +233,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }];
     }
 #endif
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.feedCountTimer invalidate];
+    self.feedCountTimer = nil;
 }
 
 #pragma mark - UITableViewDataSource
@@ -1395,17 +1402,19 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [db close];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView beginUpdates];
-            
-            if (![self personalSectionIsHidden]) {
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-            }
+            if (!self.tableView.editing) {
+                [self.tableView beginUpdates];
+
+                if (![self personalSectionIsHidden]) {
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                }
             
 #ifdef PINBOARD
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
                           withRowAnimation:UITableViewRowAnimationFade];
 #endif
-            [self.tableView endUpdates];
+                [self.tableView endUpdates];
+            }
         });
     });
 }
