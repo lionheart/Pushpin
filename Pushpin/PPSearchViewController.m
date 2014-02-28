@@ -571,37 +571,45 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         dataSource.searchQuery = self.searchTextField.text;
     }
 
-    dataSource.isPrivate = self.isPrivate;
-    dataSource.starred = self.starred;
     dataSource.searchScope = self.pinboardSearchScope;
+    switch (self.searchScope) {
+        case PPSearchScopeMine:
+            dataSource.isPrivate = self.isPrivate;
+            dataSource.starred = self.starred;
 
-    switch (self.read) {
-        case kPushpinFilterTrue:
-            dataSource.unread = kPushpinFilterFalse;
+            switch (self.read) {
+                case kPushpinFilterTrue:
+                    dataSource.unread = kPushpinFilterFalse;
+                    break;
+
+                case kPushpinFilterFalse:
+                    dataSource.unread = kPushpinFilterTrue;
+                    break;
+
+                case kPushpinFilterNone:
+                    dataSource.unread = kPushpinFilterNone;
+                    break;
+            }
+            
+            switch (self.tagged) {
+                case kPushpinFilterTrue:
+                    dataSource.untagged = kPushpinFilterFalse;
+                    break;
+
+                case kPushpinFilterFalse:
+                    dataSource.untagged = kPushpinFilterTrue;
+                    break;
+
+                case kPushpinFilterNone:
+                    dataSource.untagged = kPushpinFilterNone;
+                    break;
+            }
             break;
             
-        case kPushpinFilterFalse:
-            dataSource.unread = kPushpinFilterTrue;
-            break;
-            
-        case kPushpinFilterNone:
-            dataSource.unread = kPushpinFilterNone;
+        default:
             break;
     }
-    
-    switch (self.tagged) {
-        case kPushpinFilterTrue:
-            dataSource.untagged = kPushpinFilterFalse;
-            break;
-            
-        case kPushpinFilterFalse:
-            dataSource.untagged = kPushpinFilterTrue;
-            break;
-            
-        case kPushpinFilterNone:
-            dataSource.untagged = kPushpinFilterNone;
-            break;
-    }
+
 #endif
     
 #ifdef DELICIOUS
