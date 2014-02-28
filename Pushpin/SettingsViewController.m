@@ -330,7 +330,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (buttonIndex == 1) {
             AppDelegate *delegate = [AppDelegate sharedDelegate];
             delegate.lastUpdated = nil;
-            [delegate resetCredentials];
+            [delegate logout];
 
 #ifdef DELICIOUS
             [[LHSDelicious sharedInstance] resetAuthentication];
