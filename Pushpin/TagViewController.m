@@ -28,8 +28,19 @@ static NSString *CellIdentifier = @"TagCell";
 @interface TagViewController ()
 
 @property (nonatomic) BOOL searchInProgress;
+@property (nonatomic, strong) NSMutableDictionary *sectionTitles;
+@property (nonatomic, strong) NSMutableDictionary *tagCounts;
+@property (nonatomic, strong) UIActionSheet *tagActionSheet;
+@property (nonatomic, strong) UIAlertView *deleteConfirmationAlertView;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) NSTimer *tagUpdateTimer;
 
+- (void)updateTagsAndCounts;
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (NSString *)titleForSectionIndex:(NSInteger)section;
+- (NSString *)tagForIndexPath:(NSIndexPath *)indexPath;
+- (NSArray *)sortedSectionTitles:(NSDictionary *)sectionTitles;
 
 @end
 
@@ -41,6 +52,8 @@ static NSString *CellIdentifier = @"TagCell";
 - (id)initWithStyle:(UITableViewStyle)style {
     return [super initWithStyle:UITableViewStyleGrouped];
 }
+
+#pragma mark - UIViewController
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
@@ -55,12 +68,17 @@ static NSString *CellIdentifier = @"TagCell";
     // TODO Trying to get this to @"" but back button still displays "Back"
     self.navigationItem.titleView = titleView;
     self.searchInProgress = NO;
+    self.tagCounts = [NSMutableDictionary dictionary];
+    self.sectionTitles = [NSMutableDictionary dictionary];
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     
     self.tableView.opaque = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.sectionIndexBackgroundColor = [UIColor whiteColor];
     self.tableView.sectionIndexTrackingBackgroundColor = HEX(0xDDDDDDFF);
     self.tableView.sectionIndexColor = [UIColor darkGrayColor];
+    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -68,51 +86,6 @@ static NSString *CellIdentifier = @"TagCell";
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
     [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
 
-    NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
-
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-
-    self.titleToTags = [NSMutableDictionary dictionary];
-
-    FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
-    while ([results next]) {
-        NSString *name = [results stringForColumnIndex:0];
-        NSMutableString *lossyName = [name mutableCopy];
-        CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
-        NSString *count = [results stringForColumnIndex:1];
-
-        if ([name length] == 0) {
-            continue;
-        }
-
-        if ([count length] == 0) {
-            continue;
-        }
-
-        NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
-        if (![letters containsObject:firstLetter]) {
-            firstLetter = @"#";
-        }
-
-        NSMutableArray *temp = [self.titleToTags objectForKey:firstLetter];
-        if (!temp) {
-            temp = [NSMutableArray array];
-        }
-
-        [temp addObject:@{@"name": name, @"count": [results stringForColumn:@"count"]}];
-        [self.titleToTags setObject:temp forKey:firstLetter];
-    }
-
-    NSArray *newSortedTitles = [[self.titleToTags allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        return [obj1 compare:obj2];
-    }];
-    NSMutableArray *newSortedTitlesWithSearch = [NSMutableArray arrayWithObject:UITableViewIndexSearch];
-    for (NSString *title in newSortedTitles) {
-        [newSortedTitlesWithSearch addObject:title];
-    }
-
-    self.sortedTitles = newSortedTitlesWithSearch;
     self.filteredTags = [NSMutableArray array];
 
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 44)];
@@ -131,6 +104,15 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    self.tagUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(updateTagsAndCounts) userInfo:nil repeats:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self.tagUpdateTimer invalidate];
+    self.tagUpdateTimer = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -139,14 +121,16 @@ static NSString *CellIdentifier = @"TagCell";
     [mixpanel track:@"Opened tags"];
 }
 
+#pragma mark - UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
         if (section == 0) {
             return 0;
         }
         else {
-            NSString *key = self.sortedTitles[section];
-            return [(NSMutableArray *)self.titleToTags[key] count];
+            NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
+            return [(NSMutableArray *)self.sectionTitles[key] count];
         }
     }
     else {
@@ -161,7 +145,7 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.tableView) {
-        return [self.sortedTitles count];
+        return [self.sectionTitles count];
     }
     else {
         return 1;
@@ -173,7 +157,7 @@ static NSString *CellIdentifier = @"TagCell";
         return nil;
     }
     else {
-        return self.sortedTitles;
+        return [self sortedSectionTitles:self.sectionTitles];
     }
 }
 
@@ -190,7 +174,7 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
-        return self.sortedTitles[section];
+        return [self sortedSectionTitles:self.sectionTitles][section];
     }
     return nil;
 }
@@ -198,22 +182,24 @@ static NSString *CellIdentifier = @"TagCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
-    NSDictionary *tag;
+    NSString *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         tag = self.filteredTags[indexPath.row];
     }
     else {
-        tag = self.titleToTags[[self titleForSectionIndex:indexPath.section]][indexPath.row];
+        tag = [self tagForIndexPath:indexPath];
     }
 
-    cell.textLabel.text = tag[@"name"];
+    cell.textLabel.text = tag;
     cell.textLabel.font = [PPTheme textLabelFont];
 
-    NSString *badgeCount = [NSString stringWithFormat:@"%@", tag[@"count"]];
+    NSString *badgeCount = [NSString stringWithFormat:@"%@", self.tagCounts[tag]];
     cell.detailTextLabel.text = badgeCount;
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
     return cell;
 }
+
+#pragma mark - UISearchDisplayController
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     return NO;
@@ -222,6 +208,8 @@ static NSString *CellIdentifier = @"TagCell";
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     return NO;
 }
+
+#pragma mark - UISearchBar
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     self.navigationItem.leftBarButtonItem.enabled = NO;
@@ -247,19 +235,15 @@ static NSString *CellIdentifier = @"TagCell";
             NSInteger index = 0;
             
             for (NSDictionary *tag in self.filteredTags) {
-                [oldTagNames addObject:tag[@"name"]];
+                [oldTagNames addObject:tag];
             }
             
             while ([result next]) {
                 NSString *tagName = [result stringForColumn:@"name"];
-                NSString *tagCount = [result stringForColumn:@"count"];
                 
-                if (tagName && tagCount) {
-                    [newTags addObject:@{
-                                         @"name": tagName,
-                                         @"count": tagCount }];
+                if (tagName) {
                     [newTagNames addObject:tagName];
-                    
+
                     if (![oldTagNames containsObject:tagName]) {
                         [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                     }
@@ -288,11 +272,29 @@ static NSString *CellIdentifier = @"TagCell";
     }
 }
 
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.selectedIndexPath = indexPath;
+    
+    self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                  message:@"Are you sure you want to delete this tag? There is no undo."
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Cancel"
+                                                        otherButtonTitles:@"Delete", nil];
+
+    [self.deleteConfirmationAlertView show];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Delete";
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *tag;
+    NSString *tag;
     if (tableView == self.tableView) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        tag = self.titleToTags[[self titleForSectionIndex:indexPath.section]][indexPath.row];
+        tag = [self tagForIndexPath:indexPath];
     }
     else {
         [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -305,16 +307,16 @@ static NSString *CellIdentifier = @"TagCell";
     
 #ifdef DELICIOUS
     DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
-    deliciousDataSource.tags = @[tag[@"name"]];
+    deliciousDataSource.tags = @[tag];
     postViewController.postDataSource = deliciousDataSource;
 #endif
     
 #ifdef PINBOARD
     PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
-    pinboardDataSource.tags = @[tag[@"name"]];
+    pinboardDataSource.tags = @[tag];
     postViewController.postDataSource = pinboardDataSource;
 #endif
-    
+
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
         UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
@@ -343,6 +345,191 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSString *)titleForSectionIndex:(NSInteger)section {
     return [self tableView:self.tableView titleForHeaderInSection:section];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView == self.deleteConfirmationAlertView) {
+        ASPinboard *pinboard = [ASPinboard sharedInstance];
+        NSString *tag = [self tagForIndexPath:self.selectedIndexPath];
+        [pinboard deleteTag:tag
+                    success:^{
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                            [db open];
+                            // Delete the tag from the database.
+                            
+                            [db executeUpdate:@"DELETE FROM tags WHERE name=?" withArgumentsInArray:@[tag]];
+                            [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
+                            [db close];
+                        });
+                    }];
+    }
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (actionSheet == self.tagActionSheet) {
+        NSString *title = [self.tagActionSheet buttonTitleAtIndex:buttonIndex];
+        if ([title isEqualToString:@"Delete"]) {
+            NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
+            self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:tagName
+                                                                          message:@"Are you sure you want to delete this tag? There is no undo."
+                                                                         delegate:self
+                                                                cancelButtonTitle:@"Cancel"
+                                                                otherButtonTitles:@"Delete", nil];
+            [self.deleteConfirmationAlertView show];
+        }
+    }
+}
+
+- (void)gestureDetected:(UIGestureRecognizer *)recognizer {
+    if (recognizer == self.longPressGestureRecognizer) {
+        if (self.longPressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+            CGPoint point = [self.longPressGestureRecognizer locationInView:self.tableView];
+            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:point];
+            NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
+            self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:tagName
+                                                              delegate:self
+                                                     cancelButtonTitle:@"Cancel"
+                                                destructiveButtonTitle:@"Delete"
+                                                     otherButtonTitles:@"Rename", nil];
+            [self.tagActionSheet showInView:self.tableView];
+        }
+    }
+}
+
+- (NSString *)tagForIndexPath:(NSIndexPath *)indexPath {
+    return self.sectionTitles[[self titleForSectionIndex:indexPath.section]][indexPath.row];
+}
+
+- (void)updateTagsAndCounts {
+    NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+    
+    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    [db open];
+
+    NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
+    NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
+
+    FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
+    while ([results next]) {
+        NSString *name = [results stringForColumnIndex:0];
+        NSMutableString *lossyName = [name mutableCopy];
+        CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
+        NSString *count = [results stringForColumnIndex:1];
+        
+        if ([name length] == 0) {
+            continue;
+        }
+        
+        if ([count length] == 0) {
+            continue;
+        }
+
+        NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
+        if (![letters containsObject:firstLetter]) {
+            firstLetter = @"#";
+        }
+        
+        NSMutableArray *temp = updatedSectionTitles[firstLetter];
+        if (!temp) {
+            temp = [NSMutableArray array];
+        }
+
+        updatedTagCounts[name] = count;
+
+        [temp addObject:name];
+        updatedSectionTitles[firstLetter] = temp;
+    }
+    
+    // Handle section additions / removals
+    NSArray *previousSortedTitles = [self sortedSectionTitles:self.sectionTitles];
+    NSArray *updatedSortedTitles = [self sortedSectionTitles:updatedSectionTitles];
+
+    NSMutableSet *A = [NSMutableSet setWithArray:previousSortedTitles];
+    NSMutableSet *B = [NSMutableSet setWithArray:updatedSortedTitles];
+    
+    NSMutableSet *deletedSectionTitles = [NSMutableSet setWithSet:A];
+    [deletedSectionTitles minusSet:B];
+    
+    NSMutableSet *insertedSectionTitles = [NSMutableSet setWithSet:B];
+    [insertedSectionTitles minusSet:A];
+    
+    NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
+    for (NSString *title in deletedSectionTitles) {
+        [sectionIndicesToDelete addIndex:[previousSortedTitles indexOfObject:title]];
+    }
+    
+    NSMutableIndexSet *sectionIndicesToInsert = [NSMutableIndexSet indexSet];
+    for (NSString *title in insertedSectionTitles) {
+        [sectionIndicesToInsert addIndex:[updatedSortedTitles indexOfObject:title]];
+    }
+    
+    // Get sections that are in both A & B.
+    NSMutableSet *reloadedSectionTitles = [NSMutableSet setWithSet:A];
+    [A intersectSet:B];
+    
+    // Now we handle the changes for the index paths
+    NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+    NSMutableArray *indexPathsToReload = [NSMutableArray array];
+
+    NSInteger section = 0;
+    for (NSString *title in reloadedSectionTitles) {
+        NSArray *previousTags = self.sectionTitles[title];
+        NSArray *updatedTags = updatedSectionTitles[title];
+        NSMutableSet *Atags = [NSMutableSet setWithArray:previousTags];
+        NSMutableSet *Btags = [NSMutableSet setWithArray:updatedTags];
+        
+        NSMutableSet *deletedTags = [NSMutableSet setWithSet:Atags];
+        [deletedTags minusSet:Btags];
+        
+        NSMutableSet *insertedTags = [NSMutableSet setWithSet:Btags];
+        [insertedTags minusSet:Atags];
+
+        for (NSString *tag in deletedTags) {
+            NSInteger row = [previousTags indexOfObject:tag];
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        }
+        
+        for (NSString *tag in insertedTags) {
+            NSInteger row = [updatedTags indexOfObject:tag];
+            [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        }
+        
+        // Get sections that are in both A & B.
+        NSMutableSet *reloadedTags = [NSMutableSet setWithSet:Atags];
+        [Atags intersectSet:Btags];
+        
+        for (NSString *tag in reloadedTags) {
+            if (![self.tagCounts[tag] isEqualToString:updatedTagCounts[tag]]) {
+                NSInteger row = [previousTags indexOfObject:tag];
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+            }
+        }
+
+        section++;
+    }
+    
+    self.sectionTitles = updatedSectionTitles;
+    self.tagCounts = updatedTagCounts;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
+        [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
+}
+
+- (NSArray *)sortedSectionTitles:(NSDictionary *)sectionTitles {
+    return [[sectionTitles allKeys] sortedArrayUsingSelector:@selector(compare:)];
 }
 
 @end
