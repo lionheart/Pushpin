@@ -126,11 +126,10 @@
                                
                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                    if (!error) {
-                                       NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-                                       NSMutableArray *indexPathsToRemove = [NSMutableArray array];
+                                       NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                                        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+                                       NSMutableArray *indexPathsToDelete = [NSMutableArray array];
                                        NSMutableArray *newPosts = [NSMutableArray array];
-                                       NSMutableArray *newURLs = [NSMutableArray array];
                                        NSMutableArray *oldURLs = [NSMutableArray array];
                                        NSMutableArray *oldPosts = [self.posts copy];
                                        
@@ -147,8 +146,14 @@
                                        NSMutableArray *tags = [NSMutableArray array];
                                        NSDate *date;
 
+                                       // The index of the list that `index` corresponds to
+                                       NSInteger skipPivot = 0;
+                                       BOOL postFound;
+
                                        // TODO: Should refactor to update / reload / delete more efficiently
                                        for (NSDictionary *element in payload) {
+                                           postFound = NO;
+
                                            [tags removeAllObjects];
                                            [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
                                            for (NSString *tag in element[@"t"]) {
@@ -179,25 +184,40 @@
                                                post[@"description"] = @"";
                                            }
                                            
+                                           NSString *url = post[@"url"];
                                            [newPosts addObject:post];
-                                           [newURLs addObject:post[@"url"]];
                                            
+                                           // Go from the last found value to the end of the list.
+                                           // If you find something, break and set the pivot to the current skip index.
+                                           for (NSInteger i=skipPivot; i<oldPosts.count; i++) {
+                                               if ([oldURLs[i] isEqualToString:url]) {
+                                                   // Delete all posts that were skipped
+                                                   for (NSInteger j=skipPivot; j<i; j++) {
+                                                       [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                                                   }
+
+                                                   post = oldPosts[i];
+                                                   postFound = YES;
+                                                   skipPivot = i+1;
+                                                   break;
+                                               }
+                                           }
+
                                            if (![oldPosts containsObject:post]) {
                                                // Check if the bookmark is being updated (as opposed to entirely new)
-                                               if ([oldURLs containsObject:post[@"url"]]) {
+                                               if ([oldURLs containsObject:url]) {
                                                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                                                }
                                                else {
-                                                   [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                                   [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                                                }
                                            }
+
                                            index++;
                                        }
-                                       
-                                       for (int i=0; i<oldURLs.count; i++) {
-                                           if (![newURLs containsObject:oldURLs[i]]) {
-                                               [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:[self.posts indexOfObject:oldPosts[i]] inSection:0]];
-                                           }
+
+                                       for (NSInteger i=skipPivot; i<oldURLs.count; i++) {
+                                           [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                                        }
 
                                        self.posts = newPosts;
@@ -217,7 +237,7 @@
                                        self.compressedMetadata = newCompressedMetadata;
                                        
                                        if (success != nil) {
-                                           success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
+                                           success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
                                        }
                                    }
                                });
