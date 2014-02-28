@@ -235,8 +235,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.feedCountTimer invalidate];
     self.feedCountTimer = nil;
 }
