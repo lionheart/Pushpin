@@ -177,6 +177,10 @@
 		37A7B5D018345F140038677E /* edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5CE18345F140038677E /* edit@2x.png */; };
 		37A7B5D3183463410038677E /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D1183463410038677E /* add@2x.png */; };
 		37A7B5D4183463410038677E /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D2183463410038677E /* add.png */; };
+		37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960318C437090008CDD5 /* browse-search@2x.png */; };
+		37AB960818C437090008CDD5 /* browse-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960418C437090008CDD5 /* browse-search.png */; };
+		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
+		37AB960A18C437090008CDD5 /* browse-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960618C437090008CDD5 /* browse-recent@2x.png */; };
 		37AD159518A13365005813CC /* About-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159418A13365005813CC /* About-Delicious.plist */; };
 		37AD159718A1352B005813CC /* Changelog-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159618A1352B005813CC /* Changelog-Delicious.plist */; };
 		37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
@@ -725,6 +729,10 @@
 		37A7B5CE18345F140038677E /* edit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "edit@2x.png"; path = "Assets/edit@2x.png"; sourceTree = "<group>"; };
 		37A7B5D1183463410038677E /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "add@2x.png"; path = "Assets/add@2x.png"; sourceTree = "<group>"; };
 		37A7B5D2183463410038677E /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add.png; path = Assets/add.png; sourceTree = "<group>"; };
+		37AB960318C437090008CDD5 /* browse-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search@2x.png"; path = "Assets/browse-search@2x.png"; sourceTree = "<group>"; };
+		37AB960418C437090008CDD5 /* browse-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search.png"; path = "Assets/browse-search.png"; sourceTree = "<group>"; };
+		37AB960518C437090008CDD5 /* browse-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent.png"; path = "Assets/browse-recent.png"; sourceTree = "<group>"; };
+		37AB960618C437090008CDD5 /* browse-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent@2x.png"; path = "Assets/browse-recent@2x.png"; sourceTree = "<group>"; };
 		37AD159418A13365005813CC /* About-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "About-Delicious.plist"; path = "Assets/About-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37AD159618A1352B005813CC /* Changelog-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Changelog-Delicious.plist"; path = "Assets/Changelog-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
@@ -1796,6 +1804,10 @@
 		E8DA795A183D23F9002B1D0B /* Browse */ = {
 			isa = PBXGroup;
 			children = (
+				37AB960318C437090008CDD5 /* browse-search@2x.png */,
+				37AB960418C437090008CDD5 /* browse-search.png */,
+				37AB960518C437090008CDD5 /* browse-recent.png */,
+				37AB960618C437090008CDD5 /* browse-recent@2x.png */,
 				E8F987D4183E796900EF976D /* browse-all.png */,
 				E8F987D5183E796900EF976D /* browse-fandom.png */,
 				E8F987D6183E796900EF976D /* browse-japanese.png */,
@@ -2147,6 +2159,7 @@
 				37EAB9E2173F01DA00B2684B /* loading_16.png in Resources */,
 				37EAB9E3173F01DA00B2684B /* loading_16@2x.png in Resources */,
 				37EAB9E4173F01DA00B2684B /* loading_17.png in Resources */,
+				37AB960918C437090008CDD5 /* browse-recent.png in Resources */,
 				37EAB9E5173F01DA00B2684B /* loading_17@2x.png in Resources */,
 				E8DA7968183D2415002B1D0B /* browse-japanese@2x.png in Resources */,
 				37EAB9E6173F01DA00B2684B /* loading_18.png in Resources */,
@@ -2259,6 +2272,7 @@
 				37EABA2F173F01DA00B2684B /* loading_54@2x.png in Resources */,
 				37EABA30173F01DA00B2684B /* loading_55.png in Resources */,
 				37EABA31173F01DA00B2684B /* loading_55@2x.png in Resources */,
+				37AB960818C437090008CDD5 /* browse-search.png in Resources */,
 				37A7B5CA18345DAE0038677E /* mark-as-read@2x.png in Resources */,
 				E8DA796A183D2415002B1D0B /* browse-network@2x.png in Resources */,
 				E80EEF70184E9AA000979AA3 /* toolbar-trash.png in Resources */,
@@ -2273,6 +2287,7 @@
 				37EABA38173F01DA00B2684B /* loading_59.png in Resources */,
 				37EABA39173F01DA00B2684B /* loading_59@2x.png in Resources */,
 				37EABA3A173F01DA00B2684B /* loading_60.png in Resources */,
+				37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */,
 				37EABA3B173F01DA00B2684B /* loading_60@2x.png in Resources */,
 				37EABA3C173F01DA00B2684B /* loading_61.png in Resources */,
 				37EABA3D173F01DA00B2684B /* loading_61@2x.png in Resources */,
@@ -2371,6 +2386,7 @@
 				37B348E21760196400929E2E /* caution-dash@2x.png in Resources */,
 				E80EEF8F185B6A1300979AA3 /* roundbutton-private.png in Resources */,
 				E8900208183FA8F600C1F969 /* navigation-edit.png in Resources */,
+				37AB960A18C437090008CDD5 /* browse-recent@2x.png in Resources */,
 				3798B08E18767DAB002D684B /* navigation-edit-blue.png in Resources */,
 				37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */,
 				E80EEF80185A4AD900979AA3 /* toolbar-bookmark@2x.png in Resources */,
