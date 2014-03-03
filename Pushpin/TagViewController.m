@@ -104,8 +104,9 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.tagUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(updateTagsAndCounts) userInfo:nil repeats:YES];
+
+    [self updateTagsAndCounts];
+    self.tagUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTagsAndCounts) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -134,12 +135,7 @@ static NSString *CellIdentifier = @"TagCell";
         }
     }
     else {
-        if (section == 0) {
-            return [self.filteredTags count];
-        }
-        else {
-            return 0;
-        }
+        return [self.filteredTags count];
     }
 }
 
@@ -231,7 +227,6 @@ static NSString *CellIdentifier = @"TagCell";
             NSMutableArray *indexPathsToRemove = [NSMutableArray array];
             NSMutableArray *indexPathsToAdd = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            NSMutableArray *newTags = [NSMutableArray array];
             NSInteger index = 0;
             
             for (NSDictionary *tag in self.filteredTags) {
@@ -260,7 +255,7 @@ static NSString *CellIdentifier = @"TagCell";
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.filteredTags = newTags;
+                self.filteredTags = newTagNames;
                 [self.searchDisplayController.searchResultsTableView beginUpdates];
                 [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
                 [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
@@ -351,20 +346,36 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.deleteConfirmationAlertView) {
-        ASPinboard *pinboard = [ASPinboard sharedInstance];
-        NSString *tag = [self tagForIndexPath:self.selectedIndexPath];
-        [pinboard deleteTag:tag
-                    success:^{
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                            [db open];
-                            // Delete the tag from the database.
-                            
-                            [db executeUpdate:@"DELETE FROM tags WHERE name=?" withArgumentsInArray:@[tag]];
-                            [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
-                            [db close];
-                        });
-                    }];
+        if (buttonIndex == 1) {
+            ASPinboard *pinboard = [ASPinboard sharedInstance];
+            NSString *tag = [self tagForIndexPath:self.selectedIndexPath];
+            [pinboard deleteTag:tag
+                        success:^{
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                [db open];
+                                // Delete the tag from the database.
+                                
+                                [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
+                                
+                                FMResultSet *result = [db executeQuery:@"SELECT hash, tags FROM bookmark WHERE hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name=?)" withArgumentsInArray:@[tag]];
+                                while ([result next]) {
+                                    // Convert the tags to a list, remove the removed tag, and then update the bookmark.
+                                    NSString *hash = [result stringForColumnIndex:0];
+                                    NSString *tags = [result stringForColumnIndex:1];
+                                    
+                                    NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
+                                    [tagList removeObject:tag];
+                                    NSString *updatedTags = [tagList componentsJoinedByString:@" "];
+
+                                    [db executeUpdate:@"UPDATE bookmark SET tags=? WHERE hash=?" withArgumentsInArray:@[updatedTags, hash]];
+                                }
+
+                                [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
+                                [db close];
+                            });
+                        }];
+        }
     }
 }
 
@@ -406,126 +417,142 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (void)updateTagsAndCounts {
-    NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
-    
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-    [db open];
-
-    NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
-    NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
-
-    FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
-    while ([results next]) {
-        NSString *name = [results stringForColumnIndex:0];
-        NSMutableString *lossyName = [name mutableCopy];
-        CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
-        NSString *count = [results stringForColumnIndex:1];
-        
-        if ([name length] == 0) {
-            continue;
-        }
-        
-        if ([count length] == 0) {
-            continue;
-        }
-
-        NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
-        if (![letters containsObject:firstLetter]) {
-            firstLetter = @"#";
-        }
-        
-        NSMutableArray *temp = updatedSectionTitles[firstLetter];
-        if (!temp) {
-            temp = [NSMutableArray array];
-        }
-
-        updatedTagCounts[name] = count;
-
-        [temp addObject:name];
-        updatedSectionTitles[firstLetter] = temp;
-    }
-    
-    // Handle section additions / removals
-    NSArray *previousSortedTitles = [self sortedSectionTitles:self.sectionTitles];
-    NSArray *updatedSortedTitles = [self sortedSectionTitles:updatedSectionTitles];
-
-    NSMutableSet *A = [NSMutableSet setWithArray:previousSortedTitles];
-    NSMutableSet *B = [NSMutableSet setWithArray:updatedSortedTitles];
-    
-    NSMutableSet *deletedSectionTitles = [NSMutableSet setWithSet:A];
-    [deletedSectionTitles minusSet:B];
-    
-    NSMutableSet *insertedSectionTitles = [NSMutableSet setWithSet:B];
-    [insertedSectionTitles minusSet:A];
-    
-    NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
-    for (NSString *title in deletedSectionTitles) {
-        [sectionIndicesToDelete addIndex:[previousSortedTitles indexOfObject:title]];
-    }
-    
-    NSMutableIndexSet *sectionIndicesToInsert = [NSMutableIndexSet indexSet];
-    for (NSString *title in insertedSectionTitles) {
-        [sectionIndicesToInsert addIndex:[updatedSortedTitles indexOfObject:title]];
-    }
-    
-    // Get sections that are in both A & B.
-    NSMutableSet *reloadedSectionTitles = [NSMutableSet setWithSet:A];
-    [A intersectSet:B];
-    
-    // Now we handle the changes for the index paths
-    NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-    NSMutableArray *indexPathsToReload = [NSMutableArray array];
-
-    NSInteger section = 0;
-    for (NSString *title in reloadedSectionTitles) {
-        NSArray *previousTags = self.sectionTitles[title];
-        NSArray *updatedTags = updatedSectionTitles[title];
-        NSMutableSet *Atags = [NSMutableSet setWithArray:previousTags];
-        NSMutableSet *Btags = [NSMutableSet setWithArray:updatedTags];
-        
-        NSMutableSet *deletedTags = [NSMutableSet setWithSet:Atags];
-        [deletedTags minusSet:Btags];
-        
-        NSMutableSet *insertedTags = [NSMutableSet setWithSet:Btags];
-        [insertedTags minusSet:Atags];
-
-        for (NSString *tag in deletedTags) {
-            NSInteger row = [previousTags indexOfObject:tag];
-            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-        }
-        
-        for (NSString *tag in insertedTags) {
-            NSInteger row = [updatedTags indexOfObject:tag];
-            [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-        }
-        
-        // Get sections that are in both A & B.
-        NSMutableSet *reloadedTags = [NSMutableSet setWithSet:Atags];
-        [Atags intersectSet:Btags];
-        
-        for (NSString *tag in reloadedTags) {
-            if (![self.tagCounts[tag] isEqualToString:updatedTagCounts[tag]]) {
-                NSInteger row = [previousTags indexOfObject:tag];
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:section]];
-            }
-        }
-
-        section++;
-    }
-    
-    self.sectionTitles = updatedSectionTitles;
-    self.tagCounts = updatedTagCounts;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView beginUpdates];
-        [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
+    static dispatch_queue_t serialQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        serialQueue = dispatch_queue_create("com.lionheartsw.TagUpdateQueue", DISPATCH_QUEUE_SERIAL);
     });
+    
+    if (!self.searchDisplayController.isActive) {
+        dispatch_async(serialQueue, ^{
+            NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+            
+            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            [db open];
+            
+            NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
+            NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
+            
+            FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
+            while ([results next]) {
+                NSString *name = [results stringForColumnIndex:0];
+                NSMutableString *lossyName = [name mutableCopy];
+                CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
+                NSString *count = [results stringForColumnIndex:1];
+                
+                if ([name length] == 0) {
+                    continue;
+                }
+                
+                if ([count length] == 0) {
+                    continue;
+                }
+                
+                NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
+                if (![letters containsObject:firstLetter]) {
+                    firstLetter = @"#";
+                }
+                
+                NSMutableArray *temp = updatedSectionTitles[firstLetter];
+                if (!temp) {
+                    temp = [NSMutableArray array];
+                }
+                
+                updatedTagCounts[name] = count;
+                
+                [temp addObject:name];
+                updatedSectionTitles[firstLetter] = temp;
+            }
+            
+            // Handle section additions / removals
+            NSArray *previousSortedTitles = [self sortedSectionTitles:self.sectionTitles];
+            NSArray *updatedSortedTitles = [self sortedSectionTitles:updatedSectionTitles];
+            
+            NSMutableSet *A = [NSMutableSet setWithArray:previousSortedTitles];
+            NSMutableSet *B = [NSMutableSet setWithArray:updatedSortedTitles];
+            
+            NSMutableSet *deletedSectionTitles = [NSMutableSet setWithSet:A];
+            [deletedSectionTitles minusSet:B];
+            
+            NSMutableSet *insertedSectionTitles = [NSMutableSet setWithSet:B];
+            [insertedSectionTitles minusSet:A];
+            
+            NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
+            for (NSString *title in deletedSectionTitles) {
+                [sectionIndicesToDelete addIndex:[previousSortedTitles indexOfObject:title]];
+            }
+            
+            NSMutableIndexSet *sectionIndicesToInsert = [NSMutableIndexSet indexSet];
+            for (NSString *title in insertedSectionTitles) {
+                [sectionIndicesToInsert addIndex:[updatedSortedTitles indexOfObject:title]];
+            }
+            
+            // Get sections that are in both A & B.
+            NSMutableSet *reloadedSectionTitles = [NSMutableSet setWithSet:A];
+            [A intersectSet:B];
+            
+            // Now we handle the changes for the index paths
+            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            
+            NSInteger section = 0;
+            for (NSString *title in updatedSortedTitles) {
+                if ([reloadedSectionTitles containsObject:title]) {
+                    NSArray *previousTags = self.sectionTitles[title];
+                    NSArray *updatedTags = updatedSectionTitles[title];
+                    NSMutableSet *Atags = [NSMutableSet setWithArray:previousTags];
+                    NSMutableSet *Btags = [NSMutableSet setWithArray:updatedTags];
+                    
+                    NSMutableSet *deletedTags = [NSMutableSet setWithSet:Atags];
+                    [deletedTags minusSet:Btags];
+                    
+                    NSMutableSet *insertedTags = [NSMutableSet setWithSet:Btags];
+                    [insertedTags minusSet:Atags];
+                    
+                    for (NSString *tag in deletedTags) {
+                        NSInteger row = [previousTags indexOfObject:tag];
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                    }
+                    
+                    for (NSString *tag in insertedTags) {
+                        NSInteger row = [updatedTags indexOfObject:tag];
+                        [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                    }
+                    
+                    // Get sections that are in both A & B.
+                    NSMutableSet *reloadedTags = [NSMutableSet setWithSet:Atags];
+                    [reloadedTags intersectSet:Btags];
+                    
+                    for (NSString *tag in reloadedTags) {
+                        if (![self.tagCounts[tag] isEqualToString:updatedTagCounts[tag]]) {
+                            NSInteger row = [previousTags indexOfObject:tag];
+                            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                        }
+                    }
+                }
+                
+                section++;
+            }
+            
+            // We have the semaroid
+            dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.sectionTitles = updatedSectionTitles;
+                self.tagCounts = updatedTagCounts;
+                [self.tableView beginUpdates];
+                [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+                dispatch_semaphore_signal(sem);
+            });
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+        });
+    }
 }
 
 - (NSArray *)sortedSectionTitles:(NSDictionary *)sectionTitles {
