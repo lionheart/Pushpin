@@ -725,6 +725,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                                                   }];
                     
                     if (count > 0) {
+                        // The bookmark already exists, so we're updating it.
+
                         [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                         
                         if (hash && ![hash isEqual:[NSNull null]]) {
@@ -770,7 +772,21 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         bookmarkAdded = YES;
                     }
+
+                    // We reset the associated tags regardless of whether the bookmark has been added or updated.
+                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                     
+#warning Potential problem with using existingTags instead of the post itself? Uncertain.
+                    for (NSString *tagName in self.existingTags) {
+                        NSString *cleanedTagName = [tagName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                        if (![cleanedTagName isEqualToString:@""]) {
+                            [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                            [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                        }
+                    }
+                    
+                    [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                    [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                     [db commit];
                     
 #ifdef PINBOARD
