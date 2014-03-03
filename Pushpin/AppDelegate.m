@@ -592,6 +592,10 @@ static void save_crash_report (PLCrashReporter *reporter) {
                     feedDataSource.components = @[@"popular", @"japanese"];
                     break;
                     
+                case PPPinboardCommunityFeedRecent:
+                    feedDataSource.components = @[@"recent"];
+                    break;
+                    
                 default:
                     break;
             }
@@ -737,6 +741,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
                 @(PPPinboardCommunityFeedWikipedia),
                 @(PPPinboardCommunityFeedFandom),
                 @(PPPinboardCommunityFeedJapan),
+                @(PPPinboardCommunityFeedRecent),
             ],
 #endif
      }];
@@ -1141,6 +1146,10 @@ static void save_crash_report (PLCrashReporter *reporter) {
             case 8:
                 [db executeUpdate:@"DELETE FROM tagging WHERE tag_name='';"];
                 [db executeUpdate:@"PRAGMA user_version=9;"];
+                
+            case 9:
+                self.communityFeedOrder = [self.communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)];
+                [db executeUpdate:@"PRAGMA user_version=10;"];
 
             default:
                 break;

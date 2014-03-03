@@ -454,6 +454,9 @@
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 return HEX(0xFF9409FF);
             }
+            else if ([self.components[0] isEqualToString:@"recent"]) {
+                return HEX(0x2AC5FFFF);
+            }
             
         case 2:
             if ([self.components[0] isEqualToString:@"popular"]) {

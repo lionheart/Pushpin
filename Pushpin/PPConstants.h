@@ -54,7 +54,8 @@ typedef enum : NSInteger {
     PPPinboardCommunityFeedPopular,
     PPPinboardCommunityFeedWikipedia,
     PPPinboardCommunityFeedFandom,
-    PPPinboardCommunityFeedJapan
+    PPPinboardCommunityFeedJapan,
+    PPPinboardCommunityFeedRecent
 } PPPinboardCommunityFeedType;
 
 typedef enum : NSInteger {
@@ -65,7 +66,7 @@ typedef enum : NSInteger {
 
 typedef enum : NSInteger {
     PPPinboardPersonalRows = PPPinboardPersonalFeedStarred + 1,
-    PPPinboardCommunityRows = PPPinboardCommunityFeedJapan + 1
+    PPPinboardCommunityRows = PPPinboardCommunityFeedRecent + 1
 } PPPinboardRowCounts;
 
 static NSInteger PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1;
@@ -180,7 +181,7 @@ static NSArray *PPPersonalFeeds() {
 }
 
 static NSArray *PPCommunityFeeds() {
-    return @[@"network", @"popular", @"wikipedia", @"fandom", @"japan"];
+    return @[@"network", @"popular", @"wikipedia", @"fandom", @"japan", @"recent"];
 }
 #endif
 

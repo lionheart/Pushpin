@@ -497,6 +497,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     cell.textLabel.text = @"日本語";
                     cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
                     break;
+                    
+                case PPPinboardCommunityFeedRecent:
+                    cell.textLabel.text = @"Recent";
+                    cell.imageView.image = [UIImage imageNamed:@"browse-recent"];
+                    break;
             }
 
             break;
@@ -736,6 +741,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         case PPPinboardCommunityFeedJapan: {
                             feedDataSource.components = @[@"popular", @"japanese"];
                             [mixpanel track:@"Browsed 日本語 bookmarks"];
+                            break;
+                        }
+
+                        case PPPinboardCommunityFeedRecent: {
+                            feedDataSource.components = @[@"recent"];
+                            [mixpanel track:@"Browsed Recent bookmarks"];
                             break;
                         }
                     }
