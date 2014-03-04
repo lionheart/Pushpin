@@ -44,6 +44,8 @@
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 #import <BugshotKit/BugshotKit.h>
+#import <Crashlytics/Crashlytics.h>
+#import <Bugsnag/Bugsnag.h>
 
 #ifdef APPSTORE
 #import <CrashReporter/CrashReporter.h>
@@ -641,7 +643,10 @@ static void save_crash_report (PLCrashReporter *reporter) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     application.applicationSupportsShakeToEdit = YES;
 
+    [Bugsnag startBugsnagWithApiKey:@"514d576732eef794d59c0f2ef4768407"];
+    [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 #ifdef APPSTORE
+    
     PLCrashReporterConfig *config = [[PLCrashReporterConfig alloc] initWithSignalHandlerType:PLCrashReporterSignalHandlerTypeBSD
                                                                        symbolicationStrategy:PLCrashReporterSymbolicationStrategyAll];
     PLCrashReporter *crashReporter = [[PLCrashReporter alloc] initWithConfiguration:config];

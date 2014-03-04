@@ -490,6 +490,9 @@
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 return NSLocalizedString(@"Popular", nil);
             }
+            else if ([self.components[0] isEqualToString:@"recent"]) {
+                return NSLocalizedString(@"Recent", nil);
+            }
             break;
 
         case 2:
@@ -531,6 +534,10 @@
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 titleViewSet = YES;
                 [titleButton setTitle:NSLocalizedString(@"Popular", nil) imageName:@"navigation-popular"];
+            }
+            else if ([self.components[0] isEqualToString:@"recent"]) {
+                titleViewSet = YES;
+                [titleButton setTitle:NSLocalizedString(@"Recent", nil) imageName:@"navigation-recent"];
             }
             break;
 
