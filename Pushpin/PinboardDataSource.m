@@ -1103,24 +1103,19 @@ static BOOL kPinboardSyncInProgress = NO;
     [components addObject:@"SELECT bookmark.* FROM"];
     
     // Use only one match query with the FTS4 syntax.
-    BOOL singleMatch = YES;
+    BOOL generateSubquery = YES;
     NSMutableArray *tables = [NSMutableArray arrayWithObject:@"bookmark"];
-    if (self.searchQuery && singleMatch) {
+    if (self.searchQuery && !generateSubquery) {
         [tables addObject:@"bookmark_fts"];
     }
 
     [components addObject:[tables componentsJoinedByString:@", "]];
-    
+
     NSMutableArray *whereComponents = [NSMutableArray array];
     if (self.searchQuery) {
-        if (singleMatch) {
-            [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
-            [whereComponents addObject:@"bookmark_fts MATCH ?"];
-            [parameters addObject:self.searchQuery];
-        }
-        else {
+        if (generateSubquery) {
             NSMutableArray *subqueries = [NSMutableArray array];
-            
+
             NSError *error;
             // Both of these regex searches comprise the form 'tag:programming' or 'tag:"programming python"'. The only difference are the capture groups.
             NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|(\\w+:\"[^\"]+\"))" options:0 error:&error];
@@ -1175,6 +1170,11 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             
             [whereComponents addObject:[NSString stringWithFormat:@"bookmark.hash IN (%@)", [subqueries componentsJoinedByString:@" INTERSECT "]]];
+        }
+        else {
+            [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
+            [whereComponents addObject:@"bookmark_fts MATCH ?"];
+            [parameters addObject:self.searchQuery];
         }
     }
 
@@ -1265,24 +1265,52 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)searchPlaceholder {
-    if (self.isPrivate == kPushpinFilterTrue) {
-        return @"Search Private";
+    if (self.searchQuery) {
+        return @"Search in Results";
     }
     
-    if (self.isPrivate == kPushpinFilterFalse) {
-        return @"Search Public";
+    switch (self.untagged) {
+        case kPushpinFilterFalse:
+            return @"Search Tagged";
+            
+        case kPushpinFilterTrue:
+            return @"Search Untagged";
+            
+        default:
+            break;
     }
     
-    if (self.starred == kPushpinFilterTrue) {
-        return @"Search Starred";
+    switch (self.starred) {
+        case kPushpinFilterTrue:
+            return @"Search Starred";
+            
+        case kPushpinFilterFalse:
+            return @"Search Unstarred";
+            
+        default:
+            break;
     }
-    
-    if (self.unread == kPushpinFilterTrue) {
-        return @"Search Unread";
+
+    switch (self.isPrivate) {
+        case kPushpinFilterTrue:
+            return @"Search Private";
+            
+        case kPushpinFilterFalse:
+            return @"Search Public";
+            
+        default:
+            break;
     }
-    
-    if (self.untagged == kPushpinFilterTrue) {
-        return @"Search Untagged";
+
+    switch (self.unread) {
+        case kPushpinFilterTrue:
+            return @"Search Unread";
+            
+        case kPushpinFilterFalse:
+            return @"Search Read";
+            
+        default:
+            break;
     }
 
     return @"Search";
