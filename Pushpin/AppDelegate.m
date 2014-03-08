@@ -45,7 +45,6 @@
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 #import <BugshotKit/BugshotKit.h>
 #import <Crashlytics/Crashlytics.h>
-#import <Bugsnag/Bugsnag.h>
 
 #ifdef APPSTORE
 #import <CrashReporter/CrashReporter.h>
