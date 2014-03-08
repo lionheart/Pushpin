@@ -2440,7 +2440,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a\n";
+			shellScript = "./Pods/CrashlyticsFramework/Crashlytics.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a\n";
 		};
 		37B65FDA1672D0270041DA8C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

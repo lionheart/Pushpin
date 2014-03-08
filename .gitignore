@@ -27,3 +27,4 @@ Podfile.lock
 *.xcworkspace
 
 ghi.token
+Crashlytics.framework
