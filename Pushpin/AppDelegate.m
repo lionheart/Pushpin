@@ -643,7 +643,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     application.applicationSupportsShakeToEdit = YES;
 
-    [Bugsnag startBugsnagWithApiKey:@"514d576732eef794d59c0f2ef4768407"];
+//    [Bugsnag startBugsnagWithApiKey:@"514d576732eef794d59c0f2ef4768407"];
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 #ifdef APPSTORE
     
@@ -681,7 +681,7 @@ static void save_crash_report (PLCrashReporter *reporter) {
         [crashReporter purgePendingCrashReport];
     }
 #else
-    [TestFlight takeOff:PPTestFlightToken];
+//    [TestFlight takeOff:PPTestFlightToken];
     [BugshotKit enableWithNumberOfTouches:2 performingGestures:BSKInvocationGestureSwipeUp feedbackEmailAddress:@"dan@lionheartsw.com"];
 #endif
 

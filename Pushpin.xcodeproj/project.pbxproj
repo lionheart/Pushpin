@@ -153,6 +153,7 @@
 		378482D4186CB92D00DF7A74 /* single-tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D2186CB92C00DF7A74 /* single-tag@2x.png */; };
 		378482D7186CB9ED00DF7A74 /* single-person.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D5186CB9ED00DF7A74 /* single-person.png */; };
 		378482D8186CB9ED00DF7A74 /* single-person@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D6186CB9ED00DF7A74 /* single-person@2x.png */; };
+		37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37887D6918C51F7D00A20B76 /* Crashlytics.framework */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
@@ -382,6 +383,10 @@
 		37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
 		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
 		37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */; };
+		37F1E1BA18C617940032B22B /* navigation-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B618C617940032B22B /* navigation-recent.png */; };
+		37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B718C617940032B22B /* navigation-recent@2x.png */; };
+		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
+		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
 		37F79E1218A03A5E00EE8A5F /* MixpanelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F79E1118A03A5E00EE8A5F /* MixpanelProxy.m */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
@@ -701,6 +706,7 @@
 		378482D2186CB92C00DF7A74 /* single-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag@2x.png"; path = "Assets/single-tag@2x.png"; sourceTree = "<group>"; };
 		378482D5186CB9ED00DF7A74 /* single-person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person.png"; path = "Assets/single-person.png"; sourceTree = "<group>"; };
 		378482D6186CB9ED00DF7A74 /* single-person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person@2x.png"; path = "Assets/single-person@2x.png"; sourceTree = "<group>"; };
+		37887D6918C51F7D00A20B76 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -946,7 +952,10 @@
 		37ECBC5717739C24005AE740 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~ipad.png"; path = "Assets/Default~ipad.png"; sourceTree = "<group>"; };
 		37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPActivityViewController.h; sourceTree = "<group>"; };
 		37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPActivityViewController.m; sourceTree = "<group>"; };
-		37ED8D311878D8960010CDA8 /* libPython.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPython.a; path = "../libPython 1-4-14, 5.58 PM/usr/local/lib/libPython.a"; sourceTree = "<group>"; };
+		37F1E1B618C617940032B22B /* navigation-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent.png"; path = "Assets/navigation-recent.png"; sourceTree = "<group>"; };
+		37F1E1B718C617940032B22B /* navigation-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent@2x.png"; path = "Assets/navigation-recent@2x.png"; sourceTree = "<group>"; };
+		37F1E1B818C617940032B22B /* navigation-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search.png"; path = "Assets/navigation-search.png"; sourceTree = "<group>"; };
+		37F1E1B918C617940032B22B /* navigation-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search@2x.png"; path = "Assets/navigation-search@2x.png"; sourceTree = "<group>"; };
 		37F79E1018A03A5E00EE8A5F /* MixpanelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MixpanelProxy.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37F79E1118A03A5E00EE8A5F /* MixpanelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MixpanelProxy.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
@@ -1095,6 +1104,7 @@
 			files = (
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
+				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
@@ -1606,7 +1616,7 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				37ED8D311878D8960010CDA8 /* libPython.a */,
+				37887D6918C51F7D00A20B76 /* Crashlytics.framework */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				376E0A7F175AA9EC004CCDEE /* StoreKit.framework */,
@@ -1839,6 +1849,10 @@
 		E8F987CB183E764A00EF976D /* General UI */ = {
 			isa = PBXGroup;
 			children = (
+				37F1E1B618C617940032B22B /* navigation-recent.png */,
+				37F1E1B718C617940032B22B /* navigation-recent@2x.png */,
+				37F1E1B818C617940032B22B /* navigation-search.png */,
+				37F1E1B918C617940032B22B /* navigation-search@2x.png */,
 				E80EEF89185B6A1300979AA3 /* roundbutton-checkmark.png */,
 				E80EEF8A185B6A1300979AA3 /* roundbutton-checkmark@2x.png */,
 				E80EEF8B185B6A1300979AA3 /* roundbutton-private.png */,
@@ -1939,6 +1953,8 @@
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
 				A6F1C6EA2C074EC083104155 /* Copy Pods Resources */,
+				37887D6818C51F1A00A20B76 /* Crashlytics */,
+				7E1B7E5F10004C3598E0D04C /* Upload Bugsnag dSYM */,
 			);
 			buildRules = (
 			);
@@ -2138,6 +2154,7 @@
 				37EAB9D1173F01DA00B2684B /* loading_07@2x.png in Resources */,
 				37EAB9D2173F01DA00B2684B /* loading_08.png in Resources */,
 				37EAB9D3173F01DA00B2684B /* loading_08@2x.png in Resources */,
+				37F1E1BC18C617940032B22B /* navigation-search.png in Resources */,
 				37EAB9D4173F01DA00B2684B /* loading_09.png in Resources */,
 				37EAB9D5173F01DA00B2684B /* loading_09@2x.png in Resources */,
 				E8F987E2183E796900EF976D /* browse-japanese.png in Resources */,
@@ -2228,11 +2245,13 @@
 				37EABA0F173F01DA00B2684B /* loading_38@2x.png in Resources */,
 				37EABA10173F01DA00B2684B /* loading_39.png in Resources */,
 				37EABA11173F01DA00B2684B /* loading_39@2x.png in Resources */,
+				37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */,
 				37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */,
 				37EABA12173F01DA00B2684B /* loading_40.png in Resources */,
 				E8734237180DAC3400CF9E5F /* activity-pocket.png in Resources */,
 				E8F987E0183E796900EF976D /* browse-all.png in Resources */,
 				37EABA13173F01DA00B2684B /* loading_40@2x.png in Resources */,
+				37F1E1BA18C617940032B22B /* navigation-recent.png in Resources */,
 				37EABA14173F01DA00B2684B /* loading_41.png in Resources */,
 				37EABA15173F01DA00B2684B /* loading_41@2x.png in Resources */,
 				37EABA16173F01DA00B2684B /* loading_42.png in Resources */,
@@ -2262,6 +2281,7 @@
 				37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */,
 				37EABA29173F01DA00B2684B /* loading_51@2x.png in Resources */,
 				37EABA2A173F01DA00B2684B /* loading_52.png in Resources */,
+				37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */,
 				E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */,
 				37EABA2B173F01DA00B2684B /* loading_52@2x.png in Resources */,
 				37EABA2C173F01DA00B2684B /* loading_53.png in Resources */,
@@ -2408,6 +2428,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		37887D6818C51F1A00A20B76 /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Crashlytics;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a\n";
+		};
 		37B65FDA1672D0270041DA8C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -2434,6 +2468,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7E1B7E5F10004C3598E0D04C /* Upload Bugsnag dSYM */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Bugsnag dSYM";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/ruby;
+			shellScript = "
+
+";
 			showEnvVarsInLog = 0;
 		};
 		A6F1C6EA2C074EC083104155 /* Copy Pods Resources */ = {
@@ -2913,7 +2964,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Beta-Info.plist";
@@ -2993,7 +3047,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
@@ -3076,7 +3133,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Delicious;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/DeliciousAppStore.plist;
@@ -3157,7 +3217,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/DeliciousDebug.plist;
@@ -3297,7 +3360,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Dev-Info.plist";
@@ -3319,7 +3385,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = "Pushpin/Pushpin for Pinboard-Info.plist";

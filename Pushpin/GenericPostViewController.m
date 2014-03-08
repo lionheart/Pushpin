@@ -753,6 +753,7 @@ static NSInteger kToolbarHeight = 44;
         [self.tableView setEditing:NO animated:YES];
         
         self.navigationItem.leftBarButtonItem.enabled = YES;
+        self.navigationItem.backBarButtonItem.enabled = YES;
         [self.navigationItem setRightBarButtonItem:self.editButton animated:YES];
         
         if ([self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
@@ -777,8 +778,9 @@ static NSInteger kToolbarHeight = 44;
         [self.tableView setEditing:YES animated:YES];
         
         self.navigationItem.leftBarButtonItem.enabled = NO;
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
-        
+        self.navigationItem.backBarButtonItem.enabled = NO;
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+
         [self updateTitleViewText];
         
         [UIView animateWithDuration:0.25 animations:^{
