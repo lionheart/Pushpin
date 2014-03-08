@@ -401,13 +401,14 @@ static NSString *CellIdentifier = @"TagCell";
         if (self.longPressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
             CGPoint point = [self.longPressGestureRecognizer locationInView:self.tableView];
             self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:point];
+            CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
             NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
             self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:tagName
                                                               delegate:self
                                                      cancelButtonTitle:@"Cancel"
                                                 destructiveButtonTitle:@"Delete"
-                                                     otherButtonTitles:@"Rename", nil];
-            [self.tagActionSheet showInView:self.tableView];
+                                                     otherButtonTitles:nil];
+            [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
         }
     }
 }
