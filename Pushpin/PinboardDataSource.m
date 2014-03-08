@@ -666,65 +666,110 @@ static BOOL kPinboardSyncInProgress = NO;
         
         NSArray *oldPosts = [self.posts copy];
         NSMutableArray *newPosts = [NSMutableArray array];
+        NSMutableArray *newHashes = [NSMutableArray array];
+        NSMutableArray *oldHashesPlusMeta = [NSMutableArray array];
+        NSMutableDictionary *oldHashesToIndexPaths = [NSMutableDictionary dictionary];
+        NSMutableDictionary *newHashmetasToHashes = [NSMutableDictionary dictionary];
+
+        NSMutableDictionary *newHashesToIndexPaths = [NSMutableDictionary dictionary];
+        NSMutableDictionary *newHashesToMetas = [NSMutableDictionary dictionary];
+        
+        // Three things we want to do here:
+        //
+        // 1. Add new bookmarks.
+        // 2. Update existing bookmarks.
+        // 3. Delete removed bookmarks.
+        //
+        // Let's call "before update" A, and "after update" B.
+        // For 1, we want all bookmarks in B but not in A. So [B minusSet:A]
+        // For 3, we want all bookmarks in A but not in B. So [A minusSet:B]
+        // For 2, we do [B minusSet:A], but with hashes + meta instead of just hashes as keys.
+        NSMutableSet *A = [NSMutableSet set];
+        NSMutableSet *B = [NSMutableSet set];
+        NSMutableSet *APlusMeta = [NSMutableSet set];
+        NSMutableSet *BPlusMeta = [NSMutableSet set];
+        
+        NSMutableSet *insertedBookmarkSet = [NSMutableSet set];
+        NSMutableSet *insertedBookmarkPlusMetaSet = [NSMutableSet set];
+        NSMutableSet *deletedBookmarkSet = [NSMutableSet set];
+        NSMutableSet *updatedBookmarkSet = [NSMutableSet set];
         
         NSMutableArray *oldHashes = [NSMutableArray array];
         NSMutableDictionary *oldMetas = [NSMutableDictionary dictionary];
+
+        NSInteger row = 0;
         for (NSDictionary *post in self.posts) {
-            [oldHashes addObject:post[@"hash"]];
-            oldMetas[post[@"hash"]] = post[@"meta"];
+            NSString *hash = post[@"hash"];
+            NSString *meta = post[@"meta"];
+            NSString *hashmeta = [hash stringByAppendingString:meta];
+
+            oldMetas[hash] = meta;
+            
+            [oldHashes addObject:hash];
+            [oldHashesPlusMeta addObject:meta];
+            [A addObject:hash];
+            [APlusMeta addObject:hashmeta];
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+            oldHashesToIndexPaths[hash] = indexPath;
+            row++;
         }
-        
+
         NSMutableArray *indexPathsToInsert = [NSMutableArray array];
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        NSInteger index = 0;
+        row = 0;
         
         // The index of the list that `index` corresponds to
-        NSInteger skipPivot = 0;
         BOOL postFound = NO;
         
         while ([results next]) {
             postFound = NO;
             NSString *hash = [results stringForColumn:@"hash"];
             NSString *meta = [results stringForColumn:@"meta"];
-            NSDictionary *post;
-            
-            // Go from the last found value to the end of the list.
-            // If you find something, break and set the pivot to the current skip index.
-            
-            for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-                if ([oldHashes[i] isEqualToString:hash]) {
-                    // Delete all posts that were skipped
-                    for (NSInteger j=skipPivot; j<i; j++) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:j inSection:0]];
-                    }
-                    
-                    post = oldPosts[i];
-                    
-                    // Reload the post if its meta value has changed.
-                    if (![meta isEqualToString:oldMetas[hash]]) {
-                        post = [PinboardDataSource postFromResultSet:results];
-                        
-                        // Reloads affect the old index path
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
-                    }
-                    
-                    postFound = YES;
-                    skipPivot = i+1;
-                    break;
-                }
-            }
-            
-            // If the post wasn't found by looping through, it's a new one
-            if (!postFound) {
-                post = [PinboardDataSource postFromResultSet:results];
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-            }
-            
+            NSString *hashmeta = [hash stringByAppendingString:meta];
+            NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+
+            newHashesToMetas[hash] = meta;
+            [newHashes addObject:hash];
+            [B addObject:hash];
+            [BPlusMeta addObject:[hash stringByAppendingString:meta]];
             [newPosts addObject:post];
-            index++;
+
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+            newHashmetasToHashes[hashmeta] = hash;
+            newHashesToIndexPaths[hash] = indexPath;
+            row++;
+        }
+
+        [insertedBookmarkSet setSet:B];
+        [insertedBookmarkSet minusSet:A];
+        
+        for (NSString *hash in insertedBookmarkSet) {
+            NSString *hashmeta = [hash stringByAppendingString:newHashesToMetas[hash]];
+            [insertedBookmarkPlusMetaSet addObject:hashmeta];
+        }
+
+        [deletedBookmarkSet setSet:A];
+        [deletedBookmarkSet minusSet:B];
+        
+        [updatedBookmarkSet setSet:BPlusMeta];
+        [updatedBookmarkSet minusSet:APlusMeta];
+        [updatedBookmarkSet minusSet:insertedBookmarkPlusMetaSet];
+
+        for (NSString *hash in deletedBookmarkSet) {
+            [indexPathsToDelete addObject:oldHashesToIndexPaths[hash]];
         }
         
+        for (NSString *hashmeta in updatedBookmarkSet) {
+            NSString *hash = newHashmetasToHashes[hashmeta];
+            [indexPathsToReload addObject:oldHashesToIndexPaths[hash]];
+        }
+        
+        for (NSString *hash in insertedBookmarkSet) {
+            [indexPathsToInsert addObject:newHashesToIndexPaths[hash]];
+        }
+
         [self.tagsWithFrequency removeAllObjects];
         
         FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
@@ -736,18 +781,26 @@ static BOOL kPinboardSyncInProgress = NO;
         
         [db close];
         
-        for (NSInteger i=skipPivot; i<oldHashes.count; i++) {
-            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-        }
-        
         NSMutableArray *newMetadata = [NSMutableArray array];
         NSMutableArray *newCompressedMetadata = [NSMutableArray array];
 
         for (NSDictionary *post in newPosts) {
-            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency];
+            NSString *hash = post[@"hash"];
+            NSString *meta = post[@"meta"];
+            NSString *hashmeta = [hash stringByAppendingString:meta];
+
+            BOOL useCache;
+            if ([updatedBookmarkSet containsObject:hashmeta] || [insertedBookmarkSet containsObject:hash]) {
+                useCache = NO;
+            }
+            else {
+                useCache = YES;
+            }
+
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency cache:useCache];
             [newMetadata addObject:metadata];
 
-            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency];
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency cache:useCache];
             [newCompressedMetadata addObject:compressedMetadata];
         }
 
@@ -1073,6 +1126,11 @@ static BOOL kPinboardSyncInProgress = NO;
     if (!hash) {
         hash = @"";
     }
+    
+    NSString *tags = [resultSet stringForColumn:@"tags"];
+    if (!tags) {
+        tags = @"";
+    }
 
     return @{
         @"title": title,
@@ -1080,7 +1138,7 @@ static BOOL kPinboardSyncInProgress = NO;
         @"unread": @([resultSet boolForColumn:@"unread"]),
         @"url": [resultSet stringForColumn:@"url"],
         @"private": @([resultSet boolForColumn:@"private"]),
-        @"tags": [resultSet stringForColumn:@"tags"],
+        @"tags": tags,
         @"created_at": [resultSet dateForColumn:@"created_at"],
         @"starred": @([resultSet boolForColumn:@"starred"]),
         @"hash": hash,

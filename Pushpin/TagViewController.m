@@ -358,20 +358,20 @@ static NSString *CellIdentifier = @"TagCell";
                                 
                                 [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
                                 
-                                FMResultSet *result = [db executeQuery:@"SELECT hash, tags FROM bookmark WHERE hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name=?)" withArgumentsInArray:@[tag]];
+                                NSMutableArray *hashesToUpdate = [NSMutableArray array];
+                                NSMutableArray *parameterPlaceholders = [NSMutableArray array];
+                                FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
                                 while ([result next]) {
                                     // Convert the tags to a list, remove the removed tag, and then update the bookmark.
                                     NSString *hash = [result stringForColumnIndex:0];
-                                    NSString *tags = [result stringForColumnIndex:1];
-                                    
-                                    NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
-                                    [tagList removeObject:tag];
-                                    NSString *updatedTags = [tagList componentsJoinedByString:@" "];
-
-                                    [db executeUpdate:@"UPDATE bookmark SET tags=? WHERE hash=?" withArgumentsInArray:@[updatedTags, hash]];
+                                    [hashesToUpdate addObject:hash];
+                                    [parameterPlaceholders addObject:@"?"];
                                 }
 
                                 [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
+                                
+                                NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
+                                [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
                                 [db close];
                             });
                         }];
