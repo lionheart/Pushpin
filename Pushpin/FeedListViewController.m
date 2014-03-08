@@ -65,6 +65,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section;
 - (PPPinboardPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)communitySectionIsHidden;
+- (BOOL)feedSectionIsHidden;
 - (void)updateSavedFeeds:(FMDatabase *)db;
 - (PPPinboardCommunityFeedType)communityFeedForIndexPath:(NSIndexPath *)indexPath;
 #endif
@@ -260,7 +261,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
 #ifdef PINBOARD
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
-        return PPProviderPinboardSections - 1;
+        return PPProviderPinboardSections;
     }
     else {
         return PPProviderPinboardSections - [self numberOfHiddenSections];
@@ -303,7 +304,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
                 
             case PPPinboardSectionSavedFeeds:
-                return self.feeds.count + 1;
+                return self.feeds.count;
         }
     }
 #endif
@@ -336,8 +337,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 #ifdef PINBOARD
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (!tableView.allowsMultipleSelectionDuringEditing) {
-        PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+    PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+
+    if (tableView.allowsMultipleSelectionDuringEditing) {
+        if (sectionType == PPPinboardSectionSavedFeeds) {
+            return NO;
+        }
+    }
+    else {
         switch (sectionType) {
             case PPPinboardSectionCommunity:
                 return NO;
@@ -349,6 +356,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 return YES;
         }
     }
+    
     return YES;
 }
 
@@ -364,7 +372,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [tableView beginUpdates];
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
+            if (self.feeds.count == 0) {
+                [tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                         withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else {
+                [tableView deleteRowsAtIndexPaths:@[indexPath]
+                                 withRowAnimation:UITableViewRowAnimationFade];
+            }
+
             [tableView endUpdates];
         });
     }];
@@ -382,10 +399,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
     cell.clipsToBounds = YES;
-
-    NSString *badgeCount;
     
 #ifdef DELICIOUS
+    NSString *badgeCount;
     switch ((PPDeliciousSectionType)indexPath.section) {
         case PPDeliciousSectionPersonal: {
             PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
@@ -512,10 +528,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.textLabel.font = [PPTheme textLabelFont];
 
-            if (indexPath.row == self.feeds.count) {
-                cell.textLabel.text = @"Add Feed";
-                cell.imageView.image = nil;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            if (tableView.editing) {
+                if (indexPath.row == 0) {
+                    cell.textLabel.text = @"Add Feed";
+                    cell.imageView.image = nil;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }
+                else {
+                    cell.textLabel.text = self.feeds[indexPath.row - 1][@"title"];
+                    cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
+                    cell.accessoryType = UITableViewCellAccessoryNone;
+                }
             }
             else {
                 cell.textLabel.text = self.feeds[indexPath.row][@"title"];
@@ -592,7 +615,42 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     UIViewController *viewControllerToPush;
 
-    if (!tableView.allowsMultipleSelectionDuringEditing) {
+    if (tableView.allowsMultipleSelectionDuringEditing) {
+        PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+        switch (sectionType) {
+            case PPPinboardSectionSavedFeeds: {
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+                PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+                addSavedFeedViewController.SuccessCallback = ^{
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                        [db open];
+                        [self updateSavedFeeds:db];
+                        [db close];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.tableView beginUpdates];
+                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                                          withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
+                        });
+                    });
+                };
+
+                PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+                if ([UIApplication isIPad]) {
+                    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                }
+                [self presentViewController:navigationController animated:YES completion:nil];
+                break;
+            }
+                
+            default:
+                break;
+        }
+    }
+    else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 #ifdef DELICIOUS
@@ -755,35 +813,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
                 }
             }
-
+                
             case PPPinboardSectionSavedFeeds: {
-                if (indexPath.row == self.feeds.count) {
-                    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
-                    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
-                    if ([UIApplication isIPad]) {
-                        addSavedFeedViewController.SuccessCallback = ^{
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
-                                [db open];
-                                [self updateSavedFeeds:db];
-                                [db close];
-
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [self.tableView beginUpdates];
-                                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                                                  withRowAnimation:UITableViewRowAnimationFade];
-                                    [self.tableView endUpdates];
-                                });
-                            });
-                        };
-                        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-                    }
-                    [self presentViewController:navigationController animated:YES completion:nil];
-                    return;
-                }
-                else {
-                    viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
-                }
+                viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
                 break;
             }
         }
@@ -1015,8 +1047,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
         }
         
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                      withRowAnimation:UITableViewRowAnimationFade];
+        if ([self feedSectionIsHidden]) {
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
 #endif
 
         [CATransaction setCompletionBlock:^{
@@ -1059,9 +1097,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         if ([self communitySectionIsHidden]) {
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
         }
-
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                      withRowAnimation:UITableViewRowAnimationFade];
+        
+        if ([self feedSectionIsHidden]) {
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
 #endif
 
         [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
@@ -1153,6 +1197,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     if ([self communitySectionIsHidden]) {
         numSectionsToHide++;
     }
+
+    if ([self feedSectionIsHidden]) {
+        numSectionsToHide++;
+    }
 #endif
     
     return numSectionsToHide;
@@ -1217,6 +1265,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSString *)communityFeedNameForIndex:(NSInteger)index {
     return PPCommunityFeeds()[[[AppDelegate sharedDelegate].communityFeedOrder[index] integerValue]];
+}
+
+- (BOOL)feedSectionIsHidden {
+    return self.feeds.count == 0;
 }
 
 - (BOOL)communitySectionIsHidden {
