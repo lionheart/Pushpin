@@ -2,22 +2,30 @@ Pushpin is a beautiful, blazing fast, and feature packed Pinboard client for you
 
 # Testimonials #
 
-"I wished hard enough and it came true: the clean, clear, and stable Pinboard iOS app of my dreams was written and released by someone much smarter than me and you should give them your money" - Jim Jazwiecki (@jimbecile)
+"If you’re a fan of Pinboard (and you should be), do yourself a favor and buy this app because it’s the best." - Chris Gonzales, on The Sweet Setup.
 
-"[T]he only option out there for a full-featured Pinboard experience" - Shawn Blanc (@shawnblanc)
+"I've said it before and I'll gladly say it again. If you buy only one Pinboard client for iOS, then your best bet would be Pushpin." - Pedro Lobo
 
-"This is exactly what I want in a Pinboard app" - Alex Payne (@al3x)
+"I wished hard enough and it came true: the clean, clear, and stable Pinboard iOS app of my dreams was written and released by someone much smarter than me and you should give them your money" - Jim Jazwiecki
+
+"[T]he only option out there for a full-featured Pinboard experience" - Shawn Blanc
+
+"This is exactly what I want in a Pinboard app" - Alex Payne
 
 # Features #
 
-* Search bookmarks at ridiculous speeds across titles, descriptions, URLs, and tags.
-* View bookmarks by unread, starred, private, untagged, public, or specific tags. You can even filter by multiple tags!
-* Share links on Twitter, Facebook, or Messages.
+* Search bookmark at ridiculous speeds across titles, descriptions, URLs, and tags.
+* Easily view bookmarks that are Unread, Starred, Private, Untagged, or Public.
+* Browse Recent, Network, Popular, Wikipedia, Fandom, and Japanese feeds.
+* Hide, show, and reorder both personal and community feeds to suit your tastes.
+* Share bookmarks over Twitter, Facebook, App.net, Email, iMessage, and more.
 * Send your links to Pocket, Instapaper, or Readability.
 * View tag suggestions and autocompletions when adding or updating bookmarks.
-* Browse Network, Popular, Wikipedia, Fandom, and Japanese feeds.
-* View and save feeds for specific users, tags, or any combination of the two.
-* Browse tags along with the number of times they've each been used.
-* Add bookmarks by switching to Pushpin with a URL on your clipboard.
-* Comes with a full-featured in-app browser with support for popular mobilizers.
-* Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags. Visit http://bit.ly/PushpinURL for more information on Pushpin's URL scheme.
+* View and save feeds for specific users and tags, or any combination of the two.
+* Browse and edit your tags, and view the number of times they've been used.
+* Simply add a bookmark by switching to Pushpin with a URL on your clipboard.
+* Full-featured in-app browser with support for popular mobilizers for easy mobile reading.
+* Keyboard shortcut support.
+* Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags. Visit bit.ly/PushpinURL for more information on Pushpin's URL scheme.
+
+To read more, visit lionheartsw.com/software/pushpin
