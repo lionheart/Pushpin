@@ -7,7 +7,36 @@
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>Add Keyboard shortcuts!</string>
+				<string>Add Keyboard shortcuts. See below for details:
+
+General
+
+⌘ + n - add new bookmark
+
+Bookmark List
+
+/ - set focus to search bar
+j - move down
+k - move up
+⌘ + o - open selected bookmark
+⌘ + e - edit selected bookmark
+⌘ + option + c - toggle compressed / uncompressed bookmarks
+
+Add / Edit Bookmark Screen
+
+⌘ + 1 - set focus to title field
+⌘ + 2 - set focus to description
+⌘ + 3 - set focus to tag field
+⌘ + 4 - toggle private / public
+⌘ + 5 - toggle read / unread
+⌘ + s - save
+Esc - cancel
+
+Tag / Description Editing Screens
+
+Esc - move back to bookmark edit screen
+
+</string>
 			</array>
 			<array>
 				<string>NEW</string>
@@ -48,6 +77,14 @@
 			<array>
 				<string>FIX</string>
 				<string>Fix an issue where clipboard prompt settings had no effect on the popup for existing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue on iPad where swiping right to edit wouldn’t work until swiping left first.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a bug where if you have under 200 bookmarks, the number of bookmarks that would sync would remain under 200.</string>
 			</array>
 			<array>
 				<string>FIX</string>
