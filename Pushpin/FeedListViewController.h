@@ -13,6 +13,12 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 
+typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
+    FeedListToolbarOrientationRight,
+    FeedListToolbarOrientationLeft,
+    FeedListToolbarOrientationCenter,
+};
+
 @interface FeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, PPTitleButtonDelegate> {
     NSString *postViewTitle;
 }

@@ -46,7 +46,7 @@
     self.textView = [[UITextView alloc] init];
     self.textView.textContainerInset = UIEdgeInsetsMake(5, 3, 5, 3);
     self.textView.editable = NO;
-    self.textView.selectable = NO;
+    self.textView.selectable = YES;
     self.textView.text = self.license;
     self.textView.font = [PPTheme descriptionFont];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
