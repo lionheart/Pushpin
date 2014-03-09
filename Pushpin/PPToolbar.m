@@ -11,19 +11,57 @@
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
+static CGFloat const kDefaultColorLayerOpacity = 0.5f;
+
+@interface PPToolbar ()
+
+@property (nonatomic, strong) CALayer *extraColorLayer;
+
+@end
+
 @implementation PPToolbar
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (void)setBarTintColor:(UIColor *)barTintColor
+{
+    [super setBarTintColor:barTintColor];
+	if (self.extraColorLayer == nil) {
+		// this all only applies to 7.0 - 7.0.2
+		if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0.3" options:NSNumericSearch] == NSOrderedAscending) {
+			self.extraColorLayer = [CALayer layer];
+			self.extraColorLayer.opacity = self.extraColorLayerOpacity;
+			[self.layer addSublayer:self.extraColorLayer];
+		}
+	}
+	self.extraColorLayer.backgroundColor = barTintColor.CGColor;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+	if (self.extraColorLayer != nil) {
+		[self.extraColorLayer removeFromSuperlayer];
+		self.extraColorLayer.opacity = self.extraColorLayerOpacity;
+		[self.layer insertSublayer:self.extraColorLayer atIndex:1];
+		CGFloat spaceAboveBar = self.frame.origin.y;
+		self.extraColorLayer.frame = CGRectMake(0, 0 - spaceAboveBar, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) + spaceAboveBar);
+	}
+}
+
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
     if (self) {
-        CALayer *topBorder = [CALayer layer];
-        topBorder.frame = CGRectMake(0, -0.5, 1500, 1);
-        topBorder.borderWidth = 1;
-        topBorder.borderColor = [UIColor colorWithRed:0.161 green:0.176 blue:0.318 alpha:1].CGColor;
-        [self.layer insertSublayer:topBorder atIndex:self.layer.sublayers.count];
-        self.clipsToBounds = YES;
+        _extraColorLayerOpacity = [[decoder decodeObjectForKey:@"extraColorLayerOpacity"] floatValue];
     }
     return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+	[super encodeWithCoder:encoder];
+	[encoder encodeObject:@(self.extraColorLayerOpacity) forKey:@"extraColorLayerOpacity"];
 }
 
 @end
