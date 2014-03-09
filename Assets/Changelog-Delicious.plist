@@ -3,11 +3,11 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>1.0</string>
+		<string>3.1</string>
 		<array>
 			<array>
 				<string>NEW</string>
-				<string>First release!</string>
+				<string>Hello, world.</string>
 			</array>
 		</array>
 	</array>
