@@ -13,7 +13,7 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 
-@interface FeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface FeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, PPTitleButtonDelegate> {
     NSString *postViewTitle;
 }
 

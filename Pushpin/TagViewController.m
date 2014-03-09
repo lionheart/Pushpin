@@ -539,15 +539,22 @@ static NSString *CellIdentifier = @"TagCell";
             // We have the semaroid
             dispatch_semaphore_t sem = dispatch_semaphore_create(0);
             dispatch_async(dispatch_get_main_queue(), ^{
+                BOOL firstLaunch = self.tagCounts.count == 0;
                 self.sectionTitles = updatedSectionTitles;
                 self.tagCounts = updatedTagCounts;
-                [self.tableView beginUpdates];
-                [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+
+                if (firstLaunch) {
+                    [self.tableView reloadData];
+                }
+                else {
+                    [self.tableView beginUpdates];
+                    [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                }
                 dispatch_semaphore_signal(sem);
             });
             

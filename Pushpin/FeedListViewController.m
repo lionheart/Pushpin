@@ -37,7 +37,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @interface FeedListViewController ()
 
 @property (nonatomic, strong) NSMutableArray *feeds;
-@property (nonatomic, strong) UIToolbar *bottomBar;
+@property (nonatomic, strong) PPToolbar *bottomBar;
 @property (nonatomic, strong) NSLayoutConstraint *bottomBarBottomConstraint;
 @property (nonatomic, strong) NSTimer *feedCountTimer;
 
@@ -94,8 +94,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Browse", nil) imageName:nil];
+    titleView.delegate = self;
 
     self.title = @"Browse";
+    self.navigationItem.titleView = titleView;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
@@ -127,16 +129,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
     settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Settings", @"Cancel", nil];
 
-    UIImage *tagImage = [[UIImage imageNamed:@"navigation-tags"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
+    editBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Edit", @"Done", nil];
+
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tagButton setImage:tagImage forState:UIControlStateNormal];
-    [tagButton setImage:[tagImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
-    tagBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Edit", @"Done", nil];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
 
-    self.navigationItem.rightBarButtonItem = tagBarButtonItem;
+    self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -155,9 +156,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
 
 #ifdef PINBOARD
+    /*
     UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
                                                                                          target:self
                                                                                          action:@selector(searchBarButtonItemTouchUpInside:)];
+     */
+    
+    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+                                                                            style:UIBarButtonItemStyleDone
+                                                                           target:self
+                                                                           action:@selector(searchBarButtonItemTouchUpInside:)];
 #endif
     
 #ifdef DELICIOUS
@@ -176,9 +184,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     UIBarButtonItem *tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
     [tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
-    self.bottomBar = [[UIToolbar alloc] init];
-    self.bottomBar.barTintColor = [UIColor whiteColor];
+    self.bottomBar = [[PPToolbar alloc] init];
+    [self.bottomBar setBarTintColor:[UIColor whiteColor]];
     self.bottomBar.tintColor = [UIColor darkGrayColor];
+    self.bottomBar.delegate = self;
+    self.bottomBar.extraColorLayerOpacity = 0.1;
+
 #ifdef PINBOARD
     self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
 #endif
@@ -194,18 +205,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                             @"bar": self.bottomBar };
     
     self.bottomBarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.bottomBar
-                                                                  attribute:NSLayoutAttributeBottom
+                                                                  attribute:NSLayoutAttributeTop
                                                                   relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.view
-                                                                  attribute:NSLayoutAttributeBottom
+                                                                     toItem:self.topLayoutGuide
+                                                                  attribute:NSLayoutAttributeTop
                                                                  multiplier:1
                                                                    constant:0];
     
     [self.view addConstraint:self.bottomBarBottomConstraint];
-    [self.view lhs_addConstraints:@"V:[bar(44)]" views:views];
     [self.bottomBar lhs_fillWidthOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[top][table]|" views:views];
+    [self.view lhs_addConstraints:@"V:[bar(44)][table]|" views:views];
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -1113,7 +1123,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.bottomBarBottomConstraint.constant = 44;
+                             self.bottomBarBottomConstraint.constant = -44;
                              [self.view layoutIfNeeded];
                          }];
 
@@ -1473,13 +1483,37 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
             
 #ifdef PINBOARD
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                if (![self feedSectionIsHidden]) {
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                                  withRowAnimation:UITableViewRowAnimationFade];
+                }
 #endif
                 [self.tableView endUpdates];
             }
         });
     });
+}
+
+- (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar {
+    return UIBarPositionTopAttached;
+}
+
+#pragma mark - PPTitleButtonDelegate
+
+- (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton {
+    CGFloat updatedConstant;
+    if (self.bottomBarBottomConstraint.constant == 0) {
+        updatedConstant = -44;
+    }
+    else {
+        updatedConstant = 0;
+    }
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.bottomBarBottomConstraint.constant = updatedConstant;
+                         [self.view layoutIfNeeded];
+                     }];
 }
 
 @end

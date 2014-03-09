@@ -741,6 +741,7 @@
 		37AB960618C437090008CDD5 /* browse-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent@2x.png"; path = "Assets/browse-recent@2x.png"; sourceTree = "<group>"; };
 		37AD159418A13365005813CC /* About-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "About-Delicious.plist"; path = "Assets/About-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37AD159618A1352B005813CC /* Changelog-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Changelog-Delicious.plist"; path = "Assets/Changelog-Delicious.plist"; sourceTree = SOURCE_ROOT; };
+		37ADE0FA18CBE011008F80BC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
@@ -1994,6 +1995,7 @@
 				"zh-Hant",
 				pt,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 37FEEB8315745488003F2B77;
 			productRefGroup = 37FEEB8F15745488003F2B77 /* Products */;
@@ -2621,6 +2623,7 @@
 				3740A23D16863CF000F95D82 /* fr */,
 				3740A23E16863CF000F95D82 /* it */,
 				3740A23F16863CF000F95D82 /* pt */,
+				37ADE0FA18CBE011008F80BC /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
