@@ -772,9 +772,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         bookmarkAdded = YES;
                     }
-
-                    // We reset the associated tags regardless of whether the bookmark has been added or updated.
-                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                     
 #warning Potential problem with using existingTags instead of the post itself? Uncertain.
                     for (NSString *tagName in self.existingTags) {
