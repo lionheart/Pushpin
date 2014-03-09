@@ -119,7 +119,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.motionManager = [[CMMotionManager alloc] init];
-    self.motionManager.deviceMotionUpdateInterval = 18.0 / 60.0;
+    self.motionManager.deviceMotionUpdateInterval = 6.0 / 60.0;
 
     self.bookmarkCounts = [NSMutableArray array];
 
@@ -342,7 +342,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             else {
                 FeedListToolbarOrientationType updatedFeedListToolbarOrientation;
 
-                if (ABS(x) < 0.1) {
+                if (ABS(x) < 0.15) {
                     updatedFeedListToolbarOrientation = FeedListToolbarOrientationCenter;
                 }
                 else {
@@ -355,7 +355,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         updatedFeedListToolbarOrientation = FeedListToolbarOrientationRight;
                     }
                 }
-                
+
                 if (updatedFeedListToolbarOrientation != self.toolbarOrientation) {
                     static BOOL animationInProgress;
                     static dispatch_once_t onceToken;
@@ -813,13 +813,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                         [db open];
                         [self updateSavedFeeds:db];
                         [db close];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.tableView beginUpdates];
-                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView endUpdates];
-                        });
                     });
                 };
 
@@ -1570,17 +1563,71 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
     [db commit];
     
+    NSMutableArray *previousFeedTitles = [NSMutableArray array];
+    NSMutableArray *updatedFeedTitles = [NSMutableArray array];
+    NSMutableArray *updatedFeeds = [NSMutableArray array];
+    
+    for (NSDictionary *feed in self.feeds) {
+        [previousFeedTitles addObject:feed[@"title"]];
+    }
+
     FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-    [self.feeds removeAllObjects];
     
     NSInteger index = 0;
     while ([result next]) {
         NSString *componentString = [result stringForColumnIndex:0];
         NSArray *components = [componentString componentsSeparatedByString:@" "];
+        NSString *title = [components componentsJoinedByString:@"+"];
         
         [iCloudFeeds addObject:componentString];
-        [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+        [updatedFeedTitles addObject:title];
+        [updatedFeeds addObject:@{@"components": components, @"title": title}];
         index++;
+    }
+    
+    NSSet *A = [NSSet setWithArray:previousFeedTitles];
+    NSSet *B = [NSSet setWithArray:updatedFeedTitles];
+    
+    NSMutableSet *deletedFeedTitles = [NSMutableSet setWithSet:A];
+    [deletedFeedTitles minusSet:B];
+    
+    NSInteger offset;
+    NSInteger section;
+    if (self.tableView.editing) {
+        // If the table is in editing mode, the first row is "Add feed", so we shift all of the other rows down 1.
+        offset = 1;
+        
+        section = PPPinboardSectionSavedFeeds;
+    }
+    else {
+        offset = 0;
+        section = PPPinboardSectionSavedFeeds;
+        
+        if ([self personalSectionIsHidden]) {
+            section--;
+        }
+        
+        if ([self communitySectionIsHidden]) {
+            section--;
+        }
+    }
+
+    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+    NSInteger row = 0;
+    for (NSString *feedTitle in deletedFeedTitles) {
+        row = [previousFeedTitles indexOfObject:feedTitle];
+        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row + offset
+                                                         inSection:section]];
+    }
+    
+    NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+    NSMutableSet *insertedFeedTitles = [NSMutableSet setWithSet:B];
+    [insertedFeedTitles minusSet:A];
+
+    for (NSString *feedTitle in insertedFeedTitles) {
+        row = [updatedFeedTitles indexOfObject:feedTitle];
+        [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row + offset
+                                                         inSection:section]];
     }
     
     // Remove duplicates from the array
@@ -1588,6 +1635,38 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     // Sync the new saved feed list with iCloud
     [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.feeds = [updatedFeeds mutableCopy];
+        [self.tableView beginUpdates];
+        if (self.tableView.editing) {
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                  withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                  withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            if (previousFeedTitles.count == 0) {
+                if (updatedFeedTitles.count > 0) {
+                    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
+                                  withRowAnimation:UITableViewRowAnimationFade];
+                }
+            }
+            else {
+                if (updatedFeedTitles.count == 0) {
+                    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
+                                  withRowAnimation:UITableViewRowAnimationFade];
+                }
+                else {
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                          withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                          withRowAnimation:UITableViewRowAnimationFade];
+                }
+            }
+        }
+        [self.tableView endUpdates];
+    });
 }
 
 - (void)updateFeedCounts {
