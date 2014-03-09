@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import CoreMotion;
 
 #import "FeedListViewController.h"
 #import "AppDelegate.h"
@@ -37,9 +38,23 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @interface FeedListViewController ()
 
 @property (nonatomic, strong) NSMutableArray *feeds;
-@property (nonatomic, strong) PPToolbar *bottomBar;
-@property (nonatomic, strong) NSLayoutConstraint *bottomBarBottomConstraint;
+@property (nonatomic, strong) PPToolbar *toolbar;
+@property (nonatomic, strong) NSLayoutConstraint *toolbarBottomConstraint;
+@property (nonatomic, strong) NSArray *rightOrientationConstraints;
+@property (nonatomic, strong) NSArray *leftOrientationConstraints;
+@property (nonatomic, strong) NSArray *centerOrientationConstraints;
 @property (nonatomic, strong) NSTimer *feedCountTimer;
+@property (nonatomic, strong) CMMotionManager *motionManager;
+@property (nonatomic) FeedListToolbarOrientationType toolbarOrientation;
+
+@property (nonatomic, strong) UIButton *searchButton;
+@property (nonatomic, strong) UIButton *noteButton;
+@property (nonatomic, strong) UIButton *tagsButton;
+
+@property (nonatomic, strong) UIBarButtonItem *searchBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *noteBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *tagsBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *flexibleSpace;
 
 - (void)openNotes;
 - (void)openSettings;
@@ -102,6 +117,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.motionManager = [[CMMotionManager alloc] init];
+    self.motionManager.deviceMotionUpdateInterval = 18.0 / 60.0;
 
     self.bookmarkCounts = [NSMutableArray array];
 
@@ -147,10 +165,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.opaque = YES;
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 44, 0);
+//    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 44, 0);
     [self.view addSubview:self.tableView];
     
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.toolbar = [[PPToolbar alloc] init];
+    [self.toolbar setBarTintColor:[UIColor whiteColor]];
+    self.toolbar.tintColor = [UIColor darkGrayColor];
+    self.toolbar.delegate = self;
+    self.toolbar.extraColorLayerOpacity = 0.1;
+    
+    self.flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
     NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
@@ -162,60 +186,137 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                                                          action:@selector(searchBarButtonItemTouchUpInside:)];
      */
     
-    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
                                                                             style:UIBarButtonItemStyleDone
                                                                            target:self
                                                                            action:@selector(searchBarButtonItemTouchUpInside:)];
 #endif
     
 #ifdef DELICIOUS
-    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
                                                                             style:UIBarButtonItemStyleDone
                                                                            target:self
                                                                            action:@selector(searchBarButtonItemTouchUpInside:)];
 #endif
 
-    searchBarButtonItem.tintColor = [UIColor darkGrayColor];
-    [searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+    self.searchBarButtonItem.tintColor = [UIColor darkGrayColor];
+    [self.searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
-    UIBarButtonItem *noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
-    [noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
+    [self.noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
-    UIBarButtonItem *tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
-    [tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+    self.tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
+    [self.tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
+    
+    self.tagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.tagsButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Tags" attributes:barButtonTitleTextAttributes]
+                               forState:UIControlStateNormal];
+    [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+    [self.toolbar addSubview:self.tagsButton];
 
-    self.bottomBar = [[PPToolbar alloc] init];
-    [self.bottomBar setBarTintColor:[UIColor whiteColor]];
-    self.bottomBar.tintColor = [UIColor darkGrayColor];
-    self.bottomBar.delegate = self;
-    self.bottomBar.extraColorLayerOpacity = 0.1;
+    self.searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.searchButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.searchButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Search" attributes:barButtonTitleTextAttributes]
+                                 forState:UIControlStateNormal];
+    [self.searchButton addTarget:self action:@selector(searchBarButtonItemTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+    [self.toolbar addSubview:self.searchButton];
+
+    self.noteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.noteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.noteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Notes" attributes:barButtonTitleTextAttributes] forState:UIControlStateNormal];
+    [self.noteButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
+    [self.toolbar addSubview:self.noteButton];
+
 
 #ifdef PINBOARD
-    self.bottomBar.items = @[noteBarButtonItem, flexibleSpace, searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
+//    self.toolbar.items = @[self.noteBarButtonItem, self.flexibleSpace, self.searchBarButtonItem, self.flexibleSpace, self.tagsBarButtonItem];
 #endif
     
 #ifdef DELICIOUS
-    self.bottomBar.items = @[searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
+    self.toolbar.items = @[searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
 #endif
-    self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.bottomBar];
+    self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.toolbar];
 
     NSDictionary *views = @{@"table": self.tableView,
                             @"top": self.topLayoutGuide,
-                            @"bar": self.bottomBar };
+                            @"bar": self.toolbar,
+                            @"search": self.searchButton,
+                            @"tags": self.tagsButton,
+                            @"notes": self.noteButton };
+
+    NSMutableArray *constraints = [[NSLayoutConstraint constraintsWithVisualFormat:@"H:[notes]-(>=12)-[search]-(>=12)-[tags]"
+                                                                           options:0
+                                                                           metrics:nil
+                                                                             views:views] mutableCopy];
     
-    self.bottomBarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.bottomBar
-                                                                  attribute:NSLayoutAttributeTop
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.noteButton
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.toolbar
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1
+                                                         constant:0]];
+
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.tagsButton
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.toolbar
+                                                        attribute:NSLayoutAttributeCenterY
+                                                       multiplier:1
+                                                         constant:0]];
+
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.searchButton
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.toolbar
+                                                        attribute:NSLayoutAttributeCenterY
+                                                       multiplier:1
+                                                         constant:0]];
+
+    NSLayoutConstraint *notesLeftConstraint = [NSLayoutConstraint constraintWithItem:self.noteButton
+                                                                           attribute:NSLayoutAttributeLeft
+                                                                           relatedBy:NSLayoutRelationEqual
+                                                                              toItem:self.toolbar
+                                                                           attribute:NSLayoutAttributeLeft
+                                                                          multiplier:1
+                                                                            constant:12];
+    
+    NSLayoutConstraint *tagsRightConstraint = [NSLayoutConstraint constraintWithItem:self.tagsButton
+                                                                           attribute:NSLayoutAttributeRight
+                                                                           relatedBy:NSLayoutRelationEqual
+                                                                              toItem:self.toolbar
+                                                                           attribute:NSLayoutAttributeRight
+                                                                          multiplier:1
+                                                                            constant:-12];
+
+    NSLayoutConstraint *searchCenterConstraint = [NSLayoutConstraint constraintWithItem:self.searchButton
+                                                                              attribute:NSLayoutAttributeCenterX
+                                                                              relatedBy:NSLayoutRelationEqual
+                                                                                 toItem:self.toolbar
+                                                                              attribute:NSLayoutAttributeCenterX
+                                                                             multiplier:1
+                                                                               constant:0];
+
+    self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
+    self.rightOrientationConstraints = [constraints arrayByAddingObject:tagsRightConstraint];
+    self.centerOrientationConstraints = [constraints arrayByAddingObjectsFromArray:@[notesLeftConstraint, tagsRightConstraint, searchCenterConstraint]];
+    
+    [self.toolbar addConstraints:self.centerOrientationConstraints];
+    
+    self.toolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.toolbar
+                                                                  attribute:NSLayoutAttributeBottom
                                                                   relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.topLayoutGuide
-                                                                  attribute:NSLayoutAttributeTop
+                                                                     toItem:self.bottomLayoutGuide
+                                                                  attribute:NSLayoutAttributeBottom
                                                                  multiplier:1
                                                                    constant:0];
     
-    [self.view addConstraint:self.bottomBarBottomConstraint];
-    [self.bottomBar lhs_fillWidthOfSuperview];
+    [self.view addConstraint:self.toolbarBottomConstraint];
+    [self.toolbar lhs_fillWidthOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[bar(44)][table]|" views:views];
+    [self.view lhs_addConstraints:@"V:[top][table][bar(44)]" views:views];
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
@@ -224,6 +325,79 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // UIDevice *device = [UIDevice currentDevice];
+
+    [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical
+                                                            toQueue:[NSOperationQueue mainQueue]
+                                                        withHandler:^(CMDeviceMotion *motion, NSError *error) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            CGFloat x = motion.gravity.x;
+            CGFloat __unused y = motion.gravity.y;
+            CGFloat __unused z = motion.gravity.z;
+            
+            if (1 - ABS(z) < 0.00001) {
+                // For some reason, the *first* reading is wrong and has a negative z-value really close to -1.
+            }
+            else {
+                FeedListToolbarOrientationType updatedFeedListToolbarOrientation;
+
+                if (ABS(x) < 0.1) {
+                    updatedFeedListToolbarOrientation = FeedListToolbarOrientationCenter;
+                }
+                else {
+                    if (x > 0) {
+                        // Move items to the left.
+                        updatedFeedListToolbarOrientation = FeedListToolbarOrientationLeft;
+                    }
+                    else {
+                        // Move items to the right.
+                        updatedFeedListToolbarOrientation = FeedListToolbarOrientationRight;
+                    }
+                }
+                
+                if (updatedFeedListToolbarOrientation != self.toolbarOrientation) {
+                    static BOOL animationInProgress;
+                    static dispatch_once_t onceToken;
+                    dispatch_once(&onceToken, ^{
+                        animationInProgress = NO;
+                    });
+
+                    if (!animationInProgress) {
+                        animationInProgress = YES;
+
+                        self.toolbarOrientation = updatedFeedListToolbarOrientation;
+                        
+                        NSArray *constraintsToAdd;
+                        
+                        switch (self.toolbarOrientation) {
+                            case FeedListToolbarOrientationCenter:
+                                constraintsToAdd = self.centerOrientationConstraints;
+                                break;
+                                
+                            case FeedListToolbarOrientationRight:
+                                constraintsToAdd = self.rightOrientationConstraints;
+                                break;
+                                
+                            case FeedListToolbarOrientationLeft:
+                                constraintsToAdd = self.leftOrientationConstraints;
+                                break;
+                        }
+
+                        [UIView animateWithDuration:0.3
+                                         animations:^{
+                                             [self.toolbar removeConstraints:self.toolbar.constraints];
+                                             [self.toolbar addConstraints:constraintsToAdd];
+                                             [self.toolbar layoutIfNeeded];
+                                         }
+                                         completion:^(BOOL finished) {
+                                             animationInProgress = NO;
+                                         }];
+                    }
+                }
+            }
+        }];
+    }];
     
     self.feedCountTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(updateFeedCounts) userInfo:nil repeats:YES];
     [self updateFeedCounts];
@@ -250,6 +424,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [super viewWillDisappear:animated];
     [self.feedCountTimer invalidate];
     self.feedCountTimer = nil;
+    [self.motionManager stopDeviceMotionUpdates];
 }
 
 #pragma mark - UITableViewDataSource
@@ -1034,7 +1209,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.bottomBarBottomConstraint.constant = 0;
+                             self.toolbarBottomConstraint.constant = 0;
                              [self.view layoutIfNeeded];
                          }];
         
@@ -1123,7 +1298,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.bottomBarBottomConstraint.constant = -44;
+                             self.toolbarBottomConstraint.constant = 44;
                              [self.view layoutIfNeeded];
                          }];
 
@@ -1495,15 +1670,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar {
-    return UIBarPositionTopAttached;
+    return UIBarPositionBottom;
 }
 
 #pragma mark - PPTitleButtonDelegate
 
 - (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton {
     CGFloat updatedConstant;
-    if (self.bottomBarBottomConstraint.constant == 0) {
-        updatedConstant = -44;
+    if (self.toolbarBottomConstraint.constant == 0) {
+        updatedConstant = 44;
     }
     else {
         updatedConstant = 0;
@@ -1511,7 +1686,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     [UIView animateWithDuration:0.3
                      animations:^{
-                         self.bottomBarBottomConstraint.constant = updatedConstant;
+                         self.toolbarBottomConstraint.constant = updatedConstant;
                          [self.view layoutIfNeeded];
                      }];
 }
