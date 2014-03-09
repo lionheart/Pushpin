@@ -43,20 +43,14 @@
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
-#import <BugshotKit/BugshotKit.h>
 #import <Crashlytics/Crashlytics.h>
-
-#ifdef APPSTORE
-#import <CrashReporter/CrashReporter.h>
 #import "MFMailComposeViewController+Theme.h"
+
+#if TESTING
+#import <BugshotKit/BugshotKit.h>
 #endif
 
 @interface AppDelegate ()
-
-#ifdef APPSTORE
-@property (nonatomic, strong) PLCrashReport *crashReport;
-@property (nonatomic, strong) NSData *crashData;
-#endif
 
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIAlertView *updateBookmarkAlertView;
@@ -92,48 +86,6 @@
 @synthesize hiddenFeedNames = _hiddenFeedNames;
 @synthesize personalFeedOrder = _personalFeedOrder;
 @synthesize communityFeedOrder = _communityFeedOrder;
-
-#pragma mark - PLCrashReporter
-
-#ifdef APPSTORE
-// From https://github.com/plausiblelabs/plcrashreporter/blob/master/Source/Crash%20Demo/main.m#L47
-
-void post_crash_callback (siginfo_t *info, ucontext_t *uap, void *context) {
-    // this is not async-safe, but this is a test implementation
-    DLog(@"post crash callback: signo=%d, uap=%p, context=%p", info->si_signo, uap, context);
-}
-
-/* If a crash report exists, make it accessible via iTunes document sharing. This is a no-op on Mac OS X. */
-static void save_crash_report (PLCrashReporter *reporter) {
-    if (![reporter hasPendingCrashReport]) {
-        return;
-    }
-
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSError *error;
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = paths[0];
-    if (![fm createDirectoryAtPath: documentsDirectory withIntermediateDirectories: YES attributes:nil error: &error]) {
-        DLog(@"Could not create documents directory: %@", error);
-        return;
-    }
-    
-    
-    NSData *data = [[PLCrashReporter sharedReporter] loadPendingCrashReportDataAndReturnError: &error];
-    if (data == nil) {
-        DLog(@"Failed to load crash report data: %@", error);
-        return;
-    }
-    
-    NSString *outputPath = [documentsDirectory stringByAppendingPathComponent: @"demo.plcrash"];
-    if (![data writeToFile: outputPath atomically: YES]) {
-        DLog(@"Failed to write crash report");
-    }
-    
-    NSLog(@"Saved crash report to: %@", outputPath);
-}
-#endif
 
 + (NSString *)databasePath {
 #ifdef DELICIOUS
@@ -642,45 +594,8 @@ static void save_crash_report (PLCrashReporter *reporter) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     application.applicationSupportsShakeToEdit = YES;
 
-//    [Bugsnag startBugsnagWithApiKey:@"514d576732eef794d59c0f2ef4768407"];
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
-#ifdef APPSTORE
-    
-    PLCrashReporterConfig *config = [[PLCrashReporterConfig alloc] initWithSignalHandlerType:PLCrashReporterSignalHandlerTypeBSD
-                                                                       symbolicationStrategy:PLCrashReporterSymbolicationStrategyAll];
-    PLCrashReporter *crashReporter = [[PLCrashReporter alloc] initWithConfiguration:config];
-    
-    // Disabled when PLCrashReporter is enabled.
-    
-    save_crash_report(crashReporter);
-
-    NSError *error;
-    
-    PLCrashReporterCallbacks cb = {
-        .version = 0,
-        .context = (void *) 0xABABABAB,
-        .handleSignal = post_crash_callback
-    };
-    [crashReporter setCrashCallbacks: &cb];
-    
-    BOOL crashReportingSuccessfullyEnabled = [crashReporter enableCrashReporterAndReturnError:&error];
-    if (!crashReportingSuccessfullyEnabled) {
-        // Maybe we can remove this? Not sure what we really can do here.
-        // http://plcrashreporter.googlecode.com/svn/tags/plcrashreporter-1.1-rc1/Documentation/API/example_usage_iphone.html
-    }
-    
-    if ([crashReporter hasPendingCrashReport]) {
-        NSError *crashError;
-        self.crashData = [crashReporter loadPendingCrashReportDataAndReturnError:&crashError];
-        
-        if (self.crashData) {
-            self.crashReport = [[PLCrashReport alloc] initWithData:self.crashData error:&crashError];
-        }
-        
-        [crashReporter purgePendingCrashReport];
-    }
-#else
-//    [TestFlight takeOff:PPTestFlightToken];
+#ifndef APPSTORE
     [BugshotKit enableWithNumberOfTouches:2 performingGestures:BSKInvocationGestureSwipeUp feedbackEmailAddress:@"dan@lionheartsw.com"];
 #endif
 
@@ -818,32 +733,6 @@ static void save_crash_report (PLCrashReporter *reporter) {
     }
 
     [self.window makeKeyAndVisible];
-    
-#ifdef APPSTORE
-    if (self.crashReport) {
-        MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
-        [mailComposeViewController.navigationBar setTintColor:HEX(0xFFFFFFFF)];
-        NSBundle *bundle = [NSBundle mainBundle];
-        NSDictionary *info = [bundle infoDictionary];
-        NSString *subject = [NSString stringWithFormat:@"Pushpin Crashed!"];
-
-        NSString *body = [NSString stringWithFormat:@"\n\n\n---\nApp: %@ %@ (%@)\n"
-                          "Device: %@\n"
-                          "OS Version: %@ (%@)", info[@"CFBundleName"], info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"], self.crashReport.machineInfo.modelName, self.crashReport.systemInfo.operatingSystemVersion, self.crashReport.systemInfo.operatingSystemBuild];
-        
-        [mailComposeViewController setSubject:subject];
-        [mailComposeViewController setMessageBody:body isHTML:NO];
-        [mailComposeViewController setToRecipients:@[@"crashes@lionheartsw.com"]];
-        mailComposeViewController.mailComposeDelegate = self;
-        [mailComposeViewController addAttachmentData:self.crashData mimeType:@"application/octet-stream" fileName:@"crash.log"];
-
-        self.presentingController = [UIViewController lhs_topViewController];
-        [self.presentingController presentViewController:mailComposeViewController animated:YES completion:^{
-            self.crashData = nil;
-            self.crashReport = nil;
-        }];
-    }
-#endif
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     self.dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";

@@ -1638,6 +1638,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.feeds = [updatedFeeds mutableCopy];
+
         [self.tableView beginUpdates];
         if (self.tableView.editing) {
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
@@ -1735,13 +1736,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 if (![self personalSectionIsHidden]) {
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                 }
-            
-#ifdef PINBOARD
-                if (![self feedSectionIsHidden]) {
-                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                                  withRowAnimation:UITableViewRowAnimationFade];
-                }
-#endif
+
                 [self.tableView endUpdates];
             }
         });
