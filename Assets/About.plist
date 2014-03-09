@@ -84,9 +84,15 @@
 			</dict>
 			<dict>
 				<key>title</key>
-				<string>Phil Havens</string>
+				<string>John Manoogian III</string>
 				<key>username</key>
-				<string>philhavens</string>
+				<string>jm3</string>
+			</dict>
+			<dict>
+				<key>title</key>
+				<string>Mikhail Madnani</string>
+				<key>username</key>
+				<string>failgunner</string>
 			</dict>
 			<dict>
 				<key>title</key>
@@ -136,9 +142,15 @@
 				<key>username</key>
 				<string>vhgalvao</string>
 			</dict>
+			<dict>
+				<key>detail</key>
+				<string>Mandarin translation.</string>
+				<key>title</key>
+				<string>Wu Liang</string>
+			</dict>
 		</array>
 		<key>title</key>
-		<string>Acknowledgements</string>
+		<string>Beta Testers and Acknowledgements</string>
 	</dict>
 	<dict>
 		<key>rows</key>
