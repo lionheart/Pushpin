@@ -1282,6 +1282,8 @@ static BOOL kPinboardSyncInProgress = NO;
         [whereComponents addObject:@"bookmark.unread = ?"];
         [parameters addObject:@(self.unread)];
     }
+    
+    [whereComponents addObject:@"bookmark.hash IS NOT NULL"];
 
     if (whereComponents.count > 0) {
         [components addObject:@"WHERE"];

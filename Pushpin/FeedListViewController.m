@@ -1451,7 +1451,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         NSInteger i = 0;
         NSInteger j = 0;
         for (FMResultSet *resultSet in resultSets) {
-            NSString *feedName = [self personalFeedNameForIndex:i];
+            NSString *feedName = PPPersonalFeeds()[i];
             NSString *fullName = [@[sectionName, feedName] componentsJoinedByString:@"-"];
             BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
             
