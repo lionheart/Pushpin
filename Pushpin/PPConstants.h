@@ -20,6 +20,8 @@ typedef enum PPProviders : NSInteger {
 } PPProviderType;
 
 #ifdef DELICIOUS
+static NSString *PPTwitterUsername = @"PushpinDel";
+
 typedef enum : NSInteger {
     PPDeliciousPersonalFeedAll,
     PPDeliciousPersonalFeedPrivate,
@@ -40,6 +42,8 @@ typedef enum : NSInteger {
 #endif
 
 #ifdef PINBOARD
+static NSString *PPTwitterUsername = @"Pushpin_app";
+
 typedef enum : NSInteger {
     PPPinboardPersonalFeedAll,
     PPPinboardPersonalFeedPrivate,
@@ -153,7 +157,7 @@ static NSString *PPPocketIPadToken = @"23110-86247a432b99945a85a44846";
 static PPProviderType PPProvider __unused = PPProviderDelicious;
 
 static NSArray *PPSections() {
-    return @[@"personal", @"community", @"feeds"];
+    return @[@"personal"];
 }
 
 static NSArray *PPPersonalFeeds() {
@@ -170,7 +174,7 @@ static NSString *PPTestFlightToken = @"575d650a-43d5-4e99-a3bb-2b7bbae29a6c";
 static NSString *PPMixpanelToken = @"045e859e70632363c4809784b13c5e98";
 static NSString *PPPocketIPhoneToken = @"11122-03068da9a8951bec2dcc93f3";
 static NSString *PPPocketIPadToken = @"11122-03068da9a8951bec2dcc93f3";
-static PPProviderType PPProvider __unused = PPProviderDelicious;
+static PPProviderType PPProvider __unused = PPProviderPinboard;
 
 static NSArray *PPSections() {
     return @[@"personal", @"community", @"feeds"];

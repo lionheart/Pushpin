@@ -8,27 +8,56 @@
 
 #import "PPTableViewController.h"
 
+#ifdef PINBOARD
 typedef enum : NSInteger {
     PPSearchScopeMine,
-    
-#ifdef PINBOARD
     PPSearchScopePinboard,
-#endif
-
     PPSearchScopeNetwork,
     PPSearchScopeEveryone,
 } PPSearchScopeType;
 
-static NSArray *PPSearchScopes() {
-//    return @[@"Mine", @"Pinboard Search", @"Network", @"Everyone"];
-    return @[@"Mine", @"Pinboard Search"];
-}
+typedef enum : NSInteger {
+    PPSearchFilterPrivate,
+    PPSearchFilterUnread,
+    PPSearchFilterStarred,
+    PPSearchFilterUntagged
+} PPSearchFilterRowType;
 
 typedef enum : NSInteger {
     PPSearchSectionQuery,
     PPSearchSectionScope,
     PPSearchSectionFilters
 } PPSearchSectionType;
+#endif
+
+#ifdef DELICIOUS
+typedef enum : NSInteger {
+    PPSearchScopeMine,
+    PPSearchScopeNetwork,
+    PPSearchScopeEveryone,
+    
+    // Unused
+    PPSearchScopePinboard,
+} PPSearchScopeType;
+
+typedef enum : NSInteger {
+    PPSearchFilterPrivate,
+    PPSearchFilterUnread,
+    PPSearchFilterUntagged
+} PPSearchFilterRowType;
+
+typedef enum : NSInteger {
+    PPSearchSectionQuery,
+    PPSearchSectionFilters,
+    
+    // Unused
+    PPSearchSectionScope
+} PPSearchSectionType;
+#endif
+
+static NSArray *PPSearchScopes() {
+    return @[@"Mine", @"Pinboard Search"];
+}
 
 typedef enum : NSInteger {
     PPSearchQueryRow
@@ -37,23 +66,6 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPSearchScopeRow
 } PPSearchScopeRowType;
-
-#ifdef PINBOARD
-typedef enum : NSInteger {
-    PPSearchFilterPrivate,
-    PPSearchFilterUnread,
-    PPSearchFilterStarred,
-    PPSearchFilterUntagged
-} PPSearchFilterRowType;
-#endif
-
-#ifdef DELICIOUS
-typedef enum : NSInteger {
-    PPSearchFilterPrivate,
-    PPSearchFilterUnread,
-    PPSearchFilterUntagged
-} PPSearchFilterRowType;
-#endif
 
 typedef enum : NSInteger {
     PPSearchQueryRowCount = PPSearchQueryRow + 1,

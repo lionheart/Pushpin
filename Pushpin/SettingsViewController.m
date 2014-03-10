@@ -284,7 +284,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                     
                 case PPOtherFollow:
-                    cell.textLabel.text = @"Follow @Pushpin_app on Twitter";
+                    cell.textLabel.text = [NSString stringWithFormat:@"Follow @%@ on Twitter", PPTwitterUsername];
                     break;
 
                 case PPOtherFeedback:
@@ -635,7 +635,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case PPOtherFollow: {
                     UIView *view = [tableView cellForRowAtIndexPath:indexPath];
                     CGPoint point = view.center;
-                    [[PPTwitter sharedInstance] followScreenName:@"pushpin_app" point:point view:view callback:nil];
+                    [[PPTwitter sharedInstance] followScreenName:PPTwitterUsername point:point view:view callback:nil];
                     break;
                 }
 

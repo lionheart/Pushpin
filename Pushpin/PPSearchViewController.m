@@ -83,8 +83,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.isPrivate = kPushpinFilterNone;
     self.read = kPushpinFilterNone;
     self.tagged = kPushpinFilterNone;
-    self.pinboardSearchScope = ASPinboardSearchScopeNone;
     self.searchScope = PPSearchScopeMine;
+    
+#ifdef PINBOARD
+    self.pinboardSearchScope = ASPinboardSearchScopeNone;
+#endif
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.searchTextField = [[UITextField alloc] init];
@@ -160,6 +163,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+#ifdef PINBOARD
     switch (self.searchScope) {
         case PPSearchScopeMine:
             return 3;
@@ -173,6 +177,17 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSearchScopePinboard:
             return 3;
     }
+#endif
+    
+#ifdef DELICIOUS
+    switch (self.searchScope) {
+        case PPSearchScopeMine:
+            return 2;
+            
+        default:
+            return 0;
+    }
+#endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -252,6 +267,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.textLabel.text = @"Search Full-Text";
                     cell.detailTextLabel.text = @"For archival accounts only.";
 
+#ifdef PINBOARD
                     switch (self.pinboardSearchScope) {
                         case ASPinboardSearchScopeFullText: {
                             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -265,6 +281,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         default:
                             break;
                     }
+#endif
                     break;
                 }
 
@@ -459,6 +476,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSearchSectionFilters:
             switch (self.searchScope) {
                 case PPSearchScopePinboard:
+#ifdef PINBOARD
                     switch (self.pinboardSearchScope) {
                         case ASPinboardSearchScopeFullText:
                             self.pinboardSearchScope = ASPinboardSearchScopeMine;
@@ -471,6 +489,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         default:
                             break;
                     }
+#endif
                     break;
 
                 case PPSearchScopeMine:
@@ -682,6 +701,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+#ifdef PINBOARD
+
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.searchScopeActionSheet) {
         if (buttonIndex == [PPSearchScopes() count]) {
@@ -786,6 +807,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     }
     
 }
+#endif
 
 #pragma mark - UITextFieldDelegate
 

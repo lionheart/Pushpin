@@ -55,6 +55,7 @@
 #ifdef PINBOARD
 @property (nonatomic, strong) NSArray *communityFeedOrder;
 #endif
+
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;
 @property (nonatomic, strong) NSString *clipboardBookmarkURL;
