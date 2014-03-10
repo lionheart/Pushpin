@@ -835,16 +835,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 });
             };
             
-#ifdef DELICIOUS
-            LHSDelicious *delicious = [LHSDelicious sharedInstance];
-            
-            [delicious addBookmarkWithURL:url
-                                    title:title
-                              description:description
-                                     tags:tags
-                                   shared:!private
-                                  success:BookmarkSuccessBlock
-                                  failure:BookmarkFailureBlock];
+#ifdef DELICIOUS 
+            dispatch_async(dispatch_get_main_queue(), ^{
+                LHSDelicious *delicious = [LHSDelicious sharedInstance];
+
+                [delicious addBookmarkWithURL:url
+                                        title:title
+                                  description:description
+                                         tags:tags
+                                       shared:!private
+                                      success:BookmarkSuccessBlock
+                                      failure:BookmarkFailureBlock];
+            });
 #endif
 
 #ifdef PINBOARD

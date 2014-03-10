@@ -48,13 +48,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @property (nonatomic) FeedListToolbarOrientationType toolbarOrientation;
 
 @property (nonatomic, strong) UIButton *searchButton;
-@property (nonatomic, strong) UIButton *noteButton;
 @property (nonatomic, strong) UIButton *tagsButton;
 
 @property (nonatomic, strong) UIBarButtonItem *searchBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *noteBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *tagsBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *flexibleSpace;
+
+#ifdef PINBOARD
+@property (nonatomic, strong) UIButton *noteButton;
+@property (nonatomic, strong) UIBarButtonItem *noteBarButtonItem;
+#endif
 
 - (void)openNotes;
 - (void)openSettings;
@@ -69,16 +72,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (BOOL)personalSectionIsHidden;
 - (NSInteger)numberOfHiddenSections;
 
+- (NSString *)personalFeedNameForIndex:(NSInteger)index;
+
 #ifdef DELICIOUS
 - (PPDeliciousSectionType)sectionTypeForSection:(NSInteger)section;
 - (PPDeliciousPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
 #endif
 
 #ifdef PINBOARD
-- (NSString *)personalFeedNameForIndex:(NSInteger)index;
+- (PPPinboardPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
 - (NSString *)communityFeedNameForIndex:(NSInteger)index;
 - (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section;
-- (PPPinboardPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)communitySectionIsHidden;
 - (BOOL)feedSectionIsHidden;
 - (void)updateSavedFeeds:(FMDatabase *)db;
@@ -165,7 +169,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.opaque = YES;
-//    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 44, 0);
     [self.view addSubview:self.tableView];
     
     self.toolbar = [[PPToolbar alloc] init];
@@ -180,30 +183,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
 
 #ifdef PINBOARD
-    /*
-    UIBarButtonItem *searchBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                         target:self
-                                                                                         action:@selector(searchBarButtonItemTouchUpInside:)];
-     */
-    
     self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
                                                                             style:UIBarButtonItemStyleDone
                                                                            target:self
-                                                                           action:@selector(searchBarButtonItemTouchUpInside:)];
+                                                               action:@selector(searchBarButtonItemTouchUpInside:)];
+    
+    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
+    [self.noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 #endif
     
 #ifdef DELICIOUS
     self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
-                                                                            style:UIBarButtonItemStyleDone
-                                                                           target:self
-                                                                           action:@selector(searchBarButtonItemTouchUpInside:)];
+                                                                style:UIBarButtonItemStyleDone
+                                                               target:self
+                                                               action:@selector(searchBarButtonItemTouchUpInside:)];
 #endif
 
     self.searchBarButtonItem.tintColor = [UIColor darkGrayColor];
     [self.searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
-
-    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
-    [self.noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
     self.tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
     [self.tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
@@ -222,20 +219,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self.searchButton addTarget:self action:@selector(searchBarButtonItemTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.searchButton];
 
+#ifdef PINBOARD
     self.noteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.noteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.noteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Notes" attributes:barButtonTitleTextAttributes] forState:UIControlStateNormal];
     [self.noteButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.noteButton];
-
-
-#ifdef PINBOARD
-//    self.toolbar.items = @[self.noteBarButtonItem, self.flexibleSpace, self.searchBarButtonItem, self.flexibleSpace, self.tagsBarButtonItem];
 #endif
-    
-#ifdef DELICIOUS
-    self.toolbar.items = @[searchBarButtonItem, flexibleSpace, tagsBarButtonItem];
-#endif
+
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.toolbar];
 
@@ -244,8 +235,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                             @"bar": self.toolbar,
                             @"search": self.searchButton,
                             @"tags": self.tagsButton,
-                            @"notes": self.noteButton };
+#ifdef PINBOARD
+                            @"notes": self.noteButton
+#endif
+                        };
 
+#ifdef PINBOARD
     NSMutableArray *constraints = [[NSLayoutConstraint constraintsWithVisualFormat:@"H:[notes]-(>=12)-[search]-(>=12)-[tags]"
                                                                            options:0
                                                                            metrics:nil
@@ -256,8 +251,36 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                         relatedBy:NSLayoutRelationEqual
                                                            toItem:self.toolbar
                                                         attribute:NSLayoutAttributeCenterY
-                                                        multiplier:1
+                                                       multiplier:1
                                                          constant:0]];
+    
+    NSLayoutConstraint *notesLeftConstraint = [NSLayoutConstraint constraintWithItem:self.noteButton
+                                                                           attribute:NSLayoutAttributeLeft
+                                                                           relatedBy:NSLayoutRelationEqual
+                                                                              toItem:self.toolbar
+                                                                           attribute:NSLayoutAttributeLeft
+                                                                          multiplier:1
+                                                                            constant:12];
+    
+    self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
+#endif
+    
+#ifdef DELICIOUS
+    NSMutableArray *constraints = [[NSLayoutConstraint constraintsWithVisualFormat:@"H:[search]-(>=12)-[tags]"
+                                                                           options:0
+                                                                           metrics:nil
+                                                                             views:views] mutableCopy];
+
+    NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:self.searchButton
+                                                                      attribute:NSLayoutAttributeLeft
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self.toolbar
+                                                                      attribute:NSLayoutAttributeLeft
+                                                                     multiplier:1
+                                                                       constant:12];
+    
+    self.leftOrientationConstraints = [constraints arrayByAddingObject:leftConstraint];
+#endif
 
     [constraints addObject:[NSLayoutConstraint constraintWithItem:self.tagsButton
                                                         attribute:NSLayoutAttributeCenterY
@@ -274,14 +297,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                         attribute:NSLayoutAttributeCenterY
                                                        multiplier:1
                                                          constant:0]];
-
-    NSLayoutConstraint *notesLeftConstraint = [NSLayoutConstraint constraintWithItem:self.noteButton
-                                                                           attribute:NSLayoutAttributeLeft
-                                                                           relatedBy:NSLayoutRelationEqual
-                                                                              toItem:self.toolbar
-                                                                           attribute:NSLayoutAttributeLeft
-                                                                          multiplier:1
-                                                                            constant:12];
     
     NSLayoutConstraint *tagsRightConstraint = [NSLayoutConstraint constraintWithItem:self.tagsButton
                                                                            attribute:NSLayoutAttributeRight
@@ -291,6 +306,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                                           multiplier:1
                                                                             constant:-12];
 
+    self.rightOrientationConstraints = [constraints arrayByAddingObject:tagsRightConstraint];
+    
+#ifdef PINBOARD
     NSLayoutConstraint *searchCenterConstraint = [NSLayoutConstraint constraintWithItem:self.searchButton
                                                                               attribute:NSLayoutAttributeCenterX
                                                                               relatedBy:NSLayoutRelationEqual
@@ -299,9 +317,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                                              multiplier:1
                                                                                constant:0];
 
-    self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
-    self.rightOrientationConstraints = [constraints arrayByAddingObject:tagsRightConstraint];
     self.centerOrientationConstraints = [constraints arrayByAddingObjectsFromArray:@[notesLeftConstraint, tagsRightConstraint, searchCenterConstraint]];
+#endif
+
+#ifdef DELICIOUS
+    self.centerOrientationConstraints = [constraints arrayByAddingObjectsFromArray:@[leftConstraint, tagsRightConstraint]];
+#endif
     
     [self.toolbar addConstraints:self.centerOrientationConstraints];
     
@@ -430,18 +451,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-#ifdef DELICIOUS
-    if ((PPDeliciousSectionType)indexPath.section == PPDeliciousSectionPersonal && [self.bookmarkCounts[indexPath.row] isEqualToString:@"0"]) {
-        return 0;
-    }
-#endif
-
     return 44;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 #ifdef DELICIOUS
-    return PPProviderDeliciousSections;
+    return PPProviderDeliciousSections - [self numberOfHiddenSections];
 #endif
     
 #ifdef PINBOARD
@@ -456,9 +471,24 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #ifdef DELICIOUS
-    return PPDeliciousPersonalRows;
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPDeliciousSectionType sectionType = [self sectionTypeForSection:section];
+    
+    if (tableView.allowsMultipleSelectionDuringEditing) {
+        switch (sectionType) {
+            case PPDeliciousSectionPersonal:
+                return PPDeliciousPersonalRows;
+        }
+    }
+    else {
+        switch (sectionType) {
+            case PPDeliciousSectionPersonal: {
+                NSArray *filteredRows = [delegate.hiddenFeedNames filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF BEGINSWITH %@", @"personal"]];
+                return PPDeliciousPersonalRows - filteredRows.count;
+            }
+        }
+    }
 #endif
-
     
 #ifdef PINBOARD
     AppDelegate *delegate = [AppDelegate sharedDelegate];
@@ -586,11 +616,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.clipsToBounds = YES;
     
 #ifdef DELICIOUS
-    NSString *badgeCount;
     switch ((PPDeliciousSectionType)indexPath.section) {
         case PPDeliciousSectionPersonal: {
-            PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
-            badgeCount = self.bookmarkCounts[feedType];
+            PPDeliciousPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
+
             switch (feedType) {
                 case PPDeliciousPersonalFeedAll:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
@@ -617,8 +646,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     cell.imageView.image = [UIImage imageNamed:@"browse-untagged"];
                     break;
             }
-            
-            cell.detailTextLabel.text = badgeCount;
+
+            cell.detailTextLabel.text = self.bookmarkCounts[feedType];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
@@ -738,7 +767,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return cell;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
+#ifdef PINBOARD
     PPPinboardSectionType destinationSection = (PPPinboardSectionType)proposedDestinationIndexPath.section;
     PPPinboardSectionType sourceSection = (PPPinboardSectionType)sourceIndexPath.section;
 
@@ -762,9 +793,35 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     else {
         return proposedDestinationIndexPath;
     }
+#endif
+    
+#ifdef DELICIOUS
+    PPDeliciousSectionType destinationSection = (PPDeliciousSectionType)proposedDestinationIndexPath.section;
+    PPDeliciousSectionType sourceSection = (PPDeliciousSectionType)sourceIndexPath.section;
+    
+    if (destinationSection < sourceSection) {
+        // The row was moved to a section above the current one, so change the row to 0.
+        return [NSIndexPath indexPathForRow:0 inSection:sourceSection];
+    }
+    else if (destinationSection > sourceSection) {
+        // The row was moved to a section above the current one, so change the row to the last row.
+        switch (sourceSection) {
+            case PPDeliciousSectionPersonal:
+                return [NSIndexPath indexPathForRow:(PPDeliciousPersonalRows-1) inSection:sourceSection];
+
+            default:
+                return sourceIndexPath;
+        }
+    }
+    else {
+        return proposedDestinationIndexPath;
+    }
+#endif
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+      toIndexPath:(NSIndexPath *)destinationIndexPath {
+#ifdef PINBOARD
     PPPinboardSectionType sectionType = [self sectionTypeForSection:sourceIndexPath.section];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
 
@@ -790,6 +847,26 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         default:
             break;
     }
+#endif
+    
+#ifdef DELICIOUS
+    PPDeliciousSectionType sectionType = [self sectionTypeForSection:sourceIndexPath.section];
+    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    
+    switch (sectionType) {
+        case PPDeliciousSectionPersonal: {
+            NSMutableArray *feeds = [delegate.personalFeedOrder mutableCopy];
+            NSNumber *object = feeds[sourceIndexPath.row];
+            [feeds removeObjectAtIndex:sourceIndexPath.row];
+            [feeds insertObject:object atIndex:destinationIndexPath.row];
+            delegate.personalFeedOrder = [feeds copy];
+            break;
+        }
+
+        default:
+            break;
+    }
+#endif
 }
 
 #pragma mark - UITableViewDelegate
@@ -801,6 +878,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     UIViewController *viewControllerToPush;
 
     if (tableView.allowsMultipleSelectionDuringEditing) {
+#ifdef PINBOARD
         PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
         switch (sectionType) {
             case PPPinboardSectionSavedFeeds: {
@@ -827,6 +905,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             default:
                 break;
         }
+#endif
     }
     else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -837,7 +916,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
                 dataSource.limit = 100;
 
-                PPDeliciousPersonalFeedType feedType = (PPDeliciousPersonalFeedType)indexPath.row;
+                PPDeliciousPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
 
                 switch (feedType) {
                     case PPDeliciousPersonalFeedAll:
@@ -1092,7 +1171,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
                 switch (sectionType) {
                     case PPDeliciousSectionPersonal: {
-                        feedName = [@[@"personal", PPPersonalFeeds()[indexPath.row]] componentsJoinedByString:@"-"];
+                        feedName = [@[@"personal", [self personalFeedNameForIndex:indexPath.row]] componentsJoinedByString:@"-"];
                         break;
                     }
                         
@@ -1142,11 +1221,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     NSString *feedName;
                     switch (sectionType) {
                         case PPDeliciousSectionPersonal: {
-                            feedName = [@[PPSections()[section], PPPersonalFeeds()[row]] componentsJoinedByString:@"-"];
+                            feedName = [@[PPSections()[section], [self personalFeedNameForIndex:row]] componentsJoinedByString:@"-"];
                             break;
                         }
                     }
-                    
+
                     if (feedName && ![visibleFeedNames containsObject:feedName]) {
                         [hiddenFeedNames addObject:feedName];
                     }
@@ -1210,17 +1289,18 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
         
-        if ([self personalSectionIsHidden]) {
-#ifdef PINBOARD
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-#endif
-            
 #ifdef DELICIOUS
+        if ([self personalSectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPDeliciousSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+
+        }
 #endif
+        
+#ifdef PINBOARD
+        if ([self personalSectionIsHidden]) {
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];\
         }
 
-#ifdef PINBOARD
         if ([self communitySectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
         }
@@ -1307,12 +1387,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     if (![self personalSectionIsHidden]) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
-            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
 #ifdef PINBOARD
+            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+            }
 #endif
                 
 #ifdef DELICIOUS
+            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
 #endif
             }
@@ -1336,12 +1418,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSMutableArray *indexPaths = [NSMutableArray array];
     AppDelegate *delegate = [AppDelegate sharedDelegate];
     for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
-        if (![delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
 #ifdef PINBOARD
+        if (![delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
+        }
 #endif
             
 #ifdef DELICIOUS
+        if (![delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
 #endif
         }
@@ -1387,7 +1471,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
 
 - (PPDeliciousSectionType)sectionTypeForSection:(NSInteger)section {
-    return (PPDeliciousSectionType)(section);
     NSInteger numSectionsSkipped = 0;
     NSInteger numSectionsNotSkipped = 0;
 
@@ -1419,7 +1502,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
     if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
-            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", personal()[[delegate.communityFeedOrder[i] integerValue]]] componentsJoinedByString:@"-"]]) {
+            if ([delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 numFeedsSkipped++;
             }
             else {
@@ -1430,16 +1513,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
         }
     }
-
-    return (PPDeliciousPersonalFeedType)(indexPath.row + numFeedsSkipped);
+    
+    return (PPDeliciousPersonalFeedType)([delegate.personalFeedOrder[indexPath.row + numFeedsSkipped] integerValue]);
 }
-#endif
 
-#ifdef PINBOARD
+#endif
 
 - (NSString *)personalFeedNameForIndex:(NSInteger)index {
     return PPPersonalFeeds()[[[AppDelegate sharedDelegate].personalFeedOrder[index] integerValue]];
 }
+
+#ifdef PINBOARD
 
 - (NSString *)communityFeedNameForIndex:(NSInteger)index {
     return PPCommunityFeeds()[[[AppDelegate sharedDelegate].communityFeedOrder[index] integerValue]];
@@ -1550,6 +1634,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
+
+#ifdef PINBOARD
 
 - (void)updateSavedFeeds:(FMDatabase *)db {
     // Check if we have any updates from iCloud
@@ -1670,6 +1756,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     });
 }
 
+#endif
+
 - (void)updateFeedCounts {
     AppDelegate *delegate = [AppDelegate sharedDelegate];
 
@@ -1700,6 +1788,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
                                 ];
+#endif
         
         NSString *sectionName = PPSections()[0];
         
@@ -1725,7 +1814,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             i++;
         }
-#endif
         
         [db close];
         

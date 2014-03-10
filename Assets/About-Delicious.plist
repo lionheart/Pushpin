@@ -65,30 +65,6 @@
 		<key>rows</key>
 		<array>
 			<dict>
-				<key>title</key>
-				<string>Michael Solis</string>
-				<key>username</key>
-				<string>morphorod</string>
-			</dict>
-			<dict>
-				<key>title</key>
-				<string>JB Bryant</string>
-				<key>username</key>
-				<string>jb_bryant</string>
-			</dict>
-			<dict>
-				<key>title</key>
-				<string>Phil Havens</string>
-				<key>username</key>
-				<string>philhavens</string>
-			</dict>
-			<dict>
-				<key>title</key>
-				<string>Chase McCoy</string>
-				<key>username</key>
-				<string>chase_mccoy</string>
-			</dict>
-			<dict>
 				<key>detail</key>
 				<string>For donating the getpushpin.com domain name.</string>
 				<key>title</key>

@@ -19,6 +19,7 @@ static BOOL kPinboardSyncInProgress = NO;
 @interface DeliciousDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
+@property (nonatomic) CGFloat mostRecentWidth;
 
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
 
@@ -917,6 +918,21 @@ static BOOL kPinboardSyncInProgress = NO;
         [quotedTagComponents addObject:[NSString stringWithFormat:@"\"%@\"", tag]];
     }
     return quotedTagComponents;
+}
+
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
+    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
+#warning should really add a success parameter to this block;
+        if ([post count] > 0) {
+            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
+            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
+            
+            self.metadata[index] = metadata;
+            self.compressedMetadata[index] = compressedMetadata;
+        }
+        
+        callback();
+    }];
 }
 
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback {

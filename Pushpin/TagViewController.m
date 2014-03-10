@@ -269,6 +269,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 #pragma mark - UITableViewDelegate
 
+// Only let users delete tags with Pinboard (for now)
+#ifdef PINBOARD
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedIndexPath = indexPath;
     
@@ -280,6 +282,7 @@ static NSString *CellIdentifier = @"TagCell";
 
     [self.deleteConfirmationAlertView show];
 }
+#endif
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
     return @"Delete";

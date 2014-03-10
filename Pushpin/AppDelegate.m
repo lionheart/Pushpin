@@ -85,7 +85,10 @@
 @synthesize username = _username;
 @synthesize hiddenFeedNames = _hiddenFeedNames;
 @synthesize personalFeedOrder = _personalFeedOrder;
+
+#ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
+#endif
 
 + (NSString *)databasePath {
 #ifdef DELICIOUS
@@ -645,6 +648,7 @@
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
+#ifdef PINBOARD
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
                 @(PPPinboardPersonalFeedPrivate),
@@ -653,7 +657,6 @@
                 @(PPPinboardPersonalFeedUntagged),
                 @(PPPinboardPersonalFeedStarred),
             ],
-#ifdef PINBOARD
         @"io.aurora.pinboard.CommunityFeedOrder": @[
                 @(PPPinboardCommunityFeedNetwork),
                 @(PPPinboardCommunityFeedPopular),
@@ -661,6 +664,16 @@
                 @(PPPinboardCommunityFeedFandom),
                 @(PPPinboardCommunityFeedJapan),
                 @(PPPinboardCommunityFeedRecent),
+            ],
+#endif
+        
+#ifdef DELICIOUS
+        @"io.aurora.pinboard.PersonalFeedOrder": @[
+                @(PPDeliciousPersonalFeedAll),
+                @(PPDeliciousPersonalFeedPrivate),
+                @(PPDeliciousPersonalFeedPublic),
+                @(PPDeliciousPersonalFeedUnread),
+                @(PPDeliciousPersonalFeedUntagged),
             ],
 #endif
      }];
@@ -1409,6 +1422,8 @@
     [defaults synchronize];
 }
 
+#ifdef PINBOARD
+
 - (NSArray *)communityFeedOrder {
     if (!_communityFeedOrder) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -1423,6 +1438,8 @@
     [defaults setObject:communityFeedOrder forKey:@"io.aurora.pinboard.CommunityFeedOrder"];
     [defaults synchronize];
 }
+
+#endif
 
 - (void)setToken:(NSString *)token {
     _token = token;
@@ -1622,31 +1639,24 @@
     [db executeUpdate:@"DELETE FROM tag WHERE 1=1;"];
     [db executeUpdate:@"DELETE FROM tagging WHERE 1=1;"];
     [db close];
-
-    /*
-    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
-    // Remove all saved feeds from iCloud
-    [store setArray:@[] forKey:kSavedFeedsKey];
-    [store synchronize];
-     */
 #endif
 
     // Reset all values in settings
 #warning Need to decide which settings are reset and which ones aren't.
-    /*
-    self.openLinksInApp = YES;
-    self.privateByDefault = NO;
-    self.readByDefault = NO;
-    self.browser = PPBrowserSafari;
-    self.compressPosts = NO;
-    self.dimReadPosts = NO;
-    self.openLinksWithMobilizer = NO;
-    self.doubleTapToEdit = NO;
-    self.onlyPromptToAddOnce = NO;
-    self.alwaysShowClipboardNotification = YES;
-     */
 
     self.hiddenFeedNames = @[];
+
+#ifdef DELICIOUS
+    self.personalFeedOrder = @[
+                               @(PPDeliciousPersonalFeedAll),
+                               @(PPDeliciousPersonalFeedPrivate),
+                               @(PPDeliciousPersonalFeedPublic),
+                               @(PPDeliciousPersonalFeedUnread),
+                               @(PPDeliciousPersonalFeedUntagged),
+                           ];
+#endif
+
+#ifdef PINBOARD
     self.personalFeedOrder = @[
                                @(PPPinboardPersonalFeedAll),
                                @(PPPinboardPersonalFeedPrivate),
@@ -1656,7 +1666,6 @@
                                @(PPPinboardPersonalFeedStarred),
                                ];
 
-#ifdef PINBOARD
     self.communityFeedOrder = @[
                                 @(PPPinboardCommunityFeedNetwork),
                                 @(PPPinboardCommunityFeedPopular),
