@@ -1,0 +1,99 @@
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>Callback</title>
+
+<style>
+body {
+  margin:0;
+  padding:0;
+  font-family: "Helvetica Neue",Helvetica,sans-serif;
+  font-size: 100%;
+}
+#container {
+  width:100%;
+  height:100%;
+}
+#navigation {
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:100;
+  background:#efefef;
+  border: 1px solid #ccc;
+  opacity: 0.8;
+}
+#navigation a {
+  text-decoration:none;
+  font-weight:bold;
+  display:inline-block;
+  padding:.25em 1em;
+  color: #666;
+}
+#content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+#frame {
+  width:100%;
+  height:100%;
+}
+.error {
+  margin: auto;
+  text-align:center;
+  font-size: 2em;
+  color:maroon;
+  padding:2em;
+}
+
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px) {
+  body { font-size: 50px; }
+}
+</style>
+
+<script>
+var params = {'url': "https://amazon.com/",
+              'x-success': "pushpin://" };
+
+function init() {
+  var url = params.url;
+  if (url) {
+    var fr = document.getElementById("frame");
+    fr.src = url;
+  }
+  else {
+    document.getElementById("content").innerHTML = "<div class='error'>No \"url\" parameter found.</div>"
+  }
+}
+
+function back() {
+  var url = params["x-success"];
+  window.location = url;
+}
+
+function hide() {
+  var url = params.url
+  document.getElementById("content").innerHTML = "";
+  window.location = url;
+}
+
+</script>
+
+</head>
+<body onload='init();'>
+
+  <div id="navigation">
+    <a href='javascript:back();'>&lt; Back</a>
+    <a href='javascript:hide();'>X</a>
+  </div>
+  <div id="content">
+    <iframe id='frame' src="" frameborder="0"></iframe>
+  </div>
+</body>
+</html>
+
