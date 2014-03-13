@@ -1396,8 +1396,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
             if ([delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
-#endif
             }
+#endif
         }
     }
 
@@ -1427,8 +1427,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
         if (![delegate.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPDeliciousSectionPersonal]];
-#endif
         }
+#endif
     }
     
 #ifdef PINBOARD
