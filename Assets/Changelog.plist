@@ -3,6 +3,15 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.1</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash when adding a new bookmark with tags from the clipboard.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1</string>
 		<array>
 			<array>
