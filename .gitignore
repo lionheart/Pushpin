@@ -1,7 +1,7 @@
-*BACKUP*
-*BASE*
+*BACKUP*.pbxproj
+*BASE*.pbxproj
+*REMOTE*.pbxproj
 !Base.lproj/
-*REMOTE*
 *.orig
 
 # Xcode
@@ -22,9 +22,6 @@ DerivedData
 .idea/
 *.hmap
 build/
-Pods/
-Podfile.lock
-*.xcworkspace
 
 ghi.token
 Crashlytics.framework

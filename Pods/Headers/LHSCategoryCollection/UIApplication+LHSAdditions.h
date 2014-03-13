@@ -1,0 +1,1 @@
+../../../../LHSCategoryCollection/UIApplication+LHSAdditions.h
