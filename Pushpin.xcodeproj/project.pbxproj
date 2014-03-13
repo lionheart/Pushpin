@@ -1948,9 +1948,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
 			buildPhases = (
+				37B65FDA1672D0270041DA8C /* Sync Bundle and Version Strings */,
 				6733412331344A298389F74A /* Check Pods Manifest.lock */,
 				37FEEB8A15745488003F2B77 /* Sources */,
-				37B65FDA1672D0270041DA8C /* Sync Bundle and Version Strings */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
 				A6F1C6EA2C074EC083104155 /* Copy Pods Resources */,
@@ -2455,7 +2455,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BUNDLE_VERSION=`/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' \"Pushpin/Pushpin for Pinboard-Info.plist\"`\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/Pushpin for Pinboard-Info.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pushpin/Dev-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Dev-Info.plist\"\n\nBUNDLE_VERSION=`/usr/libexec/PlistBuddy -c 'print :CFBundleVersion' \"Pushpin/DeliciousAppStore.plist\"`\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/DeliciousAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pushpin/DeliciousDebug.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousDebug.plist\"\n\n";
+			shellScript = "SHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/Pushpin for Pinboard-Info.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Dev-Info.plist\"\n\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/DeliciousAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousDebug.plist\"\n\n#!/bin/bash\nBUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"Pushpin/Pushpin for Pinboard-Info.plist\")\nBUNDLE_VERSION=$(($BUNDLE_VERSION + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"$INFOPLIST_FILE\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"Pushpin/Pushpin for Pinboard-Info.plist\"\n";
 		};
 		6733412331344A298389F74A /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -689,7 +689,7 @@ static NSInteger kToolbarHeight = 44;
                                                      [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView endUpdates];
                                                  }
-                                                 
+
                                                  if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
