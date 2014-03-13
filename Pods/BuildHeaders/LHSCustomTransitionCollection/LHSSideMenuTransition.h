@@ -1,0 +1,1 @@
+../../../../LHSCustomTransitionCollection/Sources/Transitions/LHSSideMenuTransition.h
