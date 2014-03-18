@@ -106,7 +106,7 @@
 #define COCOAPODS_POD_AVAILABLE_LHSCategoryCollection
 #define COCOAPODS_VERSION_MAJOR_LHSCategoryCollection 0
 #define COCOAPODS_VERSION_MINOR_LHSCategoryCollection 0
-#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 5
+#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 7
 
 // LHSCustomTransitionCollection
 #define COCOAPODS_POD_AVAILABLE_LHSCustomTransitionCollection

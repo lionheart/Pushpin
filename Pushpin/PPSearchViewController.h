@@ -7,6 +7,7 @@
 //
 
 #import "PPTableViewController.h"
+#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
 
 #ifdef PINBOARD
 typedef enum : NSInteger {
@@ -73,6 +74,6 @@ typedef enum : NSInteger {
     PPSearchFilterRowCount = PPSearchFilterUntagged + 1
 } PPSearchRowCounts;
 
-@interface PPSearchViewController : PPTableViewController <UITextFieldDelegate, UIActionSheetDelegate>
+@interface PPSearchViewController : PPTableViewController <UITextFieldDelegate, UIActionSheetDelegate, LHSKeyboardAdjusting>
 
 @end

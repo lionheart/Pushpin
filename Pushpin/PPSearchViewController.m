@@ -21,6 +21,7 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSKeyboardAdjustment.h>
 
 #ifdef PINBOARD
 #import <ASPinboard/ASPinboard.h>
@@ -52,9 +53,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (void)searchBarButtonItemTouchUpInside:(id)sender;
 - (void)cancelBarButtonItemTouchUpInside:(id)sender;
 - (void)switchValueChanged:(UISwitch *)sender;
-
-- (void)keyboardWillHide:(NSNotification *)sender;
-- (void)keyboardDidShow:(NSNotification *)sender;
 
 @end
 
@@ -127,14 +125,24 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
+    
+    [self lhs_activateKeyboardAdjustment];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self lhs_deactivateKeyboardAdjustment];
+}
+
+#pragma mark - LHSKeyboardAdjusting
+
+- (NSLayoutConstraint *)keyboardAdjustingBottomConstraint {
+    return self.bottomConstraint;
 }
 
 #pragma mark UITableViewDataSource
@@ -815,20 +823,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     [textField resignFirstResponder];
     [self searchBarButtonItemTouchUpInside:textField];
     return NO;
-}
-
-#pragma mark -
-
-- (void)keyboardDidShow:(NSNotification *)sender {
-    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect newFrame = [self.view convertRect:frame fromView:[[UIApplication sharedApplication] delegate].window];
-    self.bottomConstraint.constant = newFrame.origin.y - CGRectGetHeight(self.view.frame);
-    [self.view layoutIfNeeded];
-}
-
-- (void)keyboardWillHide:(NSNotification *)sender {
-    self.bottomConstraint.constant = 0;
-    [self.view layoutIfNeeded];
 }
 
 @end

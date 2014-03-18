@@ -18,6 +18,7 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSKeyboardAdjustment.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -45,9 +46,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSArray *)filteredPopularAndRecommendedTags;
 - (BOOL)filteredPopularAndRecommendedTagsVisible;
 
-- (void)keyboardWillHide:(NSNotification *)sender;
-- (void)keyboardDidShow:(NSNotification *)sender;
-
 - (void)searchUpdatedWithString:(NSString *)string;
 - (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 
@@ -56,7 +54,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @implementation PPTagEditViewController
 
 #pragma mark - UIViewController
-
 
 - (BOOL)disablesAutomaticKeyboardDismissal {
     return NO;
@@ -76,6 +73,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self setNeedsStatusBarAppearanceUpdate];
     [self.tagTextField becomeFirstResponder];
+    [self lhs_activateKeyboardAdjustmentWithShow:nil hide:^{
+        self.autocompleteInProgress = NO;
+    }];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self lhs_deactivateKeyboardAdjustment];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -138,9 +143,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tagTextField.text = @"";
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
@@ -819,20 +821,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - Notification Handlers
 
-- (void)keyboardDidShow:(NSNotification *)sender {
-    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect newFrame = [self.view convertRect:frame fromView:[AppDelegate sharedDelegate].window];
-    self.bottomConstraint.constant = newFrame.origin.y - CGRectGetHeight(self.view.frame);
-    [self.view layoutIfNeeded];
-}
-
-- (void)keyboardWillHide:(NSNotification *)sender {
-    self.autocompleteInProgress = NO;
-
-    self.bottomConstraint.constant = 0;
-    [self.view layoutIfNeeded];
-}
-
 - (NSInteger)maxTagsToAutocomplete {
     if ([UIApplication isIPad]) {
         return 8;
@@ -893,6 +881,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (keyCommand == self.goBackKeyCommand) {
         [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+#pragma mark - LHSKeyboardAdjusting
+
+- (NSLayoutConstraint *)keyboardAdjustingBottomConstraint {
+    return self.bottomConstraint;
 }
 
 @end

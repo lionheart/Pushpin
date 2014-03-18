@@ -8,6 +8,7 @@
 
 @import UIKit;
 #import <TextExpander/SMTEDelegateController.h>
+#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
 
 @class PPEditDescriptionViewController;
 
@@ -19,7 +20,7 @@
 
 @end
 
-@interface PPEditDescriptionViewController : UIViewController <UITextViewDelegate, SMTEFillDelegate>
+@interface PPEditDescriptionViewController : UIViewController <UITextViewDelegate, SMTEFillDelegate, LHSKeyboardAdjusting>
 
 @property (nonatomic, strong) UITextView *textView;
 @property (nonatomic, strong) id<PPDescriptionEditing> delegate;
