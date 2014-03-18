@@ -12,6 +12,7 @@
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSKeyboardAdjustment.h>
 
 @interface PPEditDescriptionViewController ()
 
@@ -21,8 +22,6 @@
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
 - (void)fixTextView:(UITextView *)textView;
-- (void)keyboardWillHide:(NSNotification *)sender;
-- (void)keyboardDidShow:(NSNotification *)sender;
 
 @end
 
@@ -72,9 +71,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    
+
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
@@ -84,19 +81,20 @@
     [super viewWillAppear:animated];
     
     [self.textView becomeFirstResponder];
+
+    [self lhs_activateKeyboardAdjustment];
 }
 
-- (void)keyboardDidShow:(NSNotification *)sender {
-    CGRect frame = [sender.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect newFrame = [self.view convertRect:frame fromView:[AppDelegate sharedDelegate].window];
-    
-    self.bottomConstraint.constant = newFrame.origin.y - CGRectGetHeight(self.view.frame);
-    [self.view layoutIfNeeded];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self lhs_deactivateKeyboardAdjustment];
 }
 
-- (void)keyboardWillHide:(NSNotification *)sender {
-    self.bottomConstraint.constant = 0;
-    [self.view layoutIfNeeded];
+#pragma mark - LHSKeyboardAdjusting
+
+- (NSLayoutConstraint *)keyboardAdjustingBottomConstraint {
+    return self.bottomConstraint;
 }
 
 #pragma mark - UITextViewDelegate
@@ -121,8 +119,6 @@
 
     return YES;
 }
-
-
 
 #pragma mark - Key Commands
 

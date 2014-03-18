@@ -31,7 +31,7 @@ PODS:
   - hpple (0.2.0)
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
-  - LHSCategoryCollection (0.0.5)
+  - LHSCategoryCollection (0.0.7)
   - LHSCustomTransitionCollection (0.0.1)
   - LHSDelicious (0.0.1):
     - AFNetworking (= 2.2.0)
@@ -111,7 +111,7 @@ SPEC CHECKSUMS:
   hpple: dde62f905f482bbec50186280d1a1be2c881241b
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: b532e85de8792ea70dad237e7ead90993af763cf
-  LHSCategoryCollection: 0f0077c5018e3a937fd74b4d23adf3eb72bf19a0
+  LHSCategoryCollection: 75b42b9bc0ecc649353088db0c330d6cfec9f569
   LHSCustomTransitionCollection: 51711e5437e9de1af832c21c02c5b7580e0f42dc
   LHSDelicious: 1107455b8f9bff1237b44542400377ed99ebf424
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f

@@ -8,6 +8,8 @@
 
 @import UIKit;
 
+#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
+
 @class PPTagEditViewController;
 
 @protocol PPBadgeWrapperDelegate;
@@ -18,7 +20,7 @@
 
 @end
 
-@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate, UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate, UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, LHSKeyboardAdjusting>
 
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
