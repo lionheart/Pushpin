@@ -18,7 +18,7 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSKeyboardAdjustment.h>
+#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

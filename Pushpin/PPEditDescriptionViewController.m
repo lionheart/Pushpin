@@ -12,7 +12,7 @@
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSKeyboardAdjustment.h>
+#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 
 @interface PPEditDescriptionViewController ()
 

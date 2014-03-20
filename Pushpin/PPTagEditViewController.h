@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
+#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
 
 @class PPTagEditViewController;
 
