@@ -1,1 +1,0 @@
-../../../../LHSCategoryCollection/LHSKeyboardAdjusting.h

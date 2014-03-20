@@ -126,6 +126,12 @@
 #define COCOAPODS_VERSION_MINOR_LHSFMDatabaseAdditions 0
 #define COCOAPODS_VERSION_PATCH_LHSFMDatabaseAdditions 1
 
+// LHSKeyboardAdjusting
+#define COCOAPODS_POD_AVAILABLE_LHSKeyboardAdjusting
+#define COCOAPODS_VERSION_MAJOR_LHSKeyboardAdjusting 0
+#define COCOAPODS_VERSION_MINOR_LHSKeyboardAdjusting 0
+#define COCOAPODS_VERSION_PATCH_LHSKeyboardAdjusting 1
+
 // MWFeedParser
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser 1
