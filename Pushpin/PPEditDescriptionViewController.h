@@ -8,7 +8,7 @@
 
 @import UIKit;
 #import <TextExpander/SMTEDelegateController.h>
-#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
+#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
 
 @class PPEditDescriptionViewController;
 

@@ -7,7 +7,7 @@
 //
 
 #import "PPTableViewController.h"
-#import <LHSCategoryCollection/LHSKeyboardAdjusting.h>
+#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
 
 #ifdef PINBOARD
 typedef enum : NSInteger {
