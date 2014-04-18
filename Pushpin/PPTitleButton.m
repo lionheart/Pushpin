@@ -74,7 +74,7 @@
     NSDictionary *metrics = @{@"width": @(20),
                               @"textWidth": @([UIApplication currentSize].width - 120)};
     for (NSString *imageName in imageNames) {
-        NSString *formatName = [NSString stringWithFormat:@"image%d", i];
+        NSString *formatName = [NSString stringWithFormat:@"image%ld", (long)i];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.containerView addSubview:imageView];

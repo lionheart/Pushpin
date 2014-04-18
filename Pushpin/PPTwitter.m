@@ -11,6 +11,7 @@
 
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPTwitter ()
 
@@ -59,9 +60,9 @@
                                                        parameters:@{@"screen_name": screenName, @"follow": @"true"}];
             [request setAccount:account];
             
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
             [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                 
                 NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
                 dispatch_async(dispatch_get_main_queue(), ^{

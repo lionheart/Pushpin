@@ -3,6 +3,15 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.2</string>
+		<array>
+			<array>
+				<string>NEW</string>
+				<string>Fix an issue with URL clipboard detection where the app wouldn&apos;t prompt to add or edit a bookmark when a URL was on the clipboard.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.1</string>
 		<array>
 			<array>
