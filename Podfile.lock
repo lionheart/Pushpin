@@ -1,22 +1,22 @@
 PODS:
   - ADNActivityCollection (0.0.1)
-  - AFNetworking (2.2.0):
+  - AFNetworking (2.2.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
     - AFNetworking/UIKit
-  - AFNetworking/NSURLConnection (2.2.0):
+  - AFNetworking/NSURLConnection (2.2.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.2.0):
+  - AFNetworking/NSURLSession (2.2.1):
     - AFNetworking/NSURLConnection
-  - AFNetworking/Reachability (2.2.0)
-  - AFNetworking/Security (2.2.0)
-  - AFNetworking/Serialization (2.2.0)
-  - AFNetworking/UIKit (2.2.0):
+  - AFNetworking/Reachability (2.2.1)
+  - AFNetworking/Security (2.2.1)
+  - AFNetworking/Serialization (2.2.1)
+  - AFNetworking/UIKit (2.2.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ASPinboard (0.0.1):
@@ -31,11 +31,12 @@ PODS:
   - hpple (0.2.0)
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
-  - LHSCategoryCollection (0.0.7)
+  - LHSCategoryCollection (0.0.11)
   - LHSCustomTransitionCollection (0.0.1)
   - LHSDelicious (0.0.1):
-    - AFNetworking (= 2.2.0)
+    - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
+  - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
   - LHSKeyboardAdjusting (0.0.1)
   - MWFeedParser (1.0.0):
@@ -70,6 +71,7 @@ DEPENDENCIES:
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
   - LHSCustomTransitionCollection (from `../LHSCustomTransitionCollection`)
   - LHSDelicious (from `../LHSDelicious`)
+  - LHSDiigo (from `../LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
   - LHSKeyboardAdjusting (= 0.0.1)
   - MWFeedParser (= 1.0.0)
@@ -96,6 +98,8 @@ EXTERNAL SOURCES:
     :local: ../LHSCustomTransitionCollection
   LHSDelicious:
     :local: ../LHSDelicious
+  LHSDiigo:
+    :local: ../LHSDiigo
   LHSFMDatabaseAdditions:
     :podspec: Specs/LHSFMDatabaseAdditions.podspec
   oauthconsumer:
@@ -105,17 +109,18 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
-  AFNetworking: e8cfd8f3fe3bfe19124a0cc63f4d45752d892a56
+  AFNetworking: 0121f4b69be3fa58d1ab317866e036e12ac9651d
   ASPinboard: 781b62f391c4afb1b76262a996dda3395f2db5d5
   BugshotKit: b1ab5bda9165b8b79b34db4b5b30a23f39bcc641
   CrashlyticsFramework: 569d2b1c71922aa480bfdc55df4c86aedf7b215c
-  FMDB: 3fd5aaf632ca4ed39e3f101e0398504e6d5b0918
+  FMDB: d47c9f71888fcbbf6ca7d37bd3e145672477d921
   hpple: dde62f905f482bbec50186280d1a1be2c881241b
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: b532e85de8792ea70dad237e7ead90993af763cf
-  LHSCategoryCollection: b12f279c6bf0e37178d7ed8603ca045e0cc288ec
+  LHSCategoryCollection: 8566f7ccdcee34c7ccef0a8a42a1e7595e10c728
   LHSCustomTransitionCollection: 51711e5437e9de1af832c21c02c5b7580e0f42dc
-  LHSDelicious: 1107455b8f9bff1237b44542400377ed99ebf424
+  LHSDelicious: eb01ed82e2002629c61fcec13e2769a4ef3cb5af
+  LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
   LHSKeyboardAdjusting: 18d0114814bb2fb7a7563c1ec3043698638dd2a2
   MWFeedParser: eb4fbf12677a1b3d936fdd122f88866b528aca3e
@@ -124,10 +129,10 @@ SPEC CHECKSUMS:
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
   RPSTPasswordManagementAppService: ef9ba65edee84b8031c822dcebc264615b23e789
-  TestFlightSDK: 030fa8a1bc8aa9ba5c9ae1be05ceaba775368c0c
-  TextExpander: 82b79c031424f3c522520078c555d5167acdf4fa
+  TestFlightSDK: 3cf0a0c5b0a01000982528347e604aa6f393dc49
+  TextExpander: 755ff25950efe16b13cbd7be1918cb088e475bf5
   TTTAttributedLabel: 3a571d73e055f4a79c304240598e4bfd199238e4
   uservoice-iphone-sdk: 79b21e4bc6ab3d3e13e0e8597789e6f2c800602e
   XMLDictionary: 27390d3517062694ccb307a7750250e1b687571d
 
-COCOAPODS: 0.29.0
+COCOAPODS: 0.31.1
