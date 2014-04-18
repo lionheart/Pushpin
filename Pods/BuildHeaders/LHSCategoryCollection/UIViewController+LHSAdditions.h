@@ -1,1 +1,1 @@
-../../../../LHSCategoryCollection/UIViewController+LHSAdditions.h
+../../../../LHSCategoryCollection/Categories/UIViewController+LHSAdditions.h

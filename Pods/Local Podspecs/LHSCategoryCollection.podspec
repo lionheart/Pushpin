@@ -1,14 +1,14 @@
 Pod::Spec.new do |s|
   s.name         = "LHSCategoryCollection"
-  s.version      = "0.0.7"
-  s.summary      = "A collection of categories I commonly use in iOS projects."
-  s.homepage     = "lionheartsw.com"
+  s.version      = "0.0.11"
+  s.summary      = "A collection of helpful categories for use in iOS projects."
+  s.homepage     = "http://lionheartsw.com"
   s.license      = 'Apache 2.0'
   s.author       = { "Dan Loewenherz" => "dan@lionheartsw.com" }
   s.social_media_url = "http://twitter.com/dwlz"
   s.source       = { :git => "https://github.com/lionheart/LHSCategoryCollection.git", :tag => "#{s.version}" }
-  s.source_files = '*.{h,m}'
-  s.public_header_files = '*.h'
+  s.source_files = 'Categories/*.{h,m}'
+  s.public_header_files = 'Categories/*.h'
   s.requires_arc = true
 
   s.platform     = :ios, '6.0'
