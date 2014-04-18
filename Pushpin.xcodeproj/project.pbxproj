@@ -568,6 +568,7 @@
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
 		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		373115EE18E23C310072A986 /* PPDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDataSource.h; sourceTree = "<group>"; };
 		3732DF9B175957F000978A68 /* PPAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAboutViewController.h; sourceTree = "<group>"; };
 		3732DF9C175957F000978A68 /* PPAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAboutViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3732DF9E17596D7500978A68 /* apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = apple.png; path = Assets/apple.png; sourceTree = "<group>"; };
@@ -1698,6 +1699,7 @@
 				37D4B00318833BC800E07EB3 /* readability.css */,
 				37BC1BD91889C6730022020A /* PPTwitter.h */,
 				37BC1BDA1889C6740022020A /* PPTwitter.m */,
+				373115EE18E23C310072A986 /* PPDataSource.h */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";

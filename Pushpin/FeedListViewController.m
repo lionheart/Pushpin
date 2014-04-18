@@ -456,7 +456,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 #ifdef DELICIOUS
-    return PPProviderDeliciousSections - [self numberOfHiddenSections];
+    if (self.tableView.allowsMultipleSelectionDuringEditing) {
+        return PPProviderDeliciousSections;
+    }
+    else {
+        return PPProviderDeliciousSections - [self numberOfHiddenSections];
+    }
 #endif
     
 #ifdef PINBOARD

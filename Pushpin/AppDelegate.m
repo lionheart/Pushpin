@@ -45,6 +45,7 @@
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 #import <Crashlytics/Crashlytics.h>
 #import "MFMailComposeViewController+Theme.h"
+#import <LHSDiigo/LHSDiigoClient.h>
 
 #if TESTING
 #import <BugshotKit/BugshotKit.h>
@@ -304,7 +305,15 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     self.bookmarksNeedUpdate = YES;
 
-    if (!didLaunchWithURL && self.token != nil) {
+#ifdef DELICIOUS
+    BOOL isAuthenticated = self.username != nil && self.password != nil;
+#endif
+    
+#ifdef PINBOARD
+    BOOL isAuthenticated = self.token != nil;
+#endif
+
+    if (!didLaunchWithURL && isAuthenticated) {
         [self promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
