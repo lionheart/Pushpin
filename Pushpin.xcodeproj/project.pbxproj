@@ -13,6 +13,7 @@
 		3709354C1894C22100E3588E /* DeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* DeliciousDataSource.m */; };
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
+		370BBE021901ABBB004FA557 /* safari-callback.html in Resources */ = {isa = PBXBuildFile; fileRef = 370BBE011901ABBB004FA557 /* safari-callback.html */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
 		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
 		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
@@ -523,6 +524,7 @@
 		3709354B1894C22100E3588E /* DeliciousDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DeliciousDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
 		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
+		370BBE011901ABBB004FA557 /* safari-callback.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-callback.html"; path = "Assets/safari-callback.html"; sourceTree = "<group>"; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
@@ -1720,6 +1722,7 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				370BBE011901ABBB004FA557 /* safari-callback.html */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				37BC1BD4188641D80022020A /* JSDOMParser.js */,
@@ -2133,6 +2136,7 @@
 				E873422C180DAA5B00CF9E5F /* activity-browser-safari@2x.png in Resources */,
 				373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */,
 				37A7B5D3183463410038677E /* add@2x.png in Resources */,
+				370BBE021901ABBB004FA557 /* safari-callback.html in Resources */,
 				373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */,
 				37A7B5D4183463410038677E /* add.png in Resources */,
 				E873422B180DAA5B00CF9E5F /* activity-browser-safari.png in Resources */,
