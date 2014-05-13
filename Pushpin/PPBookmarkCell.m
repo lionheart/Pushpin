@@ -7,7 +7,7 @@
 //
 
 #import "PPBookmarkCell.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPScrollView.h"

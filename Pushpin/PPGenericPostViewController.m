@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
 #import "PPStatusBarNotification.h"
@@ -38,7 +38,7 @@ static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
 
-@interface GenericPostViewController ()
+@interface PPGenericPostViewController ()
 
 @property (nonatomic, strong) UIButton *multipleMarkAsReadButton;
 @property (nonatomic, strong) UIButton *multipleTagEditButton;
@@ -96,7 +96,7 @@ static NSInteger kToolbarHeight = 44;
 
 @end
 
-@implementation GenericPostViewController
+@implementation PPGenericPostViewController
 
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize itemSize = _itemSize;
@@ -724,7 +724,7 @@ static NSInteger kToolbarHeight = 44;
         
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
         
-        __weak GenericPostViewController *weakself = self;
+        __weak PPGenericPostViewController *weakself = self;
         
         [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1141,7 +1141,7 @@ static NSInteger kToolbarHeight = 44;
                 NSArray *activityItems = @[title, url];
                 self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
                 
-                __weak GenericPostViewController *weakself = self;
+                __weak PPGenericPostViewController *weakself = self;
                 self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
                     [weakself setNeedsStatusBarAppearanceUpdate];
                     
@@ -1552,7 +1552,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)removeBarButtonTouchUpside:(id)sender {
-    __weak GenericPostViewController *weakself = self;
+    __weak PPGenericPostViewController *weakself = self;
     [self.postDataSource removeDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1566,7 +1566,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)addBarButtonTouchUpside:(id)sender {
-    __weak GenericPostViewController *weakself = self;
+    __weak PPGenericPostViewController *weakself = self;
     [self.postDataSource addDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             UILocalNotification *notification = [[UILocalNotification alloc] init];

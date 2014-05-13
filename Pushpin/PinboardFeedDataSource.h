@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 
 @class PostMetadata;
 
@@ -26,7 +26,7 @@
 - (NSURL *)url;
 - (id)initWithComponents:(NSArray *)components;
 + (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
-+ (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
++ (PPGenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
 
 - (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;
 

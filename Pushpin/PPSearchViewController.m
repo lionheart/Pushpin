@@ -9,7 +9,7 @@
 #import "PPSearchViewController.h"
 #import "PPTheme.h"
 #import "PPSearchExamplesViewController.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
@@ -590,7 +590,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 #pragma -
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender {
-    GenericPostViewController *genericPostViewController = [[GenericPostViewController alloc] init];
+    PPGenericPostViewController *genericPostViewController = [[PPGenericPostViewController alloc] init];
     
 #ifdef PINBOARD
     PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];

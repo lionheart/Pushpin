@@ -842,7 +842,7 @@ static BOOL kPinboardSyncInProgress = NO;
             DeliciousDataSource *deliciousDataSource = [self dataSourceWithAdditionalTag:tag];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
                 postViewController.postDataSource = deliciousDataSource;
                 PPTitleButton *button = [PPTitleButton buttonWithDelegate:postViewController];
                 [button setTitle:[deliciousDataSource.tags componentsJoinedByString:@"+"] imageName:nil];

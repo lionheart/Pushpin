@@ -9,7 +9,7 @@
 @import Foundation;
 
 #import "PPConstants.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 
 @class FMResultSet;
 @class PostMetadata;

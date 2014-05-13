@@ -17,7 +17,7 @@
 #import "PPBrowserActivity.h"
 #import "PPReadLaterActivity.h"
 #import "PPNavigationController.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PPMobilizerUtility.h"
 #import "PPActivityViewController.h"
 
