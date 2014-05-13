@@ -14,7 +14,7 @@
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
-#import "SettingsViewController.h"
+#import "PPSettingsViewController.h"
 #import "PPTagViewController.h"
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
@@ -1121,7 +1121,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self toggleEditing:sender];
     }
     else {
-        SettingsViewController *svc = [[SettingsViewController alloc] init];
+        PPSettingsViewController *svc = [[PPSettingsViewController alloc] init];
         [self.navigationController pushViewController:svc animated:YES];
     }
 }
