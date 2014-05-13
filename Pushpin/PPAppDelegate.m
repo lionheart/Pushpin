@@ -10,7 +10,7 @@
 
 #import "PPAppDelegate.h"
 #import "NoteViewController.h"
-#import "LoginViewController.h"
+#import "PPLoginViewController.h"
 #import "SettingsViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
@@ -593,7 +593,7 @@
 
 - (PPNavigationController *)loginViewController {
     if (!_loginViewController) {
-        LoginViewController *loginViewController = [[LoginViewController alloc] init];
+        PPLoginViewController *loginViewController = [[PPLoginViewController alloc] init];
         
         PPNavigationController *controller = [[PPNavigationController alloc] initWithRootViewController:loginViewController];
         controller.navigationBar.translucent = NO;
