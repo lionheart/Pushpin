@@ -7,7 +7,7 @@
 //
 
 #import "PinboardFeedDataSource.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "AddBookmarkViewController.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
@@ -77,7 +77,7 @@
     NSInteger actions = PPPostActionCopyToMine | PPPostActionCopyURL | PPPostActionShare;
     
     BOOL shareToReadLater = NO;
-    if (shareToReadLater && [AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    if (shareToReadLater && [PPAppDelegate sharedDelegate].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
 
@@ -117,7 +117,7 @@
 
 - (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure width:(CGFloat)width {
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
@@ -264,8 +264,8 @@
     NSString *urlString;
     
     // If it's our username, we need to use the feed token to get any private tags
-    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+    NSString *username = [[[[PPAppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *feedToken = [[PPAppDelegate sharedDelegate] feedToken];
     if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
     }
@@ -365,7 +365,7 @@
     GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
     PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
     
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
     [db open];
     FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
     [result next];
@@ -389,7 +389,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
         [db close];
@@ -409,7 +409,7 @@
 - (void)removeDataSource:(void (^)())callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[componentString]];
         [db close];

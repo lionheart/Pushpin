@@ -6,7 +6,7 @@
 //
 //
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPTagEditViewController.h"
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
@@ -514,7 +514,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleTagSuggestions {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (!self.filteredPopularAndRecommendedTagsVisible) {
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
             
             NSInteger previousCount;
             if (self.filteredPopularAndRecommendedTagsVisible) {
@@ -614,7 +614,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSString *searchString = [string stringByAppendingString:@"*"];
                 NSArray *existingTags = [self existingTags];
                 
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                 [db open];
                 
                 NSMutableArray *queryComponents = [NSMutableArray array];

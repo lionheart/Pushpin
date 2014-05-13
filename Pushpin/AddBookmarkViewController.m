@@ -116,7 +116,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         self.markAsRead = NO;
         self.loadingTitle = NO;
-        self.setAsPrivate = [AppDelegate sharedDelegate].privateByDefault;
+        self.setAsPrivate = [PPAppDelegate sharedDelegate].privateByDefault;
         self.existingTags = [NSMutableArray array];
         
         self.callback = ^(NSDictionary *bookmark) {};
@@ -176,7 +176,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 + (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString
                                                              callback:(void (^)())callback {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
     [db open];
     
     FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
@@ -249,7 +249,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.setAsPrivate = [bookmark[@"private"] boolValue];
     }
     else {
-        addBookmarkViewController.setAsPrivate = [AppDelegate sharedDelegate].privateByDefault;
+        addBookmarkViewController.setAsPrivate = [PPAppDelegate sharedDelegate].privateByDefault;
     }
     
     if (bookmark[@"unread"]) {
@@ -257,7 +257,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.markAsRead = isRead;
     }
     else {
-        addBookmarkViewController.markAsRead = [AppDelegate sharedDelegate].readByDefault;
+        addBookmarkViewController.markAsRead = [PPAppDelegate sharedDelegate].readByDefault;
     }
     
     addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate;
@@ -635,7 +635,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
-        [[AppDelegate sharedDelegate] retrievePageTitle:url
+        [[PPAppDelegate sharedDelegate] retrievePageTitle:url
                                                callback:^(NSString *title, NSString *description) {
                                                    self.titleTextField.text = title;
                                                    self.postDescription = description;
@@ -653,7 +653,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[AppDelegate sharedDelegate] connectionAvailable]) {
+        if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UILocalNotification *notification = [[UILocalNotification alloc] init];
                 notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
@@ -699,7 +699,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             void (^BookmarkSuccessBlock)() = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     BOOL bookmarkAdded;
                     
                     [db open];

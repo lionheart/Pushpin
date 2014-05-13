@@ -7,7 +7,7 @@
 //
 
 #import "PPEditDescriptionViewController.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPTheme.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -45,8 +45,8 @@
 
         self.textView = [[UITextView alloc] initWithFrame:CGRectZero];
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textView.autocorrectionType = [AppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-        self.textView.autocapitalizationType =  [AppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
+        self.textView.autocorrectionType = [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+        self.textView.autocapitalizationType =  [PPAppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
         self.textView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.textView.font = font;
         self.textView.delegate = self.textExpander;

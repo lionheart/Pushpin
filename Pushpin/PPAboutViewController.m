@@ -11,7 +11,7 @@
 @import Social;
 @import StoreKit;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPAboutViewController.h"
 #import "PPWebViewController.h"
 #import "PPChangelogViewController.h"

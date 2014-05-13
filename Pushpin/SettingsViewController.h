@@ -10,7 +10,7 @@
 @import MessageUI;
 @import MessageUI.MFMessageComposeViewController;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 #import "PocketAPI.h"

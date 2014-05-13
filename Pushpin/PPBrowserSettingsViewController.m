@@ -10,7 +10,7 @@
 
 #import "PPBrowserSettingsViewController.h"
 #import "BookmarkletInstallationViewController.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
@@ -111,7 +111,7 @@ static NSString *CellIdentifier = @"Cell";
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     
-                    PPBrowserType browser = [AppDelegate sharedDelegate].browser;
+                    PPBrowserType browser = [PPAppDelegate sharedDelegate].browser;
 
                     switch (browser) {
                         case PPBrowserWebview:
@@ -153,7 +153,7 @@ static NSString *CellIdentifier = @"Cell";
                     self.openLinksInAppSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.openLinksInAppSwitch.on = [AppDelegate sharedDelegate].openLinksInApp;
+                    self.openLinksInAppSwitch.on = [PPAppDelegate sharedDelegate].openLinksInApp;
                     [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.openLinksInAppSwitch;
                     break;
@@ -209,7 +209,7 @@ static NSString *CellIdentifier = @"Cell";
     if (buttonIndex >= 0) {
         if (actionSheet == (UIActionSheet *)self.browserActionSheet) {
             NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             if ([title isEqualToString:@"Webview"]) {
                 [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Webview"];
                 delegate.browser = PPBrowserWebview;
@@ -248,7 +248,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setOpenLinksInApp:self.openLinksInAppSwitch.on];
+    [[PPAppDelegate sharedDelegate] setOpenLinksInApp:self.openLinksInAppSwitch.on];
 }
 
 @end

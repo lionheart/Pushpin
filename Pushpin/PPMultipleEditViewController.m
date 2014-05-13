@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPMultipleEditViewController.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
@@ -276,7 +276,7 @@ static NSString *CellIdentifier = @"Cell";
                     NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
                     NSArray *existingTags = [tagTextFieldText componentsSeparatedByString:@" "];
                     
-                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     [db open];
                     
                     #warning XXX For some reason, getting double results here sometimes. Search duplication?

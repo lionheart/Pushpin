@@ -9,7 +9,7 @@
 @import QuartzCore;
 
 #import "PPSavedFeedsViewController.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "GenericPostViewController.h"
 #import "PinboardFeedDataSource.h"
 #import "PPAddSavedFeedViewController.h"
@@ -51,7 +51,7 @@ static NSString *CellIdentifier = @"Cell";
     NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         
         [db beginTransaction];
@@ -126,7 +126,7 @@ static NSString *CellIdentifier = @"Cell";
     
     if (self.feeds.count > 0) {
         GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
-        [[AppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
+        [[PPAppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
     }
 }
 

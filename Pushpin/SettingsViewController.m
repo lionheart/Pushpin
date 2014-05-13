@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "SettingsViewController.h"
 #import "LoginViewController.h"
 #import "ASStyleSheet.h"
@@ -213,7 +213,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
-                    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
+                    PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
                     switch (readLater) {
                         case PPReadLaterNone:
                             cell.detailTextLabel.text = NSLocalizedString(@"None", nil);
@@ -240,7 +240,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
-                    PPMobilizerType mobilizer = [AppDelegate sharedDelegate].mobilizer;
+                    PPMobilizerType mobilizer = [PPAppDelegate sharedDelegate].mobilizer;
                     switch (mobilizer) {
                         case PPMobilizerGoogle:
                             cell.detailTextLabel.text = @"Google";
@@ -328,7 +328,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             delegate.lastUpdated = nil;
             [delegate logout];
 
@@ -341,7 +341,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #endif
 
             NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:[AppDelegate databasePath] error:nil];
+            [fileManager removeItemAtPath:[PPAppDelegate databasePath] error:nil];
             [delegate setLoginViewController:nil];
             [delegate setNavigationController:nil];
             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -355,7 +355,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                  completion:nil];
             }
 
-            [[AppDelegate sharedDelegate] migrateDatabase];
+            [[PPAppDelegate sharedDelegate] migrateDatabase];
         }
     }
     else if (alertView == self.instapaperAlertView) {
@@ -387,11 +387,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
@@ -407,7 +407,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        
-                                       [AppDelegate sharedDelegate].readLater = PPReadLaterInstapaper;
+                                       [PPAppDelegate sharedDelegate].readLater = PPReadLaterInstapaper;
                                        [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
@@ -453,11 +453,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
-        [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
 
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
@@ -466,7 +466,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        
-                                       [AppDelegate sharedDelegate].readLater = PPReadLaterReadability;
+                                       [PPAppDelegate sharedDelegate].readLater = PPReadLaterReadability;
                                        [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                                              withRowAnimation:UITableViewRowAnimationFade];
@@ -516,7 +516,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         else if (actionSheet == self.mobilizerActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
             if ([buttonTitle isEqualToString:@"Google"]) {
                 delegate.mobilizer = PPMobilizerGoogle;
@@ -544,7 +544,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [[PocketAPI sharedAPI] loginWithDelegate:nil];;
             }
             else if ([buttonTitle isEqualToString:@"None"]) {
-                [AppDelegate sharedDelegate].readLater = PPReadLaterNone;
+                [PPAppDelegate sharedDelegate].readLater = PPReadLaterNone;
                 [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"None"];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                       withRowAnimation:UITableViewRowAnimationFade];
@@ -570,7 +570,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    [AppDelegate sharedDelegate].readLater = PPReadLaterPocket;
+    [PPAppDelegate sharedDelegate].readLater = PPReadLaterPocket;
     [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                           withRowAnimation:UITableViewRowAnimationFade];
@@ -661,7 +661,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.loadingIndicator startAnimating];
                     [loadingAlertView addSubview:self.loadingIndicator];
                     
-                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     [db open];
                     [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                     [db close];

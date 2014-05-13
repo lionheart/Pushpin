@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPDisplaySettingsViewController.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
@@ -66,43 +66,43 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.navigationItem.titleView = titleView;
     
     self.privateByDefaultSwitch = [[UISwitch alloc] init];
-    self.privateByDefaultSwitch.on = [AppDelegate sharedDelegate].privateByDefault;
+    self.privateByDefaultSwitch.on = [PPAppDelegate sharedDelegate].privateByDefault;
     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.readByDefaultSwitch = [[UISwitch alloc] init];
-    self.readByDefaultSwitch.on = [AppDelegate sharedDelegate].readByDefault;
+    self.readByDefaultSwitch.on = [PPAppDelegate sharedDelegate].readByDefault;
     [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.autoCapitalizationSwitch = [[UISwitch alloc] init];
-    self.autoCapitalizationSwitch.on = [AppDelegate sharedDelegate].enableAutoCapitalize;
+    self.autoCapitalizationSwitch.on = [PPAppDelegate sharedDelegate].enableAutoCapitalize;
     [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.compressPostsSwitch = [[UISwitch alloc] init];
-    self.compressPostsSwitch.on = [AppDelegate sharedDelegate].compressPosts;
+    self.compressPostsSwitch.on = [PPAppDelegate sharedDelegate].compressPosts;
     [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.markReadSwitch = [[UISwitch alloc] init];
-    self.markReadSwitch.on = [AppDelegate sharedDelegate].markReadPosts;
+    self.markReadSwitch.on = [PPAppDelegate sharedDelegate].markReadPosts;
     [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.doubleTapToEditSwitch = [[UISwitch alloc] init];
-    self.doubleTapToEditSwitch.on = [AppDelegate sharedDelegate].doubleTapToEdit;
+    self.doubleTapToEditSwitch.on = [PPAppDelegate sharedDelegate].doubleTapToEdit;
     [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
-    self.autoCorrectionSwitch.on = [AppDelegate sharedDelegate].enableAutoCorrect;
+    self.autoCorrectionSwitch.on = [PPAppDelegate sharedDelegate].enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
-    self.onlyPromptToAddOnceSwitch.on = ![AppDelegate sharedDelegate].onlyPromptToAddOnce;
+    self.onlyPromptToAddOnceSwitch.on = ![PPAppDelegate sharedDelegate].onlyPromptToAddOnce;
     [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.dimReadPostsSwitch = [[UISwitch alloc] init];
-    self.dimReadPostsSwitch.on = [AppDelegate sharedDelegate].dimReadPosts;
+    self.dimReadPostsSwitch.on = [PPAppDelegate sharedDelegate].dimReadPosts;
     [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.alwaysShowAlertSwitch = [[UISwitch alloc] init];
-    self.alwaysShowAlertSwitch.on = [AppDelegate sharedDelegate].alwaysShowClipboardNotification;
+    self.alwaysShowAlertSwitch.on = [PPAppDelegate sharedDelegate].alwaysShowClipboardNotification;
     [self.alwaysShowAlertSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
@@ -319,7 +319,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = nil;
 
                     cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
-                    cell.detailTextLabel.text = [AppDelegate sharedDelegate].defaultFeedDescription;
+                    cell.detailTextLabel.text = [PPAppDelegate sharedDelegate].defaultFeedDescription;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
             }
@@ -412,7 +412,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             break;
 
         case PPSectionTextExpanderSettings: {
-            SMTEDelegateController *teDelegate = [AppDelegate sharedDelegate].textExpander;
+            SMTEDelegateController *teDelegate = [PPAppDelegate sharedDelegate].textExpander;
             teDelegate.getSnippetsScheme = @"pushpin";
             teDelegate.clientAppName = @"Pushpin";
             [teDelegate getSnippets];
@@ -440,7 +440,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [activity startAnimating];
                     [loadingAlertView addSubview:activity];
                     
-                    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     [db open];
                     [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                     [db close];
@@ -502,7 +502,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)switchChangedValue:(id)sender {
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     if (sender == self.compressPostsSwitch) {
         [delegate setCompressPosts:self.compressPostsSwitch.on];
     }
@@ -554,11 +554,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setPrivateByDefault:self.privateByDefaultSwitch.on];
+    [[PPAppDelegate sharedDelegate] setPrivateByDefault:self.privateByDefaultSwitch.on];
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[AppDelegate sharedDelegate] setReadByDefault:self.readByDefaultSwitch.on];
+    [[PPAppDelegate sharedDelegate] setReadByDefault:self.readByDefaultSwitch.on];
 }
 
 @end

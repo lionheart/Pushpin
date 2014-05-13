@@ -7,7 +7,7 @@
 //
 
 #import "NoteViewController.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 
 #import <ASPinboard.h>
 
@@ -86,7 +86,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
 
-    if (![[AppDelegate sharedDelegate] connectionAvailable]) {
+    if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
         return;
     }
 

@@ -37,12 +37,12 @@
 
     UIViewController *controller = [UIViewController lhs_topViewController];
     if ([[controller class] isEqual:[AddBookmarkViewController class]]) {
-        controller = (UIViewController *)[[AppDelegate sharedDelegate].navigationController topViewController];
+        controller = (UIViewController *)[[PPAppDelegate sharedDelegate].navigationController topViewController];
     }
 
     self.superview = controller.view;
     if ([[self.superview class] isSubclassOfClass:[UITableView class]]) {
-        self.superview = [AppDelegate sharedDelegate].window;
+        self.superview = [PPAppDelegate sharedDelegate].window;
     }
 
     self.view = [[UIView alloc] init];

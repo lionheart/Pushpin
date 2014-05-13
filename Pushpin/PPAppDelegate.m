@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "NoteViewController.h"
 #import "LoginViewController.h"
 #import "SettingsViewController.h"
@@ -51,7 +51,7 @@
 #import <BugshotKit/BugshotKit.h>
 #endif
 
-@interface AppDelegate ()
+@interface PPAppDelegate ()
 
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIAlertView *updateBookmarkAlertView;
@@ -61,7 +61,7 @@
 
 @end
 
-@implementation AppDelegate
+@implementation PPAppDelegate
 
 @synthesize splitViewController = _splitViewController;
 @synthesize readLater = _readLater;
@@ -194,7 +194,7 @@
 
         void (^PresentView)() = ^{
             if ([UIApplication isIPad]) {
-                UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+                UINavigationController *navigationController = [PPAppDelegate sharedDelegate].navigationController;
                 if (navigationController.viewControllers.count == 1) {
                     UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
                     if (showPopoverBarButtonItem) {
@@ -210,7 +210,7 @@
                     }
                 }
 
-                UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+                UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
                 if (popover) {
                     [popover dismissPopoverAnimated:YES];
                 }
@@ -330,7 +330,7 @@
             }
             
             MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
             [results next];
@@ -364,7 +364,7 @@
             else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
                 if (candidateURL && candidateURL.scheme && candidateURL.host) {
-                    [[AppDelegate sharedDelegate] retrievePageTitle:candidateURL
+                    [[PPAppDelegate sharedDelegate] retrievePageTitle:candidateURL
                                                            callback:^(NSString *title, NSString *description) {
                                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                                    self.clipboardBookmarkTitle = title;
@@ -535,8 +535,8 @@
             
             switch (feedType) {
                 case PPPinboardCommunityFeedNetwork: {
-                    NSString *username = [[[[AppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                    NSString *feedToken = [[AppDelegate sharedDelegate] feedToken];
+                    NSString *username = [[[[PPAppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
+                    NSString *feedToken = [[PPAppDelegate sharedDelegate] feedToken];
                     feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
                     break;
                 }
@@ -773,7 +773,7 @@
 }
 
 - (void)migrateDatabase {
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
     [db open];
     // http://stackoverflow.com/a/875422/39155
     [db executeUpdate:@"PRAGMA cache_size=100;"];
@@ -1076,8 +1076,8 @@
     [db close];
 }
 
-+ (AppDelegate *)sharedDelegate {
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
++ (PPAppDelegate *)sharedDelegate {
+    return (PPAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 #pragma mark - Properties
@@ -1546,7 +1546,7 @@
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                 [db open];
                 [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 [db close];
@@ -1568,7 +1568,7 @@
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                 [db open];
                 [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 [db close];
@@ -1642,7 +1642,7 @@
 #ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 
-    FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
     [db open];
     [db executeUpdate:@"DELETE FROM feeds WHERE 1=1;"];
     [db executeUpdate:@"DELETE FROM tag WHERE 1=1;"];

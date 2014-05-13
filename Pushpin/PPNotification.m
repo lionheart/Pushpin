@@ -6,7 +6,7 @@
 //
 //
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPNotification.h"
 #import "PPTheme.h"
 

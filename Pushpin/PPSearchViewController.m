@@ -14,7 +14,7 @@
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
 #import "PPTitleButton.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "FeedListViewController.h"
 #import "DeliciousDataSource.h"
 
@@ -682,7 +682,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
-        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+        UINavigationController *navigationController = [PPAppDelegate sharedDelegate].navigationController;
         if (navigationController.viewControllers.count == 1) {
             UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
             if (showPopoverBarButtonItem) {
@@ -696,7 +696,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             [self.navigationController.navigationBar setBarTintColor:[dataSource barTintColor]];
         }
         
-        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+        UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
         if (popover) {
             [popover dismissPopoverAnimated:YES];
         }

@@ -8,7 +8,7 @@
 
 #import "LoginViewController.h"
 @import QuartzCore;
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PinboardDataSource.h"
 #import "FeedListViewController.h"
 #import "PPTheme.h"
@@ -166,7 +166,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            AppDelegate *delegate = [AppDelegate sharedDelegate];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             
             UIActivityIndicatorView *loginActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
             [loginActivityView startAnimating];

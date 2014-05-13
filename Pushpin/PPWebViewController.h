@@ -8,7 +8,7 @@
 
 @import UIKit;
 #import <MessageUI/MessageUI.h>
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPToolbar.h"
 
 @interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate>

@@ -200,7 +200,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (NSInteger)totalNumberOfPosts {
     if (!_totalNumberOfPosts) {
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
         [result next];
@@ -237,7 +237,7 @@ static BOOL kPinboardSyncInProgress = NO;
         void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
             DLog(@"%@ - Received data", [NSDate date]);
             NSDate *startDate = [NSDate date];
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             db.logsErrors = YES;
             
@@ -455,7 +455,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             self.totalNumberOfPosts = index;
             
-            [[AppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
+            [[PPAppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
             kPinboardSyncInProgress = NO;
             
             progress(total, total);
@@ -473,7 +473,7 @@ static BOOL kPinboardSyncInProgress = NO;
         
         void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSDate *lastLocalUpdate = [[AppDelegate sharedDelegate] lastUpdated];
+                NSDate *lastLocalUpdate = [[PPAppDelegate sharedDelegate] lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
                 BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
@@ -530,7 +530,7 @@ static BOOL kPinboardSyncInProgress = NO;
                       cancel:(void (^)(BOOL *))cancel
                        width:(CGFloat)width {
     void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
         
@@ -668,7 +668,7 @@ static BOOL kPinboardSyncInProgress = NO;
                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                               if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                   // Bookmark has already been marked as read on server.
-                                  FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                  FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                                   [db open];
                                   [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
                                   [db close];
@@ -684,7 +684,7 @@ static BOOL kPinboardSyncInProgress = NO;
                               [delicious addBookmark:newBookmark
                                              success:^{
                                                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                     FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                                     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                                                      [db open];
                                                      [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
                                                      [db close];
@@ -720,7 +720,7 @@ static BOOL kPinboardSyncInProgress = NO;
         url = self.posts[indexPath.row][@"url"];
         SuccessBlock = ^{
             NSString *hash = self.posts[indexPath.row][@"hash"];
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             [db beginTransaction];
             [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
@@ -748,7 +748,7 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_notify(group, queue, ^{
         dispatch_group_t inner_group = dispatch_group_create();
         
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
         [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
@@ -774,7 +774,7 @@ static BOOL kPinboardSyncInProgress = NO;
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                 [db open];
                 [db beginTransaction];
                 [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
@@ -822,7 +822,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     
     BOOL shareToReadLater = NO;
-    if (shareToReadLater && [AppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    if (shareToReadLater && [PPAppDelegate sharedDelegate].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
     
