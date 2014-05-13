@@ -129,7 +129,7 @@
 		3751D18918346EED00E0A42A /* mobilized-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18718346EED00E0A42A /* mobilized-active@2x.png */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		375A1009167D4B3100320495 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375A1008167D4B3100320495 /* Security.framework */; };
-		375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* FeedListViewController.m */; };
+		375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
 		3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
 		376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
@@ -674,8 +674,8 @@
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
 		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; };
 		375A1008167D4B3100320495 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		375A638816C0CB0800665CA1 /* FeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedListViewController.h; sourceTree = "<group>"; };
-		375A638916C0CB0800665CA1 /* FeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		375A638816C0CB0800665CA1 /* PPFeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFeedListViewController.h; sourceTree = "<group>"; };
+		375A638916C0CB0800665CA1 /* PPFeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPFeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMobilizerUtility.h; sourceTree = "<group>"; };
 		3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMobilizerUtility.m; sourceTree = "<group>"; };
 		3769A5771879C50D00AC8C44 /* PPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPConstants.h; sourceTree = "<group>"; };
@@ -1471,8 +1471,8 @@
 				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
 				377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */,
 				377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */,
-				375A638816C0CB0800665CA1 /* FeedListViewController.h */,
-				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
+				375A638816C0CB0800665CA1 /* PPFeedListViewController.h */,
+				375A638916C0CB0800665CA1 /* PPFeedListViewController.m */,
 				3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */,
 				3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */,
 				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
@@ -2536,7 +2536,7 @@
 				3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */,
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
-				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
+				375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */,
 				37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */,
 				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
