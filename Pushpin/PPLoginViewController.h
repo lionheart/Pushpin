@@ -14,7 +14,7 @@ typedef enum kLoginRows {
     kLogin1PasswordRow = 0
 } kLoginRowType;
 
-@interface LoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
+@interface PPLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
 }
 
 @property (nonatomic) BOOL keyboard_shown;

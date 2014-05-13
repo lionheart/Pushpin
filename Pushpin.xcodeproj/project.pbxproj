@@ -157,7 +157,7 @@
 		37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37887D6918C51F7D00A20B76 /* Crashlytics.framework */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
-		37919F1E16091DF5007708EF /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* LoginViewController.m */; };
+		37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPLoginViewController.m */; };
 		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
 		3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3798AD7A18766DA3002D684B /* Delete-Button-Light.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798AD7818766DA3002D684B /* Delete-Button-Light.png */; };
@@ -713,8 +713,8 @@
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		37919F1C16091DF5007708EF /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		37919F1D16091DF5007708EF /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = LoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		37919F1C16091DF5007708EF /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
+		37919F1D16091DF5007708EF /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
 		3798AD7818766DA3002D684B /* Delete-Button-Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button-Light.png"; path = "Assets/Delete-Button-Light.png"; sourceTree = "<group>"; };
@@ -1463,8 +1463,8 @@
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				37A25A2015FC42B5009716BB /* NoteViewController.h */,
 				37A25A2115FC42B5009716BB /* NoteViewController.m */,
-				37919F1C16091DF5007708EF /* LoginViewController.h */,
-				37919F1D16091DF5007708EF /* LoginViewController.m */,
+				37919F1C16091DF5007708EF /* PPLoginViewController.h */,
+				37919F1D16091DF5007708EF /* PPLoginViewController.m */,
 				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
 				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
 				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
@@ -2521,7 +2521,7 @@
 				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
 				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
-				37919F1E16091DF5007708EF /* LoginViewController.m in Sources */,
+				37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */,
 				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
 				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,

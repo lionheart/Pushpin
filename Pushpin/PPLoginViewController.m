@@ -6,7 +6,7 @@
 //
 //
 
-#import "LoginViewController.h"
+#import "PPLoginViewController.h"
 @import QuartzCore;
 #import "PPAppDelegate.h"
 #import "PinboardDataSource.h"
@@ -25,13 +25,13 @@
 #import <ASPinboard/ASPinboard.h>
 #import <LHSDelicious/LHSDelicious.h>
 
-@interface LoginViewController ()
+@interface PPLoginViewController ()
 
 @property (nonatomic) BOOL loginInProgress;
 
 @end
 
-@implementation LoginViewController
+@implementation PPLoginViewController
 
 static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
