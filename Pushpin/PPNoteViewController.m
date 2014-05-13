@@ -6,16 +6,16 @@
 //
 //
 
-#import "NoteViewController.h"
+#import "PPNoteViewController.h"
 #import "PPAppDelegate.h"
 
 #import <ASPinboard.h>
 
-@interface NoteViewController ()
+@interface PPNoteViewController ()
 
 @end
 
-@implementation NoteViewController
+@implementation PPNoteViewController
 
 // We have to re-synthesize this, because UITableViewController already has a searchDisplayController property. Confusing, right? Remove it and you'll understand.
 @synthesize searchDisplayController;

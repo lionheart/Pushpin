@@ -168,7 +168,7 @@
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
 		379C3C201894BD4C003A02FF /* DeliciousAppStore.plist in Resources */ = {isa = PBXBuildFile; fileRef = 379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */; };
-		37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* NoteViewController.m */; };
+		37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* PPNoteViewController.m */; };
 		37A7B5C718345DAE0038677E /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C118345DAE0038677E /* stop@2x.png */; };
 		37A7B5C818345DAE0038677E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C218345DAE0038677E /* stop.png */; };
 		37A7B5C918345DAE0038677E /* mark-as-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C318345DAE0038677E /* mark-as-read.png */; };
@@ -726,8 +726,8 @@
 		3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-darker@2x.png"; path = "Assets/navigation-edit-darker@2x.png"; sourceTree = "<group>"; };
 		3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-blue@2x.png"; path = "Assets/navigation-edit-blue@2x.png"; sourceTree = "<group>"; };
 		379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousAppStore.plist; sourceTree = "<group>"; };
-		37A25A2015FC42B5009716BB /* NoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteViewController.h; sourceTree = "<group>"; };
-		37A25A2115FC42B5009716BB /* NoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoteViewController.m; sourceTree = "<group>"; };
+		37A25A2015FC42B5009716BB /* PPNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNoteViewController.h; sourceTree = "<group>"; };
+		37A25A2115FC42B5009716BB /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNoteViewController.m; sourceTree = "<group>"; };
 		37A7B5C118345DAE0038677E /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "Assets/stop@2x.png"; sourceTree = "<group>"; };
 		37A7B5C218345DAE0038677E /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = Assets/stop.png; sourceTree = "<group>"; };
 		37A7B5C318345DAE0038677E /* mark-as-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mark-as-read.png"; path = "Assets/mark-as-read.png"; sourceTree = "<group>"; };
@@ -1461,8 +1461,8 @@
 				3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */,
 				3728CF3B18726EC900155791 /* PPTagEditViewController.h */,
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
-				37A25A2015FC42B5009716BB /* NoteViewController.h */,
-				37A25A2115FC42B5009716BB /* NoteViewController.m */,
+				37A25A2015FC42B5009716BB /* PPNoteViewController.h */,
+				37A25A2115FC42B5009716BB /* PPNoteViewController.m */,
 				37919F1C16091DF5007708EF /* PPLoginViewController.h */,
 				37919F1D16091DF5007708EF /* PPLoginViewController.m */,
 				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
@@ -2518,7 +2518,7 @@
 				3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */,
 				37FEEBA315745488003F2B77 /* PPAppDelegate.m in Sources */,
 				3743B73B18763D1D00B97E6D /* PPTableViewTitleView.m in Sources */,
-				37A25A2215FC42B5009716BB /* NoteViewController.m in Sources */,
+				37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */,
 				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
 				37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */,
