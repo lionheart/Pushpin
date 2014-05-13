@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 
 @interface PinboardNotesDataSource : NSObject <GenericPostDataSource>
 

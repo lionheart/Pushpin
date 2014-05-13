@@ -11,7 +11,7 @@
 
 #import "FeedListViewController.h"
 #import "PPAppDelegate.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 #import "SettingsViewController.h"
@@ -878,7 +878,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
     UIViewController *viewControllerToPush;
 
@@ -1096,8 +1096,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             [navigationController setViewControllers:@[viewControllerToPush] animated:YES];
             
             if ([viewControllerToPush respondsToSelector:@selector(postDataSource)]) {
-                if ([[(GenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
-                    [self.navigationController.navigationBar setBarTintColor:[[(GenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
+                if ([[(PPGenericPostViewController *)viewControllerToPush postDataSource] respondsToSelector:@selector(barTintColor)]) {
+                    [self.navigationController.navigationBar setBarTintColor:[[(PPGenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
                 }
             }
             
@@ -1127,7 +1127,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)openNotes {
-    GenericPostViewController *notesViewController = [[GenericPostViewController alloc] init];
+    PPGenericPostViewController *notesViewController = [[PPGenericPostViewController alloc] init];
     PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
     notesViewController.postDataSource = notesDataSource;
     notesViewController.title = NSLocalizedString(@"Notes", nil);

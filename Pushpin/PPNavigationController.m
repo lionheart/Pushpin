@@ -9,7 +9,7 @@
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 #import "PPWebViewController.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "FeedListViewController.h"
 #import "SettingsViewController.h"
 #import "PPAboutViewController.h"
@@ -89,7 +89,7 @@
     
     if ([UIApplication isIPad]) {
         backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:nil action:nil];
-        if ([[viewController class] isEqual:[GenericPostViewController class]] && navigationController.viewControllers.count == 1) {
+        if ([[viewController class] isEqual:[PPGenericPostViewController class]] && navigationController.viewControllers.count == 1) {
             viewController.navigationItem.leftBarButtonItem = self.splitViewControllerBarButtonItem;
         }
     }

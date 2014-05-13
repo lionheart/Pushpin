@@ -9,7 +9,7 @@
 @import UIKit;
 
 #import "PPTableViewController.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 

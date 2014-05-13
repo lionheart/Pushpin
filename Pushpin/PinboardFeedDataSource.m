@@ -354,15 +354,15 @@
 
         if (shouldPush) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+                PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
                 callback(postViewController);
             });
         }
     });
 }
 
-+ (GenericPostViewController *)postViewControllerWithComponents:(NSArray *)components {
-    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
++ (PPGenericPostViewController *)postViewControllerWithComponents:(NSArray *)components {
+    PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
     
     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];

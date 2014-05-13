@@ -10,7 +10,7 @@
 
 #import "TagViewController.h"
 #import "FMDatabase.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
@@ -301,7 +301,7 @@ static NSString *CellIdentifier = @"TagCell";
     
     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
 
-    GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+    PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
 #ifdef DELICIOUS
     DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
