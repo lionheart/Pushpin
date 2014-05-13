@@ -11,7 +11,7 @@
 #import "PPAppDelegate.h"
 #import "PPNoteViewController.h"
 #import "PPLoginViewController.h"
-#import "SettingsViewController.h"
+#import "PPSettingsViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPNotification.h"
@@ -416,7 +416,7 @@
 }
 
 - (void)openSettings {
-    SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+    PPSettingsViewController *settingsViewController = [[PPSettingsViewController alloc] init];
     [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 

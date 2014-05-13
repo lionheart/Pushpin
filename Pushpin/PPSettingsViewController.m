@@ -9,7 +9,7 @@
 @import QuartzCore;
 
 #import "PPAppDelegate.h"
-#import "SettingsViewController.h"
+#import "PPSettingsViewController.h"
 #import "PPLoginViewController.h"
 #import "ASStyleSheet.h"
 #import "NSString+URLEncoding.h"
@@ -35,11 +35,11 @@
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
-@interface SettingsViewController ()
+@interface PPSettingsViewController ()
 
 @end
 
-@implementation SettingsViewController
+@implementation PPSettingsViewController
 
 - (id)init {
     return [super initWithStyle:UITableViewStyleGrouped];

@@ -42,7 +42,7 @@ enum : NSInteger {
     PPRowCountOther = PPOtherLogout + 1
 };
 
-@interface SettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+@interface PPSettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;

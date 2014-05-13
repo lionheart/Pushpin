@@ -11,7 +11,7 @@
 #import "PPWebViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPFeedListViewController.h"
-#import "SettingsViewController.h"
+#import "PPSettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPAddBookmarkViewController.h"

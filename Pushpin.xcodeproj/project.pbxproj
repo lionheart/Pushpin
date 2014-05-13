@@ -144,7 +144,7 @@
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
 		377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46E1174C85C500CE3813 /* PPWebViewController.m */; };
-		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
+		37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
@@ -698,8 +698,8 @@
 		377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserSettingsViewController.m; sourceTree = "<group>"; };
 		377E46E0174C85C500CE3813 /* PPWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPWebViewController.h; sourceTree = "<group>"; };
 		377E46E1174C85C500CE3813 /* PPWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPWebViewController.m; sourceTree = "<group>"; };
-		37800E3F162B2EDA009FCB17 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		37800E40162B2EDA009FCB17 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		37800E3F162B2EDA009FCB17 /* PPSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettingsViewController.h; sourceTree = "<group>"; };
+		37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSettingsViewController.m; sourceTree = "<group>"; };
 		37800E43162B389B009FCB17 /* PPAddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAddBookmarkViewController.h; sourceTree = "<group>"; };
 		37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAddBookmarkViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1467,8 +1467,8 @@
 				37919F1D16091DF5007708EF /* PPLoginViewController.m */,
 				37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */,
 				37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */,
-				37800E3F162B2EDA009FCB17 /* SettingsViewController.h */,
-				37800E40162B2EDA009FCB17 /* SettingsViewController.m */,
+				37800E3F162B2EDA009FCB17 /* PPSettingsViewController.h */,
+				37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */,
 				377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */,
 				377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */,
 				375A638816C0CB0800665CA1 /* PPFeedListViewController.h */,
@@ -2523,7 +2523,7 @@
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
 				37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */,
 				3727558C161A66A2001A857B /* PPTagViewController.m in Sources */,
-				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
+				37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */,
 				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,
 				37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
