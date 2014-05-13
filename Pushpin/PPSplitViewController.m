@@ -58,7 +58,7 @@
             addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
         }
 
-        [[AppDelegate sharedDelegate].navigationController presentViewController:addBookmarkViewController
+        [[PPAppDelegate sharedDelegate].navigationController presentViewController:addBookmarkViewController
                                                                         animated:YES
                                                                       completion:nil];
     }

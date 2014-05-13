@@ -217,7 +217,7 @@ static NSString *CellIdentifier = @"TagCell";
         self.searchInProgress = YES;
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
             
@@ -317,7 +317,7 @@ static NSString *CellIdentifier = @"TagCell";
 
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
-        UINavigationController *navigationController = [AppDelegate sharedDelegate].navigationController;
+        UINavigationController *navigationController = [PPAppDelegate sharedDelegate].navigationController;
         if (navigationController.viewControllers.count == 1) {
             UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
             if (showPopoverBarButtonItem) {
@@ -327,7 +327,7 @@ static NSString *CellIdentifier = @"TagCell";
         
         [navigationController setViewControllers:@[postViewController] animated:YES];
         
-        UIPopoverController *popover = [AppDelegate sharedDelegate].feedListViewController.popover;
+        UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
         if (popover) {
             [popover dismissPopoverAnimated:YES];
         }
@@ -355,7 +355,7 @@ static NSString *CellIdentifier = @"TagCell";
             [pinboard deleteTag:tag
                         success:^{
                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                                 [db open];
                                 // Delete the tag from the database.
                                 
@@ -431,7 +431,7 @@ static NSString *CellIdentifier = @"TagCell";
         dispatch_async(serialQueue, ^{
             NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
             
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             
             NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];

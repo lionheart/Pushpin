@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "BookmarkletInstallationViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"

@@ -9,7 +9,7 @@
 #import "PostMetadata.h"
 #import "PPConstants.h"
 #import "PPTheme.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBookmarkCell.h"
@@ -59,7 +59,7 @@
         read = NO;
     }
 
-    BOOL dimmed = [AppDelegate sharedDelegate].dimReadPosts && read;
+    BOOL dimmed = [PPAppDelegate sharedDelegate].dimReadPosts && read;
 
     if (cache) {
         PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed dimmed:dimmed width:width];

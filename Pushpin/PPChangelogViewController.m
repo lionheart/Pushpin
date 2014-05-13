@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "UITableViewCellSubtitle.h"

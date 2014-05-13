@@ -382,7 +382,7 @@ static NSInteger kTitleHeight = 40;
 
         if (theURLString) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                 [db open];
                 FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
                 [results next];
@@ -500,7 +500,7 @@ static NSInteger kTitleHeight = 40;
 
 - (void)sendToReadLater {
     // Send to the default read later service
-    [self sendToReadLater:[AppDelegate sharedDelegate].readLater];
+    [self sendToReadLater:[PPAppDelegate sharedDelegate].readLater];
 }
 
 - (void)sendToReadLater:(PPReadLaterType)service {
@@ -525,11 +525,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:parameters];
             [request prepare];
             
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -564,11 +564,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:tempUrl]]];
             [request prepare];
             
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
                                        
@@ -752,7 +752,7 @@ static NSInteger kTitleHeight = 40;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *editUrlString = [self.mobilizerUtility originalURLStringForURL:self.url];
         if (editUrlString) {
-            FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
             [results next];
@@ -927,14 +927,14 @@ static NSInteger kTitleHeight = 40;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     self.numberOfRequestsCompleted++;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsCompleted++;
     
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
     [self enableOrDisableButtons];
 
     // Only run the following when this is an actual web URL.
@@ -986,7 +986,7 @@ static NSInteger kTitleHeight = 40;
     [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
     self.numberOfRequests++;
-    [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
     [self enableOrDisableButtons];
 }
 

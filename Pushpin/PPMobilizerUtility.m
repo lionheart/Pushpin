@@ -7,7 +7,7 @@
 //
 
 #import "PPMobilizerUtility.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "NSString+URLEncoding2.h"
 
 @interface PPMobilizerUtility ()
@@ -30,7 +30,7 @@
 }
 
 - (PPMobilizerType)mobilizer {
-    return [[AppDelegate sharedDelegate] mobilizer];
+    return [[PPAppDelegate sharedDelegate] mobilizer];
 }
 
 - (BOOL)canMobilizeURL:(NSURL *)url {

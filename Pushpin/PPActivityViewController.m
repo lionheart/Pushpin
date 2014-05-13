@@ -9,7 +9,7 @@
 #import "PPActivityViewController.h"
 #import "PPReadLaterActivity.h"
 #import "PPConstants.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPBrowserActivity.h"
 #import "PPMobilizerUtility.h"
 
@@ -58,7 +58,7 @@
 
     // Read later
     NSMutableArray *readLaterActivities = [NSMutableArray array];
-    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
+    PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
     
     // Always include the native Reading List
     PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:PPReadLaterNative];

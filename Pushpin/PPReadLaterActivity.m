@@ -8,7 +8,7 @@
 
 #import <SafariServices/SafariServices.h>
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPReadLaterActivity.h"
 #import "PPWebViewController.h"
 
@@ -129,11 +129,11 @@
             [request setParameters:parameters];
             [request prepare];
 
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -173,11 +173,11 @@
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]]];
             [request prepare];
 
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
 

@@ -341,10 +341,10 @@ static NSInteger kToolbarHeight = 44;
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
     
-    self.compressPosts = [AppDelegate sharedDelegate].compressPosts;
+    self.compressPosts = [PPAppDelegate sharedDelegate].compressPosts;
     
     self.postDataSource.posts = [self.posts mutableCopy];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     [self updateFromLocalDatabaseWithCallback:^{
         if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
@@ -373,7 +373,7 @@ static NSInteger kToolbarHeight = 44;
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[AppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
+    [[PPAppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
 }
 
 - (void)popViewController {
@@ -440,7 +440,7 @@ static NSInteger kToolbarHeight = 44;
         }
         else {
             // If configured, always mark the post as read
-            if ([AppDelegate sharedDelegate].markReadPosts) {
+            if ([PPAppDelegate sharedDelegate].markReadPosts) {
                 self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
                 [self markPostsAsRead:@[self.selectedPost] notify:NO];
             }
@@ -460,9 +460,9 @@ static NSInteger kToolbarHeight = 44;
 #warning TODO Check outside links
                         // Check for App Store link
                         
-                        if ([AppDelegate sharedDelegate].openLinksInApp) {
+                        if ([PPAppDelegate sharedDelegate].openLinksInApp) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                            if ([AppDelegate sharedDelegate].openLinksWithMobilizer) {
+                            if ([PPAppDelegate sharedDelegate].openLinksWithMobilizer) {
                                 self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
                             }
                             else {
@@ -478,7 +478,7 @@ static NSInteger kToolbarHeight = 44;
                             }
                         }
                         else {
-                            PPBrowserType browser = [AppDelegate sharedDelegate].browser;
+                            PPBrowserType browser = [PPAppDelegate sharedDelegate].browser;
                             switch (browser) {
                                 case PPBrowserSafari: {
                                     [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
@@ -965,7 +965,7 @@ static NSInteger kToolbarHeight = 44;
         }
         
         if (actions & PPPostActionReadLater) {
-            PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
+            PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
             
             switch (readLater) {
                 case PPReadLaterInstapaper:
@@ -1184,7 +1184,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     if (!delegate.connectionAvailable) {
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = @"Connection unavailable.";
@@ -1255,7 +1255,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)sendToReadLater {
-    PPReadLaterType readLater = [AppDelegate sharedDelegate].readLater;
+    PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
     NSString *urlString = self.selectedPost[@"url"];
     
     switch (readLater) {
@@ -1273,11 +1273,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:parameters];
             [request prepare];
             
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1312,11 +1312,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
             [request prepare];
             
-            [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[AppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
                                        

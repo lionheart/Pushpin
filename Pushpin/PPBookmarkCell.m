@@ -156,7 +156,7 @@ static NSInteger kEditButtonOuterMargin = 20;
         read = NO;
     }
 
-    BOOL dimmed = [AppDelegate sharedDelegate].dimReadPosts && read;
+    BOOL dimmed = [PPAppDelegate sharedDelegate].dimReadPosts && read;
 
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);
 

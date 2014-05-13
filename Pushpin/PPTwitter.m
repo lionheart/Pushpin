@@ -7,7 +7,7 @@
 //
 
 #import "PPTwitter.h"
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>

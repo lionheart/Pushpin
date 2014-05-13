@@ -66,7 +66,7 @@
 }
 
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.posts[index][@"id"]];
 }
 
@@ -77,7 +77,7 @@
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index {
     __block PPLicenseViewController *license = [[PPLicenseViewController alloc] init];
     
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     
     [delegate setNetworkActivityIndicatorVisible:YES];
@@ -103,7 +103,7 @@
         [oldIDs addObject:post[@"id"]];
     }
     
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     [delegate setNetworkActivityIndicatorVisible:YES];
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
         [delegate setNetworkActivityIndicatorVisible:NO];

@@ -19,7 +19,7 @@
 @class PPSplitViewController;
 @class FeedListViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
+@interface PPAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
@@ -76,7 +76,7 @@
 - (void)setUsername:(NSString *)username password:(NSString *)password;
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
-+ (AppDelegate *)sharedDelegate;
++ (PPAppDelegate *)sharedDelegate;
 - (void)migrateDatabase;
 + (NSString *)databasePath;
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;

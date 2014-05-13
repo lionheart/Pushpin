@@ -6,7 +6,7 @@
 //
 //
 
-#import "AppDelegate.h"
+#import "PPAppDelegate.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
@@ -45,13 +45,13 @@ static NSString *CellIdentifier = @"Cell";
     NSString *feedDetails;
     NSInteger row = 0;
     NSInteger section = 0;
-    if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"personal"]) {
-        feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:9];
+    if ([[PPAppDelegate sharedDelegate].defaultFeed hasPrefix:@"personal"]) {
+        feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:9];
         row = [PPPersonalFeeds() indexOfObject:feedDetails];
         section = 0;
     }
-    else if ([[AppDelegate sharedDelegate].defaultFeed hasPrefix:@"community"]) {
-        feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:10];
+    else if ([[PPAppDelegate sharedDelegate].defaultFeed hasPrefix:@"community"]) {
+        feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:10];
         row = [PPCommunityFeeds() indexOfObject:feedDetails];
         section = 1;
     }
@@ -65,7 +65,7 @@ static NSString *CellIdentifier = @"Cell";
     
 #ifdef PINBOARD
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[AppDelegate databasePath]];
+        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
         [db open];
         FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
         [self.savedFeeds removeAllObjects];
@@ -73,8 +73,8 @@ static NSString *CellIdentifier = @"Cell";
         // See if we need to update our selected index path
         BOOL updateDefaultIndex = NO;
         NSString *feedDetails;
-        if ([[[AppDelegate sharedDelegate].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-            feedDetails = [[AppDelegate sharedDelegate].defaultFeed substringFromIndex:6];
+        if ([[[PPAppDelegate sharedDelegate].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+            feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:6];
             updateDefaultIndex = YES;
         }
         
@@ -412,7 +412,7 @@ static NSString *CellIdentifier = @"Cell";
 #endif
         
         // Update the default feed and pop the view
-        [[AppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
+        [[PPAppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
     }
     else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
