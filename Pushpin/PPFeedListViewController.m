@@ -15,7 +15,7 @@
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 #import "SettingsViewController.h"
-#import "TagViewController.h"
+#import "PPTagViewController.h"
 #import "PinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPTheme.h"
@@ -1135,7 +1135,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)openTags {
-    TagViewController *tagViewController = [[TagViewController alloc] init];
+    PPTagViewController *tagViewController = [[PPTagViewController alloc] init];
     [self.navigationController pushViewController:tagViewController animated:YES];
 }
 

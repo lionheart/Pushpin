@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 
-#import "TagViewController.h"
+#import "PPTagViewController.h"
 #import "FMDatabase.h"
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
@@ -25,7 +25,7 @@
 
 static NSString *CellIdentifier = @"TagCell";
 
-@interface TagViewController ()
+@interface PPTagViewController ()
 
 @property (nonatomic) BOOL searchInProgress;
 @property (nonatomic, strong) NSMutableDictionary *sectionTitles;
@@ -44,7 +44,7 @@ static NSString *CellIdentifier = @"TagCell";
 
 @end
 
-@implementation TagViewController
+@implementation PPTagViewController
 
 @synthesize searchDisplayController = __searchDisplayController;
 @synthesize searchBar = _searchBar;
