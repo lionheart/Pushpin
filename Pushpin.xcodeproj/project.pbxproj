@@ -34,7 +34,7 @@
 		371EE5C8185B49FE005DB908 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
 		3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */; };
 		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
-		3727558C161A66A2001A857B /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* TagViewController.m */; };
+		3727558C161A66A2001A857B /* PPTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* PPTagViewController.m */; };
 		3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3C18726EC900155791 /* PPTagEditViewController.m */; };
 		3728CF401872880A00155791 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */; };
@@ -556,8 +556,8 @@
 		3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardFeedDataSource.h; sourceTree = "<group>"; };
 		3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PinboardFeedDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		3727558A161A66A2001A857B /* TagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagViewController.h; sourceTree = "<group>"; };
-		3727558B161A66A2001A857B /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TagViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3727558A161A66A2001A857B /* PPTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagViewController.h; sourceTree = "<group>"; };
+		3727558B161A66A2001A857B /* PPTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTagViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3728CF3B18726EC900155791 /* PPTagEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagEditViewController.h; sourceTree = "<group>"; };
 		3728CF3C18726EC900155791 /* PPTagEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTagEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPEditDescriptionViewController.h; sourceTree = "<group>"; };
@@ -1453,8 +1453,8 @@
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
 				37F91F3C177AB1D500683D46 /* PPNavigationController.h */,
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
-				3727558A161A66A2001A857B /* TagViewController.h */,
-				3727558B161A66A2001A857B /* TagViewController.m */,
+				3727558A161A66A2001A857B /* PPTagViewController.h */,
+				3727558B161A66A2001A857B /* PPTagViewController.m */,
 				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
 				37800E44162B389B009FCB17 /* AddBookmarkViewController.m */,
 				3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */,
@@ -2522,7 +2522,7 @@
 				E804951B1810597A00C5CA8B /* PPDefaultFeedViewController.m in Sources */,
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
 				37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */,
-				3727558C161A66A2001A857B /* TagViewController.m in Sources */,
+				3727558C161A66A2001A857B /* PPTagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
 				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,
 				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,

@@ -10,7 +10,7 @@
 #import "FMDatabase.h"
 #import "PPTableViewController.h"
 
-@interface TagViewController : PPTableViewController <UISearchDisplayDelegate, UISearchBarDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
+@interface PPTagViewController : PPTableViewController <UISearchDisplayDelegate, UISearchBarDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, retain) NSArray *alphabet;
 @property (nonatomic, retain) NSArray *filteredTags;
