@@ -9,7 +9,7 @@
 @import QuartzCore;
 
 #import "PPAppDelegate.h"
-#import "NoteViewController.h"
+#import "PPNoteViewController.h"
 #import "PPLoginViewController.h"
 #import "SettingsViewController.h"
 #import "PPGenericPostViewController.h"

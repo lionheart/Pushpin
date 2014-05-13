@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@interface NoteViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
+@interface PPNoteViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
 
 @property (nonatomic, retain) NSArray *notes;
 @property (nonatomic, retain) NSMutableArray *filteredNotes;
