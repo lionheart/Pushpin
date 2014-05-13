@@ -17,7 +17,7 @@
 #import "PinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
 #import "PPMultipleEditViewController.h"
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "PPTheme.h"
 #import "PPReadLaterActivity.h"
 #import "PPActivityViewController.h"
@@ -323,7 +323,7 @@ static NSInteger kToolbarHeight = 44;
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
     
-    if (![UIApplication isIPad] && [backViewController isKindOfClass:[FeedListViewController class]]) {
+    if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
         self.navigationItem.accessibilityLabel = @"Back";
         

@@ -15,7 +15,7 @@
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPNotification.h"
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "AddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
@@ -454,9 +454,9 @@
     return _feedListNavigationController;
 }
 
-- (FeedListViewController *)feedListViewController {
+- (PPFeedListViewController *)feedListViewController {
     if (!_feedListViewController) {
-        _feedListViewController = [[FeedListViewController alloc] init];
+        _feedListViewController = [[PPFeedListViewController alloc] init];
     }
     return _feedListViewController;
 }

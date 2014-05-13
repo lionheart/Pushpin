@@ -15,7 +15,7 @@
 #import "UITableViewCellSubtitle.h"
 #import "PPTitleButton.h"
 #import "PPAppDelegate.h"
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "DeliciousDataSource.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>

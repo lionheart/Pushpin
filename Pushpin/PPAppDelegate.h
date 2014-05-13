@@ -17,7 +17,7 @@
 @class FMDatabaseQueue;
 @class PPNavigationController;
 @class PPSplitViewController;
-@class FeedListViewController;
+@class PPFeedListViewController;
 
 @interface PPAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
     BOOL didLaunchWithURL;
@@ -69,7 +69,7 @@
 @property (nonatomic, strong) PPNavigationController *loginViewController;
 @property (nonatomic, strong) PPNavigationController *navigationController;
 @property (nonatomic, strong) PPSplitViewController *splitViewController;
-@property (nonatomic, strong) FeedListViewController *feedListViewController;
+@property (nonatomic, strong) PPFeedListViewController *feedListViewController;
 
 @property (nonatomic, strong) SMTEDelegateController *textExpander;
 

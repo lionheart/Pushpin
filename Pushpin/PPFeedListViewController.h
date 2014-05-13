@@ -19,7 +19,7 @@ typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
     FeedListToolbarOrientationCenter,
 };
 
-@interface FeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, PPTitleButtonDelegate> {
+@interface PPFeedListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, PPTitleButtonDelegate> {
     NSString *postViewTitle;
 }
 

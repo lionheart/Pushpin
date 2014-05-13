@@ -9,7 +9,7 @@
 @import QuartzCore;
 @import CoreMotion;
 
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "PPAppDelegate.h"
 #import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
@@ -35,7 +35,7 @@
 
 static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
-@interface FeedListViewController ()
+@interface PPFeedListViewController ()
 
 @property (nonatomic, strong) NSMutableArray *feeds;
 @property (nonatomic, strong) PPToolbar *toolbar;
@@ -93,7 +93,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @end
 
-@implementation FeedListViewController
+@implementation PPFeedListViewController
 
 #pragma mark UITableViewController
 

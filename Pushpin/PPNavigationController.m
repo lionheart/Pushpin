@@ -10,7 +10,7 @@
 #import "PPNavigationBar.h"
 #import "PPWebViewController.h"
 #import "PPGenericPostViewController.h"
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "SettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
@@ -94,7 +94,7 @@
         }
     }
     else {
-        if ([[viewController class] isEqual:[FeedListViewController class]]) {
+        if ([[viewController class] isEqual:[PPFeedListViewController class]]) {
             backButton = [[UIBarButtonItem alloc] initWithTitle:@"Browse" style:UIBarButtonItemStylePlain target:nil action:nil];
         }
         else {

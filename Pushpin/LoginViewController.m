@@ -10,7 +10,7 @@
 @import QuartzCore;
 #import "PPAppDelegate.h"
 #import "PinboardDataSource.h"
-#import "FeedListViewController.h"
+#import "PPFeedListViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "ASStyleSheet.h"
