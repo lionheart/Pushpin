@@ -47,7 +47,7 @@
 		3732DFA117596D7500978A68 /* apple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DF9F17596D7500978A68 /* apple@2x.png */; };
 		3732DFA41759703A00978A68 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA21759703A00978A68 /* twitter.png */; };
 		3732DFA51759703A00978A68 /* twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA31759703A00978A68 /* twitter@2x.png */; };
-		3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* GenericPostViewController.m */; };
+		3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */; };
 		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
 		373C82BD16F81C6900A7D7C8 /* ptr_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827D16F81C6800A7D7C8 /* ptr_01.png */; };
 		373C82BE16F81C6900A7D7C8 /* ptr_01@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */; };
@@ -577,8 +577,8 @@
 		3732DF9F17596D7500978A68 /* apple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "apple@2x.png"; path = "Assets/apple@2x.png"; sourceTree = "<group>"; };
 		3732DFA21759703A00978A68 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = twitter.png; path = Assets/twitter.png; sourceTree = "<group>"; };
 		3732DFA31759703A00978A68 /* twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "twitter@2x.png"; path = "Assets/twitter@2x.png"; sourceTree = "<group>"; };
-		3733251D16E155A2002E2AB0 /* GenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPostViewController.h; sourceTree = "<group>"; };
-		3733251E16E155A2002E2AB0 /* GenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GenericPostViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGenericPostViewController.h; sourceTree = "<group>"; };
+		3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPGenericPostViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
 		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardDataSource.m; sourceTree = "<group>"; };
 		373C827D16F81C6800A7D7C8 /* ptr_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_01.png; sourceTree = "<group>"; };
@@ -1473,8 +1473,8 @@
 				377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */,
 				375A638816C0CB0800665CA1 /* FeedListViewController.h */,
 				375A638916C0CB0800665CA1 /* FeedListViewController.m */,
-				3733251D16E155A2002E2AB0 /* GenericPostViewController.h */,
-				3733251E16E155A2002E2AB0 /* GenericPostViewController.m */,
+				3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */,
+				3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */,
 				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
 				376C9E8E1749969200A62CB5 /* PPTableViewController.m */,
 				3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */,
@@ -2537,7 +2537,7 @@
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				375A638A16C0CB0800665CA1 /* FeedListViewController.m in Sources */,
-				3733251F16E155A2002E2AB0 /* GenericPostViewController.m in Sources */,
+				3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */,
 				37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */,
 				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,

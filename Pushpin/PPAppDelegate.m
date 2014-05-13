@@ -12,7 +12,7 @@
 #import "NoteViewController.h"
 #import "LoginViewController.h"
 #import "SettingsViewController.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardDataSource.h"
 #import "PPNotification.h"
 #import "FeedListViewController.h"
@@ -188,7 +188,7 @@
             }
         }
 
-        GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+        PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
         postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
@@ -488,7 +488,7 @@
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
 
-        GenericPostViewController *pinboardViewController = [[GenericPostViewController alloc] init];
+        PPGenericPostViewController *pinboardViewController = [[PPGenericPostViewController alloc] init];
         
         _navigationController = [[PPNavigationController alloc] init];
         

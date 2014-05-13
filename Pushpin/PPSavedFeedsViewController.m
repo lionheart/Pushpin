@@ -10,7 +10,7 @@
 
 #import "PPSavedFeedsViewController.h"
 #import "PPAppDelegate.h"
-#import "GenericPostViewController.h"
+#import "PPGenericPostViewController.h"
 #import "PinboardFeedDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPTheme.h"
@@ -125,7 +125,7 @@ static NSString *CellIdentifier = @"Cell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (self.feeds.count > 0) {
-        GenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+        PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
         [[PPAppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
     }
 }
