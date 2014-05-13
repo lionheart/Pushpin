@@ -16,7 +16,7 @@
 #import "PinboardDataSource.h"
 #import "PPNotification.h"
 #import "PPFeedListViewController.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
 #import "PinboardFeedDataSource.h"
@@ -136,7 +136,7 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
-    PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+    PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 
     if (self.navigationController.presentedViewController) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
@@ -1535,7 +1535,7 @@
         self.addBookmarkAlertView = nil;
 
         if (buttonIndex == 1) {
-            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+            PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
             
             if ([UIApplication isIPad]) {
                 addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1557,7 +1557,7 @@
         self.updateBookmarkAlertView = nil;
 
         if (buttonIndex == 1) {
-            PPNavigationController *addBookmarkViewController = [AddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
+            PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
             
             if ([UIApplication isIPad]) {
                 addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;

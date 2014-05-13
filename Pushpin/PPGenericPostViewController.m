@@ -21,7 +21,7 @@
 #import "PPTheme.h"
 #import "PPReadLaterActivity.h"
 #import "PPActivityViewController.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
 
 #import <FMDB/FMDatabase.h>
@@ -1801,7 +1801,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
-    UIViewController *vc = (UIViewController *)[AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
+    UIViewController *vc = (UIViewController *)[PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;

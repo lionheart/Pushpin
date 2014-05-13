@@ -8,7 +8,7 @@
 
 #import "PinboardFeedDataSource.h"
 #import "PPAppDelegate.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PostMetadata.h"
@@ -307,7 +307,7 @@
 }
 
 - (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) callback:nil];
+    return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(NO) callback:nil];
 }
 
 - (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback {

@@ -14,7 +14,7 @@
 #import "SettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -143,7 +143,7 @@
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
     if (keyCommand == self.createBookmarkKeyCommand) {
-        PPNavigationController *addBookmarkViewController = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
+        PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
         }];
         
         if ([UIApplication isIPad]) {

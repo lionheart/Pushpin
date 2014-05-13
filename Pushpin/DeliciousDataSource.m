@@ -9,7 +9,7 @@
 #import "DeliciousDataSource.h"
 #import "PostMetadata.h"
 #import "PPPinboardMetadataCache.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSDelicious/LHSDelicious.h>
@@ -830,7 +830,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:nil];
+    return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:nil];
 }
 
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
@@ -921,7 +921,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
+    return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
 #warning should really add a success parameter to this block;
         if ([post count] > 0) {
             PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
