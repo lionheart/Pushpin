@@ -145,7 +145,7 @@
 		377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
 		377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46E1174C85C500CE3813 /* PPWebViewController.m */; };
 		37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* SettingsViewController.m */; };
-		37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* AddBookmarkViewController.m */; };
+		37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
@@ -700,8 +700,8 @@
 		377E46E1174C85C500CE3813 /* PPWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPWebViewController.m; sourceTree = "<group>"; };
 		37800E3F162B2EDA009FCB17 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		37800E40162B2EDA009FCB17 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		37800E43162B389B009FCB17 /* AddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBookmarkViewController.h; sourceTree = "<group>"; };
-		37800E44162B389B009FCB17 /* AddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddBookmarkViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		37800E43162B389B009FCB17 /* PPAddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAddBookmarkViewController.h; sourceTree = "<group>"; };
+		37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAddBookmarkViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
 		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
@@ -1455,8 +1455,8 @@
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				3727558A161A66A2001A857B /* PPTagViewController.h */,
 				3727558B161A66A2001A857B /* PPTagViewController.m */,
-				37800E43162B389B009FCB17 /* AddBookmarkViewController.h */,
-				37800E44162B389B009FCB17 /* AddBookmarkViewController.m */,
+				37800E43162B389B009FCB17 /* PPAddBookmarkViewController.h */,
+				37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */,
 				3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */,
 				3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */,
 				3728CF3B18726EC900155791 /* PPTagEditViewController.h */,
@@ -2525,7 +2525,7 @@
 				3727558C161A66A2001A857B /* PPTagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* SettingsViewController.m in Sources */,
 				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,
-				37800E45162B389B009FCB17 /* AddBookmarkViewController.m in Sources */,
+				37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,
 				E84A8D9917FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m in Sources */,

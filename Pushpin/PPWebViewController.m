@@ -13,7 +13,7 @@
 @import SafariServices;
 
 #import "PPWebViewController.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPBrowserActivity.h"
 #import "PPReadLaterActivity.h"
 #import "PPNavigationController.h"
@@ -739,7 +739,7 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)showAddViewController:(NSDictionary *)data {
-    PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:data update:@(NO) callback:nil];
+    PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:data update:@(NO) callback:nil];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -772,7 +772,7 @@ static NSInteger kTitleHeight = 40;
             [db close];
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                PPNavigationController *vc = [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
+                PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
                 
                 if ([UIApplication isIPad]) {
                     vc.modalPresentationStyle = UIModalPresentationFormSheet;

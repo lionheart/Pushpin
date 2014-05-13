@@ -9,7 +9,7 @@
 
 @import QuartzCore;
 
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSString+URLEncoding2.h"
@@ -39,7 +39,7 @@
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
-@interface AddBookmarkViewController ()
+@interface PPAddBookmarkViewController ()
 
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 @property (nonatomic, strong) UIKeyCommand *focusTitleKeyCommand;
@@ -56,7 +56,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @end
 
-@implementation AddBookmarkViewController
+@implementation PPAddBookmarkViewController
 
 #pragma mark - Instantiation
 
@@ -184,7 +184,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSDictionary *post = [PinboardDataSource postFromResultSet:results];
     [db close];
     
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+    return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                      update:@(YES)
                                                                    callback:callback];
 }
@@ -192,7 +192,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark
                                                            update:(NSNumber *)isUpdate
                                                          callback:(void (^)(NSDictionary *))callback {
-    AddBookmarkViewController *addBookmarkViewController = [[AddBookmarkViewController alloc] init];
+    PPAddBookmarkViewController *addBookmarkViewController = [[PPAddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
 
     addBookmarkViewController.bookmarkData = bookmark;

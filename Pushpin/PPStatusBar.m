@@ -7,7 +7,7 @@
 //
 
 #import "PPStatusBar.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -36,7 +36,7 @@
     self.tapGestureRecognizer.numberOfTapsRequired = 1;
 
     UIViewController *controller = [UIViewController lhs_topViewController];
-    if ([[controller class] isEqual:[AddBookmarkViewController class]]) {
+    if ([[controller class] isEqual:[PPAddBookmarkViewController class]]) {
         controller = (UIViewController *)[[PPAppDelegate sharedDelegate].navigationController topViewController];
     }
 

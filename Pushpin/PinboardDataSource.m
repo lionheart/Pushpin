@@ -8,7 +8,7 @@
 
 #import "PinboardDataSource.h"
 #import "PPAppDelegate.h"
-#import "AddBookmarkViewController.h"
+#import "PPAddBookmarkViewController.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
@@ -1042,7 +1042,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
-    return [AddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
+    return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
 #warning should really add a success parameter to this block;
         if ([post count] > 0) {
             PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
