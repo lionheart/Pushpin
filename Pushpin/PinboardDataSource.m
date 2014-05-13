@@ -1069,7 +1069,7 @@ static BOOL kPinboardSyncInProgress = NO;
             PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                GenericPostViewController *postViewController = [[GenericPostViewController alloc] init];
+                PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
                 postViewController.postDataSource = pinboardDataSource;
                 PPTitleButton *button = [PPTitleButton buttonWithDelegate:postViewController];
                 [button setTitle:[pinboardDataSource.tags componentsJoinedByString:@"+"] imageName:nil];
