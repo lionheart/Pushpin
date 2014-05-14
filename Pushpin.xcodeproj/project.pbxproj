@@ -15,7 +15,7 @@
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
 		370BBE021901ABBB004FA557 /* safari-callback.html in Resources */ = {isa = PBXBuildFile; fileRef = 370BBE011901ABBB004FA557 /* safari-callback.html */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
-		3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */; };
+		3714DB7517556FC600B23F4F /* PPPinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */; };
 		3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
 		3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB7E175673E200B23F4F /* safari-instructions.html */; };
 		3714DB8F1757D81E00B23F4F /* PPAddSavedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */; };
@@ -529,8 +529,8 @@
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
-		3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardNotesDataSource.h; sourceTree = "<group>"; };
-		3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardNotesDataSource.m; sourceTree = "<group>"; };
+		3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardNotesDataSource.h; sourceTree = "<group>"; };
+		3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPPinboardNotesDataSource.m; sourceTree = "<group>"; };
 		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
 		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; };
 		3714DB7E175673E200B23F4F /* safari-instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-instructions.html"; path = "Assets/safari-instructions.html"; sourceTree = "<group>"; };
@@ -1156,8 +1156,8 @@
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
 				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
-				3714DB7317556FC500B23F4F /* PinboardNotesDataSource.h */,
-				3714DB7417556FC600B23F4F /* PinboardNotesDataSource.m */,
+				3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */,
+				3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */,
 			);
 			name = "Data Sources";
 			sourceTree = "<group>";
@@ -2561,7 +2561,7 @@
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
 				3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */,
-				3714DB7517556FC600B23F4F /* PinboardNotesDataSource.m in Sources */,
+				3714DB7517556FC600B23F4F /* PPPinboardNotesDataSource.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,
 				370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */,
