@@ -23,7 +23,7 @@ typedef enum PPDeliciousErrorCodes {
 
 static NSString *DeliciousDataSourceErrorDomain __unused = @"DeliciousDataSourceErrorDomain";
 
-@interface DeliciousDataSource : NSObject <GenericPostDataSource>
+@interface DeliciousDataSource : NSObject <PPDataSource>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;

@@ -25,7 +25,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 @property (nonatomic, strong) TTTAttributedLabel *linkLabel;
 @property (nonatomic, strong) TTTAttributedLabel *descriptionLabel;
 
-@property (nonatomic, weak) id<GenericPostDataSource> dataSource;
+@property (nonatomic, weak) id<PPDataSource> dataSource;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIButton *editButton;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
@@ -90,7 +90,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     }
 }
 
-- (void)prepareCellWithDataSource:(id<GenericPostDataSource>)dataSource
+- (void)prepareCellWithDataSource:(id<PPDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
                             index:(NSInteger)index
                        compressed:(BOOL)compressed {

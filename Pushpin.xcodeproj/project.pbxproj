@@ -192,6 +192,7 @@
 		37B348D6176011F800929E2E /* star-table@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348D4176011F800929E2E /* star-table@2x.png */; };
 		37B348E11760196400929E2E /* caution-dash.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348DF1760196400929E2E /* caution-dash.png */; };
 		37B348E21760196400929E2E /* caution-dash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348E01760196400929E2E /* caution-dash@2x.png */; };
+		37B4FFE01922B6EF002F8558 /* NSString+LHSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */; };
 		37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B5F4E41773864C005687DA /* Twitter.framework */; };
 		37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD3188641D80022020A /* readabilityInitializer.js */; };
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
@@ -754,6 +755,8 @@
 		37B348D4176011F800929E2E /* star-table@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "star-table@2x.png"; path = "Assets/star-table@2x.png"; sourceTree = "<group>"; };
 		37B348DF1760196400929E2E /* caution-dash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "caution-dash.png"; path = "Assets/caution-dash.png"; sourceTree = "<group>"; };
 		37B348E01760196400929E2E /* caution-dash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "caution-dash@2x.png"; path = "Assets/caution-dash@2x.png"; sourceTree = "<group>"; };
+		37B4FFDE1922B6EF002F8558 /* NSString+LHSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LHSAdditions.h"; sourceTree = "<group>"; };
+		37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+LHSAdditions.m"; sourceTree = "<group>"; };
 		37B5F4E41773864C005687DA /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		37BC1BD3188641D80022020A /* readabilityInitializer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readabilityInitializer.js; path = Pushpin/readabilityInitializer.js; sourceTree = "<group>"; };
 		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; };
@@ -1497,6 +1500,8 @@
 				37171A2B18B16C77007FF164 /* PPSearchViewController.m */,
 				3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */,
 				3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */,
+				37B4FFDE1922B6EF002F8558 /* NSString+LHSAdditions.h */,
+				37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -2571,6 +2576,7 @@
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
 				37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */,
+				37B4FFE01922B6EF002F8558 /* NSString+LHSAdditions.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
 				37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */,
 			);

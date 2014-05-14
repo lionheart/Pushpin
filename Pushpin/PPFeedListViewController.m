@@ -23,7 +23,6 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
-#import "PPConstants.h"
 #import "DeliciousDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"

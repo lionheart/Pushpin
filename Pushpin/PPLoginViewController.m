@@ -296,7 +296,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                 
                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                     DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
-                                                    
+
                                                     [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
                                                                                    failure:nil
                                                                                   progress:UpdateProgressBlock
@@ -328,14 +328,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    delegate.token = token;
                                                    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
 
-                                                   [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
-                                                                                  failure:^(NSError *error) {
-                                                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                          [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
-                                                                                      });
-                                                                                  }
-                                                                                 progress:UpdateProgressBlock
-                                                                                  options:@{@"count": @(-1)}];
+                                                   [dataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                                                       if (error) {
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+                                                           });
+                                                       }
+                                                       else {
+                                                           SyncCompletedBlock();
+                                                       }
+                                                   } progress:UpdateProgressBlock];
 
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
                                                        [delegate setFeedToken:feedToken];

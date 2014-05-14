@@ -351,9 +351,9 @@ static NSInteger kToolbarHeight = 44;
             delegate.bookmarksNeedUpdate = NO;
             
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource updateBookmarksWithSuccess:^{
+            [self.postDataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 [self updateFromLocalDatabaseWithCallback:nil];
-            } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
+            } progress:nil];
         }
     }];
 }
@@ -431,7 +431,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)handleCellTap {
     if (self.numberOfTapsSinceTapReset > 0) {
-        id <GenericPostDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
+        id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
         
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
@@ -655,7 +655,7 @@ static NSInteger kToolbarHeight = 44;
             }
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+                [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [UIView animateWithDuration:0.3
                                          animations:^{
@@ -689,7 +689,7 @@ static NSInteger kToolbarHeight = 44;
                                                      [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView endUpdates];
                                                  }
-
+                                                 
                                                  if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
@@ -702,7 +702,7 @@ static NSInteger kToolbarHeight = 44;
                                              });
                                          }];
                     });
-                } failure:nil width:width];
+                } cancel:nil width:width];
             });
         });
     }
@@ -726,17 +726,20 @@ static NSInteger kToolbarHeight = 44;
         
         __weak PPGenericPostViewController *weakself = self;
         
-        [self.searchPostDataSource bookmarksWithSuccess:^(NSArray *indexPathsToAdd, NSArray *indexPathsToReload, NSArray *indexPathsToRemove) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                weakself.searchPosts = [self.searchPostDataSource.posts copy];
-                [weakself.searchDisplayController.searchResultsTableView reloadData];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                if (!error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        weakself.searchPosts = [self.searchPostDataSource.posts copy];
+                        [weakself.searchDisplayController.searchResultsTableView reloadData];
+                    });
+                }
+                
                 weakself.searchLoading = NO;
-            });
-        } failure:^(NSError *error) {
-            weakself.searchLoading = NO;
-        } cancel:^(BOOL *stop) {
-            *stop = [time compare:weakself.latestSearchTime] != NSOrderedSame;
-        } width:[self currentWidth]];
+            } cancel:^BOOL{
+                return [time compare:weakself.latestSearchTime] != NSOrderedSame;
+            } width:self.currentWidth];
+        });
     }
 }
 
@@ -871,7 +874,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
+    id <PPDataSource> dataSource = [self dataSourceForTableView:tableView];
     
     if (!self.isProcessingPosts) {
         if ([dataSource respondsToSelector:@selector(willDisplayIndexPath:callback:)]) {
@@ -914,7 +917,7 @@ static NSInteger kToolbarHeight = 44;
     PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
     cell.delegate = self;
     
-    id <GenericPostDataSource> dataSource = [self dataSourceForTableView:tableView];
+    id <PPDataSource> dataSource = [self dataSourceForTableView:tableView];
     [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
 }
@@ -936,7 +939,7 @@ static NSInteger kToolbarHeight = 44;
         
         self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
-        id <GenericPostDataSource> dataSource = [self currentDataSource];
+        id <PPDataSource> dataSource = [self currentDataSource];
         PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
         
         if (actions & PPPostActionDelete) {
@@ -1040,7 +1043,7 @@ static NSInteger kToolbarHeight = 44;
         }
         
         NSString *tag = [self.additionalTagsActionSheet buttonTitleAtIndex:buttonIndex];
-        id <GenericPostDataSource> dataSource = [self currentDataSource];
+        id <PPDataSource> dataSource = [self currentDataSource];
         if (!self.tableView.editing) {
             if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
                 [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
@@ -1091,7 +1094,7 @@ static NSInteger kToolbarHeight = 44;
     else if (actionSheet == self.longPressActionSheet) {
         if (buttonIndex >= 0) {
             NSString *title = [self.longPressActionSheet buttonTitleAtIndex:buttonIndex];
-            id <GenericPostDataSource> dataSource = [self currentDataSource];
+            id <PPDataSource> dataSource = [self currentDataSource];
             
             if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
                 [self showConfirmDeletionAlert];
@@ -1192,7 +1195,7 @@ static NSInteger kToolbarHeight = 44;
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     }
     else {
-        id <GenericPostDataSource> dataSource = [self currentDataSource];
+        id <PPDataSource> dataSource = [self currentDataSource];
         
         if ([dataSource respondsToSelector:@selector(markPostAsRead:callback:)]) {
             BOOL __block hasError = NO;
@@ -1420,9 +1423,9 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource updateBookmarksWithSuccess:^{
+            [self.postDataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 [self updateFromLocalDatabaseWithCallback:nil];
-            } failure:nil progress:nil options:@{@"ratio": @(1.0) }];
+            } progress:nil];
         }
         else if (offset < 0) {
             [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
@@ -1579,8 +1582,8 @@ static NSInteger kToolbarHeight = 44;
     }];
 }
 
-- (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView {
-    id <GenericPostDataSource> dataSource;
+- (id<PPDataSource>)dataSourceForTableView:(UITableView *)tableView {
+    id <PPDataSource> dataSource;
     if (tableView == self.tableView) {
         dataSource = self.postDataSource;
     }
@@ -1590,8 +1593,8 @@ static NSInteger kToolbarHeight = 44;
     return dataSource;
 }
 
-- (id<GenericPostDataSource>)currentDataSource {
-    id <GenericPostDataSource> dataSource;
+- (id<PPDataSource>)currentDataSource {
+    id <PPDataSource> dataSource;
     if (self.searchDisplayController.isActive) {
         dataSource = self.searchPostDataSource;
     }
@@ -1604,14 +1607,14 @@ static NSInteger kToolbarHeight = 44;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     if (!self.isProcessingPosts) {
         self.isProcessingPosts = YES;
-        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+        [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView beginUpdates];
                 [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
                 self.isProcessingPosts = NO;
             });
-        } failure:nil width:[self currentWidth]];
+        } cancel:nil width:self.currentWidth];
     }
 }
 
@@ -1630,18 +1633,19 @@ static NSInteger kToolbarHeight = 44;
     if (!self.isProcessingPosts) {
         self.isProcessingPosts = YES;
         
-        [self.postDataSource bookmarksWithSuccess:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-            dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                
-                self.isProcessingPosts = NO;
-            });
-        } failure:^(NSError *error) {
+        [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            if (!error) {
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    
+                });
+            }
+
             self.isProcessingPosts = NO;
-        } width:[self currentWidth]];
+        } cancel:nil width:self.currentWidth];
     }
 }
 
@@ -1693,7 +1697,7 @@ static NSInteger kToolbarHeight = 44;
             }
             else {
                 // Go to the tag link
-                id <GenericPostDataSource> dataSource = [self currentDataSource];
+                id <PPDataSource> dataSource = [self currentDataSource];
                 if (!self.tableView.editing) {
                     if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
                         // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil

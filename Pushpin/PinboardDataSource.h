@@ -22,7 +22,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @class FMResultSet;
 @class PostMetadata;
 
-@interface PinboardDataSource : NSObject <GenericPostDataSource, NSCopying>
+@interface PinboardDataSource : NSObject <PPDataSource, NSCopying>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;
@@ -50,8 +50,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @property (nonatomic) NSString *orderBy;
 @property (nonatomic, strong) NSString *searchQuery;
 
-- (void)updateStarredPostsWithSuccess:(void (^)())success
-                              failure:(void (^)())failure;
+- (void)updateStarredPostsWithCompletion:(PPErrorBlock)completion;
 
 - (void)filterWithQuery:(NSString *)query;
 - (void)filterWithParameters:(NSDictionary *)parameters;
@@ -67,5 +66,16 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
+
+- (void)generateDiffForPrevious:(NSArray *)previousItems
+                        updated:(NSArray *)updatedItems
+                           hash:(NSString *(^)(id))extractHash
+                           meta:(NSString *(^)(id))extractMeta
+                     completion:(void (^)(NSSet *inserted, NSSet *updated, NSSet *deleted))completion;
+
+- (void)generateDiffForPrevious:(NSArray *)previousItems
+                        updated:(NSArray *)updatedItems
+                           hash:(NSString *(^)(id))extractHash
+                     completion:(void (^)(NSSet *inserted, NSSet *deleted))completion;
 
 @end

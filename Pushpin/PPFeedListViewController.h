@@ -10,6 +10,7 @@
 
 #import "PPTableViewController.h"
 #import "PPGenericPostViewController.h"
+#import "PPConstants.h"
 #import "PinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 
@@ -24,7 +25,7 @@ typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
 }
 
 @property (nonatomic, strong) UIPopoverController *popover;
-@property (nonatomic, strong) NSObject <GenericPostDataSource> *postDataSource;
+@property (nonatomic, strong) NSObject <PPDataSource> *postDataSource;
 @property (nonatomic, strong) UIBarButtonItem *notesBarButtonItem;
 @property (nonatomic, strong) NSTimer *updateTimer;
 @property (nonatomic, strong) NSMutableArray *bookmarkCounts;
