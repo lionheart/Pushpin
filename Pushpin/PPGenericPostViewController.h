@@ -55,7 +55,6 @@ typedef enum : NSInteger {
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) UIAlertView *confirmMultipleDeletionAlertView;
 @property (nonatomic, strong) UIAlertView *confirmDeletionAlertView;
-@property (nonatomic) BOOL searchLoading;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 
 @property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
