@@ -198,15 +198,6 @@ static NSArray *PPCommunityFeeds() {
 }
 #endif
 
-static dispatch_queue_t PPBookmarkUpdateQueue() {
-    static dispatch_once_t onceToken;
-    static dispatch_queue_t queue;
-    dispatch_once(&onceToken, ^{
-        queue = dispatch_queue_create("io.aurora.Pushpin.BookmarkUpdateQueue", 0);
-    });
-    return queue;
-}
-
 @interface PPConstants : NSObject
 
 @end

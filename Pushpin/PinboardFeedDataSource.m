@@ -18,6 +18,8 @@
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
+#import "PPUtilities.h"
+#import "NSString+LHSAdditions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
@@ -27,6 +29,9 @@
 @interface PinboardFeedDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
+
+// Need to remove or condense with the other data formatters below
+- (NSDateFormatter *)feedDateFormatter;
 
 @end
 
@@ -108,140 +113,114 @@
     return self.posts[index][@"url"];
 }
 
-- (void)updateBookmarksWithSuccess:(void (^)())success
-                           failure:(void (^)(NSError *))failure
-                          progress:(void (^)(NSInteger, NSInteger))progress
-                           options:(NSDictionary *)options {
-    success();
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+                           progress:(void (^)(NSInteger, NSInteger))progress {
+    completion(nil);
 }
 
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure width:(CGFloat)width {
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [delegate setNetworkActivityIndicatorVisible:NO];
-                               
-                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                   if (!error) {
-                                       NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-                                       NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                                       NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                                       NSMutableArray *newPosts = [NSMutableArray array];
-                                       NSMutableArray *oldURLs = [NSMutableArray array];
-                                       NSMutableArray *oldPosts = [self.posts copy];
-                                       
-                                       for (NSDictionary *post in self.posts) {
-                                           [oldURLs addObject:post[@"url"]];
-                                       }
-                                       
-                                       NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                                       [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-                                       [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-                                       
-                                       NSInteger index = 0;
-                                       NSMutableArray *tags = [NSMutableArray array];
-                                       NSDate *date;
+- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+                               cancel:(BOOL (^)())cancel
+                                width:(CGFloat)width {
+    dispatch_async(PPPinboardFeedReloadQueue(), ^{
+        NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+        [delegate setNetworkActivityIndicatorVisible:YES];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                   [delegate setNetworkActivityIndicatorVisible:NO];
+                                   
+                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                       if (!error) {
+                                           NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
 
-                                       // The index of the list that `index` corresponds to
-                                       NSInteger skipPivot = 0;
-                                       BOOL postFound;
+                                           NSMutableDictionary *oldURLsToIndexPaths = [NSMutableDictionary dictionary];
+                                           NSMutableDictionary *newURLsToIndexPaths = [NSMutableDictionary dictionary];
+                                           NSInteger row = 0;
 
-                                       // TODO: Should refactor to update / reload / delete more efficiently
-                                       for (NSDictionary *element in payload) {
-                                           postFound = NO;
+                                           NSMutableArray *newPosts = [NSMutableArray array];
+                                           NSMutableArray *oldURLs = [NSMutableArray array];
+                                           NSMutableArray *oldPosts = [self.posts copy];
+                                           
+                                           for (NSDictionary *post in oldPosts) {
+                                               [oldURLs addObject:post[@"url"]];
+                                               oldURLsToIndexPaths[post[@"url"]] = [NSIndexPath indexPathForRow:row inSection:0];
+                                               row++;
+                                           }
 
-                                           [tags removeAllObjects];
-                                           [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
-                                           for (NSString *tag in element[@"t"]) {
-                                               if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
-                                                   [tags addObject:[tag stringByDecodingHTMLEntities]];
-                                               }
-                                           }
-                                           
-                                           date = [dateFormatter dateFromString:element[@"dt"]];
-                                           if (!date) {
-                                               // https://rink.hockeyapp.net/manage/apps/33685/app_versions/4/crash_reasons/4734816
-                                               date = [NSDate date];
-                                           }
-                                           
-                                           NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                       @"title": element[@"d"],
-                                                                                                                       @"description": element[@"n"],
-                                                                                                                       @"url": element[@"u"],
-                                                                                                                       @"tags": [tags componentsJoinedByString:@" "],
-                                                                                                                       @"created_at": date
-                                                                                                                       }];
-                                           
-                                           if (post[@"title"] == [NSNull null]) {
-                                               post[@"title"] = @"";
-                                           }
-                                           
-                                           if (post[@"description"] == [NSNull null]) {
-                                               post[@"description"] = @"";
-                                           }
-                                           
-                                           NSString *url = post[@"url"];
-                                           [newPosts addObject:post];
-                                           
-                                           // Go from the last found value to the end of the list.
-                                           // If you find something, break and set the pivot to the current skip index.
-                                           for (NSInteger i=skipPivot; i<oldPosts.count; i++) {
-                                               if ([oldURLs[i] isEqualToString:url]) {
-                                                   // Delete all posts that were skipped
-                                                   for (NSInteger j=skipPivot; j<i; j++) {
-                                                       [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:j inSection:0]];
+                                           NSDate *date;
+
+                                           row = 0;
+                                           for (NSDictionary *element in payload) {
+                                               NSMutableArray *tags = [NSMutableArray array];
+                                               [tags addObject:[NSString stringWithFormat:@"via:%@", element[@"a"]]];
+                                               for (NSString *tag in element[@"t"]) {
+                                                   if (![tag isEqual:[NSNull null]] && ![tag isEqualToString:@""]) {
+                                                       [tags addObject:[tag stringByDecodingHTMLEntities]];
                                                    }
-
-                                                   post = oldPosts[i];
-                                                   postFound = YES;
-                                                   skipPivot = i+1;
-                                                   break;
                                                }
+                                               
+                                               date = [[self feedDateFormatter] dateFromString:element[@"dt"]];
+                                               if (!date) {
+                                                   // https://rink.hockeyapp.net/manage/apps/33685/app_versions/4/crash_reasons/4734816
+                                                   date = [NSDate date];
+                                               }
+                                               
+                                               NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                                           @"title": [element[@"d"] lhs_stringByTrimmingWhitespace],
+                                                                                                                           @"description": [element[@"n"] lhs_stringByTrimmingWhitespace],
+                                                                                                                           @"url": element[@"u"],
+                                                                                                                           @"tags": [tags componentsJoinedByString:@" "],
+                                                                                                                           @"created_at": date
+                                                                                                                       }];
+
+                                               NSString *url = post[@"url"];
+                                               [newPosts addObject:post];
+
+                                               newURLsToIndexPaths[url] = [NSIndexPath indexPathForRow:row inSection:0];
+                                               row++;
                                            }
-
-                                           if (![oldPosts containsObject:post]) {
-                                               // Check if the bookmark is being updated (as opposed to entirely new)
-                                               if ([oldURLs containsObject:url]) {
-                                                   [indexPathsToReload addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                                               }
-                                               else {
-                                                   [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                                               }
-                                           }
-
-                                           index++;
-                                       }
-
-                                       for (NSInteger i=skipPivot; i<oldURLs.count; i++) {
-                                           [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-                                       }
-
-                                       self.posts = newPosts;
-                                       
-                                       NSMutableArray *newMetadata = [NSMutableArray array];
-                                       NSMutableArray *newCompressedMetadata = [NSMutableArray array];
-
-                                       for (NSDictionary *post in newPosts) {
-                                           PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
-                                           [newMetadata addObject:metadata];
                                            
-                                           PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
-                                           [newCompressedMetadata addObject:compressedMetadata];
+                                           self.posts = newPosts;
+                                           
+                                           [PPUtilities generateDiffForPrevious:oldPosts
+                                                                        updated:newPosts
+                                                                           hash:^NSString *(id obj) {
+                                                                               return obj[@"url"];
+                                                                           }
+                                                                     completion:^(NSSet *inserted, NSSet *deleted) {
+                                                                         NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+                                                                         NSMutableArray *indexPathsToReload = [NSMutableArray array];
+                                                                         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+
+                                                                         for (NSString *url in deleted) {
+                                                                             [indexPathsToDelete addObject:oldURLsToIndexPaths[url]];
+                                                                         }
+                                                                         
+                                                                         for (NSString *url in inserted) {
+                                                                             [indexPathsToInsert addObject:newURLsToIndexPaths[url]];
+                                                                         }
+                                                                         
+                                                                         NSMutableArray *newMetadata = [NSMutableArray array];
+                                                                         NSMutableArray *newCompressedMetadata = [NSMutableArray array];
+                                                                         
+                                                                         for (NSDictionary *post in newPosts) {
+                                                                             PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
+                                                                             [newMetadata addObject:metadata];
+                                                                             
+                                                                             PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
+                                                                             [newCompressedMetadata addObject:compressedMetadata];
+                                                                         }
+                                                                         
+                                                                         self.metadata = newMetadata;
+                                                                         self.compressedMetadata = newCompressedMetadata;
+                                                                         
+                                                                         completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                                                     }];
                                        }
-                                       
-                                       self.metadata = newMetadata;
-                                       self.compressedMetadata = newCompressedMetadata;
-                                       
-                                       if (success != nil) {
-                                           success(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
-                                       }
-                                   }
-                               });
-                           }];
+                                   });
+                               }];
+    });
 }
 
 - (NSURL *)url {
@@ -578,6 +557,17 @@
 
 - (BOOL)searchSupported {
     return NO;
+}
+
+- (NSDateFormatter *)feedDateFormatter {
+    static NSDateFormatter *dateFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    });
+    return dateFormatter;
 }
 
 @end

@@ -193,6 +193,7 @@
 		37B348E11760196400929E2E /* caution-dash.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348DF1760196400929E2E /* caution-dash.png */; };
 		37B348E21760196400929E2E /* caution-dash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37B348E01760196400929E2E /* caution-dash@2x.png */; };
 		37B4FFE01922B6EF002F8558 /* NSString+LHSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */; };
+		37B4FFE31923AD18002F8558 /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B5F4E41773864C005687DA /* Twitter.framework */; };
 		37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD3188641D80022020A /* readabilityInitializer.js */; };
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
@@ -757,6 +758,8 @@
 		37B348E01760196400929E2E /* caution-dash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "caution-dash@2x.png"; path = "Assets/caution-dash@2x.png"; sourceTree = "<group>"; };
 		37B4FFDE1922B6EF002F8558 /* NSString+LHSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LHSAdditions.h"; sourceTree = "<group>"; };
 		37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+LHSAdditions.m"; sourceTree = "<group>"; };
+		37B4FFE11923AD18002F8558 /* PPUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPUtilities.h; sourceTree = "<group>"; };
+		37B4FFE21923AD18002F8558 /* PPUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPUtilities.m; sourceTree = "<group>"; };
 		37B5F4E41773864C005687DA /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		37BC1BD3188641D80022020A /* readabilityInitializer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readabilityInitializer.js; path = Pushpin/readabilityInitializer.js; sourceTree = "<group>"; };
 		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; };
@@ -1707,6 +1710,8 @@
 				37BC1BD91889C6730022020A /* PPTwitter.h */,
 				37BC1BDA1889C6740022020A /* PPTwitter.m */,
 				373115EE18E23C310072A986 /* PPDataSource.h */,
+				37B4FFE11923AD18002F8558 /* PPUtilities.h */,
+				37B4FFE21923AD18002F8558 /* PPUtilities.m */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";
@@ -2530,6 +2535,7 @@
 				3727558C161A66A2001A857B /* PPTagViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */,
 				37ED3E4E188C4A1F0039B344 /* PPActivityViewController.m in Sources */,
+				37B4FFE31923AD18002F8558 /* PPUtilities.m in Sources */,
 				37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */,
 				378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */,
 				37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */,

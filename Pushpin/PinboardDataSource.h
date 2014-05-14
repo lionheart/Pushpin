@@ -22,6 +22,24 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @class FMResultSet;
 @class PostMetadata;
 
+static dispatch_queue_t PPPinboardBookmarkUpdateQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.PinboardBookmarkUpdateQueue", 0);
+    });
+    return queue;
+}
+
+static dispatch_queue_t PPPinboardBookmarkReloadQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.PinboardBookmarkReloadQueue", 0);
+    });
+    return queue;
+}
+
 @interface PinboardDataSource : NSObject <PPDataSource, NSCopying>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
@@ -66,16 +84,5 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
-
-- (void)generateDiffForPrevious:(NSArray *)previousItems
-                        updated:(NSArray *)updatedItems
-                           hash:(NSString *(^)(id))extractHash
-                           meta:(NSString *(^)(id))extractMeta
-                     completion:(void (^)(NSSet *inserted, NSSet *updated, NSSet *deleted))completion;
-
-- (void)generateDiffForPrevious:(NSArray *)previousItems
-                        updated:(NSArray *)updatedItems
-                           hash:(NSString *(^)(id))extractHash
-                     completion:(void (^)(NSSet *inserted, NSSet *deleted))completion;
 
 @end
