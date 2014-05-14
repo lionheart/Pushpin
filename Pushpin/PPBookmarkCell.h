@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@protocol GenericPostDataSource;
+@protocol PPDataSource;
 @protocol PPBadgeWrapperDelegate;
 
 @class PPBookmarkCell;
@@ -26,7 +26,7 @@
 
 @property (nonatomic, weak) id<PPBookmarkCellDelegate> delegate;
 
-- (void)prepareCellWithDataSource:(id<GenericPostDataSource>)dataSource
+- (void)prepareCellWithDataSource:(id<PPDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
                             index:(NSInteger)index
                        compressed:(BOOL)compressed;

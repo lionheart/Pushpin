@@ -10,7 +10,7 @@
 
 #import "PPGenericPostViewController.h"
 
-@interface PinboardNotesDataSource : NSObject <GenericPostDataSource>
+@interface PinboardNotesDataSource : NSObject <PPDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSMutableArray *metadata;

@@ -36,75 +36,6 @@ typedef enum : NSInteger {
     PPSearchScopePublic,
 } PPSearchBarScopeType;
 
-@protocol GenericPostDataSource <NSObject>
-
-- (PPPostActionType)actionsForPost:(NSDictionary *)post;
-- (NSInteger)numberOfPosts;
-- (BOOL)searchSupported;
-
-- (NSAttributedString *)titleForPostAtIndex:(NSInteger)index;
-- (NSAttributedString *)descriptionForPostAtIndex:(NSInteger)index;
-- (NSAttributedString *)linkForPostAtIndex:(NSInteger)index;
-
-- (CGFloat)heightForPostAtIndex:(NSInteger)index;
-- (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index;
-
-- (BOOL)isPostAtIndexPrivate:(NSInteger)index;
-- (BOOL)supportsTagDrilldown;
-
-- (NSDictionary *)postAtIndex:(NSInteger)index;
-- (NSString *)urlForPostAtIndex:(NSInteger)index;
-
-@optional
-
-@property (nonatomic, strong) NSMutableArray *posts;
-@property (nonatomic) NSInteger totalNumberOfPosts;
-
-- (BOOL)isPostAtIndexStarred:(NSInteger)index;
-
-- (NSString *)searchPlaceholder;
-
-- (void)updateBookmarksWithSuccess:(void (^)())success
-                           failure:(void (^)(NSError *))failure
-                          progress:(void (^)(NSInteger, NSInteger))progress
-                           options:(NSDictionary *)options;
-
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                     failure:(void (^)(NSError *))failure
-                       width:(CGFloat)width;
-
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                     failure:(void (^)(NSError *))failure
-                      cancel:(void (^)(BOOL *))cancel
-                       width:(CGFloat)width;
-
-- (NSArray *)badgesForPostAtIndex:(NSInteger)index;
-
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback;
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index;
-- (id <GenericPostDataSource>)searchDataSource;
-- (void)filterWithQuery:(NSString *)query;
-- (void)addDataSource:(void (^)())callback;
-- (void)removeDataSource:(void (^)())callback;
-
-// A data source may alternatively provide a UIViewController to push
-- (NSInteger)sourceForPostAtIndex:(NSInteger)index;
-- (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index;
-- (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback;
-
-- (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index;
-- (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
-- (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback;
-- (void)willDisplayIndexPath:(NSIndexPath *)indexPath callback:(void (^)(BOOL))callback;
-
-- (UIColor *)barTintColor;
-- (NSString *)title;
-- (UIView *)titleView;
-- (UIView *)titleViewWithDelegate:(id<PPTitleButtonDelegate>)delegate;
-
-@end
-
 @interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -114,8 +45,8 @@ typedef enum : NSInteger {
 @property (nonatomic, strong) UIActionSheet *longPressActionSheet;
 @property (nonatomic, strong) UIActionSheet *additionalTagsActionSheet;
 
-@property (nonatomic, retain) id<GenericPostDataSource> postDataSource;
-@property (nonatomic, strong) id<GenericPostDataSource> searchPostDataSource;
+@property (nonatomic, retain) id<PPDataSource> postDataSource;
+@property (nonatomic, strong) id<PPDataSource> searchPostDataSource;
 
 @property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
@@ -174,8 +105,8 @@ typedef enum : NSInteger {
 
 - (void)removeBarButtonTouchUpside:(id)sender;
 - (void)addBarButtonTouchUpside:(id)sender;
-- (id<GenericPostDataSource>)dataSourceForTableView:(UITableView *)tableView;
-- (id<GenericPostDataSource>)currentDataSource;
+- (id<PPDataSource>)dataSourceForTableView:(UITableView *)tableView;
+- (id<PPDataSource>)currentDataSource;
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 

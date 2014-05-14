@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @protocol PPDataSource <NSObject>
-
-- (PPPostActionType)actionsForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;
 - (BOOL)searchSupported;
 
@@ -27,6 +25,17 @@
 - (NSDictionary *)postAtIndex:(NSInteger)index;
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 
+// Retrieves bookmarks from remote server and inserts them into database.
+- (void)syncBookmarksWithCompletion:(void (^)(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error))success
+                           progress:(void (^)(NSInteger, NSInteger))progress;
+
+// Refreshes local cache.
+- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error))completion
+                               cancel:(BOOL (^)())cancel
+                                width:(CGFloat)width;
+
+- (PPPostActionType)actionsForPost:(NSDictionary *)post;
+
 @optional
 
 @property (nonatomic, strong) NSMutableArray *posts;
@@ -35,20 +44,6 @@
 - (BOOL)isPostAtIndexStarred:(NSInteger)index;
 
 - (NSString *)searchPlaceholder;
-
-- (void)updateBookmarksWithSuccess:(void (^)())success
-                           failure:(void (^)(NSError *))failure
-                          progress:(void (^)(NSInteger, NSInteger))progress
-                           options:(NSDictionary *)options;
-
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                     failure:(void (^)(NSError *))failure
-                       width:(CGFloat)width;
-
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success
-                     failure:(void (^)(NSError *))failure
-                      cancel:(void (^)(BOOL *))cancel
-                       width:(CGFloat)width;
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 

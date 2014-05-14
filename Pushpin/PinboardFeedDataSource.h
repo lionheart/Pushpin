@@ -12,7 +12,7 @@
 
 @class PostMetadata;
 
-@interface PinboardFeedDataSource : NSObject <GenericPostDataSource>
+@interface PinboardFeedDataSource : NSObject <PPDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSArray *components;

@@ -8,6 +8,8 @@
 
 @import Foundation;
 
+typedef void (^PPErrorBlock)(NSError *error);
+
 typedef enum : NSInteger {
     PPMobilizerGoogle,
     PPMobilizerInstapaper,
@@ -130,6 +132,8 @@ static dispatch_queue_t PPSerialQueue() {
     return dispatch_queue_create("Pushpin Serial Queue", DISPATCH_QUEUE_SERIAL);
 }
 
+static NSString *PPErrorDomain = @"PPErrorDomain";
+
 static NSString *emptyString = @"";
 static NSString *newLine = @"\n";
 static NSString *ellipsis = @"…";
@@ -185,9 +189,23 @@ static NSArray *PPPersonalFeeds() {
 }
 
 static NSArray *PPCommunityFeeds() {
-    return @[@"network", @"popular", @"wikipedia", @"fandom", @"japan", @"recent"];
+    static dispatch_once_t onceToken;
+    static NSArray *feeds;
+    dispatch_once(&onceToken, ^{
+        feeds = @[@"network", @"popular", @"wikipedia", @"fandom", @"japan", @"recent"];
+    });
+    return feeds;
 }
 #endif
+
+static dispatch_queue_t PPBookmarkUpdateQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.BookmarkUpdateQueue", 0);
+    });
+    return queue;
+}
 
 @interface PPConstants : NSObject
 
