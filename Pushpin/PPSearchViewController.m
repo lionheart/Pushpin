@@ -484,9 +484,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 case PPSearchScopePinboard:
 #ifdef PINBOARD
                     switch (self.pinboardSearchScope) {
-                        case ASPinboardSearchScopeFullText:
-                            self.pinboardSearchScope = ASPinboardSearchScopeMine;
+                        case ASPinboardSearchScopeFullText: {
+                            // Check if the user has no username or password set.
+                            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+                            if (YES || [delegate.username length] == 0 || [delegate.password length] == 0) {
+                                [[[UIAlertView alloc] initWithTitle:nil
+                                                            message:@"To enable Pinboard full-text search, please log out and then log back in."
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"OK", nil] show];
+                            }
+                            else {
+                                self.pinboardSearchScope = ASPinboardSearchScopeMine;
+                            }
                             break;
+                        }
                             
                         case ASPinboardSearchScopeMine:
                             self.pinboardSearchScope = ASPinboardSearchScopeFullText;
@@ -720,7 +732,20 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         self.searchScope = (PPSearchScopeType)[PPPinboardSearchScopes() indexOfObject:title];
         
         if (self.searchScope == PPSearchScopePinboard) {
-            self.pinboardSearchScope = ASPinboardSearchScopeFullText;
+            // Check if the user has no username or password set.
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            if ([delegate.username length] == 0 || [delegate.password length] == 0) {
+                self.searchScope = PPSearchScopeMine;
+
+                [[[UIAlertView alloc] initWithTitle:nil
+                                            message:@"To enable Pinboard full-text search, please log out and then log back in."
+                                           delegate:nil
+                                  cancelButtonTitle:nil
+                                  otherButtonTitles:@"OK", nil] show];
+            }
+            else {
+                self.pinboardSearchScope = ASPinboardSearchScopeFullText;
+            }
         }
         else {
             self.pinboardSearchScope = ASPinboardSearchScopeMine;

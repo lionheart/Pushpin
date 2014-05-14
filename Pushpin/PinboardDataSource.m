@@ -1359,24 +1359,26 @@ static BOOL kPinboardSyncInProgress = NO;
                                          password:sharedDelegate.password
                                             query:self.searchQuery
                                             scope:self.searchScope
-                                          success:^(NSArray *urls) {
-                                              NSMutableArray *components = [NSMutableArray array];
-                                              NSMutableArray *parameters = [NSMutableArray array];
-                                              [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-                                              
-                                              NSMutableArray *urlComponents = [NSMutableArray array];
-                                              for (NSString *url in urls) {
-                                                  [urlComponents addObject:@"?"];
-                                                  [parameters addObject:url];
-                                              }
-                                              
-                                              [components addObject:[urlComponents componentsJoinedByString:@", "]];
-                                              [components addObject:@")"];
-                                              
-                                              NSString *query = [components componentsJoinedByString:@" "];
-                                              
-                                              HandleSearch(query, parameters);
-                                          }];
+                                       completion:^(NSArray *urls, NSError *error) {
+                                           if (!error) {
+                                               NSMutableArray *components = [NSMutableArray array];
+                                               NSMutableArray *parameters = [NSMutableArray array];
+                                               [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
+
+                                               NSMutableArray *urlComponents = [NSMutableArray array];
+                                               for (NSString *url in urls) {
+                                                   [urlComponents addObject:@"?"];
+                                                   [parameters addObject:url];
+                                               }
+                                               
+                                               [components addObject:[urlComponents componentsJoinedByString:@", "]];
+                                               [components addObject:@")"];
+                                               
+                                               NSString *query = [components componentsJoinedByString:@" "];
+                                               
+                                               HandleSearch(query, parameters);
+                                           }
+                                       }];
         }
         else {
             [self generateQueryAndParameters:HandleSearch];
