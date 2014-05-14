@@ -118,11 +118,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                      cancelButtonTitle:nil
                                                 destructiveButtonTitle:nil
                                                      otherButtonTitles:nil];
-    for (NSString *scope in PPSearchScopes()) {
+    for (NSString *scope in PPPinboardSearchScopes()) {
         [self.searchScopeActionSheet addButtonWithTitle:scope];
     }
     [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
-    self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
+    self.searchScopeActionSheet.cancelButtonIndex = [PPPinboardSearchScopes() count];
     
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
@@ -254,7 +254,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.textLabel.text = @"Search scope";
 
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
-            cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];
+            cell.detailTextLabel.text = PPPinboardSearchScopes()[self.searchScope];
 
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.accessoryView = nil;
@@ -404,20 +404,17 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         case kPushpinFilterTrue: {
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0x53A93FFF)]];
                             cell.textLabel.textColor = [UIColor blackColor];
-//                            cell.accessoryType = UITableViewCellAccessoryCheckmark;
                             break;
                         }
                             
                         case kPushpinFilterFalse:
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)]];
                             cell.textLabel.textColor = [UIColor blackColor];
-//                            cell.accessoryType = UITableViewCellAccessoryCheckmark;
                             break;
                             
                         case kPushpinFilterNone:
                             cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                             cell.textLabel.textColor = [UIColor lightGrayColor];
-//                            cell.accessoryType = UITableViewCellAccessoryNone;
                             break;
                     }
                     break;
@@ -714,13 +711,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.searchScopeActionSheet) {
-        if (buttonIndex == [PPSearchScopes() count]) {
+        if (buttonIndex == [PPPinboardSearchScopes() count]) {
             return;
         }
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         
         PPSearchScopeType previousSearchScope = self.searchScope;
-        self.searchScope = (PPSearchScopeType)[PPSearchScopes() indexOfObject:title];
+        self.searchScope = (PPSearchScopeType)[PPPinboardSearchScopes() indexOfObject:title];
         
         if (self.searchScope == PPSearchScopePinboard) {
             self.pinboardSearchScope = ASPinboardSearchScopeFullText;
