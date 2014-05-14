@@ -6,7 +6,7 @@
 //
 //
 
-#import "PinboardNotesDataSource.h"
+#import "PPPinboardNotesDataSource.h"
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PostMetadata.h"
@@ -17,14 +17,14 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 
-@interface PinboardNotesDataSource ()
+@interface PPPinboardNotesDataSource ()
 
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSLocale *locale;
 
 @end
 
-@implementation PinboardNotesDataSource
+@implementation PPPinboardNotesDataSource
 
 - (id)init {
     self = [super init];

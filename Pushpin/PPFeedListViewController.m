@@ -16,7 +16,7 @@
 #import "PinboardFeedDataSource.h"
 #import "PPSettingsViewController.h"
 #import "PPTagViewController.h"
-#import "PinboardNotesDataSource.h"
+#import "PPPinboardNotesDataSource.h"
 #import "PPSavedFeedsViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
@@ -1054,7 +1054,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)openNotes {
     PPGenericPostViewController *notesViewController = [[PPGenericPostViewController alloc] init];
-    PinboardNotesDataSource *notesDataSource = [[PinboardNotesDataSource alloc] init];
+    PPPinboardNotesDataSource *notesDataSource = [[PPPinboardNotesDataSource alloc] init];
     notesViewController.postDataSource = notesDataSource;
     notesViewController.title = NSLocalizedString(@"Notes", nil);
     [self.navigationController pushViewController:notesViewController animated:YES];
