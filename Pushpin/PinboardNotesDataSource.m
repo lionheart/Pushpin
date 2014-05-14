@@ -91,7 +91,9 @@
     return license;
 }
 
-- (void)bookmarksWithSuccess:(void (^)(NSArray *, NSArray *, NSArray *))success failure:(void (^)(NSError *))failure width:(CGFloat)width {
+- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+                               cancel:(BOOL (^)())cancel
+                                width:(CGFloat)width {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
@@ -152,14 +154,13 @@
 
         self.posts = [newNotes copy];
         
-        if (success) {
-            success(indexPathsToAdd, indexPathsToReload, indexPathsToRemove);
-        }
+        completion(indexPathsToAdd, indexPathsToReload, indexPathsToRemove, nil);
     }];
 }
 
-- (void)updateBookmarksWithSuccess:(void (^)())success failure:(void (^)(NSError *))failure progress:(void (^)(NSInteger, NSInteger))progress options:(NSDictionary *)options {
-    success();
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+                           progress:(void (^)(NSInteger, NSInteger))progress {
+    completion(nil);
 }
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index {

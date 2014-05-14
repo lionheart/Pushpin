@@ -11,6 +11,8 @@
 
 #import <ASPinboard.h>
 
+static NSString *CellIdentifier = @"Cell";
+
 @interface PPNoteViewController ()
 
 @end
@@ -64,7 +66,6 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {

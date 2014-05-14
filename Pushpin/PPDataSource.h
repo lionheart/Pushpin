@@ -26,7 +26,7 @@
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 
 // Retrieves bookmarks from remote server and inserts them into database.
-- (void)syncBookmarksWithCompletion:(void (^)(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error))success
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *error))completion
                            progress:(void (^)(NSInteger, NSInteger))progress;
 
 // Refreshes local cache.

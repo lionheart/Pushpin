@@ -328,7 +328,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    delegate.token = token;
                                                    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
 
-                                                   [dataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                                                   [dataSource syncBookmarksWithCompletion:^(NSError *error) {
                                                        if (error) {
                                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                                [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
