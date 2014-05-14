@@ -12,6 +12,15 @@
 
 @class PostMetadata;
 
+static dispatch_queue_t PPPinboardFeedReloadQueue () {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.PinboardFeedReloadQueue", 0);
+    });
+    return queue;
+}
+
 @interface PinboardFeedDataSource : NSObject <PPDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
