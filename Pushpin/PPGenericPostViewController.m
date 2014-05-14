@@ -724,20 +724,22 @@ static NSInteger kToolbarHeight = 44;
         
         [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
         
-        __weak PPGenericPostViewController *weakself = self;
-        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        weakself.searchPosts = [self.searchPostDataSource.posts copy];
-                        [weakself.searchDisplayController.searchResultsTableView reloadData];
+                        self.searchPosts = [self.searchPostDataSource.posts copy];
+                        [self.searchDisplayController.searchResultsTableView beginUpdates];
+                        [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.searchDisplayController.searchResultsTableView endUpdates];
                     });
                 }
                 
-                weakself.searchLoading = NO;
+                self.searchLoading = NO;
             } cancel:^BOOL{
-                return [time compare:weakself.latestSearchTime] != NSOrderedSame;
+                return [time compare:self.latestSearchTime] != NSOrderedSame;
             } width:self.currentWidth];
         });
     }
