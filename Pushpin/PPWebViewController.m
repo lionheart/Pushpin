@@ -328,8 +328,6 @@ static NSInteger kTitleHeight = 40;
     [UIView animateWithDuration:0.3 animations:^{
         [self setNeedsStatusBarAppearanceUpdate];
     }];
-
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     // Determine if we should mobilize or not
     if (self.shouldMobilize && ![self.mobilizerUtility isURLMobilized:self.url]) {
@@ -339,8 +337,6 @@ static NSInteger kTitleHeight = 40;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     if (!self.alreadyLoaded) {
         [self loadURL];
