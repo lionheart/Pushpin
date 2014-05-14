@@ -727,8 +727,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         }
         
         [self.tableView beginUpdates];
-        
-        
+
         if (self.searchScope != previousSearchScope) {
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPSearchScopeRow inSection:PPSearchSectionScope]] withRowAnimation:UITableViewRowAnimationFade];
 

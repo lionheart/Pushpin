@@ -72,6 +72,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIKeyCommand *moveDownKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *openKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *editKeyCommand;
+@property (nonatomic, strong) UIKeyCommand *enterKeyCommand;
 
 @property (nonatomic, strong) UIView *circle;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
@@ -149,6 +150,16 @@ static NSInteger kToolbarHeight = 44;
     self.escapeKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
+    
+#if TARGET_IPHONE_SIMULATOR
+    self.enterKeyCommand = [UIKeyCommand keyCommandWithInput:@"\R"
+                                               modifierFlags:0
+                                                      action:@selector(handleKeyCommand:)];
+#else
+    self.enterKeyCommand = [UIKeyCommand keyCommandWithInput:@"\r"
+                                               modifierFlags:0
+                                                      action:@selector(handleKeyCommand:)];
+#endif
     
     self.circle = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMidX(self.view.frame), -100, 20, 20)];
     self.circle.layer.cornerRadius = 10;
@@ -681,6 +692,7 @@ static NSInteger kToolbarHeight = 44;
                                                      [tableView reloadData];
                                                  }
                                                  else {
+#warning Crash here
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -1890,52 +1902,59 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
-    if (keyCommand == self.focusSearchKeyCommand) {
-        [self.searchBar becomeFirstResponder];
-    }
-    else if (keyCommand == self.toggleCompressKeyCommand) {
-        [self toggleCompressedPosts];
-    }
-    else if (keyCommand == self.escapeKeyCommand) {
-        [self.searchBar resignFirstResponder];
-    }
-    else if (keyCommand == self.moveUpKeyCommand) {
-        if (self.selectedIndexPath) {
-            NSInteger row = self.selectedIndexPath.row;
-            self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
-            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+    if ([self.searchBar isFirstResponder]) {
+        if (keyCommand == self.enterKeyCommand) {
+            [self.searchBar resignFirstResponder];
         }
     }
-    else if (keyCommand == self.moveDownKeyCommand) {
-        if (self.selectedIndexPath) {
-            NSInteger row = self.selectedIndexPath.row;
-            self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
-            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+    else {
+        if (keyCommand == self.focusSearchKeyCommand) {
+            [self.searchBar becomeFirstResponder];
         }
-        else {
-            self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+        else if (keyCommand == self.toggleCompressKeyCommand) {
+            [self toggleCompressedPosts];
         }
-    }
-    else if (keyCommand == self.openKeyCommand) {
-        self.numberOfTapsSinceTapReset = 1;
-        self.selectedTableView = self.tableView;
-        [self handleCellTap];
-    }
-    else if (keyCommand == self.editKeyCommand) {
-        UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-            });
-        }];
-        
-        if ([UIApplication isIPad]) {
-            vc.modalPresentationStyle = UIModalPresentationFormSheet;
+        else if (keyCommand == self.escapeKeyCommand) {
+            [self.searchBar resignFirstResponder];
         }
-
-        [self.navigationController presentViewController:vc animated:YES completion:nil];
+        else if (keyCommand == self.moveUpKeyCommand) {
+            if (self.selectedIndexPath) {
+                NSInteger row = self.selectedIndexPath.row;
+                self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
+                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+            }
+        }
+        else if (keyCommand == self.moveDownKeyCommand) {
+            if (self.selectedIndexPath) {
+                NSInteger row = self.selectedIndexPath.row;
+                self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
+                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+            }
+            else {
+                self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
+            }
+        }
+        else if (keyCommand == self.openKeyCommand) {
+            self.numberOfTapsSinceTapReset = 1;
+            self.selectedTableView = self.tableView;
+            [self handleCellTap];
+        }
+        else if (keyCommand == self.editKeyCommand) {
+            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                });
+            }];
+            
+            if ([UIApplication isIPad]) {
+                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
+            
+            [self.navigationController presentViewController:vc animated:YES completion:nil];
+        }
     }
 }
 
