@@ -44,7 +44,8 @@
             [A addObject:hash];
             
             NSString *meta = extractMeta(obj);
-            [APlusMeta addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
+            NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
+            [APlusMeta addObject:hashmeta];
         }
         
         for (id obj in updatedItems) {
@@ -53,7 +54,8 @@
             [B addObject:hash];
             
             NSString *meta = extractMeta(obj);
-            [BPlusMeta addObject:[@[hash, meta] componentsJoinedByString:@"_"]];
+            NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
+            [APlusMeta addObject:hashmeta];
             identifiersToChanges[hash] = meta;
         }
     }

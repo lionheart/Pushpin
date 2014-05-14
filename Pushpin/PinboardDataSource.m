@@ -1226,11 +1226,26 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableDictionary *oldHashesToIndexPaths = [NSMutableDictionary dictionary];
             NSMutableDictionary *newHashesToIndexPaths = [NSMutableDictionary dictionary];
             NSMutableDictionary *newHashmetasToHashes = [NSMutableDictionary dictionary];
+            NSMutableDictionary *newTagsWithFrequencies = [NSMutableDictionary dictionary];
             
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
+            
+            if (cancel && cancel()) {
+                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
+
             [db open];
             FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
             
+            if (cancel && cancel()) {
+                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
+                [db close];
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
+
             while ([results next]) {
                 NSString *hash = [results stringForColumn:@"hash"];
                 NSString *meta = [results stringForColumn:@"meta"];
@@ -1254,13 +1269,18 @@ static BOOL kPinboardSyncInProgress = NO;
                 row++;
             }
             
-            [self.tagsWithFrequency removeAllObjects];
+            if (cancel && cancel()) {
+                DLog(@"B: Cancelling search for query (%@)", self.searchQuery);
+                [db close];
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
             
             FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
             while ([tagResult next]) {
                 NSString *tag = [tagResult stringForColumnIndex:0];
                 NSNumber *count = [tagResult objectForColumnIndex:1];
-                self.tagsWithFrequency[tag] = count;
+                newTagsWithFrequencies[tag] = count;
             }
             
             [db close];
@@ -1268,8 +1288,14 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            
-            [PPUtilities generateDiffForPrevious:self.posts
+
+            if (cancel && cancel()) {
+                DLog(@"C: Cancelling search for query (%@)", self.searchQuery);
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
+
+            [PPUtilities generateDiffForPrevious:previousBookmarks
                                          updated:updatedBookmarks
                                             hash:^NSString *(id obj) { return obj[@"hash"]; }
                                             meta:^NSString *(id obj) { return obj[@"meta"]; }
@@ -1310,13 +1336,8 @@ static BOOL kPinboardSyncInProgress = NO;
                                               [newCompressedMetadata addObject:compressedMetadata];
                                           }
                                           
-                                          // We run this block to make sure that these results should be the latest on "file"
-                                          BOOL stop = NO;
-                                          if (cancel) {
-                                              stop = cancel();
-                                          }
-                                          
-                                          if (stop) {
+                                          // We run this block to make sure that these results should be the latest on file
+                                          if (cancel && cancel()) {
                                               DLog(@"Cancelling search for query (%@)", self.searchQuery);
                                               completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                           }
@@ -1324,7 +1345,8 @@ static BOOL kPinboardSyncInProgress = NO;
                                               self.posts = updatedBookmarks;
                                               self.metadata = newMetadata;
                                               self.compressedMetadata = newCompressedMetadata;
-                                              
+                                              self.tagsWithFrequency = newTagsWithFrequencies;
+
                                               completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
                                           }
                                       }];

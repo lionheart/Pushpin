@@ -216,8 +216,6 @@ static NSInteger kToolbarHeight = 44;
         self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
     }
     
-    self.searchLoading = NO;
-    
     // Setup the multi-edit toolbar
     self.multiToolbarView = [[UIView alloc] init];
     self.multiToolbarView.backgroundColor = HEX(0xEBF2F6FF);
@@ -713,36 +711,30 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
-    if (!self.searchLoading) {
-        self.searchLoading = YES;
-        
 #ifdef PINBOARD
-        if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
-            [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
-        }
+    if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
+        [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
+    }
 #endif
         
-        [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                if (!error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.searchPosts = [self.searchPostDataSource.posts copy];
-                        [self.searchDisplayController.searchResultsTableView beginUpdates];
-                        [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                        [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                        [self.searchDisplayController.searchResultsTableView endUpdates];
-                    });
-                }
-                
-                self.searchLoading = NO;
-            } cancel:^BOOL{
-                return [time compare:self.latestSearchTime] != NSOrderedSame;
-            } width:self.currentWidth];
-        });
-    }
+    [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            if (!error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.searchPosts = [self.searchPostDataSource.posts copy];
+                    [self.searchDisplayController.searchResultsTableView beginUpdates];
+                    [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.searchDisplayController.searchResultsTableView endUpdates];
+                });
+            }
+        } cancel:^BOOL{
+            return [time compare:self.latestSearchTime] != NSOrderedSame;
+        } width:self.currentWidth];
+    });
 }
 
 - (void)toggleEditingMode:(id)sender {
