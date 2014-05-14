@@ -948,7 +948,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
 
     if (!progress) {
@@ -1134,7 +1134,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                    [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
                                    [self updateStarredPostsWithCompletion:^(NSError *error) {
                                        [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                                           completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                           completion(nil);
                                        } cancel:nil width:self.mostRecentWidth];
                                    }];
                                }];
@@ -1161,14 +1161,14 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 });
                                             }
                                             failure:^(NSError *error) {
-                                                completion(nil, nil, nil, error);
+                                                completion(error);
                                             }];
                     });
                 }
                 else {
                     kPinboardSyncInProgress = NO;
                     [self updateStarredPostsWithCompletion:^(NSError *error) {
-                        completion(nil, nil, nil, error);
+                        completion(error);
                     }];
                 }
             });
@@ -1176,7 +1176,7 @@ static BOOL kPinboardSyncInProgress = NO;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:^(NSError *error) {
-                completion(nil, nil, nil, error);
+                completion(error);
             }];
         });
     });

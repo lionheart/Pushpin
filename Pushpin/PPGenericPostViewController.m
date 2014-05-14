@@ -351,7 +351,7 @@ static NSInteger kToolbarHeight = 44;
             delegate.bookmarksNeedUpdate = NO;
             
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
                 [self updateFromLocalDatabaseWithCallback:nil];
             } progress:nil];
         }
@@ -1423,7 +1423,7 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
                 [self updateFromLocalDatabaseWithCallback:nil];
             } progress:nil];
         }
