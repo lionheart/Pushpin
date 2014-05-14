@@ -29,6 +29,10 @@ typedef enum : NSInteger {
     PPSearchSectionScope,
     PPSearchSectionFilters
 } PPSearchSectionType;
+
+static NSArray *PPPinboardSearchScopes() {
+    return @[@"Mine", @"Mine (Pinboard Syntax)"];
+}
 #endif
 
 #ifdef DELICIOUS
@@ -55,10 +59,6 @@ typedef enum : NSInteger {
     PPSearchSectionScope
 } PPSearchSectionType;
 #endif
-
-static NSArray *PPSearchScopes() {
-    return @[@"Mine", @"Pinboard Search"];
-}
 
 typedef enum : NSInteger {
     PPSearchQueryRow

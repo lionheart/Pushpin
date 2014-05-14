@@ -724,6 +724,8 @@ static NSInteger kToolbarHeight = 44;
             if (!error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.searchPosts = [self.searchPostDataSource.posts copy];
+//                    [self.searchDisplayController.searchResultsTableView reloadData];
+                    
                     [self.searchDisplayController.searchResultsTableView beginUpdates];
                     [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
