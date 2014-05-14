@@ -654,7 +654,7 @@
         @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold",
         
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
-        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(NO),
+        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
 #ifdef PINBOARD
