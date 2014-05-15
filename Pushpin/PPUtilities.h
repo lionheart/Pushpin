@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class FMResultSet;
+
 @interface PPUtilities : NSObject
 
 + (void)generateDiffForPrevious:(NSArray *)previousItems
