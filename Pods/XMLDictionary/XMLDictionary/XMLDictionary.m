@@ -1,7 +1,7 @@
 //
 //  XMLDictionary.m
 //
-//  Version 1.3
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 15/11/2010.
 //  Copyright 2010 Charcoal Design. All rights reserved.
@@ -30,6 +30,12 @@
 //
 
 #import "XMLDictionary.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wformat-non-iso"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 #import <Availability.h>
@@ -69,6 +75,7 @@
         _trimWhiteSpace = YES;
         _alwaysUseArrays = NO;
         _preserveComments = NO;
+        _wrapRootNode = NO;
     }
     return self;
 }
@@ -83,12 +90,12 @@
     copy.preserveComments = _preserveComments;
     copy.attributesMode = _attributesMode;
     copy.nodeNameMode = _nodeNameMode;
+    copy.wrapRootNode = _wrapRootNode;
     return copy;
 }
 
-- (NSDictionary *)dictionaryWithData:(NSData *)data
+- (NSDictionary *)dictionaryWithParser:(NSXMLParser *)parser
 {
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
     [parser setDelegate:self];
     [parser parse];
     id result = _root;
@@ -96,6 +103,12 @@
     _stack = nil;
     _text = nil;
     return result;
+}
+
+- (NSDictionary *)dictionaryWithData:(NSData *)data
+{
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    return [self dictionaryWithParser:parser];
 }
 
 - (NSDictionary *)dictionaryWithString:(NSString *)string
@@ -127,7 +140,7 @@
         NSMutableString *attributeString = [NSMutableString string];
         for (NSString *key in [attributes allKeys])
         {
-            [attributeString appendFormat:@" %@=\"%@\"", [key XMLEncodedString], [attributes[key] XMLEncodedString]];
+            [attributeString appendFormat:@" %@=\"%@\"", [[key description] XMLEncodedString], [[attributes[key] description] XMLEncodedString]];
         }
         
         NSString *innerXML = [node innerXML];
@@ -184,7 +197,7 @@
 	}
 }
 
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
+- (void)parser:(__unused NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(__unused NSString *)namespaceURI qualifiedName:(__unused NSString *)qName attributes:(NSDictionary *)attributeDict
 {	
 	[self endText];
 	
@@ -241,8 +254,13 @@
 	
 	if (!_root)
 	{
-		_root = node;
-		_stack = [NSMutableArray arrayWithObject:node];
+        _root = node;
+        _stack = [NSMutableArray arrayWithObject:node];
+        if (_wrapRootNode)
+        {
+            _root = [NSMutableDictionary dictionaryWithObject:_root forKey:elementName];
+            [_stack insertObject:_root atIndex:0];
+        }
 	}
 	else
 	{
@@ -292,7 +310,7 @@
 	return nil;
 }
 
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
+- (void)parser:(__unused NSXMLParser *)parser didEndElement:(__unused NSString *)elementName namespaceURI:(__unused NSString *)namespaceURI qualifiedName:(__unused NSString *)qName
 {	
 	[self endText];
     
@@ -328,21 +346,25 @@
                     [newTop removeObjectForKey:nodeName];
                 }
             }
+            else if (!top.innerText && !_collapseTextNodes && !_stripEmptyNodes)
+            {
+                top[XMLDictionaryTextKey] = @"";
+            }
         }
 	}
 }
 
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
+- (void)parser:(__unused NSXMLParser *)parser foundCharacters:(NSString *)string
 {
 	[self addText:string];
 }
 
-- (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock
+- (void)parser:(__unused NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock
 {
 	[self addText:[[NSString alloc] initWithData:CDATABlock encoding:NSUTF8StringEncoding]];
 }
 
-- (void)parser:(NSXMLParser *)parser foundComment:(NSString *)comment
+- (void)parser:(__unused NSXMLParser *)parser foundComment:(NSString *)comment
 {
 	if (_preserveComments)
 	{
@@ -364,6 +386,11 @@
 
 
 @implementation NSDictionary(XMLDictionary)
+
++ (NSDictionary *)dictionaryWithXMLParser:(NSXMLParser *)parser
+{
+	return [[[XMLDictionaryParser sharedInstance] copy] dictionaryWithParser:parser];
+}
 
 + (NSDictionary *)dictionaryWithXMLData:(NSData *)data
 {
@@ -466,8 +493,16 @@
 }
 
 - (NSString *)XMLString
-{	
-	return [XMLDictionaryParser XMLStringForNode:self withNodeName:[self nodeName] ?: @"root"];
+{
+    if ([self count] == 1 && ![self nodeName])
+    {
+        //ignore outermost dictionary
+        return [self innerXML];
+    }
+    else
+    {
+        return [XMLDictionaryParser XMLStringForNode:self withNodeName:[self nodeName] ?: @"root"];
+    }
 }
 
 - (NSArray *)arrayValueForKeyPath:(NSString *)keyPath
@@ -489,7 +524,7 @@
     }
     if ([value isKindOfClass:[NSDictionary class]])
     {
-        return [value innerText];
+        return [(NSDictionary *)value innerText];
     }
     return value;
 }
