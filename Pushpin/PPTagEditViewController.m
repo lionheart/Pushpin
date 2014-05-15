@@ -310,6 +310,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 
                 if (index < self.popularTags.count) {
                     completion = self.popularTags[index];
+                    
+#warning http://crashes.to/s/4988f817e3d
                     [self.popularTags removeObjectAtIndex:index];
                 }
                 else {
