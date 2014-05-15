@@ -7,6 +7,7 @@
 //
 
 #import "PPUtilities.h"
+#import <FMDB/FMDatabase.h>
 
 @implementation PPUtilities
 
@@ -105,5 +106,24 @@
                            completion(inserted, deleted);
                        }];
 }
+
+#ifdef PINBOARD
++ (NSDictionary *)dictionaryFromResultSet:(id)resultSet {
+    NSNumber *starred = @([resultSet boolForColumn:@"starred"]);
+    if (!starred) {
+        starred = @(NO);
+    }
+    return @{
+             @"title": [resultSet stringForColumn:@"title"],
+             @"description": [resultSet stringForColumn:@"description"],
+             @"unread": @([resultSet boolForColumn:@"unread"]),
+             @"url": [resultSet stringForColumn:@"url"],
+             @"private": @([resultSet boolForColumn:@"private"]),
+             @"tags": [resultSet stringForColumn:@"tags"],
+             @"created_at": [resultSet dateForColumn:@"created_at"],
+             @"starred": starred
+    };
+}
+#endif
 
 @end

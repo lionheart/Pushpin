@@ -20,6 +20,7 @@
 #import "PPGenericPostViewController.h"
 #import "PPMobilizerUtility.h"
 #import "PPActivityViewController.h"
+#import "PPUtilities.h"
 
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -752,19 +753,7 @@ static NSInteger kTitleHeight = 40;
             [db open];
             FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
             [results next];
-            NSDictionary *post = @{
-                @"title": [results stringForColumn:@"title"],
-                @"description": [results stringForColumn:@"description"],
-                @"unread": @([results boolForColumn:@"unread"]),
-                @"url": [results stringForColumn:@"url"],
-                @"private": @([results boolForColumn:@"private"]),
-                @"tags": [results stringForColumn:@"tags"],
-                @"created_at": [results dateForColumn:@"created_at"],
-
-#ifdef PINBOARD
-                @"starred": @([results boolForColumn:@"starred"])
-#endif
-            };
+            NSDictionary *post = [PPUtilities dictionaryFromResultSet:results];
             [db close];
 
             dispatch_async(dispatch_get_main_queue(), ^{
