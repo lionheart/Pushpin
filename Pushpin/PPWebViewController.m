@@ -967,6 +967,8 @@ static NSInteger kTitleHeight = 40;
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     [self.webViewTimeoutTimer invalidate];
+    
+#warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
     self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self selector:@selector(webViewLoadTimedOut) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
