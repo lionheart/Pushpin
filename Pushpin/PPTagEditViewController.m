@@ -19,6 +19,7 @@
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
+#import <Crashlytics/Crashlytics.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -307,10 +308,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
+
+                CLS_LOG(@"Popular: %@", [self.popularTags componentsJoinedByString:@" "]);
+                CLS_LOG(@"Recommended: %@", [self.recommendedTags componentsJoinedByString:@" "]);
                 
                 if (index < self.popularTags.count) {
                     completion = self.popularTags[index];
-                    
+
 #warning http://crashes.to/s/4988f817e3d
                     [self.popularTags removeObjectAtIndex:index];
                 }
