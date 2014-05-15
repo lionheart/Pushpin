@@ -1,0 +1,1 @@
+../../icu4c/source/common/utrie2_impl.h

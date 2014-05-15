@@ -1,0 +1,1 @@
+../../icu4c/source/layout/CoverageTables.h

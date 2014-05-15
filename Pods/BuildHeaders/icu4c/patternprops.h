@@ -1,0 +1,1 @@
+../../icu4c/source/common/patternprops.h

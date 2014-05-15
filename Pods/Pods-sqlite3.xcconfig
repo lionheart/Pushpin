@@ -1,0 +1,1 @@
+PODS_SQLITE__OTHER_LDFLAGS = -licu4c
