@@ -19,6 +19,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"
 #import "DeliciousDataSource.h"
+#import "PPUtilities.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -429,20 +430,20 @@ static NSString *CellIdentifier = @"TagCell";
     
     if (!self.searchDisplayController.isActive) {
         dispatch_async(serialQueue, ^{
-            NSArray *letters = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+            NSArray *letters = [[UILocalizedIndexedCollation currentCollation] sectionTitles];
             
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
-            
+
             NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
             NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
-            
+
             FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
             while ([results next]) {
                 NSString *name = [results stringForColumnIndex:0];
+                NSString *count = [results stringForColumnIndex:1];
                 NSMutableString *lossyName = [name mutableCopy];
                 CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
-                NSString *count = [results stringForColumnIndex:1];
                 
                 if ([name length] == 0) {
                     continue;
