@@ -1,1 +1,0 @@
-../../icu4c/source/common/ubidi_props_data.h

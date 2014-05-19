@@ -1,1 +1,0 @@
-../../icu4c/source/layout/StateTableProcessor2.h

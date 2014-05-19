@@ -1,1 +1,0 @@
-../../icu4c/source/common/ucol_swp.h

@@ -1,1 +1,0 @@
-../../icu4c/source/layout/SingleTableProcessor2.h
