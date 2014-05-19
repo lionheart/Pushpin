@@ -1,32 +1,32 @@
 PODS:
   - ADNActivityCollection (0.0.1)
-  - AFNetworking (2.2.1):
+  - AFNetworking (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
     - AFNetworking/UIKit
-  - AFNetworking/NSURLConnection (2.2.1):
+  - AFNetworking/NSURLConnection (2.2.4):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.2.1):
+  - AFNetworking/NSURLSession (2.2.4):
     - AFNetworking/NSURLConnection
-  - AFNetworking/Reachability (2.2.1)
-  - AFNetworking/Security (2.2.1)
-  - AFNetworking/Serialization (2.2.1)
-  - AFNetworking/UIKit (2.2.1):
+  - AFNetworking/Reachability (2.2.4)
+  - AFNetworking/Security (2.2.4)
+  - AFNetworking/Serialization (2.2.4)
+  - AFNetworking/UIKit (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ASPinboard (0.0.1):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
   - CrashlyticsFramework (2.1.7)
-  - FMDB (2.1):
+  - FMDB (2.3):
     - FMDB/standard
-  - FMDB/common (2.1)
-  - FMDB/standard (2.1):
+  - FMDB/common (2.3)
+  - FMDB/standard (2.3):
     - FMDB/common
   - hpple (0.2.0)
   - HTMLParser (0.0.1)
@@ -57,7 +57,7 @@ PODS:
   - TextExpander (2.3.1)
   - TTTAttributedLabel (1.8.1)
   - uservoice-iphone-sdk (3.0.2)
-  - XMLDictionary (1.3)
+  - XMLDictionary (1.4)
 
 DEPENDENCIES:
   - ADNActivityCollection (from `Specs/ADNActivityCollection.podspec`)
@@ -65,7 +65,7 @@ DEPENDENCIES:
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
   - CrashlyticsFramework (= 2.1.7)
-  - FMDB (= 2.1)
+  - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
@@ -109,11 +109,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
-  AFNetworking: 0121f4b69be3fa58d1ab317866e036e12ac9651d
+  AFNetworking: 01aa7c3aa9a200b94943e54072a4373f14b3d219
   ASPinboard: 781b62f391c4afb1b76262a996dda3395f2db5d5
   BugshotKit: b1ab5bda9165b8b79b34db4b5b30a23f39bcc641
   CrashlyticsFramework: 569d2b1c71922aa480bfdc55df4c86aedf7b215c
-  FMDB: d47c9f71888fcbbf6ca7d37bd3e145672477d921
+  FMDB: 8b6b69b1164e3007d7f4b3b3719e667602ec247e
   hpple: dde62f905f482bbec50186280d1a1be2c881241b
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: b532e85de8792ea70dad237e7ead90993af763cf
@@ -133,6 +133,6 @@ SPEC CHECKSUMS:
   TextExpander: 755ff25950efe16b13cbd7be1918cb088e475bf5
   TTTAttributedLabel: 3a571d73e055f4a79c304240598e4bfd199238e4
   uservoice-iphone-sdk: 79b21e4bc6ab3d3e13e0e8597789e6f2c800602e
-  XMLDictionary: 27390d3517062694ccb307a7750250e1b687571d
+  XMLDictionary: a6ede1b0f7e8acd0ee3495e93350a311be2bfd1e
 
-COCOAPODS: 0.31.1
+COCOAPODS: 0.32.1

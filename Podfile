@@ -5,7 +5,7 @@ inhibit_all_warnings!
 pod 'TestFlightSDK', '2.2.1'
 pod 'Reachability', '3.0.0'
 pod 'PocketAPI', '1.0.2'
-pod 'FMDB', '2.1'
+pod 'FMDB', '2.3'
 pod 'KeychainItemWrapper', '1.2'
 pod 'TTTAttributedLabel', '1.8.1'
 # pod 'Mixpanel', '2.0.0'

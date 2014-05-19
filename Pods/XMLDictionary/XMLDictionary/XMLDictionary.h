@@ -1,7 +1,7 @@
 //
 //  XMLDictionary.h
 //
-//  Version 1.3
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 15/11/2010.
 //  Copyright 2010 Charcoal Design. All rights reserved.
@@ -30,25 +30,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 
-typedef enum
+typedef NS_ENUM(NSInteger, XMLDictionaryAttributesMode)
 {
     XMLDictionaryAttributesModePrefixed = 0, //default
     XMLDictionaryAttributesModeDictionary,
     XMLDictionaryAttributesModeUnprefixed,
     XMLDictionaryAttributesModeDiscard
-}
-XMLDictionaryAttributesMode;
+};
 
 
-typedef enum
+typedef NS_ENUM(NSInteger, XMLDictionaryNodeNameMode)
 {
     XMLDictionaryNodeNameModeRootOnly = 0, //default
     XMLDictionaryNodeNameModeAlways,
     XMLDictionaryNodeNameModeNever
-}
-XMLDictionaryNodeNameMode;
+};
 
 
 static NSString *const XMLDictionaryAttributesKey   = @"__attributes";
@@ -67,10 +67,12 @@ static NSString *const XMLDictionaryAttributePrefix = @"_";
 @property (nonatomic, assign) BOOL trimWhiteSpace;    // defaults to YES
 @property (nonatomic, assign) BOOL alwaysUseArrays;   // defaults to NO
 @property (nonatomic, assign) BOOL preserveComments;  // defaults to NO
+@property (nonatomic, assign) BOOL wrapRootNode;      // defaults to NO
 
 @property (nonatomic, assign) XMLDictionaryAttributesMode attributesMode;
 @property (nonatomic, assign) XMLDictionaryNodeNameMode nodeNameMode;
 
+- (NSDictionary *)dictionaryWithParser:(NSXMLParser *)parser;
 - (NSDictionary *)dictionaryWithData:(NSData *)data;
 - (NSDictionary *)dictionaryWithString:(NSString *)string;
 - (NSDictionary *)dictionaryWithFile:(NSString *)path;
@@ -80,6 +82,7 @@ static NSString *const XMLDictionaryAttributePrefix = @"_";
 
 @interface NSDictionary (XMLDictionary)
 
++ (NSDictionary *)dictionaryWithXMLParser:(NSXMLParser *)parser;
 + (NSDictionary *)dictionaryWithXMLData:(NSData *)data;
 + (NSDictionary *)dictionaryWithXMLString:(NSString *)string;
 + (NSDictionary *)dictionaryWithXMLFile:(NSString *)path;
@@ -105,3 +108,5 @@ static NSString *const XMLDictionaryAttributePrefix = @"_";
 
 @end
 
+
+#pragma GCC diagnostic pop

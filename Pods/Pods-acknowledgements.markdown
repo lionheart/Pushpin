@@ -26,7 +26,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 ## AFNetworking
 
-Copyright (c) 2013 AFNetworking (http://afnetworking.com/)
+Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -838,7 +838,7 @@ http://smilesoftware.com/sdk
 ## XMLDictionary
 
 XMLDictionary
-version 1.3, August 14th, 2013
+version 1.4, April 16th, 2014
 
 Copyright (C) 2011 Charcoal Design
 
