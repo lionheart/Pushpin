@@ -1,6 +1,6 @@
 // AFHTTPSessionManager.m
 //
-// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -84,6 +84,10 @@
     return self;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];
+}
+
 #pragma mark -
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -104,7 +108,7 @@
 #pragma mark -
 
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
-                   parameters:(id)parameters
+                   parameters:(NSDictionary *)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -128,7 +132,7 @@
 }
 
 - (NSURLSessionDataTask *)HEAD:(NSString *)URLString
-                    parameters:(id)parameters
+                    parameters:(NSDictionary *)parameters
                        success:(void (^)(NSURLSessionDataTask *task))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -152,7 +156,7 @@
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(id)parameters
+                    parameters:(NSDictionary *)parameters
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -176,7 +180,7 @@
 }
 
 - (NSURLSessionDataTask *)POST:(NSString *)URLString
-                    parameters:(id)parameters
+                    parameters:(NSDictionary *)parameters
      constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
@@ -201,7 +205,7 @@
 }
 
 - (NSURLSessionDataTask *)PUT:(NSString *)URLString
-                   parameters:(id)parameters
+                   parameters:(NSDictionary *)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -225,7 +229,7 @@
 }
 
 - (NSURLSessionDataTask *)PATCH:(NSString *)URLString
-                     parameters:(id)parameters
+                     parameters:(NSDictionary *)parameters
                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -249,7 +253,7 @@
 }
 
 - (NSURLSessionDataTask *)DELETE:(NSString *)URLString
-                      parameters:(id)parameters
+                      parameters:(NSDictionary *)parameters
                          success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                          failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
@@ -272,23 +276,13 @@
     return task;
 }
 
-#pragma mark - NSObject
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, baseURL: %@, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, [self.baseURL absoluteString], self.session, self.operationQueue];
-}
-
-#pragma mark - NSecureCoding
-
-+ (BOOL)supportsSecureCoding {
-    return YES;
-}
+#pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)decoder {
-    NSURL *baseURL = [decoder decodeObjectOfClass:[NSURL class] forKey:NSStringFromSelector(@selector(baseURL))];
-    NSURLSessionConfiguration *configuration = [decoder decodeObjectOfClass:[NSURLSessionConfiguration class] forKey:@"sessionConfiguration"];
+    NSURL *baseURL = [decoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
+    NSURLSessionConfiguration *configuration = [decoder decodeObjectForKey:@"sessionConfiguration"];
     if (!configuration) {
-        NSString *configurationIdentifier = [decoder decodeObjectOfClass:[NSString class] forKey:@"identifier"];
+        NSString *configurationIdentifier = [decoder decodeObjectForKey:@"identifier"];
         if (configurationIdentifier) {
             configuration = [NSURLSessionConfiguration backgroundSessionConfiguration:configurationIdentifier];
         }
@@ -299,8 +293,8 @@
         return nil;
     }
 
-    self.requestSerializer = [decoder decodeObjectOfClass:[AFHTTPRequestSerializer class] forKey:NSStringFromSelector(@selector(requestSerializer))];
-    self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.requestSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
+    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }

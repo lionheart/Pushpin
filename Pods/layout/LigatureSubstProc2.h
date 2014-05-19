@@ -1,1 +1,0 @@
-../icu4c/source/layout/LigatureSubstProc2.h

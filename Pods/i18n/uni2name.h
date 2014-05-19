@@ -1,1 +1,0 @@
-../icu4c/source/i18n/uni2name.h

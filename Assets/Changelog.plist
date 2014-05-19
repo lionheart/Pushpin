@@ -3,6 +3,27 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.2</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash when viewing Saved Feeds or Community Feeds.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent &quot;Notes&quot;, &quot;Search&quot;, and &quot;Tags&quot; on feed list screen from moving based on device orientation.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent keyboard shortcuts from interfering with search when viewing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Switch the default add bookmark prompt behavior to only prompt once for each URL.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.1</string>
 		<array>
 			<array>
