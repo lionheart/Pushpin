@@ -4,3 +4,12 @@
 [submodule "Vendor/ASPinboard"]
 	path = Vendor/ASPinboard
 	url = git@github.com:lionheart/ASPinboard.git
+[submodule "Vendor/LHSDiigo"]
+	path = Vendor/LHSDiigo
+	url = git@github.com:lionheart/LHSDiigo
+[submodule "Vendor/LHSDelicious"]
+	path = Vendor/LHSDelicious
+	url = git@github.com:lionheart/LHSDelicious
+[submodule "Vendor/LHSCategoryCollection"]
+	path = Vendor/LHSCategoryCollection
+	url = git@github.com:lionheart/LHSCategoryCollection
