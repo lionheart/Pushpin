@@ -1,6 +1,6 @@
 [submodule "Localizations"]
 	path = Localizations
-	url = git@github.com:aurorasoftware/pushpin-localizations.git
+	url = git@github.com:lionheart/pushpin-localizations.git
 [submodule "Vendor/ASPinboard"]
 	path = Vendor/ASPinboard
-	url = git@github.com:aurorasoftware/ASPinboard.git
+	url = git@github.com:lionheart/ASPinboard.git
