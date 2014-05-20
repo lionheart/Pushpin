@@ -108,12 +108,6 @@
 #define COCOAPODS_VERSION_MINOR_LHSCategoryCollection 0
 #define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 11
 
-// LHSCustomTransitionCollection
-#define COCOAPODS_POD_AVAILABLE_LHSCustomTransitionCollection
-#define COCOAPODS_VERSION_MAJOR_LHSCustomTransitionCollection 0
-#define COCOAPODS_VERSION_MINOR_LHSCustomTransitionCollection 0
-#define COCOAPODS_VERSION_PATCH_LHSCustomTransitionCollection 1
-
 // LHSDelicious
 #define COCOAPODS_POD_AVAILABLE_LHSDelicious
 #define COCOAPODS_VERSION_MAJOR_LHSDelicious 0
