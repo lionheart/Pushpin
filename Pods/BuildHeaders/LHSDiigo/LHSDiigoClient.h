@@ -1,1 +1,1 @@
-../../../../LHSDiigo/LHSDiigo/LHSDiigoClient.h
+../../../Vendor/LHSDiigo/LHSDiigo/LHSDiigoClient.h

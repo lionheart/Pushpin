@@ -1,1 +1,0 @@
-../../../../LHSCustomTransitionCollection/Sources/Animators/LHSTuckUnderAnimator.h

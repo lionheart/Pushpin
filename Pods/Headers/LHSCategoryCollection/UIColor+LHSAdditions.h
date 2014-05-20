@@ -1,1 +1,1 @@
-../../../../LHSCategoryCollection/Categories/UIColor+LHSAdditions.h
+../../../Vendor/LHSCategoryCollection/Categories/UIColor+LHSAdditions.h
