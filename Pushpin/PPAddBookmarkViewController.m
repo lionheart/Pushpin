@@ -108,7 +108,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         self.tagTextField = [[UITextField alloc] init];
         self.tagTextField.font = font;
-        self.tagTextField.placeholder = @"Tap to add tags.";
+        self.tagTextField.placeholder = NSLocalizedString(@"Tap to add tags.", nil);
         self.tagTextField.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.tagTextField.userInteractionEnabled = NO;
@@ -656,7 +656,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
+                notification.alertBody = NSLocalizedString(NSLocalizedString(@"Unable to add bookmark; no connection available.", nil), nil);
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
@@ -824,7 +824,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.navigationItem.leftBarButtonItem.enabled = YES;
                     self.navigationItem.rightBarButtonItem.enabled = YES;
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                     [alert show];
                 });
             };

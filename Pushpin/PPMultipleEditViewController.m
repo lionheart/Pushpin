@@ -231,7 +231,7 @@ static NSString *CellIdentifier = @"Cell";
             
             return footerString;
         } else if (self.existingTags.count > 0 || self.tagsToAdd.count > 0) {
-            return @"Tap an existing tag to remove it";
+            return NSLocalizedString(@"Tap an existing tag to remove it", nil);
         }
     }
     
