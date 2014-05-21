@@ -656,7 +656,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = NSLocalizedString(NSLocalizedString(@"Unable to add bookmark; no connection available.", nil), nil);
+                notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
                 notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
