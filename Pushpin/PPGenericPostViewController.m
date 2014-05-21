@@ -339,7 +339,7 @@ static NSInteger kToolbarHeight = 44;
     
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
-        self.navigationItem.accessibilityLabel = @"Back";
+        self.navigationItem.accessibilityLabel = NSLocalizedString(@"Back", nil);
         
         __weak id weakself = self;
         self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
@@ -351,7 +351,7 @@ static NSInteger kToolbarHeight = 44;
     
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
         self.editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-edit"] landscapeImagePhone:[UIImage imageNamed:@"navigation-edit"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
-        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
+        self.editButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
     
@@ -804,7 +804,7 @@ static NSInteger kToolbarHeight = 44;
         
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.backBarButtonItem.enabled = NO;
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
 
         [self updateTitleViewText];
         
@@ -857,7 +857,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)multiEdit:(id)sender {
-    [[[UIAlertView alloc] initWithTitle:nil message:@"Almost ready to go, but not quite functional yet." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+    [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Almost ready to go, but not quite functional yet.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
     return;
     
     NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
@@ -883,7 +883,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
     
-    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
     [self.confirmMultipleDeletionActionSheet showInView:self.view];
 }
 
@@ -1304,7 +1304,7 @@ static NSInteger kToolbarHeight = 44;
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
+                                       notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
                                        if (httpResponse.statusCode == 200) {
                                            notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
@@ -1341,20 +1341,20 @@ static NSInteger kToolbarHeight = 44;
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
+                                       notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
                                        
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        if (httpResponse.statusCode == 202) {
-                                           notification.alertBody = @"Sent to Readability.";
+                                           notification.alertBody = NSLocalizedString(@"Sent to Readability.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                            [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                        }
                                        else if (httpResponse.statusCode == 409) {
-                                           notification.alertBody = @"Link already sent to Readability.";
+                                           notification.alertBody = NSLocalizedString(@"Link already sent to Readability.", nil);
                                            notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                        }
                                        else {
-                                           notification.alertBody = @"Error sending to Readability.";
+                                           notification.alertBody = NSLocalizedString(@"Error sending to Readability.", nil);
                                            notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                                        }
                                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
@@ -1368,7 +1368,7 @@ static NSInteger kToolbarHeight = 44;
                                    handler:^(PocketAPI *api, NSURL *url, NSError *error) {
                                        if (!error) {
                                            UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                           notification.alertBody = @"Sent to Pocket.";
+                                           notification.alertBody = NSLocalizedString(@"Sent to Pocket.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                            
@@ -1388,7 +1388,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionActionSheet {
-    self.confirmDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    self.confirmDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
     [self.confirmDeletionActionSheet showInView:self.view];
 }
 
@@ -1583,7 +1583,7 @@ static NSInteger kToolbarHeight = 44;
             notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             
-            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
         });
     }];
 }
@@ -1597,7 +1597,7 @@ static NSInteger kToolbarHeight = 44;
             notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             
-            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Remove", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
         });
     }];
 }

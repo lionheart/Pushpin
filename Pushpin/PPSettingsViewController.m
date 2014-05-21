@@ -61,15 +61,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                      target:self
                                                                      action:@selector(showAboutPage)];
     self.navigationItem.rightBarButtonItem = barButtonItem;
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
     
-    self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Logout", nil), nil];
+    self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log Out", nil), nil];
 
     self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
 
     self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                             delegate:self
-                                                   cancelButtonTitle:@"Cancel"
+                                                   cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                               destructiveButtonTitle:nil
                                                    otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
@@ -78,36 +78,36 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.readLaterServices addObject:@[@(PPReadLaterReadability)]];
     [self.readLaterServices addObject:@[@(PPReadLaterPocket)]];
 
-    self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:@"Instapaper Login" message:@"Password may be blank." delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@"Log In", nil];
+    self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Instapaper Login", nil) message:NSLocalizedString(@"Password may be blank.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log In", nil), nil];
     self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
     [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
     [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
-    [[self.instapaperAlertView textFieldAtIndex:0] setPlaceholder:@"Email Address"];
+    [[self.instapaperAlertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"Email Address", nil)];
     [[self.instapaperAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
     [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
     [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
 
-    self.readabilityAlertView = [[UIAlertView alloc] initWithTitle:@"Readability Login" message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:@"Log In", nil];
+    self.readabilityAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Readability Login", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log In", nil), nil];
     self.readabilityAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
     [[self.readabilityAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
     [[self.readabilityAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
-    [[self.readabilityAlertView textFieldAtIndex:0] setPlaceholder:@"Email Address"];
+    [[self.readabilityAlertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"Email Address", nil)];
     [[self.readabilityAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
     [[self.readabilityAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
     [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
 
-    self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
-                                                                      message:@"Logging into Instapaper."
+    self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                      message:NSLocalizedString(@"Logging into Instapaper.", nil)
                                                                      delegate:nil
                                                             cancelButtonTitle:nil
                                                             otherButtonTitles:nil];
-    self.readabilityVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
-                                                                       message:@"Logging into Readability."
+    self.readabilityVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                       message:NSLocalizedString(@"Logging into Readability.", nil)
                                                                       delegate:nil
                                                              cancelButtonTitle:nil
                                                              otherButtonTitles:nil];
-    self.pocketVerificationAlertView = [[UIAlertView alloc] initWithTitle:@"Verifying credentials"
-                                                                  message:@"Logging into Pocket."
+    self.pocketVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                  message:NSLocalizedString(@"Logging into Pocket.", nil)
                                                                  delegate:nil
                                                         cancelButtonTitle:nil
                                                         otherButtonTitles:nil];
@@ -269,7 +269,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
-                    cell.textLabel.text = @"Rate Pushpin on the App Store";
+                    cell.textLabel.text = NSLocalizedString(@"Rate Pushpin on the App Store", nil);
                     break;
                     
                 case PPOtherFollow:
@@ -386,7 +386,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
                                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
-                                                                   message:@"We couldn't log you into Instapaper with those credentials."
+                                                                   message:NSLocalizedString(@"We couldn't log you into Instapaper with those credentials.", nil)
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
                                                          otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
@@ -399,7 +399,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                       message:@"You've successfully logged in."
+                                                                                       message:NSLocalizedString(@"You've successfully logged in.", nil)
                                                                                       delegate:nil
                                                                              cancelButtonTitle:nil
                                                                              otherButtonTitles:nil];
@@ -460,7 +460,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                              withRowAnimation:UITableViewRowAnimationFade];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                       message:@"You've successfully logged in."
+                                                                                       message:NSLocalizedString(@"You've successfully logged in.", nil)
                                                                                       delegate:nil
                                                                              cancelButtonTitle:nil
                                                                              otherButtonTitles:nil];
@@ -473,7 +473,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                    }
                                    else {
                                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                   message:@"We couldn't log you into Readability with those credentials."
+                                                                   message:NSLocalizedString(@"We couldn't log you into Readability with those credentials.", nil)
                                                                   delegate:nil
                                                          cancelButtonTitle:nil
                                                          otherButtonTitles:NSLocalizedString(@"Shucks", nil), nil] show];
@@ -644,7 +644,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
 
                 case PPOtherClearCache: {
-                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting Cache" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                     [loadingAlertView show];
                     
                     self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
@@ -661,7 +661,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Your cache was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your cache was cleared.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
