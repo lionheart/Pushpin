@@ -582,7 +582,7 @@
 		3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGenericPostViewController.h; sourceTree = "<group>"; };
 		3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPGenericPostViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
-		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinboardDataSource.m; sourceTree = "<group>"; };
+		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PinboardDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		373C827D16F81C6800A7D7C8 /* ptr_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_01.png; sourceTree = "<group>"; };
 		373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_01@2x.png"; sourceTree = "<group>"; };
 		373C827F16F81C6800A7D7C8 /* ptr_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_02.png; sourceTree = "<group>"; };

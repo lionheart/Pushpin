@@ -221,7 +221,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                             [[MixpanelProxy sharedInstance] track:@"Failed to log in"];
                             break;
                         }
-                            
+
                         case PinboardErrorTimeout: {
 #ifdef DELICIOUS
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];

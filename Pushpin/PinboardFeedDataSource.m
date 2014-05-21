@@ -167,8 +167,8 @@
                                                }
                                                
                                                NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                           @"title": [element[@"d"] lhs_stringByTrimmingWhitespace],
-                                                                                                                           @"description": [element[@"n"] lhs_stringByTrimmingWhitespace],
+                                                                                                                           @"title": [PPUtilities stringByTrimmingWhitespace:element[@"d"]],
+                                                                                                                           @"description": [PPUtilities stringByTrimmingWhitespace:element[@"n"]],
                                                                                                                            @"url": element[@"u"],
                                                                                                                            @"tags": [tags componentsJoinedByString:@" "],
                                                                                                                            @"created_at": date

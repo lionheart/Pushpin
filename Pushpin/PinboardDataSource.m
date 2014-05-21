@@ -114,7 +114,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    query = [query lhs_stringByTrimmingWhitespace];
+    query = [PPUtilities stringByTrimmingWhitespace:query];
     if (self.searchScope != ASPinboardSearchScopeNone) {
         self.searchQuery = query;
     }
@@ -629,7 +629,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     }
                     
                     if (isValidField) {
-                        NSString *value = [[matchString substringWithRange:[subresult rangeAtIndex:2]] lhs_stringByTrimmingWhitespace];
+                        NSString *value = [PPUtilities stringByTrimmingWhitespace:[matchString substringWithRange:[subresult rangeAtIndex:2]]];
                         NSArray *words = [value componentsSeparatedByString:@" "];
                         NSMutableArray *wordsWithWildcards = [NSMutableArray array];
                         for (NSString *word in words) {
@@ -652,7 +652,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
             }
             
-            NSString *trimmedQuery = [remainingQuery lhs_stringByTrimmingWhitespace];
+            NSString *trimmedQuery = [PPUtilities stringByTrimmingWhitespace:remainingQuery];
             if (![trimmedQuery isEqualToString:@""]) {
                 [subqueries addObject:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts MATCH ?"];
                 [parameters addObject:trimmedQuery];
@@ -1026,7 +1026,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           for (NSString *hash in inserted) {
                                               NSDictionary *post = bookmarks[hash];
                                               
-                                              NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
+                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
                                               NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                               if (!dateError && !params) {
                                                   dateError = YES;
@@ -1039,7 +1039,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               tagDeleteCount++;
                                               
                                               for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [tagName lhs_stringByTrimmingWhitespace];
+                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
                                                   if (![cleanedTagName isEqualToString:@""]) {
                                                       [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                                       [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
@@ -1075,7 +1075,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                   dateError = YES;
                                               }
                                               
-                                              NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
+                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
                                               
                                               NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                               if (!dateError && !params) {
@@ -1090,7 +1090,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               tagDeleteCount++;
                                               
                                               for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [tagName lhs_stringByTrimmingWhitespace];
+                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
                                                   if (![cleanedTagName isEqualToString:@""]) {
                                                       [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                                       [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
@@ -1197,9 +1197,9 @@ static BOOL kPinboardSyncInProgress = NO;
     NSString *hash = post[@"hash"];
     NSString *meta = post[@"meta"];
     
-    NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
-    NSString *title = [post[@"description"] lhs_stringByTrimmingWhitespace];
-    NSString *description = [post[@"extended"] lhs_stringByTrimmingWhitespace];
+    NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+    NSString *title = [PPUtilities stringByTrimmingWhitespace:post[@"description"]];
+    NSString *description = [PPUtilities stringByTrimmingWhitespace:post[@"extended"]];
     
     return @{
              @"url": post[@"href"],

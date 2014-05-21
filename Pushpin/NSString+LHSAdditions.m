@@ -11,6 +11,7 @@
 @implementation NSString (LHSAdditions)
 
 - (NSInteger)lhs_IntegerIfNotNull {
+#warning XXX Does not work, since NSNull must have a category with the same name.
     if ([self isEqual:[NSNull null]]) {
         return 0;
     }
@@ -20,6 +21,7 @@
 }
 
 - (NSString *)lhs_stringByTrimmingWhitespace {
+#warning XXX Does not work, since NSNull must have a category with the same name.
     if ([self isEqual:[NSNull null]]) {
         return @"";
     }
