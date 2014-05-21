@@ -119,27 +119,27 @@ static NSString *CellIdentifier = @"Cell";
                             break;
 
                         case PPBrowserSafari:
-                            cell.detailTextLabel.text = @"Safari";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Safari", nil);
                             break;
 
                         case PPBrowserChrome:
-                            cell.detailTextLabel.text = @"Chrome";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Chrome", nil);
                             break;
 
                         case PPBrowseriCabMobile:
-                            cell.detailTextLabel.text = @"iCab Mobile";
+                            cell.detailTextLabel.text = NSLocalizedString(@"iCab Mobile", nil);
                             break;
 
                         case PPBrowserDolphin:
-                            cell.detailTextLabel.text = @"Dolphin";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Dolphin", nil);
                             break;
 
                         case PPBrowserCyberspace:
-                            cell.detailTextLabel.text = @"Cyberspace";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Cyberspace", nil);
                             break;
 
                         case PPBrowserOpera:
-                            cell.detailTextLabel.text = @"Opera";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Cyberspace", nil);
                             break;
                     }
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

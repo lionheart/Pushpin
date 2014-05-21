@@ -101,16 +101,16 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.searchTextField.placeholder = NSLocalizedString(@"Search query", nil);
     
-    self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Private", @"Public", @"Clear", nil];
+    self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil), NSLocalizedString(@"Clear", nil), nil];
     self.isPrivateActionSheet.destructiveButtonIndex = 2;
     
-    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Starred", @"Unstarred", @"Clear", nil];
+    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil), NSLocalizedString(@"Clear", nil), nil];
     self.starredActionSheet.destructiveButtonIndex = 2;
 
-    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Read", @"Unread", @"Clear", nil];
+    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Clear", nil), nil];
     self.unreadActionSheet.destructiveButtonIndex = 2;
 
-    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tagged", @"Untagged", @"Clear", nil];
+    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil), NSLocalizedString(@"Clear", nil), nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
 
     self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
@@ -252,7 +252,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.textLabel.textColor = [UIColor blackColor];
             cell.textLabel.hidden = NO;
-            cell.textLabel.text = @"Search scope";
+            cell.textLabel.text = NSLocalizedString(@"Search scope", nil);
 
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
             cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];
@@ -274,8 +274,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.detailTextLabel.font = [PPTheme detailLabelFont];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
 
-                    cell.textLabel.text = @"Search Full-Text";
-                    cell.detailTextLabel.text = @"For archival accounts only.";
+                    cell.textLabel.text = NSLocalizedString(@"Search Full-Text", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"For archival accounts only.", nil);
 
 #ifdef PINBOARD
                     switch (self.pinboardSearchScope) {
@@ -490,7 +490,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
                             if (YES || [delegate.username length] == 0 || [delegate.password length] == 0) {
                                 [[[UIAlertView alloc] initWithTitle:nil
-                                                            message:@"To enable Pinboard full-text search, please log out and then log back in."
+                                                            message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
                                                            delegate:nil
                                                   cancelButtonTitle:nil
                                                   otherButtonTitles:@"OK", nil] show];
@@ -739,10 +739,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 self.searchScope = PPSearchScopeMine;
 
                 [[[UIAlertView alloc] initWithTitle:nil
-                                            message:@"To enable Pinboard full-text search, please log out and then log back in to Pushpin."
+                                            message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
                                            delegate:nil
                                   cancelButtonTitle:nil
-                                  otherButtonTitles:@"OK", nil] show];
+                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
             }
             else {
                 self.pinboardSearchScope = ASPinboardSearchScopeFullText;
