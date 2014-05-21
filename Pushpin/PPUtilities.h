@@ -12,6 +12,8 @@
 
 @interface PPUtilities : NSObject
 
++ (NSString *)stringByTrimmingWhitespace:(id)object;
+
 + (void)generateDiffForPrevious:(NSArray *)previousItems
                         updated:(NSArray *)updatedItems
                            hash:(NSString *(^)(id))extractHash

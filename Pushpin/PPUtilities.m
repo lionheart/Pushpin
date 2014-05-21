@@ -11,6 +11,15 @@
 
 @implementation PPUtilities
 
++ (NSString *)stringByTrimmingWhitespace:(id)object {
+    if ([object isEqual:[NSNull null]]) {
+        return @"";
+    }
+    else {
+        return [(NSString *)object stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
+}
+
 + (void)generateDiffForPrevious:(NSArray *)previousItems
                         updated:(NSArray *)updatedItems
                            hash:(NSString *(^)(id))extractHash
