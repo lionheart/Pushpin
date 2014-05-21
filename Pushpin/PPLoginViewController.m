@@ -117,8 +117,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.passwordTextField.enabled = YES;
     self.passwordTextField.textColor = [UIColor blackColor];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStyleDone target:self action:@selector(showContactForm)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Log In" style:UIBarButtonItemStyleDone target:self action:@selector(login)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil) style:UIBarButtonItemStyleDone target:self action:@selector(showContactForm)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil) style:UIBarButtonItemStyleDone target:self action:@selector(login)];
 }
 
 - (void)updateLoadingMessage {
@@ -158,7 +158,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
 #ifdef PINBOARD
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Please enter both a username and password to sign into Pinboard." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
 #endif
             [alert show];
             self.loginInProgress = NO;
@@ -216,7 +216,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     switch (error.code) {
                         case PinboardErrorInvalidCredentials: {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authentication Error" message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Authentication Error", nil) message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                             [alert show];
                             [[MixpanelProxy sharedInstance] track:@"Failed to log in"];
                             break;
@@ -228,7 +228,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
                             
 #ifdef PINBOARD
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
 #endif
                             [alert show];
                             [[MixpanelProxy sharedInstance] track:@"Cancelled log in"];
@@ -251,7 +251,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     if (total == current) {
                         [self.messageUpdateTimer invalidate];
                         self.activityIndicator.frame = self.activityIndicatorFrameTop;
-                        self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"Finalizing Metadata" attributes:self.textViewAttributes];
+                        self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Finalizing Metadata", nil) attributes:self.textViewAttributes];
                     }
                     else {
                         CGFloat f = current / (float)total;
@@ -331,7 +331,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    [dataSource syncBookmarksWithCompletion:^(NSError *error) {
                                                        if (error) {
                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                               [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+                                                               [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                                                            });
                                                        }
                                                        else {

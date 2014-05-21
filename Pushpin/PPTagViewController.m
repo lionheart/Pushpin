@@ -276,10 +276,10 @@ static NSString *CellIdentifier = @"TagCell";
     self.selectedIndexPath = indexPath;
     
     self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                  message:@"Are you sure you want to delete this tag? There is no undo."
+                                                                  message:NSLocalizedString(@"Are you sure you want to delete this tag? There is no undo.", nil)
                                                                  delegate:self
-                                                        cancelButtonTitle:@"Cancel"
-                                                        otherButtonTitles:@"Delete", nil];
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                        otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
 
     [self.deleteConfirmationAlertView show];
 }
@@ -391,10 +391,10 @@ static NSString *CellIdentifier = @"TagCell";
         if ([title isEqualToString:@"Delete"]) {
             NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
             self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:tagName
-                                                                          message:@"Are you sure you want to delete this tag? There is no undo."
+                                                                          message:NSLocalizedString(@"Are you sure you want to delete this tag? There is no undo.", nil)
                                                                          delegate:self
-                                                                cancelButtonTitle:@"Cancel"
-                                                                otherButtonTitles:@"Delete", nil];
+                                                                cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                                otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
             [self.deleteConfirmationAlertView show];
         }
     }
@@ -409,8 +409,8 @@ static NSString *CellIdentifier = @"TagCell";
             NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
             self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:tagName
                                                               delegate:self
-                                                     cancelButtonTitle:@"Cancel"
-                                                destructiveButtonTitle:@"Delete"
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
                                                      otherButtonTitles:nil];
             [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
         }

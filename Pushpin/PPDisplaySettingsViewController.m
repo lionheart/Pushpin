@@ -244,8 +244,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPEditAutoMarkAsReadRow:
-                    cell.textLabel.text = @"Auto mark as read";
-                    cell.detailTextLabel.text = @"When opening unread bookmarks.";
+                    cell.textLabel.text = NSLocalizedString(@"Auto mark as read", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"When opening unread bookmarks.", nil);
 
                     size = cell.frame.size;
                     switchSize = self.markReadSwitch.frame.size;
@@ -284,7 +284,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
                     cell.textLabel.text = NSLocalizedString(@"Compress bookmark list", nil);
-                    cell.detailTextLabel.text = @"Limit descriptions to two lines and tags to one line.";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Limit descriptions to two lines and tags to one line.", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     size = cell.frame.size;
                     switchSize = self.compressPostsSwitch.frame.size;
@@ -338,8 +338,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    cell.textLabel.text = @"Always show add prompt";
-                    cell.detailTextLabel.text = @"Always show the add bookmark prompt, even for URLs that Pushpin has seen before.";
+                    cell.textLabel.text = NSLocalizedString(@"Always show add prompt", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Always show the add bookmark prompt, even for URLs that Pushpin has seen before.", nil);
 
                     size = cell.frame.size;
                     switchSize = self.onlyPromptToAddOnceSwitch.frame.size;
@@ -348,14 +348,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPOtherDisplayClearCache:
-                    cell.textLabel.text = @"Reset the list of stored URLs";
-                    cell.detailTextLabel.text = @"Resets the list of URLs that you've decided not to add from the clipboard.";
+                    cell.textLabel.text = NSLocalizedString(@"Reset the list of stored URLs", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Resets the list of URLs that you've decided not to add from the clipboard.", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
                 case PPOtherAlwaysShowAlert:
-                    cell.textLabel.text = @"Notify when a URL isn't added";
-                    cell.detailTextLabel.text = @"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.";
+                    cell.textLabel.text = NSLocalizedString(@"Notify when a URL isn't added", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.", nil);
 
                     size = cell.frame.size;
                     switchSize = self.alwaysShowAlertSwitch.frame.size;
@@ -428,7 +428,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherDisplayClearCache: {
-                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Resetting stored URL list"
+                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Resetting stored URL list", nil)
                                                                                message:nil
                                                                               delegate:nil
                                                                      cancelButtonTitle:nil
@@ -450,7 +450,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Success" message:@"The URL list was cleared." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil
+                                                                                                             )
+                                                                                   message:NSLocalizedString(@"The URL list was cleared.", nil)
+                                                                                  delegate:nil
+                                                                         cancelButtonTitle:nil
+                                                                         otherButtonTitles:nil];
                         [successAlertView show];
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));

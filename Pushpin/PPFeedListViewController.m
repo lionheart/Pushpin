@@ -147,16 +147,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
-    settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Settings", @"Cancel", nil];
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil) style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
+    settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Settings", nil), NSLocalizedString(@"Cancel", nil), nil];
 
-    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
-    editBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Edit", @"Done", nil];
+    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
+    editBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Edit", nil), NSLocalizedString(@"Done", nil), nil];
 
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags" , nil) style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
@@ -182,17 +182,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
 
 #ifdef PINBOARD
-    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil)
                                                                             style:UIBarButtonItemStyleDone
                                                                            target:self
                                                                action:@selector(searchBarButtonItemTouchUpInside:)];
     
-    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Notes" style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
+    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Notes", nil) style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
     [self.noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 #endif
     
 #ifdef DELICIOUS
-    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search"
+    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil)
                                                                 style:UIBarButtonItemStyleDone
                                                                target:self
                                                                action:@selector(searchBarButtonItemTouchUpInside:)];
@@ -201,19 +201,19 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.searchBarButtonItem.tintColor = [UIColor darkGrayColor];
     [self.searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
 
-    self.tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tags" style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
+    self.tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil) style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
     [self.tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
     
     self.tagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.tagsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Tags" attributes:barButtonTitleTextAttributes]
+    [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tags", nil) attributes:barButtonTitleTextAttributes]
                                forState:UIControlStateNormal];
     [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.tagsButton];
 
     self.searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.searchButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.searchButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Search" attributes:barButtonTitleTextAttributes]
+    [self.searchButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil) attributes:barButtonTitleTextAttributes]
                                  forState:UIControlStateNormal];
     [self.searchButton addTarget:self action:@selector(searchBarButtonItemTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.searchButton];
@@ -221,7 +221,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef PINBOARD
     self.noteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.noteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.noteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Notes" attributes:barButtonTitleTextAttributes] forState:UIControlStateNormal];
+    [self.noteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Notes", nil) attributes:barButtonTitleTextAttributes] forState:UIControlStateNormal];
     [self.noteButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.noteButton];
 #endif
@@ -952,7 +952,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
                 if (![PPAppDelegate sharedDelegate].connectionAvailable) {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:@"You can't browse popular feeds unless you have an active Internet connection." delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't browse popular feeds unless you have an active Internet connection.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                 }
                 else {
                     PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
@@ -1079,8 +1079,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
-        self.navigationItem.leftBarButtonItem.title = @"Settings";
-        self.navigationItem.rightBarButtonItem.title = @"Edit";
+        self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Settings", nil);
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Edit", nil);
 
         NSArray *indexPathsForSelectedRows = [self.tableView indexPathsForSelectedRows];
         
@@ -1264,8 +1264,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [CATransaction commit];
     }
     else {
-        self.navigationItem.leftBarButtonItem.title = @"Cancel";
-        self.navigationItem.rightBarButtonItem.title = @"Done";
+        self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Cancel", nil);
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
         
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];

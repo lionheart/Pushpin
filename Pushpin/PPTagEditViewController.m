@@ -98,7 +98,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.title = @"Edit Tags";
     
 #ifdef PINBOARD
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Suggest" style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonItemTouchUpInside:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suggest", nil) style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonItemTouchUpInside:)];
 #endif
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -867,7 +867,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.currentlySelectedTag = tag;
     
     NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
-    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:prompt otherButtonTitles:nil];
+    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:prompt otherButtonTitles:nil];
 
     CGPoint point = CGPointMake(badge.center.x - 2, badge.frame.origin.y);
     [self.removeTagActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
