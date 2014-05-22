@@ -30,6 +30,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
+@property (nonatomic, strong) UIAlertView *fullTextSearchAlertView;
 
 - (NSDictionary *)paramsForPost:(NSDictionary *)post dateError:(BOOL)dateError;
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
@@ -1355,35 +1356,55 @@ static BOOL kPinboardSyncInProgress = NO;
         if (self.searchScope != ASPinboardSearchScopeNone) {
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             PPAppDelegate *sharedDelegate = [PPAppDelegate sharedDelegate];
-            [pinboard searchBookmarksWithUsername:sharedDelegate.username
-                                         password:sharedDelegate.password
-                                            query:self.searchQuery
-                                            scope:self.searchScope
-                                       completion:^(NSArray *urls, NSError *error) {
-                                           if (!error) {
-                                               NSMutableArray *components = [NSMutableArray array];
-                                               NSMutableArray *parameters = [NSMutableArray array];
-                                               [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
+            if ([sharedDelegate.password length] > 0) {
+                [pinboard searchBookmarksWithUsername:sharedDelegate.username
+                                             password:sharedDelegate.password
+                                                query:self.searchQuery
+                                                scope:self.searchScope
+                                           completion:^(NSArray *urls, NSError *error) {
+                                               if (!error) {
+                                                   NSMutableArray *components = [NSMutableArray array];
+                                                   NSMutableArray *parameters = [NSMutableArray array];
+                                                   [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
 
-                                               NSMutableArray *urlComponents = [NSMutableArray array];
-                                               for (NSString *url in urls) {
-                                                   [urlComponents addObject:@"?"];
-                                                   [parameters addObject:url];
+                                                   NSMutableArray *urlComponents = [NSMutableArray array];
+                                                   for (NSString *url in urls) {
+                                                       [urlComponents addObject:@"?"];
+                                                       [parameters addObject:url];
+                                                   }
+
+                                                   [components addObject:[urlComponents componentsJoinedByString:@", "]];
+                                                   [components addObject:@")"];
+
+                                                   NSString *query = [components componentsJoinedByString:@" "];
+
+                                                   HandleSearch(query, parameters);
                                                }
-                                               
-                                               [components addObject:[urlComponents componentsJoinedByString:@", "]];
-                                               [components addObject:@")"];
-                                               
-                                               NSString *query = [components componentsJoinedByString:@" "];
-                                               
-                                               HandleSearch(query, parameters);
-                                           }
-                                       }];
+                                           }];
+            }
+            else {
+                if (!self.fullTextSearchAlertView) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.fullTextSearchAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                                  message:@"To enable Pinboard full-text search, please log out and then log back in to Pushpin."
+                                                                                 delegate:self
+                                                                        cancelButtonTitle:nil
+                                                                        otherButtonTitles:@"OK", nil];
+                        [self.fullTextSearchAlertView show];
+                    });
+                }
+            }
         }
         else {
             [self generateQueryAndParameters:HandleSearch];
         }
     });
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.fullTextSearchAlertView = nil;
 }
 
 @end
