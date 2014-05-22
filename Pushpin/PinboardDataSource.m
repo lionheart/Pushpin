@@ -678,7 +678,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [whereComponents addObject:@"bookmark.tags = ?"];
             [parameters addObject:@""];
             break;
-            
+
         case kPushpinFilterNone:
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
@@ -1366,18 +1366,18 @@ static BOOL kPinboardSyncInProgress = NO;
                                                    NSMutableArray *components = [NSMutableArray array];
                                                    NSMutableArray *parameters = [NSMutableArray array];
                                                    [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-
+                                                   
                                                    NSMutableArray *urlComponents = [NSMutableArray array];
                                                    for (NSString *url in urls) {
                                                        [urlComponents addObject:@"?"];
                                                        [parameters addObject:url];
                                                    }
-
+                                                   
                                                    [components addObject:[urlComponents componentsJoinedByString:@", "]];
                                                    [components addObject:@")"];
-
+                                                   
                                                    NSString *query = [components componentsJoinedByString:@" "];
-
+                                                   
                                                    HandleSearch(query, parameters);
                                                }
                                            }];
