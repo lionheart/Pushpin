@@ -738,7 +738,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 self.searchScope = PPSearchScopeMine;
 
                 [[[UIAlertView alloc] initWithTitle:nil
-                                            message:@"To enable Pinboard full-text search, please log out and then log back in."
+                                            message:@"To enable Pinboard full-text search, please log out and then log back in to Pushpin."
                                            delegate:nil
                                   cancelButtonTitle:nil
                                   otherButtonTitles:@"OK", nil] show];

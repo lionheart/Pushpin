@@ -727,8 +727,11 @@ static NSInteger kToolbarHeight = 44;
     if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
         [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
     }
+    else {
+        [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
+    }
 #endif
-        
+
     [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

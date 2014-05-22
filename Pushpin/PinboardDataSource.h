@@ -40,7 +40,7 @@ static dispatch_queue_t PPPinboardBookmarkReloadQueue() {
     return queue;
 }
 
-@interface PinboardDataSource : NSObject <PPDataSource, NSCopying>
+@interface PinboardDataSource : NSObject <PPDataSource, NSCopying, UIAlertViewDelegate>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;
