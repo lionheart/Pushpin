@@ -18,7 +18,7 @@
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 #import "PPUtilities.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -305,7 +305,7 @@ static NSString *CellIdentifier = @"TagCell";
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
 #ifdef DELICIOUS
-    DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
+    PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
     deliciousDataSource.tags = @[tag];
     postViewController.postDataSource = deliciousDataSource;
 #endif

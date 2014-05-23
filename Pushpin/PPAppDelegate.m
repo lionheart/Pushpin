@@ -29,7 +29,7 @@
 #import "PPMobilizerUtility.h"
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
@@ -464,11 +464,11 @@
 - (PPNavigationController *)navigationController {
     if (!_navigationController) {
 #ifdef DELICIOUS
-        DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
+        PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
         deliciousDataSource.limit = 100;
         deliciousDataSource.orderBy = @"created_at DESC";
-        
-        GenericPostViewController *deliciousViewController = [[GenericPostViewController alloc] init];
+
+        PPGenericPostViewController *deliciousViewController = [[PPGenericPostViewController alloc] init];
         deliciousViewController.postDataSource = deliciousDataSource;
 
         _navigationController = [[PPNavigationController alloc] init];
@@ -859,7 +859,9 @@
         }
         [db commit];
     }
-#else
+#endif
+    
+#ifdef PINBOARD
     if ([s next]) {
         int version = [s intForColumnIndex:0];
         [db beginTransaction];

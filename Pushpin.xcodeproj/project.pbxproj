@@ -10,7 +10,7 @@
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		370935471894BF4F00E3588E /* DeliciousBeta.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935461894BF4F00E3588E /* DeliciousBeta.plist */; };
 		370935491894BF6100E3588E /* DeliciousDebug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935481894BF6100E3588E /* DeliciousDebug.plist */; };
-		3709354C1894C22100E3588E /* DeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* DeliciousDataSource.m */; };
+		3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* PPDeliciousDataSource.m */; };
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
 		370BBE021901ABBB004FA557 /* safari-callback.html in Resources */ = {isa = PBXBuildFile; fileRef = 370BBE011901ABBB004FA557 /* safari-callback.html */; };
@@ -522,8 +522,8 @@
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		370935461894BF4F00E3588E /* DeliciousBeta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousBeta.plist; sourceTree = "<group>"; };
 		370935481894BF6100E3588E /* DeliciousDebug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousDebug.plist; sourceTree = "<group>"; };
-		3709354A1894C22100E3588E /* DeliciousDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeliciousDataSource.h; sourceTree = "<group>"; };
-		3709354B1894C22100E3588E /* DeliciousDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DeliciousDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3709354A1894C22100E3588E /* PPDeliciousDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDeliciousDataSource.h; sourceTree = "<group>"; };
+		3709354B1894C22100E3588E /* PPDeliciousDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPDeliciousDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
 		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
 		370BBE011901ABBB004FA557 /* safari-callback.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-callback.html"; path = "Assets/safari-callback.html"; sourceTree = "<group>"; };
@@ -1153,8 +1153,8 @@
 			children = (
 				37405C6518620BCB0052213A /* PostMetadata.h */,
 				37405C6618620BCB0052213A /* PostMetadata.m */,
-				3709354A1894C22100E3588E /* DeliciousDataSource.h */,
-				3709354B1894C22100E3588E /* DeliciousDataSource.m */,
+				3709354A1894C22100E3588E /* PPDeliciousDataSource.h */,
+				3709354B1894C22100E3588E /* PPDeliciousDataSource.m */,
 				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
 				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
@@ -2522,7 +2522,7 @@
 				378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */,
 				378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */,
 				E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */,
-				3709354C1894C22100E3588E /* DeliciousDataSource.m in Sources */,
+				3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */,
 				E89001F9183EA5B500C1F969 /* PPBadgeView.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */,

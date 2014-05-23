@@ -6,7 +6,7 @@
 //
 //
 
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 #import "PostMetadata.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPAddBookmarkViewController.h"
@@ -16,7 +16,7 @@
 
 static BOOL kPinboardSyncInProgress = NO;
 
-@interface DeliciousDataSource ()
+@interface PPDeliciousDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
@@ -25,7 +25,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 @end
 
-@implementation DeliciousDataSource
+@implementation PPDeliciousDataSource
 
 - (id)init {
     self = [super init];
@@ -153,15 +153,15 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (DeliciousDataSource *)searchDataSource {
-    DeliciousDataSource *search = [self copy];
+- (PPDeliciousDataSource *)searchDataSource {
+    PPDeliciousDataSource *search = [self copy];
     search.searchQuery = @"*";
     return search;
 }
 
-- (DeliciousDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
+- (PPDeliciousDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
     NSArray *newTags = [self.tags arrayByAddingObject:tag];
-    DeliciousDataSource *dataSource = [self copy];
+    PPDeliciousDataSource *dataSource = [self copy];
     dataSource.tags = newTags;
     return dataSource;
 }
@@ -573,7 +573,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     
                     // Reload the post if its meta value has changed.
                     if (![meta isEqualToString:oldMetas[hash]]) {
-                        post = [DeliciousDataSource postFromResultSet:results];
+                        post = [PPDeliciousDataSource postFromResultSet:results];
                         
                         // Reloads affect the old index path
                         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:skipPivot inSection:0]];
@@ -587,7 +587,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             // If the post wasn't found by looping through, it's a new one
             if (!postFound) {
-                post = [DeliciousDataSource postFromResultSet:results];
+                post = [PPDeliciousDataSource postFromResultSet:results];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
             }
             
@@ -839,7 +839,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         if (![self.tags containsObject:tag]) {
-            DeliciousDataSource *deliciousDataSource = [self dataSourceWithAdditionalTag:tag];
+            PPDeliciousDataSource *deliciousDataSource = [self dataSourceWithAdditionalTag:tag];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
@@ -1064,7 +1064,7 @@ static BOOL kPinboardSyncInProgress = NO;
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+    PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
     dataSource.limit = self.limit;
     dataSource.tags = self.tags;
     dataSource.orderBy = self.orderBy;
