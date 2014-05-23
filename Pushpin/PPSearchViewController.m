@@ -16,7 +16,7 @@
 #import "PPTitleButton.h"
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -112,18 +112,19 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tagged", @"Untagged", @"Clear", nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
-    
+
     self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                               delegate:self
                                                      cancelButtonTitle:nil
                                                 destructiveButtonTitle:nil
                                                      otherButtonTitles:nil];
-    for (NSString *scope in PPPinboardSearchScopes()) {
+    
+    for (NSString *scope in PPSearchScopes()) {
         [self.searchScopeActionSheet addButtonWithTitle:scope];
     }
     [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
-    self.searchScopeActionSheet.cancelButtonIndex = [PPPinboardSearchScopes() count];
-    
+    self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
+
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
@@ -254,7 +255,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.textLabel.text = @"Search scope";
 
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
-            cell.detailTextLabel.text = PPPinboardSearchScopes()[self.searchScope];
+            cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];
 
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.accessoryView = nil;
@@ -650,7 +651,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 #endif
     
 #ifdef DELICIOUS
-    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+    PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
     
     if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
         dataSource.searchQuery = self.searchTextField.text;
@@ -723,13 +724,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.searchScopeActionSheet) {
-        if (buttonIndex == [PPPinboardSearchScopes() count]) {
+        if (buttonIndex == [PPSearchScopes() count]) {
             return;
         }
         NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         
         PPSearchScopeType previousSearchScope = self.searchScope;
-        self.searchScope = (PPSearchScopeType)[PPPinboardSearchScopes() indexOfObject:title];
+        self.searchScope = (PPSearchScopeType)[PPSearchScopes() indexOfObject:title];
         
         if (self.searchScope == PPSearchScopePinboard) {
             // Check if the user has no username or password set.

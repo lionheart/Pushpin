@@ -30,7 +30,7 @@ typedef enum : NSInteger {
     PPSearchSectionFilters
 } PPSearchSectionType;
 
-static NSArray *PPPinboardSearchScopes() {
+static NSArray *PPSearchScopes() {
     return @[@"Mine", @"Mine (Pinboard Syntax)"];
 }
 #endif
@@ -58,6 +58,10 @@ typedef enum : NSInteger {
     // Unused
     PPSearchSectionScope
 } PPSearchSectionType;
+
+static NSArray *PPSearchScopes() {
+    return @[];
+}
 #endif
 
 typedef enum : NSInteger {

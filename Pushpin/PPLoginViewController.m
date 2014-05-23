@@ -15,7 +15,7 @@
 #import "PPNavigationController.h"
 #import "ASStyleSheet.h"
 #import "PPTableViewTitleView.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
@@ -295,7 +295,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                 LoginSuccessBlock();
                                                 
                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+                                                    PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
 
                                                     [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
                                                                                    failure:nil

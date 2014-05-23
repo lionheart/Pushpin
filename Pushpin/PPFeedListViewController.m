@@ -23,7 +23,7 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"
 
@@ -844,7 +844,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
         switch ((PPDeliciousSectionType)indexPath.section) {
             case PPDeliciousSectionPersonal: {
-                DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+                PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
                 dataSource.limit = 100;
 
                 PPDeliciousPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
