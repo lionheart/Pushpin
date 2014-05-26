@@ -22,7 +22,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @class FMResultSet;
 @class PostMetadata;
 
-@interface PinboardDataSource : NSObject <PPDataSource, NSCopying, UIAlertViewDelegate>
+@interface PPPinboardDataSource : NSObject <PPDataSource, NSCopying, UIAlertViewDelegate>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;
@@ -62,8 +62,8 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
                  offset:(NSInteger)offset
                   limit:(NSInteger)limit;
 
-- (PinboardDataSource *)searchDataSource;
-- (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
+- (PPPinboardDataSource *)searchDataSource;
+- (PPPinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 

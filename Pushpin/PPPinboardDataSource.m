@@ -6,7 +6,7 @@
 //
 //
 
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPAppDelegate.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPBadgeView.h"
@@ -26,7 +26,7 @@
 
 static BOOL kPinboardSyncInProgress = NO;
 
-@interface PinboardDataSource ()
+@interface PPPinboardDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
@@ -37,7 +37,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 @end
 
-@implementation PinboardDataSource
+@implementation PPPinboardDataSource
 
 - (id)init {
     self = [super init];
@@ -176,15 +176,15 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (PinboardDataSource *)searchDataSource {
-    PinboardDataSource *search = [self copy];
+- (PPPinboardDataSource *)searchDataSource {
+    PPPinboardDataSource *search = [self copy];
     search.searchQuery = @"*";
     return search;
 }
 
-- (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
+- (PPPinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
     NSArray *newTags = [self.tags arrayByAddingObject:tag];
-    PinboardDataSource *dataSource = [self copy];
+    PPPinboardDataSource *dataSource = [self copy];
     dataSource.tags = newTags;
     return dataSource;
 }
@@ -498,7 +498,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
         if (![self.tags containsObject:tag]) {
-            PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
+            PPPinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
@@ -743,7 +743,7 @@ static BOOL kPinboardSyncInProgress = NO;
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+    PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
     dataSource.limit = self.limit;
     dataSource.tags = self.tags;
     dataSource.orderBy = self.orderBy;
@@ -1251,7 +1251,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *hash = [results stringForColumn:@"hash"];
                 NSString *meta = [results stringForColumn:@"meta"];
                 NSString *hashmeta = [hash stringByAppendingString:meta];
-                NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+                NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
                 
                 [updatedBookmarks addObject:post];
                 

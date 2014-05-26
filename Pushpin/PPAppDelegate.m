@@ -13,7 +13,7 @@
 #import "PPLoginViewController.h"
 #import "PPSettingsViewController.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPNotification.h"
 #import "PPFeedListViewController.h"
 #import "PPAddBookmarkViewController.h"
@@ -484,7 +484,7 @@
 #endif
         
 #ifdef PINBOARD
-        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
 

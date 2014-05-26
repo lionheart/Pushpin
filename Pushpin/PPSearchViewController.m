@@ -10,7 +10,7 @@
 #import "PPTheme.h"
 #import "PPSearchExamplesViewController.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
 #import "PPTitleButton.h"
@@ -603,7 +603,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     PPGenericPostViewController *genericPostViewController = [[PPGenericPostViewController alloc] init];
     
 #ifdef PINBOARD
-    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+    PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
     
     if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
         dataSource.searchQuery = self.searchTextField.text;

@@ -12,7 +12,7 @@
 #import "PPFeedListViewController.h"
 #import "PPAppDelegate.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PinboardFeedDataSource.h"
 #import "PPSettingsViewController.h"
 #import "PPTagViewController.h"
@@ -907,7 +907,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
                 PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)([delegate.personalFeedOrder[indexPath.row + numFeedsSkipped] integerValue]);
 
-                PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
                 dataSource.limit = 100;
 
                 switch (feedType) {

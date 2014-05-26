@@ -11,7 +11,7 @@
 #import "PPTagViewController.h"
 #import "FMDatabase.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
@@ -311,7 +311,7 @@ static NSString *CellIdentifier = @"TagCell";
 #endif
     
 #ifdef PINBOARD
-    PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+    PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag];
     postViewController.postDataSource = pinboardDataSource;
 #endif
