@@ -33,15 +33,21 @@ static NSString *CellIdentifier = @"TagCell";
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
 @property (nonatomic, strong) UIActionSheet *tagActionSheet;
 @property (nonatomic, strong) UIAlertView *deleteConfirmationAlertView;
-@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) NSTimer *tagUpdateTimer;
+@property (nonatomic, strong) NSMutableDictionary *duplicates;
+@property (nonatomic, strong) UIActionSheet *selectTagToDeleteActionSheet;
+@property (nonatomic, strong) NSString *tagToDelete;
 
+- (void)showSelectTagToDeleteActionSheet;
+- (void)showDeleteConfirmationAlertView;
 - (void)updateTagsAndCounts;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (NSString *)titleForSectionIndex:(NSInteger)section;
 - (NSString *)tagForIndexPath:(NSIndexPath *)indexPath;
 - (NSArray *)sortedSectionTitles:(NSDictionary *)sectionTitles;
+
+- (void)deleteTagWithName:(NSString *)name;
 
 @end
 
@@ -71,6 +77,7 @@ static NSString *CellIdentifier = @"TagCell";
     self.searchInProgress = NO;
     self.tagCounts = [NSMutableDictionary dictionary];
     self.sectionTitles = [NSMutableDictionary dictionary];
+    self.duplicates = [NSMutableDictionary dictionary];
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     
@@ -187,8 +194,21 @@ static NSString *CellIdentifier = @"TagCell";
         tag = [self tagForIndexPath:indexPath];
     }
 
-    cell.textLabel.text = tag;
-    cell.textLabel.font = [PPTheme textLabelFont];
+    NSArray *tags = self.duplicates[tag];
+    if ([tags count] > 1) {
+        NSString *tagsString = [tags componentsJoinedByString:@" · "];
+        NSRange range = NSMakeRange([[tags firstObject] length] + 1, [tagsString length] - [[tags firstObject] length] - 1);
+        
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:tagsString
+                                                                                           attributes:@{NSForegroundColorAttributeName: [UIColor blackColor],
+                                                                                                        NSFontAttributeName: [PPTheme textLabelFont] }];
+        [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
+        cell.textLabel.attributedText = attributedText;
+    }
+    else {
+        cell.textLabel.text = tag;
+        cell.textLabel.font = [PPTheme textLabelFont];
+    }
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", self.tagCounts[tag]];
     cell.detailTextLabel.text = badgeCount;
@@ -273,15 +293,14 @@ static NSString *CellIdentifier = @"TagCell";
 // Only let users delete tags with Pinboard (for now)
 #ifdef PINBOARD
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.selectedIndexPath = indexPath;
-    
-    self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                  message:@"Are you sure you want to delete this tag? There is no undo."
-                                                                 delegate:self
-                                                        cancelButtonTitle:@"Cancel"
-                                                        otherButtonTitles:@"Delete", nil];
-
-    [self.deleteConfirmationAlertView show];
+    self.tagToDelete = [self tagForIndexPath:indexPath];
+    NSArray *duplicates = self.duplicates[self.tagToDelete];
+    if ([duplicates count] > 1) {
+        [self showSelectTagToDeleteActionSheet];
+    }
+    else {
+        [self showDeleteConfirmationAlertView];
+    }
 }
 #endif
 
@@ -351,34 +370,7 @@ static NSString *CellIdentifier = @"TagCell";
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.deleteConfirmationAlertView) {
         if (buttonIndex == 1) {
-            ASPinboard *pinboard = [ASPinboard sharedInstance];
-            NSString *tag = [self tagForIndexPath:self.selectedIndexPath];
-            [pinboard deleteTag:tag
-                        success:^{
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                                [db open];
-                                // Delete the tag from the database.
-                                
-                                [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[tag]];
-                                
-                                NSMutableArray *hashesToUpdate = [NSMutableArray array];
-                                NSMutableArray *parameterPlaceholders = [NSMutableArray array];
-                                FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
-                                while ([result next]) {
-                                    // Convert the tags to a list, remove the removed tag, and then update the bookmark.
-                                    NSString *hash = [result stringForColumnIndex:0];
-                                    [hashesToUpdate addObject:hash];
-                                    [parameterPlaceholders addObject:@"?"];
-                                }
-
-                                [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[tag]];
-                                
-                                NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
-                                [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
-                                [db close];
-                            });
-                        }];
+            [self deleteTagWithName:self.tagToDelete];
         }
     }
 }
@@ -389,13 +381,14 @@ static NSString *CellIdentifier = @"TagCell";
     if (actionSheet == self.tagActionSheet) {
         NSString *title = [self.tagActionSheet buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:@"Delete"]) {
-            NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
-            self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:tagName
-                                                                          message:@"Are you sure you want to delete this tag? There is no undo."
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"Cancel"
-                                                                otherButtonTitles:@"Delete", nil];
-            [self.deleteConfirmationAlertView show];
+            [self showDeleteConfirmationAlertView];
+        }
+    }
+    else if (actionSheet == self.selectTagToDeleteActionSheet) {
+        NSString *title = [self.selectTagToDeleteActionSheet buttonTitleAtIndex:buttonIndex];
+        if (![title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
+            self.tagToDelete = title;
+            [self showDeleteConfirmationAlertView];
         }
     }
 }
@@ -404,15 +397,22 @@ static NSString *CellIdentifier = @"TagCell";
     if (recognizer == self.longPressGestureRecognizer) {
         if (self.longPressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
             CGPoint point = [self.longPressGestureRecognizer locationInView:self.tableView];
-            self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:point];
-            CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-            NSString *tagName = [self tagForIndexPath:self.selectedIndexPath];
-            self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:tagName
-                                                              delegate:self
-                                                     cancelButtonTitle:@"Cancel"
-                                                destructiveButtonTitle:@"Delete"
-                                                     otherButtonTitles:nil];
-            [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
+            NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+            CGRect rect = [self.tableView rectForRowAtIndexPath:indexPath];
+            self.tagToDelete = [self tagForIndexPath:indexPath];
+            
+            NSArray *duplicates = self.duplicates[self.tagToDelete];
+            if ([duplicates count] > 1) {
+                [self showSelectTagToDeleteActionSheet];
+            }
+            else {
+                self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:self.tagToDelete
+                                                                  delegate:self
+                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                    destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
+                                                         otherButtonTitles:nil];
+                [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
+            }
         }
     }
 }
@@ -437,11 +437,13 @@ static NSString *CellIdentifier = @"TagCell";
 
             NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
             NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
+            NSMutableDictionary *updatedDuplicates = [NSMutableDictionary dictionary];
 
-            FMResultSet *results = [db executeQuery:@"SELECT name, count FROM tag ORDER BY name ASC"];
+            FMResultSet *results = [db executeQuery:@"SELECT name, group_concat(name, ' '), SUM(count) FROM tag GROUP BY lower(name) ORDER BY lower(name) ASC"];
             while ([results next]) {
                 NSString *name = [results stringForColumnIndex:0];
-                NSString *count = [results stringForColumnIndex:1];
+                NSArray *names = [[results stringForColumnIndex:1] componentsSeparatedByString:@" "];
+                NSString *count = [results stringForColumnIndex:2];
                 NSMutableString *lossyName = [name mutableCopy];
                 CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
                 
@@ -452,7 +454,7 @@ static NSString *CellIdentifier = @"TagCell";
                 if ([count length] == 0) {
                     continue;
                 }
-                
+
                 NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
                 if (![letters containsObject:firstLetter]) {
                     firstLetter = @"#";
@@ -463,8 +465,11 @@ static NSString *CellIdentifier = @"TagCell";
                     temp = [NSMutableArray array];
                 }
                 
+                if ([names count] > 0) {
+                    updatedDuplicates[name] = names;
+                }
+
                 updatedTagCounts[name] = count;
-                
                 [temp addObject:name];
                 updatedSectionTitles[firstLetter] = temp;
             }
@@ -546,6 +551,7 @@ static NSString *CellIdentifier = @"TagCell";
                 BOOL firstLaunch = self.tagCounts.count == 0;
                 self.sectionTitles = updatedSectionTitles;
                 self.tagCounts = updatedTagCounts;
+                self.duplicates = updatedDuplicates;
 
                 if (firstLaunch) {
                     [self.tableView reloadData];
@@ -561,7 +567,7 @@ static NSString *CellIdentifier = @"TagCell";
                 }
                 dispatch_semaphore_signal(sem);
             });
-            
+
             dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
         });
     }
@@ -569,6 +575,64 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSArray *)sortedSectionTitles:(NSDictionary *)sectionTitles {
     return [[sectionTitles allKeys] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (void)deleteTagWithName:(NSString *)name {
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+    [pinboard deleteTag:name
+                success:^{
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
+                        [db open];
+                        // Delete the tag from the database.
+
+                        [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
+                        
+                        NSMutableArray *hashesToUpdate = [NSMutableArray array];
+                        NSMutableArray *parameterPlaceholders = [NSMutableArray array];
+                        FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                        while ([result next]) {
+                            // Convert the tags to a list, remove the removed tag, and then update the bookmark.
+                            NSString *hash = [result stringForColumnIndex:0];
+                            [hashesToUpdate addObject:hash];
+                            [parameterPlaceholders addObject:@"?"];
+                        }
+                        
+                        [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                        
+                        NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
+                        [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
+                        [db close];
+                        
+                        [self.tagCounts removeObjectForKey:name];
+                        self.tagToDelete = nil;
+                    });
+                }];
+}
+
+- (void)showDeleteConfirmationAlertView {
+    self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:self.tagToDelete
+                                                                  message:NSLocalizedString(@"Are you sure you want to delete this tag? There is no undo.", nil)
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                        otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
+    [self.deleteConfirmationAlertView show];
+}
+
+- (void)showSelectTagToDeleteActionSheet {
+    NSArray *duplicates = self.duplicates[self.tagToDelete];
+    self.selectTagToDeleteActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"This tag has a few versions. Select the one you'd like to delete.", nil)
+                                                                    delegate:self
+                                                           cancelButtonTitle:nil
+                                                      destructiveButtonTitle:nil
+                                                           otherButtonTitles:nil];
+    for (NSString *duplicate in duplicates) {
+        [self.selectTagToDeleteActionSheet addButtonWithTitle:duplicate];
+    }
+    [self.selectTagToDeleteActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+    
+    self.selectTagToDeleteActionSheet.cancelButtonIndex = self.selectTagToDeleteActionSheet.numberOfButtons - 1;
+    [self.selectTagToDeleteActionSheet showInView:self.view];
 }
 
 @end
