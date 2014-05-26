@@ -7,10 +7,6 @@
 		<array>
 			<array>
 				<string>FIX</string>
-				<string>Improve responsiveness of description editor when TextExpander has not been enabled.</string>
-			</array>
-			<array>
-				<string>FIX</string>
 				<string>Fix a crash when viewing Saved Feeds or Community Feeds.</string>
 			</array>
 			<array>
@@ -36,6 +32,14 @@
 			<array>
 				<string>FIX</string>
 				<string>Fix issue where sending URLs to Instapaper would fail for certain users.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where adding a bookmark via URL scheme on iPad would open a full-screen editor instead of a form sheet.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
 			</array>
 		</array>
 	</array>
