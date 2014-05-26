@@ -41,6 +41,10 @@
 				<string>FIX</string>
 				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Group similar tags (e.g., &apos;apple&apos;, &apos;Apple&apos;, and &apos;APPLE&apos;) together in the tag list.</string>
+			</array>
 		</array>
 	</array>
 	<array>
