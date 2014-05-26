@@ -1747,7 +1747,12 @@
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
     NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
     NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-    return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+    if (resourceKey && resourceSecret) {
+        return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+    }
+    else {
+        return nil;
+    }
 }
 
 @end
