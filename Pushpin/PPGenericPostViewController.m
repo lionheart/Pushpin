@@ -14,7 +14,7 @@
 #import "PPStatusBarNotification.h"
 #import "PPConstants.h"
 
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
 #import "PPMultipleEditViewController.h"
 #import "PPFeedListViewController.h"
@@ -725,10 +725,10 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
 #ifdef PINBOARD
     if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
-        [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
+        [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
     }
     else {
-        [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
+        [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
     }
 #endif
 

@@ -21,7 +21,7 @@
 #import "UITableView+Additions.h"
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -181,7 +181,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
     [results next];
-    NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+    NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
     [db close];
     
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
@@ -783,7 +783,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #ifdef PINBOARD
                     FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
                     [resultSet next];
-                    NSDictionary *post = [PinboardDataSource postFromResultSet:resultSet];
+                    NSDictionary *post = [PPPinboardDataSource postFromResultSet:resultSet];
 #endif
                     [db close];
                     

@@ -9,7 +9,7 @@
 #import "PPLoginViewController.h"
 @import QuartzCore;
 #import "PPAppDelegate.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPFeedListViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
@@ -327,7 +327,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    delegate.token = token;
-                                                   PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                                                   PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
 
                                                    [dataSource syncBookmarksWithCompletion:^(NSError *error) {
                                                        if (error) {
