@@ -41,7 +41,6 @@ install_resource()
       ;;
   esac
 }
-install_resource "BugshotKit/Resources/Inconsolata.otf"
 install_resource "RPSTPasswordManagementAppService/images/official-1pw-icon-set/1P-29.png"
 install_resource "RPSTPasswordManagementAppService/images/official-1pw-icon-set/1P-29@2x.png"
 install_resource "RPSTPasswordManagementAppService/images/official-1pw-icon-set/1P-50.png"

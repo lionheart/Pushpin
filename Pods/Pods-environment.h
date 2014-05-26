@@ -58,13 +58,7 @@
 #define COCOAPODS_POD_AVAILABLE_ASPinboard
 #define COCOAPODS_VERSION_MAJOR_ASPinboard 0
 #define COCOAPODS_VERSION_MINOR_ASPinboard 0
-#define COCOAPODS_VERSION_PATCH_ASPinboard 1
-
-// BugshotKit
-#define COCOAPODS_POD_AVAILABLE_BugshotKit
-#define COCOAPODS_VERSION_MAJOR_BugshotKit 0
-#define COCOAPODS_VERSION_MINOR_BugshotKit 1
-#define COCOAPODS_VERSION_PATCH_BugshotKit 0
+#define COCOAPODS_VERSION_PATCH_ASPinboard 2
 
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
