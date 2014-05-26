@@ -1732,4 +1732,22 @@
     return [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
 }
 
+- (void)setInstapaperToken:(OAToken *)instapaperToken {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+    if (instapaperToken) {
+        [keychain setObject:instapaperToken.key forKey:(__bridge id)kSecAttrAccount];
+        [keychain setObject:instapaperToken.secret forKey:(__bridge id)kSecValueData];
+    }
+    else {
+        [keychain resetKeychainItem];
+    }
+}
+
+- (OAToken *)instapaperToken {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+    NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+    NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+    return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+}
+
 @end

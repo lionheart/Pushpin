@@ -116,24 +116,24 @@
 
     switch (self.service) {
         case PPReadLaterInstapaper: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
+            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+            OAToken *token = delegate.instapaperToken;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
+            [parameters addObject:[OARequestParameter requestParameter:@"title" value:self.title]];
             [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]];
             [request setParameters:parameters];
             [request prepare];
 
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [delegate setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [delegate setNetworkActivityIndicatorVisible:NO];
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
