@@ -141,7 +141,6 @@
 		3772DE531933B0D1004B348D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		3772DE581933B0D1004B348D /* DebugPods.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3772DE571933B0D1004B348D /* DebugPods.h */; };
 		3772DE5A1933B0D1004B348D /* DebugPods.m in Sources */ = {isa = PBXBuildFile; fileRef = 3772DE591933B0D1004B348D /* DebugPods.m */; };
-		3772DE911933B19E004B348D /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -1162,7 +1161,6 @@
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */,
-				3772DE911933B19E004B348D /* libDebugPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3299,6 +3297,7 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
+					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "4280BF04-27B4-494E-A621-5FD5BA7FE00B";
 				SDKROOT = iphoneos;
@@ -3385,6 +3384,7 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
+					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "082A1E51-C373-4E9F-B3B6-D8C4CCBFA1A3";
 				SDKROOT = iphoneos;
@@ -3558,6 +3558,7 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
+					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "D3F796BF-1DA0-4238-A189-BDED5B560521";
 				SDKROOT = iphoneos;
@@ -3646,6 +3647,7 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
+					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "AE05D9EC-AACB-4026-B2B8-C45B3F62604A";
 				SDKROOT = iphoneos;
