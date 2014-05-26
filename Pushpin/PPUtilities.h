@@ -25,8 +25,6 @@
                            hash:(NSString *(^)(id))extractHash
                      completion:(void (^)(NSSet *inserted, NSSet *deleted))completion;
 
-#ifdef PINBOARD
 + (NSDictionary *)dictionaryFromResultSet:(FMResultSet *)resultSet;
-#endif
 
 @end

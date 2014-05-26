@@ -116,8 +116,8 @@
                        }];
 }
 
-#ifdef PINBOARD
 + (NSDictionary *)dictionaryFromResultSet:(id)resultSet {
+#ifdef PINBOARD
     NSNumber *starred = @([resultSet boolForColumn:@"starred"]);
     if (!starred) {
         starred = @(NO);
@@ -131,8 +131,32 @@
              @"tags": [resultSet stringForColumn:@"tags"],
              @"created_at": [resultSet dateForColumn:@"created_at"],
              @"starred": starred
-    };
-}
+             };
 #endif
+
+#ifdef DELICIOUS
+    NSString *title = [resultSet stringForColumn:@"title"];
+    
+    if ([title isEqualToString:@""]) {
+        title = @"untitled";
+    }
+    
+    NSString *hash = [resultSet stringForColumn:@"hash"];
+    if (!hash) {
+        hash = @"";
+    }
+
+    return @{
+             @"title": title,
+             @"description": [resultSet stringForColumn:@"description"],
+             @"unread": @([resultSet boolForColumn:@"unread"]),
+             @"url": [resultSet stringForColumn:@"url"],
+             @"tags": [resultSet stringForColumn:@"tags"],
+             @"created_at": [resultSet dateForColumn:@"created_at"],
+             @"hash": hash,
+             @"meta": [resultSet stringForColumn:@"meta"],
+             };
+#endif
+}
 
 @end

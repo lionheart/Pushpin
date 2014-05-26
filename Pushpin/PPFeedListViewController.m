@@ -402,9 +402,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #ifdef DELICIOUS
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     PPDeliciousSectionType sectionType = [self sectionTypeForSection:section];
-    
+
     if (tableView.allowsMultipleSelectionDuringEditing) {
         switch (sectionType) {
             case PPDeliciousSectionPersonal:
@@ -782,7 +782,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
 #ifdef DELICIOUS
     PPDeliciousSectionType sectionType = [self sectionTypeForSection:sourceIndexPath.section];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     switch (sectionType) {
         case PPDeliciousSectionPersonal: {
@@ -1429,7 +1429,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSInteger numFeedsSkipped = 0;
     NSInteger numFeedsNotSkipped = 0;
     
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {

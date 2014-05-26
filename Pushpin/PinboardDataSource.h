@@ -22,24 +22,6 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @class FMResultSet;
 @class PostMetadata;
 
-static dispatch_queue_t PPPinboardBookmarkUpdateQueue() {
-    static dispatch_once_t onceToken;
-    static dispatch_queue_t queue;
-    dispatch_once(&onceToken, ^{
-        queue = dispatch_queue_create("io.aurora.Pushpin.PinboardBookmarkUpdateQueue", 0);
-    });
-    return queue;
-}
-
-static dispatch_queue_t PPPinboardBookmarkReloadQueue() {
-    static dispatch_once_t onceToken;
-    static dispatch_queue_t queue;
-    dispatch_once(&onceToken, ^{
-        queue = dispatch_queue_create("io.aurora.Pushpin.PinboardBookmarkReloadQueue", 0);
-    });
-    return queue;
-}
-
 @interface PinboardDataSource : NSObject <PPDataSource, NSCopying, UIAlertViewDelegate>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
