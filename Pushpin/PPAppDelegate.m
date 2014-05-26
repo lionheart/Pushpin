@@ -1724,4 +1724,12 @@
 }
 #endif
 
+- (UITextAutocapitalizationType)autoCapitalizationType {
+    return [PPAppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
+}
+
+- (UITextAutocorrectionType)autoCorrectionType {
+    return [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+}
+
 @end

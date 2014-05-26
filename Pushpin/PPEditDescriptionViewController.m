@@ -38,19 +38,28 @@
         self.title = NSLocalizedString(@"Description", nil);
         
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
-        
-        // TextExpander SDK
-        self.textExpander = [[SMTEDelegateController alloc] init];
-        self.textExpander.nextDelegate = self;
 
         self.textView = [[UITextView alloc] initWithFrame:CGRectZero];
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textView.autocorrectionType = [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-        self.textView.autocapitalizationType =  [PPAppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
+        self.textView.autocorrectionType = [[PPAppDelegate sharedDelegate] autoCorrectionType];
+        self.textView.autocapitalizationType =  [[PPAppDelegate sharedDelegate] autoCapitalizationType];
         self.textView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.textView.font = font;
-        self.textView.delegate = self.textExpander;
         self.textView.text = description;
+
+        // TextExpander SDK
+        BOOL snippetsLoaded = [SMTEDelegateController expansionStatusForceLoad:NO
+                                                                  snippetCount:0
+                                                                      loadDate:nil
+                                                                         error:nil];
+        if (snippetsLoaded) {
+            self.textExpander = [[SMTEDelegateController alloc] init];
+            self.textExpander.nextDelegate = self;
+            self.textView.delegate = self.textExpander;
+        }
+        else {
+            self.textView.delegate = self;
+        }
         
         [self.view addSubview:self.textView];
         

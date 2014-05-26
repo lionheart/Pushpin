@@ -7,7 +7,7 @@
 		<array>
 			<array>
 				<string>FIX</string>
-				<string>Fix issue where updates to existing bookmarks would not be saved.</string>
+				<string>Fix issue where updates to existing bookmarks would fail.</string>
 			</array>
 			<array>
 				<string>FIX</string>
