@@ -21,6 +21,14 @@
 				<string>FIX</string>
 				<string>Switch the default add bookmark prompt behavior to only prompt once for each URL.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where bookmark edit prompt would always appear, regardless of settings, when an existing bookmark&apos;s URL was on the clipboard.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where sending URLs to Instapaper would fail for certain users.</string>
+			</array>
 		</array>
 	</array>
 	<array>
