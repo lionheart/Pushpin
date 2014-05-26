@@ -535,7 +535,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                       withRowAnimation:UITableViewRowAnimationFade];
             }
-
+            
             self.readLaterActionSheet = nil;
         }
 
@@ -710,7 +710,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [_readLaterActionSheet addButtonWithTitle:@"Instapaper"];
         [_readLaterActionSheet addButtonWithTitle:@"Readability"];
         [_readLaterActionSheet addButtonWithTitle:@"Pocket"];
-
+        
         // Only show the "Remove" option if the user already has a read later service chosen.
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
         BOOL readLaterServiceChosen = delegate.readLater != PPReadLaterNone;
@@ -719,7 +719,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
 
         [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-
+        
         if (readLaterServiceChosen) {
             _readLaterActionSheet.destructiveButtonIndex = self.readLaterActionSheet.numberOfButtons - 2;
         }

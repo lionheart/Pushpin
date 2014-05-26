@@ -340,7 +340,17 @@
             BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
             [db close];
 
-            if (alreadyExistsInBookmarks) {
+            if (alreadyRejected && self.onlyPromptToAddOnce) {
+                if (self.alwaysShowClipboardNotification) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UILocalNotification *notification = [[UILocalNotification alloc] init];
+                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
+                        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                    });
+                }
+            }
+            else if (alreadyExistsInBookmarks) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
                     self.updateBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
@@ -350,16 +360,6 @@
                                                                     otherButtonTitles:NSLocalizedString(@"Edit", nil), nil];
                     [self.updateBookmarkAlertView show];
                 });
-            }
-            else if (alreadyRejected && self.onlyPromptToAddOnce) {
-                if (self.alwaysShowClipboardNotification) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UILocalNotification *notification = [[UILocalNotification alloc] init];
-                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
-                        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                    });
-                }
             }
             else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
