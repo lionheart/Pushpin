@@ -663,6 +663,9 @@ static NSInteger kToolbarHeight = 44;
                 [self.view lhs_centerVerticallyForView:activityIndicator];
             }
             
+            NSDate *date = [NSDate date];
+            DLog(@"A: %@", date);
+
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -693,6 +696,9 @@ static NSInteger kToolbarHeight = 44;
                                                  }
                                                  else {
 #warning Crash here
+                                                     DLog(@"B: %@", date);
+                                                     DLog(@"%d", [indexPathsToInsert count]);
+
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];

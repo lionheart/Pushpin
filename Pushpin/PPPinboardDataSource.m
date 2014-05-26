@@ -1135,9 +1135,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
                                           [self updateStarredPostsWithCompletion:^(NSError *error) {
-                                              [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                                                  completion(nil);
-                                              } cancel:nil width:self.mostRecentWidth];
+                                              completion(error);
                                           }];
                                       }];
         };
@@ -1218,6 +1216,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
+    
     dispatch_async(PPBookmarkReloadQueue(), ^{
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSArray *previousBookmarks = [self.posts copy];
@@ -1295,6 +1294,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
+            
+
 
             [PPUtilities generateDiffForPrevious:previousBookmarks
                                          updated:updatedBookmarks

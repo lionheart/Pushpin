@@ -48,7 +48,7 @@
 		3732DFA41759703A00978A68 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA21759703A00978A68 /* twitter.png */; };
 		3732DFA51759703A00978A68 /* twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3732DFA31759703A00978A68 /* twitter@2x.png */; };
 		3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */; };
-		3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PinboardDataSource.m */; };
+		3733252816E15D6A002E2AB0 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
 		373C82BD16F81C6900A7D7C8 /* ptr_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827D16F81C6800A7D7C8 /* ptr_01.png */; };
 		373C82BE16F81C6900A7D7C8 /* ptr_01@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */; };
 		373C82BF16F81C6900A7D7C8 /* ptr_02.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C827F16F81C6800A7D7C8 /* ptr_02.png */; };
@@ -598,8 +598,8 @@
 		3732DFA31759703A00978A68 /* twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "twitter@2x.png"; path = "Assets/twitter@2x.png"; sourceTree = "<group>"; };
 		3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGenericPostViewController.h; sourceTree = "<group>"; };
 		3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPGenericPostViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		3733252616E15D6A002E2AB0 /* PinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinboardDataSource.h; sourceTree = "<group>"; };
-		3733252716E15D6A002E2AB0 /* PinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PinboardDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3733252616E15D6A002E2AB0 /* PPPinboardDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardDataSource.h; sourceTree = "<group>"; };
+		3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		373C827D16F81C6800A7D7C8 /* ptr_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_01.png; sourceTree = "<group>"; };
 		373C827E16F81C6800A7D7C8 /* ptr_01@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_01@2x.png"; sourceTree = "<group>"; };
 		373C827F16F81C6800A7D7C8 /* ptr_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_02.png; sourceTree = "<group>"; };
@@ -1187,8 +1187,8 @@
 				37405C6618620BCB0052213A /* PostMetadata.m */,
 				3709354A1894C22100E3588E /* PPDeliciousDataSource.h */,
 				3709354B1894C22100E3588E /* PPDeliciousDataSource.m */,
-				3733252616E15D6A002E2AB0 /* PinboardDataSource.h */,
-				3733252716E15D6A002E2AB0 /* PinboardDataSource.m */,
+				3733252616E15D6A002E2AB0 /* PPPinboardDataSource.h */,
+				3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */,
 				3722155D16FCDB430036AA20 /* PinboardFeedDataSource.h */,
 				3722155E16FCDB430036AA20 /* PinboardFeedDataSource.m */,
 				3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */,
@@ -2665,7 +2665,7 @@
 				3728CF3D18726EC900155791 /* PPTagEditViewController.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
 				37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */,
-				3733252816E15D6A002E2AB0 /* PinboardDataSource.m in Sources */,
+				3733252816E15D6A002E2AB0 /* PPPinboardDataSource.m in Sources */,
 				3722155F16FCDB430036AA20 /* PinboardFeedDataSource.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				E89001F6183EA43E00C1F969 /* PPBadgeWrapperView.m in Sources */,
