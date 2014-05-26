@@ -7,6 +7,10 @@
 		<array>
 			<array>
 				<string>FIX</string>
+				<string>Improve responsiveness of description editor when TextExpander has not been enabled.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix issue where updates to existing bookmarks would fail.</string>
 			</array>
 			<array>
