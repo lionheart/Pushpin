@@ -297,10 +297,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                     PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
 
-                                                    [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
-                                                                                   failure:nil
-                                                                                  progress:UpdateProgressBlock
-                                                                                   options:@{@"count": @(-1)}];
+                                                    [dataSource syncBookmarksWithCompletion:^(NSError *error) {
+                                                        if (!error) {
+                                                            SyncCompletedBlock();
+                                                        }
+                                                    } progress:UpdateProgressBlock];
 
                                                     MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
                                                     [mixpanel identify:delegate.username];

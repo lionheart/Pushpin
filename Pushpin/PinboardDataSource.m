@@ -958,7 +958,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     // Dispatch serially to ensure that no two syncs happen simultaneously.
-    dispatch_async(PPPinboardBookmarkUpdateQueue(), ^{
+    dispatch_async(PPBookmarkUpdateQueue(), ^{
         ASPinboard *pinboard = [ASPinboard sharedInstance];
         MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
         
@@ -1218,7 +1218,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
-    dispatch_async(PPPinboardBookmarkReloadQueue(), ^{
+    dispatch_async(PPBookmarkReloadQueue(), ^{
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSArray *previousBookmarks = [self.posts copy];
             NSMutableArray *updatedBookmarks = [NSMutableArray array];

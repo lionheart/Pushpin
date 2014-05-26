@@ -818,7 +818,6 @@
                  ");" ];
 
                 [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];

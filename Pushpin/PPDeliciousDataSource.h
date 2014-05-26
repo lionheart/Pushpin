@@ -62,6 +62,5 @@ static NSString *DeliciousDataSourceErrorDomain __unused = @"DeliciousDataSource
 - (PPDeliciousDataSource *)searchDataSource;
 - (PPDeliciousDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
-+ (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 
 @end
