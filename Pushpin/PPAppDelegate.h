@@ -88,6 +88,9 @@
 - (void)promptUserToAddBookmark;
 - (void)logout;
 
+- (UITextAutocapitalizationType)autoCapitalizationType;
+- (UITextAutocorrectionType)autoCorrectionType;
+
 - (NSString *)defaultFeedDescription;
 
 @end
