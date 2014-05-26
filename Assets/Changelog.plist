@@ -25,6 +25,14 @@
 				<string>FIX</string>
 				<string>Fix crash when using full-text search.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where bookmark edit prompt would always appear when an existing bookmark&apos;s URL was on the clipboard.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where sending URLs to Instapaper would fail for certain users.</string>
+			</array>
 		</array>
 	</array>
 	<array>
