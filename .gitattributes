@@ -1,1 +1,2 @@
-*.png diff=png filter=bigstore
+# *.png diff=png
+*.png filter=bigstore
