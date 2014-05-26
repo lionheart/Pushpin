@@ -7,6 +7,10 @@
 		<array>
 			<array>
 				<string>FIX</string>
+				<string>Fix issue where updates to existing bookmarks would not be saved.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Prevent &quot;Search&quot; and &quot;Tags&quot; on feed list screen from moving based on device orientation. </string>
 			</array>
 			<array>
