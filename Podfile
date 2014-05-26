@@ -22,7 +22,10 @@ pod 'MWFeedParser', '1.0.0'
 pod 'ADNActivityCollection', :podspec => 'Specs/ADNActivityCollection.podspec'
 pod 'ASPinboard', :local => 'Vendor/ASPinboard'
 pod 'OpenInChrome', '0.0.1'
-# pod 'BugshotKit', '0.1.0'
 pod 'CrashlyticsFramework', '2.1.7'
 pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
+
+target 'DebugPods', :exclusive => true do
+  pod 'BugshotKit', '0.1.0'
+end
