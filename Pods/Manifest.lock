@@ -21,6 +21,7 @@ PODS:
     - AFNetworking/NSURLSession
   - ASPinboard (0.0.2):
     - hpple (~> 0.2.0)
+  - BugshotKit (0.1.0)
   - CrashlyticsFramework (2.1.7)
   - FMDB (2.3):
     - FMDB/standard
@@ -61,6 +62,7 @@ DEPENDENCIES:
   - ADNActivityCollection (from `Specs/ADNActivityCollection.podspec`)
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
+  - BugshotKit (= 0.1.0)
   - CrashlyticsFramework (= 2.1.7)
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
@@ -105,6 +107,7 @@ SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
   ASPinboard: c8b89fe3af5a6cee4b03488a9ec56211a3654dbe
+  BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
   CrashlyticsFramework: 282bb8e99a2755cc984c361d520160d69522e636
   FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
   hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
