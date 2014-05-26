@@ -653,6 +653,7 @@ static BOOL kPinboardSyncInProgress = NO;
     [delicious bookmarkWithURL:url
                        success:^(NSDictionary *bookmark) {
                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+#warning XXX Check tags instead of "toread"
                               if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                   // Bookmark has already been marked as read on server.
                                   FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
@@ -665,8 +666,8 @@ static BOOL kPinboardSyncInProgress = NO;
                               }
                               
                               NSMutableDictionary *newBookmark = [NSMutableDictionary dictionaryWithDictionary:bookmark];
-                              newBookmark[@"toread"] = @"no";
                               newBookmark[@"url"] = newBookmark[@"href"];
+                              
                               [newBookmark removeObjectsForKeys:@[@"href", @"hash", @"meta", @"time"]];
                               [delicious addBookmark:newBookmark
                                              success:^{
