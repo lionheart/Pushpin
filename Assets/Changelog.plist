@@ -7,7 +7,15 @@
 		<array>
 			<array>
 				<string>FIX</string>
-				<string>Fix a crash when viewing Saved Feeds or Community Feeds.</string>
+				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Group similar tags (e.g., &apos;apple&apos;, &apos;Apple&apos;, and &apos;APPLE&apos;) together in the tag list.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent keyboard shortcuts from interfering with search when viewing bookmarks.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -15,7 +23,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Prevent keyboard shortcuts from interfering with search when viewing bookmarks.</string>
+				<string>Fix a crash when viewing Saved Feeds or Community Feeds.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -39,15 +47,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Group similar tags (e.g., &apos;apple&apos;, &apos;Apple&apos;, and &apos;APPLE&apos;) together in the tag list.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Fix issue where edits were not immediately reflected in the bookmark list when editing with the swipe gesture.</string>
+				<string>Fix issue where edits were not immediately reflected in the bookmark list after editing with the swipe gesture.</string>
 			</array>
 		</array>
 	</array>
