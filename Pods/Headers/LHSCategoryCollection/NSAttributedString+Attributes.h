@@ -1,1 +1,1 @@
-../../../Vendor/LHSCategoryCollection/Categories/NSAttributedString+Attributes.h
+../../LHSCategoryCollection/Categories/NSAttributedString+Attributes.h

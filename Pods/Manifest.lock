@@ -68,7 +68,7 @@ DEPENDENCIES:
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
-  - LHSCategoryCollection (from `Vendor/LHSCategoryCollection`)
+  - LHSCategoryCollection (= 0.0.11)
   - LHSDelicious (from `Vendor/LHSDelicious`)
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
@@ -92,8 +92,6 @@ EXTERNAL SOURCES:
     :local: Vendor/ASPinboard
   HTMLParser:
     :podspec: Specs/HTMLParser.podspec
-  LHSCategoryCollection:
-    :local: Vendor/LHSCategoryCollection
   LHSDelicious:
     :local: Vendor/LHSDelicious
   LHSDiigo:
@@ -115,7 +113,7 @@ SPEC CHECKSUMS:
   hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
-  LHSCategoryCollection: 8566f7ccdcee34c7ccef0a8a42a1e7595e10c728
+  LHSCategoryCollection: e95e1ec4e82108a0b34b86e2ea1364b3cc384c42
   LHSDelicious: eb01ed82e2002629c61fcec13e2769a4ef3cb5af
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f

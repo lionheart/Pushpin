@@ -1,1 +1,1 @@
-../../../Vendor/LHSCategoryCollection/Categories/UIFont+LHSAdditions.h
+../../LHSCategoryCollection/Categories/UIFont+LHSAdditions.h
