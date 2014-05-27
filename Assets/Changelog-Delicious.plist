@@ -7,7 +7,11 @@
 		<array>
 			<array>
 				<string>FIX</string>
-				<string>Fix issue where edits made to existing bookmarks would not succeed.</string>
+				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Group similar tags (e.g., &apos;apple&apos;, &apos;Apple&apos;, and &apos;APPLE&apos;) together in the tag list.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -23,6 +27,10 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Fix issue where edits made to existing bookmarks would not succeed.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix issue where bookmark edit prompt would always appear, regardless of settings, when an existing bookmark&apos;s URL was on the clipboard.</string>
 			</array>
 			<array>
@@ -35,15 +43,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Vastly improve responsiveness of description editor when TextExpander functionality has not been enabled.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Group similar tags (e.g., &apos;apple&apos;, &apos;Apple&apos;, and &apos;APPLE&apos;) together in the tag list.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Fix issue where edits were not immediately reflected in the bookmark list when editing with the swipe gesture.</string>
+				<string>Fix issue where edits were not immediately reflected in the bookmark list after editing with the swipe gesture.</string>
 			</array>
 		</array>
 	</array>
