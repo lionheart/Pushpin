@@ -122,6 +122,12 @@
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     dispatch_async(PPPinboardFeedReloadQueue(), ^{
+        
+        if (cancel && cancel()) {
+            completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+            return;
+        }
+
         NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
         [delegate setNetworkActivityIndicatorVisible:YES];
@@ -146,6 +152,11 @@
                                                [oldURLs addObject:post[@"url"]];
                                                oldURLsToIndexPaths[post[@"url"]] = [NSIndexPath indexPathForRow:row inSection:0];
                                                row++;
+                                           }
+
+                                           if (cancel && cancel()) {
+                                               completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                               return;
                                            }
 
                                            NSDate *date;
@@ -181,23 +192,30 @@
                                                row++;
                                            }
                                            
-                                           self.posts = newPosts;
+                                           
+                                           if (cancel && cancel()) {
+                                               completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                               return;
+                                           }
                                            
                                            [PPUtilities generateDiffForPrevious:oldPosts
                                                                         updated:newPosts
                                                                            hash:^NSString *(id obj) {
-                                                                               return obj[@"url"];
+                                                                               NSString *date = [[self feedDateFormatter] stringFromDate:obj[@"created_at"]];
+                                                                               return [NSString stringWithFormat:@"%@ %@", obj[@"url"], date];
                                                                            }
                                                                      completion:^(NSSet *inserted, NSSet *deleted) {
                                                                          NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                                                                          NSMutableArray *indexPathsToReload = [NSMutableArray array];
                                                                          NSMutableArray *indexPathsToDelete = [NSMutableArray array];
 
-                                                                         for (NSString *url in deleted) {
+                                                                         for (NSString *urlDate in deleted) {
+                                                                             NSString *url = [[urlDate componentsSeparatedByString:@" "] firstObject];
                                                                              [indexPathsToDelete addObject:oldURLsToIndexPaths[url]];
                                                                          }
                                                                          
-                                                                         for (NSString *url in inserted) {
+                                                                         for (NSString *urlDate in inserted) {
+                                                                             NSString *url = [[urlDate componentsSeparatedByString:@" "] firstObject];
                                                                              [indexPathsToInsert addObject:newURLsToIndexPaths[url]];
                                                                          }
                                                                          
@@ -212,10 +230,17 @@
                                                                              [newCompressedMetadata addObject:compressedMetadata];
                                                                          }
                                                                          
-                                                                         self.metadata = newMetadata;
-                                                                         self.compressedMetadata = newCompressedMetadata;
-                                                                         
-                                                                         completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                                                         if (cancel && cancel()) {
+                                                                             completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                                             return;
+                                                                         }
+                                                                         else {
+                                                                             self.posts = newPosts;
+                                                                             self.metadata = newMetadata;
+                                                                             self.compressedMetadata = newCompressedMetadata;
+                                                                             
+                                                                             completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                                                         }
                                                                      }];
                                        }
                                    });
