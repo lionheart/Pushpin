@@ -1231,7 +1231,6 @@ static BOOL kPinboardSyncInProgress = NO;
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             
             if (cancel && cancel()) {
-                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
@@ -1240,7 +1239,6 @@ static BOOL kPinboardSyncInProgress = NO;
             FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
             
             if (cancel && cancel()) {
-                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
                 [db close];
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
