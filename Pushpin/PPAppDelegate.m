@@ -705,25 +705,25 @@
 #ifdef DELICIOUS
     LHSDelicious *delicious = [LHSDelicious sharedInstance];
     [delicious setRequestCompletedCallback:^{
-        [self setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     }];
 
     [delicious setRequestStartedCallback:^{
-        [self setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
 #endif
 
 #ifdef PINBOARD
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
-        [self setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     }];
     [pinboard setRequestStartedCallback:^{
-        [self setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
 #endif
 
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
     BOOL isAuthenticated;
     
@@ -1476,28 +1476,13 @@
 
 #pragma mark - Helpers
 
-- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {
-    static NSInteger NumberOfCallsToSetVisible = 0;
-    if (setVisible) {
-        NumberOfCallsToSetVisible++;
-    }
-    else {
-        NumberOfCallsToSetVisible--;
-    }
-    
-    // Display the indicator as long as our static counter is > 0.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
-    });
-}
-
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
-    [self setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self setNetworkActivityIndicatorVisible:NO];
+                               [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                
                                NSString *description = @"";
                                NSString *title = @"";

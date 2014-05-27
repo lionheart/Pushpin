@@ -87,7 +87,6 @@
 
 - (void)openSettings;
 - (void)customizeUIElements;
-- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 - (void)promptUserToAddBookmark;
 - (void)logout;
 

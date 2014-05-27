@@ -358,7 +358,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
     if (![delegate feedToken]) {
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
             [delegate setFeedToken:feedToken];
             [self.tableView reloadData];
