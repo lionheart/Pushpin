@@ -15,6 +15,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <oauthconsumer/OAuthConsumer.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPReadLaterActivity ()
 
