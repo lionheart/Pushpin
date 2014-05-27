@@ -333,7 +333,7 @@
                 return;
             }
             
-            MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
@@ -635,7 +635,7 @@
 
     [self customizeUIElements];
 
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstanceWithToken:PPMixpanelToken];
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     
     if ([UIApplication isIPad]) {
         [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPadToken];
@@ -1547,7 +1547,7 @@
             }
 
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-            [[MixpanelProxy sharedInstance] track:@"Decided to add bookmark from clipboard"];
+            [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1569,7 +1569,7 @@
             }
             
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-            [[MixpanelProxy sharedInstance] track:@"Decided to edit bookmark from clipboard"];
+            [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

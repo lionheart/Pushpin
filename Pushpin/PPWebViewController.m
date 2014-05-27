@@ -532,7 +532,7 @@ static NSInteger kTitleHeight = 40;
                                        if (httpResponse.statusCode == 200) {
                                            notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                        }
                                        else if (httpResponse.statusCode == 1221) {
                                            notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
@@ -571,7 +571,7 @@ static NSInteger kTitleHeight = 40;
                                        if (httpResponse.statusCode == 202) {
                                            notification.alertBody = @"Sent to Readability.";
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                        }
                                        else if (httpResponse.statusCode == 409) {
                                            notification.alertBody = @"Link already sent to Readability.";
@@ -596,7 +596,7 @@ static NSInteger kTitleHeight = 40;
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                            
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                        }
                                    }];
             break;
@@ -619,7 +619,7 @@ static NSInteger kTitleHeight = 40;
                 notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             }
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
+            [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
             break;
         }
             
@@ -705,7 +705,7 @@ static NSInteger kTitleHeight = 40;
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
     [[UIPasteboard generalPasteboard] setString:[self.mobilizerUtility originalURLStringForURL:url]];
-    [[MixpanelProxy sharedInstance] track:@"Copied URL"];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
