@@ -131,11 +131,11 @@
                 [request setParameters:parameters];
                 [request prepare];
                 
-                [delegate setNetworkActivityIndicatorVisible:YES];
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
                 [NSURLConnection sendAsynchronousRequest:request
                                                    queue:[NSOperationQueue mainQueue]
                                        completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                           [delegate setNetworkActivityIndicatorVisible:NO];
+                                           [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                            
                                            UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -182,11 +182,11 @@
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]]];
             [request prepare];
 
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
 

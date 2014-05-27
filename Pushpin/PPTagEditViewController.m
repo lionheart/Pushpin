@@ -520,7 +520,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleTagSuggestions {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (!self.filteredPopularAndRecommendedTagsVisible) {
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
             
             NSInteger previousCount;
             if (self.filteredPopularAndRecommendedTagsVisible) {

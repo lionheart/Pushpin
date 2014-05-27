@@ -277,12 +277,12 @@ static BOOL kPinboardSyncInProgress = NO;
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
         NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [delegate setNetworkActivityIndicatorVisible:NO];
+                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    if (error) {
                                        completion(error);
                                    }

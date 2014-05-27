@@ -375,11 +375,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [request prepare];
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                                      [delegate setNetworkActivityIndicatorVisible:NO];
+                                                                      [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
@@ -439,11 +439,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
-        [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
 
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {

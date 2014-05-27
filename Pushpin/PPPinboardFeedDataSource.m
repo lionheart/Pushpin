@@ -130,11 +130,11 @@
 
         NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [delegate setNetworkActivityIndicatorVisible:NO];
+                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    
                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                        if (!error) {

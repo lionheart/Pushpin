@@ -1291,11 +1291,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:parameters];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1330,11 +1330,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
                                        

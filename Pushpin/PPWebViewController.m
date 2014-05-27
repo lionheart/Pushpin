@@ -520,11 +520,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:parameters];
             [request prepare];
             
-            [delegate setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -559,11 +559,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:tempUrl]]];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
                                        
@@ -910,14 +910,14 @@ static NSInteger kTitleHeight = 40;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     self.numberOfRequestsCompleted++;
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
     [self enableOrDisableButtons];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsCompleted++;
     
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
     [self enableOrDisableButtons];
 
     // Only run the following when this is an actual web URL.
@@ -971,7 +971,7 @@ static NSInteger kTitleHeight = 40;
     [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
     self.numberOfRequests++;
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [self enableOrDisableButtons];
 }
 
