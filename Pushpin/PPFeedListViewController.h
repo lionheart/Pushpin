@@ -12,7 +12,7 @@
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"
 #import "PPPinboardDataSource.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 
 typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
     FeedListToolbarOrientationRight,

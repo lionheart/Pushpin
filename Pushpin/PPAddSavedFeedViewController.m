@@ -9,7 +9,7 @@
 @import QuartzCore;
 
 #import "PPAddSavedFeedViewController.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPTheme.h"
 
 #import "NSString+URLEncoding2.h"
@@ -178,7 +178,7 @@ static NSString *CellIdentifier = @"Cell";
         self.navigationItem.rightBarButtonItem.enabled = NO;
         self.tagsTextField.enabled = NO;
         self.userTextField.enabled = NO;
-        PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+        PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
         [dataSource addDataSource:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.parentViewController dismissViewControllerAnimated:YES completion:^{
