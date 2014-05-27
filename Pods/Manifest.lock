@@ -38,6 +38,7 @@ PODS:
   - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
   - LHSKeyboardAdjusting (0.0.1)
+  - Mixpanel (2.3.6)
   - MWFeedParser (1.0.0):
     - MWFeedParser/FeedParser
     - MWFeedParser/NSDate+InternetDateTime
@@ -72,6 +73,7 @@ DEPENDENCIES:
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
   - LHSKeyboardAdjusting (= 0.0.1)
+  - Mixpanel (= 2.3.6)
   - MWFeedParser (= 1.0.0)
   - oauthconsumer (from `Specs/oauthconsumer.podspec`)
   - OpenInChrome (= 0.0.1)
@@ -118,6 +120,7 @@ SPEC CHECKSUMS:
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
   LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
+  Mixpanel: 9aba38257fc4d2777ab5db1afc55e22bdfd57a4a
   MWFeedParser: 682e244ee30ad1f016e920c03fe1321d27206990
   oauthconsumer: c1ccfa4eb54e2473ae375dee1293456804ad9bdc
   OpenInChrome: b7c73ddf8fe0a1788dc0549c3c4c70e3c84da578
