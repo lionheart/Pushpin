@@ -13,7 +13,7 @@
 #import "PPAppDelegate.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPSettingsViewController.h"
 #import "PPTagViewController.h"
 #import "PPPinboardNotesDataSource.h"
@@ -512,7 +512,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *feed = self.feeds[indexPath.row];
-    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+    PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
     [dataSource removeDataSource:^{
         [self.feeds removeObjectAtIndex:indexPath.row];
 
@@ -947,7 +947,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 break;
             }
             case PPPinboardSectionCommunity: {
-                PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+                PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
                 postViewController.postDataSource = feedDataSource;
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
@@ -1003,7 +1003,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
                 
             case PPPinboardSectionSavedFeeds: {
-                viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+                viewControllerToPush = [PPPinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
                 break;
             }
         }

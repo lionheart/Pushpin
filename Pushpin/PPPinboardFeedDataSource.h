@@ -21,7 +21,7 @@ static dispatch_queue_t PPPinboardFeedReloadQueue () {
     return queue;
 }
 
-@interface PinboardFeedDataSource : NSObject <PPDataSource>
+@interface PPPinboardFeedDataSource : NSObject <PPDataSource>
 
 @property (nonatomic, strong) NSMutableArray *posts;
 @property (nonatomic, strong) NSArray *components;
@@ -34,7 +34,7 @@ static dispatch_queue_t PPPinboardFeedReloadQueue () {
 
 - (NSURL *)url;
 - (id)initWithComponents:(NSArray *)components;
-+ (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
++ (PPPinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components;
 + (PPGenericPostViewController *)postViewControllerWithComponents:(NSArray *)components;
 
 - (NSAttributedString *)trimTrailingPunctuationFromAttributedString:(NSAttributedString *)string trimmedLength:(NSUInteger *)trimmed;

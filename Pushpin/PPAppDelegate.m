@@ -19,7 +19,7 @@
 #import "PPAddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
@@ -192,7 +192,7 @@
             }
         }
 
-        PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+        PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:components];
         postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
@@ -532,7 +532,7 @@
         }
         else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
             feedDetails = [self.defaultFeed substringFromIndex:10];
-            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+            PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
             PPPinboardCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
@@ -572,7 +572,7 @@
         else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
             feedDetails = [self.defaultFeed substringFromIndex:6];
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
-            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+            PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
         }
 

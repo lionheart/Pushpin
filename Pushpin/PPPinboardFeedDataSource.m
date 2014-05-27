@@ -6,7 +6,7 @@
 //
 //
 
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPAppDelegate.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPBadgeView.h"
@@ -26,7 +26,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <MWFeedParser/NSString+HTML.h>
 
-@interface PinboardFeedDataSource ()
+@interface PPPinboardFeedDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 
@@ -35,7 +35,7 @@
 
 @end
 
-@implementation PinboardFeedDataSource
+@implementation PPPinboardFeedDataSource
 
 - (id)initWithComponents:(NSArray *)components {
     self = [super init];
@@ -72,8 +72,8 @@
     return self;
 }
 
-+ (PinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components {
-    return [[PinboardFeedDataSource alloc] initWithComponents:components];
++ (PPPinboardFeedDataSource *)dataSourceWithComponents:(NSArray *)components {
+    return [[PPPinboardFeedDataSource alloc] initWithComponents:components];
 }
 
 #pragma mark - Delegate Methods
@@ -358,7 +358,7 @@
 
         if (shouldPush) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
+                PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:components];
                 callback(postViewController);
             });
         }
@@ -367,7 +367,7 @@
 
 + (PPGenericPostViewController *)postViewControllerWithComponents:(NSArray *)components {
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
-    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+    PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
     
     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
     [db open];
