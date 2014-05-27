@@ -45,6 +45,10 @@
 				<string>FIX</string>
 				<string>Fix issue where edits were not immediately reflected in the bookmark list after editing with the swipe gesture.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where TextExpander snippets would not sync appropriately.</string>
+			</array>
 		</array>
 	</array>
 	<array>
