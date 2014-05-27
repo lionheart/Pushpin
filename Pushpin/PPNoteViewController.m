@@ -28,7 +28,7 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
         self.notes = notes;
@@ -48,7 +48,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     [mixpanel track:@"Opened notes"];
 }
 
@@ -85,7 +85,7 @@ static NSString *CellIdentifier = @"Cell";
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
 
     if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
         return;

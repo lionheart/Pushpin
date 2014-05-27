@@ -211,31 +211,31 @@ static NSString *CellIdentifier = @"Cell";
             NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             if ([title isEqualToString:@"Webview"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Webview"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
                 delegate.browser = PPBrowserWebview;
             }
             else if ([title isEqualToString:@"Safari"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Safari"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
                 delegate.browser = PPBrowserSafari;
             }
             else if ([title isEqualToString:@"Chrome"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Chrome"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
                 delegate.browser = PPBrowserChrome;
             }
             else if ([title isEqualToString:@"iCab Mobile"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
                 delegate.browser = PPBrowseriCabMobile;
             }
             else if ([title isEqualToString:@"Dolphin"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Dolphin"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
                 delegate.browser = PPBrowserDolphin;
             }
             else if ([title isEqualToString:@"Cyberspace"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
                 delegate.browser = PPBrowserCyberspace;
             }
             else if ([title isEqualToString:@"Opera"]) {
-                [[[MixpanelProxy sharedInstance] people] set:@"Browser" to:@"Opera"];
+                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
                 delegate.browser = PPBrowserOpera;
             }
             

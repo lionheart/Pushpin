@@ -803,7 +803,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
     UIViewController *viewControllerToPush;

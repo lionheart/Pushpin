@@ -126,7 +126,7 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     [mixpanel track:@"Opened tags"];
 }
 

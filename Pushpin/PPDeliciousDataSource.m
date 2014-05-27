@@ -219,7 +219,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
     // Dispatch serially to ensure that no two syncs happen simultaneously.
     dispatch_async(PPBookmarkUpdateQueue(), ^{
-        MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
         LHSDelicious *delicious = [LHSDelicious sharedInstance];
         
         void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
@@ -355,7 +355,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                     if (!dateError && !date) {
                         date = [NSDate dateWithTimeIntervalSince1970:0];
-                        [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                        [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                         dateError = YES;
                     }
                     
@@ -448,7 +448,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             progress(total, total);
             
-            [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
+            [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
             completion(nil);
         };
 
@@ -716,7 +716,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db commit];
             [db close];
             
-            [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
+            [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
             
             [self.posts removeObjectAtIndex:indexPath.row];
             
@@ -771,7 +771,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [db commit];
                 [db close];
                 
-                [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
+                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                 
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];

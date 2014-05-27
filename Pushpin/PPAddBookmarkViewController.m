@@ -668,7 +668,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [alert show];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                Mixpanel *mixpanel = [Mixpanel sharedInstance];
                 [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
             });
             return;
@@ -698,7 +698,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             void (^BookmarkSuccessBlock)() = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
                     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     BOOL bookmarkAdded;
                     
