@@ -10,6 +10,3 @@
 [submodule "Vendor/LHSDelicious"]
 	path = Vendor/LHSDelicious
 	url = git@github.com:lionheart/LHSDelicious
-[submodule "Vendor/LHSCategoryCollection"]
-	path = Vendor/LHSCategoryCollection
-	url = git@github.com:lionheart/LHSCategoryCollection
