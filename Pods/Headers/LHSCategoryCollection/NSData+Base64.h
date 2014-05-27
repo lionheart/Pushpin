@@ -1,1 +1,1 @@
-../../../Vendor/LHSCategoryCollection/Categories/NSData+Base64.h
+../../LHSCategoryCollection/Categories/NSData+Base64.h
