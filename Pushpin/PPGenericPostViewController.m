@@ -1814,13 +1814,25 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
+                                    forPost:(NSDictionary *)post
+                                  indexPath:(NSIndexPath *)indexPath {
     self.selectedPost = post;
+    self.selectedIndexPath = indexPath;
     [self showConfirmDeletionAlert];
 }
 
-- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
-    UIViewController *vc = (UIViewController *)[PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
+                                  forPost:(NSDictionary *)post
+                                indexPath:(NSIndexPath *)indexPath {
+    self.selectedIndexPath = indexPath;
+    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        });
+    }];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1948,7 +1960,8 @@ static NSInteger kToolbarHeight = 44;
             [self handleCellTap];
         }
         else if (keyCommand == self.editKeyCommand) {
-            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
+                                                                                                       callback:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];

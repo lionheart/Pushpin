@@ -16,8 +16,12 @@
 
 @protocol PPBookmarkCellDelegate <NSObject>
 
-- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post;
-- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post;
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
+                                    forPost:(NSDictionary *)post
+                                  indexPath:(NSIndexPath *)indexPath;
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
+                                  forPost:(NSDictionary *)post
+                                indexPath:(NSIndexPath *)indexPath;
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell;
 
 @end
