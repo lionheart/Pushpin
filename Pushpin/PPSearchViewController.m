@@ -63,7 +63,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     [super viewDidLoad];
     
     PPTitleButton *button = [PPTitleButton button];
-    [button setTitle:@"Advanced Search" imageName:nil];
+    [button setTitle:NSLocalizedString(@"Advanced Search", nil) imageName:nil];
     self.navigationItem.titleView = button;
 
     if ([UIApplication isIPad]) {
