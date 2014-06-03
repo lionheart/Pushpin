@@ -222,7 +222,7 @@ static BOOL kPinboardSyncInProgress = NO;
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         LHSDelicious *delicious = [LHSDelicious sharedInstance];
         
-        void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
+        void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
             DLog(@"%@ - Received data", [NSDate date]);
             NSDate *startDate = [NSDate date];
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
@@ -241,10 +241,8 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             
             // Offsets from the full data set
-            NSUInteger offset = 0;
-            NSUInteger count = 0;
-            offset = ([constraints[@"start"] isEqual:[NSNull null]]) ? 0 : [(NSString *)constraints[@"start"] intValue];
-            count = ([constraints[@"results"] isEqual:[NSNull null]]) ? 0 : [(NSString *)constraints[@"results"] intValue];
+            NSUInteger offset = -1;
+            NSUInteger count = -1;
             
             // Create an NSSet of the local data for filtering
             NSMutableArray *localHashTable = [NSMutableArray array];
@@ -472,14 +470,16 @@ static BOOL kPinboardSyncInProgress = NO;
                                            fromDate:nil
                                              toDate:nil
                                         includeMeta:YES
-                                            success:^(NSArray *bookmarks, NSDictionary *parameters) {
-                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    BookmarksSuccessBlock(bookmarks, parameters);
-                                                });
-                                            }
-                                            failure:^(NSError *error) {
-                                                BookmarksFailureBlock(error);
-                                            }];
+                                         completion:^(NSArray *bookmarks, NSError *error) {
+                                             if (error) {
+                                                 BookmarksFailureBlock(error);
+                                             }
+                                             else {
+                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                     BookmarksSuccessBlock(bookmarks);
+                                                 });
+                                             }
+                                         }];
                     });
                 }
                 else {
@@ -490,7 +490,14 @@ static BOOL kPinboardSyncInProgress = NO;
         };
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [delicious lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:completion];
+            [delicious lastUpdateWithCompletion:^(NSDate *date, NSError *error) {
+                if (error) {
+                    completion(error);
+                }
+                else {
+                    BookmarksUpdatedTimeSuccessBlock(date);
+                }
+            }];
         });
     });
 }
@@ -651,44 +658,48 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
     LHSDelicious *delicious = [LHSDelicious sharedInstance];
     [delicious bookmarkWithURL:url
-                       success:^(NSDictionary *bookmark) {
-                          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    completion:^(NSDictionary *bookmark, NSError *error) {
+                        if (error) {
+                            if (error.code == DeliciousErrorBookmarkNotFound) {
+                                callback(error);
+                            }
+                        }
+                        else {
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 #warning XXX Check tags instead of "toread"
-                              if ([bookmark[@"toread"] isEqualToString:@"no"]) {
-                                  // Bookmark has already been marked as read on server.
-                                  FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                                  [db open];
-                                  [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                  [db close];
-                                  
-                                  callback(nil);
-                                  return;
-                              }
-                              
-                              NSMutableDictionary *newBookmark = [NSMutableDictionary dictionaryWithDictionary:bookmark];
-                              newBookmark[@"url"] = newBookmark[@"href"];
-                              
-                              [newBookmark removeObjectsForKeys:@[@"href", @"hash", @"meta", @"time"]];
-                              [delicious addBookmark:newBookmark
-                                             success:^{
-                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                                                     [db open];
-                                                     [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                     [db close];
-                                                     callback(nil);
-                                                 });
-                                             }
-                                             failure:^(NSError *error) {
-                                                 callback(error);
-                                             }];
+                                if ([bookmark[@"toread"] isEqualToString:@"no"]) {
+                                    // Bookmark has already been marked as read on server.
+                                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
+                                    [db open];
+                                    [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                    [db close];
+                                    
+                                    callback(nil);
+                                    return;
+                                }
+                                
+                                NSMutableDictionary *newBookmark = [NSMutableDictionary dictionaryWithDictionary:bookmark];
+                                newBookmark[@"url"] = newBookmark[@"href"];
+                                
+                                [newBookmark removeObjectsForKeys:@[@"href", @"hash", @"meta", @"time"]];
+                                [delicious addBookmark:newBookmark
+                                            completion:^(NSError *error) {
+                                                if (error) {
+                                                    callback(error);
+                                                }
+                                                else {
+                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
+                                                        [db open];
+                                                        [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                        [db close];
+                                                        callback(nil);
+                                                    });
+                                                }
+                                            }];
                             });
-                       }
-                       failure:^(NSError *error) {
-                           if (error.code == DeliciousErrorBookmarkNotFound) {
-                               callback(error);
-                           }
-                       }];
+                        }
+                    }];
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
@@ -730,7 +741,15 @@ static BOOL kPinboardSyncInProgress = NO;
         };
 
         dispatch_group_enter(group);
-        [delicious deleteBookmarkWithURL:url success:SuccessBlock failure:ErrorBlock];
+        [delicious deleteBookmarkWithURL:url
+                              completion:^(NSError *error) {
+                                  if (error) {
+                                      ErrorBlock(error);
+                                  }
+                                  else {
+                                      SuccessBlock();
+                                  }
+                              }];
     }
     
     dispatch_group_notify(group, queue, ^{
@@ -787,7 +806,15 @@ static BOOL kPinboardSyncInProgress = NO;
             callback(nil);
         };
         
-        [delicious deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
+        [delicious deleteBookmarkWithURL:post[@"url"]
+                              completion:^(NSError *error) {
+                                  if (error) {
+                                      ErrorBlock(error);
+                                  }
+                                  else {
+                                      SuccessBlock();
+                                  }
+                              }];
     }
 
     dispatch_group_notify(group, queue, ^{
