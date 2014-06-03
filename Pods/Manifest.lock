@@ -32,7 +32,7 @@ PODS:
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.11)
-  - LHSDelicious (0.0.1):
+  - LHSDelicious (0.1.0):
     - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
   - LHSDiigo (0.0.1)
@@ -114,7 +114,7 @@ SPEC CHECKSUMS:
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
   LHSCategoryCollection: e95e1ec4e82108a0b34b86e2ea1364b3cc384c42
-  LHSDelicious: eb01ed82e2002629c61fcec13e2769a4ef3cb5af
+  LHSDelicious: 3f31c2b51e951ac5e4e04e86e913f0439f45e708
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
   LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
@@ -131,4 +131,4 @@ SPEC CHECKSUMS:
   uservoice-iphone-sdk: e3229dadb3a834d7535bfc4b24d268a9bbb03547
   XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.32.1
