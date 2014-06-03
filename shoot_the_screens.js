@@ -26,10 +26,10 @@
 // Now, we simply drive the application! For more information, check out my
 // resources on UI Automation at http://cocoamanifest.net/features
 var target = UIATarget.localTarget();
-
+target.delay(1.0);
 captureLocalizedScreenshot("screen1");
 
 target.frontMostApp().navigationBar().leftButton().tap();
-
+target.delay(1.0);
 captureLocalizedScreenshot("screen2");
 
