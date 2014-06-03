@@ -104,13 +104,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil), NSLocalizedString(@"Clear", nil), nil];
     self.isPrivateActionSheet.destructiveButtonIndex = 2;
     
-    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil), NSLocalizedString(@"Clear", nil), nil];
+    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil), NSLocalizedString(@"Clear", nil), nil];
     self.starredActionSheet.destructiveButtonIndex = 2;
 
-    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Clear", nil), nil];
+    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Clear", nil), nil];
     self.unreadActionSheet.destructiveButtonIndex = 2;
 
-    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil), NSLocalizedString(@"Clear", nil), nil];
+    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil), NSLocalizedString(@"Clear", nil), nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
     
     self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
@@ -492,7 +492,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                             message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
                                                            delegate:nil
                                                   cancelButtonTitle:nil
-                                                  otherButtonTitles:@"OK", nil] show];
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                             }
                             else {
                                 self.pinboardSearchScope = ASPinboardSearchScopeMine;
