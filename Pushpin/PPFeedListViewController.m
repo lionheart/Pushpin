@@ -156,7 +156,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags" , nil) style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil) style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
