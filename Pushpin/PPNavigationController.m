@@ -95,7 +95,7 @@
     }
     else {
         if ([[viewController class] isEqual:[PPFeedListViewController class]]) {
-            backButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Browse",nil) style:UIBarButtonItemStylePlain target:nil action:nil];
+            backButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Browse", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
         }
         else {
             backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStylePlain target:nil action:nil];
