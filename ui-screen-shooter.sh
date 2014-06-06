@@ -32,14 +32,14 @@ ui_script="$2"
 # connect upload tool
 # FYI: get the locale names for you existing app with iTMSTransporter and: 
 # grep locale ~/Desktop/*.itmsp/metadata.xml  | grep name | sort -u
-languages="en-US fr"
-
+#languages="en-US fr"
+languages="en-US fr de pt it bp zh_CN es"
 # The simulators we want to run the script against, declared as a Bash array.
 # Run `instruments -w help` to get a list of all the possible string values.
 declare -a simulators=(
-"iPhone Retina (3.5-inch) - Simulator - iOS 7.1"
+#"iPhone Retina (3.5-inch) - Simulator - iOS 7.1"
 "iPhone Retina (4-inch) - Simulator - iOS 7.1"
-"iPad Retina - Simulator - iOS 7.1"
+#"iPad Retina - Simulator - iOS 7.1"
 )
 
 function main {
@@ -166,6 +166,10 @@ function _run_automation {
     "$@"
 
   find $trace_results_dir/Run\ 1/ -name *landscape*png -type f -exec sips -r -90 \{\} \;
+killall -s "iPhone Simulator" &> /dev/null
+if [ $? -eq 0 ]; then
+killall -m -KILL "iPhone Simulator"
+fi
 }
 
 function _copy_screenshots {
