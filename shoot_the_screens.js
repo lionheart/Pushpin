@@ -25,11 +25,74 @@
 
 // Now, we simply drive the application! For more information, check out my
 // resources on UI Automation at http://cocoamanifest.net/features
+
+UIATarget.onAlert = function onAlert(alert){
+    
+    if (alert.name() != "Resetting stored URL list" && alert.name() != "Success" ){
+        target.frontMostApp().alert().cancelButton().tap();
+        captureLocalizedScreenshot("screen1");
+        
+    }
+    else {
+        
+        return false;
+    }
+    
+}
+
 var target = UIATarget.localTarget();
+
+target.delay(1.5);
+
+//capture
+
+
+
+//
+
+
+var searchBar = target.frontMostApp().mainWindow().tableViews()[0].elements()["Search Bar"];
+searchBar.tap();
+searchBar.setValue('Py');
+target.frontMostApp().mainWindow().elements()["Search Bar"].tapWithOptions({tapOffset:{x:0.72, y:0.80}});
+target.delay(0.5);
+//capture
+captureLocalizedScreenshot("screen2");
+target.frontMostApp().mainWindow().elements()["Search Bar"].tapWithOptions({tapOffset:{x:0.90, y:0.27}});
+
+
+target.frontMostApp().mainWindow().tap();
+target.delay(3.0);
+//capture
+captureLocalizedScreenshot("screen3");
+target.frontMostApp().mainWindow().buttons()["back icon"].tap();
+
+
+target.frontMostApp().mainWindow().touchAndHold(1.1);
+target.frontMostApp().actionSheet().buttons()[1].tap();
+target.frontMostApp().mainWindow().tableViews()[0].cells()[2].tap();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].tapWithOptions({tapOffset:{x:0.30, y:0.36}});
+target.frontMostApp().keyboard().typeString("app");
 target.delay(1.0);
-captureLocalizedScreenshot("screen1");
+//capture
+captureLocalizedScreenshot("screen4");
+target.frontMostApp().navigationBar().leftButton().tap();
+target.frontMostApp().navigationBar().leftButton().tap();
 
 target.frontMostApp().navigationBar().leftButton().tap();
 target.delay(1.0);
-captureLocalizedScreenshot("screen2");
+//capture
+captureLocalizedScreenshot("screen5");
+
+target.frontMostApp().navigationBar().leftButton().tap();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].cells()["Advanced Settings"].tap();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].cells()[2].scrollToVisible();
+target.frontMostApp().mainWindow().tableViews()[0].cells()["Advanced Settings"].tap();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].cells()["Always show add prompt, Always show the add bookmark prompt, even for URLs that Pushpin has seen before."].scrollToVisible();
+target.frontMostApp().mainWindow().tableViews()[0].cells()["Reset URL"].scrollToVisible();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].cells()["Reset the list of stored URLs, Resets the list of URLs that you've decided not to add from the clipboard."].scrollToVisible();
+target.frontMostApp().mainWindow().tableViews()[0].cells()["Reset URL"].tap();
+//target.frontMostApp().mainWindow().tableViews()["Empty list"].cells()["Reset the list of stored URLs, Resets the list of URLs that you've decided not to add from the clipboard."].tap();
+target.delay(3.0);
+
 
