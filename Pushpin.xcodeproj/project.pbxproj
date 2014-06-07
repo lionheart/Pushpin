@@ -3622,7 +3622,6 @@
 					"$(inherited)",
 					"DEBUG=1",
 					"PINBOARD=1",
-					"TOKEN_OVERRIDE=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
