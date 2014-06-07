@@ -134,13 +134,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-        if (section == 0) {
-            return 0;
-        }
-        else {
-            NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
-            return [(NSMutableArray *)self.sectionTitles[key] count];
-        }
+        NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
+        return [(NSMutableArray *)self.sectionTitles[key] count];
     }
     else {
         return [self.filteredTags count];
@@ -177,7 +172,7 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView && !self.searchDisplayController.active && section > 0) {
+    if (tableView == self.tableView && !self.searchDisplayController.active) {
         return [self sortedSectionTitles:self.sectionTitles][section];
     }
     return nil;
