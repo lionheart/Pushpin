@@ -8,4 +8,6 @@ When an issue is addressed, remove the "queued" tag and add "needs changelog men
 
 If an issue is a duplicate, move the issue to the milestone where the original issue lives, label it "duplicate", but do NOT close it. Write the issue it duplicates in parenthesis. E.g., "Crash when viewing saved feeds (duplicate of #123)" where #123 is the original issue.
 
+After an issue has been fixed, close it and all of its duplicates. Add any support feeds or Tweets that need to be addressed to the root issue.
+
 Use the "pinboard" or "delicious" labels if a bug or enhancement only relates to Pinboard or Delicious.
