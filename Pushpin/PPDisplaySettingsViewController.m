@@ -450,8 +450,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                         [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil
-                                                                                                             )
+                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                    message:NSLocalizedString(@"The URL list was cleared.", nil)
                                                                                   delegate:nil
                                                                          cancelButtonTitle:nil
