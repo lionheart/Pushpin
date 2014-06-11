@@ -40,12 +40,17 @@ typedef enum : NSInteger {
     PPOtherDisplayClearCache
 } PPOtherDisplaySettingsRowType;
 
+typedef NS_ENUM(NSInteger, PPTextExpanderRowType) {
+    PPTextExpanderRowSwitch,
+    PPTextExpanderRowUpdate,
+};
+
 enum : NSInteger {
     PPRowCountBrowse = PPBrowseDefaultFeedRow + 1,
     PPRowCountDisplaySettings = PPEditAutoMarkAsReadRow + 1,
     PPRowCountOtherSettings = PPOtherDisplayClearCache + 1
 };
 
-@interface PPDisplaySettingsViewController : PPTableViewController
+@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate>
 
 @end
