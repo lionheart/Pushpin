@@ -13,6 +13,10 @@
 				<string>FIX</string>
 				<string>Fix a crash when viewing saved feeds containing links with spaces in the URL.</string>
 			</array>
+			<array>
+				<string>FIX</string>
+				<string>TextExpander integration can now be disabled.</string>
+			</array>
 		</array>
 	</array>
 	<array>
