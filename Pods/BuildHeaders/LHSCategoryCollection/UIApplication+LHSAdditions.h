@@ -1,1 +1,1 @@
-../../../Vendor/LHSCategoryCollection/Categories/UIApplication+LHSAdditions.h
+../../LHSCategoryCollection/Categories/UIApplication+LHSAdditions.h

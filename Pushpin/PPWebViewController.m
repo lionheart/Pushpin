@@ -509,12 +509,10 @@ static NSInteger kTitleHeight = 40;
     
     switch (service) {
         case PPReadLaterInstapaper: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+            OAToken *token = delegate.instapaperToken;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
@@ -522,11 +520,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:parameters];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -534,7 +532,7 @@ static NSInteger kTitleHeight = 40;
                                        if (httpResponse.statusCode == 200) {
                                            notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                        }
                                        else if (httpResponse.statusCode == 1221) {
                                            notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
@@ -561,11 +559,11 @@ static NSInteger kTitleHeight = 40;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:tempUrl]]];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
                                        
@@ -573,7 +571,7 @@ static NSInteger kTitleHeight = 40;
                                        if (httpResponse.statusCode == 202) {
                                            notification.alertBody = @"Sent to Readability.";
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                        }
                                        else if (httpResponse.statusCode == 409) {
                                            notification.alertBody = @"Link already sent to Readability.";
@@ -598,7 +596,7 @@ static NSInteger kTitleHeight = 40;
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                            
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                        }
                                    }];
             break;
@@ -621,7 +619,7 @@ static NSInteger kTitleHeight = 40;
                 notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
             }
             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
+            [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
             break;
         }
             
@@ -707,7 +705,7 @@ static NSInteger kTitleHeight = 40;
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
     [[UIPasteboard generalPasteboard] setString:[self.mobilizerUtility originalURLStringForURL:url]];
-    [[MixpanelProxy sharedInstance] track:@"Copied URL"];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
@@ -912,14 +910,14 @@ static NSInteger kTitleHeight = 40;
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     self.numberOfRequestsCompleted++;
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
     [self enableOrDisableButtons];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.numberOfRequestsCompleted++;
     
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
     [self enableOrDisableButtons];
 
     // Only run the following when this is an actual web URL.
@@ -973,7 +971,7 @@ static NSInteger kTitleHeight = 40;
     [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
     self.numberOfRequests++;
-    [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [self enableOrDisableButtons];
 }
 

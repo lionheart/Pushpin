@@ -21,7 +21,7 @@
 #import "UITableView+Additions.h"
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPConstants.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -181,7 +181,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
     [results next];
-    NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+    NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
     [db close];
     
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
@@ -668,7 +668,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [alert show];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                Mixpanel *mixpanel = [Mixpanel sharedInstance];
                 [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
             });
             return;
@@ -698,7 +698,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             void (^BookmarkSuccessBlock)() = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
                     FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
                     BOOL bookmarkAdded;
                     
@@ -783,7 +783,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #ifdef PINBOARD
                     FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
                     [resultSet next];
-                    NSDictionary *post = [PinboardDataSource postFromResultSet:resultSet];
+                    NSDictionary *post = [PPPinboardDataSource postFromResultSet:resultSet];
 #endif
                     [db close];
                     
@@ -832,14 +832,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #ifdef DELICIOUS 
             dispatch_async(dispatch_get_main_queue(), ^{
                 LHSDelicious *delicious = [LHSDelicious sharedInstance];
-
                 [delicious addBookmarkWithURL:url
                                         title:title
                                   description:description
                                          tags:tags
                                        shared:!private
-                                      success:BookmarkSuccessBlock
-                                      failure:BookmarkFailureBlock];
+                                   completion:^(NSError *error) {
+                                       if (error) {
+                                           BookmarkFailureBlock(error);
+                                       }
+                                       else {
+                                           BookmarkSuccessBlock();
+                                       }
+                                   }];
             });
 #endif
 

@@ -126,7 +126,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     self.heights = [heights mutableCopy];
     
-    [[MixpanelProxy sharedInstance] track:@"Opened about page"];
+    [[Mixpanel sharedInstance] track:@"Opened about page"];
     [self.tableView reloadData];
 }
 

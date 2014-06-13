@@ -80,11 +80,11 @@
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     
-    [delegate setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [pinboard noteWithId:self.posts[index][@"id"]
                  success:^(NSString *title, NSString *text) {
                      license.text = text;
-                     [delegate setNetworkActivityIndicatorVisible:NO];
+                     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
     }];
 
     license.title = self.posts[index][@"title"];
@@ -106,9 +106,9 @@
     }
     
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-    [delegate setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
-        [delegate setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];

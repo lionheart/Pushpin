@@ -11,7 +11,7 @@
 #import "PPSavedFeedsViewController.h"
 #import "PPAppDelegate.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
@@ -125,7 +125,7 @@ static NSString *CellIdentifier = @"Cell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (self.feeds.count > 0) {
-        PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+        PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
         [[PPAppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
     }
 }
@@ -140,7 +140,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *feed = self.feeds[indexPath.row];
-    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+    PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
     [dataSource removeDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView beginUpdates];

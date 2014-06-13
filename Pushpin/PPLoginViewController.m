@@ -9,13 +9,13 @@
 #import "PPLoginViewController.h"
 @import QuartzCore;
 #import "PPAppDelegate.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPFeedListViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "ASStyleSheet.h"
 #import "PPTableViewTitleView.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
@@ -218,10 +218,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         case PinboardErrorInvalidCredentials: {
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Authentication Error", nil) message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                             [alert show];
-                            [[MixpanelProxy sharedInstance] track:@"Failed to log in"];
+                            [[Mixpanel sharedInstance] track:@"Failed to log in"];
                             break;
                         }
-                            
+
                         case PinboardErrorTimeout: {
 #ifdef DELICIOUS
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
@@ -231,7 +231,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
 #endif
                             [alert show];
-                            [[MixpanelProxy sharedInstance] track:@"Cancelled log in"];
+                            [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                             break;
                         }
                     }
@@ -275,7 +275,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     }
                 });
 
-                MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+                Mixpanel *mixpanel = [Mixpanel sharedInstance];
                 [mixpanel identify:[delegate username]];
                 [mixpanel.people set:@"$created" to:[NSDate date]];
                 [mixpanel.people set:@"$username" to:[delegate username]];
@@ -286,31 +286,36 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
                                        password:self.passwordTextField.text
-                                        success:^(NSString *username) {
-                                            self.loginInProgress = NO;
-                                            delegate.username = username;
-                                            delegate.password = self.passwordTextField.text;
-                                            
-                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                LoginSuccessBlock();
-                                                
-                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
-
-                                                    [dataSource updateBookmarksWithSuccess:SyncCompletedBlock
-                                                                                   failure:nil
-                                                                                  progress:UpdateProgressBlock
-                                                                                   options:@{@"count": @(-1)}];
-
-                                                    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
-                                                    [mixpanel identify:delegate.username];
-                                                    [mixpanel.people set:@"$created" to:[NSDate date]];
-                                                    [mixpanel.people set:@"$username" to:[delegate username]];
-                                                    [mixpanel.people set:@"Browser" to:@"Webview"];
-                                                });
-                                            });
-                                        }
-                                        failure:LoginFailureBlock];
+                                     completion:^(NSError *error) {
+                                         if (error) {
+                                             LoginFailureBlock(error);
+                                         }
+                                         else {
+                                             self.loginInProgress = NO;
+                                             delegate.username = self.usernameTextField.text;
+                                             delegate.password = self.passwordTextField.text;
+                                             
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 LoginSuccessBlock();
+                                                 
+                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                     PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
+                                                     
+                                                     [dataSource syncBookmarksWithCompletion:^(NSError *error) {
+                                                         if (!error) {
+                                                             SyncCompletedBlock();
+                                                         }
+                                                     } progress:UpdateProgressBlock];
+                                                     
+                                                     Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                     [mixpanel identify:delegate.username];
+                                                     [mixpanel.people set:@"$created" to:[NSDate date]];
+                                                     [mixpanel.people set:@"$username" to:[delegate username]];
+                                                     [mixpanel.people set:@"Browser" to:@"Webview"];
+                                                 });
+                                             });
+                                         }
+                                     }];
 #endif
 
 #ifdef PINBOARD
@@ -326,7 +331,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    delegate.token = token;
-                                                   PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                                                   PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
 
                                                    [dataSource syncBookmarksWithCompletion:^(NSError *error) {
                                                        if (error) {

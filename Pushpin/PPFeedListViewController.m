@@ -12,8 +12,8 @@
 #import "PPFeedListViewController.h"
 #import "PPAppDelegate.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPSettingsViewController.h"
 #import "PPTagViewController.h"
 #import "PPPinboardNotesDataSource.h"
@@ -23,7 +23,7 @@
 #import "PPTitleButton.h"
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"
 
@@ -358,7 +358,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
     if (![delegate feedToken]) {
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
             [delegate setFeedToken:feedToken];
             [self.tableView reloadData];
@@ -402,9 +402,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #ifdef DELICIOUS
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     PPDeliciousSectionType sectionType = [self sectionTypeForSection:section];
-    
+
     if (tableView.allowsMultipleSelectionDuringEditing) {
         switch (sectionType) {
             case PPDeliciousSectionPersonal:
@@ -512,7 +512,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *feed = self.feeds[indexPath.row];
-    PinboardFeedDataSource *dataSource = [[PinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+    PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
     [dataSource removeDataSource:^{
         [self.feeds removeObjectAtIndex:indexPath.row];
 
@@ -782,7 +782,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     
 #ifdef DELICIOUS
     PPDeliciousSectionType sectionType = [self sectionTypeForSection:sourceIndexPath.section];
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     switch (sectionType) {
         case PPDeliciousSectionPersonal: {
@@ -803,7 +803,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
     UIViewController *viewControllerToPush;
@@ -844,7 +844,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef DELICIOUS
         switch ((PPDeliciousSectionType)indexPath.section) {
             case PPDeliciousSectionPersonal: {
-                DeliciousDataSource *dataSource = [[DeliciousDataSource alloc] init];
+                PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
                 dataSource.limit = 100;
 
                 PPDeliciousPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
@@ -907,7 +907,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
                 PPPinboardPersonalFeedType feedType = (PPPinboardPersonalFeedType)([delegate.personalFeedOrder[indexPath.row + numFeedsSkipped] integerValue]);
 
-                PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+                PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
                 dataSource.limit = 100;
 
                 switch (feedType) {
@@ -947,7 +947,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 break;
             }
             case PPPinboardSectionCommunity: {
-                PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+                PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
                 postViewController.postDataSource = feedDataSource;
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
@@ -1003,7 +1003,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
                 
             case PPPinboardSectionSavedFeeds: {
-                viewControllerToPush = [PinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
+                viewControllerToPush = [PPPinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
                 break;
             }
         }
@@ -1429,7 +1429,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSInteger numFeedsSkipped = 0;
     NSInteger numFeedsNotSkipped = 0;
     
-    AppDelegate *delegate = [AppDelegate sharedDelegate];
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     if (!self.tableView.allowsMultipleSelectionDuringEditing) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {

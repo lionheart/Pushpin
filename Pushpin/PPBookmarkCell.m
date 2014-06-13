@@ -282,13 +282,19 @@ static NSInteger kEditButtonOuterMargin = 20;
         }
         else if (recognizer.state == UIGestureRecognizerStateEnded) {
             if (self.deleteButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:)]) {
-                    [self.delegate bookmarkCellDidActivateDeleteButton:self forPost:self.post];
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:indexPath:)]) {
+                    [self.delegate bookmarkCellDidActivateDeleteButton:self
+                                                               forPost:self.post
+                                                             indexPath:[NSIndexPath indexPathForRow:self.index
+                                                                                          inSection:0]];
                 }
             }
             else if (self.editButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:)]) {
-                    [self.delegate bookmarkCellDidActivateEditButton:self forPost:self.post];
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:indexPath:)]) {
+                    [self.delegate bookmarkCellDidActivateEditButton:self
+                                                             forPost:self.post
+                                                           indexPath:[NSIndexPath indexPathForRow:self.index
+                                                                                        inSection:0]];
                 }
             }
 

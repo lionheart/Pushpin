@@ -58,13 +58,7 @@
 #define COCOAPODS_POD_AVAILABLE_ASPinboard
 #define COCOAPODS_VERSION_MAJOR_ASPinboard 0
 #define COCOAPODS_VERSION_MINOR_ASPinboard 0
-#define COCOAPODS_VERSION_PATCH_ASPinboard 1
-
-// BugshotKit
-#define COCOAPODS_POD_AVAILABLE_BugshotKit
-#define COCOAPODS_VERSION_MAJOR_BugshotKit 0
-#define COCOAPODS_VERSION_MINOR_BugshotKit 1
-#define COCOAPODS_VERSION_PATCH_BugshotKit 0
+#define COCOAPODS_VERSION_PATCH_ASPinboard 2
 
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
@@ -111,8 +105,8 @@
 // LHSDelicious
 #define COCOAPODS_POD_AVAILABLE_LHSDelicious
 #define COCOAPODS_VERSION_MAJOR_LHSDelicious 0
-#define COCOAPODS_VERSION_MINOR_LHSDelicious 0
-#define COCOAPODS_VERSION_PATCH_LHSDelicious 1
+#define COCOAPODS_VERSION_MINOR_LHSDelicious 1
+#define COCOAPODS_VERSION_PATCH_LHSDelicious 0
 
 // LHSDiigo
 #define COCOAPODS_POD_AVAILABLE_LHSDiigo
@@ -155,6 +149,12 @@
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser_NSString_HTML 1
 #define COCOAPODS_VERSION_MINOR_MWFeedParser_NSString_HTML 0
 #define COCOAPODS_VERSION_PATCH_MWFeedParser_NSString_HTML 0
+
+// Mixpanel
+#define COCOAPODS_POD_AVAILABLE_Mixpanel
+#define COCOAPODS_VERSION_MAJOR_Mixpanel 2
+#define COCOAPODS_VERSION_MINOR_Mixpanel 3
+#define COCOAPODS_VERSION_PATCH_Mixpanel 6
 
 // OpenInChrome
 #define COCOAPODS_POD_AVAILABLE_OpenInChrome

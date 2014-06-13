@@ -15,6 +15,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <oauthconsumer/OAuthConsumer.h>
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PPReadLaterActivity ()
 
@@ -116,48 +117,57 @@
 
     switch (self.service) {
         case PPReadLaterInstapaper: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
+            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-            OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
-            [request setHTTPMethod:@"POST"];
-            NSMutableArray *parameters = [[NSMutableArray alloc] init];
-            [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]];
-            [request setParameters:parameters];
-            [request prepare];
-
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
-                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
-                                       if (httpResponse.statusCode == 200) {
-                                           notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
-                                       }
-                                       else if (httpResponse.statusCode == 1221) {
-                                           notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       else {
-                                           notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-
-                                       [self activityDidFinish:YES];
-
-                                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                           [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                       });
-                                   }];
+            OAToken *token = delegate.instapaperToken;
+            
+            if (token) {
+                OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
+                [request setHTTPMethod:@"POST"];
+                NSMutableArray *parameters = [[NSMutableArray alloc] init];
+                [parameters addObject:[OARequestParameter requestParameter:@"title" value:self.title]];
+                [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]];
+                [request setParameters:parameters];
+                [request prepare];
+                
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+                [NSURLConnection sendAsynchronousRequest:request
+                                                   queue:[NSOperationQueue mainQueue]
+                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                           [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+                                           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                           
+                                           UILocalNotification *notification = [[UILocalNotification alloc] init];
+                                           notification.alertAction = @"Open Pushpin";
+                                           if (httpResponse.statusCode == 200) {
+                                               notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
+                                               notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                                               [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                           }
+                                           else if (httpResponse.statusCode == 1221) {
+                                               notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
+                                               notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+                                           }
+                                           else {
+                                               notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
+                                               notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+                                           }
+                                           
+                                           [self activityDidFinish:YES];
+                                           
+                                           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                               [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                                           });
+                                       }];
+            }
+            else {
+                UILocalNotification *notification = [[UILocalNotification alloc] init];
+                notification.alertBody = NSLocalizedString(@"Instapaper credentials have expired. Please re-authenticate and try again.", nil);
+                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            }
             break;
         }
 
@@ -173,11 +183,11 @@
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]]];
             [request prepare];
 
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = @"Open Pushpin";
 
@@ -185,7 +195,7 @@
                                        if (httpResponse.statusCode == 202) {
                                            notification.alertBody = @"Sent to Readability.";
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                        }
                                        else if (httpResponse.statusCode == 409) {
                                            notification.alertBody = @"Link already sent to Readability.";
@@ -219,7 +229,7 @@
                                                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                            });
 
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                        }
                                    }];
             break;
@@ -247,7 +257,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
             });
-            [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
+            [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
             break;
         }
 

@@ -73,23 +73,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                               destructiveButtonTitle:nil
                                                    otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
-    self.readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                            delegate:self
-                                                   cancelButtonTitle:nil
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:nil];
-
     self.readLaterServices = [NSMutableArray array];
     [self.readLaterServices addObject:@[@(PPReadLaterInstapaper)]];
-    [self.readLaterActionSheet addButtonWithTitle:@"Instapaper"];
     [self.readLaterServices addObject:@[@(PPReadLaterReadability)]];
-    [self.readLaterActionSheet addButtonWithTitle:@"Readability"];
     [self.readLaterServices addObject:@[@(PPReadLaterPocket)]];
-    [self.readLaterActionSheet addButtonWithTitle:@"Pocket"];
-    [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
-    [self.readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-    self.readLaterActionSheet.destructiveButtonIndex = self.readLaterActionSheet.numberOfButtons - 2;
-    self.readLaterActionSheet.cancelButtonIndex = self.readLaterActionSheet.numberOfButtons - 1;
 
     self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Instapaper Login", nil) message:NSLocalizedString(@"Password may be blank.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log In", nil), nil];
     self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
@@ -144,7 +131,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[MixpanelProxy sharedInstance] track:@"Opened settings"];
+    [[Mixpanel sharedInstance] track:@"Opened settings"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -160,7 +147,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)showAboutPage {
-    [[MixpanelProxy sharedInstance] track:@"Opened about page"];
+    [[Mixpanel sharedInstance] track:@"Opened about page"];
     dispatch_async(dispatch_get_main_queue(), ^{
         PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
         [self.navigationController pushViewController:aboutViewController animated:YES];
@@ -376,7 +363,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         NSString *username = [[alertView textFieldAtIndex:0] text];
         NSString *password = [[alertView textFieldAtIndex:1] text];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/oauth/access_token"]];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/oauth/access_token"]];
 
         OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
         OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
@@ -386,12 +373,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
              [OARequestParameter requestParameter:@"x_auth_username" value:username],
              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
-        [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                                                      [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                    [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (httpResponse.statusCode == 400 || error != nil) {
@@ -402,13 +390,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                          otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                                    }
                                    else {
-                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
-                                       KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-                                       [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
-                                       [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       
-                                       [PPAppDelegate sharedDelegate].readLater = PPReadLaterInstapaper;
-                                       [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
+                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+                                       delegate.instapaperToken = token;
+                                       delegate.readLater = PPReadLaterInstapaper;
+
+                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
                                                                                        message:NSLocalizedString(@"You've successfully logged in.", nil)
@@ -453,11 +439,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
 
-        [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
 
                                    [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
                                    if (!error) {
@@ -467,7 +453,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
                                        
                                        [PPAppDelegate sharedDelegate].readLater = PPReadLaterReadability;
-                                       [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                                              withRowAnimation:UITableViewRowAnimationFade];
 
@@ -543,12 +529,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
             else if ([buttonTitle isEqualToString:@"Pocket"]) {
                 [[PocketAPI sharedAPI] loginWithDelegate:nil];;
             }
-            else if ([buttonTitle isEqualToString:@"None"]) {
+            else if ([buttonTitle isEqualToString:NSLocalizedString(@"Remove", nil)]) {
                 [PPAppDelegate sharedDelegate].readLater = PPReadLaterNone;
-                [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"None"];
+                [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                       withRowAnimation:UITableViewRowAnimationFade];
             }
+            
+            self.readLaterActionSheet = nil;
         }
 
         self.actionSheet = nil;
@@ -571,7 +559,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [PPAppDelegate sharedDelegate].readLater = PPReadLaterPocket;
-    [[[MixpanelProxy sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
+    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                           withRowAnimation:UITableViewRowAnimationFade];
 }
@@ -710,6 +698,34 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
+}
+
+- (UIActionSheet *)readLaterActionSheet {
+    if (!_readLaterActionSheet) {
+        _readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                delegate:self
+                                                       cancelButtonTitle:nil
+                                                  destructiveButtonTitle:nil
+                                                       otherButtonTitles:nil];
+        [_readLaterActionSheet addButtonWithTitle:@"Instapaper"];
+        [_readLaterActionSheet addButtonWithTitle:@"Readability"];
+        [_readLaterActionSheet addButtonWithTitle:@"Pocket"];
+        
+        // Only show the "Remove" option if the user already has a read later service chosen.
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+        BOOL readLaterServiceChosen = delegate.readLater != PPReadLaterNone;
+        if (readLaterServiceChosen) {
+            [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
+        }
+
+        [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+        
+        if (readLaterServiceChosen) {
+            _readLaterActionSheet.destructiveButtonIndex = self.readLaterActionSheet.numberOfButtons - 2;
+        }
+        _readLaterActionSheet.cancelButtonIndex = self.readLaterActionSheet.numberOfButtons - 1;
+    }
+    return _readLaterActionSheet;
 }
 
 @end
