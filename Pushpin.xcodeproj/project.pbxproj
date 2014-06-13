@@ -113,7 +113,6 @@
 		373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */; };
 		373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BB16F81C6900A7D7C8 /* ptr_32.png */; };
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
-		373D480E193E194400BC60AF /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -1141,7 +1140,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				373D480E193E194400BC60AF /* libDebugPods.a in Frameworks */,
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
@@ -3258,7 +3256,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3295,7 +3293,7 @@
 					"-all_load",
 					"-lDebugPods",
 				);
-				PROVISIONING_PROFILE = "4280BF04-27B4-494E-A621-5FD5BA7FE00B";
+				PROVISIONING_PROFILE = "EF630651-DF34-415B-8E4F-CFD13DE9BC42";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
@@ -3346,7 +3344,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3383,7 +3381,7 @@
 					"-all_load",
 					"-lDebugPods",
 				);
-				PROVISIONING_PROFILE = "082A1E51-C373-4E9F-B3B6-D8C4CCBFA1A3";
+				PROVISIONING_PROFILE = "9623E780-C739-4399-B64D-EBCB0055A6B9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
@@ -3434,7 +3432,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -3472,7 +3470,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "B209B354-3A57-4FA6-9A93-C4992EB60620";
+				PROVISIONING_PROFILE = "5C7FDEB8-9FEC-4023-8AD2-0D7221896AC5";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3522,7 +3520,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (Y659LH6YL9)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3610,7 +3608,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (Y659LH6YL9)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3673,7 +3671,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -3710,7 +3708,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "8AE228A5-FB56-471A-B4D0-41DEC02A4226";
+				PROVISIONING_PROFILE = "5517F5CF-7F20-45ED-91DD-BEBA13D60FF1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
