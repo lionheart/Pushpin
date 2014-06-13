@@ -175,7 +175,15 @@
     }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
-        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query]
+                                                 update:@(NO)
+                                               callback:^{
+                                                   NSDictionary *data = [self parseQueryParameters:url.query];
+                                                   if (data[@"x-success"]) {
+                                                       NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                                       [application openURL:url];
+                                                   }
+                                               }];
     }
     else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
@@ -193,7 +201,10 @@
         }
 
         PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:components];
-        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
+        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                                               style:UIBarButtonItemStyleDone
+                                                                                              target:self
+                                                                                              action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
         void (^PresentView)() = ^{

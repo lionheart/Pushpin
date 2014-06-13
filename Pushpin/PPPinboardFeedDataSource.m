@@ -177,17 +177,17 @@
                                                    date = [NSDate date];
                                                }
                                                
-                                               NSMutableDictionary *post = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                           @"title": [PPUtilities stringByTrimmingWhitespace:element[@"d"]],
-                                                                                                                           @"description": [PPUtilities stringByTrimmingWhitespace:element[@"n"]],
-                                                                                                                           @"url": element[@"u"],
-                                                                                                                           @"tags": [tags componentsJoinedByString:@" "],
-                                                                                                                           @"created_at": date
-                                                                                                                       }];
+                                               // There is a bug where spaces are not encoded as %20 in feeds when the space occurs after a hash. In this case, we encode it ourselves first.
+                                               NSString *url = [element[@"u"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                                               NSMutableDictionary *post = [@{
+                                                                              @"title": [PPUtilities stringByTrimmingWhitespace:element[@"d"]],
+                                                                              @"description": [PPUtilities stringByTrimmingWhitespace:element[@"n"]],
+                                                                              @"url": url,
+                                                                              @"tags": [tags componentsJoinedByString:@" "],
+                                                                              @"created_at": date
+                                                                          } mutableCopy];
 
-                                               NSString *url = post[@"url"];
                                                [newPosts addObject:post];
-
                                                newURLsToIndexPaths[url] = [NSIndexPath indexPathForRow:row inSection:0];
                                                row++;
                                            }
