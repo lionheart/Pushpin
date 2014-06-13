@@ -407,6 +407,7 @@ static NSString *CellIdentifier = @"TagCell";
                                                 destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
                                                      otherButtonTitles:nil];
             [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
+            }
         }
     }
 }
