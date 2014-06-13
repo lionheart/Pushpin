@@ -399,6 +399,10 @@
 		37FEEB9F15745488003F2B77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEBA315745488003F2B77 /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
 		37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
+		6D023C56193E8D280070C013 /* capture.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C52193E8D280070C013 /* capture.js */; };
+		6D023C57193E8D280070C013 /* shoot_the_screens.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C53193E8D280070C013 /* shoot_the_screens.js */; };
+		6D023C58193E8D280070C013 /* ui-screen-shooter.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6D023C54193E8D280070C013 /* ui-screen-shooter.sh */; };
+		6D023C59193E8D280070C013 /* unix_instruments.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6D023C55193E8D280070C013 /* unix_instruments.sh */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
@@ -1003,6 +1007,10 @@
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSplitViewController.m; sourceTree = "<group>"; };
 		54B0022F87374C449F105BA0 /* Pods-DebugPods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.xcconfig"; path = "Pods/Pods-DebugPods.xcconfig"; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		6D023C52193E8D280070C013 /* capture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = capture.js; sourceTree = SOURCE_ROOT; };
+		6D023C53193E8D280070C013 /* shoot_the_screens.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = shoot_the_screens.js; sourceTree = SOURCE_ROOT; };
+		6D023C54193E8D280070C013 /* ui-screen-shooter.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "ui-screen-shooter.sh"; sourceTree = SOURCE_ROOT; };
+		6D023C55193E8D280070C013 /* unix_instruments.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = unix_instruments.sh; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
@@ -1706,6 +1714,7 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				6D023C51193E8D0A0070C013 /* Screenshot Automation */,
 				376ABBBE1895892300132CFF /* Entitlements */,
 				376ABBBD189588F100132CFF /* Info Dictionaries */,
 				37516A03186C8AE200AEF7A6 /* Table View Cells */,
@@ -1839,6 +1848,17 @@
 				37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		6D023C51193E8D0A0070C013 /* Screenshot Automation */ = {
+			isa = PBXGroup;
+			children = (
+				6D023C52193E8D280070C013 /* capture.js */,
+				6D023C53193E8D280070C013 /* shoot_the_screens.js */,
+				6D023C54193E8D280070C013 /* ui-screen-shooter.sh */,
+				6D023C55193E8D280070C013 /* unix_instruments.sh */,
+			);
+			name = "Screenshot Automation";
 			sourceTree = "<group>";
 		};
 		E84A8D9217FB1BCB003B4F50 /* FluidTableview */ = {
@@ -2102,6 +2122,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D023C58193E8D280070C013 /* ui-screen-shooter.sh in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */,
 				37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */,
@@ -2144,6 +2165,7 @@
 				E80EEF81185A4AD900979AA3 /* toolbar-description.png in Resources */,
 				373C82C816F81C6900A7D7C8 /* ptr_06@2x.png in Resources */,
 				373C82C916F81C6900A7D7C8 /* ptr_07.png in Resources */,
+				6D023C59193E8D280070C013 /* unix_instruments.sh in Resources */,
 				37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */,
 				E890022F1840173600C1F969 /* navigation-fandom@2x.png in Resources */,
 				373C82CA16F81C6900A7D7C8 /* ptr_07@2x.png in Resources */,
@@ -2667,7 +2689,9 @@
 				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */,
+				6D023C56193E8D280070C013 /* capture.js in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
+				6D023C57193E8D280070C013 /* shoot_the_screens.js in Sources */,
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
