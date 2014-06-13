@@ -13,13 +13,13 @@
 #import "PPLoginViewController.h"
 #import "PPSettingsViewController.h"
 #import "PPGenericPostViewController.h"
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPNotification.h"
 #import "PPFeedListViewController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPToolbar.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 #import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
@@ -29,7 +29,7 @@
 #import "PPMobilizerUtility.h"
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
-#import "DeliciousDataSource.h"
+#import "PPDeliciousDataSource.h"
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
@@ -138,6 +138,10 @@
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
     PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
 
+    if ([UIApplication isIPad]) {
+        addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    }
+
     if (self.navigationController.presentedViewController) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
             [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
@@ -171,7 +175,15 @@
     }
     else if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
-        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query] update:@(NO) callback:nil];
+        [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query]
+                                                 update:@(NO)
+                                               callback:^{
+                                                   NSDictionary *data = [self parseQueryParameters:url.query];
+                                                   if (data[@"x-success"]) {
+                                                       NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                                       [application openURL:url];
+                                                   }
+                                               }];
     }
     else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
@@ -188,8 +200,11 @@
             }
         }
 
-        PPGenericPostViewController *postViewController = [PinboardFeedDataSource postViewControllerWithComponents:components];
-        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
+        PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:components];
+        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                                               style:UIBarButtonItemStyleDone
+                                                                                              target:self
+                                                                                              action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
         void (^PresentView)() = ^{
@@ -329,7 +344,7 @@
                 return;
             }
             
-            MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             [db open];
             FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
@@ -340,7 +355,17 @@
             BOOL alreadyRejected = [results intForColumnIndex:0] != 0;
             [db close];
 
-            if (alreadyExistsInBookmarks) {
+            if (alreadyRejected && self.onlyPromptToAddOnce) {
+                if (self.alwaysShowClipboardNotification) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UILocalNotification *notification = [[UILocalNotification alloc] init];
+                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
+                        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                    });
+                }
+            }
+            else if (alreadyExistsInBookmarks) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
                     self.updateBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
@@ -350,16 +375,6 @@
                                                                     otherButtonTitles:NSLocalizedString(@"Edit", nil), nil];
                     [self.updateBookmarkAlertView show];
                 });
-            }
-            else if (alreadyRejected && self.onlyPromptToAddOnce) {
-                if (self.alwaysShowClipboardNotification) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UILocalNotification *notification = [[UILocalNotification alloc] init];
-                        notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
-                        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                    });
-                }
             }
             else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
@@ -464,11 +479,11 @@
 - (PPNavigationController *)navigationController {
     if (!_navigationController) {
 #ifdef DELICIOUS
-        DeliciousDataSource *deliciousDataSource = [[DeliciousDataSource alloc] init];
+        PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
         deliciousDataSource.limit = 100;
         deliciousDataSource.orderBy = @"created_at DESC";
-        
-        GenericPostViewController *deliciousViewController = [[GenericPostViewController alloc] init];
+
+        PPGenericPostViewController *deliciousViewController = [[PPGenericPostViewController alloc] init];
         deliciousViewController.postDataSource = deliciousDataSource;
 
         _navigationController = [[PPNavigationController alloc] init];
@@ -484,7 +499,7 @@
 #endif
         
 #ifdef PINBOARD
-        PinboardDataSource *pinboardDataSource = [[PinboardDataSource alloc] init];
+        PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
 
@@ -528,7 +543,7 @@
         }
         else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
             feedDetails = [self.defaultFeed substringFromIndex:10];
-            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] init];
+            PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
             PPPinboardCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
@@ -568,7 +583,7 @@
         else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
             feedDetails = [self.defaultFeed substringFromIndex:6];
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
-            PinboardFeedDataSource *feedDataSource = [[PinboardFeedDataSource alloc] initWithComponents:components];
+            PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
         }
 
@@ -631,7 +646,7 @@
 
     [self customizeUIElements];
 
-    MixpanelProxy *mixpanel = [MixpanelProxy sharedInstanceWithToken:PPMixpanelToken];
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     
     if ([UIApplication isIPad]) {
         [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPadToken];
@@ -701,25 +716,25 @@
 #ifdef DELICIOUS
     LHSDelicious *delicious = [LHSDelicious sharedInstance];
     [delicious setRequestCompletedCallback:^{
-        [self setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     }];
 
     [delicious setRequestStartedCallback:^{
-        [self setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
 #endif
 
 #ifdef PINBOARD
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
-        [self setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     }];
     [pinboard setRequestStartedCallback:^{
-        [self setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
 #endif
 
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
     BOOL isAuthenticated;
     
@@ -818,7 +833,6 @@
                  ");" ];
 
                 [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
                 [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];
@@ -859,7 +873,9 @@
         }
         [db commit];
     }
-#else
+#endif
+    
+#ifdef PINBOARD
     if ([s next]) {
         int version = [s intForColumnIndex:0];
         [db beginTransaction];
@@ -1471,28 +1487,13 @@
 
 #pragma mark - Helpers
 
-- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {
-    static NSInteger NumberOfCallsToSetVisible = 0;
-    if (setVisible) {
-        NumberOfCallsToSetVisible++;
-    }
-    else {
-        NumberOfCallsToSetVisible--;
-    }
-    
-    // Display the indicator as long as our static counter is > 0.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
-    });
-}
-
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
-    [self setNetworkActivityIndicatorVisible:YES];
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [self setNetworkActivityIndicatorVisible:NO];
+                               [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                
                                NSString *description = @"";
                                NSString *title = @"";
@@ -1542,7 +1543,7 @@
             }
 
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-            [[MixpanelProxy sharedInstance] track:@"Decided to add bookmark from clipboard"];
+            [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1564,7 +1565,7 @@
             }
             
             [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-            [[MixpanelProxy sharedInstance] track:@"Decided to edit bookmark from clipboard"];
+            [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1722,5 +1723,36 @@
     [self.presentingController dismissViewControllerAnimated:YES completion:nil];
 }
 #endif
+
+- (UITextAutocapitalizationType)autoCapitalizationType {
+    return [PPAppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
+}
+
+- (UITextAutocorrectionType)autoCorrectionType {
+    return [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+}
+
+- (void)setInstapaperToken:(OAToken *)instapaperToken {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+    if (instapaperToken) {
+        [keychain setObject:instapaperToken.key forKey:(__bridge id)kSecAttrAccount];
+        [keychain setObject:instapaperToken.secret forKey:(__bridge id)kSecValueData];
+    }
+    else {
+        [keychain resetKeychainItem];
+    }
+}
+
+- (OAToken *)instapaperToken {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
+    NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
+    NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
+    if (resourceKey && resourceSecret) {
+        return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+    }
+    else {
+        return nil;
+    }
+}
 
 @end

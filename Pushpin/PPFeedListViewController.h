@@ -11,8 +11,8 @@
 #import "PPTableViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"
-#import "PinboardDataSource.h"
-#import "PinboardFeedDataSource.h"
+#import "PPPinboardDataSource.h"
+#import "PPPinboardFeedDataSource.h"
 
 typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
     FeedListToolbarOrientationRight,

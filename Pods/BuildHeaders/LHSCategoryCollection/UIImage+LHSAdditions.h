@@ -1,1 +1,1 @@
-../../../Vendor/LHSCategoryCollection/Categories/UIImage+LHSAdditions.h
+../../LHSCategoryCollection/Categories/UIImage+LHSAdditions.h

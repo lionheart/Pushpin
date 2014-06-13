@@ -15,7 +15,7 @@
 #ifdef __OBJC__
     @import UIKit;
     @import Foundation;
-    #import <MixpanelProxy.h>
+    #import <Mixpanel.h>
 #endif
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1

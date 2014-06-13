@@ -6,7 +6,7 @@
 //
 //
 
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPAppDelegate.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPBadgeView.h"
@@ -26,17 +26,18 @@
 
 static BOOL kPinboardSyncInProgress = NO;
 
-@interface PinboardDataSource ()
+@interface PPPinboardDataSource ()
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
+@property (nonatomic, strong) UIAlertView *fullTextSearchAlertView;
 
 - (NSDictionary *)paramsForPost:(NSDictionary *)post dateError:(BOOL)dateError;
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
 
 @end
 
-@implementation PinboardDataSource
+@implementation PPPinboardDataSource
 
 - (id)init {
     self = [super init];
@@ -114,7 +115,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)filterWithQuery:(NSString *)query {
-    query = [query lhs_stringByTrimmingWhitespace];
+    query = [PPUtilities stringByTrimmingWhitespace:query];
     if (self.searchScope != ASPinboardSearchScopeNone) {
         self.searchQuery = query;
     }
@@ -175,15 +176,15 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (PinboardDataSource *)searchDataSource {
-    PinboardDataSource *search = [self copy];
+- (PPPinboardDataSource *)searchDataSource {
+    PPPinboardDataSource *search = [self copy];
     search.searchQuery = @"*";
     return search;
 }
 
-- (PinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
+- (PPPinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag {
     NSArray *newTags = [self.tags arrayByAddingObject:tag];
-    PinboardDataSource *dataSource = [self copy];
+    PPPinboardDataSource *dataSource = [self copy];
     dataSource.tags = newTags;
     return dataSource;
 }
@@ -276,12 +277,12 @@ static BOOL kPinboardSyncInProgress = NO;
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
         NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        [delegate setNetworkActivityIndicatorVisible:YES];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [delegate setNetworkActivityIndicatorVisible:NO];
+                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    if (error) {
                                        completion(error);
                                    }
@@ -373,7 +374,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [db commit];
             [db close];
 
-            [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
+            [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
             dispatch_group_leave(group);
         };
 
@@ -425,7 +426,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [db commit];
                 [db close];
                 
-                [[MixpanelProxy sharedInstance] track:@"Deleted bookmark"];
+                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
 
                 NSUInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -497,7 +498,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSString *tag = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
         if (![self.tags containsObject:tag]) {
-            PinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
+            PPPinboardDataSource *pinboardDataSource = [self dataSourceWithAdditionalTag:tag];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
@@ -629,7 +630,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     }
                     
                     if (isValidField) {
-                        NSString *value = [[matchString substringWithRange:[subresult rangeAtIndex:2]] lhs_stringByTrimmingWhitespace];
+                        NSString *value = [PPUtilities stringByTrimmingWhitespace:[matchString substringWithRange:[subresult rangeAtIndex:2]]];
                         NSArray *words = [value componentsSeparatedByString:@" "];
                         NSMutableArray *wordsWithWildcards = [NSMutableArray array];
                         for (NSString *word in words) {
@@ -652,7 +653,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
             }
             
-            NSString *trimmedQuery = [remainingQuery lhs_stringByTrimmingWhitespace];
+            NSString *trimmedQuery = [PPUtilities stringByTrimmingWhitespace:remainingQuery];
             if (![trimmedQuery isEqualToString:@""]) {
                 [subqueries addObject:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts MATCH ?"];
                 [parameters addObject:trimmedQuery];
@@ -677,7 +678,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [whereComponents addObject:@"bookmark.tags = ?"];
             [parameters addObject:@""];
             break;
-            
+
         case kPushpinFilterNone:
             // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
             if (!self.searchQuery) {
@@ -742,7 +743,7 @@ static BOOL kPinboardSyncInProgress = NO;
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    PinboardDataSource *dataSource = [[PinboardDataSource alloc] init];
+    PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
     dataSource.limit = self.limit;
     dataSource.tags = self.tags;
     dataSource.orderBy = self.orderBy;
@@ -957,9 +958,9 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     // Dispatch serially to ensure that no two syncs happen simultaneously.
-    dispatch_async(PPPinboardBookmarkUpdateQueue(), ^{
+    dispatch_async(PPBookmarkUpdateQueue(), ^{
         ASPinboard *pinboard = [ASPinboard sharedInstance];
-        MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
         
         void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
             DLog(@"%@ - Received data", [NSDate date]);
@@ -1026,7 +1027,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           for (NSString *hash in inserted) {
                                               NSDictionary *post = bookmarks[hash];
                                               
-                                              NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
+                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
                                               NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                               if (!dateError && !params) {
                                                   dateError = YES;
@@ -1039,7 +1040,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               tagDeleteCount++;
                                               
                                               for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [tagName lhs_stringByTrimmingWhitespace];
+                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
                                                   if (![cleanedTagName isEqualToString:@""]) {
                                                       [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                                       [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
@@ -1071,11 +1072,11 @@ static BOOL kPinboardSyncInProgress = NO;
                                               NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                                               if (!dateError && !date) {
                                                   date = [NSDate dateWithTimeIntervalSince1970:0];
-                                                  [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                                                  [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
                                                   dateError = YES;
                                               }
                                               
-                                              NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
+                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
                                               
                                               NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                               if (!dateError && !params) {
@@ -1090,7 +1091,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               tagDeleteCount++;
                                               
                                               for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [tagName lhs_stringByTrimmingWhitespace];
+                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
                                                   if (![cleanedTagName isEqualToString:@""]) {
                                                       [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                                       [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
@@ -1132,11 +1133,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                           NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
                                           [queue enqueueNotification:note postingStyle:NSPostASAP];
                                           
-                                          [[MixpanelProxy sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
+                                          [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
                                           [self updateStarredPostsWithCompletion:^(NSError *error) {
-                                              [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                                                  completion(nil);
-                                              } cancel:nil width:self.mostRecentWidth];
+                                              completion(error);
                                           }];
                                       }];
         };
@@ -1187,7 +1186,7 @@ static BOOL kPinboardSyncInProgress = NO;
     NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
     if (!dateError && !date) {
         date = [NSDate dateWithTimeIntervalSince1970:0];
-        [[MixpanelProxy sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+        [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
         DLog(@"Error parsing date: %@", post[@"time"]);
         
         // XXX This changed recently! Could be a source of issues.
@@ -1197,9 +1196,9 @@ static BOOL kPinboardSyncInProgress = NO;
     NSString *hash = post[@"hash"];
     NSString *meta = post[@"meta"];
     
-    NSString *postTags = [post[@"tags"] lhs_stringByTrimmingWhitespace];
-    NSString *title = [post[@"description"] lhs_stringByTrimmingWhitespace];
-    NSString *description = [post[@"extended"] lhs_stringByTrimmingWhitespace];
+    NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+    NSString *title = [PPUtilities stringByTrimmingWhitespace:post[@"description"]];
+    NSString *description = [PPUtilities stringByTrimmingWhitespace:post[@"extended"]];
     
     return @{
              @"url": post[@"href"],
@@ -1217,7 +1216,8 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
-    dispatch_async(PPPinboardBookmarkReloadQueue(), ^{
+    
+    dispatch_async(PPBookmarkReloadQueue(), ^{
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSArray *previousBookmarks = [self.posts copy];
             NSMutableArray *updatedBookmarks = [NSMutableArray array];
@@ -1231,7 +1231,6 @@ static BOOL kPinboardSyncInProgress = NO;
             FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
             
             if (cancel && cancel()) {
-                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
@@ -1240,7 +1239,6 @@ static BOOL kPinboardSyncInProgress = NO;
             FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
             
             if (cancel && cancel()) {
-                DLog(@"A: Cancelling search for query (%@)", self.searchQuery);
                 [db close];
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
@@ -1250,7 +1248,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *hash = [results stringForColumn:@"hash"];
                 NSString *meta = [results stringForColumn:@"meta"];
                 NSString *hashmeta = [hash stringByAppendingString:meta];
-                NSDictionary *post = [PinboardDataSource postFromResultSet:results];
+                NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
                 
                 [updatedBookmarks addObject:post];
                 
@@ -1294,6 +1292,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
+            
+
 
             [PPUtilities generateDiffForPrevious:previousBookmarks
                                          updated:updatedBookmarks
@@ -1355,35 +1355,55 @@ static BOOL kPinboardSyncInProgress = NO;
         if (self.searchScope != ASPinboardSearchScopeNone) {
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             PPAppDelegate *sharedDelegate = [PPAppDelegate sharedDelegate];
-            [pinboard searchBookmarksWithUsername:sharedDelegate.username
-                                         password:sharedDelegate.password
-                                            query:self.searchQuery
-                                            scope:self.searchScope
-                                       completion:^(NSArray *urls, NSError *error) {
-                                           if (!error) {
-                                               NSMutableArray *components = [NSMutableArray array];
-                                               NSMutableArray *parameters = [NSMutableArray array];
-                                               [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-
-                                               NSMutableArray *urlComponents = [NSMutableArray array];
-                                               for (NSString *url in urls) {
-                                                   [urlComponents addObject:@"?"];
-                                                   [parameters addObject:url];
+            if ([sharedDelegate.password length] > 0) {
+                [pinboard searchBookmarksWithUsername:sharedDelegate.username
+                                             password:sharedDelegate.password
+                                                query:self.searchQuery
+                                                scope:self.searchScope
+                                           completion:^(NSArray *urls, NSError *error) {
+                                               if (!error) {
+                                                   NSMutableArray *components = [NSMutableArray array];
+                                                   NSMutableArray *parameters = [NSMutableArray array];
+                                                   [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
+                                                   
+                                                   NSMutableArray *urlComponents = [NSMutableArray array];
+                                                   for (NSString *url in urls) {
+                                                       [urlComponents addObject:@"?"];
+                                                       [parameters addObject:url];
+                                                   }
+                                                   
+                                                   [components addObject:[urlComponents componentsJoinedByString:@", "]];
+                                                   [components addObject:@")"];
+                                                   
+                                                   NSString *query = [components componentsJoinedByString:@" "];
+                                                   
+                                                   HandleSearch(query, parameters);
                                                }
-                                               
-                                               [components addObject:[urlComponents componentsJoinedByString:@", "]];
-                                               [components addObject:@")"];
-                                               
-                                               NSString *query = [components componentsJoinedByString:@" "];
-                                               
-                                               HandleSearch(query, parameters);
-                                           }
-                                       }];
+                                           }];
+            }
+            else {
+                if (!self.fullTextSearchAlertView) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.fullTextSearchAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                                  message:@"To enable Pinboard full-text search, please log out and then log back in to Pushpin."
+                                                                                 delegate:self
+                                                                        cancelButtonTitle:nil
+                                                                        otherButtonTitles:@"OK", nil];
+                        [self.fullTextSearchAlertView show];
+                    });
+                }
+            }
         }
         else {
             [self generateQueryAndParameters:HandleSearch];
         }
     });
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.fullTextSearchAlertView = nil;
 }
 
 @end

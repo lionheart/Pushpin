@@ -13,6 +13,7 @@
 #import "PPConstants.h"
 
 #import <TextExpander/SMTEDelegateController.h>
+#import <oauthconsumer/OAuthConsumer.h>
 
 @class FMDatabaseQueue;
 @class PPNavigationController;
@@ -63,6 +64,8 @@
 @property (nonatomic, strong) NSString *feedToken;
 @property (nonatomic, strong) NSString *token;
 
+@property (nonatomic, strong) OAToken *instapaperToken;
+
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, strong) NSTimer *refreshTimer;
@@ -84,9 +87,11 @@
 
 - (void)openSettings;
 - (void)customizeUIElements;
-- (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
 - (void)promptUserToAddBookmark;
 - (void)logout;
+
+- (UITextAutocapitalizationType)autoCapitalizationType;
+- (UITextAutocorrectionType)autoCorrectionType;
 
 - (NSString *)defaultFeedDescription;
 

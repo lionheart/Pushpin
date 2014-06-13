@@ -14,7 +14,7 @@
 #import "PPStatusBarNotification.h"
 #import "PPConstants.h"
 
-#import "PinboardDataSource.h"
+#import "PPPinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
 #import "PPMultipleEditViewController.h"
 #import "PPFeedListViewController.h"
@@ -455,7 +455,7 @@ static NSInteger kToolbarHeight = 44;
             }
             
             [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
-            MixpanelProxy *mixpanel = [MixpanelProxy sharedInstance];
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
             
             switch (self.numberOfTapsSinceTapReset) {
                 case 1:
@@ -663,6 +663,9 @@ static NSInteger kToolbarHeight = 44;
                 [self.view lhs_centerVerticallyForView:activityIndicator];
             }
             
+            NSDate *date = [NSDate date];
+            DLog(@"A: %@", date);
+
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -693,6 +696,9 @@ static NSInteger kToolbarHeight = 44;
                                                  }
                                                  else {
 #warning Crash here
+                                                     DLog(@"B: %@", date);
+                                                     DLog(@"%d", [indexPathsToInsert count]);
+
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -725,10 +731,13 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
 #ifdef PINBOARD
     if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
-        [(PinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
+        [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
+    }
+    else {
+        [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
     }
 #endif
-        
+
     [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1262,7 +1271,7 @@ static NSInteger kToolbarHeight = 44;
     notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
-    [[MixpanelProxy sharedInstance] track:@"Copied URL"];
+    [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)sendToReadLater {
@@ -1271,12 +1280,10 @@ static NSInteger kToolbarHeight = 44;
     
     switch (readLater) {
         case PPReadLaterInstapaper: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1/bookmarks/add"]];
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
+            OAToken *token = delegate.instapaperToken;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
@@ -1284,11 +1291,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:parameters];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -1296,7 +1303,7 @@ static NSInteger kToolbarHeight = 44;
                                        if (httpResponse.statusCode == 200) {
                                            notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
                                        }
                                        else if (httpResponse.statusCode == 1221) {
                                            notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
@@ -1323,11 +1330,11 @@ static NSInteger kToolbarHeight = 44;
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
             [request prepare];
             
-            [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:YES];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [[PPAppDelegate sharedDelegate] setNetworkActivityIndicatorVisible:NO];
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                        UILocalNotification *notification = [[UILocalNotification alloc] init];
                                        notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
                                        
@@ -1335,7 +1342,7 @@ static NSInteger kToolbarHeight = 44;
                                        if (httpResponse.statusCode == 202) {
                                            notification.alertBody = NSLocalizedString(@"Sent to Readability.", nil);
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
                                        }
                                        else if (httpResponse.statusCode == 409) {
                                            notification.alertBody = NSLocalizedString(@"Link already sent to Readability.", nil);
@@ -1360,7 +1367,7 @@ static NSInteger kToolbarHeight = 44;
                                            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
                                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                                            
-                                           [[MixpanelProxy sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
+                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
                                        }
                                    }];
             
@@ -1807,13 +1814,25 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
+- (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
+                                    forPost:(NSDictionary *)post
+                                  indexPath:(NSIndexPath *)indexPath {
     self.selectedPost = post;
+    self.selectedIndexPath = indexPath;
     [self showConfirmDeletionAlert];
 }
 
-- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell forPost:(NSDictionary *)post {
-    UIViewController *vc = (UIViewController *)[PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
+- (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
+                                  forPost:(NSDictionary *)post
+                                indexPath:(NSIndexPath *)indexPath {
+    self.selectedIndexPath = indexPath;
+    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        });
+    }];
     
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1941,7 +1960,8 @@ static NSInteger kToolbarHeight = 44;
             [self handleCellTap];
         }
         else if (keyCommand == self.editKeyCommand) {
-            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
+            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
+                                                                                                       callback:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];

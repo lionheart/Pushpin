@@ -19,7 +19,7 @@ PODS:
   - AFNetworking/UIKit (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ASPinboard (0.0.1):
+  - ASPinboard (0.0.2):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
   - CrashlyticsFramework (2.1.7)
@@ -32,12 +32,13 @@ PODS:
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.11)
-  - LHSDelicious (0.0.1):
+  - LHSDelicious (0.1.0):
     - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
   - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
   - LHSKeyboardAdjusting (0.0.1)
+  - Mixpanel (2.3.6)
   - MWFeedParser (1.0.0):
     - MWFeedParser/FeedParser
     - MWFeedParser/NSDate+InternetDateTime
@@ -67,11 +68,12 @@ DEPENDENCIES:
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
-  - LHSCategoryCollection (from `Vendor/LHSCategoryCollection`)
+  - LHSCategoryCollection (= 0.0.11)
   - LHSDelicious (from `Vendor/LHSDelicious`)
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
   - LHSKeyboardAdjusting (= 0.0.1)
+  - Mixpanel (= 2.3.6)
   - MWFeedParser (= 1.0.0)
   - oauthconsumer (from `Specs/oauthconsumer.podspec`)
   - OpenInChrome (= 0.0.1)
@@ -90,8 +92,6 @@ EXTERNAL SOURCES:
     :local: Vendor/ASPinboard
   HTMLParser:
     :podspec: Specs/HTMLParser.podspec
-  LHSCategoryCollection:
-    :local: Vendor/LHSCategoryCollection
   LHSDelicious:
     :local: Vendor/LHSDelicious
   LHSDiigo:
@@ -105,29 +105,30 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
-  AFNetworking: 01aa7c3aa9a200b94943e54072a4373f14b3d219
-  ASPinboard: 781b62f391c4afb1b76262a996dda3395f2db5d5
-  BugshotKit: b1ab5bda9165b8b79b34db4b5b30a23f39bcc641
-  CrashlyticsFramework: 569d2b1c71922aa480bfdc55df4c86aedf7b215c
-  FMDB: 8b6b69b1164e3007d7f4b3b3719e667602ec247e
-  hpple: dde62f905f482bbec50186280d1a1be2c881241b
+  AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
+  ASPinboard: c8b89fe3af5a6cee4b03488a9ec56211a3654dbe
+  BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
+  CrashlyticsFramework: 282bb8e99a2755cc984c361d520160d69522e636
+  FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
+  hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
-  KeychainItemWrapper: b532e85de8792ea70dad237e7ead90993af763cf
-  LHSCategoryCollection: 8566f7ccdcee34c7ccef0a8a42a1e7595e10c728
-  LHSDelicious: eb01ed82e2002629c61fcec13e2769a4ef3cb5af
+  KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
+  LHSCategoryCollection: e95e1ec4e82108a0b34b86e2ea1364b3cc384c42
+  LHSDelicious: 3f31c2b51e951ac5e4e04e86e913f0439f45e708
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
-  LHSKeyboardAdjusting: 18d0114814bb2fb7a7563c1ec3043698638dd2a2
-  MWFeedParser: eb4fbf12677a1b3d936fdd122f88866b528aca3e
+  LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
+  Mixpanel: 9aba38257fc4d2777ab5db1afc55e22bdfd57a4a
+  MWFeedParser: 682e244ee30ad1f016e920c03fe1321d27206990
   oauthconsumer: c1ccfa4eb54e2473ae375dee1293456804ad9bdc
-  OpenInChrome: 4990ae561b1c8e38caa6fc6c346f4565f6c37bfb
-  PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
-  Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
+  OpenInChrome: b7c73ddf8fe0a1788dc0549c3c4c70e3c84da578
+  PocketAPI: 801df1a3cdd094e5477add10c80dceb533c98a66
+  Reachability: d369b8d7d33730a4bb71d0f601e287da9867c9dd
   RPSTPasswordManagementAppService: ef9ba65edee84b8031c822dcebc264615b23e789
-  TestFlightSDK: 3cf0a0c5b0a01000982528347e604aa6f393dc49
-  TextExpander: 755ff25950efe16b13cbd7be1918cb088e475bf5
-  TTTAttributedLabel: 3a571d73e055f4a79c304240598e4bfd199238e4
-  uservoice-iphone-sdk: 79b21e4bc6ab3d3e13e0e8597789e6f2c800602e
-  XMLDictionary: a6ede1b0f7e8acd0ee3495e93350a311be2bfd1e
+  TestFlightSDK: 3fbe16e5fb1a7bb9dbcc5e00a5c2933bae357a68
+  TextExpander: 52e77e37c52115ec59cad66b082800f0e54fa545
+  TTTAttributedLabel: 2be49e23f10fc87130272e03160bdb938835c51c
+  uservoice-iphone-sdk: e3229dadb3a834d7535bfc4b24d268a9bbb03547
+  XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
 
 COCOAPODS: 0.32.1

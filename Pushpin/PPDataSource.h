@@ -8,7 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
+static dispatch_queue_t PPBookmarkUpdateQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.BookmarkUpdateQueue", 0);
+    });
+    return queue;
+}
+
+static dispatch_queue_t PPBookmarkReloadQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.BookmarkReloadQueue", 0);
+    });
+    return queue;
+}
+
 @protocol PPDataSource <NSObject>
+
 - (NSInteger)numberOfPosts;
 - (BOOL)searchSupported;
 
