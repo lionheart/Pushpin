@@ -371,6 +371,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = @"Reset the list of stored URLs";
                     cell.detailTextLabel.text = @"Resets the list of URLs that you've decided not to add from the clipboard.";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.isAccessibilityElement = YES;
+                    cell.accessibilityLabel = @"Reset URL";
                     break;
                     
                 case PPOtherAlwaysShowAlert:

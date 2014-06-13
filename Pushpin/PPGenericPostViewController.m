@@ -110,8 +110,12 @@ static NSInteger kToolbarHeight = 44;
     return UIStatusBarAnimationSlide;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.URL = [NSURL URLWithString:@"http://lionheartsw.com"];
+    
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
@@ -201,7 +205,8 @@ static NSInteger kToolbarHeight = 44;
         
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
-        
+        self.searchBar.isAccessibilityElement = YES;
+        self.searchBar.accessibilityLabel = @"Search Bar";
 #ifdef DELICIOUS
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
 #endif

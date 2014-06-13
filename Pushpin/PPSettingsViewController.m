@@ -248,6 +248,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Advanced Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.isAccessibilityElement = YES;
+                    cell.accessibilityLabel = @"Advanced Settings";
                     break;
 
                 case PPMainBrowser:
