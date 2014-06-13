@@ -286,32 +286,36 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
                                        password:self.passwordTextField.text
-                                        success:^(NSString *username) {
-                                            self.loginInProgress = NO;
-                                            delegate.username = username;
-                                            delegate.password = self.passwordTextField.text;
-                                            
-                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                LoginSuccessBlock();
-                                                
-                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
-
-                                                    [dataSource syncBookmarksWithCompletion:^(NSError *error) {
-                                                        if (!error) {
-                                                            SyncCompletedBlock();
-                                                        }
-                                                    } progress:UpdateProgressBlock];
-
-                                                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                                    [mixpanel identify:delegate.username];
-                                                    [mixpanel.people set:@"$created" to:[NSDate date]];
-                                                    [mixpanel.people set:@"$username" to:[delegate username]];
-                                                    [mixpanel.people set:@"Browser" to:@"Webview"];
-                                                });
-                                            });
-                                        }
-                                        failure:LoginFailureBlock];
+                                     completion:^(NSError *error) {
+                                         if (error) {
+                                             LoginFailureBlock(error);
+                                         }
+                                         else {
+                                             self.loginInProgress = NO;
+                                             delegate.username = self.usernameTextField.text;
+                                             delegate.password = self.passwordTextField.text;
+                                             
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 LoginSuccessBlock();
+                                                 
+                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                     PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
+                                                     
+                                                     [dataSource syncBookmarksWithCompletion:^(NSError *error) {
+                                                         if (!error) {
+                                                             SyncCompletedBlock();
+                                                         }
+                                                     } progress:UpdateProgressBlock];
+                                                     
+                                                     Mixpanel *mixpanel = [Mixpanel sharedInstance];
+                                                     [mixpanel identify:delegate.username];
+                                                     [mixpanel.people set:@"$created" to:[NSDate date]];
+                                                     [mixpanel.people set:@"$username" to:[delegate username]];
+                                                     [mixpanel.people set:@"Browser" to:@"Webview"];
+                                                 });
+                                             });
+                                         }
+                                     }];
 #endif
 
 #ifdef PINBOARD
