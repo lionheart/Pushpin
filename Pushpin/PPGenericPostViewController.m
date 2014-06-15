@@ -113,9 +113,11 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+#ifdef PROFILING
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.URL = [NSURL URLWithString:@"http://lionheartsw.com"];
-    
+#endif
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
