@@ -21,6 +21,7 @@ typedef enum PPDeliciousErrorCodes {
     DeliciousErrorEmptyResponse
 } PPDeliciousErrorCodeType;
 
+static NSString *kDeliciousDataSourceProgressNotification __unused = @"kDeliciousDataSourceProgressNotification";
 static NSString *DeliciousDataSourceErrorDomain __unused = @"DeliciousDataSourceErrorDomain";
 
 @interface PPDeliciousDataSource : NSObject <PPDataSource>
