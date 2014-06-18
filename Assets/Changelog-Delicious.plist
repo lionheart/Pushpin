@@ -3,6 +3,15 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.5</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash that occurred after adding a new bookmark or viewing an unread bookmark.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.4</string>
 		<array>
 			<array>
