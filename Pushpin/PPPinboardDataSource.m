@@ -1000,7 +1000,10 @@ static BOOL kPinboardSyncInProgress = NO;
             progress(0, total);
             
             NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
-            [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(0), @"total": @(total)}] postingStyle:NSPostASAP];
+            [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification
+                                                                     object:nil
+                                                                   userInfo:@{@"current": @(0), @"total": @(total)}]
+                          postingStyle:NSPostASAP];
             
             NSMutableDictionary *bookmarks = [NSMutableDictionary dictionary];
             for (id post in posts) {
