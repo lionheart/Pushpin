@@ -380,9 +380,25 @@ static NSInteger kToolbarHeight = 44;
     [self setNeedsStatusBarAppearanceUpdate];
     
     // Register for Dynamic Type notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(preferredContentSizeChanged:)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveDisplaySettingsUpdateNotification:)
+                                                 name:PPBookmarkDisplaySettingUpdated
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toggleCompressedPosts)
+                                                 name:PPBookmarkCompressSettingUpdate
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateFromLocalDatabaseWithCallback:)
+                                                 name:PPBookmarkEventNotificationName
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -704,7 +720,6 @@ static NSInteger kToolbarHeight = 44;
                                                  else {
 #warning Crash here
                                                      DLog(@"B: %@", date);
-                                                     DLog(@"%d", [indexPathsToInsert count]);
 
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -1654,7 +1669,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     if (!self.isProcessingPosts) {
         self.isProcessingPosts = YES;
-        
+
         [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             if (!error) {
                 dispatch_sync(dispatch_get_main_queue(), ^(void) {
@@ -1662,11 +1677,14 @@ static NSInteger kToolbarHeight = 44;
                     [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    
+                    [self.tableView endUpdates];
+                    self.isProcessingPosts = NO;
                 });
             }
+            else {
+                self.isProcessingPosts = NO;
+            }
 
-            self.isProcessingPosts = NO;
         } cancel:nil width:self.currentWidth];
     }
 }

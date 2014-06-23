@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
-		370935471894BF4F00E3588E /* DeliciousBeta.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935461894BF4F00E3588E /* DeliciousBeta.plist */; };
-		370935491894BF6100E3588E /* DeliciousDebug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935481894BF6100E3588E /* DeliciousDebug.plist */; };
 		3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* PPDeliciousDataSource.m */; };
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
@@ -128,6 +126,7 @@
 		3751D18818346EED00E0A42A /* mobilized-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18618346EED00E0A42A /* mobilized-active.png */; };
 		3751D18918346EED00E0A42A /* mobilized-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18718346EED00E0A42A /* mobilized-active@2x.png */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
+		375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
 		3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
@@ -169,7 +168,6 @@
 		3798B08F18767DAB002D684B /* navigation-edit-darker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08B18767DAB002D684B /* navigation-edit-darker.png */; };
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
-		379C3C201894BD4C003A02FF /* DeliciousAppStore.plist in Resources */ = {isa = PBXBuildFile; fileRef = 379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */; };
 		37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* PPNoteViewController.m */; };
 		37A7B5C718345DAE0038677E /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C118345DAE0038677E /* stop@2x.png */; };
 		37A7B5C818345DAE0038677E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C218345DAE0038677E /* stop.png */; };
@@ -201,7 +199,6 @@
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
 		37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
-		37BCAD3F194B47BC008E1CB1 /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
@@ -402,7 +399,6 @@
 		37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
 		6D023C56193E8D280070C013 /* capture.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C52193E8D280070C013 /* capture.js */; };
 		6D023C57193E8D280070C013 /* shoot_the_screens.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C53193E8D280070C013 /* shoot_the_screens.js */; };
-		6D023C58193E8D280070C013 /* ui-screen-shooter.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6D023C54193E8D280070C013 /* ui-screen-shooter.sh */; };
 		6D023C59193E8D280070C013 /* unix_instruments.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6D023C55193E8D280070C013 /* unix_instruments.sh */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
@@ -1149,7 +1145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37BCAD3F194B47BC008E1CB1 /* libDebugPods.a in Frameworks */,
+				375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */,
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
@@ -2124,7 +2120,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D023C58193E8D280070C013 /* ui-screen-shooter.sh in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
 				37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */,
 				37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */,
@@ -2190,7 +2185,6 @@
 				373C82D816F81C6900A7D7C8 /* ptr_14@2x.png in Resources */,
 				373C82D916F81C6900A7D7C8 /* ptr_15.png in Resources */,
 				373C82DA16F81C6900A7D7C8 /* ptr_15@2x.png in Resources */,
-				379C3C201894BD4C003A02FF /* DeliciousAppStore.plist in Resources */,
 				373C82DB16F81C6900A7D7C8 /* ptr_16.png in Resources */,
 				373C82DC16F81C6900A7D7C8 /* ptr_16@2x.png in Resources */,
 				E8900201183EB90100C1F969 /* bookmark-private@2x.png in Resources */,
@@ -2429,14 +2423,12 @@
 				37EABA43173F01DA00B2684B /* loading_64@2x.png in Resources */,
 				37EABA44173F01DA00B2684B /* loading_65.png in Resources */,
 				37EABA45173F01DA00B2684B /* loading_65@2x.png in Resources */,
-				370935491894BF6100E3588E /* DeliciousDebug.plist in Resources */,
 				37EABA46173F01DA00B2684B /* loading_66.png in Resources */,
 				37EABA47173F01DA00B2684B /* loading_66@2x.png in Resources */,
 				37EABA48173F01DA00B2684B /* loading_67.png in Resources */,
 				37EABA49173F01DA00B2684B /* loading_67@2x.png in Resources */,
 				E80EEF90185B6A1300979AA3 /* roundbutton-private@2x.png in Resources */,
 				37EABA4A173F01DA00B2684B /* loading_68.png in Resources */,
-				370935471894BF4F00E3588E /* DeliciousBeta.plist in Resources */,
 				37EABA4B173F01DA00B2684B /* loading_68@2x.png in Resources */,
 				37CBB7551881FFBC000F9C36 /* About.json in Resources */,
 				3751D18218346C0200E0A42A /* mobilize.png in Resources */,
@@ -3347,7 +3339,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3436,7 +3427,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3499,7 +3489,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "5C7FDEB8-9FEC-4023-8AD2-0D7221896AC5";
+				PROVISIONING_PROFILE = "86A275B3-0E9F-45E5-8960-2AF283AB787C";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3526,7 +3516,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -3550,7 +3539,7 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (V87J634922)";
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3614,7 +3603,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3677,7 +3665,7 @@
 					"-all_load",
 					"-lDebugPods",
 				);
-				PROVISIONING_PROFILE = "AE05D9EC-AACB-4026-B2B8-C45B3F62604A";
+				PROVISIONING_PROFILE = "37825474-DEA4-4390-B197-C863DD9B187C";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3767,7 +3755,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3793,7 +3780,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

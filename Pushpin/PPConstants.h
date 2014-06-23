@@ -153,6 +153,9 @@ static NSString *PPReadingListActivity = @"PPReadingListActivity";
 static NSString *PPPocketActivity = @"PPPocketActivity";
 static NSString *PPNoActivity = @"PPNoActivity";
 
+// Notification Names
+static NSString *const PPBookmarkEventNotificationName = @"PPBookmarkUpdateNotificationName";
+
 #ifdef DELICIOUS
 static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";
 static NSString *PPMixpanelToken = @"c9c119f24aa8b5d17311be35ecf2310e";

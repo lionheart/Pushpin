@@ -118,16 +118,17 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     [application cancelAllLocalNotifications];
+
     if (application.applicationState == UIApplicationStateActive) {
-        self.bookmarksUpdated = [notification.userInfo[@"updated"] boolValue];
-        NSString *text = notification.alertBody;
-        
-        if ([notification.userInfo[@"success"] isEqual:@(YES)]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[PPStatusBar status] showWithText:text];
-            });
+        UIViewController *controller = [UIViewController lhs_topViewController];
+        if ([NSStringFromClass([controller class]) isEqualToString:@"_UIModalItemsPresentingViewController"]) {
+            notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+            [application scheduleLocalNotification:notification];
         }
         else {
+            self.bookmarksUpdated = [notification.userInfo[@"updated"] boolValue];
+            NSString *text = notification.alertBody;
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[PPStatusBar status] showWithText:text];
             });
