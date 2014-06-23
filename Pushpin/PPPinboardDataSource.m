@@ -1148,9 +1148,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSDate *lastLocalUpdate = [[PPAppDelegate sharedDelegate] lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
-                BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
-                
-                if (neverUpdated || outOfSyncWithAPI) {
+                BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
+
+                if (neverUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [pinboard bookmarksWithTags:nil
                                              offset:-1
