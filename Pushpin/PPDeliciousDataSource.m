@@ -409,9 +409,9 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSDate *lastLocalUpdate = [[PPAppDelegate sharedDelegate] lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
-                BOOL lastUpdatedMoreThanFiveMinutesAgo = [[NSDate date] timeIntervalSinceReferenceDate] - [lastLocalUpdate timeIntervalSinceReferenceDate] > 300;
+                BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
 
-                if (neverUpdated || outOfSyncWithAPI) {
+                if (neverUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [delicious bookmarksWithTag:nil
                                              offset:-1
