@@ -137,7 +137,9 @@
 }
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
-    PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark update:isUpdate callback:callback];
+    PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                    update:isUpdate
+                                                                                                                  callback:callback];
 
     if ([UIApplication isIPad]) {
         addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
