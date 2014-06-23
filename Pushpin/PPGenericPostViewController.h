@@ -91,7 +91,6 @@ typedef enum : NSInteger {
 - (void)markPostsAsRead:(NSArray *)posts;
 - (void)copyURL;
 - (void)sendToReadLater;
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;

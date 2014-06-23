@@ -14,8 +14,8 @@
 
 #import <TextExpander/SMTEDelegateController.h>
 #import <oauthconsumer/OAuthConsumer.h>
+#import <FMDB/FMDatabaseQueue.h>
 
-@class FMDatabaseQueue;
 @class PPNavigationController;
 @class PPSplitViewController;
 @class PPFeedListViewController;
@@ -79,9 +79,9 @@
 - (void)setUsername:(NSString *)username password:(NSString *)password;
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 - (NSString *)username;
-+ (PPAppDelegate *)sharedDelegate;
+
 - (void)migrateDatabase;
-+ (NSString *)databasePath;
+
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
@@ -94,5 +94,9 @@
 - (UITextAutocorrectionType)autoCorrectionType;
 
 - (NSString *)defaultFeedDescription;
+
++ (PPAppDelegate *)sharedDelegate;
++ (NSString *)databasePath;
++ (FMDatabaseQueue *)databaseQueue;
 
 @end
