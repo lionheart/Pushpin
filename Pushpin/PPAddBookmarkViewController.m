@@ -787,6 +787,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #endif
                     [db close];
                     
+                    PPBookmarkEventType eventType;
+                    if (bookmarkAdded) {
+                        eventType = PPBookmarkEventAdd;
+                    }
+                    else {
+                        eventType = PPBookmarkEventUpdate;
+                    }
+
                     if (self.callback) {
 #ifdef PINBOARD
                         self.callback(post);
@@ -795,10 +803,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #ifdef DELICIOUS
                         self.callback(@{});
 #endif
-                        
+
                         dispatch_async(dispatch_get_main_queue(), ^{
 #warning This used to be "NO". Why?
-                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+
+                            [self.parentViewController dismissViewControllerAnimated:YES
+                                                                          completion:^{
+                                                                              [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
+                                                                                                                                  object:nil
+                                                                                                                                userInfo:@{@"type": @(eventType) }];
+                                                                          }];
                         });
                     }
                     else {
@@ -810,11 +824,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             else {
                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
                             }
-                            
+
                             notification.alertAction = @"Open Pushpin";
                             notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                            [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
+                                                                                    object:nil
+                                                                                  userInfo:@{@"type": @(eventType) }];
+                            }];
                         });
                     }
                 });

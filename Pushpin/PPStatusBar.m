@@ -35,7 +35,17 @@
     self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
     self.tapGestureRecognizer.numberOfTapsRequired = 1;
 
-    UIViewController *controller = [UIViewController lhs_topViewController];
+    __block UIViewController *controller = [UIViewController lhs_topViewController];
+    while ([NSStringFromClass([controller class]) isEqualToString:@"_UIModalItemsPresentingViewController"]) {
+        dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            controller = [UIViewController lhs_topViewController];
+            dispatch_semaphore_signal(sem);
+        });
+
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    }
+
     if ([[controller class] isEqual:[PPAddBookmarkViewController class]]) {
         controller = (UIViewController *)[[PPAppDelegate sharedDelegate].navigationController topViewController];
     }

@@ -32,39 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3717966418A88578004B2D08"
-               BuildableName = "\.xctest"
-               BlueprintName = "\"
-               ReferencedContainer = "container:Pushpin.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "3717967F18A885F7004B2D08"
                BuildableName = "Pushpin Tests.xctest"
                BlueprintName = "Pushpin Tests"
-               ReferencedContainer = "container:Pushpin.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3772DE5E1933B0D1004B348D"
-               BuildableName = "DebugPodsTests.xctest"
-               BlueprintName = "DebugPodsTests"
-               ReferencedContainer = "container:Pushpin.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3772DE7C1933B0DE004B348D"
-               BuildableName = "DebugPodsTests copy.xctest"
-               BlueprintName = "DebugPodsTests copy"
                ReferencedContainer = "container:Pushpin.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -84,7 +54,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Delicious Debug"
+      buildConfiguration = "Delicious App Store"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">

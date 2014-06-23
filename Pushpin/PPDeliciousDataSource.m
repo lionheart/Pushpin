@@ -775,6 +775,7 @@ static BOOL kPinboardSyncInProgress = NO;
         else {
             notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks were deleted.", (unsigned long)[posts count]];
         }
+
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     });
 }
