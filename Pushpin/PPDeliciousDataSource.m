@@ -202,18 +202,29 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (NSInteger)totalNumberOfPosts {
     if (!_totalNumberOfPosts) {
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
-        [result next];
-        NSInteger count = [result intForColumnIndex:0];
-        [db close];
+        __block NSInteger count;
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
+            [result next];
+            count = [result intForColumnIndex:0];
+            [result close];
+        }];
+
         _totalNumberOfPosts = count;
     }
     return _totalNumberOfPosts;
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion progress:(void (^)(NSInteger, NSInteger))progress {
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+                           progress:(void (^)(NSInteger, NSInteger))progress {
+    [self syncBookmarksWithCompletion:completion
+                             progress:progress
+                              options:nil];
+}
+
+- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+                           progress:(void (^)(NSInteger, NSInteger))progress
+                            options:(NSDictionary *)options {
     if (!progress) {
         progress = ^(NSInteger current, NSInteger total) {};
     }
@@ -225,34 +236,41 @@ static BOOL kPinboardSyncInProgress = NO;
         void (^BookmarksSuccessBlock)(NSArray *) = ^(NSArray *posts) {
             DLog(@"%@ - Received data", [NSDate date]);
             NSDate *startDate = [NSDate date];
-            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-            [db open];
-            [db beginTransaction];
-            [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
-            
-            FMResultSet *results;
-            
-            NSMutableArray *tags = [NSMutableArray array];
-            results = [db executeQuery:@"SELECT name FROM tag"];
-            while ([results next]) {
-                [tags addObject:[results stringForColumn:@"name"]];
-            }
-            
-            DLog(@"%@ - Getting local data", [NSDate date]);
-            NSUInteger total = posts.count;
-            results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
-            
-            NSMutableArray *previousBookmarks = [NSMutableArray array];
-            while ([results next]) {
-                [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
-                                               @"meta": [results stringForColumn:@"meta"]}];
-            }
+
+            __block NSUInteger total;
+            __block NSMutableArray *previousBookmarks;
+
+            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
+
+                FMResultSet *results;
+                
+                NSMutableArray *tags = [NSMutableArray array];
+                results = [db executeQuery:@"SELECT name FROM tag"];
+                while ([results next]) {
+                    [tags addObject:[results stringForColumn:@"name"]];
+                }
+                
+                [results close];
+                
+                DLog(@"%@ - Getting local data", [NSDate date]);
+                total = posts.count;
+                results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+                
+                previousBookmarks = [NSMutableArray array];
+                while ([results next]) {
+                    [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
+                                                   @"meta": [results stringForColumn:@"meta"]}];
+                }
+
+                [results close];
+            }];
 
             NSMutableDictionary *bookmarks = [NSMutableDictionary dictionary];
             for (NSDictionary *post in posts) {
                 bookmarks[post[@"hash"]] = post;
             }
-            
+
             NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
 
             [queue enqueueNotification:[NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
@@ -265,112 +283,110 @@ static BOOL kPinboardSyncInProgress = NO;
                                             hash:^NSString *(id obj) { return obj[@"hash"]; }
                                             meta:^NSString *(id obj) { return obj[@"meta"]; }
                                       completion:^(NSSet *inserted, NSSet *updated, NSSet *deleted) {
-                                          CGFloat index = 0;
+                                          __block CGFloat index = 0;
                                           NSUInteger skipped = 0;
-                                          NSUInteger updateCount = 0;
-                                          NSUInteger addCount = 0;
-                                          NSUInteger deleteCount = 0;
-                                          NSUInteger tagAddCount = 0;
-                                          NSUInteger tagDeleteCount = 0;
+                                          __block NSUInteger updateCount = 0;
+                                          __block NSUInteger addCount = 0;
+                                          __block NSUInteger deleteCount = 0;
+                                          __block NSUInteger tagAddCount = 0;
+                                          __block NSUInteger tagDeleteCount = 0;
                                           
-                                          // Only track one date error per update
-                                          BOOL dateError = NO;
-                                          
-                                          CGFloat amountToAdd = (CGFloat)inserted.count / posts.count;
-                                          for (NSString *hash in inserted) {
-                                              NSDictionary *post = bookmarks[hash];
+                                          [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                              // Only track one date error per update
+                                              BOOL dateError = NO;
                                               
-                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
-                                              NSDictionary *params = [self paramsForPost:post dateError:dateError];
-                                              if (!dateError && !params) {
-                                                  dateError = YES;
-                                              }
-                                              
-                                              [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
-                                              addCount++;
-                                              
-                                              [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                                              tagDeleteCount++;
-                                              
-                                              for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
-                                                  if (![cleanedTagName isEqualToString:@""]) {
-                                                      [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                                      [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                                                      tagAddCount++;
+                                              CGFloat amountToAdd = (CGFloat)inserted.count / posts.count;
+                                              for (NSString *hash in inserted) {
+                                                  NSDictionary *post = bookmarks[hash];
+
+                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+                                                  NSDictionary *params = [self paramsForPost:post dateError:dateError];
+                                                  if (!dateError && !params) {
+                                                      dateError = YES;
                                                   }
-                                              }
-                                              
-                                              index += amountToAdd;
-                                              progress((NSInteger)index, total);
-                                              NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
-                                                                                                   object:nil
-                                                                                                 userInfo:@{@"current": @(index), @"total": @(total)}];
-                                              [queue enqueueNotification:note postingStyle:NSPostASAP];
-                                          }
-                                          
-                                          amountToAdd = (CGFloat)deleted.count / posts.count;
-                                          for (NSString *hash in deleted) {
-                                              [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
-                                              deleteCount++;
-                                              index += amountToAdd;
-                                              progress((NSInteger)index, total);
-                                              NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
-                                                                                                   object:nil
-                                                                                                 userInfo:@{@"current": @(index), @"total": @(total)}];
-                                              [queue enqueueNotification:note postingStyle:NSPostASAP];
-                                          }
-                                          
-                                          amountToAdd = (CGFloat)updated.count / posts.count;
-                                          for (NSString *hashmeta in updated) {
-                                              NSString *hash = [hashmeta componentsSeparatedByString:@"_"][0];
-                                              NSDictionary *post = bookmarks[hash];
-                                              
-                                              NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
-                                              if (!dateError && !date) {
-                                                  date = [NSDate dateWithTimeIntervalSince1970:0];
-                                                  [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
-                                                  dateError = YES;
-                                              }
-                                              
-                                              NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
-                                              
-                                              NSDictionary *params = [self paramsForPost:post dateError:dateError];
-                                              if (!dateError && !params) {
-                                                  dateError = YES;
-                                              }
-                                              
-                                              // Update this bookmark
-                                              [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
-                                              updateCount++;
-                                              
-                                              [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                                              tagDeleteCount++;
-                                              
-                                              for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                  NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
-                                                  if (![cleanedTagName isEqualToString:@""]) {
-                                                      [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                                      [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
-                                                      tagAddCount++;
+                                                  
+                                                  [db executeUpdate:@"INSERT INTO bookmark (title, description, url, private, unread, hash, tags, meta, created_at) VALUES (:title, :description, :url, :private, :unread, :hash, :tags, :meta, :created_at);" withParameterDictionary:params];
+                                                  addCount++;
+                                                  
+                                                  [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                                                  tagDeleteCount++;
+                                                  
+                                                  for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
+                                                      NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
+                                                      if (![cleanedTagName isEqualToString:@""]) {
+                                                          [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                                          [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                                                          tagAddCount++;
+                                                      }
                                                   }
+                                                  
+                                                  index += amountToAdd;
+                                                  progress((NSInteger)index, total);
+                                                  NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
+                                                                                                       object:nil
+                                                                                                     userInfo:@{@"current": @(index), @"total": @(total)}];
+                                                  [queue enqueueNotification:note postingStyle:NSPostASAP];
                                               }
                                               
-                                              index += amountToAdd;
-                                              progress((NSInteger)index, total);
-                                              NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
-                                                                                                   object:nil
-                                                                                                 userInfo:@{@"current": @(index), @"total": @(total)}];
-                                              [queue enqueueNotification:note postingStyle:NSPostASAP];
-                                          }
-                                          
-                                          DLog(@"Updating tags");
-                                          [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-                                          [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-                                          
-                                          DLog(@"Committing changes");
-                                          [db commit];
-                                          [db close];
+                                              amountToAdd = (CGFloat)deleted.count / posts.count;
+                                              for (NSString *hash in deleted) {
+                                                  [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
+                                                  deleteCount++;
+                                                  index += amountToAdd;
+                                                  progress((NSInteger)index, total);
+                                                  NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
+                                                                                                       object:nil
+                                                                                                     userInfo:@{@"current": @(index), @"total": @(total)}];
+                                                  [queue enqueueNotification:note postingStyle:NSPostASAP];
+                                              }
+                                              
+                                              amountToAdd = (CGFloat)updated.count / posts.count;
+                                              for (NSString *hashmeta in updated) {
+                                                  NSString *hash = [hashmeta componentsSeparatedByString:@"_"][0];
+                                                  NSDictionary *post = bookmarks[hash];
+                                                  
+                                                  NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
+                                                  if (!dateError && !date) {
+                                                      date = [NSDate dateWithTimeIntervalSince1970:0];
+                                                      [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+                                                      dateError = YES;
+                                                  }
+                                                  
+                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+                                                  
+                                                  NSDictionary *params = [self paramsForPost:post dateError:dateError];
+                                                  if (!dateError && !params) {
+                                                      dateError = YES;
+                                                  }
+                                                  
+                                                  // Update this bookmark
+                                                  [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, url=:url, private=:private, unread=:unread, tags=:tags, meta=:meta WHERE hash=:hash" withParameterDictionary:params];
+                                                  updateCount++;
+                                                  
+                                                  [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                                                  tagDeleteCount++;
+                                                  
+                                                  for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
+                                                      NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
+                                                      if (![cleanedTagName isEqualToString:@""]) {
+                                                          [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                                          [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                                                          tagAddCount++;
+                                                      }
+                                                  }
+                                                  
+                                                  index += amountToAdd;
+                                                  progress((NSInteger)index, total);
+                                                  NSNotification *note = [NSNotification notificationWithName:kDeliciousDataSourceProgressNotification
+                                                                                                       object:nil
+                                                                                                     userInfo:@{@"current": @(index), @"total": @(total)}];
+                                                  [queue enqueueNotification:note postingStyle:NSPostASAP];
+                                              }
+                                              
+                                              DLog(@"Updating tags");
+                                              [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                                              [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+                                          }];
                                           
                                           NSDate *endDate = [NSDate date];
                                           skipped = total - addCount - updateCount - deleteCount;
@@ -455,7 +471,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
-        NSInteger row = 0;
+        __block NSInteger row = 0;
         NSArray *previousBookmarks = [self.posts copy];
         NSMutableArray *updatedBookmarks = [NSMutableArray array];
         NSMutableDictionary *oldHashesToIndexPaths = [NSMutableDictionary dictionary];
@@ -469,52 +485,55 @@ static BOOL kPinboardSyncInProgress = NO;
             return;
         }
 
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
-        if (cancel && cancel()) {
-            DLog(@"Cancelling search for query (%@)", self.searchQuery);
-            completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-            return;
-        }
-        
-        while ([results next]) {
-            NSString *hash = [results stringForColumn:@"hash"];
-            NSString *meta = [results stringForColumn:@"meta"];
-            NSString *hashmeta = [hash stringByAppendingString:meta];
-            NSDictionary *post = [PPUtilities dictionaryFromResultSet:results];
-            [updatedBookmarks addObject:post];
+            if (cancel && cancel()) {
+                DLog(@"Cancelling search for query (%@)", self.searchQuery);
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
 
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-            newHashesToIndexPaths[hash] = indexPath;
-            newHashmetasToHashes[hashmeta] = hash;
-            row++;
-        }
-        
-        row = 0;
-        for (NSDictionary *post in previousBookmarks) {
-            NSString *hash = post[@"hash"];
+            while ([results next]) {
+                NSString *hash = [results stringForColumn:@"hash"];
+                NSString *meta = [results stringForColumn:@"meta"];
+                NSString *hashmeta = [hash stringByAppendingString:meta];
+                NSDictionary *post = [PPUtilities dictionaryFromResultSet:results];
+                [updatedBookmarks addObject:post];
+                
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                newHashesToIndexPaths[hash] = indexPath;
+                newHashmetasToHashes[hashmeta] = hash;
+                row++;
+            }
+
+            [results close];
             
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-            oldHashesToIndexPaths[hash] = indexPath;
-            row++;
-        }
+            row = 0;
+            for (NSDictionary *post in previousBookmarks) {
+                NSString *hash = post[@"hash"];
+                
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row
+                                                            inSection:0];
+                oldHashesToIndexPaths[hash] = indexPath;
+                row++;
+            }
+            
+            if (cancel && cancel()) {
+                DLog(@"Cancelling search for query (%@)", self.searchQuery);
+                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                return;
+            }
+            
+            FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+            while ([tagResult next]) {
+                NSString *tag = [tagResult stringForColumnIndex:0];
+                NSNumber *count = [tagResult objectForColumnIndex:1];
+                newTagsWithFrequencies[tag] = count;
+            }
 
-        if (cancel && cancel()) {
-            DLog(@"Cancelling search for query (%@)", self.searchQuery);
-            completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-            return;
-        }
-        
-        FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-        while ([tagResult next]) {
-            NSString *tag = [tagResult stringForColumnIndex:0];
-            NSNumber *count = [tagResult objectForColumnIndex:1];
-            newTagsWithFrequencies[tag] = count;
-        }
-        
-        [db close];
+            [tagResult close];
+        }];
         
         NSMutableArray *indexPathsToInsert = [NSMutableArray array];
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
@@ -618,10 +637,9 @@ static BOOL kPinboardSyncInProgress = NO;
 #warning XXX Check tags instead of "toread"
                                 if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                     // Bookmark has already been marked as read on server.
-                                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                                    [db open];
-                                    [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                    [db close];
+                                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                        [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                    }];
                                     
                                     callback(nil);
                                     return;
@@ -638,10 +656,10 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 }
                                                 else {
                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                                                        [db open];
-                                                        [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
-                                                        [db close];
+                                                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                            [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
+                                                        }];
+
                                                         callback(nil);
                                                     });
                                                 }
@@ -668,13 +686,11 @@ static BOOL kPinboardSyncInProgress = NO;
         url = self.posts[indexPath.row][@"url"];
         SuccessBlock = ^{
             NSString *hash = self.posts[indexPath.row][@"hash"];
-            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-            [db open];
-            [db beginTransaction];
-            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-            [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
-            [db commit];
-            [db close];
+            
+            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
+            }];
             
             [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
             
@@ -704,11 +720,10 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_notify(group, queue, ^{
         dispatch_group_t inner_group = dispatch_group_create();
         
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-        [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-        [db close];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+        }];
 
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
@@ -731,13 +746,10 @@ static BOOL kPinboardSyncInProgress = NO;
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                [db open];
-                [db beginTransaction];
-                [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
-                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
-                [db commit];
-                [db close];
+                [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                    [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
+                    [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
+                }];
                 
                 [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
                 

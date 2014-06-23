@@ -379,13 +379,17 @@ static NSInteger kTitleHeight = 40;
 
         if (theURLString) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                [db open];
-                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
-                [results next];
-                BOOL bookmarkExists = [results intForColumnIndex:0] > 0;
-                BOOL isRead = ![results boolForColumnIndex:1];
-                [db close];
+                __block BOOL bookmarkExists;
+                __block BOOL isRead;
+
+                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
+                    [results next];
+                    bookmarkExists = [results intForColumnIndex:0] > 0;
+                    isRead = ![results boolForColumnIndex:1];
+                    
+                    [results close];
+                }];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.navigationItem.rightBarButtonItem = nil;
@@ -747,12 +751,13 @@ static NSInteger kTitleHeight = 40;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *editUrlString = [self.mobilizerUtility originalURLStringForURL:self.url];
         if (editUrlString) {
-            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-            [db open];
-            FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
-            [results next];
-            NSDictionary *post = [PPUtilities dictionaryFromResultSet:results];
-            [db close];
+            __block NSDictionary *post;
+
+            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
+                [results next];
+                post = [PPUtilities dictionaryFromResultSet:results];
+            }];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];

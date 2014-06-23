@@ -233,35 +233,34 @@ static NSString *CellIdentifier = @"TagCell";
         self.searchInProgress = YES;
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-            [db open];
-            FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
-            
             NSMutableArray *newTagNames = [NSMutableArray array];
             NSMutableArray *oldTagNames = [NSMutableArray array];
             
             NSMutableArray *indexPathsToRemove = [NSMutableArray array];
             NSMutableArray *indexPathsToAdd = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            NSInteger index = 0;
-            
-            for (NSDictionary *tag in self.filteredTags) {
-                [oldTagNames addObject:tag];
-            }
-            
-            while ([result next]) {
-                NSString *tagName = [result stringForColumn:@"name"];
-                
-                if (tagName) {
-                    [newTagNames addObject:tagName];
+            __block NSInteger index = 0;
 
-                    if (![oldTagNames containsObject:tagName]) {
-                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                    }
-                    index++;
+            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
+                
+                for (NSDictionary *tag in self.filteredTags) {
+                    [oldTagNames addObject:tag];
                 }
-            }
-            [db close];
+                
+                while ([result next]) {
+                    NSString *tagName = [result stringForColumn:@"name"];
+                    
+                    if (tagName) {
+                        [newTagNames addObject:tagName];
+                        
+                        if (![oldTagNames containsObject:tagName]) {
+                            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                        }
+                        index++;
+                    }
+                }
+            }];
             
             NSInteger i;
             for (i=0; i<oldTagNames.count; i++) {
@@ -576,28 +575,29 @@ static NSString *CellIdentifier = @"TagCell";
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard deleteTag:name
                 success:^{
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                        [db open];
-                        // Delete the tag from the database.
+                    // Delete the tag from the database.
 
-                        [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
-                        
-                        NSMutableArray *hashesToUpdate = [NSMutableArray array];
-                        NSMutableArray *parameterPlaceholders = [NSMutableArray array];
-                        FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
-                        while ([result next]) {
-                            // Convert the tags to a list, remove the removed tag, and then update the bookmark.
-                            NSString *hash = [result stringForColumnIndex:0];
-                            [hashesToUpdate addObject:hash];
-                            [parameterPlaceholders addObject:@"?"];
-                        }
-                        
-                        [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
-                        
-                        NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
-                        [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
-                        [db close];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                            [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
+                            
+                            NSMutableArray *hashesToUpdate = [NSMutableArray array];
+                            NSMutableArray *parameterPlaceholders = [NSMutableArray array];
+                            FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                            while ([result next]) {
+                                // Convert the tags to a list, remove the removed tag, and then update the bookmark.
+                                NSString *hash = [result stringForColumnIndex:0];
+                                [hashesToUpdate addObject:hash];
+                                [parameterPlaceholders addObject:@"?"];
+                            }
+
+                            [result close];
+                            
+                            [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                            
+                            NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
+                            [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
+                        }];
                         
                         [self.tagCounts removeObjectForKey:name];
                         self.tagToDelete = nil;

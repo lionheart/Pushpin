@@ -651,10 +651,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.loadingIndicator startAnimating];
                     [loadingAlertView addSubview:self.loadingIndicator];
                     
-                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                    [db open];
-                    [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
-                    [db close];
+                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                        [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
+                    }];
                     
                     double delayInSeconds = 1.0;
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));

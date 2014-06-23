@@ -95,6 +95,9 @@ static NSInteger kToolbarHeight = 44;
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position;
 - (void)hideCircle;
 
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
+- (void)synchronizeAddedBookmark;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -362,16 +365,16 @@ static NSInteger kToolbarHeight = 44;
     self.postDataSource.posts = [self.posts mutableCopy];
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
-    [self updateFromLocalDatabaseWithCallback:^{
-        if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
-            delegate.bookmarksNeedUpdate = NO;
-            
-            [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-                [self updateFromLocalDatabaseWithCallback:nil];
-            } progress:nil];
-        }
-    }];
+    if (self.postDataSource.posts.count == 0) {
+        [self updateFromLocalDatabaseWithCallback:^{
+            if (delegate.connectionAvailable) {
+                [self.pullToRefreshImageView startAnimating];
+                [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
+                    [self updateFromLocalDatabaseWithCallback:nil];
+                } progress:nil];
+            }
+        }];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -396,7 +399,7 @@ static NSInteger kToolbarHeight = 44;
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateFromLocalDatabaseWithCallback:)
+                                             selector:@selector(synchronizeAddedBookmark)
                                                  name:PPBookmarkEventNotificationName
                                                object:nil];
 }
@@ -666,6 +669,12 @@ static NSInteger kToolbarHeight = 44;
             }
         }
     }
+}
+
+- (void)synchronizeAddedBookmark {
+    [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
+        [self updateFromLocalDatabaseWithCallback:nil];
+    } progress:nil options:@{@"count": @(10)}];
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
