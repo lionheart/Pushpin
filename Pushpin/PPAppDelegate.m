@@ -361,10 +361,11 @@
                 FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 [results next];
                 alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
+                [results close];
+
                 results = [db executeQuery:@"SELECT COUNT(*) FROM rejected_bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 [results next];
                 alreadyRejected = [results intForColumnIndex:0] != 0;
-
                 [results close];
             }];
 
@@ -811,13 +812,14 @@
         
         FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
         BOOL success = [s next];
-
-#ifdef DELICIOUS
         if (success) {
             int version = [s intForColumnIndex:0];
             [s close];
             
+            [db beginTransaction];
+
             switch (version) {
+#ifdef DELICIOUS
                 case 0:
                     [db executeUpdate:
                      @"CREATE TABLE feeds("
@@ -884,18 +886,9 @@
                     
                 default:
                     break;
-            }
-            [db commit];
-        }
 #endif
-        
-#ifdef PINBOARD
-        if (success) {
-            int version = [s intForColumnIndex:0];
-            [s close];
 
-            [db beginTransaction];
-            switch (version) {
+#ifdef PINBOARD
                 case 0:
                     [db executeUpdate:
                      @"CREATE TABLE bookmark("
@@ -1100,10 +1093,14 @@
                     
                 default:
                     break;
+#endif
             }
+
             [db commit];
         }
-#endif
+        else {
+            [s close];
+        }
     }];
 }
 
