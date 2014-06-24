@@ -347,7 +347,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // XXX EXC_BAD_ACCESS
         self.clipboardBookmarkURL = [UIPasteboard generalPasteboard].string;
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!self.clipboardBookmarkURL || self.addBookmarkAlertView) {
                 return;
@@ -1090,7 +1090,7 @@
                 case 9:
                     self.communityFeedOrder = [self.communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)];
                     [db executeUpdate:@"PRAGMA user_version=10;"];
-                    
+
                 default:
                     break;
 #endif
