@@ -757,6 +757,7 @@ static NSInteger kTitleHeight = 40;
                 FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
                 [results next];
                 post = [PPUtilities dictionaryFromResultSet:results];
+                [results close];
             }];
 
             dispatch_async(dispatch_get_main_queue(), ^{

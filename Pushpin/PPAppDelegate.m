@@ -810,11 +810,12 @@
         [db executeUpdate:@"PRAGMA syncronous=OFF;"];
         
         FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
-        
+        BOOL success = [s next];
+
 #ifdef DELICIOUS
-        if ([s next]) {
+        if (success) {
             int version = [s intForColumnIndex:0];
-            [db beginTransaction];
+            [s close];
             
             switch (version) {
                 case 0:
@@ -889,8 +890,10 @@
 #endif
         
 #ifdef PINBOARD
-        if ([s next]) {
+        if (success) {
             int version = [s intForColumnIndex:0];
+            [s close];
+
             [db beginTransaction];
             switch (version) {
                 case 0:

@@ -260,6 +260,8 @@ static NSString *CellIdentifier = @"TagCell";
                         index++;
                     }
                 }
+                
+                [result close];
             }];
             
             NSInteger i;
@@ -425,48 +427,49 @@ static NSString *CellIdentifier = @"TagCell";
     if (!self.searchDisplayController.isActive) {
         dispatch_async(serialQueue, ^{
             NSArray *letters = [[UILocalizedIndexedCollation currentCollation] sectionTitles];
-            
-            FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-            [db open];
 
             NSMutableDictionary *updatedSectionTitles = [NSMutableDictionary dictionary];
             NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
             NSMutableDictionary *updatedDuplicates = [NSMutableDictionary dictionary];
 
-            FMResultSet *results = [db executeQuery:@"SELECT name, group_concat(name, ' '), SUM(count) FROM tag GROUP BY lower(name) ORDER BY lower(name) ASC"];
-            while ([results next]) {
-                NSString *name = [results stringForColumnIndex:0];
-                NSArray *names = [[results stringForColumnIndex:1] componentsSeparatedByString:@" "];
-                NSString *count = [results stringForColumnIndex:2];
-                NSMutableString *lossyName = [name mutableCopy];
-                CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
-                
-                if ([name length] == 0) {
-                    continue;
+            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *results = [db executeQuery:@"SELECT name, group_concat(name, ' '), SUM(count) FROM tag GROUP BY lower(name) ORDER BY lower(name) ASC"];
+                while ([results next]) {
+                    NSString *name = [results stringForColumnIndex:0];
+                    NSArray *names = [[results stringForColumnIndex:1] componentsSeparatedByString:@" "];
+                    NSString *count = [results stringForColumnIndex:2];
+                    NSMutableString *lossyName = [name mutableCopy];
+                    CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
+                    
+                    if ([name length] == 0) {
+                        continue;
+                    }
+                    
+                    if ([count length] == 0) {
+                        continue;
+                    }
+                    
+                    NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
+                    if (![letters containsObject:firstLetter]) {
+                        firstLetter = @"#";
+                    }
+                    
+                    NSMutableArray *temp = updatedSectionTitles[firstLetter];
+                    if (!temp) {
+                        temp = [NSMutableArray array];
+                    }
+                    
+                    if ([names count] > 0) {
+                        updatedDuplicates[name] = names;
+                    }
+                    
+                    updatedTagCounts[name] = count;
+                    [temp addObject:name];
+                    updatedSectionTitles[firstLetter] = temp;
                 }
                 
-                if ([count length] == 0) {
-                    continue;
-                }
-
-                NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
-                if (![letters containsObject:firstLetter]) {
-                    firstLetter = @"#";
-                }
-                
-                NSMutableArray *temp = updatedSectionTitles[firstLetter];
-                if (!temp) {
-                    temp = [NSMutableArray array];
-                }
-                
-                if ([names count] > 0) {
-                    updatedDuplicates[name] = names;
-                }
-
-                updatedTagCounts[name] = count;
-                [temp addObject:name];
-                updatedSectionTitles[firstLetter] = temp;
-            }
+                [results close];
+            }];
             
             // Handle section additions / removals
             NSArray *previousSortedTitles = [self sortedSectionTitles:self.sectionTitles];
