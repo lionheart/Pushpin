@@ -1032,7 +1032,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             DLog(@"Iterating posts");
             progress(0, total);
-            
+
             NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
             [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification
                                                                      object:nil
@@ -1062,7 +1062,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           __block CGFloat amountToAdd = (CGFloat)inserted.count / posts.count;
                                           
-                                          [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                          [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                              [db beginTransaction];
+
                                               for (NSString *hash in inserted) {
                                                   NSDictionary *post = bookmarks[hash];
                                                   
@@ -1147,6 +1149,8 @@ static BOOL kPinboardSyncInProgress = NO;
                                               DLog(@"Updating tags");
                                               [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                                               [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+                                              
+                                              [db commit];
                                           }];
                                           
                                           NSDate *endDate = [NSDate date];
@@ -1163,7 +1167,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           [[PPAppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
                                           kPinboardSyncInProgress = NO;
-                                          
+
                                           progress(total, total);
                                           
                                           NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];

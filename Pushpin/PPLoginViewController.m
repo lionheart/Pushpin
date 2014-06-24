@@ -283,6 +283,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             };
 
 #ifdef DELICIOUS
+            [delegate migrateDatabase];
+
             LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
                                        password:self.passwordTextField.text
@@ -319,6 +321,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
 #ifdef PINBOARD
+            [delegate migrateDatabase];
+
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:self.usernameTextField.text
                                       password:self.passwordTextField.text
