@@ -803,6 +803,11 @@
 }
 
 - (void)migrateDatabase {
+    // Create the database if it does not yet exist.
+    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
+    [db open];
+    [db close];
+
     [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
         // http://stackoverflow.com/a/875422/39155
         [db executeUpdate:@"PRAGMA cache_size=100;"];
