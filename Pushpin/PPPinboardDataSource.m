@@ -255,6 +255,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSString *url = [results stringForColumnIndex:0];
                     [previous addObject:@{@"u": url}];
                 }
+
                 [results close];
             }];
 

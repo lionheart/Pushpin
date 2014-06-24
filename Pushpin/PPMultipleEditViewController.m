@@ -313,6 +313,8 @@ static NSString *CellIdentifier = @"Cell";
                                 }
                             }
                         }
+                        
+                        [result close];
                     }];
                     
                     for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {

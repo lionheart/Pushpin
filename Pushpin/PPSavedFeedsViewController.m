@@ -53,13 +53,16 @@ static NSString *CellIdentifier = @"Cell";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
             [db beginTransaction];
+
             for (NSString *components in iCloudFeeds) {
                 [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
             }
+
             [db commit];
+
+            [self.feeds removeAllObjects];
             
             FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-            [self.feeds removeAllObjects];
             while ([result next]) {
                 NSString *componentString = [result stringForColumnIndex:0];
                 NSArray *components = [componentString componentsSeparatedByString:@" "];
