@@ -147,16 +147,28 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil) style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
+
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil)
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self
+                                                                             action:@selector(leftBarButtonItemTouchUpInside:)];
+
     settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Settings", nil), NSLocalizedString(@"Cancel", nil), nil];
 
-    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
+    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
+                                                                          style:UIBarButtonItemStyleDone
+                                                                         target:self
+                                                                         action:@selector(toggleEditing:)];
+
     editBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Edit", nil), NSLocalizedString(@"Done", nil), nil];
 
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil) style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil)
+                                                                         style:UIBarButtonItemStyleDone
+                                                                        target:self
+                                                                        action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
@@ -1246,19 +1258,22 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
 
         [CATransaction setCompletionBlock:^{
-            NSMutableArray *allIndexPaths = [NSMutableArray array];
-            for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
-                for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
-                    [allIndexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSMutableArray *allIndexPaths = [NSMutableArray array];
+                for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
+                    for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
+                        [allIndexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                    }
                 }
-            }
-
-            if (allIndexPaths.count <= PPPersonalFeeds().count + PPCommunityFeeds().count) {
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView endUpdates];
-            }
+                
+                if (allIndexPaths.count <= PPPersonalFeeds().count + PPCommunityFeeds().count) {
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView endUpdates];
+                }
+            });
         }];
+
         [self.tableView endUpdates];
         [CATransaction commit];
     }
