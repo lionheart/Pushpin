@@ -411,7 +411,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           [queue enqueueNotification:note postingStyle:NSPostASAP];
                                           
                                           [[Mixpanel sharedInstance] track:@"Synced bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
-
+                                          
                                           BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
                                           completion(updatesMade, nil);
                                       }];

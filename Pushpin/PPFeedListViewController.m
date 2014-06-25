@@ -1743,7 +1743,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
                 
                 [resultSet next];
-                
                 NSString *count = [resultSet stringForColumnIndex:0];
                 [resultSet close];
 

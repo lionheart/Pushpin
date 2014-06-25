@@ -432,7 +432,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                 NSInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-
+                
                 if (index >= 0) {
                     [self.posts removeObjectAtIndex:index];
                     [self.metadata removeObjectAtIndex:index];
@@ -1033,7 +1033,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 else {
                     results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
                 }
-
+                
                 previousBookmarks = [NSMutableArray array];
                 while ([results next]) {
                     [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
@@ -1430,18 +1430,18 @@ static BOOL kPinboardSyncInProgress = NO;
                                                        NSMutableArray *components = [NSMutableArray array];
                                                        NSMutableArray *parameters = [NSMutableArray array];
                                                        [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-
+                                                       
                                                        NSMutableArray *urlComponents = [NSMutableArray array];
                                                        for (NSString *url in urls) {
                                                            [urlComponents addObject:@"?"];
                                                            [parameters addObject:url];
                                                        }
-
+                                                       
                                                        [components addObject:[urlComponents componentsJoinedByString:@", "]];
                                                        [components addObject:@")"];
-
+                                                       
                                                        NSString *query = [components componentsJoinedByString:@" "];
-
+                                                       
                                                        HandleSearch(query, parameters);
                                                    }
                                                });

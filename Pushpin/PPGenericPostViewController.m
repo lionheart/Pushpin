@@ -686,7 +686,7 @@ static NSInteger kToolbarHeight = 44;
         if (!self.isProcessingPosts) {
             self.isProcessingPosts = YES;
             BOOL firstLoad = self.posts.count == 0;
-
+            
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             
             if (firstLoad) {
@@ -732,7 +732,7 @@ static NSInteger kToolbarHeight = 44;
                                                  else {
 #warning Crash here
                                                      DLog(@"B: %@", date);
-
+                                                     
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
