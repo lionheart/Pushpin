@@ -674,18 +674,19 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)synchronizeAddedBookmark {
-    [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-        [self updateFromLocalDatabaseWithCallback:nil];
+    [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+        if (updated) {
+            [self updateFromLocalDatabaseWithCallback:nil];
+        }
     } progress:nil options:@{@"count": @(10)}];
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
-    if (!self.isProcessingPosts) {
-        self.isProcessingPosts = YES;
-        CGFloat width = [self currentWidth];
-        BOOL firstLoad = self.posts.count == 0;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.isProcessingPosts) {
+            self.isProcessingPosts = YES;
+            BOOL firstLoad = self.posts.count == 0;
+
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             
             if (firstLoad) {
