@@ -158,9 +158,9 @@
     }];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
-    completion(nil);
+    completion(YES, nil);
 }
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index {

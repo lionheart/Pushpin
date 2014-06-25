@@ -35,7 +35,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (NSDictionary *)paramsForPost:(NSDictionary *)post dateError:(BOOL)dateError;
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress
                               count:(NSInteger)count
                         skipStarred:(BOOL)skipStarred;
@@ -952,14 +952,14 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
     [self syncBookmarksWithCompletion:completion
                              progress:progress
                               options:nil];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress
                             options:(NSDictionary *)options {
     BOOL skipStarred = NO;
@@ -978,7 +978,7 @@ static BOOL kPinboardSyncInProgress = NO;
                           skipStarred:skipStarred];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress
                               count:(NSInteger)count
                         skipStarred:(BOOL)skipStarred {
@@ -1175,12 +1175,13 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
 
+                                          BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
                                           if (skipStarred) {
-                                              completion(nil);
+                                              completion(updatesMade, nil);
                                           }
                                           else {
                                               [self updateStarredPostsWithCompletion:^(NSError *error) {
-                                                  completion(error);
+                                                  completion(updatesMade, error);
                                               }];
                                           }
                                       }];
@@ -1207,14 +1208,14 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 });
                                             }
                                             failure:^(NSError *error) {
-                                                completion(error);
+                                                completion(NO, error);
                                             }];
                     });
                 }
                 else {
                     kPinboardSyncInProgress = NO;
                     [self updateStarredPostsWithCompletion:^(NSError *error) {
-                        completion(error);
+                        completion(NO, error);
                     }];
                 }
             });
@@ -1222,7 +1223,7 @@ static BOOL kPinboardSyncInProgress = NO;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:^(NSError *error) {
-                completion(error);
+                completion(NO, error);
             }];
         });
     });

@@ -113,9 +113,9 @@
     return self.posts[index][@"url"];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
-    completion(nil);
+    completion(YES, nil);
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion

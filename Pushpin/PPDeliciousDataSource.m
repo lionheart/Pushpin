@@ -215,14 +215,14 @@ static BOOL kPinboardSyncInProgress = NO;
     return _totalNumberOfPosts;
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
     [self syncBookmarksWithCompletion:completion
                              progress:progress
                               options:nil];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress
                             options:(NSDictionary *)options {
     if (!progress) {
@@ -411,12 +411,14 @@ static BOOL kPinboardSyncInProgress = NO;
                                           [queue enqueueNotification:note postingStyle:NSPostASAP];
                                           
                                           [[Mixpanel sharedInstance] track:@"Synced bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
-                                          completion(nil);
+
+                                          BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
+                                          completion(updatesMade, nil);
                                       }];
         };
 
         void (^BookmarksFailureBlock)(NSError *) = ^(NSError *error) {
-            completion(error);
+            completion(NO, error);
             kPinboardSyncInProgress = NO;
         };
 
@@ -449,7 +451,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 else {
                     kPinboardSyncInProgress = NO;
-                    completion(nil);
+                    completion(NO, nil);
                 }
             });
         };
@@ -457,7 +459,7 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [delicious lastUpdateWithCompletion:^(NSDate *date, NSError *error) {
                 if (error) {
-                    completion(error);
+                    completion(NO, error);
                 }
                 else {
                     BookmarksUpdatedTimeSuccessBlock(date);
