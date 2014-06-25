@@ -7,15 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserVoice.h"
 #import "UVCallback.h"
 #import "UVSigninManager.h"
 #import "UVDefines.h"
+#import "UVModelDelegate.h"
 
 @class UVActivityIndicator;
 
 // Base class for UserVoice content view controllers. Will handle things like
 // the search box, help bar, etc.
-@interface UVBaseViewController : UIViewController<UIAlertViewDelegate, UITextFieldDelegate, UVSigninManagerDelegate> {
+@interface UVBaseViewController : UIViewController<UIAlertViewDelegate, UITextFieldDelegate, UVSigninManagerDelegate, UVModelDelegate> {
     BOOL _firstController;
     UITableView *_tableView;
     NSInteger _kbHeight;
@@ -87,5 +89,8 @@
 - (void)configureView:(UIView *)superview subviews:(NSDictionary *)viewsDict constraints:(NSArray *)constraintStrings finalCondition:(BOOL)includeFinalConstraint finalConstraint:(NSString *)finalConstraint;
 - (UITextField *)configureView:(UIView *)view label:(NSString *)labelText placeholder:(NSString *)placeholderText;
 - (UIView *)poweredByView;
+
+- (void)correctSearchDisplayFrames:(UISearchDisplayController *)controller;
+- (void)correctFramesForSearchDisplayControllerBeginSearch:(BOOL)beginSearch searchDisplayController:(UISearchDisplayController *)controller;
 
 @end

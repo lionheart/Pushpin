@@ -7,6 +7,7 @@
 //
 
 #import "UVInitialLoadManager.h"
+#import "UserVoice.h"
 #import "UVHelpTopic.h"
 #import "UVArticle.h"
 #import "UVAccessToken.h"
@@ -19,9 +20,11 @@
 #import "UVUtils.h"
 #import "UVForum.h"
 #import "UVBabayaga.h"
+#import "UVBaseViewController.h"
 
 @implementation UVInitialLoadManager {
     UIAlertView *_errorAlertView;
+    BOOL _complete;
 }
 
 + (UVInitialLoadManager *)loadWithDelegate:(id)delegate action:(SEL)action {
@@ -47,7 +50,7 @@
 }
 
 - (void)loadUser {
-    if ([UVSession currentSession].config.ssoToken != nil || [UVSession currentSession].config.email != nil) {
+    if ([UVSession currentSession].config.ssoToken != nil || ([UVSession currentSession].config.guid != nil && ![UVAccessToken existsForGuid:[UVSession currentSession].config.guid])) {
         [UVRequestToken getRequestTokenWithDelegate:self];
     } else if ([UVAccessToken exists]) {
         [UVSession currentSession].accessToken = [[UVAccessToken alloc] initWithExisting];
@@ -60,9 +63,12 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 - (void)checkComplete {
-    if (_configDone && _userDone && _topicsDone && _articlesDone && _forumDone) {
-        if (_dismissed) return;
-        [_delegate performSelector:_action];
+    @synchronized(self) {
+        if (_configDone && _userDone && _topicsDone && _articlesDone && _forumDone) {
+            if (_dismissed || _complete) return;
+            _complete = YES;
+            [_delegate performSelector:_action];
+        }
     }
 }
 #pragma clang diagnostic pop
@@ -72,8 +78,11 @@
     [UVSession currentSession].requestToken = token;
     if ([UVSession currentSession].config.ssoToken != nil) {
         [UVUser findOrCreateWithSsoToken:[UVSession currentSession].config.ssoToken delegate:self];
-    } else if ([UVSession currentSession].config.email != nil) {
+    } else if ([UVSession currentSession].config.guid != nil) {
         [UVUser findOrCreateWithGUID:[UVSession currentSession].config.guid andEmail:[UVSession currentSession].config.email andName:[UVSession currentSession].config.displayName andDelegate:self];
+    } else {
+        // this should never happen
+        [self didLoadUser];
     }
 }
 
@@ -174,23 +183,23 @@
             [self loadUser];
             return;
         } else {
-            message = NSLocalizedStringFromTable(@"This application didn't configure UserVoice properly", @"UserVoice", nil);
+            message = NSLocalizedStringFromTableInBundle(@"This application didn't configure UserVoice properly", @"UserVoice", [UserVoice bundle], nil);
         }
     } else if ([UVUtils isConnectionError:error]) {
-        message = NSLocalizedStringFromTable(@"There appears to be a problem with your network connection, please check your connectivity and try again.", @"UserVoice", nil);
+        message = NSLocalizedStringFromTableInBundle(@"There appears to be a problem with your network connection, please check your connectivity and try again.", @"UserVoice", [UserVoice bundle], nil);
     } else {
-        message = NSLocalizedStringFromTable(@"Sorry, there was an error in the application.", @"UserVoice", nil);
+        message = NSLocalizedStringFromTableInBundle(@"Sorry, there was an error in the application.", @"UserVoice", [UserVoice bundle], nil);
     }
     
     if (_errorAlertView) {
         return;
     }
     
-    _errorAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Error", @"UserVoice", nil)
+    _errorAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Error", @"UserVoice", [UserVoice bundle], nil)
                                                  message:message
                                                 delegate:self
                                        cancelButtonTitle:nil
-                                       otherButtonTitles:NSLocalizedStringFromTable(@"OK", @"UserVoice", nil), nil];
+                                       otherButtonTitles:NSLocalizedStringFromTableInBundle(@"OK", @"UserVoice", [UserVoice bundle], nil), nil];
     [_errorAlertView show];
 }
 

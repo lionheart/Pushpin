@@ -15,10 +15,9 @@
 #import "UVUtils.h"
 #import "UVRequestContext.h"
 #import "HRFormatJson.h"
+#import "UVConfig.h"
 
-@implementation UVBabayaga {
-    NSMutableArray *_queue;
-}
+@implementation UVBabayaga
 
 + (UVBabayaga *)instance {
     static UVBabayaga *_instance;
@@ -46,14 +45,9 @@
     [UVBabayaga track:event props:@{@"text" : text, @"ids" : ids}];
 }
 
-+ (void)flush {
-    [[UVBabayaga instance] flush];
-}
-
 - (id)init {
     self = [super init];
     if (self) {
-        _queue = [NSMutableArray new];
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         _uvts = [prefs stringForKey:@"uv-uvts"];
     }
@@ -70,24 +64,18 @@
 }
 
 - (void)track:(NSString *)event props:(NSDictionary *)props {
-    if ([UVSession currentSession].clientConfig) {
-       [self sendTrack:event props:props];
-    } else {
-        [_queue addObject:props ? @{@"event" : event, @"props" : props} : @{@"event": event}];
-    }
-}
-
-- (void)flush {
-    for (NSDictionary *dict in _queue) {
-        [self track:[dict objectForKey:@"event"] props:[dict objectForKey:@"props"]];
-    }
-    _queue = [NSMutableArray new];
-}
-
-- (void)sendTrack:(NSString *)event props:(NSDictionary *)props {
     // NSLog(@"sending track: %@", event);
-    NSInteger subdomainId = [UVSession currentSession].clientConfig.subdomain.subdomainId;
-    NSString *path = [NSString stringWithFormat:@"%d/%@/%@", (int)subdomainId, CHANNEL, event];
+    NSString *subdomain;
+    NSString *route;
+    if ([UVSession currentSession].clientConfig) {
+        subdomain = [NSString stringWithFormat:@"%d", (int)[UVSession currentSession].clientConfig.subdomain.subdomainId];
+        route = @"t";
+    } else {
+        subdomain = [[UVSession currentSession].config.site componentsSeparatedByString:@"."][0];
+        route = @"t/k";
+    }
+    NSString *channel = [event isEqualToString:VIEW_APP] ? EXTERNAL_CHANNEL : CHANNEL;
+    NSString *path = [NSString stringWithFormat:@"/%@/%@/%@/%@", route, subdomain, channel, event];
     if (_uvts) {
         path = [NSString stringWithFormat:@"%@/%@", path, _uvts];
     }
@@ -108,7 +96,7 @@
         [params setObject:encoded forKey:@"d"];
     }
     NSDictionary *opts = @{
-        kHRClassAttributesBaseURLKey  : [NSURL URLWithString:@"https://by.uservoice.com/t/"],
+        kHRClassAttributesBaseURLKey  : [NSURL URLWithString:@"https://by.uservoice.com"],
         kHRClassAttributesDelegateKey : self,
         @"params" : params
     };
