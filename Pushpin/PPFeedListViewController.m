@@ -1723,8 +1723,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
             
 #ifdef PINBOARD
-            [self updateSavedFeeds:db];
-
             NSArray *resultSets = @[
                                     [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
                                     [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
@@ -1732,7 +1730,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                     [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
                                     [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
                                     [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-                                    ];
+                                ];
 #endif
             
             NSString *sectionName = PPSections()[0];
@@ -1772,6 +1770,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
 
                 [self.tableView endUpdates];
+
+                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    [self updateSavedFeeds:db];
+                }];
             }
         });
     });
