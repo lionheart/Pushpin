@@ -744,18 +744,20 @@ static NSInteger kToolbarHeight = 44;
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
                                                  
-                                                 self.isProcessingPosts = NO;
-                                                 
                                                  if (callback) {
                                                      callback();
                                                  }
+
+                                                 self.isProcessingPosts = NO;
                                              });
                                          }];
                     });
-                } cancel:nil width:width];
+                } cancel:^BOOL{
+                    return NO;
+                } width:self.currentWidth];
             });
-        });
-    }
+        }
+    });
 }
 
 - (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification {
