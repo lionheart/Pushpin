@@ -49,23 +49,20 @@
 }
 
 - (void)retrieveMoreSuggestions {
-    NSInteger page = (_suggestions.count / SUGGESTIONS_PAGE_SIZE) + 1;
+    NSInteger page = (_forum.suggestions.count / SUGGESTIONS_PAGE_SIZE) + 1;
     [self showActivityIndicator];
     [UVSuggestion getWithForum:_forum page:page delegate:self];
 }
 
 - (void)populateSuggestions {
-    _suggestions = [NSMutableArray arrayWithCapacity:10];
     _forum.suggestions = [NSMutableArray arrayWithCapacity:10];
     [self retrieveMoreSuggestions];
 }
 
 - (void)didRetrieveSuggestions:(NSArray *)theSuggestions {
     if (theSuggestions.count > 0) {
-        [_suggestions addObjectsFromArray:theSuggestions];
+        [_forum.suggestions addObjectsFromArray:theSuggestions];
     }
-
-    [_forum.suggestions addObjectsFromArray:theSuggestions];
     [self hideActivityIndicator];
     [_tableView reloadData];
 }
@@ -84,7 +81,7 @@
 
 - (void)initCellForAdd:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.text = NSLocalizedStringFromTable(@"Post an idea", @"UserVoice", nil);
+    cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Post an idea", @"UserVoice", [UserVoice bundle], nil);
     if (IOS7) {
         cell.textLabel.textColor = cell.textLabel.tintColor;
     }
@@ -93,7 +90,7 @@
 - (void)initCellForSuggestion:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    UIImageView *heart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"uv_heart.png"]];
+    UIImageView *heart = [UVUtils imageViewWithImageNamed:@"uv_heart.png"];
     UILabel *subs = [UILabel new];
     subs.font = [UIFont systemFontOfSize:14];
     subs.textColor = [UIColor grayColor];
@@ -126,7 +123,7 @@
 }
 
 - (void)customizeCellForSuggestion:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
-    [self customizeCellForSuggestion:[_suggestions objectAtIndex:indexPath.row] cell:cell];
+    [self customizeCellForSuggestion:[_forum.suggestions objectAtIndex:indexPath.row] cell:cell];
 }
 
 - (void)initCellForResult:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
@@ -150,7 +147,7 @@
 
 - (void)customizeCellForLoad:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     UILabel *label = (UILabel *)[cell viewWithTag:LOADING];
-    label.text = _loading ? NSLocalizedStringFromTable(@"Loading...", @"UserVoice", nil) : NSLocalizedStringFromTable(@"Load more", @"UserVoice", nil);
+    label.text = _loading ? NSLocalizedStringFromTableInBundle(@"Loading...", @"UserVoice", [UserVoice bundle], nil) : NSLocalizedStringFromTableInBundle(@"Load more", @"UserVoice", [UserVoice bundle], nil);
 }
 
 - (void)customizeCellForSuggestion:(UVSuggestion *)suggestion cell:(UITableViewCell *)cell {
@@ -168,7 +165,7 @@
 - (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier;
     if (theTableView == _tableView) {
-        identifier = (indexPath.section == 0 && [UVSession currentSession].config.showPostIdea) ? @"Add" : (indexPath.row < _suggestions.count) ? @"Suggestion" : @"Load";
+        identifier = (indexPath.section == 0 && [UVSession currentSession].config.showPostIdea) ? @"Add" : (indexPath.row < _forum.suggestions.count) ? @"Suggestion" : @"Load";
     } else {
         identifier = @"Result";
     }
@@ -183,9 +180,7 @@
     if (section == 0 && [UVSession currentSession].config.showPostIdea && theTableView == _tableView) {
         return 1;
     } else if (theTableView == _tableView) {
-        int loadedCount = _suggestions.count;
-        int suggestionsCount = _forum.suggestionsCount;
-        return loadedCount + (loadedCount >= suggestionsCount || suggestionsCount < SUGGESTIONS_PAGE_SIZE ? 0 : 1);
+        return _forum.suggestions.count + (_forum.suggestions.count < _forum.suggestionsCount || _loading ? 1 : 0);
     } else {
         return _searchResults.count;
     }
@@ -200,7 +195,7 @@
 - (CGFloat)tableView:(UITableView *)theTableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && [UVSession currentSession].config.showPostIdea && theTableView == _tableView) {
         return 44;
-    } else if (theTableView == _tableView && indexPath.row < _suggestions.count) {
+    } else if (theTableView == _tableView && indexPath.row < _forum.suggestions.count) {
         return [self heightForDynamicRowWithReuseIdentifier:@"Suggestion" indexPath:indexPath];
     } else if (theTableView != _tableView) {
         return [self heightForDynamicRowWithReuseIdentifier:@"Result" indexPath:indexPath];
@@ -232,8 +227,8 @@
     if (theTableView == _tableView) {
         if (indexPath.section == 0 && [UVSession currentSession].config.showPostIdea) {
             [self composeButtonTapped];
-        } else if (indexPath.row < _suggestions.count) {
-            [self showSuggestion:[_suggestions objectAtIndex:indexPath.row]];
+        } else if (indexPath.row < _forum.suggestions.count) {
+            [self showSuggestion:[_forum.suggestions objectAtIndex:indexPath.row]];
         } else {
             [self retrieveMoreSuggestions];
         }
@@ -259,6 +254,33 @@
     [UVSuggestion searchWithForum:_forum query:searchBar.text delegate:self];
 }
 
+#pragma mark ===== UISearchDisplayControllerDelegate Methods =====
+
+- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    controller.searchBar.showsScopeBar = NO;
+    if (IOS7 && IPAD) {
+        [self correctFramesForSearchDisplayControllerBeginSearch:NO searchDisplayController:_searchController];
+    }
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    if (IOS7 && IPAD) {
+        [self correctFramesForSearchDisplayControllerBeginSearch:YES searchDisplayController:_searchController];
+    }
+}
+
+- (void)searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller {
+    if (IOS7 && IPAD) {
+        [self correctSearchDisplayFrames:_searchController];
+    }
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
+    if (IOS7 && IPAD) {
+        controller.searchResultsTableView.contentInset = UIEdgeInsetsMake(self.searchController.searchBar.frame.size.height, 0.f, 0.f, 0.f);
+    }
+}
+
 #pragma mark ===== Basic View Methods =====
 
 - (void)loadView {
@@ -267,7 +289,7 @@
     [self setupGroupedTableView];
 
     UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
-    searchBar.placeholder = NSLocalizedStringFromTable(@"Search forum", @"UserVoice", nil);
+    searchBar.placeholder = NSLocalizedStringFromTableInBundle(@"Search forum", @"UserVoice", [UserVoice bundle], nil);
     searchBar.delegate = self;
 
     _searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
@@ -284,12 +306,10 @@
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                                                target:self
                                                                                                action:@selector(composeButtonTapped)];
-        if ([self.navigationItem.rightBarButtonItem respondsToSelector:@selector(setTintColor:)])
-            self.navigationItem.rightBarButtonItem.tintColor = [UIColor colorWithRed:0.24f green:0.51f blue:0.95f alpha:1.0f];
     }
 
     if ([UVSession currentSession].isModal && _firstController) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTable(@"Close", @"UserVoice", nil)
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Close", @"UserVoice", [UserVoice bundle], nil)
                                                                                  style:UIBarButtonItemStylePlain
                                                                                 target:self
                                                                                 action:@selector(dismiss)];
@@ -307,7 +327,7 @@
 
 - (void)initNavigationItem {
     self.navigationItem.title = _forum.name;
-    self.exitButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTable(@"Cancel", @"UserVoice", nil)
+    self.exitButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"UserVoice", [UserVoice bundle], nil)
                                                        style:UIBarButtonItemStylePlain
                                                       target:self
                                                       action:@selector(dismiss)];
@@ -319,10 +339,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    if (_forum) {
-        if (!_suggestions) {
-            [self populateSuggestions];
-        }
+    if (_forum && !_forum.suggestions.count) {
+        [self populateSuggestions];
     }
     [_tableView reloadData];
 }
