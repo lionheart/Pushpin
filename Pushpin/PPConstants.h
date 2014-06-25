@@ -128,10 +128,6 @@ typedef enum : NSInteger {
     kPushpinFilterNone
 } kPushpinFilterType;
 
-static dispatch_queue_t PPSerialQueue() {
-    return dispatch_queue_create("Pushpin Serial Queue", DISPATCH_QUEUE_SERIAL);
-}
-
 static NSString *PPErrorDomain = @"PPErrorDomain";
 
 static NSString *emptyString = @"";
