@@ -184,25 +184,27 @@ static NSString *CellIdentifier = @"TagCell";
     NSString *tag;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         tag = self.filteredTags[indexPath.row];
+        cell.textLabel.text = tag;
+        cell.textLabel.font = [PPTheme textLabelFont];
     }
     else {
         tag = [self tagForIndexPath:indexPath];
-    }
 
-    NSArray *tags = self.duplicates[tag];
-    if ([tags count] > 1) {
-        NSString *tagsString = [tags componentsJoinedByString:@" · "];
-        NSRange range = NSMakeRange([[tags firstObject] length] + 1, [tagsString length] - [[tags firstObject] length] - 1);
-        
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:tagsString
-                                                                                           attributes:@{NSForegroundColorAttributeName: [UIColor blackColor],
-                                                                                                        NSFontAttributeName: [PPTheme textLabelFont] }];
-        [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
-        cell.textLabel.attributedText = attributedText;
-    }
-    else {
-    cell.textLabel.text = tag;
-    cell.textLabel.font = [PPTheme textLabelFont];
+        NSArray *tags = self.duplicates[tag];
+        if ([tags count] > 1) {
+            NSString *tagsString = [tags componentsJoinedByString:@" · "];
+            NSRange range = NSMakeRange([[tags firstObject] length] + 1, [tagsString length] - [[tags firstObject] length] - 1);
+            
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:tagsString
+                                                                                               attributes:@{NSForegroundColorAttributeName: [UIColor blackColor],
+                                                                                                            NSFontAttributeName: [PPTheme textLabelFont] }];
+            [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
+            cell.textLabel.attributedText = attributedText;
+        }
+        else {
+            cell.textLabel.text = tag;
+            cell.textLabel.font = [PPTheme textLabelFont];
+        }
     }
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", self.tagCounts[tag]];
@@ -462,8 +464,12 @@ static NSString *CellIdentifier = @"TagCell";
                     if ([names count] > 0) {
                         updatedDuplicates[name] = names;
                     }
-                    
+
                     updatedTagCounts[name] = count;
+                    for (NSString *otherName in names) {
+                        updatedTagCounts[otherName] = count;
+                    }
+
                     [temp addObject:name];
                     updatedSectionTitles[firstLetter] = temp;
                 }

@@ -488,7 +488,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         case ASPinboardSearchScopeFullText: {
                             // Check if the user has no username or password set.
                             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-                            if (YES || [delegate.username length] == 0 || [delegate.password length] == 0) {
+                            if ([delegate.username length] == 0 || [delegate.password length] == 0) {
                                 [[[UIAlertView alloc] initWithTitle:nil
                                                             message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
                                                            delegate:nil
