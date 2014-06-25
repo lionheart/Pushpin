@@ -23,7 +23,7 @@ pod 'ADNActivityCollection', :podspec => 'Specs/ADNActivityCollection.podspec'
 pod 'ASPinboard', :local => 'Vendor/ASPinboard'
 pod 'OpenInChrome', '0.0.1'
 pod 'CrashlyticsFramework', '2.2.1'
-pod 'AFNetworking', '2.3.1'
+pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
 
 target 'DebugPods', :exclusive => true do
