@@ -199,6 +199,7 @@
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
 		37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
+		37BCAD3F194B47BC008E1CB1 /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
@@ -3339,6 +3340,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3427,6 +3429,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3516,6 +3519,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -3603,6 +3607,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3755,6 +3760,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3780,6 +3786,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

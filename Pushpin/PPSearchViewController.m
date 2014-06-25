@@ -112,7 +112,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil), NSLocalizedString(@"Clear", nil), nil];
     self.untaggedActionSheet.destructiveButtonIndex = 2;
-
+    
     self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                               delegate:self
                                                      cancelButtonTitle:nil
@@ -124,7 +124,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     }
     [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
     self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
-
+    
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
