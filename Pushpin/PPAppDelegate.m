@@ -1453,7 +1453,6 @@
     if (!_personalFeedOrder) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _personalFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.PersonalFeedOrder"];
-        _personalFeedOrder = [_personalFeedOrder subarrayWithRange:NSMakeRange(0, _personalFeedOrder.count - self.hiddenFeedNames.count)];
     }
     return _personalFeedOrder;
 }
