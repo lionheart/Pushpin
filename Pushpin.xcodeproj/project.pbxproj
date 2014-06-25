@@ -111,6 +111,7 @@
 		373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */; };
 		373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BB16F81C6900A7D7C8 /* ptr_32.png */; };
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
+		373EA453195B4230006547BE /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -126,7 +127,6 @@
 		3751D18818346EED00E0A42A /* mobilized-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18618346EED00E0A42A /* mobilized-active.png */; };
 		3751D18918346EED00E0A42A /* mobilized-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18718346EED00E0A42A /* mobilized-active@2x.png */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
-		375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
 		3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
@@ -199,7 +199,6 @@
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
 		37BC1BDB1889C6740022020A /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
-		37BCAD3F194B47BC008E1CB1 /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
 		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
 		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
@@ -1146,7 +1145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */,
+				373EA453195B4230006547BE /* libDebugPods.a in Frameworks */,
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
@@ -3311,7 +3310,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
-					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "EF630651-DF34-415B-8E4F-CFD13DE9BC42";
 				SDKROOT = iphoneos;
@@ -3400,7 +3398,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
-					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "9623E780-C739-4399-B64D-EBCB0055A6B9";
 				SDKROOT = iphoneos;
@@ -3542,7 +3539,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -3578,7 +3575,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
-					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "78C02057-5311-42EF-8EE7-727BD47B6F43";
 				SDKROOT = iphoneos;
@@ -3596,7 +3592,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3632,7 +3628,7 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3668,7 +3664,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-all_load",
-					"-lDebugPods",
 				);
 				PROVISIONING_PROFILE = "37825474-DEA4-4390-B197-C863DD9B187C";
 				SDKROOT = iphoneos;
