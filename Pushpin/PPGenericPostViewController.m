@@ -369,8 +369,10 @@ static NSInteger kToolbarHeight = 44;
         [self updateFromLocalDatabaseWithCallback:^{
             if (delegate.connectionAvailable) {
                 [self.pullToRefreshImageView startAnimating];
-                [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-                    [self updateFromLocalDatabaseWithCallback:nil];
+                [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                    if (updated) {
+                        [self updateFromLocalDatabaseWithCallback:nil];
+                    }
                 } progress:nil];
             }
         }];
@@ -1469,8 +1471,10 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-                [self updateFromLocalDatabaseWithCallback:nil];
+            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                if (updated) {
+                    [self updateFromLocalDatabaseWithCallback:nil];
+                }
             } progress:nil];
         }
         else if (offset < 0) {
