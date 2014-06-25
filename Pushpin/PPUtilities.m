@@ -12,7 +12,7 @@
 @implementation PPUtilities
 
 + (NSString *)stringByTrimmingWhitespace:(id)object {
-    if ([object isEqual:[NSNull null]]) {
+    if (!object || [object isEqual:[NSNull null]]) {
         return @"";
     }
     else {

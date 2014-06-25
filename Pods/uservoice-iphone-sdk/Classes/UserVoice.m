@@ -16,25 +16,33 @@
 #import "UVNavigationController.h"
 #import "UVUtils.h"
 #import "UVBabayaga.h"
-#import "UVClientConfig.h"
 
 @implementation UserVoice
+
+static id<UVDelegate> userVoiceDelegate;
+static NSBundle *userVoiceBundle;
 
 + (void)initialize:(UVConfig *)config {
     [[UVSession currentSession] clear];
     [UVBabayaga instance].userTraits = [config traits];
     [UVSession currentSession].config = config;
     [UVBabayaga track:VIEW_APP];
-    // preload client config so that babayaga can flush
-    [UVClientConfig getWithDelegate:self];
 }
 
-+ (void)didRetrieveClientConfig:(UVClientConfig *)clientConfig {
-    [UVSession currentSession].clientConfig = clientConfig;
++ (NSBundle *)bundle {
+    if (!userVoiceBundle) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:@"UserVoice" withExtension:@"bundle"];
+        if (url) {
+            userVoiceBundle = [NSBundle bundleWithURL:url];
+        }
+    }
+    if (!userVoiceBundle) {
+        userVoiceBundle = [NSBundle mainBundle];
+    }
+    return userVoiceBundle;
 }
 
 + (UINavigationController *)getNavigationControllerForUserVoiceControllers:(NSArray *)viewControllers {
-    [UVBabayaga track:VIEW_CHANNEL];
     [UVSession currentSession].isModal = YES;
     UINavigationController *navigationController = [UVNavigationController new];
     [UVUtils applyStylesheetToNavigationController:navigationController];
@@ -129,7 +137,6 @@
     [UVBabayaga track:event];
 }
 
-static id<UVDelegate> userVoiceDelegate;
 + (void)setDelegate:(id<UVDelegate>)delegate {
     userVoiceDelegate = delegate;
 }
@@ -139,7 +146,7 @@ static id<UVDelegate> userVoiceDelegate;
 }
 
 + (NSString *)version {
-    return @"3.0.2";
+    return @"3.1.0";
 }
 
 

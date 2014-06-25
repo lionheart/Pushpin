@@ -19,10 +19,10 @@ PODS:
   - AFNetworking/UIKit (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ASPinboard (0.0.2):
+  - ASPinboard (0.0.3):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
-  - CrashlyticsFramework (2.1.7)
+  - CrashlyticsFramework (2.2.1)
   - FMDB (2.3):
     - FMDB/standard
   - FMDB/common (2.3)
@@ -32,31 +32,31 @@ PODS:
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.11)
-  - LHSDelicious (0.1.0):
+  - LHSDelicious (0.1.1):
     - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
   - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
   - LHSKeyboardAdjusting (0.0.1)
-  - Mixpanel (2.3.6)
-  - MWFeedParser (1.0.0):
+  - Mixpanel (2.4.0)
+  - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser
     - MWFeedParser/NSDate+InternetDateTime
     - MWFeedParser/NSString+HTML
-  - MWFeedParser/FeedParser (1.0.0):
+  - MWFeedParser/FeedParser (1.0.1):
     - MWFeedParser/NSDate+InternetDateTime
     - MWFeedParser/NSString+HTML
-  - MWFeedParser/NSDate+InternetDateTime (1.0.0)
-  - MWFeedParser/NSString+HTML (1.0.0)
+  - MWFeedParser/NSDate+InternetDateTime (1.0.1)
+  - MWFeedParser/NSString+HTML (1.0.1)
   - oauthconsumer (0.0.1)
   - OpenInChrome (0.0.1)
   - PocketAPI (1.0.2)
   - Reachability (3.0.0)
   - RPSTPasswordManagementAppService (0.0.1)
-  - TestFlightSDK (2.2.1)
+  - TestFlightSDK (3.0.2)
   - TextExpander (2.3.1)
-  - TTTAttributedLabel (1.8.1)
-  - uservoice-iphone-sdk (3.0.2)
+  - TTTAttributedLabel (1.10.1)
+  - uservoice-iphone-sdk (3.1.0)
   - XMLDictionary (1.4)
 
 DEPENDENCIES:
@@ -64,7 +64,7 @@ DEPENDENCIES:
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
-  - CrashlyticsFramework (= 2.1.7)
+  - CrashlyticsFramework (= 2.2.1)
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
@@ -73,17 +73,17 @@ DEPENDENCIES:
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
   - LHSKeyboardAdjusting (= 0.0.1)
-  - Mixpanel (= 2.3.6)
-  - MWFeedParser (= 1.0.0)
+  - Mixpanel (= 2.4.0)
+  - MWFeedParser (= 1.0.1)
   - oauthconsumer (from `Specs/oauthconsumer.podspec`)
   - OpenInChrome (= 0.0.1)
   - PocketAPI (= 1.0.2)
   - Reachability (= 3.0.0)
   - RPSTPasswordManagementAppService (from `Specs/RPSTPasswordManagementAppService.podspec`)
-  - TestFlightSDK (= 2.2.1)
+  - TestFlightSDK (= 3.0.2)
   - TextExpander (= 2.3.1)
-  - TTTAttributedLabel (= 1.8.1)
-  - uservoice-iphone-sdk (= 3.0.2)
+  - TTTAttributedLabel (= 1.10.1)
+  - uservoice-iphone-sdk (= 3.1.0)
 
 EXTERNAL SOURCES:
   ADNActivityCollection:
@@ -106,29 +106,29 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
-  ASPinboard: c8b89fe3af5a6cee4b03488a9ec56211a3654dbe
+  ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
   BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
-  CrashlyticsFramework: 282bb8e99a2755cc984c361d520160d69522e636
+  CrashlyticsFramework: a9d172599c3a34e68067e16446a764041b980162
   FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
   hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
   LHSCategoryCollection: e95e1ec4e82108a0b34b86e2ea1364b3cc384c42
-  LHSDelicious: 3f31c2b51e951ac5e4e04e86e913f0439f45e708
+  LHSDelicious: f504d944af93d22dc94628b3ee947d8a8892d1bf
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
   LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
-  Mixpanel: 9aba38257fc4d2777ab5db1afc55e22bdfd57a4a
-  MWFeedParser: 682e244ee30ad1f016e920c03fe1321d27206990
+  Mixpanel: 8cdf6fc831ae1f7515f0d8164dcc381990e0a23a
+  MWFeedParser: 003cbf5398e99a7f2057fbe9583054fd1b84be72
   oauthconsumer: c1ccfa4eb54e2473ae375dee1293456804ad9bdc
   OpenInChrome: b7c73ddf8fe0a1788dc0549c3c4c70e3c84da578
   PocketAPI: 801df1a3cdd094e5477add10c80dceb533c98a66
   Reachability: d369b8d7d33730a4bb71d0f601e287da9867c9dd
   RPSTPasswordManagementAppService: ef9ba65edee84b8031c822dcebc264615b23e789
-  TestFlightSDK: 3fbe16e5fb1a7bb9dbcc5e00a5c2933bae357a68
+  TestFlightSDK: 0c24c533748d0d84bfe7a3cb6036fa79124d84ee
   TextExpander: 52e77e37c52115ec59cad66b082800f0e54fa545
-  TTTAttributedLabel: 2be49e23f10fc87130272e03160bdb938835c51c
-  uservoice-iphone-sdk: e3229dadb3a834d7535bfc4b24d268a9bbb03547
+  TTTAttributedLabel: 94bb04f1e005616002dd2cee0262a0082e533627
+  uservoice-iphone-sdk: 36286c4a8de16a1e7e87110de6b2270fe9a31a36
   XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
 
-COCOAPODS: 0.32.1
+COCOAPODS: 0.33.1

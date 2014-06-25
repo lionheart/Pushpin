@@ -65,31 +65,32 @@ static NSString *CellIdentifier = @"Cell";
     
 #ifdef PINBOARD
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-        [self.savedFeeds removeAllObjects];
-        
-        // See if we need to update our selected index path
-        BOOL updateDefaultIndex = NO;
-        NSString *feedDetails;
-        if ([[[PPAppDelegate sharedDelegate].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-            feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:6];
-            updateDefaultIndex = YES;
-        }
-        
-        NSUInteger currentRow = 0;
-        while ([result next]) {
-            NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
-            [self.savedFeeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
-            if (updateDefaultIndex) {
-                if ([[components componentsJoinedByString:@"+"] isEqualToString:feedDetails]) {
-                    self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:2];
-                }
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+            [self.savedFeeds removeAllObjects];
+
+            // See if we need to update our selected index path
+            BOOL updateDefaultIndex = NO;
+            NSString *feedDetails;
+            if ([[[PPAppDelegate sharedDelegate].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+                feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:6];
+                updateDefaultIndex = YES;
             }
-            currentRow++;
-        }
-        [db close];
+            
+            NSUInteger currentRow = 0;
+            while ([result next]) {
+                NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
+                [self.savedFeeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+                if (updateDefaultIndex) {
+                    if ([[components componentsJoinedByString:@"+"] isEqualToString:feedDetails]) {
+                        self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:2];
+                    }
+                }
+                currentRow++;
+            }
+            
+            [result close];
+        }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];

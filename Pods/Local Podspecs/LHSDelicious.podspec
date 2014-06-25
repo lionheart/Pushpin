@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = "LHSDelicious"
   s.summary      = "An easy-to-use API wrapper for the Delicious API."
-  s.version      = "0.1.0"
+  s.version      = "0.1.1"
   s.homepage     = "http://lionheartsw.com"
   s.license      = 'Apache 2.0'
   s.authors      = { "Dan Loewenherz" => "dan@lionheartsw.com",

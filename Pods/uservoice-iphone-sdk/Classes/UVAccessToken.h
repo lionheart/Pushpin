@@ -16,11 +16,11 @@
 @property (nonatomic, retain) YOAuthToken *oauthToken;
 
 + (BOOL)exists;
-+ (id)getAccessTokenWithDelegate:(id)delegate andEmail:(NSString *)email andPassword:(NSString *)password;
++ (BOOL)existsForGuid:(NSString *)guid;
++ (id)getAccessTokenWithDelegate:(id<UVModelDelegate>)delegate andEmail:(NSString *)email andPassword:(NSString *)password;
 
 - (id)initWithExisting;
 - (id)initWithDictionary:(NSDictionary *)dict;
-- (id)revoke:(id) delegate;
 
 - (void)persist;
 - (void)remove;

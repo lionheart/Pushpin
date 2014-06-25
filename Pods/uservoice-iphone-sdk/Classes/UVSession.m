@@ -14,7 +14,7 @@
 #import "UVForum.h"
 #import "UVSubdomain.h"
 #import "UVUtils.h"
-#import "UVBabayaga.h"
+#import "UVUser.h"
 #import <stdlib.h>
 
 @implementation UVSession
@@ -50,7 +50,6 @@
 
 - (void)setClientConfig:(UVClientConfig *)newConfig {
     _clientConfig = newConfig;
-    [UVBabayaga flush];
 }
 
 - (void)setExternalId:(NSString *)identifier forScope:(NSString *)scope {
@@ -63,11 +62,16 @@
     }
 }
 
+- (void)didIdentifyUser:(UVUser *)user {
+    // nothing to do
+}
+
 // This is used when dismissing UV so that everything gets reloaded
 - (void)clear {
     _requestToken = nil;
     _user = nil;
     _clientConfig = nil;
+    _yOAuthConsumer = nil;
 }
 
 - (YOAuthConsumer *)yOAuthConsumer {

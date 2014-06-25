@@ -371,6 +371,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Reset the list of stored URLs", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Resets the list of URLs that you've decided not to add from the clipboard.", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.isAccessibilityElement = YES;
+                    cell.accessibilityLabel = @"Reset URL";
                     break;
                     
                 case PPOtherAlwaysShowAlert:
@@ -480,10 +482,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [activity startAnimating];
                     [loadingAlertView addSubview:activity];
                     
-                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                    [db open];
-                    [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
-                    [db close];
+                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                        [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
+                    }];
                     
                     double delayInSeconds = 1.0;
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));

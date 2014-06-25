@@ -38,7 +38,7 @@
 
 - (void)initCellForContact:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.text = NSLocalizedStringFromTable(@"Send us a message", @"UserVoice", nil);
+    cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Send us a message", @"UserVoice", [UserVoice bundle], nil);
     if (IOS7) {
         cell.textLabel.textColor = cell.textLabel.tintColor;
     }
@@ -46,13 +46,13 @@
 
 - (void)initCellForForum:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.text = NSLocalizedStringFromTable(@"Feedback Forum", @"UserVoice", nil);
+    cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Feedback Forum", @"UserVoice", [UserVoice bundle], nil);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     NSString *detail;
     if ([UVSession currentSession].forum.suggestionsCount == 1) {
-        detail = NSLocalizedStringFromTable(@"2 idea", @"UserVoice", nil);
+        detail = NSLocalizedStringFromTableInBundle(@"1 idea", @"UserVoice", [UserVoice bundle], nil);
     } else {
-        detail = [NSString stringWithFormat:NSLocalizedStringFromTable(@"%@ ideas", @"UserVoice", nil), [UVUtils formatInteger:[UVSession currentSession].forum.suggestionsCount]];
+        detail = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"%@ ideas", @"UserVoice", [UserVoice bundle], nil), [UVUtils formatInteger:[UVSession currentSession].forum.suggestionsCount]];
     }
     cell.detailTextLabel.text = detail;
 }
@@ -60,7 +60,7 @@
 - (void)customizeCellForTopic:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
     if (indexPath.row == [[UVSession currentSession].topics count]) {
-        cell.textLabel.text = NSLocalizedStringFromTable(@"All Articles", @"UserVoice", nil);
+        cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"All Articles", @"UserVoice", [UserVoice bundle], nil);
         cell.detailTextLabel.text = nil;
     } else {
         UVHelpTopic *topic = [[UVSession currentSession].topics objectAtIndex:indexPath.row];
@@ -74,7 +74,7 @@
     cell.backgroundColor = [UIColor whiteColor];
     UVArticle *article = [[UVSession currentSession].articles objectAtIndex:indexPath.row];
     cell.textLabel.text = article.question;
-    cell.imageView.image = [UIImage imageNamed:@"uv_article.png"];
+    cell.imageView.image = [UVUtils imageNamed:@"uv_article.png"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.numberOfLines = 2;
     cell.textLabel.font = [UIFont boldSystemFontOfSize:13.0];
@@ -82,7 +82,7 @@
 
 - (void)initCellForFlash:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.text = NSLocalizedStringFromTable(@"View idea", @"UserVoice", nil);
+    cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"View idea", @"UserVoice", [UserVoice bundle], nil);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
@@ -120,7 +120,7 @@
     } else {
         if (indexPath.section == 0 && indexPath.row == 0 && [UVSession currentSession].config.showContactUs)
             identifier = @"Contact";
-        else if (indexPath.section == 0)
+        else if (indexPath.section == 0 && [UVSession currentSession].config.showForum)
             identifier = @"Forum";
         else if ([self showArticles])
             identifier = @"Article";
@@ -201,12 +201,12 @@
 }
 
 - (NSString *)tableView:(UITableView *)theTableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 0 && [UVSession currentSession].config.showForum)
+    if (section == 0 && ([UVSession currentSession].config.showForum || [UVSession currentSession].config.showContactUs))
         return nil;
     else if ([UVSession currentSession].config.topicId)
         return [((UVHelpTopic *)[[UVSession currentSession].topics objectAtIndex:0]) name];
     else
-        return NSLocalizedStringFromTable(@"Knowledge Base", @"UserVoice", nil);
+        return NSLocalizedStringFromTableInBundle(@"Knowledge Base", @"UserVoice", [UserVoice bundle], nil);
 }
 
 - (CGFloat)tableView:(UITableView *)theTableView heightForHeaderInSection:(NSInteger)section {
@@ -229,10 +229,6 @@
     return YES;
 }
 
-- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
-    controller.searchBar.showsScopeBar = NO;
-}
-
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     _filter = searchBar.selectedScopeButtonIndex;
     [_searchController.searchResultsTableView reloadData];
@@ -242,6 +238,35 @@
     _instantAnswerManager.searchText = searchBar.text;
     [_instantAnswerManager search];
 }
+
+#pragma mark ===== UISearchDisplayControllerDelegate Methods =====
+
+- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    controller.searchBar.showsScopeBar = NO;
+    if (IOS7 && IPAD) {
+        [self correctFramesForSearchDisplayControllerBeginSearch:NO searchDisplayController:_searchController];
+    }
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    if (IOS7 && IPAD) {
+        [self correctFramesForSearchDisplayControllerBeginSearch:YES searchDisplayController:_searchController];
+    }
+}
+
+- (void)searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller {
+    if (IOS7 && IPAD) {
+        [self correctSearchDisplayFrames:_searchController];
+    }
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
+    if (IOS7 && IPAD) {
+        controller.searchResultsTableView.contentInset = UIEdgeInsetsMake(self.searchController.searchBar.frame.size.height, 0.f, 0.f, 0.f);
+    }
+}
+
+#pragma mark ===== Search handling =====
 
 - (void)didUpdateInstantAnswers {
     if (_searchController.active)
@@ -268,8 +293,8 @@
     [UVBabayaga track:VIEW_KB];
     _instantAnswerManager = [UVInstantAnswerManager new];
     _instantAnswerManager.delegate = self;
-    self.navigationItem.title = NSLocalizedStringFromTable(@"Feedback & Support", @"UserVoice", nil);
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTable(@"Close", @"UserVoice", nil)
+    self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"Feedback & Support", @"UserVoice", [UserVoice bundle], nil);
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Close", @"UserVoice", [UserVoice bundle], nil)
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self
                                                                             action:@selector(dismiss)];
@@ -279,11 +304,11 @@
     if ([UVSession currentSession].config.showKnowledgeBase) {
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
         searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        searchBar.placeholder = NSLocalizedStringFromTable(@"Search", @"UserVoice", nil);
+        searchBar.placeholder = NSLocalizedStringFromTableInBundle(@"Search", @"UserVoice", [UserVoice bundle], nil);
         searchBar.delegate = self;
         searchBar.showsScopeBar = NO;
         if ([UVSession currentSession].config.showForum) {
-            searchBar.scopeButtonTitles = @[NSLocalizedStringFromTable(@"All", @"UserVoice", nil), NSLocalizedStringFromTable(@"Articles", @"UserVoice", nil), NSLocalizedStringFromTable(@"Ideas", @"UserVoice", nil)];
+            searchBar.scopeButtonTitles = @[NSLocalizedStringFromTableInBundle(@"All", @"UserVoice", [UserVoice bundle], nil), NSLocalizedStringFromTableInBundle(@"Articles", @"UserVoice", [UserVoice bundle], nil), NSLocalizedStringFromTableInBundle(@"Ideas", @"UserVoice", [UserVoice bundle], nil)];
         }
         _tableView.tableHeaderView = searchBar;
 

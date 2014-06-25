@@ -23,8 +23,8 @@
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Pinboard Debug">
       <Testables>
@@ -35,26 +35,6 @@
                BlueprintIdentifier = "3717967F18A885F7004B2D08"
                BuildableName = "Pushpin Tests.xctest"
                BlueprintName = "Pushpin Tests"
-               ReferencedContainer = "container:Pushpin.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3772DE5E1933B0D1004B348D"
-               BuildableName = "DebugPodsTests.xctest"
-               BlueprintName = "DebugPodsTests"
-               ReferencedContainer = "container:Pushpin.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3772DE7C1933B0DE004B348D"
-               BuildableName = "DebugPodsTests copy.xctest"
-               BlueprintName = "DebugPodsTests copy"
                ReferencedContainer = "container:Pushpin.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -92,7 +72,7 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldUseLaunchSchemeArgsEnv = "NO"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Pinboard Debug"
@@ -106,12 +86,19 @@
             ReferencedContainer = "container:Pushpin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "PROFILING"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Pinboard Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Pinboard App Store"
+      buildConfiguration = "Pinboard Beta"
       customArchiveName = "Pushpin"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
