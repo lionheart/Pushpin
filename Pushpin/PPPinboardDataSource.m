@@ -1412,24 +1412,26 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 query:self.searchQuery
                                                 scope:self.searchScope
                                            completion:^(NSArray *urls, NSError *error) {
-                                               if (!error) {
-                                                   NSMutableArray *components = [NSMutableArray array];
-                                                   NSMutableArray *parameters = [NSMutableArray array];
-                                                   [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-                                                   
-                                                   NSMutableArray *urlComponents = [NSMutableArray array];
-                                                   for (NSString *url in urls) {
-                                                       [urlComponents addObject:@"?"];
-                                                       [parameters addObject:url];
+                                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                   if (!error) {
+                                                       NSMutableArray *components = [NSMutableArray array];
+                                                       NSMutableArray *parameters = [NSMutableArray array];
+                                                       [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
+
+                                                       NSMutableArray *urlComponents = [NSMutableArray array];
+                                                       for (NSString *url in urls) {
+                                                           [urlComponents addObject:@"?"];
+                                                           [parameters addObject:url];
+                                                       }
+
+                                                       [components addObject:[urlComponents componentsJoinedByString:@", "]];
+                                                       [components addObject:@")"];
+
+                                                       NSString *query = [components componentsJoinedByString:@" "];
+
+                                                       HandleSearch(query, parameters);
                                                    }
-                                                   
-                                                   [components addObject:[urlComponents componentsJoinedByString:@", "]];
-                                                   [components addObject:@")"];
-                                                   
-                                                   NSString *query = [components componentsJoinedByString:@" "];
-                                                   
-                                                   HandleSearch(query, parameters);
-                                               }
+                                               });
                                            }];
             }
             else {
