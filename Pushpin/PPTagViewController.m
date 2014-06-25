@@ -134,9 +134,9 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-        NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
-        return [(NSMutableArray *)self.sectionTitles[key] count];
-    }
+            NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
+            return [(NSMutableArray *)self.sectionTitles[key] count];
+        }
     else {
         return [self.filteredTags count];
     }
@@ -201,8 +201,8 @@ static NSString *CellIdentifier = @"TagCell";
         cell.textLabel.attributedText = attributedText;
     }
     else {
-        cell.textLabel.text = tag;
-        cell.textLabel.font = [PPTheme textLabelFont];
+    cell.textLabel.text = tag;
+    cell.textLabel.font = [PPTheme textLabelFont];
     }
 
     NSString *badgeCount = [NSString stringWithFormat:@"%@", self.tagCounts[tag]];
@@ -367,7 +367,7 @@ static NSString *CellIdentifier = @"TagCell";
     if (alertView == self.deleteConfirmationAlertView) {
         if (buttonIndex == 1) {
             [self deleteTagWithName:self.tagToDelete];
-        }
+                                }
     }
 }
 
@@ -403,11 +403,11 @@ static NSString *CellIdentifier = @"TagCell";
             }
             else {
                 self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:self.tagToDelete
-                                                                  delegate:self
-                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                    destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
-                                                         otherButtonTitles:nil];
-                [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
+                                                              delegate:self
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
+                                                     otherButtonTitles:nil];
+            [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
             }
         }
     }
@@ -564,7 +564,7 @@ static NSString *CellIdentifier = @"TagCell";
                 }
                 dispatch_semaphore_signal(sem);
             });
-
+            
             dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
         });
     }
@@ -578,7 +578,7 @@ static NSString *CellIdentifier = @"TagCell";
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard deleteTag:name
                 success:^{
-                    // Delete the tag from the database.
+                        // Delete the tag from the database.
 
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
