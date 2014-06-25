@@ -175,14 +175,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 + (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString
-                                                             callback:(void (^)())callback {
-    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-    [db open];
-    
-    FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
-    [results next];
-    NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
-    [db close];
+                                                             callback:(void (^)(NSDictionary *))callback {
+    __block NSDictionary *post;
+    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
+        [results next];
+        post = [PPPinboardDataSource postFromResultSet:results];
+
+        [results close];
+    }];
     
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                      update:@(YES)
@@ -699,94 +700,101 @@ static NSString *CellIdentifier = @"CellIdentifier";
             void (^BookmarkSuccessBlock)() = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                    BOOL bookmarkAdded;
-                    
-                    [db open];
-                    [db beginTransaction];
-                    
-                    FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
-                    [results next];
-                    
-                    NSString *hash = [results stringForColumnIndex:0];
-                    NSInteger count = [results intForColumnIndex:1];
-                    
-                    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                  @"url": url,
-                                                                                                  @"title": title,
-                                                                                                  @"description": description,
-                                                                                                  @"tags": tags,
-                                                                                                  @"unread": @(unread),
-                                                                                                  @"private": @(private),
-                                                                                                  
-#ifdef PINBOARD
-                                                                                                  @"starred": @(NO)
-#endif
-                                                                                                  }];
-                    BOOL hashExists = hash && ![hash isEqual:[NSNull null]];
+                    __block BOOL bookmarkAdded;
+                    __block NSDictionary *post;
 
-                    if (count > 0) {
-                        // The bookmark already exists, so we're updating it.
-
-                        [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+                    [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                        FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
+                        [results next];
                         
-                        if (hashExists) {
-                            params[@"hash"] = hash;
-                            
-#ifdef DELICIOUS
-                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE hash=:hash" withParameterDictionary:params];
-#endif
-                            
+                        NSString *hash = [results stringForColumnIndex:0];
+                        NSInteger count = [results intForColumnIndex:1];
+                        
+                        [results close];
+
+                        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                      @"url": url,
+                                                                                                      @"title": title,
+                                                                                                      @"description": description,
+                                                                                                      @"tags": tags,
+                                                                                                      @"unread": @(unread),
+                                                                                                      @"private": @(private),
+                                                                                                      
 #ifdef PINBOARD
-                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+                                                                                                      @"starred": @(NO)
 #endif
-                            [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
-                            for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
-                                [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
-                                [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                                                                                                      }];
+                        BOOL hashExists = hash && ![hash isEqual:[NSNull null]];
+                        
+                        if (count > 0) {
+                            // The bookmark already exists, so we're updating it.
+                            
+                            [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+                            
+                            if (hashExists) {
+                                params[@"hash"] = hash;
+                                
+#ifdef DELICIOUS
+                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+#endif
+                                
+#ifdef PINBOARD
+                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
+#endif
+                                [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                                for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
+                                    [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
+                                    [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
+                                }
                             }
+                            else {
+#warning The bookmark doesn't yet have a hash
+                                
+#ifdef DELICIOUS
+                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE url=:url" withParameterDictionary:params];
+#endif
+                                
+#ifdef PINBOARD
+                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
+#endif
+                            }
+                            bookmarkAdded = NO;
                         }
                         else {
-#warning The bookmark doesn't yet have a hash
+                            // We're adding this bookmark for the first time.
+                            params[@"created_at"] = [NSDate date];
+                            [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                             
 #ifdef DELICIOUS
-                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE url=:url" withParameterDictionary:params];
+                            [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
 #endif
                             
 #ifdef PINBOARD
-                            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
+                            [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
 #endif
+                            
+                            bookmarkAdded = YES;
                         }
-                        bookmarkAdded = NO;
+                        
+                        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                        [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+                        
+#ifdef PINBOARD
+                        FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
+                        [resultSet next];
+                        post = [PPPinboardDataSource postFromResultSet:resultSet];
+                        [resultSet close];
+#endif
+                    }];
+                    
+                    PPBookmarkEventType eventType;
+                    if (bookmarkAdded) {
+                        eventType = PPBookmarkEventAdd;
                     }
                     else {
-                        // We're adding this bookmark for the first time.
-
-                        params[@"created_at"] = [NSDate date];
-                        [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
-                        
-#ifdef DELICIOUS
-                        [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-#endif
-                        
-#ifdef PINBOARD
-                        [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
-#endif
-                        
-                        bookmarkAdded = YES;
+                        eventType = PPBookmarkEventUpdate;
                     }
-                    
-                    [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-                    [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-                    [db commit];
-                    
-#ifdef PINBOARD
-                    FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
-                    [resultSet next];
-                    NSDictionary *post = [PPPinboardDataSource postFromResultSet:resultSet];
-#endif
-                    [db close];
-                    
+
                     if (self.callback) {
 #ifdef PINBOARD
                         self.callback(post);
@@ -795,10 +803,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #ifdef DELICIOUS
                         self.callback(@{});
 #endif
-                        
+
                         dispatch_async(dispatch_get_main_queue(), ^{
 #warning This used to be "NO". Why?
-                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                            [self.parentViewController dismissViewControllerAnimated:YES
+                                                                          completion:^{
+                                                                              [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
+                                                                                                                                  object:nil
+                                                                                                                                userInfo:@{@"type": @(eventType) }];
+                                                                          }];
                         });
                     }
                     else {
@@ -810,11 +823,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             else {
                                 notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
                             }
-                            
+
                             notification.alertAction = @"Open Pushpin";
                             notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
                             [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+                            [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
+                                                                                    object:nil
+                                                                                  userInfo:@{@"type": @(eventType) }];
+                            }];
                         });
                     }
                 });

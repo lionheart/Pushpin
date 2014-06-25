@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
-		370935471894BF4F00E3588E /* DeliciousBeta.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935461894BF4F00E3588E /* DeliciousBeta.plist */; };
-		370935491894BF6100E3588E /* DeliciousDebug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 370935481894BF6100E3588E /* DeliciousDebug.plist */; };
 		3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* PPDeliciousDataSource.m */; };
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
@@ -128,6 +126,7 @@
 		3751D18818346EED00E0A42A /* mobilized-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18618346EED00E0A42A /* mobilized-active.png */; };
 		3751D18918346EED00E0A42A /* mobilized-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18718346EED00E0A42A /* mobilized-active@2x.png */; };
 		37561D9416AE0C7500D69CDE /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
+		375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
 		3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		3769A5791879C50D00AC8C44 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
@@ -169,7 +168,6 @@
 		3798B08F18767DAB002D684B /* navigation-edit-darker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08B18767DAB002D684B /* navigation-edit-darker.png */; };
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
-		379C3C201894BD4C003A02FF /* DeliciousAppStore.plist in Resources */ = {isa = PBXBuildFile; fileRef = 379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */; };
 		37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* PPNoteViewController.m */; };
 		37A7B5C718345DAE0038677E /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C118345DAE0038677E /* stop@2x.png */; };
 		37A7B5C818345DAE0038677E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C218345DAE0038677E /* stop.png */; };
@@ -400,6 +398,9 @@
 		37FEEB9F15745488003F2B77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEBA315745488003F2B77 /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
 		37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
+		6D023C56193E8D280070C013 /* capture.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C52193E8D280070C013 /* capture.js */; };
+		6D023C57193E8D280070C013 /* shoot_the_screens.js in Sources */ = {isa = PBXBuildFile; fileRef = 6D023C53193E8D280070C013 /* shoot_the_screens.js */; };
+		6D023C59193E8D280070C013 /* unix_instruments.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6D023C55193E8D280070C013 /* unix_instruments.sh */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784337BD93F74E058D4FD66B /* libPods.a */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
@@ -588,7 +589,7 @@
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
 		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		373115EE18E23C310072A986 /* PPDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDataSource.h; sourceTree = "<group>"; };
+		373115EE18E23C310072A986 /* PPDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPDataSource.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		3732DF9B175957F000978A68 /* PPAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAboutViewController.h; sourceTree = "<group>"; };
 		3732DF9C175957F000978A68 /* PPAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAboutViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3732DF9E17596D7500978A68 /* apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = apple.png; path = Assets/apple.png; sourceTree = "<group>"; };
@@ -666,12 +667,12 @@
 		37405C6518620BCB0052213A /* PostMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostMetadata.h; sourceTree = "<group>"; };
 		37405C6618620BCB0052213A /* PostMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostMetadata.m; sourceTree = "<group>"; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		3740A23A16863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3740A23A16863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		3740A23B16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		3740A23C16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3740A23D16863CF000F95D82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3740A23E16863CF000F95D82 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3740A23C16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
+		3740A23D16863CF000F95D82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
+		3740A23E16863CF000F95D82 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
+		3740A23F16863CF000F95D82 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardMetadataCache.h; sourceTree = "<group>"; };
 		3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPPinboardMetadataCache.m; sourceTree = "<group>"; };
 		3743B73918763D1D00B97E6D /* PPTableViewTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTableViewTitleView.h; sourceTree = "<group>"; };
@@ -690,7 +691,7 @@
 		3751D18718346EED00E0A42A /* mobilized-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilized-active@2x.png"; path = "Assets/mobilized-active@2x.png"; sourceTree = "<group>"; };
 		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Pushpin.entitlements; sourceTree = SOURCE_ROOT; };
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
-		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; };
+		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		375A638816C0CB0800665CA1 /* PPFeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* PPFeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPFeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMobilizerUtility.h; sourceTree = "<group>"; };
@@ -766,7 +767,7 @@
 		37AB960618C437090008CDD5 /* browse-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent@2x.png"; path = "Assets/browse-recent@2x.png"; sourceTree = "<group>"; };
 		37AD159418A13365005813CC /* About-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "About-Delicious.plist"; path = "Assets/About-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37AD159618A1352B005813CC /* Changelog-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Changelog-Delicious.plist"; path = "Assets/Changelog-Delicious.plist"; sourceTree = SOURCE_ROOT; };
-		37ADE0FA18CBE011008F80BC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		37ADE0FA18CBE011008F80BC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
@@ -782,7 +783,7 @@
 		37B4FFE21923AD18002F8558 /* PPUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPUtilities.m; sourceTree = "<group>"; };
 		37B5F4E41773864C005687DA /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		37BC1BD3188641D80022020A /* readabilityInitializer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readabilityInitializer.js; path = Pushpin/readabilityInitializer.js; sourceTree = "<group>"; };
-		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; };
+		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; lineEnding = 0; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		37BC1BD7188642F90022020A /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
 		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
 		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
@@ -998,12 +999,16 @@
 		37FEEB9A15745488003F2B77 /* PinboardAppStore.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PinboardAppStore.plist; sourceTree = "<group>"; };
 		37FEEB9E15745488003F2B77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Pushpin for Pinboard-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37FEEBA115745488003F2B77 /* PPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PPAppDelegate.h; sourceTree = "<group>"; };
+		37FEEBA115745488003F2B77 /* PPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSplitViewController.m; sourceTree = "<group>"; };
 		54B0022F87374C449F105BA0 /* Pods-DebugPods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.xcconfig"; path = "Pods/Pods-DebugPods.xcconfig"; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		6D023C52193E8D280070C013 /* capture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = capture.js; sourceTree = SOURCE_ROOT; };
+		6D023C53193E8D280070C013 /* shoot_the_screens.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = shoot_the_screens.js; sourceTree = SOURCE_ROOT; };
+		6D023C54193E8D280070C013 /* ui-screen-shooter.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "ui-screen-shooter.sh"; sourceTree = SOURCE_ROOT; };
+		6D023C55193E8D280070C013 /* unix_instruments.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = unix_instruments.sh; sourceTree = SOURCE_ROOT; };
 		784337BD93F74E058D4FD66B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
@@ -1141,7 +1146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37BCAD3F194B47BC008E1CB1 /* libDebugPods.a in Frameworks */,
+				375978041953D0C9005C2B7F /* libDebugPods.a in Frameworks */,
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
@@ -1708,6 +1713,7 @@
 		37FEEB9815745488003F2B77 /* Pushpin */ = {
 			isa = PBXGroup;
 			children = (
+				6D023C51193E8D0A0070C013 /* Screenshot Automation */,
 				376ABBBE1895892300132CFF /* Entitlements */,
 				376ABBBD189588F100132CFF /* Info Dictionaries */,
 				37516A03186C8AE200AEF7A6 /* Table View Cells */,
@@ -1841,6 +1847,17 @@
 				37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		6D023C51193E8D0A0070C013 /* Screenshot Automation */ = {
+			isa = PBXGroup;
+			children = (
+				6D023C52193E8D280070C013 /* capture.js */,
+				6D023C53193E8D280070C013 /* shoot_the_screens.js */,
+				6D023C54193E8D280070C013 /* ui-screen-shooter.sh */,
+				6D023C55193E8D280070C013 /* unix_instruments.sh */,
+			);
+			name = "Screenshot Automation";
 			sourceTree = "<group>";
 		};
 		E84A8D9217FB1BCB003B4F50 /* FluidTableview */ = {
@@ -2146,6 +2163,7 @@
 				E80EEF81185A4AD900979AA3 /* toolbar-description.png in Resources */,
 				373C82C816F81C6900A7D7C8 /* ptr_06@2x.png in Resources */,
 				373C82C916F81C6900A7D7C8 /* ptr_07.png in Resources */,
+				6D023C59193E8D280070C013 /* unix_instruments.sh in Resources */,
 				37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */,
 				E890022F1840173600C1F969 /* navigation-fandom@2x.png in Resources */,
 				373C82CA16F81C6900A7D7C8 /* ptr_07@2x.png in Resources */,
@@ -2168,7 +2186,6 @@
 				373C82D816F81C6900A7D7C8 /* ptr_14@2x.png in Resources */,
 				373C82D916F81C6900A7D7C8 /* ptr_15.png in Resources */,
 				373C82DA16F81C6900A7D7C8 /* ptr_15@2x.png in Resources */,
-				379C3C201894BD4C003A02FF /* DeliciousAppStore.plist in Resources */,
 				373C82DB16F81C6900A7D7C8 /* ptr_16.png in Resources */,
 				373C82DC16F81C6900A7D7C8 /* ptr_16@2x.png in Resources */,
 				E8900201183EB90100C1F969 /* bookmark-private@2x.png in Resources */,
@@ -2407,14 +2424,12 @@
 				37EABA43173F01DA00B2684B /* loading_64@2x.png in Resources */,
 				37EABA44173F01DA00B2684B /* loading_65.png in Resources */,
 				37EABA45173F01DA00B2684B /* loading_65@2x.png in Resources */,
-				370935491894BF6100E3588E /* DeliciousDebug.plist in Resources */,
 				37EABA46173F01DA00B2684B /* loading_66.png in Resources */,
 				37EABA47173F01DA00B2684B /* loading_66@2x.png in Resources */,
 				37EABA48173F01DA00B2684B /* loading_67.png in Resources */,
 				37EABA49173F01DA00B2684B /* loading_67@2x.png in Resources */,
 				E80EEF90185B6A1300979AA3 /* roundbutton-private@2x.png in Resources */,
 				37EABA4A173F01DA00B2684B /* loading_68.png in Resources */,
-				370935471894BF4F00E3588E /* DeliciousBeta.plist in Resources */,
 				37EABA4B173F01DA00B2684B /* loading_68@2x.png in Resources */,
 				37CBB7551881FFBC000F9C36 /* About.json in Resources */,
 				3751D18218346C0200E0A42A /* mobilize.png in Resources */,
@@ -2669,7 +2684,9 @@
 				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */,
+				6D023C56193E8D280070C013 /* capture.js in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
+				6D023C57193E8D280070C013 /* shoot_the_screens.js in Sources */,
 				377E46DE174C73DD00CE3813 /* PPBrowserSettingsViewController.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */,
@@ -3258,6 +3275,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -3281,7 +3299,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"\"$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -3312,8 +3330,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3348,6 +3364,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -3371,7 +3388,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"\"$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -3402,8 +3419,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3438,6 +3453,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -3463,7 +3479,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -3476,7 +3492,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "5C7FDEB8-9FEC-4023-8AD2-0D7221896AC5";
+				PROVISIONING_PROFILE = "86A275B3-0E9F-45E5-8960-2AF283AB787C";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3493,8 +3509,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Delicious;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3528,6 +3542,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -3552,7 +3567,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-lxml2",
@@ -3565,7 +3580,7 @@
 					"-all_load",
 					"-lDebugPods",
 				);
-				PROVISIONING_PROFILE = "D3F796BF-1DA0-4238-A189-BDED5B560521";
+				PROVISIONING_PROFILE = "78C02057-5311-42EF-8EE7-727BD47B6F43";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3582,8 +3597,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3618,6 +3631,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -3642,7 +3656,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-lxml2",
@@ -3656,7 +3670,7 @@
 					"-all_load",
 					"-lDebugPods",
 				);
-				PROVISIONING_PROFILE = "AE05D9EC-AACB-4026-B2B8-C45B3F62604A";
+				PROVISIONING_PROFILE = "37825474-DEA4-4390-B197-C863DD9B187C";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
@@ -3681,6 +3695,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -3705,7 +3720,7 @@
 					"”$(TARGET_BUILD_DIR)/usr/local/lib/include”",
 					"”$(OBJROOT)/UninstalledProducts/include”",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -3734,9 +3749,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3763,8 +3776,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Zixiao Wang (28V3Z4C963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

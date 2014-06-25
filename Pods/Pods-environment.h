@@ -58,13 +58,13 @@
 #define COCOAPODS_POD_AVAILABLE_ASPinboard
 #define COCOAPODS_VERSION_MAJOR_ASPinboard 0
 #define COCOAPODS_VERSION_MINOR_ASPinboard 0
-#define COCOAPODS_VERSION_PATCH_ASPinboard 2
+#define COCOAPODS_VERSION_PATCH_ASPinboard 3
 
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
 #define COCOAPODS_VERSION_MAJOR_CrashlyticsFramework 2
-#define COCOAPODS_VERSION_MINOR_CrashlyticsFramework 1
-#define COCOAPODS_VERSION_PATCH_CrashlyticsFramework 7
+#define COCOAPODS_VERSION_MINOR_CrashlyticsFramework 2
+#define COCOAPODS_VERSION_PATCH_CrashlyticsFramework 1
 
 // FMDB
 #define COCOAPODS_POD_AVAILABLE_FMDB
@@ -106,7 +106,7 @@
 #define COCOAPODS_POD_AVAILABLE_LHSDelicious
 #define COCOAPODS_VERSION_MAJOR_LHSDelicious 0
 #define COCOAPODS_VERSION_MINOR_LHSDelicious 1
-#define COCOAPODS_VERSION_PATCH_LHSDelicious 0
+#define COCOAPODS_VERSION_PATCH_LHSDelicious 1
 
 // LHSDiigo
 #define COCOAPODS_POD_AVAILABLE_LHSDiigo
@@ -130,31 +130,31 @@
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser 1
 #define COCOAPODS_VERSION_MINOR_MWFeedParser 0
-#define COCOAPODS_VERSION_PATCH_MWFeedParser 0
+#define COCOAPODS_VERSION_PATCH_MWFeedParser 1
 
 // MWFeedParser/FeedParser
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser_FeedParser
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser_FeedParser 1
 #define COCOAPODS_VERSION_MINOR_MWFeedParser_FeedParser 0
-#define COCOAPODS_VERSION_PATCH_MWFeedParser_FeedParser 0
+#define COCOAPODS_VERSION_PATCH_MWFeedParser_FeedParser 1
 
 // MWFeedParser/NSDate+InternetDateTime
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser_NSDate_InternetDateTime
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser_NSDate_InternetDateTime 1
 #define COCOAPODS_VERSION_MINOR_MWFeedParser_NSDate_InternetDateTime 0
-#define COCOAPODS_VERSION_PATCH_MWFeedParser_NSDate_InternetDateTime 0
+#define COCOAPODS_VERSION_PATCH_MWFeedParser_NSDate_InternetDateTime 1
 
 // MWFeedParser/NSString+HTML
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser_NSString_HTML
 #define COCOAPODS_VERSION_MAJOR_MWFeedParser_NSString_HTML 1
 #define COCOAPODS_VERSION_MINOR_MWFeedParser_NSString_HTML 0
-#define COCOAPODS_VERSION_PATCH_MWFeedParser_NSString_HTML 0
+#define COCOAPODS_VERSION_PATCH_MWFeedParser_NSString_HTML 1
 
 // Mixpanel
 #define COCOAPODS_POD_AVAILABLE_Mixpanel
 #define COCOAPODS_VERSION_MAJOR_Mixpanel 2
-#define COCOAPODS_VERSION_MINOR_Mixpanel 3
-#define COCOAPODS_VERSION_PATCH_Mixpanel 6
+#define COCOAPODS_VERSION_MINOR_Mixpanel 4
+#define COCOAPODS_VERSION_PATCH_Mixpanel 0
 
 // OpenInChrome
 #define COCOAPODS_POD_AVAILABLE_OpenInChrome
@@ -183,14 +183,14 @@
 // TTTAttributedLabel
 #define COCOAPODS_POD_AVAILABLE_TTTAttributedLabel
 #define COCOAPODS_VERSION_MAJOR_TTTAttributedLabel 1
-#define COCOAPODS_VERSION_MINOR_TTTAttributedLabel 8
+#define COCOAPODS_VERSION_MINOR_TTTAttributedLabel 10
 #define COCOAPODS_VERSION_PATCH_TTTAttributedLabel 1
 
 // TestFlightSDK
 #define COCOAPODS_POD_AVAILABLE_TestFlightSDK
-#define COCOAPODS_VERSION_MAJOR_TestFlightSDK 2
-#define COCOAPODS_VERSION_MINOR_TestFlightSDK 2
-#define COCOAPODS_VERSION_PATCH_TestFlightSDK 1
+#define COCOAPODS_VERSION_MAJOR_TestFlightSDK 3
+#define COCOAPODS_VERSION_MINOR_TestFlightSDK 0
+#define COCOAPODS_VERSION_PATCH_TestFlightSDK 2
 
 // TextExpander
 #define COCOAPODS_POD_AVAILABLE_TextExpander
@@ -219,6 +219,6 @@
 // uservoice-iphone-sdk
 #define COCOAPODS_POD_AVAILABLE_uservoice_iphone_sdk
 #define COCOAPODS_VERSION_MAJOR_uservoice_iphone_sdk 3
-#define COCOAPODS_VERSION_MINOR_uservoice_iphone_sdk 0
-#define COCOAPODS_VERSION_PATCH_uservoice_iphone_sdk 2
+#define COCOAPODS_VERSION_MINOR_uservoice_iphone_sdk 1
+#define COCOAPODS_VERSION_PATCH_uservoice_iphone_sdk 0
 

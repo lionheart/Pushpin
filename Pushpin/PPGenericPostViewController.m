@@ -95,6 +95,9 @@ static NSInteger kToolbarHeight = 44;
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position;
 - (void)hideCircle;
 
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
+- (void)synchronizeAddedBookmark;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -110,8 +113,14 @@ static NSInteger kToolbarHeight = 44;
     return UIStatusBarAnimationSlide;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+#ifdef PROFILING
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.URL = [NSURL URLWithString:@"http://lionheartsw.com"];
+#endif
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
@@ -201,7 +210,8 @@ static NSInteger kToolbarHeight = 44;
         
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
-        
+        self.searchBar.isAccessibilityElement = YES;
+        self.searchBar.accessibilityLabel = @"Search Bar";
 #ifdef DELICIOUS
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
 #endif
@@ -355,16 +365,18 @@ static NSInteger kToolbarHeight = 44;
     self.postDataSource.posts = [self.posts mutableCopy];
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
-    [self updateFromLocalDatabaseWithCallback:^{
-        if (delegate.bookmarksNeedUpdate && delegate.connectionAvailable) {
-            delegate.bookmarksNeedUpdate = NO;
-            
-            [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-                [self updateFromLocalDatabaseWithCallback:nil];
-            } progress:nil];
-        }
-    }];
+    if (self.postDataSource.posts.count == 0) {
+        [self updateFromLocalDatabaseWithCallback:^{
+            if (delegate.connectionAvailable) {
+                [self.pullToRefreshImageView startAnimating];
+                [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                    if (updated) {
+                        [self updateFromLocalDatabaseWithCallback:nil];
+                    }
+                } progress:nil];
+            }
+        }];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -373,9 +385,25 @@ static NSInteger kToolbarHeight = 44;
     [self setNeedsStatusBarAppearanceUpdate];
     
     // Register for Dynamic Type notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveDisplaySettingsUpdateNotification:) name:PPBookmarkDisplaySettingUpdated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleCompressedPosts) name:PPBookmarkCompressSettingUpdate object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(preferredContentSizeChanged:)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveDisplaySettingsUpdateNotification:)
+                                                 name:PPBookmarkDisplaySettingUpdated
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toggleCompressedPosts)
+                                                 name:PPBookmarkCompressSettingUpdate
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(synchronizeAddedBookmark)
+                                                 name:PPBookmarkEventNotificationName
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -645,13 +673,20 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (void)synchronizeAddedBookmark {
+    [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+        if (updated) {
+            [self updateFromLocalDatabaseWithCallback:nil];
+        }
+    } progress:nil options:@{@"count": @(10)}];
+}
+
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
-    if (!self.isProcessingPosts) {
-        self.isProcessingPosts = YES;
-        CGFloat width = [self currentWidth];
-        BOOL firstLoad = self.posts.count == 0;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.isProcessingPosts) {
+            self.isProcessingPosts = YES;
+            BOOL firstLoad = self.posts.count == 0;
+            
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             
             if (firstLoad) {
@@ -697,8 +732,7 @@ static NSInteger kToolbarHeight = 44;
                                                  else {
 #warning Crash here
                                                      DLog(@"B: %@", date);
-                                                     DLog(@"%d", [indexPathsToInsert count]);
-
+                                                     
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -710,18 +744,20 @@ static NSInteger kToolbarHeight = 44;
                                                      self.searchPostDataSource = [self.postDataSource searchDataSource];
                                                  }
                                                  
-                                                 self.isProcessingPosts = NO;
-                                                 
                                                  if (callback) {
                                                      callback();
                                                  }
+
+                                                 self.isProcessingPosts = NO;
                                              });
                                          }];
                     });
-                } cancel:nil width:width];
+                } cancel:^BOOL{
+                    return NO;
+                } width:self.currentWidth];
             });
-        });
-    }
+        }
+    });
 }
 
 - (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification {
@@ -1438,8 +1474,10 @@ static NSInteger kToolbarHeight = 44;
         CGFloat offset = scrollView.contentOffset.y;
         if (offset <= -60) {
             [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(NSError *error) {
-                [self updateFromLocalDatabaseWithCallback:nil];
+            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                if (updated) {
+                    [self updateFromLocalDatabaseWithCallback:nil];
+                }
             } progress:nil];
         }
         else if (offset < 0) {
@@ -1647,7 +1685,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
     if (!self.isProcessingPosts) {
         self.isProcessingPosts = YES;
-        
+
         [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             if (!error) {
                 dispatch_sync(dispatch_get_main_queue(), ^(void) {
@@ -1655,11 +1693,14 @@ static NSInteger kToolbarHeight = 44;
                     [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    
+                    [self.tableView endUpdates];
+                    self.isProcessingPosts = NO;
                 });
             }
+            else {
+                self.isProcessingPosts = NO;
+            }
 
-            self.isProcessingPosts = NO;
         } cancel:nil width:self.currentWidth];
     }
 }

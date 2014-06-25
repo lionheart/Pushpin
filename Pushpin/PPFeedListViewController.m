@@ -147,16 +147,28 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil) style:UIBarButtonItemStyleDone target:self action:@selector(leftBarButtonItemTouchUpInside:)];
+
+    UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil)
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self
+                                                                             action:@selector(leftBarButtonItemTouchUpInside:)];
+
     settingsBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Settings", nil), NSLocalizedString(@"Cancel", nil), nil];
 
-    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditing:)];
+    UIBarButtonItem *editBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
+                                                                          style:UIBarButtonItemStyleDone
+                                                                         target:self
+                                                                         action:@selector(toggleEditing:)];
+
     editBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Edit", nil), NSLocalizedString(@"Done", nil), nil];
 
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil) style:UIBarButtonItemStyleDone target:self action:@selector(openTags)];
+    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil)
+                                                                         style:UIBarButtonItemStyleDone
+                                                                        target:self
+                                                                        action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
@@ -818,10 +830,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
                 addSavedFeedViewController.SuccessCallback = ^{
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                        [db open];
+                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
                         [self updateSavedFeeds:db];
-                        [db close];
+                        }];
                     });
                 };
 
@@ -1247,6 +1258,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
 
         [CATransaction setCompletionBlock:^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSMutableArray *allIndexPaths = [NSMutableArray array];
             for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
                 for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
@@ -1259,7 +1271,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView endUpdates];
             }
+            });
         }];
+
         [self.tableView endUpdates];
         [CATransaction commit];
     }
@@ -1602,6 +1616,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         index++;
     }
     
+    [result close];
+    
     NSSet *A = [NSSet setWithArray:previousFeedTitles];
     NSSet *B = [NSSet setWithArray:updatedFeedTitles];
     
@@ -1694,9 +1710,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
         
 #ifdef DELICIOUS
         NSArray *resultSets = @[
@@ -1709,8 +1723,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #endif
         
 #ifdef PINBOARD
-        [self updateSavedFeeds:db];
-        
         NSArray *resultSets = @[
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
                                 [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
@@ -1731,8 +1743,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
             
             [resultSet next];
+                NSString *count = [resultSet stringForColumnIndex:0];
+                [resultSet close];
             
-            NSString *count = [resultSet stringForColumnIndex:0];
             NSString *previousCount = self.bookmarkCounts[i];
             self.bookmarkCounts[i] = count;
             
@@ -1745,8 +1758,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             i++;
         }
-        
-        [db close];
+        }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!self.tableView.editing) {
@@ -1757,6 +1769,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
 
                 [self.tableView endUpdates];
+
+                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    [self updateSavedFeeds:db];
+                }];
             }
         });
     });

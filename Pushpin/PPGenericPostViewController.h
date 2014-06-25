@@ -23,6 +23,15 @@
 
 @class PPNavigationController;
 
+static dispatch_queue_t PPReloadSerialQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("io.aurora.Pushpin.PushpinReloadQueue", 0);
+    });
+    return queue;
+}
+
 typedef enum : NSInteger {
     PPSearchScopeAllField,
     PPSearchScopeTitles,
@@ -91,7 +100,6 @@ typedef enum : NSInteger {
 - (void)markPostsAsRead:(NSArray *)posts;
 - (void)copyURL;
 - (void)sendToReadLater;
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;

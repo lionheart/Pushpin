@@ -275,46 +275,47 @@ static NSString *CellIdentifier = @"Cell";
                     
                     NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
                     NSArray *existingTags = [tagTextFieldText componentsSeparatedByString:@" "];
-                    
-                    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-                    [db open];
-                    
-                    #warning XXX For some reason, getting double results here sometimes. Search duplication?
-                    FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
-                    
-                    NSString *tag;
-                    NSInteger index = kMultipleEditViewControllerTagIndexOffset;
-                    NSInteger skipPivot = 0;
-                    BOOL tagFound = NO;
-                    
-                    while ([result next]) {
-                        tagFound = NO;
-                        tag = [result stringForColumnIndex:0];
-                        self.tagCounts[tag] = [result stringForColumnIndex:1];
-                        if (![existingTags containsObject:tag]) {
-                            for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                                if ([oldTagCompletions[i] isEqualToString:tag]) {
-                                    // Delete all posts that were skipped
-                                    for (NSInteger j=skipPivot; j<i; j++) {
-                                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:0]];
+
+                    __block NSInteger index = kMultipleEditViewControllerTagIndexOffset;
+                    __block NSInteger skipPivot = 0;
+                    __block BOOL tagFound = NO;
+
+                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+#warning XXX For some reason, getting double results here sometimes. Search duplication?
+                        FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
+                        
+                        
+                        while ([result next]) {
+                            @autoreleasepool {
+                                tagFound = NO;
+                                NSString *tag = [result stringForColumnIndex:0];
+                                self.tagCounts[tag] = [result stringForColumnIndex:1];
+                                if (![existingTags containsObject:tag]) {
+                                    for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                                        if ([oldTagCompletions[i] isEqualToString:tag]) {
+                                            // Delete all posts that were skipped
+                                            for (NSInteger j=skipPivot; j<i; j++) {
+                                                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:0]];
+                                            }
+                                            
+                                            tagFound = YES;
+                                            skipPivot = i+1;
+                                            break;
+                                        }
                                     }
                                     
-                                    tagFound = YES;
-                                    skipPivot = i+1;
-                                    break;
+                                    if (!tagFound) {
+                                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                    }
+                                    
+                                    index++;
+                                    [newTagCompletions addObject:tag];
                                 }
                             }
-                            
-                            if (!tagFound) {
-                                [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                            }
-                            
-                            index++;
-                            [newTagCompletions addObject:tag];
                         }
-                    }
-                    
-                    [db close];
+                        
+                        [result close];
+                    }];
                     
                     for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
                         [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i+kMultipleEditViewControllerTagIndexOffset inSection:0]];

@@ -283,6 +283,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             };
 
 #ifdef DELICIOUS
+            [delegate migrateDatabase];
+
             LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
                                        password:self.passwordTextField.text
@@ -301,7 +303,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                      PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
                                                      
-                                                     [dataSource syncBookmarksWithCompletion:^(NSError *error) {
+                                                     [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                                                          if (!error) {
                                                              SyncCompletedBlock();
                                                          }
@@ -319,6 +321,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
 #ifdef PINBOARD
+            [delegate migrateDatabase];
+
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard authenticateWithUsername:self.usernameTextField.text
                                       password:self.passwordTextField.text
@@ -333,7 +337,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                    delegate.token = token;
                                                    PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
 
-                                                   [dataSource syncBookmarksWithCompletion:^(NSError *error) {
+                                                   [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                                                        if (error) {
                                                            dispatch_async(dispatch_get_main_queue(), ^{
                                                                [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];

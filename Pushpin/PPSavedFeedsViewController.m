@@ -51,26 +51,28 @@ static NSString *CellIdentifier = @"Cell";
     NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        
-        [db beginTransaction];
-        for (NSString *components in iCloudFeeds) {
-            [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
-        }
-        [db commit];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [db beginTransaction];
 
-        FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-        [self.feeds removeAllObjects];
-        while ([result next]) {
-            NSString *componentString = [result stringForColumnIndex:0];
-            NSArray *components = [componentString componentsSeparatedByString:@" "];
+            for (NSString *components in iCloudFeeds) {
+                [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
+            }
 
-            [iCloudFeeds addObject:componentString];
-            [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
-        }
+            [db commit];
 
-        [db close];
+            [self.feeds removeAllObjects];
+            
+            FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
+            while ([result next]) {
+                NSString *componentString = [result stringForColumnIndex:0];
+                NSArray *components = [componentString componentsSeparatedByString:@" "];
+                
+                [iCloudFeeds addObject:componentString];
+                [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
+            }
+
+            [result close];
+        }];
         
         // Remove duplicates from the array
         NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];

@@ -45,7 +45,11 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 - (NSString *)urlForPostAtIndex:(NSInteger)index;
 
 // Retrieves bookmarks from remote server and inserts them into database.
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *error))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *error))completion
+                           progress:(void (^)(NSInteger, NSInteger))progress
+                            options:(NSDictionary *)options;
+
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *error))completion
                            progress:(void (^)(NSInteger, NSInteger))progress;
 
 // Refreshes local cache.

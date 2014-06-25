@@ -20,6 +20,9 @@
 @property (nonatomic, retain) UIColor *navigationBarTextShadowColor;
 @property (nonatomic, retain) UIImage *navigationBarBackgroundImage;
 @property (nonatomic, retain) UIFont  *navigationBarFont;
+@property (nonatomic, retain) UIColor *navigationBarTintColor;
+@property (nonatomic, retain) UIColor *navigationBarActivityIndicatorColor;
 @property (nonatomic, retain) UIColor *loadingViewBackgroundColor;
+@property (nonatomic, assign) UIStatusBarStyle preferredStatusBarStyle;
 
 @end

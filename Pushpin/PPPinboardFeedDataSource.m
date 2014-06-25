@@ -113,9 +113,9 @@
     return self.posts[index][@"url"];
 }
 
-- (void)syncBookmarksWithCompletion:(void (^)(NSError *))completion
+- (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress {
-    completion(nil);
+    completion(YES, nil);
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
@@ -369,17 +369,19 @@
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
     
-    FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-    [db open];
-    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
-    [result next];
-    if ([result intForColumnIndex:0] > 0) {
-        postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:postViewController action:@selector(removeBarButtonTouchUpside:)];
-    }
-    else {
-        postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:postViewController action:@selector(addBarButtonTouchUpside:)];
-    }
-    [db close];
+    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
+        [result next];
+
+        if ([result intForColumnIndex:0] > 0) {
+            postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:postViewController action:@selector(removeBarButtonTouchUpside:)];
+        }
+        else {
+            postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:postViewController action:@selector(addBarButtonTouchUpside:)];
+        }
+
+        [result close];
+    }];
 
     postViewController.postDataSource = dataSource;
     return postViewController;
@@ -393,10 +395,9 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
-        [db close];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
+        }];
         
         NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
         [store synchronize];
@@ -406,6 +407,7 @@
             [iCloudFeeds addObject:componentString];
             [store setArray:iCloudFeeds forKey:kSavedFeedsKey];
         }
+
         callback();
     });
 }
@@ -413,10 +415,10 @@
 - (void)removeDataSource:(void (^)())callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[componentString]];
-        [db close];
+
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[componentString]];
+        }];
 
         NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
         [store synchronize];

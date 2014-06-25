@@ -10,6 +10,7 @@
 #import "HRResponseDelegate.h"
 
 #define CHANNEL @"i"
+#define EXTERNAL_CHANNEL @"x"
 
 #define VIEW_APP        @"g"
 #define VIEW_FORUM      @"m"
@@ -36,7 +37,6 @@
 + (void)track:(NSString *)event;
 + (void)track:(NSString *)event id:(NSInteger)id;
 + (void)track:(NSString *)event searchText:(NSString *)text ids:(NSArray *)results;
-+ (void)flush;
 
 @property (nonatomic, retain) NSString *uvts;
 @property (nonatomic, retain) NSDictionary *userTraits;

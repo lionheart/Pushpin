@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UVModelDelegate.h"
 
 @class UVArticle;
 @class UVSuggestion;
@@ -22,10 +23,11 @@
 - (void)skipInstantAnswers;
 - (void)didReceiveError:(NSError *)error;
 - (void)sendWithEmail:(NSString *)email name:(NSString *)name fields:(NSDictionary *)fieldValues;
+- (void)cancel;
 
 @end
 
-@interface UVInstantAnswerManager : NSObject
+@interface UVInstantAnswerManager : NSObject<UVModelDelegate>
 
 @property (nonatomic, assign) id<UVInstantAnswersDelegate,NSObject> delegate;
 @property (nonatomic, assign) BOOL loading;
