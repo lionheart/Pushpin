@@ -427,23 +427,26 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
                 }];
-                
+
                 [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
 
-                NSUInteger index = [self.posts indexOfObject:post];
+                NSInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-                [self.posts removeObjectAtIndex:index];
-                [self.metadata removeObjectAtIndex:index];
-                [self.compressedMetadata removeObjectAtIndex:index];
+
+                if (index >= 0) {
+                    [self.posts removeObjectAtIndex:index];
+                    [self.metadata removeObjectAtIndex:index];
+                    [self.compressedMetadata removeObjectAtIndex:index];
+                }
 
                 callback(indexPath);
             });
         };
-        
+
         ErrorBlock = ^(NSError *error) {
             callback(nil);
         };
-        
+
         [pinboard deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
     }
     
@@ -1006,8 +1009,11 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSMutableArray *tags = [NSMutableArray array];
                 results = [db executeQuery:@"SELECT name FROM tag"];
                 while ([results next]) {
-                    [tags addObject:[results stringForColumn:@"name"]];
+                    NSString *name = [results stringForColumn:@"name"];
+                    [tags addObject:name];
                 }
+
+                [results close];
                 
                 NSString *firstHash;
                 if (posts.count > 0) {
@@ -1018,7 +1024,16 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 total = posts.count;
-                results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+
+                if (count > 0) {
+                    NSDictionary *earliestPost = [self paramsForPost:[posts lastObject] dateError:NO];
+                    results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark WHERE created_at >= ? ORDER BY created_at DESC"
+                          withArgumentsInArray:@[earliestPost[@"created_at"]]];
+                }
+                else {
+                    results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
+                }
+
                 previousBookmarks = [NSMutableArray array];
                 while ([results next]) {
                     [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
@@ -1050,7 +1065,6 @@ static BOOL kPinboardSyncInProgress = NO;
                                             meta:^NSString *(id obj) { return obj[@"meta"]; }
                                       completion:^(NSSet *inserted, NSSet *updated, NSSet *deleted) {
                                           __block CGFloat index = 0;
-                                          NSUInteger skipped = 0;
                                           __block NSUInteger updateCount = 0;
                                           __block NSUInteger addCount = 0;
                                           __block NSUInteger deleteCount = 0;
@@ -1154,12 +1168,10 @@ static BOOL kPinboardSyncInProgress = NO;
                                           }];
                                           
                                           NSDate *endDate = [NSDate date];
-                                          skipped = total - addCount - updateCount - deleteCount;
                                           
                                           DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
                                           DLog(@"added %lu", (unsigned long)[inserted count]);
                                           DLog(@"updated %lu", (unsigned long)[updated count]);
-                                          DLog(@"skipped %lu", (unsigned long)skipped);
                                           DLog(@"removed %lu", (unsigned long)[deleted count]);
                                           DLog(@"tags added %lu", (unsigned long)tagAddCount);
                                           
