@@ -1,3 +1,9 @@
 *.png diff=png filter=bigstore
 *.pbxproj filter=xcode
-*Info*.plist merge=bundleversion
+
+Pushpin/Beta-Info.plist merge=bundleversion
+Pushpin/DeliciousAppStore.plist merge=bundleversion
+Pushpin/DeliciousBeta.plist merge=bundleversion
+Pushpin/DeliciousDebug.plist merge=bundleversion
+Pushpin/Dev-Info.plist merge=bundleversion
+Pushpin/PinboardAppStore.plist merge=bundleversion
