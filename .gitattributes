@@ -1,1 +1,3 @@
 *.png diff=png filter=bigstore
+*.pbxproj filter=xcode
+*Info*.plist merge=bundleversion
