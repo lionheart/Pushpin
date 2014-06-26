@@ -7,19 +7,19 @@
 		<array>
 			<array>
 				<string>FIX</string>
-				<string>Make syncing faster.</string>
+				<string>Speed up syncing.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix bug where searching for tags with duplicates would display frequencies incorrectly.</string>
+				<string>Fix issue where search results for tags with duplicates would display incorrect frequencies.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix bug where Pinboard full-text search would not function appropriately.</string>
+				<string>Fix issue where Pinboard full-text search would not function appropriately.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix various crashes.</string>
+				<string>Fix crash when rearranging feeds on the main feed list.</string>
 			</array>
 		</array>
 	</array>
