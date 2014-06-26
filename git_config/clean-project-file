@@ -1,0 +1,2 @@
+sed 's/\(PROVISIONING_PROFILE\) = "\(.*\)";/\1 = \"\";/g' | sed 's/\(CODE_SIGN_IDENTITY\) = "\(.*\)";/\1 = \"\";/g'
+
