@@ -46,7 +46,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.text = @"Pushpin uses SQLite FTS (full-text search) internally to index bookmarks and to facilitate advanced searching. Indexed fields include 'title', 'description', 'tags', and 'url'. To search for text within a field, just type the field, a colon, and then the phrase you're looking for. If you don't specify a field, Pushpin will search within all fields.\n\n"
     "Tap the action button in the top right to read more about SQLite FTS advanced query syntax (pay attention to the examples with the MATCH keyword, since Pushpin feeds your input right into that), or check out the examples below.";
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openSQLiteFTSDocumentation)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                           target:self
+                                                                                           action:@selector(openSQLiteFTSDocumentation)];
     [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
