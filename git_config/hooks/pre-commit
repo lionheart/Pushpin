@@ -7,4 +7,3 @@ else
 fi
 
 git_config/sort-Xcode-project-file-arg "Pushpin/project.pbxproj"
-
