@@ -34,6 +34,7 @@ use File::Basename;
 use File::Spec;
 use File::Temp qw(tempfile);
 use Getopt::Long;
+use IO::Scalar;
 
 sub sortChildrenByFileName($$);
 sub sortFilesByFileName($$);
@@ -55,97 +56,67 @@ my $getOptionsResult = GetOptions(
     'w|warnings!'    => \$printWarnings,
 );
 
-if (scalar(@ARGV) == 0 && !$showHelp) {
-    print STDERR "ERROR: No Xcode project files (project.pbxproj) listed on command-line.\n";
-    undef $getOptionsResult;
-}
-
 if (!$getOptionsResult || $showHelp) {
     print STDERR <<__END__;
-Usage: @{[ basename($0) ]} [options] path/to/project.pbxproj [path/to/project.pbxproj ...]
+Usage: @{[ basename($0) ]} [options] STDIN
   -h|--help           show this help message
   -w|--[no-]warnings  show or suppress warnings (default: show warnings)
 __END__
     exit 1;
 }
 
-for my $projectFile (@ARGV) {
-    if (basename($projectFile) =~ /\.xcodeproj$/) {
-        $projectFile = File::Spec->catfile($projectFile, "project.pbxproj");
-    }
+# See http://www.perlmonks.org/?node_id=33587
+my $INPUTDATA = join '', <STDIN>;
+my $s;
+tie *STDIN, 'IO::Scalar', \$s;
+print STDIN $INPUTDATA;
+tied(*STDIN)->setpos(0);
 
-    if (basename($projectFile) ne "project.pbxproj") {
-        print STDERR "WARNING: Not an Xcode project file: $projectFile\n" if $printWarnings;
-        next;
-    }
+my $mainGroup = "";
+my $line = "";
+foreach $line (split /\n/, $INPUTDATA) {
+    $mainGroup = $2 if $line =~ m#^(\s*)mainGroup = ([0-9A-F]{24}( /\* .+ \*/)?);$#;
+}
 
-    # Grab the mainGroup for the project file
-    my $mainGroup = "";
-    open(IN, "< $projectFile") || die "Could not open $projectFile: $!";
-    while (my $line = <IN>) {
-        $mainGroup = $2 if $line =~ m#^(\s*)mainGroup = ([0-9A-F]{24} /\* .+ \*/);$#;
-    }
-    close(IN);
-
-    my ($OUT, $tempFileName) = tempfile(
-        basename($projectFile) . "-XXXXXXXX",
-        DIR => dirname($projectFile),
-        UNLINK => 0,
-    );
-
-    # Clean up temp file in case of die()
-    $SIG{__DIE__} = sub {
-        close(IN);
-        close($OUT);
-        unlink($tempFileName);
-    };
-
-    my @lastTwo = ();
-    open(IN, "< $projectFile") || die "Could not open $projectFile: $!";
-    while (my $line = <IN>) {
-        if ($line =~ /^(\s*)files = \(\s*$/) {
-            print $OUT $line;
-            my $endMarker = $1 . ");";
-            my @files;
-            while (my $fileLine = <IN>) {
-                if ($fileLine =~ /^\Q$endMarker\E\s*$/) {
-                    $endMarker = $fileLine;
-                    last;
-                }
-                push @files, $fileLine;
+my @lastTwo = ();
+while (my $line = <STDIN>) {
+    if ($line =~ /^(\s*)files = \(\s*$/) {
+        print $line;
+        my $endMarker = $1 . ");";
+        my @files;
+        while (my $fileLine = <STDIN>) {
+            if ($fileLine =~ /^\Q$endMarker\E\s*$/) {
+                $endMarker = $fileLine;
+                last;
             }
-            print $OUT sort sortFilesByFileName @files;
-            print $OUT $endMarker;
-        } elsif ($line =~ /^(\s*)children = \(\s*$/) {
-            print $OUT $line;
-            my $endMarker = $1 . ");";
-            my @children;
-            while (my $childLine = <IN>) {
-                if ($childLine =~ /^\Q$endMarker\E\s*$/) {
-                    $endMarker = $childLine;
-                    last;
-                }
-                push @children, $childLine;
-            }
-            if ($lastTwo[0] =~ m#^\s+\Q$mainGroup\E = \{$#) {
-                # Don't sort mainGroup
-                print $OUT @children;
-            } else {
-                print $OUT sort sortChildrenByFileName @children;
-            }
-            print $OUT $endMarker;
-        } else {
-            print $OUT $line;
+            push @files, $fileLine;
         }
-
-        push @lastTwo, $line;
-        shift @lastTwo if scalar(@lastTwo) > 2;
+        print sort sortFilesByFileName @files;
+        print $endMarker;
+    } elsif ($line =~ /^(\s*)children = \(\s*$/) {
+        print $line;
+        my $endMarker = $1 . ");";
+        my @children;
+        while (my $childLine = <STDIN>) {
+            if ($childLine =~ /^\Q$endMarker\E\s*$/) {
+                $endMarker = $childLine;
+                last;
+            }
+            push @children, $childLine;
+        }
+        if ($lastTwo[0] =~ m#^\s+\Q$mainGroup\E = \{$#) {
+            # Don't sort mainGroup
+            print @children;
+        } else {
+            print sort sortChildrenByFileName @children;
+        }
+        print $endMarker;
+    } else {
+        print $line;
     }
-    close(IN);
-    close($OUT);
 
-    unlink($projectFile) || die "Could not delete $projectFile: $!";
-    rename($tempFileName, $projectFile) || die "Could not rename $tempFileName to $projectFile: $!";
+    push @lastTwo, $line;
+    shift @lastTwo if scalar(@lastTwo) > 2;
 }
 
 exit 0;
