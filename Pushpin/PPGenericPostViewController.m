@@ -33,6 +33,7 @@
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <Crashlytics/Crashlytics.h>
 
 static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
@@ -326,6 +327,7 @@ static NSInteger kToolbarHeight = 44;
     
     if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
         self.title = [self.postDataSource title];
+        CLS_LOG(@"View appeared: %@", self.title);
     }
     
     if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
