@@ -134,9 +134,9 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-            NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
-            return [(NSMutableArray *)self.sectionTitles[key] count];
-        }
+        NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
+        return [(NSMutableArray *)self.sectionTitles[key] count];
+    }
     else {
         return [self.filteredTags count];
     }
