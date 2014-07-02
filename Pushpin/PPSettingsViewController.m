@@ -329,8 +329,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [[ASPinboard sharedInstance] resetAuthentication];
 #endif
 
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:[PPAppDelegate databasePath] error:nil];
             [delegate setLoginViewController:nil];
             [delegate setNavigationController:nil];
             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
