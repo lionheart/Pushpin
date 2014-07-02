@@ -1657,13 +1657,11 @@
     
 #ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-
-    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-        [db executeUpdate:@"DELETE FROM feeds WHERE 1=1;"];
-        [db executeUpdate:@"DELETE FROM tag WHERE 1=1;"];
-        [db executeUpdate:@"DELETE FROM tagging WHERE 1=1;"];
-    }];
 #endif
+
+    // Remove the database.
+    NSFileManager *manager = [NSFileManager defaultManager];
+    [manager removeItemAtPath:[PPAppDelegate databasePath] error:nil];
 
     // Reset all values in settings
 #warning Need to decide which settings are reset and which ones aren't.
@@ -1688,7 +1686,7 @@
                                @(PPPinboardPersonalFeedUnread),
                                @(PPPinboardPersonalFeedUntagged),
                                @(PPPinboardPersonalFeedStarred),
-                               ];
+                           ];
 
     self.communityFeedOrder = @[
                                 @(PPPinboardCommunityFeedNetwork),
@@ -1696,7 +1694,7 @@
                                 @(PPPinboardCommunityFeedWikipedia),
                                 @(PPPinboardCommunityFeedFandom),
                                 @(PPPinboardCommunityFeedJapan),
-                                ];
+                            ];
 #endif
     
     [keychain resetKeychainItem];
