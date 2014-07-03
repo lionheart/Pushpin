@@ -395,11 +395,6 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_notify(group, queue, ^{
         dispatch_group_t inner_group = dispatch_group_create();
 
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-            [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
-            [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-        }];
-
         // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
         
         dispatch_group_notify(inner_group, queue, ^{
@@ -1159,8 +1154,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                                   NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                                                   [queue enqueueNotification:note postingStyle:NSPostASAP];
                                               }
-                                              
+
                                               DLog(@"Updating tags");
+                                              [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash NOT IN (SELECT hash FROM bookmark)"];
                                               [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                                               [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                                               
