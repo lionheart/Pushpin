@@ -57,8 +57,6 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 @property (nonatomic) BOOL isProcessingPosts;
 
-@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *pullToRefreshPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
 @property (nonatomic, strong) NSInvocation *invocation;
@@ -72,6 +70,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIKeyCommand *openKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *editKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *enterKeyCommand;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @property (nonatomic, strong) UIView *circle;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
@@ -94,6 +93,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position;
 - (void)hideCircle;
 
+- (void)refreshControlValueChanged:(id)sender;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)synchronizeAddedBookmark;
 
@@ -183,15 +183,13 @@ static NSInteger kToolbarHeight = 44;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.separatorColor = HEX(0xE0E0E0FF);
     
-    self.pullToRefreshView = [[UIView alloc] init];
-    self.pullToRefreshView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.pullToRefreshView.clipsToBounds = YES;
-    self.pullToRefreshView.backgroundColor = [UIColor whiteColor];
-    
-    self.pullToRefreshImageView = [[PPLoadingView alloc] init];
-    self.pullToRefreshImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.pullToRefreshImageView.backgroundColor = [UIColor clearColor];
-    [self.pullToRefreshView addSubview:self.pullToRefreshImageView];
+    // Add in the refresh control
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.tableView = self.tableView;
+
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+    tableViewController.refreshControl = self.refreshControl;
     
     self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -272,7 +270,6 @@ static NSInteger kToolbarHeight = 44;
     
     // Multi edit status and toolbar
     [self.view addSubview:self.tableView];
-    [self.view addSubview:self.pullToRefreshView];
     [self.view addSubview:self.multiToolbarView];
     [self.view addSubview:self.circle];
     
@@ -293,24 +290,14 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
     NSDictionary *views = @{@"toolbarView": self.multiToolbarView,
-                            @"ptr": self.pullToRefreshView,
-                            @"image": self.pullToRefreshImageView,
                             @"table": self.tableView,
                             @"top": self.topLayoutGuide,
                             @"bottom": self.bottomLayoutGuide };
     
-    [self.pullToRefreshView lhs_centerHorizontallyForView:self.pullToRefreshImageView];
-    [self.pullToRefreshView lhs_centerVerticallyForView:self.pullToRefreshImageView];
-    
-    self.pullToRefreshTopConstraint = [NSLayoutConstraint constraintWithItem:self.pullToRefreshView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    [self.view addConstraint:self.pullToRefreshTopConstraint];
-    
     [self.tableView lhs_fillHeightOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];
-    [self.pullToRefreshView lhs_fillWidthOfSuperview];
     [self.multiToolbarView lhs_fillWidthOfSuperview];
-    
-    [self.view lhs_addConstraints:@"V:[ptr(60)]" views:views];
+
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     
     // Initial database update
@@ -367,7 +354,6 @@ static NSInteger kToolbarHeight = 44;
     if (self.postDataSource.posts.count == 0) {
         [self updateFromLocalDatabaseWithCallback:^{
             if (delegate.connectionAvailable) {
-                [self.pullToRefreshImageView startAnimating];
                 [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                     if (updated) {
                         [self updateFromLocalDatabaseWithCallback:nil];
@@ -708,9 +694,6 @@ static NSInteger kToolbarHeight = 44;
                                              if (self.tableView.contentInset.top != 0) {
                                                  self.tableView.contentInset = UIEdgeInsetsZero;
                                              }
-                                             
-                                             self.pullToRefreshTopConstraint.constant = 0;
-                                             [self.view layoutIfNeeded];
                                          }
                                          completion:^(BOOL finished) {
                                              dispatch_async(dispatch_get_main_queue(), ^{
@@ -734,7 +717,7 @@ static NSInteger kToolbarHeight = 44;
                                                      DLog(@"B: %@", date);
                                                      
                                                      CLS_LOG(@"Table View Reload 1");
-
+                                                     
                                                      // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -1473,51 +1456,6 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-#pragma mark - UIScrollView
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (!self.tableView.editing && !self.isProcessingPosts && !self.searchDisplayController.isActive) {
-        CGFloat offset = scrollView.contentOffset.y;
-        if (offset <= -60) {
-            [self.pullToRefreshImageView startAnimating];
-            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                if (updated) {
-                    [self updateFromLocalDatabaseWithCallback:nil];
-                }
-            } progress:nil];
-        }
-        else if (offset < 0) {
-            [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
-        }
-    }
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (!self.isProcessingPosts) {
-        [self.pullToRefreshImageView stopAnimating];
-    }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (!self.isProcessingPosts) {
-        if (scrollView.contentOffset.y > 0) {
-            self.tableView.contentInset = UIEdgeInsetsZero;
-        }
-        else {
-            CGFloat offset = MAX(-60, scrollView.contentOffset.y);
-            
-            NSInteger index = MAX(1, 32 - MIN(-offset / 60 * 32, 32));
-            NSString *imageName = [NSString stringWithFormat:@"ptr_%02ld", (long)index];
-            
-            self.tableView.contentInset = UIEdgeInsetsMake(-offset, 0, 0, 0);
-            
-            self.pullToRefreshImageView.image = [UIImage imageNamed:imageName];
-            self.pullToRefreshTopConstraint.constant = -offset;
-            [self.view layoutIfNeeded];
-        }
-    }
-}
-
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -1596,8 +1534,6 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - UISearchDisplayControllerDelegate
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-    self.pullToRefreshTopConstraint.constant = 0;
-    [self.view layoutIfNeeded];
     self.searchBar.hidden = NO;
     self.tableView.tableHeaderView = self.searchBar;
     
@@ -2037,6 +1973,23 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSArray *)posts {
     return [self.postDataSource posts];
+}
+
+- (void)refreshControlValueChanged:(id)sender {
+    if (!self.tableView.editing && !self.isProcessingPosts && !self.searchDisplayController.isActive) {
+        [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (updated) {
+                    [self updateFromLocalDatabaseWithCallback:^{
+                        [self.refreshControl endRefreshing];
+                    }];
+                }
+                else {
+                    [self.refreshControl endRefreshing];
+                }
+            });
+        } progress:nil];
+    }
 }
 
 @end

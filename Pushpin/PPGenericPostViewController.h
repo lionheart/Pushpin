@@ -48,8 +48,6 @@ typedef enum : NSInteger {
 @interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UIView *pullToRefreshView;
-@property (nonatomic, strong) PPLoadingView *pullToRefreshImageView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
 @property (nonatomic, strong) UIActionSheet *longPressActionSheet;
 @property (nonatomic, strong) UIActionSheet *additionalTagsActionSheet;
