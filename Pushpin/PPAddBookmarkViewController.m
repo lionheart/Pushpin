@@ -21,6 +21,7 @@
 #import "UITableView+Additions.h"
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
+#import "PPShortcutEnabledDescriptionViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPConstants.h"
 
@@ -935,13 +936,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - PPDescriptionEditing
 
 - (void)editDescriptionViewControllerDidUpdateDescription:(PPEditDescriptionViewController *)editDescriptionViewController {
-    NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    self.postDescription = text;
-    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
-    
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView endUpdates];
+    if (self.view.isFirstResponder) {
+        NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.postDescription = text;
+        self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
+        
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    }
 }
 
 #pragma mark - Key Commands
@@ -981,7 +984,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - Other
 
 - (void)openDescriptionViewController {
-    PPEditDescriptionViewController *editDescriptionViewController = [[PPEditDescriptionViewController alloc] initWithDescription:self.postDescription];
+    PPShortcutEnabledDescriptionViewController *editDescriptionViewController = [[PPShortcutEnabledDescriptionViewController alloc] initWithDescription:self.postDescription];
     editDescriptionViewController.delegate = self;
     [self.navigationController pushViewController:editDescriptionViewController animated:YES];
 }

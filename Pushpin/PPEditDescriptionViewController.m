@@ -17,9 +17,7 @@
 @interface PPEditDescriptionViewController ()
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
-@property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
-
-- (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
+@property (nonatomic) BOOL textExpanderEnabled;
 
 - (void)fixTextView:(UITextView *)textView;
 
@@ -48,11 +46,11 @@
         self.textView.text = description;
 
         // TextExpander SDK
-        BOOL snippetsLoaded = [SMTEDelegateController expansionStatusForceLoad:NO
-                                                                  snippetCount:0
-                                                                      loadDate:nil
-                                                                         error:nil];
-        if (snippetsLoaded) {
+        self.textExpanderEnabled = [SMTEDelegateController expansionStatusForceLoad:NO
+                                                                       snippetCount:0
+                                                                           loadDate:nil
+                                                                              error:nil];
+        if (self.textExpanderEnabled) {
             self.textExpander = [[SMTEDelegateController alloc] init];
             self.textExpander.nextDelegate = self;
             self.textView.delegate = self.textExpander;
@@ -63,7 +61,13 @@
         
         [self.view addSubview:self.textView];
         
-        self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.textView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.textView
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1
+                                                              constant:0];
         [self.view addConstraint:self.bottomConstraint];
     }
     return self;
@@ -76,14 +80,6 @@
     [self.view lhs_addConstraints:@"V:[guide][text]" views:views];
     [self.view lhs_addConstraints:@"H:|[text]|" views:views];
     [self.view layoutIfNeeded];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-                                                modifierFlags:0
-                                                       action:@selector(handleKeyCommand:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -113,7 +109,7 @@
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
-    if (self.textExpanderSnippetExpanded) {
+    if (self.textExpanderEnabled && self.textExpanderSnippetExpanded) {
         [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
         self.textExpanderSnippetExpanded = NO;
     }
@@ -122,27 +118,23 @@
 }
 
 - (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if (self.textExpander.isAttemptingToExpandText) {
+    if (self.textExpanderEnabled && self.textExpander.isAttemptingToExpandText) {
         self.textExpanderSnippetExpanded = YES;
     }
 
     return YES;
 }
 
-#pragma mark - Key Commands
+#pragma mark - SMTEFillDelegate
 
-- (BOOL)canBecomeFirstResponder {
-    return YES;
+- (NSString *)identifierForTextArea:(id)uiTextObject {
+    return @"textarea";
 }
 
-- (NSArray *)keyCommands {
-    return @[self.goBackKeyCommand];
-}
-
-- (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
-    if (keyCommand == self.goBackKeyCommand) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+- (id)makeIdentifiedTextObjectFirstResponder:(NSString *)textIdentifier
+                             fillWasCanceled:(BOOL)userCanceledFill
+                              cursorPosition:(NSInteger *)ioInsertionPointLocation {
+    return nil;
 }
 
 @end

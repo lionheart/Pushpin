@@ -293,11 +293,10 @@ static NSInteger kToolbarHeight = 44;
                             @"table": self.tableView,
                             @"top": self.topLayoutGuide,
                             @"bottom": self.bottomLayoutGuide };
-    
-    [self.tableView lhs_fillHeightOfSuperview];
-    [self.tableView lhs_fillWidthOfSuperview];
-    [self.multiToolbarView lhs_fillWidthOfSuperview];
 
+    [self.tableView lhs_fillWidthOfSuperview];
+    [self.tableView lhs_fillHeightOfSuperview];
+    [self.multiToolbarView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     
     // Initial database update
@@ -677,7 +676,7 @@ static NSInteger kToolbarHeight = 44;
             if (firstLoad) {
                 activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
                 [activityIndicator startAnimating];
-                
+
                 [self.view addSubview:activityIndicator];
                 [self.view lhs_centerHorizontallyForView:activityIndicator];
                 [self.view lhs_centerVerticallyForView:activityIndicator];
@@ -688,55 +687,45 @@ static NSInteger kToolbarHeight = 44;
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:0.3
-                                         animations:^{
-                                             if (self.tableView.contentInset.top != 0) {
-                                                 self.tableView.contentInset = UIEdgeInsetsZero;
-                                             }
-                                         }
-                                         completion:^(BOOL finished) {
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 UITableView *tableView;
-                                                 if (self.searchDisplayController.isActive) {
-                                                     tableView = self.searchDisplayController.searchResultsTableView;
-                                                 }
-                                                 else {
-                                                     tableView = self.tableView;
-                                                 }
-                                                 
-                                                 if (firstLoad) {
-                                                     [activityIndicator removeFromSuperview];
-                                                     [tableView reloadData];
-                                                 }
-                                                 else {
-
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        UITableView *tableView;
+                        if (self.searchDisplayController.isActive) {
+                            tableView = self.searchDisplayController.searchResultsTableView;
+                        }
+                        else {
+                            tableView = self.tableView;
+                        }
+                        
+                        if (firstLoad) {
+                            [activityIndicator removeFromSuperview];
+                            [tableView reloadData];
+                        }
+                        else {
+                            
 #warning XXX - Crash: http://crashes.to/s/d4cb56826ff
-// attempt to delete row 99 from section 0 which only contains 2 rows before the update
-// attempt to delete row 99 from section 0 which only contains 0 rows before the update
-                                                     DLog(@"B: %@", date);
-                                                     
-                                                     CLS_LOG(@"Table View Reload 1");
-                                                     
-                                                     // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                                                     [tableView beginUpdates];
-                                                     [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                                     [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                                     [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                                     [tableView endUpdates];
-                                                 }
-                                                 
-                                                 if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                                                     self.searchPostDataSource = [self.postDataSource searchDataSource];
-                                                 }
-                                                 
-                                                 if (callback) {
-                                                     callback();
-                                                 }
-
-                                                 self.isProcessingPosts = NO;
-                                             });
-                                         }];
+                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                            // attempt to delete row 99 from section 0 which only contains 0 rows before the update
+                            DLog(@"B: %@", date);
+                            
+                            CLS_LOG(@"Table View Reload 1");
+                            
+                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                            [tableView beginUpdates];
+                            [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView endUpdates];
+                        }
+                        
+                        if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                            self.searchPostDataSource = [self.postDataSource searchDataSource];
+                        }
+                        
+                        if (callback) {
+                            callback();
+                        }
+                        
+                        self.isProcessingPosts = NO;
                     });
                 } cancel:^BOOL{
                     return NO;
