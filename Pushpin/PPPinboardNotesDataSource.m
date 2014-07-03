@@ -126,26 +126,34 @@
                 NSInteger index = 0;
                 for (NSDictionary *note in notes) {
                     NSString *noteID = note[@"id"];
+                    NSString *title = note[@"title"];
                     NSDate *date = [enUSPOSIXDateFormatter dateFromString:note[@"updated_at"]];
                     
+#warning XXX
                     if (note[@"updated_at"]) {
                         CLS_LOG(@"updated_at: %@", note[@"updated_at"]);
                     }
+                    else {
+                        date = [NSDate date];
+                    }
                     
-                    if (note[@"title"]) {
+                    if (title) {
                         CLS_LOG(@"title: %@", note[@"title"]);
+                    }
+                    else {
+                        title = @"Untitled";
                     }
                     
                     if (noteID) {
                         CLS_LOG(@"noteID: %@", noteID);
                     }
-                    
+
                     [newNotesUnsorted addObject:@{
                                                   @"updated_at": date,
                                                   @"description": [self.dateFormatter stringFromDate:date],
-                                                  @"title": note[@"title"],
+                                                  @"title": title,
                                                   @"id": noteID,
-                                                  }];
+                                              }];
                 }
                 
                 NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
