@@ -15,6 +15,7 @@
 #import "NSAttributedString+Attributes.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <Crashlytics/Crashlytics.h>
 #import <ASPinboard/ASPinboard.h>
 
 @interface PPPinboardNotesDataSource ()
@@ -104,25 +105,45 @@
     for (NSDictionary *post in self.posts) {
         [oldIDs addObject:post[@"id"]];
     }
-    
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         
+        static NSDateFormatter *enUSPOSIXDateFormatter;
+        dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+
+            enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
+            enUSPOSIXDateFormatter.locale = enUSPOSIXLocale;
+            enUSPOSIXDateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+            enUSPOSIXDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        });
+
         NSInteger index = 0;
         for (NSDictionary *note in notes) {
             NSString *noteID = note[@"id"];
-            NSDate *date = [dateFormatter dateFromString:note[@"updated_at"]];
+            NSDate *date = [enUSPOSIXDateFormatter dateFromString:note[@"updated_at"]];
+            
+            if (note[@"updated_at"]) {
+                CLS_LOG(@"updated_at: %@", note[@"updated_at"]);
+            }
+            
+            if (note[@"title"]) {
+                CLS_LOG(@"title: %@", note[@"title"]);
+            }
+            
+            if (noteID) {
+                CLS_LOG(@"noteID: %@", noteID);
+            }
+
             [newNotesUnsorted addObject:@{
                                           @"updated_at": date,
                                           @"description": [self.dateFormatter stringFromDate:date],
                                           @"title": note[@"title"],
                                           @"id": noteID,
-                                          }];
+                                      }];
         }
         
         NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -153,7 +174,6 @@
         }
 
         self.posts = [newNotes copy];
-        
         completion(indexPathsToAdd, indexPathsToReload, indexPathsToRemove, nil);
     }];
 }
