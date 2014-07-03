@@ -55,8 +55,6 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIDynamicAnimator *animator;
 @property (nonatomic, strong) NSString *formattedSearchString;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
-@property (nonatomic, strong) NSArray *posts;
-@property (nonatomic, strong) NSArray *searchPosts;
 @property (nonatomic) BOOL isProcessingPosts;
 
 @property (nonatomic, strong) NSLayoutConstraint *pullToRefreshTopConstraint;
@@ -99,6 +97,9 @@ static NSInteger kToolbarHeight = 44;
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)synchronizeAddedBookmark;
 
+- (NSArray *)searchPosts;
+- (NSArray *)posts;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -129,8 +130,6 @@ static NSInteger kToolbarHeight = 44;
     self.prefersStatusBarHidden = NO;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
-    self.posts = @[];
-    self.searchPosts = @[];
     self.isProcessingPosts = NO;
     
     self.focusSearchKeyCommand = [UIKeyCommand keyCommandWithInput:@"/"
@@ -363,8 +362,6 @@ static NSInteger kToolbarHeight = 44;
     }
     
     self.compressPosts = [PPAppDelegate sharedDelegate].compressPosts;
-    
-    self.postDataSource.posts = [self.posts mutableCopy];
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     if (self.postDataSource.posts.count == 0) {
@@ -687,7 +684,7 @@ static NSInteger kToolbarHeight = 44;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!self.isProcessingPosts) {
             self.isProcessingPosts = YES;
-            BOOL firstLoad = self.posts.count == 0;
+            BOOL firstLoad = [self.postDataSource numberOfPosts] == 0;
             
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             
@@ -720,11 +717,9 @@ static NSInteger kToolbarHeight = 44;
                                                  UITableView *tableView;
                                                  if (self.searchDisplayController.isActive) {
                                                      tableView = self.searchDisplayController.searchResultsTableView;
-                                                     self.searchPosts = [self.searchPostDataSource.posts copy];
                                                  }
                                                  else {
                                                      tableView = self.tableView;
-                                                     self.posts = [self.postDataSource.posts copy];
                                                  }
                                                  
                                                  if (firstLoad) {
@@ -732,10 +727,15 @@ static NSInteger kToolbarHeight = 44;
                                                      [tableView reloadData];
                                                  }
                                                  else {
-#warning Crash here
+
+#warning XXX - Crash: http://crashes.to/s/d4cb56826ff
+// attempt to delete row 99 from section 0 which only contains 2 rows before the update
+// attempt to delete row 99 from section 0 which only contains 0 rows before the update
                                                      DLog(@"B: %@", date);
                                                      
                                                      CLS_LOG(@"Table View Reload 1");
+
+                                                     // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -783,7 +783,6 @@ static NSInteger kToolbarHeight = 44;
         [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             if (!error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.searchPosts = [self.searchPostDataSource.posts copy];
 //                    [self.searchDisplayController.searchResultsTableView reloadData];
                     
                     CLS_LOG(@"Table View Reload 2");
@@ -956,10 +955,10 @@ static NSInteger kToolbarHeight = 44;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (tableView == self.tableView) {
-        return self.posts.count;
+        return [self.postDataSource numberOfPosts];
     }
     else {
-        return self.searchPosts.count;
+        return [self.searchPostDataSource numberOfPosts];
     }
 }
 
@@ -974,7 +973,7 @@ static NSInteger kToolbarHeight = 44;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PPBookmarkCell *cell = (PPBookmarkCell *)[tableView dequeueReusableCellWithIdentifier:BookmarkCellIdentifier forIndexPath:indexPath];
     cell.delegate = self;
-    
+
     id <PPDataSource> dataSource = [self dataSourceForTableView:tableView];
     [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
     return cell;
@@ -1442,8 +1441,6 @@ static NSInteger kToolbarHeight = 44;
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.searchPosts = [self.searchPostDataSource.posts copy];
-                        
                         CLS_LOG(@"Table View Reload 8");
                         [self.searchDisplayController.searchResultsTableView beginUpdates];
                         [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -1454,8 +1451,6 @@ static NSInteger kToolbarHeight = 44;
             else {
                 [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.posts = [self.postDataSource.posts copy];
-                        
                         CLS_LOG(@"Table View Reload 9");
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -2034,6 +2029,14 @@ static NSInteger kToolbarHeight = 44;
             [self.navigationController presentViewController:vc animated:YES completion:nil];
         }
     }
+}
+
+- (NSArray *)searchPosts {
+    return [self.searchPostDataSource posts];
+}
+
+- (NSArray *)posts {
+    return [self.postDataSource posts];
 }
 
 @end
