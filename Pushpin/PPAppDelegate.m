@@ -1658,7 +1658,7 @@
 #ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 #endif
-
+    
     // Remove the database.
     NSFileManager *manager = [NSFileManager defaultManager];
     [manager removeItemAtPath:[PPAppDelegate databasePath] error:nil];
