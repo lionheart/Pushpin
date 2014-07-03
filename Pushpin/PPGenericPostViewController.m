@@ -327,7 +327,7 @@ static NSInteger kToolbarHeight = 44;
     
     if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
         self.title = [self.postDataSource title];
-        CLS_LOG(@"View appeared: %@", self.title);
+        CLS_LOG(@"Post view appeared: %@", self.title);
     }
     
     if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
@@ -735,6 +735,7 @@ static NSInteger kToolbarHeight = 44;
 #warning Crash here
                                                      DLog(@"B: %@", date);
                                                      
+                                                     CLS_LOG(@"Table View Reload 1");
                                                      [tableView beginUpdates];
                                                      [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                      [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -785,6 +786,7 @@ static NSInteger kToolbarHeight = 44;
                     self.searchPosts = [self.searchPostDataSource.posts copy];
 //                    [self.searchDisplayController.searchResultsTableView reloadData];
                     
+                    CLS_LOG(@"Table View Reload 2");
                     [self.searchDisplayController.searchResultsTableView beginUpdates];
                     [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -858,7 +860,8 @@ static NSInteger kToolbarHeight = 44;
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-            
+
+            CLS_LOG(@"Table View Reload 3");
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
@@ -1117,6 +1120,7 @@ static NSInteger kToolbarHeight = 44;
             if (self.searchDisplayController.isActive) {
                 [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        CLS_LOG(@"Table View Reload 4");
                         [self.searchDisplayController.searchResultsTableView beginUpdates];
                         [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.searchDisplayController.searchResultsTableView endUpdates];
@@ -1126,10 +1130,12 @@ static NSInteger kToolbarHeight = 44;
             else {
                 [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        CLS_LOG(@"Table View Reload 5");
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
-                        
+
+                        CLS_LOG(@"Table View Reload 6");
                         [self.tableView beginUpdates];
                         [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
@@ -1157,6 +1163,7 @@ static NSInteger kToolbarHeight = 44;
             else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
                 UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        CLS_LOG(@"Table View Reload 7");
                         [self.tableView beginUpdates];
                         [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
                         [self.tableView endUpdates];
@@ -1437,6 +1444,7 @@ static NSInteger kToolbarHeight = 44;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.searchPosts = [self.searchPostDataSource.posts copy];
                         
+                        CLS_LOG(@"Table View Reload 8");
                         [self.searchDisplayController.searchResultsTableView beginUpdates];
                         [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.searchDisplayController.searchResultsTableView endUpdates];
@@ -1448,6 +1456,7 @@ static NSInteger kToolbarHeight = 44;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.posts = [self.postDataSource.posts copy];
                         
+                        CLS_LOG(@"Table View Reload 9");
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                         [self.tableView endUpdates];
@@ -1664,6 +1673,7 @@ static NSInteger kToolbarHeight = 44;
         self.isProcessingPosts = YES;
         [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                CLS_LOG(@"Table View Reload 10");
                 [self.tableView beginUpdates];
                 [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
@@ -1691,6 +1701,7 @@ static NSInteger kToolbarHeight = 44;
         [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
             if (!error) {
                 dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    CLS_LOG(@"Table View Reload 11");
                     [self.tableView beginUpdates];
                     [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -1800,6 +1811,7 @@ static NSInteger kToolbarHeight = 44;
             
             self.compressPosts = !self.compressPosts;
             
+            CLS_LOG(@"Table View Reload 12");
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
@@ -1837,6 +1849,7 @@ static NSInteger kToolbarHeight = 44;
                                    deletes:(NSArray *)indexPathsToDelete {
     
     if (kGenericPostViewControllerPerformAtomicUpdates) {
+        CLS_LOG(@"Table View Reload 13");
         [self.tableView beginUpdates];
         if (indexPathsToReload) {
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -1871,6 +1884,7 @@ static NSInteger kToolbarHeight = 44;
     self.selectedIndexPath = indexPath;
     UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
         dispatch_async(dispatch_get_main_queue(), ^{
+            CLS_LOG(@"Table View Reload 14");
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
@@ -2006,6 +2020,7 @@ static NSInteger kToolbarHeight = 44;
             UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
                                                                                                        callback:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    CLS_LOG(@"Table View Reload 15");
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
