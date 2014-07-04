@@ -1275,9 +1275,9 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
-    self.mostRecentWidth = width;
-
     dispatch_async(PPBookmarkReloadQueue(), ^{
+        self.mostRecentWidth = width;
+
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSArray *previousBookmarks = [self.posts copy];
             NSMutableArray *updatedBookmarks = [NSMutableArray array];
