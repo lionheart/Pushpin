@@ -1886,66 +1886,67 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSArray *)keyCommands {
-    return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand, self.openKeyCommand, self.editKeyCommand];
+    if ([self.searchBar isFirstResponder]) {
+        return @[self.enterKeyCommand];
+    }
+    else {
+        return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand, self.openKeyCommand, self.editKeyCommand];
+    }
 }
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
-    if ([self.searchBar isFirstResponder]) {
-        if (keyCommand == self.enterKeyCommand) {
-            [self.searchBar resignFirstResponder];
+    if (keyCommand == self.enterKeyCommand) {
+        [self.searchBar resignFirstResponder];
+    }
+    else if (keyCommand == self.focusSearchKeyCommand) {
+        [self.searchBar becomeFirstResponder];
+    }
+    else if (keyCommand == self.toggleCompressKeyCommand) {
+        [self toggleCompressedPosts];
+    }
+    else if (keyCommand == self.escapeKeyCommand) {
+        [self.searchBar resignFirstResponder];
+    }
+    else if (keyCommand == self.moveUpKeyCommand) {
+        if (self.selectedIndexPath) {
+            NSInteger row = self.selectedIndexPath.row;
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
     }
-    else {
-        if (keyCommand == self.focusSearchKeyCommand) {
-            [self.searchBar becomeFirstResponder];
+    else if (keyCommand == self.moveDownKeyCommand) {
+        if (self.selectedIndexPath) {
+            NSInteger row = self.selectedIndexPath.row;
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
-        else if (keyCommand == self.toggleCompressKeyCommand) {
-            [self toggleCompressedPosts];
+        else {
+            self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
-        else if (keyCommand == self.escapeKeyCommand) {
-            [self.searchBar resignFirstResponder];
+    }
+    else if (keyCommand == self.openKeyCommand) {
+        self.numberOfTapsSinceTapReset = 1;
+        self.selectedTableView = self.tableView;
+        [self handleCellTap];
+    }
+    else if (keyCommand == self.editKeyCommand) {
+        UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
+                                                                                                   callback:^{
+                                                                                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                           CLS_LOG(@"Table View Reload 15");
+                                                                                                           
+                                                                                                           [self.tableView beginUpdates];
+                                                                                                           [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                                           [self.tableView endUpdates];
+                                                                                                       });
+                                                                                                   }];
+        
+        if ([UIApplication isIPad]) {
+            vc.modalPresentationStyle = UIModalPresentationFormSheet;
         }
-        else if (keyCommand == self.moveUpKeyCommand) {
-            if (self.selectedIndexPath) {
-                NSInteger row = self.selectedIndexPath.row;
-                self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
-                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
-            }
-        }
-        else if (keyCommand == self.moveDownKeyCommand) {
-            if (self.selectedIndexPath) {
-                NSInteger row = self.selectedIndexPath.row;
-                self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
-                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
-            }
-            else {
-                self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-                [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
-            }
-        }
-        else if (keyCommand == self.openKeyCommand) {
-            self.numberOfTapsSinceTapReset = 1;
-            self.selectedTableView = self.tableView;
-            [self handleCellTap];
-        }
-        else if (keyCommand == self.editKeyCommand) {
-            UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
-                                                                                                       callback:^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    CLS_LOG(@"Table View Reload 15");
-
-                    [self.tableView beginUpdates];
-                    [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                });
-            }];
-            
-            if ([UIApplication isIPad]) {
-                vc.modalPresentationStyle = UIModalPresentationFormSheet;
-            }
-            
-            [self.navigationController presentViewController:vc animated:YES completion:nil];
-        }
+        
+        [self.navigationController presentViewController:vc animated:YES completion:nil];
     }
 }
 
