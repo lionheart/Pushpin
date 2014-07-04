@@ -111,6 +111,8 @@
 		373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */; };
 		373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BB16F81C6900A7D7C8 /* ptr_32.png */; };
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
+		373D6F541965D92C006833D2 /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
+		373D6F571965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
 		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -661,6 +663,8 @@
 		373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_31@2x.png"; sourceTree = "<group>"; };
 		373C82BB16F81C6900A7D7C8 /* ptr_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ptr_32.png; sourceTree = "<group>"; };
 		373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ptr_32@2x.png"; sourceTree = "<group>"; };
+		373D6F551965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShortcutEnabledDescriptionViewController.h; sourceTree = "<group>"; };
+		373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShortcutEnabledDescriptionViewController.m; sourceTree = "<group>"; };
 		37405C6518620BCB0052213A /* PostMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostMetadata.h; sourceTree = "<group>"; };
 		37405C6618620BCB0052213A /* PostMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostMetadata.m; sourceTree = "<group>"; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1149,6 +1153,7 @@
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
+				373D6F541965D92C006833D2 /* libDebugPods.a in Frameworks */,
 				D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
@@ -1527,6 +1532,8 @@
 				37171A2B18B16C77007FF164 /* PPSearchViewController.m */,
 				37800E3F162B2EDA009FCB17 /* PPSettingsViewController.h */,
 				37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */,
+				373D6F551965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.h */,
+				373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */,
 				376C9E8D1749969200A62CB5 /* PPTableViewController.h */,
 				376C9E8E1749969200A62CB5 /* PPTableViewController.m */,
 				3728CF3B18726EC900155791 /* PPTagEditViewController.h */,
@@ -2685,6 +2692,7 @@
 				3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */,
 				37171A2C18B16C77007FF164 /* PPSearchViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */,
+				373D6F571965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
 				37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */,
 				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,

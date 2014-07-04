@@ -342,8 +342,11 @@ static NSInteger kToolbarHeight = 44;
     }
     
     if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
-        self.editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-edit"] landscapeImagePhone:[UIImage imageNamed:@"navigation-edit"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
-        self.editButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil) style:UIBarButtonItemStylePlain target:self action:@selector(toggleEditingMode:)];
+        self.editButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
+                                                           style:UIBarButtonItemStylePlain
+                                                          target:self
+                                                          action:@selector(toggleEditingMode:)];
+
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
     
@@ -826,7 +829,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
-    void (^DeletePostCallback)(NSArray *, NSArray *, NSArray *) = ^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -834,21 +837,19 @@ static NSInteger kToolbarHeight = 44;
 
             CLS_LOG(@"Table View Reload 3");
             [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
-            
+
             [UIView animateWithDuration:0.25 animations:^{
                 UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
                 searchTextField.enabled = YES;
             } completion:^(BOOL finished) {
-                self.indexPathsToDelete = nil;
+                self.indexPathsToDelete = @[];
             }];
         });
-    };
-    
-    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:DeletePostCallback];
+    }];
 }
 
 - (void)multiMarkAsRead:(id)sender {
@@ -890,7 +891,12 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
     
-    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil)
+                                                                          delegate:self
+                                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                            destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
+                                                                 otherButtonTitles:nil];
+    
     [self.confirmMultipleDeletionActionSheet showInView:self.view];
 }
 
@@ -1099,20 +1105,6 @@ static NSInteger kToolbarHeight = 44;
                 }];
             }
             else {
-                [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CLS_LOG(@"Table View Reload 5");
-                        [self.tableView beginUpdates];
-                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                        [self.tableView endUpdates];
-
-                        CLS_LOG(@"Table View Reload 6");
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationTop];
-                        [self.tableView endUpdates];
-                    });
-                }];
-                
                 [self deletePostsAtIndexPaths:self.indexPathsToDelete];
             }
         }
@@ -1941,6 +1933,7 @@ static NSInteger kToolbarHeight = 44;
                                                                                                        callback:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CLS_LOG(@"Table View Reload 15");
+
                     [self.tableView beginUpdates];
                     [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
@@ -1979,6 +1972,11 @@ static NSInteger kToolbarHeight = 44;
             });
         } progress:nil];
     }
+}
+
+- (void)setCompressPosts:(BOOL)compressPosts {
+    _compressPosts = compressPosts;
+    
 }
 
 @end

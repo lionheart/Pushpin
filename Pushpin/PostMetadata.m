@@ -62,7 +62,10 @@
     BOOL dimmed = [PPAppDelegate sharedDelegate].dimReadPosts && read;
 
     if (cache) {
-        PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post compressed:compressed dimmed:dimmed width:width];
+        PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post
+                                                                                 compressed:compressed
+                                                                                     dimmed:dimmed
+                                                                                      width:width];
         if (result) {
             return result;
         }

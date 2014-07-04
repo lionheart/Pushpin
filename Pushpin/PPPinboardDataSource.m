@@ -368,15 +368,18 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     ASPinboard *pinboard = [ASPinboard sharedInstance];
-    NSString *url;
 
     for (NSIndexPath *indexPath in indexPaths) {
-        url = self.posts[indexPath.row][@"url"];
+        NSString *url = self.posts[indexPath.row][@"url"];
+
         SuccessBlock = ^{
             NSString *hash = self.posts[indexPath.row][@"hash"];
 
             [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
+                [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
+
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
             }];
 
@@ -396,7 +399,6 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_group_t inner_group = dispatch_group_create();
 
         // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
-        
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
                 [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
@@ -421,6 +423,8 @@ static BOOL kPinboardSyncInProgress = NO;
                 [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                     [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
+                    [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                    [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                 }];
 
                 [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
@@ -1271,7 +1275,8 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
-    
+    self.mostRecentWidth = width;
+
     dispatch_async(PPBookmarkReloadQueue(), ^{
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSArray *previousBookmarks = [self.posts copy];
@@ -1389,13 +1394,23 @@ static BOOL kPinboardSyncInProgress = NO;
                                                   useCache = YES;
                                               }
                                               
-                                              PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:self.tagsWithFrequency cache:useCache];
+                                              PostMetadata *metadata = [PostMetadata metadataForPost:post
+                                                                                          compressed:NO
+                                                                                               width:width
+                                                                                   tagsWithFrequency:self.tagsWithFrequency
+                                                                                               cache:useCache];
                                               [newMetadata addObject:metadata];
                                               
-                                              PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:self.tagsWithFrequency cache:useCache];
+                                              PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post
+                                                                                                    compressed:YES
+                                                                                                         width:width
+                                                                                             tagsWithFrequency:self.tagsWithFrequency
+                                                                                                         cache:useCache];
                                               [newCompressedMetadata addObject:compressedMetadata];
+                                              
+                                              DLog(@"%@ %@", metadata.height, compressedMetadata.height);
                                           }
-                                          
+
                                           // We run this block to make sure that these results should be the latest on file
                                           if (cancel && cancel()) {
                                               DLog(@"Cancelling search for query (%@)", self.searchQuery);
