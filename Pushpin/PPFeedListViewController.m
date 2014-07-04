@@ -374,7 +374,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
             [delegate setFeedToken:feedToken];
             [self.tableView reloadData];
-        }];
+        } failure:nil];
     }
 #endif
 }

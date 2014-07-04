@@ -8,11 +8,18 @@
 
 @import UIKit;
 
-typedef enum kLoginRows {
-    kLoginUsernameRow,
-    kLoginPasswordRow,
-    kLogin1PasswordRow = 0
-} kLoginRowType;
+typedef NS_ENUM(NSInteger, PPLoginCredentialRowType) {
+    PPLoginCredentialUsernameRow,
+    PPLoginCredentialPasswordRow
+};
+
+typedef NS_ENUM(NSInteger, PPLoginSectionType) {
+    PPLoginCredentialSection,
+    PPLoginAuthTokenSection,
+    PPLogin1PasswordSection
+};
+
+static NSInteger PPLoginSectionCount = PPLogin1PasswordSection + 1;
 
 @interface PPLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
 }
@@ -25,10 +32,6 @@ typedef enum kLoginRows {
 @property (nonatomic, strong) NSTimer *messageUpdateTimer;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) UIProgressView *progressView;
-@property (nonatomic, strong) UITextField *passwordTextField;
-@property (nonatomic, strong) UITextField *textField;
-@property (nonatomic, strong) UITextField *usernameTextField;
-@property (nonatomic, strong) UITextView *textView;
 @property (nonatomic, strong) NSDictionary *textViewAttributes;
 
 - (void)login;
