@@ -487,7 +487,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
                 emailComposer.mailComposeDelegate = self;
                 [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
-                [emailComposer setToRecipients:@[@"support@aurora.io"]];
+                [emailComposer setToRecipients:@[@"support@lionheartsw.com"]];
                 [self presentViewController:emailComposer animated:YES completion:nil];
                 return;
             }
@@ -631,6 +631,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+
+                    __block NSString *numBookmarks;
+                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark"];
+                        [results next];
+                        numBookmarks = [results stringForColumnIndex:0];
+                    }];
+
+                    config.customFields = @{@"bookmarks": numBookmarks,
+                                            @"last_updated": [NSString stringWithFormat:@"%@", [PPAppDelegate sharedDelegate].lastUpdated] };
                     [ASStyleSheet applyStyles];
                     [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
                     break;
