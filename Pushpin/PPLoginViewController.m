@@ -28,6 +28,13 @@
 @interface PPLoginViewController ()
 
 @property (nonatomic) BOOL loginInProgress;
+@property (nonatomic, strong) UITextField *authTokenTextField;
+@property (nonatomic, strong) UITextField *passwordTextField;
+@property (nonatomic, strong) UITextField *usernameTextField;
+@property (nonatomic, strong) UITextField *textField;
+
+@property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) UITextView *authTokenFooterTextView;
 
 @end
 
@@ -63,6 +70,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.progressView.hidden = YES;
 
     self.textViewAttributes = @{NSFontAttributeName: [PPTheme urlFont]};
+
     self.textView = [[UITextView alloc] init];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     self.textView.backgroundColor = [UIColor clearColor];
@@ -71,6 +79,17 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.textView.hidden = YES;
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = NSTextAlignmentCenter;
+    
+    self.authTokenFooterTextView = [[UITextView alloc] init];
+    self.authTokenFooterTextView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.authTokenFooterTextView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Note: Logging in with your API token will prevent Pushpin from accessing Pinboard's full-text search feature.", nil)
+                                                                                  attributes:self.textViewAttributes];
+    self.authTokenFooterTextView.backgroundColor = [UIColor clearColor];
+    self.authTokenFooterTextView.textColor = [UIColor darkGrayColor];
+    self.authTokenFooterTextView.editable = NO;
+    self.authTokenFooterTextView.hidden = NO;
+    self.authTokenFooterTextView.userInteractionEnabled = NO;
+    self.authTokenFooterTextView.textAlignment = NSTextAlignmentLeft;
     
     self.usernameTextField = [[UITextField alloc] init];
     self.usernameTextField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -85,7 +104,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.usernameTextField.placeholder = NSLocalizedString(@"Username", nil);
-    
+
     self.passwordTextField = [[UITextField alloc] init];
     self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
     self.passwordTextField.font = [PPTheme titleFont];
@@ -98,6 +117,18 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.passwordTextField.secureTextEntry = YES;
     self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordTextField.placeholder = NSLocalizedString(@"Password", nil);
+    
+    self.authTokenTextField = [[UITextField alloc] init];
+    self.authTokenTextField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.authTokenTextField.font = [PPTheme titleFont];
+    self.authTokenTextField.textAlignment = NSTextAlignmentLeft;
+    self.authTokenTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.authTokenTextField.backgroundColor = [UIColor whiteColor];
+    self.authTokenTextField.delegate = self;
+    self.authTokenTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.authTokenTextField.returnKeyType = UIReturnKeyDone;
+    self.authTokenTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.authTokenTextField.placeholder = NSLocalizedString(@"username:NNNNNN", nil);
 
     self.keyboard_shown = NO;
     self.loginTimer = nil;
@@ -117,8 +148,15 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.passwordTextField.enabled = YES;
     self.passwordTextField.textColor = [UIColor blackColor];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil) style:UIBarButtonItemStyleDone target:self action:@selector(showContactForm)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil) style:UIBarButtonItemStyleDone target:self action:@selector(login)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
+                                                                             style:UIBarButtonItemStyleDone
+                                                                            target:self
+                                                                            action:@selector(showContactForm)];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil)
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self
+                                                                             action:@selector(login)];
 }
 
 - (void)updateLoadingMessage {
@@ -152,7 +190,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (!self.loginInProgress) {
         self.loginInProgress = YES;
 
-        if ([self.usernameTextField.text isEqualToString:@""] || [self.passwordTextField.text isEqualToString:@""]) {
+        BOOL authTokenProvided = self.authTokenTextField.text.length > 0;
+        BOOL validCredentialsProvided = (self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0) || authTokenProvided;
+        if (!validCredentialsProvided) {
 #ifdef DELICIOUS
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Please enter both a username and password to sign into Delicious." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
 #endif
@@ -176,47 +216,53 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
             self.usernameTextField.enabled = NO;
             self.usernameTextField.textColor = [UIColor grayColor];
+
             self.passwordTextField.enabled = NO;
             self.passwordTextField.textColor = [UIColor grayColor];
+
             self.textView.hidden = NO;
-            self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Verifying your credentials...", nil) attributes:self.textViewAttributes];
+            self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Verifying your credentials...", nil)
+                                                                           attributes:self.textViewAttributes];
             
-            if ([self is1PasswordAvailable]) {
-                [self.tableView beginUpdates];
-                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+            [self.tableView beginUpdates];
+            
+            if (authTokenProvided) {
+                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
             }
+            else {
+                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
+            }
+
+            if ([self is1PasswordAvailable]) {
+                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
+            }
+            [self.tableView endUpdates];
             
             void (^LoginSuccessBlock)() = ^{
-                self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
-                self.textView.hidden = NO;
-                
-                self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
-                [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
-                
-                self.progressView.hidden = NO;
-                
-                [CATransaction begin];
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginUsernameRow inSection:0]]
-                                      withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kLoginPasswordRow inSection:0]]
-                                      withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView endUpdates];
-                
-                [CATransaction setCompletionBlock:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
+                    self.textView.hidden = NO;
+                    
+                    self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                    [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
+                    
+                    self.progressView.hidden = NO;
+                    
                     [self.tableView beginUpdates];
-                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
                     [self.tableView endUpdates];
-                }];
-                [CATransaction begin];
+                });
             };
             
             void (^LoginFailureBlock)(NSError *) = ^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     switch (error.code) {
                         case PinboardErrorInvalidCredentials: {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Authentication Error", nil) message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Authentication Error", nil)
+                                                                            message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:nil
+                                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
                             [alert show];
                             [[Mixpanel sharedInstance] track:@"Failed to log in"];
                             break;
@@ -238,14 +284,22 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     
                     [self resetLoginScreen];
                     
-                    if ([self is1PasswordAvailable]) {
-                        [self.tableView beginUpdates];
-                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
+                    [self.tableView beginUpdates];
+
+                    if (authTokenProvided) {
+                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
+                    else {
+                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
+                    }
+
+                    if ([self is1PasswordAvailable]) {
+                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
+                    }
+                    [self.tableView endUpdates];
                 });
             };
-            
+
             void (^UpdateProgressBlock)(NSInteger, NSInteger) = ^(NSInteger current, NSInteger total) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (total == current) {
@@ -324,37 +378,59 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             [delegate migrateDatabase];
 
             ASPinboard *pinboard = [ASPinboard sharedInstance];
-            [pinboard authenticateWithUsername:self.usernameTextField.text
-                                      password:self.passwordTextField.text
-                                       success:^(NSString *token) {
-                                           self.loginInProgress = NO;
-                                           delegate.password = self.passwordTextField.text;
-                                           
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               LoginSuccessBlock();
+            
+            void (^PinboardAuthenticationSuccessBlock)() = ^{
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
+                    
+                    [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                        if (error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[[UIAlertView alloc] initWithTitle:nil
+                                                            message:error.description
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                            });
+                        }
+                        else {
+                            SyncCompletedBlock();
+                        }
+                    } progress:UpdateProgressBlock];
+                });
+            };
+            
+            if (authTokenProvided) {
+                // Check if the auth token passes.
+                pinboard.token = self.authTokenTextField.text;
+                [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                    self.loginInProgress = NO;
+                    delegate.feedToken = feedToken;
+                    delegate.token = self.authTokenTextField.text;
+
+                    LoginSuccessBlock();
+                    PinboardAuthenticationSuccessBlock();
+                } failure:LoginFailureBlock];
+            }
+            else {
+                [pinboard authenticateWithUsername:self.usernameTextField.text
+                                          password:self.passwordTextField.text
+                                           success:^(NSString *token) {
+                                               self.loginInProgress = NO;
+                                               delegate.password = self.passwordTextField.text;
+                                               delegate.token = token;
                                                
-                                               dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                   delegate.token = token;
-                                                   PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
-
-                                                   [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                                                       if (error) {
-                                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                                               [[[UIAlertView alloc] initWithTitle:nil message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-                                                           });
-                                                       }
-                                                       else {
-                                                           SyncCompletedBlock();
-                                                       }
-                                                   } progress:UpdateProgressBlock];
-
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   LoginSuccessBlock();
+                                                   PinboardAuthenticationSuccessBlock();
+                                                   
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                                       [delegate setFeedToken:feedToken];
-                                                   }];
+                                                       delegate.feedToken = feedToken;
+                                                   } failure:nil];
                                                });
-                                           });
-                                       }
-                                       failure:LoginFailureBlock];
+                                           }
+                                           failure:LoginFailureBlock];
+            }
 #endif
         });
     }
@@ -400,16 +476,25 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #pragma mark - UITableViewDataSource
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.progressView.hidden && section == 0) {
+    switch ((PPLoginSectionType)section) {
+        case PPLoginCredentialSection:
+            if (self.progressView.hidden) {
 #ifdef DELICIOUS
-    return @"Delicious Login";
+                return @"Delicious Login";
 #endif
-        
+                
 #ifdef PINBOARD
-    return @"Pinboard Login";
+                return @"Pinboard Login";
 #endif
+            }
+            break;
+            
+        case PPLoginAuthTokenSection:
+            return @"API Token";
+
+        default:
+            return nil;
     }
-    return nil;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -418,21 +503,29 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     }
     else {
         if ([self is1PasswordAvailable]) {
-            return 2;
+            return PPLoginSectionCount;
         }
         else {
-            return 1;
+            return PPLoginSectionCount - 1;
         }
     }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.progressView.hidden) {
-        switch (section) {
-            case 0:
-                return 2;
-                
-            case 1:
+        switch ((PPLoginSectionType)section) {
+            case PPLoginCredentialSection:
+                if (self.loginInProgress && self.authTokenTextField.text.length > 0) {
+                    return 1;
+                }
+                else {
+                    return 2;
+                }
+
+            case PPLoginAuthTokenSection:
+                return 1;
+
+            case PPLogin1PasswordSection:
                 return 1;
         }
     }
@@ -444,48 +537,82 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (self.progressView.hidden) {
         return 44;
     }
+
     return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        if (self.textView.hidden) {
-            return 0;
-        }
-        else {
-            if (self.loginInProgress) {
-                return 120;
+    switch ((PPLoginSectionType)section) {
+        case PPLoginCredentialSection:
+            if (self.textView.hidden) {
+                return 0;
             }
             else {
-                CGFloat width = CGRectGetWidth(tableView.frame) - 20;
-                CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
-                                                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                                                         context:nil];
-                return CGRectGetHeight(rect) + 30;
+                if (self.loginInProgress) {
+                    return 120;
+                }
+                else {
+                    CGFloat width = CGRectGetWidth(tableView.frame) - 20;
+                    CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+                                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                                             context:nil];
+                    return CGRectGetHeight(rect) + 30;
+                }
             }
+            
+        case PPLoginAuthTokenSection: {
+            CGFloat width = CGRectGetWidth(tableView.frame) - 20;
+            CGRect rect = [self.authTokenFooterTextView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+                                                                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                                                                    context:nil];
+            return CGRectGetHeight(rect) + 30;
         }
+            
+        default:
+            return 0;
     }
-    return 0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        if (self.textView.hidden) {
-            return nil;
-        }
-        else {
-            UIView *view = [[UIView alloc] init];
-            view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [view addSubview:self.textView];
-            
-            NSDictionary *views = @{@"text": self.textView };
+    switch ((PPLoginSectionType)section) {
+        case PPLoginCredentialSection:
+            if (self.textView.hidden) {
+                return nil;
+            }
+            else {
+                UIView *view = [[UIView alloc] init];
+                view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                [view addSubview:self.textView];
+                
+                NSDictionary *views = @{@"text": self.textView };
+                
+                [view lhs_addConstraints:@"V:|-5-[text]-5-|" views:views];
+                [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
+                return view;
+            }
 
-            [view lhs_addConstraints:@"V:|-5-[text]-5-|" views:views];
-            [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
-            return view;
-        }
+            break;
+            
+        case PPLoginAuthTokenSection:
+            if (self.authTokenFooterTextView.hidden) {
+                return nil;
+            }
+            else {
+                UIView *view = [[UIView alloc] init];
+                view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                [view addSubview:self.authTokenFooterTextView];
+                
+                NSDictionary *views = @{@"text": self.authTokenFooterTextView };
+                [view lhs_addConstraints:@"V:|-5-[text]-5-|" views:views];
+                [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
+                return view;
+            }
+            
+            break;
+            
+        default:
+            return nil;
     }
-    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -496,12 +623,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     cell.textLabel.text = nil;
     cell.accessoryView = nil;
 
-    switch (indexPath.section) {
-        case 0:
+    switch ((PPLoginSectionType)indexPath.section) {
+        case PPLoginCredentialSection:
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-            switch (indexPath.row) {
-                case kLoginUsernameRow: {
+            switch ((PPLoginCredentialRowType)indexPath.row) {
+                case PPLoginCredentialUsernameRow: {
                     if (self.progressView.hidden) {
                         NSDictionary *views = @{@"view": self.usernameTextField };
                         [cell.contentView addSubview:self.usernameTextField];
@@ -517,7 +644,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     break;
                 }
                     
-                case kLoginPasswordRow: {
+                case PPLoginCredentialPasswordRow: {
                     NSDictionary *views = @{@"view": self.passwordTextField };
                     [cell.contentView addSubview:self.passwordTextField];
                     [cell.contentView lhs_addConstraints:@"H:|-15-[view]-5-|" views:views];
@@ -527,7 +654,15 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
             break;
             
-        case 1: {
+        case PPLoginAuthTokenSection: {
+            NSDictionary *views = @{@"view": self.authTokenTextField };
+            [cell.contentView addSubview:self.authTokenTextField];
+            [cell.contentView lhs_addConstraints:@"H:|-15-[view]-5-|" views:views];
+            [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
+            break;
+        }
+            
+        case PPLogin1PasswordSection: {
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
 
             UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"56_Key-alt"]];
@@ -546,23 +681,27 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    switch (indexPath.section) {
-        case 0:
-            switch (indexPath.row) {
-                case kLoginUsernameRow:
+    switch ((PPLoginSectionType)indexPath.section) {
+        case PPLoginCredentialSection:
+            switch ((PPLoginCredentialRowType)indexPath.row) {
+                case PPLoginCredentialUsernameRow:
                     if (self.progressView.hidden) {
                         [self.usernameTextField becomeFirstResponder];
                     }
                     break;
                     
-                case kLoginPasswordRow:
+                case PPLoginCredentialPasswordRow:
                     [self.passwordTextField becomeFirstResponder];
                     break;
             }
 
             break;
-            
-        case 1:
+
+        case PPLoginAuthTokenSection:
+            [self.authTokenTextField becomeFirstResponder];
+            break;
+
+        case PPLogin1PasswordSection:
             [[UIApplication sharedApplication] openURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
             break;
     }
