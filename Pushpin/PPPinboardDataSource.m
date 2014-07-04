@@ -1272,7 +1272,7 @@ static BOOL kPinboardSyncInProgress = NO;
          };
 }
 
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *error))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     dispatch_async(PPBookmarkReloadQueue(), ^{
@@ -1407,8 +1407,6 @@ static BOOL kPinboardSyncInProgress = NO;
                                                                                              tagsWithFrequency:self.tagsWithFrequency
                                                                                                          cache:useCache];
                                               [newCompressedMetadata addObject:compressedMetadata];
-                                              
-                                              DLog(@"%@ %@", metadata.height, compressedMetadata.height);
                                           }
 
                                           // We run this block to make sure that these results should be the latest on file

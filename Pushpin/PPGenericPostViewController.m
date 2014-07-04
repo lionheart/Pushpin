@@ -100,6 +100,8 @@ static NSInteger kToolbarHeight = 44;
 - (NSArray *)searchPosts;
 - (NSArray *)posts;
 
+- (void)responseFailureHandler:(NSError *)error;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -357,8 +359,13 @@ static NSInteger kToolbarHeight = 44;
         [self updateFromLocalDatabaseWithCallback:^{
             if (delegate.connectionAvailable) {
                 [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                    if (updated) {
-                        [self updateFromLocalDatabaseWithCallback:nil];
+                    if (error) {
+                        [self responseFailureHandler:error];
+                    }
+                    else {
+                        if (updated) {
+                            [self updateFromLocalDatabaseWithCallback:nil];
+                        }
                     }
                 } progress:nil];
             }
@@ -662,8 +669,13 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)synchronizeAddedBookmark {
     [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-        if (updated) {
-            [self updateFromLocalDatabaseWithCallback:nil];
+        if (error) {
+            [self responseFailureHandler:error];
+        }
+        else {
+            if (updated) {
+                [self updateFromLocalDatabaseWithCallback:nil];
+            }
         }
     } progress:nil options:@{@"count": @(10)}];
 }
@@ -1961,23 +1973,45 @@ static NSInteger kToolbarHeight = 44;
 - (void)refreshControlValueChanged:(id)sender {
     if (!self.tableView.editing && !self.isProcessingPosts && !self.searchDisplayController.isActive) {
         [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (updated) {
-                    [self updateFromLocalDatabaseWithCallback:^{
+            if (error) {
+                [self responseFailureHandler:error];
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (updated) {
+                        [self updateFromLocalDatabaseWithCallback:^{
+                            [self.refreshControl endRefreshing];
+                        }];
+                    }
+                    else {
                         [self.refreshControl endRefreshing];
-                    }];
-                }
-                else {
-                    [self.refreshControl endRefreshing];
-                }
-            });
+                    }
+                });
+            }
         } progress:nil];
     }
 }
 
-- (void)setCompressPosts:(BOOL)compressPosts {
-    _compressPosts = compressPosts;
-    
+- (void)responseFailureHandler:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
+        if (response.statusCode == 401) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Credentials"
+                                                            message:@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks."
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"OK", nil];
+            [alert show];
+        }
+        else if (response.statusCode == 401) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Rate Limit Hit"
+                                                            message:@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again."
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"OK", nil];
+            [alert show];
+        }
+    });
 }
 
 @end
