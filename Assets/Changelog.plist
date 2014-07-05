@@ -3,6 +3,47 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.5</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Add API token authentication.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Improve German localizations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Improve error messages when network operations fail.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix lag in description field text entry.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue that prevented j/k keys from working while searching for bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where tags would not be deleted when bookmarks were deleted remotely.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where a visual glitch would occur when bulk-deleting bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix various crashes when reloading bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash when tapping on the &quot;Notes&quot; button.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.4</string>
 		<array>
 			<array>
