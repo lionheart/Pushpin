@@ -6,36 +6,35 @@
 //
 //
 
-#import "PPLicenseViewController.h"
+#import "PPPlainTextViewController.h"
 #import "PPTheme.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
-@interface PPLicenseViewController ()
+@interface PPPlainTextViewController ()
 
-@property (nonatomic, strong) NSString *license;
 @property (nonatomic, strong) UITextView *textView;
 
-- (instancetype)initWithLicense:(NSString *)license;
+- (instancetype)initWithString:(NSString *)license;
 
 @end
 
-@implementation PPLicenseViewController
+@implementation PPPlainTextViewController
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
-- (instancetype)initWithLicense:(NSString *)license {
+- (instancetype)initWithString:(NSString *)text {
     self = [super init];
     if (self) {
-        self.license = license;
+        self.text = text;
     }
     return self;
 }
 
-+ (instancetype)licenseViewControllerWithLicense:(NSString *)license {
-    return [[self alloc] initWithLicense:license];
++ (instancetype)plainTextViewControllerWithString:(NSString *)license {
+    return [[self alloc] initWithString:license];
 }
 
 - (void)viewDidLoad {
@@ -47,7 +46,7 @@
     self.textView.textContainerInset = UIEdgeInsetsMake(5, 3, 5, 3);
     self.textView.editable = NO;
     self.textView.selectable = YES;
-    self.textView.text = self.license;
+    self.textView.text = self.text;
     self.textView.font = [PPTheme descriptionFont];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     

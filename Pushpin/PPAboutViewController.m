@@ -20,7 +20,7 @@
 #import "UITableViewCellSubtitle.h"
 #import "PPTableViewTitleView.h"
 #import "PPTheme.h"
-#import "PPLicenseViewController.h"
+#import "PPPlainTextViewController.h"
 #import "PPTwitter.h"
 
 #import "UITableView+Additions.h"
@@ -219,7 +219,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             NSString *license = row[@"license"];
             if (license) {
-                PPLicenseViewController *licenseViewController = [PPLicenseViewController licenseViewControllerWithLicense:license];
+                PPPlainTextViewController *licenseViewController = [PPPlainTextViewController plainTextViewControllerWithString:license];
                 licenseViewController.title = row[@"title"];
                 [self.navigationController pushViewController:licenseViewController animated:YES];
             }

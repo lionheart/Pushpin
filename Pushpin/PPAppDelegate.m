@@ -9,7 +9,6 @@
 @import QuartzCore;
 
 #import "PPAppDelegate.h"
-#import "PPNoteViewController.h"
 #import "PPLoginViewController.h"
 #import "PPSettingsViewController.h"
 #import "PPGenericPostViewController.h"
@@ -1698,6 +1697,8 @@
                                 @(PPPinboardCommunityFeedJapan),
                                 @(PPPinboardCommunityFeedRecent),
                             ];
+    
+    self.hiddenFeedNames = @[];
 #endif
     
     [keychain resetKeychainItem];

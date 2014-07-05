@@ -10,7 +10,8 @@
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PostMetadata.h"
-#import "PPLicenseViewController.h"
+#import "PPPlainTextViewController.h"
+#import "PPNoteViewController.h"
 
 #import "NSAttributedString+Attributes.h"
 
@@ -76,20 +77,10 @@
 }
 
 - (UIViewController *)viewControllerForPostAtIndex:(NSInteger)index {
-    __block PPLicenseViewController *license = [[PPLicenseViewController alloc] init];
-    license.title = self.posts[index][@"title"];
-    
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-
-    ASPinboard *pinboard = [ASPinboard sharedInstance];
-    [pinboard noteWithId:self.posts[index][@"id"]
-                 success:^(NSString *title, NSString *text) {
-                     license.text = text;
-
-                     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                 }];
-
-    return license;
+    PPNoteViewController *noteViewController = [[PPNoteViewController alloc] init];
+    noteViewController.noteID = self.posts[index][@"id"];
+    noteViewController.title = self.posts[index][@"title"];
+    return noteViewController;
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
