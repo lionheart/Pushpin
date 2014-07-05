@@ -1,21 +1,15 @@
 //
-//  NoteViewController.h
-//  Pinboard for iPhone
+//  PPNoteViewController.h
+//  Pushpin
 //
-//  Created by Dan Loewenherz on 9/8/12.
+//  Created by Dan Loewenherz on 7/5/14.
 //
 //
 
-@import UIKit;
+#import "PPPlainTextViewController.h"
 
-@interface PPNoteViewController : UITableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
+@interface PPNoteViewController : PPPlainTextViewController
 
-@property (nonatomic, retain) NSArray *notes;
-@property (nonatomic, retain) NSMutableArray *filteredNotes;
-@property (nonatomic, retain) UISearchDisplayController *searchDisplayController;
-@property (nonatomic, retain) UISearchBar *searchBar;
-@property (nonatomic, retain) UIViewController *noteDetailViewController;
-@property (nonatomic, retain) UIWebView *webView;
-@property (nonatomic, retain) UINavigationController *navigationController;
+@property (nonatomic, strong) NSString *noteID;
 
 @end

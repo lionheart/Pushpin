@@ -8,10 +8,10 @@
 
 @import UIKit;
 
-@interface PPLicenseViewController : UIViewController
+@interface PPPlainTextViewController : UIViewController
 
 @property (nonatomic, strong) NSString *text;
 
-+ (instancetype)licenseViewControllerWithLicense:(NSString *)license;
++ (instancetype)plainTextViewControllerWithString:(NSString *)text;
 
 @end

@@ -444,7 +444,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
             case PPPinboardSectionCommunity:
                 return PPPinboardCommunityRows;
-                
+
             case PPPinboardSectionSavedFeeds:
                 return self.feeds.count + 1;
         }
@@ -826,21 +826,23 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         switch (sectionType) {
             case PPPinboardSectionSavedFeeds: {
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                
+                if (indexPath.row == 0) {
+                    PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
+                    addSavedFeedViewController.SuccessCallback = ^{
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                [self updateSavedFeeds:db];
+                            }];
+                        });
+                    };
 
-                PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
-                addSavedFeedViewController.SuccessCallback = ^{
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-                        [self updateSavedFeeds:db];
-                        }];
-                    });
-                };
-
-                PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
-                if ([UIApplication isIPad]) {
-                    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                    PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:addSavedFeedViewController];
+                    if ([UIApplication isIPad]) {
+                        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                    }
+                    [self presentViewController:navigationController animated:YES completion:nil];
                 }
-                [self presentViewController:navigationController animated:YES completion:nil];
                 break;
             }
                 
@@ -1743,9 +1745,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 BOOL feedHiddenByUser = [delegate.hiddenFeedNames containsObject:fullName];
                 
                 [resultSet next];
-                    NSString *count = [resultSet stringForColumnIndex:0];
-                    [resultSet close];
-                
+                NSString *count = [resultSet stringForColumnIndex:0];
+                [resultSet close];
+
                 NSString *previousCount = self.bookmarkCounts[i];
                 self.bookmarkCounts[i] = count;
                 
@@ -1762,13 +1764,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!self.tableView.editing) {
-                [self.tableView beginUpdates];
-
-                if (![self personalSectionIsHidden]) {
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                }
-
-                [self.tableView endUpdates];
+                // There is a table view inconsistency here when:
+                // 1. Remove a feed from the personal feed list.
+                // 2. Log out.
+                // 3. Log back in and do a refresh.
+                // 4. View the feed list.
+                // Crash.
+                [self.tableView reloadData];
 
 #ifdef PINBOARD
                 [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
