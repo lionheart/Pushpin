@@ -1696,6 +1696,7 @@
                                 @(PPPinboardCommunityFeedWikipedia),
                                 @(PPPinboardCommunityFeedFandom),
                                 @(PPPinboardCommunityFeedJapan),
+                                @(PPPinboardCommunityFeedRecent),
                             ];
 #endif
     
