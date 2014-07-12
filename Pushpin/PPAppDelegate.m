@@ -862,16 +862,16 @@
                         // Tagging
                         [db executeUpdate:
                          @"CREATE TABLE tag("
-                         "name TEXT UNIQUE,"
-                         "count INTEGER"
+                             "name TEXT UNIQUE,"
+                             "count INTEGER"
                          ");" ];
                         
                         [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
                         
                         [db executeUpdate:
                          @"CREATE TABLE tagging("
-                         "tag_name TEXT,"
-                         "bookmark_hash TEXT"
+                             "tag_name TEXT,"
+                             "bookmark_hash TEXT"
                          ");" ];
                         
                         [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
@@ -1652,10 +1652,8 @@
 #ifdef PINBOARD
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 #endif
-    
-    // Remove the database.
-    NSFileManager *manager = [NSFileManager defaultManager];
-    [manager removeItemAtPath:[PPAppDelegate databasePath] error:nil];
+
+    [self resetDatabase];
 
     // Reset all values in settings
 #warning Need to decide which settings are reset and which ones aren't.
@@ -1762,6 +1760,37 @@
     else {
         return nil;
     }
+}
+
+- (void)deleteDatabaseFile {
+    NSError *error;
+
+    // Remove the database.
+    NSFileManager *manager = [NSFileManager defaultManager];
+    BOOL fileExists = [manager fileExistsAtPath:[PPAppDelegate databasePath]];
+    
+    if (fileExists){
+        BOOL success = [manager removeItemAtPath:[PPAppDelegate databasePath] error:&error];
+    }
+}
+
+- (void)resetDatabase {
+    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        db.logsErrors = YES;
+        [db executeUpdate:@"DROP TABLE feeds"];
+        [db executeUpdate:@"DROP TABLE rejected_bookmark"];
+        [db executeUpdate:@"DROP TABLE bookmark"];
+        [db executeUpdate:@"DROP TABLE tag"];
+        [db executeUpdate:@"DROP TABLE tagging"];
+        [db executeUpdate:@"DROP TABLE bookmark_fts"];
+        [db executeUpdate:@"DROP TABLE tag_fts"];
+
+#ifdef PINBOARD
+        [db executeUpdate:@"DROP TABLE note"];
+#endif
+
+        [db executeUpdate:@"PRAGMA user_version=0;"];
+    }];
 }
 
 @end

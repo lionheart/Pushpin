@@ -3,6 +3,55 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.6</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Speed up syncing.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Improve German localizations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix lag in description field text entry.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where search results for tags with duplicates would display incorrect frequencies.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue that prevented j/k keys from working while searching for bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where a visual glitch would occur when bulk-deleting bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where tags would not be deleted when bookmarks were deleted remotely.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash on login.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash that occurred after adding a new bookmark or viewing an unread bookmark.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix various crashes when reloading bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash when rearranging feeds on the main feed list.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.5</string>
 		<array>
 			<array>
