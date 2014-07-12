@@ -94,6 +94,7 @@
     [super viewWillDisappear:animated];
 
     [self lhs_deactivateKeyboardAdjustment];
+    [self.delegate editDescriptionViewControllerDidUpdateDescription:self];
 }
 
 #pragma mark - LHSKeyboardAdjusting
@@ -113,8 +114,6 @@
         [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
         self.textExpanderSnippetExpanded = NO;
     }
-
-    [self.delegate editDescriptionViewControllerDidUpdateDescription:self];
 }
 
 - (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {

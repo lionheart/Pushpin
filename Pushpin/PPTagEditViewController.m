@@ -82,6 +82,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self lhs_deactivateKeyboardAdjustment];
+    [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -336,8 +337,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
-                
-                [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
             });
         });
     }
@@ -447,8 +446,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
-
-            [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
         }
     }
     else {
@@ -745,8 +742,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:animation];
         [self.tableView endUpdates];
-        
-        [self.tagDelegate tagEditViewControllerDidUpdateTags:self];
         
         if (self.searchString) {
             [self searchUpdatedWithString:self.searchString];
