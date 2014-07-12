@@ -385,13 +385,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     
                     [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                         if (error) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[[UIAlertView alloc] initWithTitle:nil
-                                                            message:error.description
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-                            });
+                            LoginFailureBlock(error);
                         }
                         else {
                             SyncCompletedBlock();
@@ -404,7 +398,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 // Check if the auth token passes.
                 pinboard.token = self.authTokenTextField.text;
                 [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                    self.loginInProgress = NO;
                     delegate.feedToken = feedToken;
                     delegate.token = self.authTokenTextField.text;
 
@@ -416,7 +409,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [pinboard authenticateWithUsername:self.usernameTextField.text
                                           password:self.passwordTextField.text
                                            success:^(NSString *token) {
-                                               self.loginInProgress = NO;
                                                delegate.password = self.passwordTextField.text;
                                                delegate.token = token;
                                                
@@ -491,21 +483,26 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
         case PPLoginAuthTokenSection:
             return @"API Token";
-
+            
         default:
             return nil;
     }
+    
+    return nil;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (!self.progressView.hidden || self.loginInProgress) {
+    if (self.loginInProgress) {
+        DLog(@"A");
         return 1;
     }
     else {
         if ([self is1PasswordAvailable]) {
+            DLog(@"B");
             return PPLoginSectionCount;
         }
         else {
+            DLog(@"C");
             return PPLoginSectionCount - 1;
         }
     }
