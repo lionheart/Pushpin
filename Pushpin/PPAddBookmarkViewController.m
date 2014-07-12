@@ -936,15 +936,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - PPDescriptionEditing
 
 - (void)editDescriptionViewControllerDidUpdateDescription:(PPEditDescriptionViewController *)editDescriptionViewController {
-    if (self.view.isFirstResponder) {
-        NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        self.postDescription = text;
-        self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
-        
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
-    }
+    NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.postDescription = text;
+    self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
+
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkDescriptionRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
 }
 
 #pragma mark - Key Commands
