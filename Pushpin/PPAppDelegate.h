@@ -81,6 +81,8 @@
 - (NSString *)username;
 
 - (void)migrateDatabase;
+- (void)deleteDatabaseFile;
+- (void)resetDatabase;
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;

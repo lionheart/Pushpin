@@ -27,14 +27,17 @@
 
 @interface PPLoginViewController ()
 
-@property (nonatomic) BOOL loginInProgress;
+#ifdef PINBOARD
 @property (nonatomic, strong) UITextField *authTokenTextField;
+@property (nonatomic, strong) UITextView *authTokenFooterTextView;
+#endif
+
+@property (nonatomic) BOOL loginInProgress;
 @property (nonatomic, strong) UITextField *passwordTextField;
 @property (nonatomic, strong) UITextField *usernameTextField;
 @property (nonatomic, strong) UITextField *textField;
 
 @property (nonatomic, strong) UITextView *textView;
-@property (nonatomic, strong) UITextView *authTokenFooterTextView;
 
 @end
 
@@ -70,16 +73,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.progressView.hidden = YES;
 
     self.textViewAttributes = @{NSFontAttributeName: [PPTheme urlFont]};
-
-    self.textView = [[UITextView alloc] init];
-    self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.textView.backgroundColor = [UIColor clearColor];
-    self.textView.textColor = [UIColor darkGrayColor];
-    self.textView.editable = NO;
-    self.textView.hidden = YES;
-    self.textView.userInteractionEnabled = NO;
-    self.textView.textAlignment = NSTextAlignmentCenter;
     
+#ifdef PINBOARD
     self.authTokenFooterTextView = [[UITextView alloc] init];
     self.authTokenFooterTextView.translatesAutoresizingMaskIntoConstraints = NO;
     self.authTokenFooterTextView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Note: Logging in with your API token will prevent Pushpin from accessing Pinboard's full-text search feature.", nil)
@@ -90,6 +85,28 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.authTokenFooterTextView.hidden = NO;
     self.authTokenFooterTextView.userInteractionEnabled = NO;
     self.authTokenFooterTextView.textAlignment = NSTextAlignmentLeft;
+    
+    self.authTokenTextField = [[UITextField alloc] init];
+    self.authTokenTextField.translatesAutoresizingMaskIntoConstraints = NO;
+    self.authTokenTextField.font = [PPTheme titleFont];
+    self.authTokenTextField.textAlignment = NSTextAlignmentLeft;
+    self.authTokenTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.authTokenTextField.backgroundColor = [UIColor whiteColor];
+    self.authTokenTextField.delegate = self;
+    self.authTokenTextField.keyboardType = UIKeyboardTypeAlphabet;
+    self.authTokenTextField.returnKeyType = UIReturnKeyDone;
+    self.authTokenTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.authTokenTextField.placeholder = NSLocalizedString(@"username:NNNNNN", nil);
+#endif
+
+    self.textView = [[UITextView alloc] init];
+    self.textView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.textView.backgroundColor = [UIColor clearColor];
+    self.textView.textColor = [UIColor darkGrayColor];
+    self.textView.editable = NO;
+    self.textView.hidden = YES;
+    self.textView.userInteractionEnabled = NO;
+    self.textView.textAlignment = NSTextAlignmentCenter;
     
     self.usernameTextField = [[UITextField alloc] init];
     self.usernameTextField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -117,18 +134,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.passwordTextField.secureTextEntry = YES;
     self.passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordTextField.placeholder = NSLocalizedString(@"Password", nil);
-    
-    self.authTokenTextField = [[UITextField alloc] init];
-    self.authTokenTextField.translatesAutoresizingMaskIntoConstraints = NO;
-    self.authTokenTextField.font = [PPTheme titleFont];
-    self.authTokenTextField.textAlignment = NSTextAlignmentLeft;
-    self.authTokenTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.authTokenTextField.backgroundColor = [UIColor whiteColor];
-    self.authTokenTextField.delegate = self;
-    self.authTokenTextField.keyboardType = UIKeyboardTypeAlphabet;
-    self.authTokenTextField.returnKeyType = UIReturnKeyDone;
-    self.authTokenTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.authTokenTextField.placeholder = NSLocalizedString(@"username:NNNNNN", nil);
 
     self.keyboard_shown = NO;
     self.loginTimer = nil;
@@ -139,9 +144,17 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)resetLoginScreen {
     self.loginInProgress = NO;
 
-    self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil) attributes:self.textViewAttributes];
-    self.textView.hidden = YES;
+#ifdef PINBOARD
+    NSString *textViewText = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
+#endif
     
+#ifdef DELICIOUS
+    NSString *textViewText = NSLocalizedString(@"Enter your Delicious credentials above. Email support@lionheartsw.com if you have any issues.", nil);
+#endif
+    self.textView.attributedText = [[NSAttributedString alloc] initWithString:textViewText
+                                                                   attributes:self.textViewAttributes];
+    self.textView.hidden = YES;
+
     self.usernameTextField.enabled = YES;
     self.usernameTextField.textColor = [UIColor blackColor];
 
@@ -182,7 +195,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             @"Reticulating Splines",
             @"Reversing Feed Originators",
         ];
-        self.textView.attributedText = [[NSAttributedString alloc] initWithString:[messages objectAtIndex:arc4random_uniform(messages.count)] attributes:self.textViewAttributes];
+        self.textView.attributedText = [[NSAttributedString alloc] initWithString:messages[arc4random_uniform((uint32_t)messages.count)]
+                                                                       attributes:self.textViewAttributes];
     });
 }
 
@@ -190,16 +204,31 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (!self.loginInProgress) {
         self.loginInProgress = YES;
 
+#ifdef PINBOARD
         BOOL authTokenProvided = self.authTokenTextField.text.length > 0;
-        BOOL validCredentialsProvided = (self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0) || authTokenProvided;
+#endif
+
+        BOOL usernameAndPasswordProvided = self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0;
+#ifdef PINBOARD
+        BOOL validCredentialsProvided = usernameAndPasswordProvided || authTokenProvided;
+#else
+        BOOL validCredentialsProvided = usernameAndPasswordProvided;
+#endif
+
         if (!validCredentialsProvided) {
 #ifdef DELICIOUS
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Please enter both a username and password to sign into Delicious." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            NSString *message = @"Please enter both a username and password to sign into Delicious.";
 #endif
 
 #ifdef PINBOARD
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
 #endif
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"OK", nil];
             [alert show];
             self.loginInProgress = NO;
             return;
@@ -226,24 +255,35 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
             [self.tableView beginUpdates];
             
+#ifdef PINBOARD
             if (authTokenProvided) {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
             }
             else {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
             }
+#endif
+            
+#ifdef DELICIOUS
+#endif
 
             if ([self is1PasswordAvailable]) {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
             }
+
             [self.tableView endUpdates];
             
             void (^LoginSuccessBlock)() = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil) attributes:self.textViewAttributes];
+                    self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil)
+                                                                                   attributes:self.textViewAttributes];
                     self.textView.hidden = NO;
                     
-                    self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(updateLoadingMessage) userInfo:nil repeats:YES];
+                    self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3
+                                                                      target:self
+                                                                    selector:@selector(updateLoadingMessage)
+                                                                    userInfo:nil
+                                                                     repeats:YES];
                     [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
                     
                     self.progressView.hidden = NO;
@@ -267,15 +307,26 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                             [[Mixpanel sharedInstance] track:@"Failed to log in"];
                             break;
                         }
+                            
+                        case LHSDeliciousErrorEmptyResponse:
+                            break;
 
                         case PinboardErrorTimeout: {
 #ifdef DELICIOUS
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                            NSString *message = NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil);
 #endif
                             
 #ifdef PINBOARD
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
 #endif
+                            
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                                            message:message
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:nil
+                                                                  otherButtonTitles:@"OK", nil];
+                            
+
                             [alert show];
                             [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                             break;
@@ -286,12 +337,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     
                     [self.tableView beginUpdates];
 
+#ifdef PINBOARD
                     if (authTokenProvided) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
                     else {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
+#endif
 
                     if ([self is1PasswordAvailable]) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
@@ -336,8 +389,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [mixpanel.people set:@"Browser" to:@"Webview"];
             };
 
-#ifdef DELICIOUS
+            [delegate resetDatabase];
             [delegate migrateDatabase];
+#ifdef DELICIOUS
 
             LHSDelicious *delicious = [LHSDelicious sharedInstance];
             [delicious authenticateWithUsername:self.usernameTextField.text
@@ -347,7 +401,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                              LoginFailureBlock(error);
                                          }
                                          else {
-                                             self.loginInProgress = NO;
                                              delegate.username = self.usernameTextField.text;
                                              delegate.password = self.passwordTextField.text;
                                              
@@ -375,8 +428,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
 #ifdef PINBOARD
-            [delegate migrateDatabase];
-
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             
             void (^PinboardAuthenticationSuccessBlock)() = ^{
@@ -511,13 +562,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.progressView.hidden) {
         switch ((PPLoginSectionType)section) {
-            case PPLoginCredentialSection:
-                if (self.loginInProgress && self.authTokenTextField.text.length > 0) {
+            case PPLoginCredentialSection: {
+                if (self.loginInProgress && !self.progressView.hidden) {
                     return 1;
                 }
                 else {
                     return 2;
                 }
+            }
 
             case PPLoginAuthTokenSection:
                 return 1;
@@ -557,6 +609,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 }
             }
             
+#ifdef PINBOARD
         case PPLoginAuthTokenSection: {
             CGFloat width = CGRectGetWidth(tableView.frame) - 20;
             CGRect rect = [self.authTokenFooterTextView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
@@ -564,7 +617,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                                     context:nil];
             return CGRectGetHeight(rect) + 30;
         }
-            
+#endif
+
         default:
             return 0;
     }
@@ -590,6 +644,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             break;
             
+#ifdef PINBOARD
         case PPLoginAuthTokenSection:
             if (self.authTokenFooterTextView.hidden) {
                 return nil;
@@ -604,8 +659,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [view lhs_addConstraints:@"H:|-5-[text]-5-|" views:views];
                 return view;
             }
-            
             break;
+#endif
             
         default:
             return nil;
@@ -651,6 +706,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
             break;
             
+#ifdef PINBOARD
         case PPLoginAuthTokenSection: {
             NSDictionary *views = @{@"view": self.authTokenTextField };
             [cell.contentView addSubview:self.authTokenTextField];
@@ -658,6 +714,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
             break;
         }
+#endif
             
         case PPLogin1PasswordSection: {
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -668,6 +725,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             cell.textLabel.font = [PPTheme titleFont];
             break;
         }
+            
+        default:
+            break;
     }
     
     return cell;
@@ -694,12 +754,17 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             break;
 
+#ifdef PINBOARD
         case PPLoginAuthTokenSection:
             [self.authTokenTextField becomeFirstResponder];
             break;
+#endif
 
         case PPLogin1PasswordSection:
             [[UIApplication sharedApplication] openURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
+            break;
+            
+        default:
             break;
     }
     
@@ -717,7 +782,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 }
 
 - (BOOL)is1PasswordAvailable {
-    return [[UIApplication sharedApplication] canOpenURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
+#ifdef PINBOARD
+    NSString *searchTerm = @"pinboard";
+#endif
+    
+#ifdef DELICIOUS
+    NSString *searchTerm = @"delicious";
+#endif
+    return [[UIApplication sharedApplication] canOpenURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:searchTerm]];
 }
 
 @end

@@ -299,7 +299,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               for (NSString *hash in inserted) {
                                                   NSDictionary *post = bookmarks[hash];
 
-                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tag"]];
                                                   NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                                   if (!dateError && !params) {
                                                       dateError = YES;
@@ -352,7 +352,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                       dateError = YES;
                                                   }
                                                   
-                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+                                                  NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tag"]];
                                                   
                                                   NSDictionary *params = [self paramsForPost:post dateError:dateError];
                                                   if (!dateError && !params) {
@@ -384,6 +384,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               }
                                               
                                               DLog(@"Updating tags");
+                                              [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash NOT IN (SELECT hash FROM bookmark)"];
                                               [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                                               [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                                           }];
@@ -433,7 +434,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [delicious bookmarksWithTag:nil
                                              offset:-1
-                                              count:-1
+                                              count:100000
                                            fromDate:nil
                                              toDate:nil
                                         includeMeta:YES
@@ -680,7 +681,6 @@ static BOOL kPinboardSyncInProgress = NO;
     
     LHSDelicious *delicious = [LHSDelicious sharedInstance];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-    NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     __block NSInteger numberOfPostsDeleted = 0;
     NSString *url;
     
@@ -749,8 +749,10 @@ static BOOL kPinboardSyncInProgress = NO;
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{
                 [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
-                    [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
+                    [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
+                    [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
+                    [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                 }];
                 
                 [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
@@ -1133,7 +1135,7 @@ static BOOL kPinboardSyncInProgress = NO;
     NSString *hash = post[@"hash"];
     NSString *meta = post[@"meta"];
     
-    NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
+    NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tag"]];
     NSArray *tagList = [postTags componentsSeparatedByString:@" "];
     NSString *title = [PPUtilities stringByTrimmingWhitespace:post[@"description"]];
     NSString *description = [PPUtilities stringByTrimmingWhitespace:post[@"extended"]];
