@@ -927,7 +927,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)tagEditViewControllerDidUpdateTags:(PPTagEditViewController *)tagEditViewController {
     self.existingTags = [tagEditViewController.existingTags mutableCopy];
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-    
+
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:kBookmarkTagRow inSection:kBookmarkTopSection]] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView endUpdates];
