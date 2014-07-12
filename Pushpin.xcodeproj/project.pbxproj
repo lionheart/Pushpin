@@ -10,6 +10,7 @@
 		370859F917F329D400270A9D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* PPDeliciousDataSource.m */; };
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
+		370951921969817E00B03B0F /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		370B1B791864FADC00319A20 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
 		370BBE021901ABBB004FA557 /* safari-callback.html in Resources */ = {isa = PBXBuildFile; fileRef = 370BBE011901ABBB004FA557 /* safari-callback.html */; };
 		370F92EF17500723005F0AD7 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
@@ -111,7 +112,6 @@
 		373C82FA16F81C6900A7D7C8 /* ptr_31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BA16F81C6900A7D7C8 /* ptr_31@2x.png */; };
 		373C82FB16F81C6900A7D7C8 /* ptr_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BB16F81C6900A7D7C8 /* ptr_32.png */; };
 		373C82FC16F81C6900A7D7C8 /* ptr_32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 373C82BC16F81C6900A7D7C8 /* ptr_32@2x.png */; };
-		373D6F541965D92C006833D2 /* libDebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3772DE521933B0CF004B348D /* libDebugPods.a */; };
 		373D6F571965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
 		37405C6718620BCB0052213A /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
@@ -169,7 +169,6 @@
 		3798B08F18767DAB002D684B /* navigation-edit-darker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08B18767DAB002D684B /* navigation-edit-darker.png */; };
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
-		37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A25A2115FC42B5009716BB /* PPNoteViewController.m */; };
 		37A7B5C718345DAE0038677E /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C118345DAE0038677E /* stop@2x.png */; };
 		37A7B5C818345DAE0038677E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C218345DAE0038677E /* stop.png */; };
 		37A7B5C918345DAE0038677E /* mark-as-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C318345DAE0038677E /* mark-as-read.png */; };
@@ -213,8 +212,9 @@
 		37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */; };
 		37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7481881B568000F9C36 /* IC-Wrench-65.png */; };
 		37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7491881B568000F9C36 /* IC-Star-5.png */; };
-		37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */; };
+		37CBB7531881F31C000F9C36 /* PPPlainTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
+		37CFA60019683ED300C67338 /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CFA5FF19683ED300C67338 /* PPNoteViewController.m */; };
 		37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		37D0D0C116B8E2310062C27E /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 37D0D0C016B8E2310062C27E /* about.html */; };
 		37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D4B001188325B000E07EB3 /* PPStatusBar.m */; };
@@ -750,8 +750,6 @@
 		3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-darker@2x.png"; path = "Assets/navigation-edit-darker@2x.png"; sourceTree = "<group>"; };
 		3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-blue@2x.png"; path = "Assets/navigation-edit-blue@2x.png"; sourceTree = "<group>"; };
 		379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousAppStore.plist; sourceTree = "<group>"; };
-		37A25A2015FC42B5009716BB /* PPNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNoteViewController.h; sourceTree = "<group>"; };
-		37A25A2115FC42B5009716BB /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNoteViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37A7B5C118345DAE0038677E /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "Assets/stop@2x.png"; sourceTree = "<group>"; };
 		37A7B5C218345DAE0038677E /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = Assets/stop.png; sourceTree = "<group>"; };
 		37A7B5C318345DAE0038677E /* mark-as-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mark-as-read.png"; path = "Assets/mark-as-read.png"; sourceTree = "<group>"; };
@@ -803,9 +801,11 @@
 		37CBB7471881B568000F9C36 /* IC-Star-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5@2x.png"; path = "Assets/IC-Star-5@2x.png"; sourceTree = "<group>"; };
 		37CBB7481881B568000F9C36 /* IC-Wrench-65.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Wrench-65.png"; path = "Assets/IC-Wrench-65.png"; sourceTree = "<group>"; };
 		37CBB7491881B568000F9C36 /* IC-Star-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IC-Star-5.png"; path = "Assets/IC-Star-5.png"; sourceTree = "<group>"; };
-		37CBB7511881F31C000F9C36 /* PPLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPLicenseViewController.h; path = Pushpin/PPLicenseViewController.h; sourceTree = "<group>"; };
-		37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPLicenseViewController.m; path = Pushpin/PPLicenseViewController.m; sourceTree = "<group>"; };
+		37CBB7511881F31C000F9C36 /* PPPlainTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPPlainTextViewController.h; path = Pushpin/PPPlainTextViewController.h; sourceTree = "<group>"; };
+		37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPPlainTextViewController.m; path = Pushpin/PPPlainTextViewController.m; sourceTree = "<group>"; };
 		37CBB7541881FFBC000F9C36 /* About.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = About.json; path = Assets/About.json; sourceTree = SOURCE_ROOT; };
+		37CFA5FE19683ED300C67338 /* PPNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNoteViewController.h; sourceTree = "<group>"; };
+		37CFA5FF19683ED300C67338 /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNoteViewController.m; sourceTree = "<group>"; };
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
@@ -1153,7 +1153,7 @@
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
-				373D6F541965D92C006833D2 /* libDebugPods.a in Frameworks */,
+				370951921969817E00B03B0F /* libDebugPods.a in Frameworks */,
 				D3A93B3F47E54E77914E3450 /* libPods.a in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
 				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
@@ -1522,8 +1522,8 @@
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
 				37F91F3C177AB1D500683D46 /* PPNavigationController.h */,
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
-				37A25A2015FC42B5009716BB /* PPNoteViewController.h */,
-				37A25A2115FC42B5009716BB /* PPNoteViewController.m */,
+				37CFA5FE19683ED300C67338 /* PPNoteViewController.h */,
+				37CFA5FF19683ED300C67338 /* PPNoteViewController.m */,
 				3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */,
 				3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */,
 				3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */,
@@ -1831,8 +1831,8 @@
 				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				376C9E8617488F2300A62CB5 /* NotificationX.png */,
 				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
-				37CBB7511881F31C000F9C36 /* PPLicenseViewController.h */,
-				37CBB7521881F31C000F9C36 /* PPLicenseViewController.m */,
+				37CBB7511881F31C000F9C36 /* PPPlainTextViewController.h */,
+				37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				370BBE011901ABBB004FA557 /* safari-callback.html */,
@@ -2673,19 +2673,19 @@
 				3728CF401872880A00155791 /* PPEditDescriptionViewController.m in Sources */,
 				375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */,
-				37CBB7531881F31C000F9C36 /* PPLicenseViewController.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
 				37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */,
 				3769A5761879BCAF00AC8C44 /* PPMobilizerUtility.m in Sources */,
 				37C012B91765423A00938D81 /* PPMultipleEditViewController.m in Sources */,
 				E8DA7975183D2EC5002B1D0B /* PPNavigationBar.m in Sources */,
 				37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */,
-				37A25A2215FC42B5009716BB /* PPNoteViewController.m in Sources */,
+				37CFA60019683ED300C67338 /* PPNoteViewController.m in Sources */,
 				374698C0174B33CF00407345 /* PPNotification.m in Sources */,
 				3733252816E15D6A002E2AB0 /* PPPinboardDataSource.m in Sources */,
 				3722155F16FCDB430036AA20 /* PPPinboardFeedDataSource.m in Sources */,
 				3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */,
 				3714DB7517556FC600B23F4F /* PPPinboardNotesDataSource.m in Sources */,
+				37CBB7531881F31C000F9C36 /* PPPlainTextViewController.m in Sources */,
 				378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
@@ -3333,7 +3333,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3423,7 +3422,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3515,7 +3513,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3604,7 +3601,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3758,7 +3754,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3786,7 +3781,6 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
