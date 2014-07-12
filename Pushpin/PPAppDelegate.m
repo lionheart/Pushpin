@@ -45,10 +45,6 @@
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>
 
-#if TESTING
-#import <BugshotKit/BugshotKit.h>
-#endif
-
 @interface PPAppDelegate ()
 
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
@@ -636,9 +632,6 @@
     application.applicationSupportsShakeToEdit = YES;
 
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
-#ifndef APPSTORE
-    [BugshotKit enableWithNumberOfTouches:2 performingGestures:BSKInvocationGestureSwipeUp feedbackEmailAddress:@"dan@lionheartsw.com"];
-#endif
 
     [self becomeFirstResponder];
     self.bookmarksUpdated = NO;
