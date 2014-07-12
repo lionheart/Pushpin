@@ -3,6 +3,19 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.6</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue preventing descriptions from being saved.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash on login.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.5</string>
 		<array>
 			<array>
