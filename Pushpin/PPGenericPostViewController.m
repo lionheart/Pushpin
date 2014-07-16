@@ -743,7 +743,7 @@ static NSInteger kToolbarHeight = 44;
                         self.isProcessingPosts = NO;
                     });
                 } cancel:^BOOL{
-                    return NO;
+                    return !self.isViewLoaded || self.view.window == nil;
                 } width:self.currentWidth];
             });
         }
@@ -1809,9 +1809,7 @@ static NSInteger kToolbarHeight = 44;
     UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             CLS_LOG(@"Table View Reload 14");
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
+            [self updateFromLocalDatabaseWithCallback:nil];
         });
     }];
     
