@@ -681,6 +681,7 @@
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNotification.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellValue1.h; sourceTree = "<group>"; };
 		374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellValue1.m; sourceTree = "<group>"; };
+		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBookmarkCell.m; sourceTree = "<group>"; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
@@ -2072,7 +2073,9 @@
 		37FEEB8515745488003F2B77 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = PP;
 				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Lionheart Software";
 				TargetAttributes = {
 					3717967F18A885F7004B2D08 = {
 						TestTargetID = 37FEEB8D15745488003F2B77;
@@ -2747,6 +2750,7 @@
 				3740A23C16863CF000F95D82 /* en */,
 				3740A23D16863CF000F95D82 /* fr */,
 				3740A23E16863CF000F95D82 /* it */,
+				374E59FE197DADEF00B6EDF1 /* nl */,
 				3740A23F16863CF000F95D82 /* pt */,
 				37ADE0FA18CBE011008F80BC /* zh-Hans */,
 			);
