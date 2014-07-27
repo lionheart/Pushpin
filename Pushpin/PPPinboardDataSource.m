@@ -1307,7 +1307,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 while ([results next]) {
                     NSString *hash = [results stringForColumn:@"hash"];
                     NSString *meta = [results stringForColumn:@"meta"];
-                    NSString *hashmeta = [hash stringByAppendingString:meta];
+                    NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
                     NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
                     
                     [updatedBookmarks addObject:post];
