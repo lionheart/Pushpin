@@ -733,6 +733,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                             
                             if (hashExists) {
+                                [params removeObjectForKey:@"url"];
                                 params[@"hash"] = hash;
                                 
 #ifdef DELICIOUS

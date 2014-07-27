@@ -102,6 +102,10 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)responseFailureHandler:(NSError *)error;
 
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index dataSource:(id<PPDataSource>)dataSource;
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index tableView:(UITableView *)tableView;
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -610,18 +614,10 @@ static NSInteger kToolbarHeight = 44;
                         vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
                     }
                     else if ([dataSource respondsToSelector:@selector(editViewControllerForPostAtIndex:withDelegate:)]) {
-                        vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row];
+                        vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
                     }
-                    
-                    if (vc) {
-                        if ([UIApplication isIPad]) {
-                            vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                        }
-                        
-                        if ([self.navigationController topViewController] == self) {
-                            [self.navigationController presentViewController:vc animated:YES completion:nil];
-                        }
-                    }
+
+                    [self presentViewControllerInFormSheetIfApplicable:vc];
                     break;
                 }
                     
@@ -897,7 +893,7 @@ static NSInteger kToolbarHeight = 44;
     }
     
     PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithTags:bookmarksToUpdate];
-    [self presentViewController:vc animated:YES completion:nil];
+    [self presentViewControllerInFormSheetIfApplicable:vc];
 }
 
 - (void)multiDelete:(id)sender {
@@ -1136,20 +1132,8 @@ static NSInteger kToolbarHeight = 44;
                 [self showConfirmDeletionAlert];
             }
             else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-                UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CLS_LOG(@"Table View Reload 7");
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
-                    });
-                }];
-                
-                if ([UIApplication isIPad]) {
-                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                }
-                
-                [self.navigationController presentViewController:vc animated:YES completion:nil];
+                UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
+                [self presentViewControllerInFormSheetIfApplicable:vc];
             }
             else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
                 [self markPostAsRead];
@@ -1806,17 +1790,9 @@ static NSInteger kToolbarHeight = 44;
                                   forPost:(NSDictionary *)post
                                 indexPath:(NSIndexPath *)indexPath {
     self.selectedIndexPath = indexPath;
-    UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row callback:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            CLS_LOG(@"Table View Reload 14");
-            [self updateFromLocalDatabaseWithCallback:nil];
-        });
-    }];
     
-    if ([UIApplication isIPad]) {
-        vc.modalPresentationStyle = UIModalPresentationFormSheet;
-    }
-    [self.navigationController presentViewController:vc animated:YES completion:nil];
+    UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row];
+    [self presentViewControllerInFormSheetIfApplicable:vc];
 }
 
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell {
@@ -1941,22 +1917,8 @@ static NSInteger kToolbarHeight = 44;
         [self handleCellTap];
     }
     else if (keyCommand == self.editKeyCommand) {
-        UIViewController *vc = (UIViewController *)[self.currentDataSource editViewControllerForPostAtIndex:self.selectedIndexPath.row
-                                                                                                   callback:^{
-                                                                                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                           CLS_LOG(@"Table View Reload 15");
-                                                                                                           
-                                                                                                           [self.tableView beginUpdates];
-                                                                                                           [self.tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-                                                                                                           [self.tableView endUpdates];
-                                                                                                       });
-                                                                                                   }];
-        
-        if ([UIApplication isIPad]) {
-            vc.modalPresentationStyle = UIModalPresentationFormSheet;
-        }
-        
-        [self.navigationController presentViewController:vc animated:YES completion:nil];
+        UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row];
+        [self presentViewControllerInFormSheetIfApplicable:vc];
     }
 }
 
@@ -2010,6 +1972,56 @@ static NSInteger kToolbarHeight = 44;
             [alert show];
         }
     });
+}
+
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index dataSource:(id<PPDataSource>)dataSource {
+    UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateFromLocalDatabaseWithCallback:nil];
+            
+            /*
+            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                if (error) {
+                    [self responseFailureHandler:error];
+                }
+                else {
+                    if (updated) {
+                        CLS_LOG(@"Table View Reload 14");
+                        [self updateFromLocalDatabaseWithCallback:nil];
+                    }
+                }
+            } progress:nil];
+             */
+        });
+    }];
+    
+    return vc;
+}
+
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index tableView:(UITableView *)tableView {
+    id<PPDataSource> dataSource;
+    if (tableView) {
+        dataSource = [self dataSourceForTableView:tableView];
+    }
+    else {
+        dataSource = self.currentDataSource;
+    }
+    
+    return [self editViewControllerForPostAtIndex:index dataSource:dataSource];
+}
+
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index {
+    return [self editViewControllerForPostAtIndex:index tableView:nil];
+}
+
+- (void)presentViewControllerInFormSheetIfApplicable:(UIViewController *)vc {
+    if ([UIApplication isIPad]) {
+        vc.modalPresentationStyle = UIModalPresentationFormSheet;
+    }
+    
+    if ([self.navigationController topViewController] == self) {
+        [self.navigationController presentViewController:vc animated:YES completion:nil];
+    }
 }
 
 @end
