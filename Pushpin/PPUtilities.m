@@ -65,7 +65,7 @@
             
             NSString *meta = extractMeta(obj);
             NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
-            [APlusMeta addObject:hashmeta];
+            [BPlusMeta addObject:hashmeta];
             identifiersToChanges[hash] = meta;
         }
     }
