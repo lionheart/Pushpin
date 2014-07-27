@@ -1978,20 +1978,6 @@ static NSInteger kToolbarHeight = 44;
     UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateFromLocalDatabaseWithCallback:nil];
-            
-            /*
-            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                if (error) {
-                    [self responseFailureHandler:error];
-                }
-                else {
-                    if (updated) {
-                        CLS_LOG(@"Table View Reload 14");
-                        [self updateFromLocalDatabaseWithCallback:nil];
-                    }
-                }
-            } progress:nil];
-             */
         });
     }];
     
