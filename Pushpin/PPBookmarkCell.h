@@ -28,7 +28,7 @@
 
 @interface PPBookmarkCell : UITableViewCell <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, weak) id<PPBookmarkCellDelegate> delegate;
+@property (nonatomic, assign) id<PPBookmarkCellDelegate> delegate;
 
 - (void)prepareCellWithDataSource:(id<PPDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate

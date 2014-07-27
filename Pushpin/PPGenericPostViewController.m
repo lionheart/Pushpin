@@ -106,6 +106,12 @@ static NSInteger kToolbarHeight = 44;
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index tableView:(UITableView *)tableView;
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index;
 
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths dataSource:(id<PPDataSource>)dataSource;
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
+
+- (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource;
+- (void)deletePosts:(NSArray *)posts;
+
 @end
 
 @implementation PPGenericPostViewController
@@ -836,28 +842,56 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
-    [self.postDataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths dataSource:(id<PPDataSource>)dataSource {
+    [dataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-
+            
             CLS_LOG(@"Table View Reload 3");
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-
-            [UIView animateWithDuration:0.25 animations:^{
-                UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
-                searchTextField.enabled = YES;
-            } completion:^(BOOL finished) {
-                self.indexPathsToDelete = @[];
+            [self updateFromLocalDatabaseWithCallback:^{
+                [UIView animateWithDuration:0.25 animations:^{
+                    UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+                    searchTextField.enabled = YES;
+                } completion:^(BOOL finished) {
+                    self.indexPathsToDelete = @[];
+                }];
             }];
         });
     }];
+}
+
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths {
+    [self deletePostsAtIndexPaths:indexPaths dataSource:self.currentDataSource];
+}
+
+- (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource {
+    [dataSource deletePosts:posts callback:^(NSIndexPath *indexPath) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            CLS_LOG(@"Table View Reload 4");
+            
+            if (dataSource == self.searchPostDataSource) {
+                [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
+            }
+            else {
+                [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            }
+
+            [self updateFromLocalDatabaseWithCallback:^{
+                [UIView animateWithDuration:0.25 animations:^{
+                    UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+                    searchTextField.enabled = YES;
+                } completion:^(BOOL finished) {
+                    self.selectedPost = nil;
+                }];
+            }];
+        });
+    }];
+}
+
+- (void)deletePosts:(NSArray *)posts {
+    [self deletePosts:posts dataSource:self.currentDataSource];
 }
 
 - (void)multiMarkAsRead:(id)sender {
@@ -1103,14 +1137,7 @@ static NSInteger kToolbarHeight = 44;
         NSString *title = [self.confirmDeletionActionSheet buttonTitleAtIndex:buttonIndex];
         if ([title isEqualToString:NSLocalizedString(@"Delete", nil)]) {
             if (self.searchDisplayController.isActive) {
-                [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CLS_LOG(@"Table View Reload 4");
-                        [self.searchDisplayController.searchResultsTableView beginUpdates];
-                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                        [self.searchDisplayController.searchResultsTableView endUpdates];
-                    });
-                }];
+                [self deletePosts:@[self.selectedPost] dataSource:self.searchPostDataSource];
             }
             else {
                 [self deletePostsAtIndexPaths:self.indexPathsToDelete];
@@ -1398,26 +1425,7 @@ static NSInteger kToolbarHeight = 44;
     if (alertView == self.confirmDeletionAlertView) {
         if ([title isEqualToString:NSLocalizedString(@"Delete", nil)]) {
             // We're only deleting one bookmark in this case.
-            if (self.searchDisplayController.isActive) {
-                [self.searchPostDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CLS_LOG(@"Table View Reload 8");
-                        [self.searchDisplayController.searchResultsTableView beginUpdates];
-                        [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                        [self.searchDisplayController.searchResultsTableView endUpdates];
-                    });
-                }];
-            }
-            else {
-                [self.postDataSource deletePosts:@[self.selectedPost] callback:^(NSIndexPath *indexPath) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CLS_LOG(@"Table View Reload 9");
-                        [self.tableView beginUpdates];
-                        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
-                        [self.tableView endUpdates];
-                    });
-                }];
-            }
+            [self deletePosts:@[self.selectedPost]];
         }
         else if ([title isEqualToString:NSLocalizedString(@"No", nil)]) {
             // Dismiss the edit view
