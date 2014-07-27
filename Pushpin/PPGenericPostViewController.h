@@ -100,7 +100,6 @@ typedef enum : NSInteger {
 - (void)sendToReadLater;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)openActionSheetForSelectedPost;
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths;
 
 - (void)multiMarkAsRead:(id)sender;
 - (void)multiEdit:(id)sender;

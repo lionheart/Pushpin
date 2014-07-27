@@ -42,6 +42,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 
 + (TTTAttributedLabel *)bookmarkAttributedLabelForWidth:(CGFloat)width;
+- (NSDictionary *)post;
 
 @end
 
@@ -104,7 +105,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.didReachDeleteThreshold = NO;
     self.didReachEditThreshold = NO;
     self.compressed = compressed;
-    self.post = [dataSource postAtIndex:self.index];
+    self.dataSource = dataSource;
     
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizer.delegate = self;
@@ -305,6 +306,10 @@ static NSInteger kEditButtonOuterMargin = 20;
                              }];
         }
     }
+}
+
+- (NSDictionary *)post {
+    return [self.dataSource postAtIndex:self.index];
 }
 
 @end
