@@ -81,7 +81,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)showConfirmDeletionActionSheet;
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
-- (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert reloads:(NSArray *)indexPathsToReload deletes:(NSArray *)indexPathsToDelete;
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
 - (void)updateTitleViewText;
 - (CGFloat)currentWidth;
@@ -1763,32 +1762,6 @@ static NSInteger kToolbarHeight = 44;
         self.multipleDeleteButton.enabled = NO;
         self.multipleTagEditButton.enabled = NO;
         self.multipleMarkAsReadButton.enabled = NO;
-    }
-}
-
-- (void)performTableViewUpdatesWithInserts:(NSArray *)indexPathsToInsert
-                                   reloads:(NSArray *)indexPathsToReload
-                                   deletes:(NSArray *)indexPathsToDelete {
-    
-    if (kGenericPostViewControllerPerformAtomicUpdates) {
-        CLS_LOG(@"Table View Reload 13");
-        [self.tableView beginUpdates];
-        if (indexPathsToReload) {
-            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        if (indexPathsToDelete) {
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        if (indexPathsToInsert) {
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        [self.tableView endUpdates];
-    }
-    else {
-        [self.tableView reloadData];
     }
 }
 
