@@ -229,6 +229,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSInteger)indexForPost:(NSDictionary *)post {
+#warning O(N^2)
     return [self.posts indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         return [obj[@"hash"] isEqualToString:post[@"hash"]];
     }];
