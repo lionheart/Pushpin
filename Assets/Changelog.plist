@@ -11,10 +11,6 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix issue where certain bookmarks might not update.</string>
-			</array>
-			<array>
-				<string>FIX</string>
 				<string>Fix issue where swipe-to-edit would display the wrong bookmark in certain scenarios.</string>
 			</array>
 			<array>
@@ -23,7 +19,11 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix an issue where bookmarks sync properly.</string>
+				<string>Fix issue where bookmark heights would display after mass-deleting bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where syncs would fail in certain situations.</string>
 			</array>
 			<array>
 				<string>FIX</string>
