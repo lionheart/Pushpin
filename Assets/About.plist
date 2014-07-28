@@ -148,6 +148,18 @@
 				<key>title</key>
 				<string>Wu Liang</string>
 			</dict>
+			<dict>
+				<key>detail</key>
+				<string>Updates to French translation.</string>
+				<key>title</key>
+				<string>Sébastien Pennec</string>
+			</dict>
+			<dict>
+				<key>detail</key>
+				<string>Updates to German translation.</string>
+				<key>title</key>
+				<string>Lukas Leitsch</string>
+			</dict>
 		</array>
 		<key>title</key>
 		<string>Beta Testers and Acknowledgements</string>
