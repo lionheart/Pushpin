@@ -86,7 +86,7 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 - (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback;
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)())callback;
 
 /**
  * Called when post at a specific index path is called

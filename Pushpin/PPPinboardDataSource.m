@@ -367,7 +367,7 @@ static BOOL kPinboardSyncInProgress = NO;
                       }];
 }
 
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)())callback {
     void (^SuccessBlock)();
     void (^ErrorBlock)(NSError *);
 
@@ -408,9 +408,7 @@ static BOOL kPinboardSyncInProgress = NO;
         // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
-                [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    callback(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
-                } cancel:nil width:self.mostRecentWidth];
+                callback();
             }
         });
     });
