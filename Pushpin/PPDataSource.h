@@ -28,6 +28,7 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 
 @protocol PPDataSource <NSObject>
 
+- (NSInteger)indexForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;
 - (BOOL)searchSupported;
 

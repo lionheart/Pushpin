@@ -725,7 +725,7 @@ static NSInteger kToolbarHeight = 44;
                             DLog(@"B: %@", date);
                             
                             CLS_LOG(@"Table View Reload 1");
-                            
+
                             // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                             [tableView beginUpdates];
                             [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -848,7 +848,7 @@ static NSInteger kToolbarHeight = 44;
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
-            
+
             CLS_LOG(@"Table View Reload 3");
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
@@ -995,7 +995,8 @@ static NSInteger kToolbarHeight = 44;
     cell.delegate = self;
 
     id <PPDataSource> dataSource = [self dataSourceForTableView:tableView];
-    [cell prepareCellWithDataSource:dataSource badgeDelegate:self index:indexPath.row compressed:self.compressPosts];
+    NSDictionary *post = [dataSource postAtIndex:indexPath.row];
+    [cell prepareCellWithDataSource:dataSource badgeDelegate:self post:post compressed:self.compressPosts];
     return cell;
 }
 
@@ -1409,7 +1410,12 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)showConfirmDeletionAlert {
     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
+
+    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                               message:message
+                                                              delegate:self
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                     otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
     [self.confirmDeletionAlertView show];
 }
 
@@ -1787,17 +1793,17 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
-                                    forPost:(NSDictionary *)post
-                                  indexPath:(NSIndexPath *)indexPath {
+                                    forPost:(NSDictionary *)post {
     self.selectedPost = post;
-    self.selectedIndexPath = indexPath;
+    NSInteger index = [self.currentDataSource indexForPost:post];
+    self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
     [self showConfirmDeletionAlert];
 }
 
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
-                                  forPost:(NSDictionary *)post
-                                indexPath:(NSIndexPath *)indexPath {
-    self.selectedIndexPath = indexPath;
+                                  forPost:(NSDictionary *)post {
+    NSInteger index = [self.currentDataSource indexForPost:post];
+    self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
     UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row];
     [self presentViewControllerInFormSheetIfApplicable:vc];

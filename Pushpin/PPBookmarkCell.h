@@ -17,11 +17,9 @@
 @protocol PPBookmarkCellDelegate <NSObject>
 
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
-                                    forPost:(NSDictionary *)post
-                                  indexPath:(NSIndexPath *)indexPath;
+                                    forPost:(NSDictionary *)post;
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
-                                  forPost:(NSDictionary *)post
-                                indexPath:(NSIndexPath *)indexPath;
+                                  forPost:(NSDictionary *)post;
 - (BOOL)bookmarkCellCanSwipe:(PPBookmarkCell *)cell;
 
 @end
@@ -32,7 +30,7 @@
 
 - (void)prepareCellWithDataSource:(id<PPDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
-                            index:(NSInteger)index
+                             post:(NSDictionary *)post
                        compressed:(BOOL)compressed;
 
 @end
