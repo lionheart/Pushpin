@@ -39,6 +39,8 @@
 
 @property (nonatomic, strong) UITextView *textView;
 
+- (BOOL)authTokenProvided;
+
 @end
 
 @implementation PPLoginViewController
@@ -205,7 +207,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         self.loginInProgress = YES;
 
 #ifdef PINBOARD
-        BOOL authTokenProvided = self.authTokenTextField.text.length > 0;
+        BOOL authTokenProvided = [self authTokenProvided];
 #endif
 
         BOOL usernameAndPasswordProvided = self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0;
@@ -561,19 +563,17 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.progressView.hidden) {
+        if (self.loginInProgress && [self authTokenProvided]) {
+            section++;
+        }
+        
         switch ((PPLoginSectionType)section) {
-            case PPLoginCredentialSection: {
-                if (self.loginInProgress && !self.progressView.hidden) {
-                    return 1;
-                }
-                else {
-                    return 2;
-                }
-            }
-
+            case PPLoginCredentialSection:
+                return 2;
+                
             case PPLoginAuthTokenSection:
                 return 1;
-
+                
             case PPLogin1PasswordSection:
                 return 1;
         }
@@ -790,6 +790,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     NSString *searchTerm = @"delicious";
 #endif
     return [[UIApplication sharedApplication] canOpenURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:searchTerm]];
+}
+            
+- (BOOL)authTokenProvided {
+    return self.authTokenTextField.text.length > 0;
 }
 
 @end
