@@ -11,6 +11,10 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Fix issue where certain bookmarks might not update.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix issue where swipe-to-edit would display the wrong bookmark in certain scenarios.</string>
 			</array>
 			<array>
