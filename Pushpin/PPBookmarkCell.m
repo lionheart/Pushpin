@@ -33,7 +33,6 @@ static NSInteger kEditButtonOuterMargin = 20;
 
 @property (nonatomic) BOOL didReachDeleteThreshold;
 @property (nonatomic) BOOL didReachEditThreshold;
-@property (nonatomic) NSInteger index;
 @property (nonatomic) BOOL compressed;
 @property (nonatomic, strong) NSLayoutConstraint *mainWidthConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *leftPositionConstraint;
@@ -62,19 +61,6 @@ static NSInteger kEditButtonOuterMargin = 20;
     return label;
 }
 
-- (id)debugQuickLookObject {
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@""];
-    NSAttributedString *title = [self.dataSource titleForPostAtIndex:self.index];
-    NSAttributedString *link = [self.dataSource linkForPostAtIndex:self.index];
-    NSAttributedString *description = [self.dataSource descriptionForPostAtIndex:self.index];
-    [string appendAttributedString:title];
-    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-    [string appendAttributedString:link];
-    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-    [string appendAttributedString:description];
-    return string;
-}
-
 - (void)didTransitionToState:(UITableViewCellStateMask)state {
     [super didTransitionToState:state];
 
@@ -93,7 +79,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 
 - (void)prepareCellWithDataSource:(id<PPDataSource>)dataSource
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
-                            index:(NSInteger)index
+                             post:(NSDictionary *)post
                        compressed:(BOOL)compressed {
     
     [self.contentView lhs_removeSubviews];
@@ -101,11 +87,11 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.clipsToBounds = YES;
 
     self.selectionStyle = UITableViewCellSelectionStyleBlue;
-    self.index = index;
     self.didReachDeleteThreshold = NO;
     self.didReachEditThreshold = NO;
     self.compressed = compressed;
     self.dataSource = dataSource;
+    self.post = post;
     
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizer.delegate = self;
@@ -126,6 +112,8 @@ static NSInteger kEditButtonOuterMargin = 20;
     
     // Keeps returning invalid values. Have to hardcode.
     CGFloat width = CGRectGetWidth(self.frame) - 20;
+
+    NSInteger index = [dataSource indexForPost:post];
     NSAttributedString *title = [dataSource titleForPostAtIndex:index];
     NSAttributedString *link = [dataSource linkForPostAtIndex:index];
     NSAttributedString *description = [dataSource descriptionForPostAtIndex:index];
@@ -283,19 +271,15 @@ static NSInteger kEditButtonOuterMargin = 20;
         }
         else if (recognizer.state == UIGestureRecognizerStateEnded) {
             if (self.deleteButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:indexPath:)]) {
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:)]) {
                     [self.delegate bookmarkCellDidActivateDeleteButton:self
-                                                               forPost:self.post
-                                                             indexPath:[NSIndexPath indexPathForRow:self.index
-                                                                                          inSection:0]];
+                                                               forPost:self.post];
                 }
             }
             else if (self.editButton.enabled) {
-                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:indexPath:)]) {
+                if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:)]) {
                     [self.delegate bookmarkCellDidActivateEditButton:self
-                                                             forPost:self.post
-                                                           indexPath:[NSIndexPath indexPathForRow:self.index
-                                                                                        inSection:0]];
+                                                             forPost:self.post];
                 }
             }
 
@@ -306,10 +290,6 @@ static NSInteger kEditButtonOuterMargin = 20;
                              }];
         }
     }
-}
-
-- (NSDictionary *)post {
-    return [self.dataSource postAtIndex:self.index];
 }
 
 @end

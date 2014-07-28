@@ -228,6 +228,12 @@ static BOOL kPinboardSyncInProgress = NO;
     return self.posts.count;
 }
 
+- (NSInteger)indexForPost:(NSDictionary *)post {
+    return [self.posts indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [obj[@"hash"] isEqualToString:post[@"hash"]];
+    }];
+}
+
 - (NSInteger)totalNumberOfPosts {
     if (!_totalNumberOfPosts) {
         __block NSInteger count;
@@ -431,12 +437,6 @@ static BOOL kPinboardSyncInProgress = NO;
 
                 NSInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-                
-                if (index >= 0) {
-                    [self.posts removeObjectAtIndex:index];
-                    [self.metadata removeObjectAtIndex:index];
-                    [self.compressedMetadata removeObjectAtIndex:index];
-                }
 
                 callback(indexPath);
             });
