@@ -826,7 +826,7 @@ static NSInteger kToolbarHeight = 44;
         
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.backBarButtonItem.enabled = NO;
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
 
         [self updateTitleViewText];
         
@@ -842,7 +842,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)deletePostsAtIndexPaths:(NSArray *)indexPaths dataSource:(id<PPDataSource>)dataSource {
-    [dataSource deletePostsAtIndexPaths:indexPaths callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
+    [dataSource deletePostsAtIndexPaths:indexPaths callback:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSIndexPath *indexPath in indexPaths) {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -960,7 +960,7 @@ static NSInteger kToolbarHeight = 44;
                         [self updateFromLocalDatabaseWithCallback:nil];
                     }
                     else {
-                        [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
+                        [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
                     }
                 }
             }];
