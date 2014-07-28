@@ -93,6 +93,13 @@
     return self.posts.count;
 }
 
+- (NSInteger)indexForPost:(NSDictionary *)post {
+#warning O(N^2)
+    return [self.posts indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [obj[@"url"] isEqualToString:post[@"url"]];
+    }];
+}
+
 - (NSInteger)totalNumberOfPosts {
     return 0;
 }
