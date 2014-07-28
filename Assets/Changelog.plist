@@ -3,6 +3,35 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.7</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Improved French localizations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where swipe-to-edit would display the wrong bookmark in certain scenarios.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix issue where editing a bookmark twice would display stale bookmark data.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix an issue where bookmarks sync properly.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash that occurred when switching sections while updating bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash that occurred when logging in with the Pinboard API token.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.6</string>
 		<array>
 			<array>
