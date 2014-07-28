@@ -19,6 +19,10 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Fix a crash that occurred when swiping to edit in a search and canceling without making a change.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix issue where bookmark heights would display after mass-deleting bookmarks.</string>
 			</array>
 			<array>
