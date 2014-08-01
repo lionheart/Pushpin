@@ -86,6 +86,9 @@ static NSInteger kToolbarHeight = 44;
 - (CGFloat)currentWidth;
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation;
 
+- (void)updateFromLocalDatabase;
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time;
 - (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
@@ -93,7 +96,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)hideCircle;
 
 - (void)refreshControlValueChanged:(id)sender;
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
 - (void)synchronizeAddedBookmark;
 
 - (NSArray *)searchPosts;
@@ -421,11 +423,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification {
-    [self updateFromLocalDatabaseWithCallback:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
+    [self updateFromLocalDatabase];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -675,13 +673,21 @@ static NSInteger kToolbarHeight = 44;
         }
         else {
             if (updated) {
-                [self updateFromLocalDatabaseWithCallback:nil];
+                [self updateFromLocalDatabase];
             }
         }
     } progress:nil options:@{@"count": @(10)}];
 }
 
+- (void)updateFromLocalDatabase {
+    [self updateFromLocalDatabaseWithCallback:nil];
+}
+
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
+    [self updateFromLocalDatabaseWithCallback:callback time:nil];
+}
+
+- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!self.isProcessingPosts) {
             self.isProcessingPosts = YES;
@@ -744,7 +750,18 @@ static NSInteger kToolbarHeight = 44;
                         self.isProcessingPosts = NO;
                     });
                 } cancel:^BOOL{
-                    return !self.isViewLoaded || self.view.window == nil;
+                    BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
+                    if (isHidden) {
+                        return YES;
+                    }
+                    else {
+                        if (time) {
+                            return [time compare:self.latestSearchTime] != NSOrderedSame;
+                        }
+                        else {
+                            return NO;
+                        }
+                    }
                 } width:self.currentWidth];
             });
         }
@@ -766,25 +783,7 @@ static NSInteger kToolbarHeight = 44;
 #endif
 
     [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-            if (!error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-//                    [self.searchDisplayController.searchResultsTableView reloadData];
-                    
-                    CLS_LOG(@"Table View Reload 2");
-                    [self.searchDisplayController.searchResultsTableView beginUpdates];
-                    [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.searchDisplayController.searchResultsTableView endUpdates];
-                });
-            }
-        } cancel:^BOOL{
-            return [time compare:self.latestSearchTime] != NSOrderedSame;
-        } width:self.currentWidth];
-    });
+    [self updateFromLocalDatabaseWithCallback:nil time:time];
 }
 
 - (void)toggleEditingMode:(id)sender {
@@ -957,7 +956,7 @@ static NSInteger kToolbarHeight = 44;
             [dataSource willDisplayIndexPath:indexPath callback:^(BOOL needsUpdate) {
                 if (needsUpdate) {
                     if (self.tableView == tableView) {
-                        [self updateFromLocalDatabaseWithCallback:nil];
+                        [self updateFromLocalDatabase];
                     }
                     else {
                         [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
@@ -1092,7 +1091,7 @@ static NSInteger kToolbarHeight = 44;
                 success();
             }
             
-            [self updateFromLocalDatabaseWithCallback:nil];
+            [self updateFromLocalDatabase];
         }];
     });
 }
@@ -1289,7 +1288,7 @@ static NSInteger kToolbarHeight = 44;
                     });
                 }
                 
-                [self updateFromLocalDatabaseWithCallback:nil];
+                [self updateFromLocalDatabase];
             });
             
         }
@@ -1590,18 +1589,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if (!self.isProcessingPosts) {
-        self.isProcessingPosts = YES;
-        [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                CLS_LOG(@"Table View Reload 10");
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-                self.isProcessingPosts = NO;
-            });
-        } cancel:nil width:self.currentWidth];
-    }
+    [self updateFromLocalDatabase];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -1616,27 +1604,7 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark iOS 7 Updates
 
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification {
-    if (!self.isProcessingPosts) {
-        self.isProcessingPosts = YES;
-
-        [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-            if (!error) {
-                dispatch_sync(dispatch_get_main_queue(), ^(void) {
-                    CLS_LOG(@"Table View Reload 11");
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    self.isProcessingPosts = NO;
-                });
-            }
-            else {
-                self.isProcessingPosts = NO;
-            }
-
-        } cancel:nil width:self.currentWidth];
-    }
+    [self updateFromLocalDatabase];
 }
 
 #pragma mark - PPBadgeWrapperDelegate
@@ -1963,9 +1931,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index dataSource:(id<PPDataSource>)dataSource {
     UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateFromLocalDatabaseWithCallback:nil];
-        });
+        [self updateFromLocalDatabase];
     }];
     
     return vc;
