@@ -131,7 +131,7 @@
              @"tags": [resultSet stringForColumn:@"tags"],
              @"created_at": [resultSet dateForColumn:@"created_at"],
              @"starred": starred
-             };
+         };
 #endif
 
 #ifdef DELICIOUS

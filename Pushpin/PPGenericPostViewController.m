@@ -688,9 +688,50 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time {
+    self.latestSearchTime = [NSDate date];
+
+    if (!time) {
+        time = self.latestSearchTime;
+    }
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (!self.isProcessingPosts) {
-            self.isProcessingPosts = YES;
+        NSDate *date = [NSDate date];
+        DLog(@"A: %@", date);
+
+        if (self.searchDisplayController.isActive) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+                        
+                        DLog(@"B: %@", date);
+                        
+                        CLS_LOG(@"Table View Reload 1");
+                        
+                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                        
+                        [tableView beginUpdates];
+                        [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView endUpdates];
+                        
+                        if (callback) {
+                            callback();
+                        }
+                    });
+                } cancel:^BOOL{
+                    BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
+                    if (isHidden) {
+                        return YES;
+                    }
+                    else {
+                        return [time compare:self.latestSearchTime] == NSOrderedDescending;
+                    }
+                } width:self.currentWidth];
+            });
+        }
+        else {
             BOOL firstLoad = [self.postDataSource numberOfPosts] == 0;
             
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -698,45 +739,32 @@ static NSInteger kToolbarHeight = 44;
             if (firstLoad) {
                 activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
                 [activityIndicator startAnimating];
-
+                
                 [self.view addSubview:activityIndicator];
                 [self.view lhs_centerHorizontallyForView:activityIndicator];
                 [self.view lhs_centerVerticallyForView:activityIndicator];
             }
             
-            NSDate *date = [NSDate date];
-            DLog(@"A: %@", date);
-
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        UITableView *tableView;
-                        if (self.searchDisplayController.isActive) {
-                            tableView = self.searchDisplayController.searchResultsTableView;
-                        }
-                        else {
-                            tableView = self.tableView;
-                        }
-                        
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         if (firstLoad) {
                             [activityIndicator removeFromSuperview];
-                            [tableView reloadData];
+                            [self.tableView reloadData];
                         }
                         else {
-                            
 #warning XXX - Crash: http://crashes.to/s/d4cb56826ff
                             // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                             // attempt to delete row 99 from section 0 which only contains 0 rows before the update
                             DLog(@"B: %@", date);
                             
                             CLS_LOG(@"Table View Reload 1");
-
                             // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                            [tableView beginUpdates];
-                            [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView endUpdates];
+                            [self.tableView beginUpdates];
+                            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
                         }
                         
                         if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
@@ -755,12 +783,7 @@ static NSInteger kToolbarHeight = 44;
                         return YES;
                     }
                     else {
-                        if (time) {
-                            return [time compare:self.latestSearchTime] != NSOrderedSame;
-                        }
-                        else {
-                            return NO;
-                        }
+                        return [time compare:self.latestSearchTime] != NSOrderedSame;
                     }
                 } width:self.currentWidth];
             });
@@ -1482,11 +1505,15 @@ static NSInteger kToolbarHeight = 44;
                 [self.fullTextSearchTimer invalidate];
             }
             
-            self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4 target:self selector:@selector(updateSearchResultsForSearchPerformed:) userInfo:@{@"time": self.latestSearchTime} repeats:NO];
+            self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4
+                                                               target:self
+                                                             selector:@selector(updateSearchResultsForSearchPerformed:)
+                                                             userInfo:@{@"time": self.latestSearchTime}
+                                                              repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
         }
         else {
-            [self updateSearchResultsForSearchPerformedAtTime:[self.latestSearchTime copy]];
+            [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
         }
     }
 }
