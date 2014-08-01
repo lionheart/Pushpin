@@ -23,7 +23,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Fix issue where bookmark heights would display after mass-deleting bookmarks.</string>
+				<string>Fix issue where bookmark heights would display incorrectly after mass-deleting bookmarks.</string>
 			</array>
 			<array>
 				<string>FIX</string>
