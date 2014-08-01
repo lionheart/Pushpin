@@ -1099,10 +1099,6 @@ static NSInteger kToolbarHeight = 44;
 
 #pragma mark - UITableViewDelegate
 
-- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
 - (void)closeModal:(UIViewController *)sender {
     [self closeModal:sender success:nil];
 }
