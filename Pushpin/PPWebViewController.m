@@ -21,7 +21,9 @@
 #import "PPMobilizerUtility.h"
 #import "PPActivityViewController.h"
 #import "PPUtilities.h"
+#import "NSData+AES256.h"
 
+#import <LHSCategoryCollection/NSData+Base64.h>
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -30,21 +32,27 @@
 #import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <RNCryptor/RNDecryptor.h>
+#import <RNCryptor/RNCryptor.h>
 
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
 
 @interface PPWebViewController ()
 
-@property (nonatomic) BOOL mobilized;
 @property (nonatomic, strong) PPMobilizerUtility *mobilizerUtility;
 @property (nonatomic) CGFloat yOffsetToStartShowingToolbar;
 @property (nonatomic) CGPoint previousContentOffset;
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) PPActivityViewController *activityView;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
+@property (nonatomic, strong) UIWebView *readerWebView;
+
+@property (nonatomic, strong) NSLayoutConstraint *readerWebViewVisibleConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *readerWebViewHiddenConstraint;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
+- (BOOL)mobilized;
 
 @end
 
@@ -58,18 +66,17 @@ static NSInteger kTitleHeight = 40;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.view.opaque = YES;
+    self.view.backgroundColor = [UIColor whiteColor];
 
     self.mobilizerUtility = [PPMobilizerUtility sharedInstance];
-    self.mobilized = NO;
     self.prefersStatusBarHidden = NO;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.stopped = NO;
     self.history = [NSMutableArray array];
-    
+
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
@@ -88,16 +95,21 @@ static NSInteger kTitleHeight = 40;
     self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.statusBarBackgroundView];
 
-    CGSize size = self.view.frame.size;
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
-    self.webView.autoresizingMask = UIViewAutoresizingNone;
+    self.webView = [[UIWebView alloc] init];
+    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.bounces = YES;
-    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
+    
+    self.readerWebView = [[UIWebView alloc] init];
+    self.readerWebView.backgroundColor = [UIColor clearColor];
+    self.readerWebView.opaque = NO;
+    self.readerWebView.scrollView.delegate = self;
+    self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.readerWebView];
     
     self.showToolbarAndTitleBarHiddenView = [[UIView alloc] init];
     self.showToolbarAndTitleBarHiddenView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -118,7 +130,7 @@ static NSInteger kTitleHeight = 40;
     self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.toolbarBackgroundView];
 
-    UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *backButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
     [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -189,16 +201,18 @@ static NSInteger kTitleHeight = 40;
     self.titleLabel.minimumScaleFactor = 0.5;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-    
-    NSDictionary *toolbarViews = @{@"back": self.backButton,
-                                   @"read": self.markAsReadButton,
-                                   @"mobilize": self.mobilizeButton,
-                                   @"action": self.actionButton,
-                                   @"edit": self.editButton,
-                                   @"stop": self.stopButton,
-                                   @"add": self.addButton,
-                                   @"background": self.toolbarBackgroundView,
-                                   @"border": toolbarBorderView };
+
+    NSDictionary *toolbarViews = @{
+        @"back": self.backButton,
+        @"read": self.markAsReadButton,
+        @"mobilize": self.mobilizeButton,
+        @"action": self.actionButton,
+        @"edit": self.editButton,
+        @"stop": self.stopButton,
+        @"add": self.addButton,
+        @"background": self.toolbarBackgroundView,
+        @"border": toolbarBorderView
+    };
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
@@ -226,26 +240,74 @@ static NSInteger kTitleHeight = 40;
 
     [self.view addSubview:self.toolbar];
     
-    NSDictionary *views = @{@"toolbar": self.toolbar,
-                            @"background": self.statusBarBackgroundView,
-                            @"show": self.showToolbarAndTitleBarHiddenView,
-                            @"webview": self.webView };
+    NSDictionary *views = @{
+        @"toolbar": self.toolbar,
+        @"background": self.statusBarBackgroundView,
+        @"show": self.showToolbarAndTitleBarHiddenView,
+        @"webview": self.webView,
+        @"reader": self.readerWebView
+    };
 
     // Setup auto-layout constraints
     [self.view lhs_addConstraints:@"H:|[background]|" views:views];
     [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
     [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
+    [self.view lhs_addConstraints:@"H:|[reader]|" views:views];
     [self.view lhs_addConstraints:@"H:|[show]|" views:views];
+
+    self.readerWebViewHiddenConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
+                                                                      attribute:NSLayoutAttributeBottom
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self.topLayoutGuide
+                                                                      attribute:NSLayoutAttributeTop
+                                                                     multiplier:1
+                                                                       constant:0];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.webView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    self.readerWebViewVisibleConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
+                                                                       attribute:NSLayoutAttributeBottom
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self.toolbar
+                                                                       attribute:NSLayoutAttributeTop
+                                                                      multiplier:1
+                                                                        constant:0];
+    [self.view addConstraint:self.readerWebViewHiddenConstraint];
+    
+    // Make sure the height of the reader view is the same as the web view
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.webView
+                                                          attribute:NSLayoutAttributeHeight
+                                                         multiplier:1
+                                                           constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.webView
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1
+                                                           constant:0]];
     [self.view lhs_addConstraints:@"V:[show(20)]" views:views];
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
     [self.view lhs_addConstraints:@"V:|[background][webview][toolbar(>=height)]" metrics:metrics views:views];
     
-    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.toolbar attribute:NSLayoutAttributeTop multiplier:1 constant:kToolbarHeight];
+    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.toolbar
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1
+                                                           constant:kToolbarHeight];
 
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.toolbar attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationLessThanOrEqual
+                                                             toItem:self.toolbar
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1
+                                                           constant:0]];
     [self.view addConstraint:self.toolbarConstraint];
 
     self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
@@ -316,7 +378,16 @@ static NSInteger kTitleHeight = 40;
             }
         }
     }
-    else if (recognizer == self.tapGestureRecognizer || recognizer == self.bottomTapGestureRecognizer) {
+    else if (recognizer == self.bottomTapGestureRecognizer) {
+        UIWebView *webView;
+        if (self.mobilized) {
+            webView = self.readerWebView;
+        }
+        else {
+            webView = self.webView;
+        }
+        self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
+
         if (self.webView.scrollView.scrollsToTop && self.webView.scrollView.scrollEnabled) {
             [self showToolbarAnimated:YES];
         }
@@ -339,6 +410,9 @@ static NSInteger kTitleHeight = 40;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
+    self.readerWebView.backgroundColor = [UIColor whiteColor];
+    self.readerWebView.opaque = YES;
+
     if (!self.alreadyLoaded) {
         [self loadURL];
     }
@@ -348,10 +422,6 @@ static NSInteger kTitleHeight = 40;
     [super viewWillDisappear:animated];
 
     [self.webView stopLoading];
-    
-    if ([UIApplication sharedApplication].statusBarHidden) {
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    }
 }
 
 - (void)stopLoading {
@@ -415,18 +485,12 @@ static NSInteger kTitleHeight = 40;
         [self.webView goBack];
     }
     else {
-        if (self.navigationController.viewControllers.count == 1) {
-            if (self.callback) {
-                self.callback();
-                [self.parentViewController dismissViewControllerAnimated:NO completion:nil];
-            }
-            else {
-                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-            }
+        if (!self.mobilized) {
+            // Hide the reader web view.
+            self.readerWebView.hidden = YES;
         }
-        else {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
+
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
@@ -636,7 +700,6 @@ static NSInteger kTitleHeight = 40;
 - (void)toggleMobilizer {
     BOOL nativeMobilizerEnabled = NO;
     if (nativeMobilizerEnabled) {
-        self.mobilized = !self.mobilized;
         self.mobilizeButton.selected = self.mobilized;
         
         if (self.mobilized) {
@@ -647,7 +710,7 @@ static NSInteger kTitleHeight = 40;
             NSString *JSDOMParserJS = [NSString stringWithContentsOfFile:JSDOMParserFile encoding:NSUTF8StringEncoding error:nil];
             NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityFile encoding:NSUTF8StringEncoding error:nil];
             NSString *readabilityInitializerJS = [NSString stringWithContentsOfFile:readabilityInitializerFile encoding:NSUTF8StringEncoding error:nil];
-            
+
             [self.webView stringByEvaluatingJavaScriptFromString:JSDOMParserJS];
             [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
             [self.webView stringByEvaluatingJavaScriptFromString:readabilityInitializerJS];
@@ -661,34 +724,59 @@ static NSInteger kTitleHeight = 40;
         }
     }
     else {
-        
-        if ([self.mobilizerUtility canMobilizeURL:self.url]) {
-            self.mobilized = !self.mobilized;
-            self.mobilizeButton.selected = self.mobilized;
-            
-            NSURL *url;
-            if (self.mobilized) {
-                url = [NSURL URLWithString:[self.mobilizerUtility urlStringForMobilizerForURL:self.url]];
-            }
-            else {
-                url = [NSURL URLWithString:[self.mobilizerUtility originalURLStringForURL:self.url]];
-            }
-            
-            self.title = self.urlString;
-            
-            NSString *previousURLString = [self.history lastObject][@"url"];
-            if ([previousURLString isEqualToString:url.absoluteString]) {
-                [self.history removeLastObject];
-                [self.webView goBack];
-            }
-            else {
-                NSURLRequest *request = [NSURLRequest requestWithURL:url];
-                [self.webView loadRequest:request];
-            }
-        }
+        [UIView animateWithDuration:0.5
+                         animations:^{
+                             if (self.mobilized) {
+                                 [self.view removeConstraint:self.readerWebViewVisibleConstraint];
+                                 [self.view addConstraint:self.readerWebViewHiddenConstraint];
+                                 self.mobilizeButton.selected = NO;
+                             }
+                             else {
+                                 [self.view removeConstraint:self.readerWebViewHiddenConstraint];
+                                 [self.view addConstraint:self.readerWebViewVisibleConstraint];
+                                 self.mobilizeButton.selected = YES;
+                             }
+                             
+                             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
+
+                             NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
+                                                                                                           port:80
+                                                                                                       protocol:@"http"
+                                                                                                          realm:@"Pushpin"
+                                                                                           authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
+                             NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
+                             
+                             NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                                                      password:@"9346edb36e542dab1e7861227f9222b7"
+                                                                                   persistence:NSURLCredentialPersistencePermanent];
+                             [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
+                             [[NSURLSession sharedSession].configuration setURLCredentialStorage:credentials];
+
+                             NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+                             configuration.URLCredentialStorage = credentials;
+                             NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
+                                                                                   delegate:nil
+                                                                              delegateQueue:nil];
+                             NSURLSessionDataTask *task = [session dataTaskWithURL:url
+                                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                                     NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+                                                                     NSData *decryptedData = [RNDecryptor decryptData:encodedData
+                                                                                                         withPassword:@"Isabelle and Dante"
+                                                                                                                error:nil];
+                                                                     id parsedResponse = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                                                                                         options:NSJSONReadingAllowFragments
+                                                                                                                           error:nil];
+                                                                     
+                                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                                         [self.readerWebView loadHTMLString:parsedResponse[@"content"] baseURL:nil];
+                                                                     });
+                                                                 }];
+                             [task resume];
+
+                             [self.view layoutIfNeeded];
+                         }];
     }
-    
-    
 }
 
 - (void)emailURL {
@@ -837,12 +925,9 @@ static NSInteger kTitleHeight = 40;
     }
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (![UIApplication isIPad]) {
-        if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
+        if (scrollView.contentOffset.y + CGRectGetHeight(scrollView.frame) > scrollView.contentSize.height - kToolbarHeight) {
             self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
         }
         else {
@@ -855,7 +940,7 @@ static NSInteger kTitleHeight = 40;
         CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
         self.toolbarConstraint.constant = MAX(0, height);
         [self.view layoutIfNeeded];
-        
+
         if (self.toolbarConstraint.constant <= 0) {
             self.yOffsetToStartShowingToolbar = 0;
         }
@@ -952,6 +1037,8 @@ static NSInteger kTitleHeight = 40;
                                       @"host": self.url.host,
                                       @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
         }
+
+        self.mobilizeButton.enabled = self.canMobilizeCurrentURL;
 
         // Disable the default action sheet
         [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
@@ -1146,6 +1233,19 @@ static NSInteger kTitleHeight = 40;
     if (keyCommand == self.goBackKeyCommand) {
         [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+#pragma mark -
+
+- (BOOL)mobilized {
+    return [[self.view constraints] containsObject:self.readerWebViewVisibleConstraint];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
+    NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                             password:@"9346edb36e542dab1e7861227f9222b7"
+                                                          persistence:NSURLCredentialPersistenceForSession];
+    completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
 }
 
 @end

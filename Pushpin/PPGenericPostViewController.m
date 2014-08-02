@@ -23,6 +23,7 @@
 #import "PPActivityViewController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
+#import "PPShrinkBackTransition.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -75,6 +76,8 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIView *circle;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
 @property (nonatomic, strong) NSTimer *circleHideTimer;
+
+@property (nonatomic, strong) PPShrinkBackTransition *shrinkBackTransition;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
@@ -144,6 +147,7 @@ static NSInteger kToolbarHeight = 44;
     self.actionSheetVisible = NO;
     self.latestSearchTime = [NSDate date];
     self.isProcessingPosts = NO;
+    self.shrinkBackTransition = [[PPShrinkBackTransition alloc] init];
     
     self.focusSearchKeyCommand = [UIKeyCommand keyCommandWithInput:@"/"
                                                      modifierFlags:0
@@ -496,8 +500,6 @@ static NSInteger kToolbarHeight = 44;
                         }
                         
 #warning TODO Check outside links
-                        // Check for App Store link
-                        
                         if ([PPAppDelegate sharedDelegate].openLinksInApp) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
                             if ([PPAppDelegate sharedDelegate].openLinksWithMobilizer) {
@@ -506,13 +508,11 @@ static NSInteger kToolbarHeight = 44;
                             else {
                                 self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                             }
-                            
-                            [self.searchDisplayController.searchContentsController.navigationController setNavigationBarHidden:YES animated:NO];
-                            [self.navigationController setNavigationBarHidden:YES animated:NO];
-                            
+
+                            self.webViewController.transitioningDelegate = self.shrinkBackTransition;
+
                             if ([self.navigationController topViewController] == self) {
-                                [self.navigationController pushViewController:self.webViewController animated:YES];
-                                [self.navigationController setNavigationBarHidden:YES animated:NO];
+                                [self presentViewController:self.webViewController animated:YES completion:nil];
                             }
                         }
                         else {
