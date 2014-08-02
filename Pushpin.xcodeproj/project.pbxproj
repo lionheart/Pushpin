@@ -148,6 +148,7 @@
 		37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */; };
 		37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
+		37802195198D709000CE269A /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 37802194198D709000CE269A /* NSData+AES256.m */; };
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
@@ -390,6 +391,8 @@
 		37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B718C617940032B22B /* navigation-recent@2x.png */; };
 		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
+		37F7825B198C354200C99139 /* PPShrinkBackTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825A198C354200C99139 /* PPShrinkBackTransition.m */; };
+		37F7825E198C354D00C99139 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37F91F3E177AB1D600683D46 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
@@ -727,6 +730,8 @@
 		37800E43162B389B009FCB17 /* PPAddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAddBookmarkViewController.h; sourceTree = "<group>"; };
 		37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAddBookmarkViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		37802193198D709000CE269A /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES256.h"; sourceTree = "<group>"; };
+		37802194198D709000CE269A /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES256.m"; sourceTree = "<group>"; };
 		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
 		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
 		378482D1186CB92C00DF7A74 /* single-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag.png"; path = "Assets/single-tag.png"; sourceTree = "<group>"; };
@@ -989,6 +994,10 @@
 		37F1E1B718C617940032B22B /* navigation-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent@2x.png"; path = "Assets/navigation-recent@2x.png"; sourceTree = "<group>"; };
 		37F1E1B818C617940032B22B /* navigation-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search.png"; path = "Assets/navigation-search.png"; sourceTree = "<group>"; };
 		37F1E1B918C617940032B22B /* navigation-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search@2x.png"; path = "Assets/navigation-search@2x.png"; sourceTree = "<group>"; };
+		37F78259198C354200C99139 /* PPShrinkBackTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackTransition.h; sourceTree = "<group>"; };
+		37F7825A198C354200C99139 /* PPShrinkBackTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShrinkBackTransition.m; sourceTree = "<group>"; };
+		37F7825C198C354D00C99139 /* PPShrinkBackAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackAnimator.h; sourceTree = "<group>"; };
+		37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShrinkBackAnimator.m; sourceTree = "<group>"; };
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
 		37F91F3C177AB1D500683D46 /* PPNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationController.h; sourceTree = "<group>"; };
@@ -1480,6 +1489,8 @@
 			children = (
 				371A48E518ADB516009D7533 /* MFMailComposeViewController+Theme.h */,
 				371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */,
+				37802193198D709000CE269A /* NSData+AES256.h */,
+				37802194198D709000CE269A /* NSData+AES256.m */,
 				37F91F36177A91A500683D46 /* UITableView+Additions.h */,
 				37F91F37177A91A500683D46 /* UITableView+Additions.m */,
 			);
@@ -1655,6 +1666,17 @@
 			path = "Assets/Navigation Bar";
 			sourceTree = "<group>";
 		};
+		37F78255198C34FE00C99139 /* Transitions / Animators */ = {
+			isa = PBXGroup;
+			children = (
+				37F7825C198C354D00C99139 /* PPShrinkBackAnimator.h */,
+				37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */,
+				37F78259198C354200C99139 /* PPShrinkBackTransition.h */,
+				37F7825A198C354200C99139 /* PPShrinkBackTransition.m */,
+			);
+			name = "Transitions / Animators";
+			sourceTree = "<group>";
+		};
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
@@ -1723,6 +1745,7 @@
 				6D023C51193E8D0A0070C013 /* Screenshot Automation */,
 				37FEEB9915745488003F2B77 /* Supporting Files */,
 				37516A03186C8AE200AEF7A6 /* Table View Cells */,
+				37F78255198C34FE00C99139 /* Transitions / Animators */,
 				37405C18186152F70052213A /* View Controllers */,
 				37AD159418A13365005813CC /* About-Delicious.plist */,
 				37CBB7541881FFBC000F9C36 /* About.json */,
@@ -2653,6 +2676,7 @@
 				37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
+				37802195198D709000CE269A /* NSData+AES256.m in Sources */,
 				37B4FFE01922B6EF002F8558 /* NSString+LHSAdditions.m in Sources */,
 				37D0D08B16B8DF240062C27E /* NSString+URLEncoding2.m in Sources */,
 				37405C6718620BCB0052213A /* PostMetadata.m in Sources */,
@@ -2694,6 +2718,8 @@
 				37171A2C18B16C77007FF164 /* PPSearchViewController.m in Sources */,
 				37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */,
 				373D6F571965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
+				37F7825E198C354D00C99139 /* PPShrinkBackAnimator.m in Sources */,
+				37F7825B198C354200C99139 /* PPShrinkBackTransition.m in Sources */,
 				37FF4131187D95CF00F2D481 /* PPSplitViewController.m in Sources */,
 				37D4B002188325B000E07EB3 /* PPStatusBar.m in Sources */,
 				37C6D620186B99820096FA88 /* PPStatusBarNotification.m in Sources */,
