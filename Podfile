@@ -25,6 +25,7 @@ pod 'OpenInChrome', '0.0.1'
 pod 'CrashlyticsFramework', '2.2.1'
 pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
+pod 'RNCryptor'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'

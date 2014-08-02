@@ -168,6 +168,12 @@
 #define COCOAPODS_VERSION_MINOR_PocketAPI 0
 #define COCOAPODS_VERSION_PATCH_PocketAPI 2
 
+// RNCryptor
+#define COCOAPODS_POD_AVAILABLE_RNCryptor
+#define COCOAPODS_VERSION_MAJOR_RNCryptor 2
+#define COCOAPODS_VERSION_MINOR_RNCryptor 2
+#define COCOAPODS_VERSION_PATCH_RNCryptor 0
+
 // RPSTPasswordManagementAppService
 #define COCOAPODS_POD_AVAILABLE_RPSTPasswordManagementAppService
 #define COCOAPODS_VERSION_MAJOR_RPSTPasswordManagementAppService 0
