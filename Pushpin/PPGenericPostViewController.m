@@ -131,7 +131,6 @@ static NSInteger kToolbarHeight = 44;
     return UIStatusBarAnimationSlide;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -342,8 +341,6 @@ static NSInteger kToolbarHeight = 44;
         [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
     }
     
-    [self setNeedsStatusBarAppearanceUpdate];
-    
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
     
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
@@ -391,7 +388,10 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self setNeedsStatusBarAppearanceUpdate];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [self setNeedsStatusBarAppearanceUpdate];
+                     }];
     
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
