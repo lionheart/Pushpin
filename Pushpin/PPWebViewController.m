@@ -23,6 +23,7 @@
 #import "PPUtilities.h"
 #import "NSData+AES256.h"
 
+#import <JavaScriptCore/JavaScriptCore.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -100,13 +101,11 @@ static NSInteger kTitleHeight = 40;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
-    self.webView.scrollView.bounces = YES;
-    self.webView.userInteractionEnabled = YES;
     [self.view addSubview:self.webView];
     
     self.readerWebView = [[UIWebView alloc] init];
-    self.readerWebView.backgroundColor = [UIColor clearColor];
-    self.readerWebView.opaque = NO;
+    self.readerWebView.hidden = YES;
+    self.readerWebView.delegate = self;
     self.readerWebView.scrollView.delegate = self;
     self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.readerWebView];
@@ -129,14 +128,15 @@ static NSInteger kTitleHeight = 40;
     self.toolbarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.toolbarBackgroundView];
-
-    UIImage *backButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
-    [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-
+    
     self.backButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] init];
     [self.backButtonLongPressGestureRecognizer addTarget:self action:@selector(gestureDetected:)];
+
+    UIImage *stopButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+    self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.backButton setImage:stopButtonImage forState:UIControlStateNormal];
+    [self.backButton addTarget:self action:@selector(backButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     [self.backButton addGestureRecognizer:self.backButtonLongPressGestureRecognizer];
     self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.backButton];
@@ -148,9 +148,15 @@ static NSInteger kTitleHeight = 40;
     [self.markAsReadButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.markAsReadButton.enabled = NO;
+    self.markAsReadButton.hidden = YES;
     [self.toolbar addSubview:self.markAsReadButton];
+    
+    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.indicator.translatesAutoresizingMaskIntoConstraints = NO;
+    self.indicator.hidesWhenStopped = YES;
+    [self.indicator startAnimating];
+    [self.toolbar addSubview:self.indicator];
 
-    UIImage *stopButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.stopButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.stopButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
     [self.stopButton setImage:stopButtonImage forState:UIControlStateNormal];
@@ -213,6 +219,22 @@ static NSInteger kTitleHeight = 40;
         @"background": self.toolbarBackgroundView,
         @"border": toolbarBorderView
     };
+
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.indicator
+                                                             attribute:NSLayoutAttributeCenterX
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.markAsReadButton
+                                                             attribute:NSLayoutAttributeCenterX
+                                                            multiplier:1
+                                                              constant:0]];
+
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.indicator
+                                                             attribute:NSLayoutAttributeCenterY
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.markAsReadButton
+                                                             attribute:NSLayoutAttributeCenterY
+                                                            multiplier:1
+                                                              constant:0]];
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
@@ -284,7 +306,7 @@ static NSInteger kTitleHeight = 40;
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView
                                                           attribute:NSLayoutAttributeBottom
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.webView
+                                                             toItem:self.bottomLayoutGuide
                                                           attribute:NSLayoutAttributeBottom
                                                          multiplier:1
                                                            constant:0]];
@@ -365,7 +387,7 @@ static NSInteger kTitleHeight = 40;
                 [self.backActionSheet addButtonWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]];
             }
 
-            [self.backActionSheet addButtonWithTitle:@"← Back"];
+            [self.backActionSheet addButtonWithTitle:@"Close Browser"];
             [self.backActionSheet addButtonWithTitle:@"Cancel"];
             self.backActionSheet.cancelButtonIndex = self.backActionSheet.numberOfButtons - 1;
 
@@ -388,7 +410,7 @@ static NSInteger kTitleHeight = 40;
         }
         self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
 
-        if (self.webView.scrollView.scrollsToTop && self.webView.scrollView.scrollEnabled) {
+        if (webView.scrollView.scrollsToTop && webView.scrollView.scrollEnabled) {
             [self showToolbarAnimated:YES];
         }
     }
@@ -410,8 +432,7 @@ static NSInteger kTitleHeight = 40;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    self.readerWebView.backgroundColor = [UIColor whiteColor];
-    self.readerWebView.opaque = YES;
+    self.readerWebView.hidden = NO;
 
     if (!self.alreadyLoaded) {
         [self loadURL];
@@ -444,6 +465,8 @@ static NSInteger kTitleHeight = 40;
 
     if (self.numberOfRequestsInProgress <= 0) {
         self.alreadyLoaded = YES;
+        self.markAsReadButton.hidden = NO;
+        [self.indicator stopAnimating];
 
         NSString *theURLString = [self.mobilizerUtility originalURLStringForURL:self.url];
 
@@ -545,6 +568,7 @@ static NSInteger kTitleHeight = 40;
         }
     }
     else if (actionSheet == self.backActionSheet) {
+        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
         if (buttonIndex < actionSheet.numberOfButtons - 2) {
             NSInteger i=0;
             while (i<buttonIndex+1) {
@@ -552,13 +576,9 @@ static NSInteger kTitleHeight = 40;
                 i++;
             }
         }
-        else if (buttonIndex == actionSheet.numberOfButtons - 2) {
-            if (self.navigationController.viewControllers.count == 1) {
-                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-            }
-            else {
-                [self.navigationController popViewControllerAnimated:YES];
-            }
+        else if ([title isEqualToString:@"Close Browser"]) {
+            self.readerWebView.hidden = YES;
+            [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }
@@ -698,85 +718,25 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)toggleMobilizer {
-    BOOL nativeMobilizerEnabled = NO;
-    if (nativeMobilizerEnabled) {
-        self.mobilizeButton.selected = self.mobilized;
-        
-        if (self.mobilized) {
-            NSString *JSDOMParserFile = [[NSBundle mainBundle] pathForResource:@"JSDOMParser" ofType:@"js"];
-            NSString *readabilityFile = [[NSBundle mainBundle] pathForResource:@"readability" ofType:@"js"];
-            NSString *readabilityInitializerFile = [[NSBundle mainBundle] pathForResource:@"readabilityInitializer" ofType:@"js"];
-            
-            NSString *JSDOMParserJS = [NSString stringWithContentsOfFile:JSDOMParserFile encoding:NSUTF8StringEncoding error:nil];
-            NSString *readabilityJS = [NSString stringWithContentsOfFile:readabilityFile encoding:NSUTF8StringEncoding error:nil];
-            NSString *readabilityInitializerJS = [NSString stringWithContentsOfFile:readabilityInitializerFile encoding:NSUTF8StringEncoding error:nil];
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         if (self.mobilized) {
+                             [self.view removeConstraint:self.readerWebViewVisibleConstraint];
+                             [self.view addConstraint:self.readerWebViewHiddenConstraint];
+                             self.mobilizeButton.selected = NO;
+                         }
+                         else {
+                             [self.webView stopLoading];
 
-            [self.webView stringByEvaluatingJavaScriptFromString:JSDOMParserJS];
-            [self.webView stringByEvaluatingJavaScriptFromString:readabilityJS];
-            [self.webView stringByEvaluatingJavaScriptFromString:readabilityInitializerJS];
-            NSString *content = [self.webView stringByEvaluatingJavaScriptFromString:@"htmlString"];
-            
-            NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
-            [self.webView loadHTMLString:content baseURL:baseURL];
-        }
-        else {
-            [self.webView reload];
-        }
-    }
-    else {
-        [UIView animateWithDuration:0.5
-                         animations:^{
-                             if (self.mobilized) {
-                                 [self.view removeConstraint:self.readerWebViewVisibleConstraint];
-                                 [self.view addConstraint:self.readerWebViewHiddenConstraint];
-                                 self.mobilizeButton.selected = NO;
-                             }
-                             else {
-                                 [self.view removeConstraint:self.readerWebViewHiddenConstraint];
-                                 [self.view addConstraint:self.readerWebViewVisibleConstraint];
-                                 self.mobilizeButton.selected = YES;
-                             }
-                             
-                             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
+                             [self.view removeConstraint:self.readerWebViewHiddenConstraint];
+                             [self.view addConstraint:self.readerWebViewVisibleConstraint];
+                             self.mobilizeButton.selected = YES;
 
-                             NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
-                                                                                                           port:80
-                                                                                                       protocol:@"http"
-                                                                                                          realm:@"Pushpin"
-                                                                                           authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
-                             NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
-                             
-                             NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
-                                                                                      password:@"9346edb36e542dab1e7861227f9222b7"
-                                                                                   persistence:NSURLCredentialPersistencePermanent];
-                             [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
-                             [[NSURLSession sharedSession].configuration setURLCredentialStorage:credentials];
+                             [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
+                         }
 
-                             NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-                             configuration.URLCredentialStorage = credentials;
-                             NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
-                                                                                   delegate:nil
-                                                                              delegateQueue:nil];
-                             NSURLSessionDataTask *task = [session dataTaskWithURL:url
-                                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                                     NSData *encodedData = [NSData dataWithBase64EncodedString:string];
-                                                                     NSData *decryptedData = [RNDecryptor decryptData:encodedData
-                                                                                                         withPassword:@"Isabelle and Dante"
-                                                                                                                error:nil];
-                                                                     id parsedResponse = [NSJSONSerialization JSONObjectWithData:decryptedData
-                                                                                                                         options:NSJSONReadingAllowFragments
-                                                                                                                           error:nil];
-                                                                     
-                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         [self.readerWebView loadHTMLString:parsedResponse[@"content"] baseURL:nil];
-                                                                     });
-                                                                 }];
-                             [task resume];
-
-                             [self.view layoutIfNeeded];
-                         }];
-    }
+                         [self.view layoutIfNeeded];
+                     }];
 }
 
 - (void)emailURL {
@@ -927,22 +887,25 @@ static NSInteger kTitleHeight = 40;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (![UIApplication isIPad]) {
-        if (scrollView.contentOffset.y + CGRectGetHeight(scrollView.frame) > scrollView.contentSize.height - kToolbarHeight) {
-            self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = NO;
-        }
-        else {
-            self.showToolbarAndTitleBarHiddenView.userInteractionEnabled = YES;
-        }
-
         CGPoint currentContentOffset = scrollView.contentOffset;
+        
+        // Only change if the offset is less than the content size minus the height of the toolbar.
+        BOOL isAtBottomOfView = currentContentOffset.y + CGRectGetHeight(scrollView.frame) >= scrollView.contentSize.height - kToolbarHeight;
+        BOOL isAtTopOfView = currentContentOffset.y < kToolbarHeight;
+        BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
         self.previousContentOffset = currentContentOffset;
 
-        CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
-        self.toolbarConstraint.constant = MAX(0, height);
-        [self.view layoutIfNeeded];
+        if (!isAtBottomOfView && !isAtTopOfView && isScrollingDown) {
+            CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
+            self.toolbarConstraint.constant = MAX(0, height);
+            [self.view layoutIfNeeded];
 
-        if (self.toolbarConstraint.constant <= 0) {
-            self.yOffsetToStartShowingToolbar = 0;
+            if (self.toolbarConstraint.constant <= 0) {
+                self.yOffsetToStartShowingToolbar = 0;
+            }
+        }
+        else {
+            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
         }
     }
 }
@@ -961,111 +924,198 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
-        self.numberOfRequestsCompleted = 0;
-        self.numberOfRequests = 0;
-        
-        switch (navigationType) {
-            case UIWebViewNavigationTypeOther:
-                break;
-                
-            case UIWebViewNavigationTypeReload:
-                break;
-                
-            case UIWebViewNavigationTypeBackForward:
-                // We've disabled forward in the UI, so it must be a pop of the stack.
-                [self.history removeLastObject];
-                
-            default:
-                webView.scrollView.contentOffset = CGPointMake(0, 0);
-                webView.scrollView.scrollEnabled = NO;
-                webView.scrollView.scrollsToTop = NO;
-                break;
+    if (webView == self.webView) {
+        if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
+            self.numberOfRequestsCompleted = 0;
+            self.numberOfRequests = 0;
+            self.markAsReadButton.hidden = YES;
+            [self.indicator startAnimating];
+            
+            switch (navigationType) {
+                case UIWebViewNavigationTypeOther:
+                    break;
+                    
+                case UIWebViewNavigationTypeReload:
+                    break;
+                    
+                case UIWebViewNavigationTypeBackForward:
+                    // We've disabled forward in the UI, so it must be a pop of the stack.
+                    [self.history removeLastObject];
+                    
+                default:
+                    webView.scrollView.contentOffset = CGPointMake(0, 0);
+                    break;
+            }
+            
+            return YES;
         }
-        
-        return YES;
+        else {
+            if (!self.openLinkExternallyAlertView) {
+                self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
+                                                                              message:@"The link is requesting to open an external application. Would you like to continue?"
+                                                                             delegate:self
+                                                                    cancelButtonTitle:@"Cancel"
+                                                                    otherButtonTitles:@"Open", nil];
+                [self.openLinkExternallyAlertView show];
+                self.urlToOpenExternally = webView.request.URL;
+            }
+            return NO;
+        }
     }
     else {
-        if (!self.openLinkExternallyAlertView) {
-            self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
-                                                                          message:@"The link is requesting to open an external application. Would you like to continue?"
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"Cancel"
-                                                                otherButtonTitles:@"Open", nil];
-            [self.openLinkExternallyAlertView show];
-            self.urlToOpenExternally = webView.request.URL;
+        if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+            [self toggleMobilizer];
+            
+            NSURLRequest *r = [NSURLRequest requestWithURL:request.URL];
+            [self.webView loadRequest:r];
+            return NO;
         }
-        return NO;
+        else {
+            return YES;
+        }
     }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    self.numberOfRequestsCompleted++;
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-    [self enableOrDisableButtons];
+    if (webView == self.webView) {
+        self.numberOfRequestsCompleted++;
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+        [self enableOrDisableButtons];
+    }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    self.numberOfRequestsCompleted++;
-    
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-    [self enableOrDisableButtons];
-
-    // Only run the following when this is an actual web URL.
-    if (![self.url.scheme isEqualToString:@"file"]) {
-        self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-        if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-            self.titleLabel.text = self.url.host;
-        }
-        else {
-            self.titleLabel.text = self.title;
-        }
-
-        if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
-            NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
-            NSMutableArray *finalTitleComponents = [NSMutableArray array];
-            for (NSString *component in titleComponents) {
-                if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
-                    [finalTitleComponents addObject:component];
-                }
-                else {
-                    break;
-                }
+    if (webView == self.webView) {
+        self.numberOfRequestsCompleted++;
+        
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+        [self enableOrDisableButtons];
+        
+        // Only run the following when this is an actual web URL.
+        if (![self.url.scheme isEqualToString:@"file"]) {
+            self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+            if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+                self.titleLabel.text = self.url.host;
             }
-
-            [self.history addObject:@{@"url": self.url.absoluteString,
-                                      @"host": self.url.host,
-                                      @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+            else {
+                self.titleLabel.text = self.title;
+            }
+            
+            if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
+                NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
+                NSMutableArray *finalTitleComponents = [NSMutableArray array];
+                for (NSString *component in titleComponents) {
+                    if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
+                        [finalTitleComponents addObject:component];
+                    }
+                    else {
+                        break;
+                    }
+                }
+                
+                [self.history addObject:@{@"url": self.url.absoluteString,
+                                          @"host": self.url.host,
+                                          @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+            }
+            
+            self.mobilizeButton.enabled = self.canMobilizeCurrentURL;
+            
+            // Disable the default action sheet
+            [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+            [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+            [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+            
+            if (self.numberOfRequestsInProgress == 0) {
+                [self updateInterfaceWithComputedWebPageBackgroundColor];
+            }
+            
+            if (self.history.count > 1) {
+                UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
+            }
+            else {
+                UIImage *stopButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                [self.backButton setImage:stopButtonImage forState:UIControlStateNormal];
+            }
         }
-
-        self.mobilizeButton.enabled = self.canMobilizeCurrentURL;
-
-        // Disable the default action sheet
-        [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
-        [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
-        [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
-
-        if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
-            self.webView.scrollView.scrollEnabled = YES;
-            self.webView.scrollView.scrollsToTop = YES;
-        }
-
-        if (self.numberOfRequestsInProgress == 0) {
-            [self updateInterfaceWithComputedWebPageBackgroundColor];
+    }
+    else {
+        BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
+        if (!isLoaded) {
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
+            
+            NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
+                                                                                          port:80
+                                                                                      protocol:@"http"
+                                                                                         realm:@"Pushpin"
+                                                                          authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
+            NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
+            
+            NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                                     password:@"9346edb36e542dab1e7861227f9222b7"
+                                                                  persistence:NSURLCredentialPersistencePermanent];
+            [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
+            [[NSURLSession sharedSession].configuration setURLCredentialStorage:credentials];
+            
+            NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+            configuration.URLCredentialStorage = credentials;
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
+                                                                  delegate:nil
+                                                             delegateQueue:nil];
+            NSURLSessionDataTask *task = [session dataTaskWithURL:url
+                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                    if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
+                                                        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                        NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+                                                        NSData *decryptedData = [RNDecryptor decryptData:encodedData
+                                                                                            withPassword:@"Isabelle and Dante"
+                                                                                                   error:nil];
+                                                        id article = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                                                                     options:NSJSONReadingAllowFragments
+                                                                                                       error:nil];
+                                                        
+                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                            JSContext *context = [self.readerWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+                                                            context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
+                                                                DLog(@"%@", exception);
+                                                            };
+                                                            
+                                                            NSString *readerFile = [[NSBundle mainBundle] pathForResource:@"reader"
+                                                                                                                   ofType:@"js"];
+                                                            NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
+                                                                                                                    ofType:@"css"];
+                                                            NSURL *cssFilePathURL = [NSURL fileURLWithPath:cssFilePath];
+                                                            NSString *readerJS = [NSString stringWithContentsOfFile:readerFile
+                                                                                                           encoding:NSUTF8StringEncoding
+                                                                                                              error:nil];
+                                                            
+                                                            [context evaluateScript:readerJS];
+                                                            JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"], cssFilePathURL.absoluteString]];
+                                                            
+                                                            [self.readerWebView loadHTMLString:[response toString] baseURL:nil];
+                                                        });
+                                                    }
+                                                    else {
+                                                        // There was an error, most likely.
+                                                    }
+                                                }];
+            [task resume];
         }
     }
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    [self.webViewTimeoutTimer invalidate];
-    
-#warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
-    self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self selector:@selector(webViewLoadTimedOut) userInfo:nil repeats:NO];
-    [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
+    if (webView == self.webView) {
+        [self.webViewTimeoutTimer invalidate];
+        
+    #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
+        self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self selector:@selector(webViewLoadTimedOut) userInfo:nil repeats:NO];
+        [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
-    self.numberOfRequests++;
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-    [self enableOrDisableButtons];
+        self.numberOfRequests++;
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+        [self enableOrDisableButtons];
+    }
 }
 
 - (void)webViewLoadTimedOut {
@@ -1097,11 +1147,6 @@ static NSInteger kTitleHeight = 40;
     }
     
     self.prefersStatusBarHidden = NO;
-    
-    if (self.webView.scrollView.contentSize.height > CGRectGetHeight(self.webView.frame)) {
-        self.webView.scrollView.scrollEnabled = YES;
-        self.webView.scrollView.scrollsToTop = YES;
-    }
     
     NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
 
@@ -1177,10 +1222,6 @@ static NSInteger kTitleHeight = 40;
     };
 
     if (animated) {
-        if (self.webView.scrollView.contentOffset.y + CGRectGetHeight(self.webView.frame) > self.webView.scrollView.contentSize.height - kToolbarHeight) {
-            [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - kToolbarHeight - CGRectGetHeight(self.webView.frame)) animated:NO];
-        }
-
         [UIView animateWithDuration:0.3
                               delay:0
              usingSpringWithDamping:0.5

@@ -149,6 +149,9 @@
 		37800E45162B389B009FCB17 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		37802195198D709000CE269A /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 37802194198D709000CE269A /* NSData+AES256.m */; };
+		37802198198EAD4600CE269A /* reader-base.css in Resources */ = {isa = PBXBuildFile; fileRef = 37802197198EAD4600CE269A /* reader-base.css */; };
+		3780219A198EADE000CE269A /* reader.js in Sources */ = {isa = PBXBuildFile; fileRef = 37802199198EADE000CE269A /* reader.js */; };
+		3780219B198EB1B900CE269A /* reader.js in Resources */ = {isa = PBXBuildFile; fileRef = 37802199198EADE000CE269A /* reader.js */; };
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
@@ -732,6 +735,8 @@
 		37800E99162D5264009FCB17 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		37802193198D709000CE269A /* NSData+AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES256.h"; sourceTree = "<group>"; };
 		37802194198D709000CE269A /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES256.m"; sourceTree = "<group>"; };
+		37802197198EAD4600CE269A /* reader-base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "reader-base.css"; path = "Pushpin/reader-base.css"; sourceTree = "<group>"; };
+		37802199198EADE000CE269A /* reader.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = reader.js; path = Pushpin/reader.js; sourceTree = "<group>"; };
 		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
 		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
 		378482D1186CB92C00DF7A74 /* single-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag.png"; path = "Assets/single-tag.png"; sourceTree = "<group>"; };
@@ -1621,6 +1626,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		37802196198EAD2500CE269A /* CSS */ = {
+			isa = PBXGroup;
+			children = (
+				37802197198EAD4600CE269A /* reader-base.css */,
+				37802199198EADE000CE269A /* reader.js */,
+			);
+			name = CSS;
+			sourceTree = "<group>";
+		};
 		378482CD186C965700DF7A74 /* Activities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1816,6 +1830,7 @@
 				372D43291723A7AC00E802C0 /* Appearance */,
 				E8F987EC183E7BF800EF976D /* Bookmarks */,
 				E8DA795A183D23F9002B1D0B /* Browse */,
+				37802196198EAD2500CE269A /* CSS */,
 				E8F987CB183E764A00EF976D /* General UI */,
 				37CBB7421881B568000F9C36 /* Navigation Bar */,
 				373C823C16F8043100A7D7C8 /* PullToRefresh */,
@@ -2514,6 +2529,8 @@
 				37D4B00418833BC800E07EB3 /* readability.css in Resources */,
 				37BC1BD8188642F90022020A /* readability.js in Resources */,
 				37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */,
+				37802198198EAD4600CE269A /* reader-base.css in Resources */,
+				3780219B198EB1B900CE269A /* reader.js in Resources */,
 				E80EEF8D185B6A1300979AA3 /* roundbutton-checkmark.png in Resources */,
 				E80EEF8E185B6A1300979AA3 /* roundbutton-checkmark@2x.png in Resources */,
 				E80EEF8F185B6A1300979AA3 /* roundbutton-private.png in Resources */,
@@ -2734,6 +2751,7 @@
 				37B4FFE31923AD18002F8558 /* PPUtilities.m in Sources */,
 				377E46E2174C85C500CE3813 /* PPWebViewController.m in Sources */,
 				3794AEA0176D33D100250909 /* PSPDFUIKitMainThreadGuard.m in Sources */,
+				3780219A198EADE000CE269A /* reader.js in Sources */,
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
 				378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */,

@@ -1,0 +1,51 @@
+body {
+  background: #fbfbfb;
+  color: #080000;
+  line-height: 1.2em;
+
+/*
+ White: #fbfbfb / #080000
+ Yellow: #fffff7 / #080000
+ Grey: #f5f5f5 / #282828
+ Dark Grey: #343a3a / #fdfdfd
+ Black: #080000 / #ccc
+*/
+}
+
+p {
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 28px; /* 2 * p */
+}
+
+h2 {
+  font-size: 21px; /* 1.5 p */
+}
+
+div.entry-content {
+  width: 95%;
+  margin: 0 auto;
+  /* 100, 95, 90, 80 */
+}
+
+p {
+  font-family: Georgia,"Times New Roman", Times, serif;
+}
+
+a {
+}
+
+/*
+img {
+  display:none;
+}
+*/
+
+img {
+  display: block;
+  margin: 1em 0;
+  width: 100%;
+}
+
