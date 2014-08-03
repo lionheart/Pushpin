@@ -32,6 +32,7 @@
 @property (nonatomic, strong) UIButton *addButton;
 @property (nonatomic, strong) UIButton *stopButton;
 @property (nonatomic, strong) UIButton *mobilizeButton;
+@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
