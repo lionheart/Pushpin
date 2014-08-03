@@ -54,6 +54,7 @@ static NSInteger kTitleHeight = 40;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (BOOL)mobilized;
+- (UIWebView *)currentWebView;
 
 @end
 
@@ -402,13 +403,7 @@ static NSInteger kTitleHeight = 40;
         }
     }
     else if (recognizer == self.bottomTapGestureRecognizer) {
-        UIWebView *webView;
-        if (self.mobilized) {
-            webView = self.readerWebView;
-        }
-        else {
-            webView = self.webView;
-        }
+        UIWebView *webView = self.currentWebView;
         self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
 
         if (webView.scrollView.scrollsToTop && webView.scrollView.scrollEnabled) {
@@ -882,12 +877,12 @@ static NSInteger kTitleHeight = 40;
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
-        if (self.toolbarConstraint.constant > kToolbarHeight / 2.) {
+        if (self.toolbarConstraint.constant < kToolbarHeight) {
             self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
-            [self showToolbarAnimated:YES];
+            [self hideToolbarAnimated:YES];
         }
         else {
-            [self hideToolbarAnimated:YES];
+            [self showToolbarAnimated:YES];
         }
     }
 }
@@ -898,17 +893,17 @@ static NSInteger kTitleHeight = 40;
         
         // Only change if the offset is less than the content size minus the height of the toolbar.
         BOOL isAtBottomOfView = currentContentOffset.y + CGRectGetHeight(scrollView.frame) >= scrollView.contentSize.height - kToolbarHeight;
-        BOOL isAtTopOfView = currentContentOffset.y < kToolbarHeight;
+        BOOL isAtTopOfView = currentContentOffset.y < 0;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
         BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
         self.previousContentOffset = currentContentOffset;
 
-        if (!isAtBottomOfView && !isAtTopOfView && isScrollingDown && isToolbarVisible) {
-            CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
+        if (!isAtBottomOfView && !isAtTopOfView && isToolbarVisible) {
+            CGFloat height = kToolbarHeight - MAX(0, currentContentOffset.y - self.yOffsetToStartShowingToolbar);
             self.toolbarConstraint.constant = MAX(0, height);
             [self.view layoutIfNeeded];
 
-            if (self.toolbarConstraint.constant <= 0) {
+            if (self.toolbarConstraint.constant == 0) {
                 self.yOffsetToStartShowingToolbar = 0;
             }
         }
@@ -1049,7 +1044,10 @@ static NSInteger kTitleHeight = 40;
     }
     else {
         BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
-        if (!isLoaded) {
+        if (isLoaded) {
+            [self updateInterfaceWithComputedWebPageBackgroundColor];
+        }
+        else {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
             
             NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
@@ -1150,13 +1148,10 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - Utils
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor {
-    if (self.webView.scrollView.contentOffset.y == 0) {
-        [self showToolbarAnimated:NO];
-    }
-    
     self.prefersStatusBarHidden = NO;
-    
-    NSString *response = [self.webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
+    UIWebView *webView = self.currentWebView;
+
+    NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
 
     NSError *error;
     NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
@@ -1191,6 +1186,7 @@ static NSInteger kTitleHeight = 40;
                 UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
                 self.statusBarBackgroundView.backgroundColor = backgroundColor;
                 self.toolbarBackgroundView.backgroundColor = backgroundColor;
+                webView.backgroundColor = backgroundColor;
                 
                 if (isDark) {
                     [self tintButtonsWithColor:[UIColor whiteColor]];
@@ -1295,6 +1291,17 @@ static NSInteger kTitleHeight = 40;
                                                              password:@"9346edb36e542dab1e7861227f9222b7"
                                                           persistence:NSURLCredentialPersistenceForSession];
     completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+}
+
+- (UIWebView *)currentWebView {
+    UIWebView *webView;
+    if (self.mobilized) {
+        webView = self.readerWebView;
+    }
+    else {
+        webView = self.webView;
+    }
+    return webView;
 }
 
 @end
