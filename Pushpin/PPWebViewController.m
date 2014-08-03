@@ -899,13 +899,17 @@ static NSInteger kTitleHeight = 40;
         self.previousContentOffset = currentContentOffset;
 
         if (!isAtBottomOfView && !isAtTopOfView && isToolbarVisible) {
-            CGFloat height = kToolbarHeight - MAX(0, currentContentOffset.y - self.yOffsetToStartShowingToolbar);
+            CGFloat height = kToolbarHeight - MAX(0, MIN(kToolbarHeight, currentContentOffset.y - self.yOffsetToStartShowingToolbar));
             self.toolbarConstraint.constant = MAX(0, height);
             [self.view layoutIfNeeded];
 
-            if (self.toolbarConstraint.constant == 0) {
-                self.yOffsetToStartShowingToolbar = 0;
+            if (!isScrollingDown && self.toolbarConstraint.constant == kToolbarHeight) {
+                self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
             }
+        }
+        else if (isAtBottomOfView) {
+            [self showToolbarAnimated:YES];
+            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
         }
         else {
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
@@ -1226,15 +1230,10 @@ static NSInteger kTitleHeight = 40;
     };
 
     if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0
-             usingSpringWithDamping:0.5
-              initialSpringVelocity:0
-                            options:0
+        [UIView animateWithDuration:0.15
                          animations:^{
                              ShowToolbarBlock();
-                         }
-                         completion:nil];
+                         }];
     }
     else {
         ShowToolbarBlock();
@@ -1248,15 +1247,10 @@ static NSInteger kTitleHeight = 40;
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0
-             usingSpringWithDamping:0.5
-              initialSpringVelocity:0
-                            options:0
+        [UIView animateWithDuration:0.15 * (self.toolbarConstraint.constant / kToolbarHeight)
                          animations:^{
                              HideToolbarBlock();
-                         }
-                         completion:nil];
+                         }];
     }
     else {
         HideToolbarBlock();
