@@ -105,6 +105,7 @@ static NSInteger kTitleHeight = 40;
     
     self.readerWebView = [[UIWebView alloc] init];
     self.readerWebView.hidden = YES;
+    self.readerWebView.backgroundColor = [UIColor whiteColor];
     self.readerWebView.delegate = self;
     self.readerWebView.scrollView.delegate = self;
     self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -513,6 +514,12 @@ static NSInteger kTitleHeight = 40;
             self.readerWebView.hidden = YES;
         }
 
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+                             [self setNeedsStatusBarAppearanceUpdate];
+                         }];
+
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
@@ -893,9 +900,10 @@ static NSInteger kTitleHeight = 40;
         BOOL isAtBottomOfView = currentContentOffset.y + CGRectGetHeight(scrollView.frame) >= scrollView.contentSize.height - kToolbarHeight;
         BOOL isAtTopOfView = currentContentOffset.y < kToolbarHeight;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
+        BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
         self.previousContentOffset = currentContentOffset;
 
-        if (!isAtBottomOfView && !isAtTopOfView && isScrollingDown) {
+        if (!isAtBottomOfView && !isAtTopOfView && isScrollingDown && isToolbarVisible) {
             CGFloat height = kToolbarHeight - ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar);
             self.toolbarConstraint.constant = MAX(0, height);
             [self.view layoutIfNeeded];
