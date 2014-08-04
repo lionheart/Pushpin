@@ -300,14 +300,8 @@
     else if (url.host && ![url.host isEqualToString:@""]) {
         NSRange range = [url.absoluteString rangeOfString:@"pushpin"];
         NSString *urlString = [url.absoluteString stringByReplacingCharactersInRange:range withString:@"http"];
-        PPWebViewController *webViewController;
-        if (self.openLinksWithMobilizer) {
-            webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
-        }
-        else {
-            webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-        }
-
+        PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+        webViewController.shouldMobilize = self.openLinksWithMobilizer;
         webViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:webViewController];
         

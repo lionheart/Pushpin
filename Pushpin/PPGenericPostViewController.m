@@ -502,13 +502,9 @@ static NSInteger kToolbarHeight = 44;
 #warning TODO Check outside links
                         if ([PPAppDelegate sharedDelegate].openLinksInApp) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                            if ([PPAppDelegate sharedDelegate].openLinksWithMobilizer) {
-                                self.webViewController = [PPWebViewController mobilizedWebViewControllerWithURL:urlString];
-                            }
-                            else {
-                                self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-                            }
 
+                            self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                            self.webViewController.shouldMobilize = [PPAppDelegate sharedDelegate].openLinksWithMobilizer;
                             self.webViewController.transitioningDelegate = self.shrinkBackTransition;
 
                             if ([self.navigationController topViewController] == self) {
