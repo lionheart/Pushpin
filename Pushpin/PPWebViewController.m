@@ -448,6 +448,10 @@ static NSInteger kTitleHeight = 40;
         self.alreadyLoaded = YES;
         self.markAsReadButton.hidden = NO;
         [self.indicator stopAnimating];
+        
+        if (self.webView.scrollView.contentOffset.y == 0) {
+            [self setToolbarVisible:YES animated:NO];
+        }
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             __block BOOL bookmarkExists;
@@ -698,27 +702,44 @@ static NSInteger kTitleHeight = 40;
 
 - (void)toggleMobilizer {
     [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
+    void (^Animate)();
+    void (^Complete)(BOOL finished);
+    
+    self.mobilizeButton.selected = !self.mobilized;
+    if (self.mobilized) {
+        [self.readerWebView stopLoading];
 
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         if (self.mobilized) {
-                             [self.view removeConstraint:self.readerWebViewVisibleConstraint];
-                             [self.view addConstraint:self.readerWebViewHiddenConstraint];
-                             self.mobilizeButton.selected = NO;
-                         }
-                         else {
-                             [self.webViewTimeoutTimer invalidate];
-                             [self.webView stopLoading];
+        Animate = ^{
+            [self.view removeConstraint:self.readerWebViewVisibleConstraint];
+            [self.view addConstraint:self.readerWebViewHiddenConstraint];
+            [self.view layoutIfNeeded];
+        };
+        
+        Complete = ^(BOOL finished) {
+            if (![self alreadyLoaded]) {
+                [self loadURL];
+            }
+        };
+    }
+    else {
+        [self.webViewTimeoutTimer invalidate];
+        [self.webView stopLoading];
 
-                             [self.view removeConstraint:self.readerWebViewHiddenConstraint];
-                             [self.view addConstraint:self.readerWebViewVisibleConstraint];
-                             self.mobilizeButton.selected = YES;
+        Animate = ^{
+            [self.webViewTimeoutTimer invalidate];
+            [self.webView stopLoading];
+            
+            [self.view removeConstraint:self.readerWebViewHiddenConstraint];
+            [self.view addConstraint:self.readerWebViewVisibleConstraint];
+            
+            [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
+            [self.view layoutIfNeeded];
+        };
+        
+        Complete = ^(BOOL finished) {};
+    }
 
-                             [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
-                         }
-
-                         [self.view layoutIfNeeded];
-                     }];
+    [UIView animateWithDuration:0.5 animations:Animate completion:Complete];
 }
 
 - (void)emailURL {
@@ -879,50 +900,63 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        // Reset the "loaded" state on the reader view.
+        [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"false"];
+    }
+
     if (webView == self.webView) {
-        if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
-            self.numberOfRequestsCompleted = 0;
-            self.numberOfRequests = 0;
-            self.markAsReadButton.hidden = YES;
-            [self.indicator startAnimating];
-            
-            switch (navigationType) {
-                case UIWebViewNavigationTypeOther:
-                    break;
-                    
-                case UIWebViewNavigationTypeReload:
-                    break;
-                    
-                case UIWebViewNavigationTypeBackForward:
-                    // We've disabled forward in the UI, so it must be a pop of the stack.
-                    [self.history removeLastObject];
-                    
-                default:
-                    webView.scrollView.contentOffset = CGPointMake(0, 0);
-                    break;
-            }
-            
-            return YES;
+        if (self.mobilized) {
+            return NO;
         }
         else {
-            if (!self.openLinkExternallyAlertView) {
-                self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
-                                                                              message:@"The link is requesting to open an external application. Would you like to continue?"
-                                                                             delegate:self
-                                                                    cancelButtonTitle:@"Cancel"
-                                                                    otherButtonTitles:@"Open", nil];
-                [self.openLinkExternallyAlertView show];
-                self.urlToOpenExternally = webView.request.URL;
+            if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
+                self.numberOfRequestsCompleted = 0;
+                self.numberOfRequests = 0;
+                self.markAsReadButton.hidden = YES;
+                [self.indicator startAnimating];
+                
+                switch (navigationType) {
+                    case UIWebViewNavigationTypeLinkClicked:
+                        break;
+
+                    case UIWebViewNavigationTypeOther:
+                        break;
+                        
+                    case UIWebViewNavigationTypeReload:
+                        break;
+                        
+                    case UIWebViewNavigationTypeBackForward:
+                        // We've disabled forward in the UI, so it must be a pop of the stack.
+                        [self.history removeLastObject];
+                        
+                    default:
+                        webView.scrollView.contentOffset = CGPointMake(0, 0);
+                        break;
+                }
+                
+                return YES;
             }
-            return NO;
+            else {
+                if (!self.openLinkExternallyAlertView) {
+                    self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
+                                                                                  message:@"The link is requesting to open an external application. Would you like to continue?"
+                                                                                 delegate:self
+                                                                        cancelButtonTitle:@"Cancel"
+                                                                        otherButtonTitles:@"Open", nil];
+                    [self.openLinkExternallyAlertView show];
+                    self.urlToOpenExternally = webView.request.URL;
+                }
+                return NO;
+            }
         }
     }
     else {
         if (navigationType == UIWebViewNavigationTypeLinkClicked) {
             [self toggleMobilizer];
             
-            NSURLRequest *r = [NSURLRequest requestWithURL:request.URL];
-            [self.webView loadRequest:r];
+            NSURLRequest *newRequest = [NSURLRequest requestWithURL:request.URL];
+            [self.webView loadRequest:newRequest];
             return NO;
         }
         else {
@@ -998,6 +1032,9 @@ static NSInteger kTitleHeight = 40;
         BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
         if (isLoaded) {
             [self updateInterfaceWithComputedWebPageBackgroundColor];
+            
+            self.markAsReadButton.hidden = NO;
+            [self.indicator stopAnimating];
         }
         else {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
