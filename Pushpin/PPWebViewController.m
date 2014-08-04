@@ -755,8 +755,11 @@ static NSInteger kTitleHeight = 40;
         
         Complete = ^(BOOL finished) {};
     }
-
-    [UIView animateWithDuration:0.5 animations:Animate completion:Complete];
+    
+    [UIView animateWithDuration:0.5
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:Animate completion:Complete];
 }
 
 - (void)emailURL {
@@ -1054,64 +1057,32 @@ static NSInteger kTitleHeight = 40;
             [self.indicator stopAnimating];
         }
         else {
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [self.url.absoluteString encodedURLString]]];
-            
-            NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
-                                                                                          port:80
-                                                                                      protocol:@"http"
-                                                                                         realm:@"Pushpin"
-                                                                          authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
-            NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
-            
-            NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
-                                                                     password:@"9346edb36e542dab1e7861227f9222b7"
-                                                                  persistence:NSURLCredentialPersistencePermanent];
-            [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
-            [[NSURLSession sharedSession].configuration setURLCredentialStorage:credentials];
-            
-            NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-            configuration.URLCredentialStorage = credentials;
-            NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
-                                                                  delegate:nil
-                                                             delegateQueue:nil];
-            NSURLSessionDataTask *task = [session dataTaskWithURL:url
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                    if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
-                                                        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                        NSData *encodedData = [NSData dataWithBase64EncodedString:string];
-                                                        NSData *decryptedData = [RNDecryptor decryptData:encodedData
-                                                                                            withPassword:@"Isabelle and Dante"
-                                                                                                   error:nil];
-                                                        id article = [NSJSONSerialization JSONObjectWithData:decryptedData
-                                                                                                     options:NSJSONReadingAllowFragments
-                                                                                                       error:nil];
-                                                        
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            JSContext *context = [self.readerWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-                                                            context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
-                                                                DLog(@"%@", exception);
-                                                            };
-                                                            
-                                                            NSString *readerFile = [[NSBundle mainBundle] pathForResource:@"reader"
-                                                                                                                   ofType:@"js"];
-                                                            NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
-                                                                                                                    ofType:@"css"];
-                                                            NSURL *cssFilePathURL = [NSURL fileURLWithPath:cssFilePath];
-                                                            NSString *readerJS = [NSString stringWithContentsOfFile:readerFile
-                                                                                                           encoding:NSUTF8StringEncoding
-                                                                                                              error:nil];
-                                                            
-                                                            [context evaluateScript:readerJS];
-                                                            JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"], cssFilePathURL.absoluteString]];
-                                                            
-                                                            [self.readerWebView loadHTMLString:[response toString] baseURL:nil];
-                                                        });
-                                                    }
-                                                    else {
-                                                        // There was an error, most likely.
-                                                    }
-                                                }];
-            [task resume];
+            [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
+                if (!error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        JSContext *context = [self.readerWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+                        context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
+                            DLog(@"%@", exception);
+                        };
+                        
+                        NSString *readerFile = [[NSBundle mainBundle] pathForResource:@"reader"
+                                                                               ofType:@"js"];
+                        NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
+                                                                                ofType:@"css"];
+                        NSURL *cssFilePathURL = [NSURL fileURLWithPath:cssFilePath];
+                        NSString *readerJS = [NSString stringWithContentsOfFile:readerFile
+                                                                       encoding:NSUTF8StringEncoding
+                                                                          error:nil];
+                        
+                        NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
+                        
+                        [context evaluateScript:readerJS];
+                        JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"]]];
+
+                        [self.readerWebView loadHTMLString:[response toString] baseURL:baseURL];
+                    });
+                }
+            }];
         }
     }
 }
@@ -1213,7 +1184,7 @@ static NSInteger kTitleHeight = 40;
                 self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
             }
             else {
-                [self tintButtonsWithColor:HEX(0x808D96FF)];
+                [self tintButtonsWithColor:HEX(0x555555FF)];
                 self.titleLabel.textColor = [UIColor darkTextColor];
                 self.preferredStatusBarStyle = UIStatusBarStyleDefault;
             }
@@ -1279,13 +1250,6 @@ static NSInteger kTitleHeight = 40;
     return [[self.view constraints] containsObject:self.readerWebViewVisibleConstraint];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
-    NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
-                                                             password:@"9346edb36e542dab1e7861227f9222b7"
-                                                          persistence:NSURLCredentialPersistenceForSession];
-    completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
-}
-
 - (UIWebView *)currentWebView {
     UIWebView *webView;
     if (self.mobilized) {
@@ -1295,6 +1259,47 @@ static NSInteger kTitleHeight = 40;
         webView = self.webView;
     }
     return webView;
+}
+
++ (void)mobilizedPageForURL:(NSURL *)url withCompletion:(void (^)(NSDictionary *, NSError *))completion {
+    NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString encodedURLString]]];
+    
+    NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
+                                                                                  port:80
+                                                                              protocol:@"http"
+                                                                                 realm:@"Pushpin"
+                                                                  authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
+    NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
+    
+    NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                             password:@"9346edb36e542dab1e7861227f9222b7"
+                                                          persistence:NSURLCredentialPersistencePermanent];
+    [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    configuration.URLCredentialStorage = credentials;
+    configuration.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
+                                                          delegate:nil
+                                                     delegateQueue:nil];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:mobilizedURL
+                                        completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                            if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
+                                                NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+                                                NSData *decryptedData = [RNDecryptor decryptData:encodedData
+                                                                                    withPassword:@"Isabelle and Dante"
+                                                                                           error:nil];
+                                                id article = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                                                             options:NSJSONReadingAllowFragments
+                                                                                               error:nil];
+                                                completion(article, nil);
+                                            }
+                                            else {
+                                                completion(nil, error);
+                                            }
+                                        }];
+    [task resume];
 }
 
 @end
