@@ -57,6 +57,8 @@ static NSInteger kTitleHeight = 40;
 - (BOOL)mobilized;
 - (UIWebView *)currentWebView;
 
+- (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated;
+
 @end
 
 @implementation PPWebViewController
@@ -229,7 +231,7 @@ static NSInteger kTitleHeight = 40;
                                                             multiplier:1
                                                               constant:0]];
 
-    [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][stop(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
+    [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][mobilize(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"H:|[background]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[background(height)]" metrics:@{@"height": @(kToolbarHeight + 60)} views:toolbarViews];
@@ -391,7 +393,7 @@ static NSInteger kTitleHeight = 40;
         self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
 
         if (webView.scrollView.scrollsToTop && webView.scrollView.scrollEnabled) {
-            [self showToolbarAnimated:YES];
+            [self setToolbarVisible:YES animated:YES];
         }
     }
 }
@@ -824,12 +826,10 @@ static NSInteger kTitleHeight = 40;
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
-        if (self.toolbarConstraint.constant < kToolbarHeight) {
+        BOOL hideToolbar = self.toolbarConstraint.constant < kToolbarHeight;
+        if (hideToolbar) {
             self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
-            [self hideToolbarAnimated:YES];
-        }
-        else {
-            [self showToolbarAnimated:YES];
+            [self setToolbarVisible:NO animated:YES];
         }
     }
 }
@@ -839,7 +839,8 @@ static NSInteger kTitleHeight = 40;
         CGPoint currentContentOffset = scrollView.contentOffset;
         
         // Only change if the offset is less than the content size minus the height of the toolbar.
-        BOOL isAtBottomOfView = currentContentOffset.y + CGRectGetHeight(scrollView.frame) >= scrollView.contentSize.height - kToolbarHeight;
+        CGFloat distanceFromBottomOfView = scrollView.contentSize.height - currentContentOffset.y - CGRectGetHeight(scrollView.frame);
+        BOOL isAtBottomOfView = distanceFromBottomOfView < kToolbarHeight;
         BOOL isAtTopOfView = currentContentOffset.y < 0;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
         BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
@@ -854,8 +855,8 @@ static NSInteger kTitleHeight = 40;
                 self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
             }
         }
-        else if (isAtBottomOfView) {
-            [self showToolbarAnimated:YES];
+        else if (distanceFromBottomOfView < 0) {
+            [self setToolbarVisible:YES animated:YES];
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
         }
         else {
@@ -871,7 +872,7 @@ static NSInteger kTitleHeight = 40;
         return YES;
     }
 
-    [self showToolbarAnimated:YES];
+    [self setToolbarVisible:YES animated:YES];
     return NO;
 }
 
@@ -1177,40 +1178,30 @@ static NSInteger kTitleHeight = 40;
     self.markAsReadButton.tintColor = color;
 }
 
-- (void)showToolbarAnimated:(BOOL)animated {
-    void (^ShowToolbarBlock)() = ^{
-        self.toolbarConstraint.constant = kToolbarHeight;
-        [self.view layoutIfNeeded];
-    };
-
-    if (animated) {
-        [UIView animateWithDuration:0.15
-                         animations:^{
-                             ShowToolbarBlock();
-                         }];
+- (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated {
+    CGFloat constant;
+    if (visible) {
+        constant = kToolbarHeight;
     }
     else {
-        ShowToolbarBlock();
+        constant = 0;
     }
-}
-
-- (void)hideToolbarAnimated:(BOOL)animated {
-    void (^HideToolbarBlock)() = ^{
-        self.toolbarConstraint.constant = 0;
+    
+    void (^UpdateConstraint)() = ^{
+        self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.15 * (self.toolbarConstraint.constant / kToolbarHeight)
+        [UIView animateWithDuration:0.15
                          animations:^{
-                             HideToolbarBlock();
+                             UpdateConstraint();
                          }];
     }
     else {
-        HideToolbarBlock();
+        UpdateConstraint();
     }
 }
-
 
 #pragma mark - UIKeyCommand
 
