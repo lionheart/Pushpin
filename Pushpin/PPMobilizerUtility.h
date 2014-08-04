@@ -14,7 +14,7 @@
 
 + (instancetype)sharedInstance;
 
-- (BOOL)canMobilizeURL:(NSURL *)url;
++ (BOOL)canMobilizeURL:(NSURL *)url;
 
 - (BOOL)isURLMobilized:(NSURL *)url;
 - (NSString *)originalURLStringForURL:(NSURL *)url;

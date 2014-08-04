@@ -18,10 +18,10 @@
 #import "PPReadLaterActivity.h"
 #import "PPNavigationController.h"
 #import "PPGenericPostViewController.h"
-#import "PPMobilizerUtility.h"
 #import "PPActivityViewController.h"
 #import "PPUtilities.h"
 #import "NSData+AES256.h"
+#import "PPMobilizerUtility.h"
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
@@ -41,7 +41,6 @@ static NSInteger kTitleHeight = 40;
 
 @interface PPWebViewController ()
 
-@property (nonatomic, strong) PPMobilizerUtility *mobilizerUtility;
 @property (nonatomic) CGFloat yOffsetToStartShowingToolbar;
 @property (nonatomic) CGPoint previousContentOffset;
 @property (nonatomic, strong) UIPopoverController *popover;
@@ -71,7 +70,6 @@ static NSInteger kTitleHeight = 40;
     self.view.opaque = YES;
     self.view.backgroundColor = [UIColor whiteColor];
 
-    self.mobilizerUtility = [PPMobilizerUtility sharedInstance];
     self.prefersStatusBarHidden = NO;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
@@ -420,8 +418,8 @@ static NSInteger kTitleHeight = 40;
     }];
     
     // Determine if we should mobilize or not
-    if (self.shouldMobilize && ![self.mobilizerUtility isURLMobilized:self.url]) {
-        self.urlString = [self.mobilizerUtility urlStringForMobilizerForURL:self.url];
+    if (self.shouldMobilize) {
+#error
     }
 }
 
@@ -525,18 +523,16 @@ static NSInteger kTitleHeight = 40;
 
 - (void)actionButtonTouchUp:(id)sender {
     NSString *title = self.title;
-    NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
-    NSURL *url = [NSURL URLWithString:tempUrl];
 
-    NSArray *activityItems = @[title, url];
+    NSArray *activityItems = @[title, self.url];
     self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
     __weak PPWebViewController *weakself = self;
     self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
-        [weakself setNeedsStatusBarAppearanceUpdate];
+        [self setNeedsStatusBarAppearanceUpdate];
 
-        if (weakself.popover) {
-            [weakself.popover dismissPopoverAnimated:YES];
+        if (self.popover) {
+            [self.popover dismissPopoverAnimated:YES];
         }
     };
     
@@ -595,8 +591,6 @@ static NSInteger kTitleHeight = 40;
         [self.activityView dismissViewControllerAnimated:YES completion:nil];
     }
 
-    NSString *tempUrl = [self.mobilizerUtility originalURLStringForURL:self.url];
-    
     switch (service) {
         case PPReadLaterInstapaper: {
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
@@ -606,7 +600,7 @@ static NSInteger kTitleHeight = 40;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
-            [parameters addObject:[OARequestParameter requestParameter:@"url" value:tempUrl]];
+            [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]];
             [request setParameters:parameters];
             [request prepare];
             
@@ -677,7 +671,7 @@ static NSInteger kTitleHeight = 40;
         }
             
         case PPReadLaterPocket:
-            [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:tempUrl]
+            [[PocketAPI sharedAPI] saveURL:self.url
                                  withTitle:self.title
                                    handler:^(PocketAPI *api, NSURL *url, NSError *error) {
                                        if (!error) {
@@ -696,7 +690,7 @@ static NSInteger kTitleHeight = 40;
             
             // Add to the native Reading List
             NSError *error;
-            [[SSReadingList defaultReadingList] addReadingListItemWithURL:[NSURL URLWithString:tempUrl]
+            [[SSReadingList defaultReadingList] addReadingListItemWithURL:self.url
                                                                     title:self.title
                                                               previewText:nil
                                                                     error:&error];
@@ -744,7 +738,7 @@ static NSInteger kTitleHeight = 40;
 - (void)emailURL {
     MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
     mailComposeViewController.mailComposeDelegate = self;
-    [mailComposeViewController setMessageBody:[self.mobilizerUtility originalURLStringForURL:self.url] isHTML:NO];
+    [mailComposeViewController setMessageBody:self.url.absoluteString isHTML:NO];
     [self presentViewController:mailComposeViewController animated:YES completion:nil];
 }
 
@@ -758,7 +752,7 @@ static NSInteger kTitleHeight = 40;
     notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
     [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
     
-    [[UIPasteboard generalPasteboard] setString:[self.mobilizerUtility originalURLStringForURL:url]];
+    [[UIPasteboard generalPasteboard] setString:self.url.absoluteString];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
@@ -835,34 +829,6 @@ static NSInteger kTitleHeight = 40;
     PPWebViewController *webViewController = [[PPWebViewController alloc] init];
     webViewController.urlString = url;
     return webViewController;
-}
-
-+ (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url {
-    PPWebViewController *webViewController = [[PPWebViewController alloc] init];
-    NSString *urlString;
-    if (![webViewController.mobilizerUtility isURLMobilized:[NSURL URLWithString:url]] && [webViewController.mobilizerUtility canMobilizeURL:[NSURL URLWithString:url]]) {
-        urlString = [webViewController.mobilizerUtility urlStringForMobilizerForURL:[NSURL URLWithString:url]];
-    }
-    else {
-        urlString = url;
-    }
-
-    webViewController.urlString = urlString;
-    return webViewController;
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    CGSize size = [UIApplication currentSize];
-    self.webView.frame = CGRectMake(0, 0, size.width, size.height);
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    CGSize size = self.view.frame.size;
-    self.webView.frame = CGRectMake(0, 0, size.width, size.height);
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
@@ -1024,8 +990,8 @@ static NSInteger kTitleHeight = 40;
                                           @"host": self.url.host,
                                           @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
             }
-            
-            self.mobilizeButton.enabled = self.canMobilizeCurrentURL;
+
+            self.mobilizeButton.enabled = [PPMobilizerUtility canMobilizeURL:self.url];
             
             // Disable the default action sheet
             [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
@@ -1217,10 +1183,6 @@ static NSInteger kTitleHeight = 40;
     self.stopButton.tintColor = color;
     self.mobilizeButton.tintColor = color;
     self.markAsReadButton.tintColor = color;
-}
-
-- (BOOL)canMobilizeCurrentURL {
-    return [self.mobilizerUtility canMobilizeURL:self.url];
 }
 
 - (void)showToolbarAnimated:(BOOL)animated {
