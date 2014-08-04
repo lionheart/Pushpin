@@ -95,6 +95,5 @@
 - (void)tintButtonsWithColor:(UIColor *)color;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
-+ (PPWebViewController *)mobilizedWebViewControllerWithURL:(NSString *)url;
 
 @end

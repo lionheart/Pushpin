@@ -33,7 +33,7 @@
     return [[PPAppDelegate sharedDelegate] mobilizer];
 }
 
-- (BOOL)canMobilizeURL:(NSURL *)url {
++ (BOOL)canMobilizeURL:(NSURL *)url {
     return ![@[@"twitter.com", @"mobile.twitter.com", @"marco.org"] containsObject:url.host];
 }
 
