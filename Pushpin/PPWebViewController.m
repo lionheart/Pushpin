@@ -51,6 +51,8 @@ static NSInteger kTitleHeight = 40;
 @property (nonatomic, strong) NSLayoutConstraint *readerWebViewVisibleConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *readerWebViewHiddenConstraint;
 
+- (void)updateInterfaceWithComputedWebPageBackgroundColor;
+- (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (BOOL)mobilized;
 - (UIWebView *)currentWebView;
@@ -74,7 +76,6 @@ static NSInteger kTitleHeight = 40;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
-    self.stopped = NO;
     self.history = [NSMutableArray array];
 
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
@@ -419,7 +420,7 @@ static NSInteger kTitleHeight = 40;
     
     // Determine if we should mobilize or not
     if (self.shouldMobilize) {
-#error
+        [self toggleMobilizer];
     }
 }
 
@@ -436,17 +437,18 @@ static NSInteger kTitleHeight = 40;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
+    [self.webViewTimeoutTimer invalidate];
     [self.webView stopLoading];
+    [self.readerWebView stopLoading];
 }
 
 - (void)stopLoading {
-    self.stopped = YES;
+    [self.webViewTimeoutTimer invalidate];
     [self.webView stopLoading];
+    [self.readerWebView stopLoading];
 }
 
 - (void)loadURL {
-    self.stopped = NO;
-    
     self.title = self.urlString;
     self.titleLabel.text = self.url.host;
 
@@ -462,38 +464,34 @@ static NSInteger kTitleHeight = 40;
         self.markAsReadButton.hidden = NO;
         [self.indicator stopAnimating];
 
-        NSString *theURLString = [self.mobilizerUtility originalURLStringForURL:self.url];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __block BOOL bookmarkExists;
+            __block BOOL isRead;
 
-        if (theURLString) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __block BOOL bookmarkExists;
-                __block BOOL isRead;
+            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
+                [results next];
+                bookmarkExists = [results intForColumnIndex:0] > 0;
+                isRead = ![results boolForColumnIndex:1];
 
-                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-                    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[theURLString]];
-                    [results next];
-                    bookmarkExists = [results intForColumnIndex:0] > 0;
-                    isRead = ![results boolForColumnIndex:1];
-                    
-                    [results close];
-                }];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.navigationItem.rightBarButtonItem = nil;
+                [results close];
+            }];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.navigationItem.rightBarButtonItem = nil;
 
-                    if (bookmarkExists) {
-                        self.editButton.hidden = NO;
-                        self.addButton.hidden = YES;
-                    }
-                    else {
-                        self.editButton.hidden = YES;
-                        self.addButton.hidden = NO;
-                    }
+                if (bookmarkExists) {
+                    self.editButton.hidden = NO;
+                    self.addButton.hidden = YES;
+                }
+                else {
+                    self.editButton.hidden = YES;
+                    self.addButton.hidden = NO;
+                }
 
-                    self.markAsReadButton.enabled = !isRead;
-                });
+                self.markAsReadButton.enabled = !isRead;
             });
-        }
+        });
     }
 }
 
@@ -529,10 +527,10 @@ static NSInteger kTitleHeight = 40;
 
     __weak PPWebViewController *weakself = self;
     self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
-        [self setNeedsStatusBarAppearanceUpdate];
+        [weakself setNeedsStatusBarAppearanceUpdate];
 
-        if (self.popover) {
-            [self.popover dismissPopoverAnimated:YES];
+        if (weakself.popover) {
+            [weakself.popover dismissPopoverAnimated:YES];
         }
     };
     
@@ -640,7 +638,7 @@ static NSInteger kTitleHeight = 40;
             OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
-            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:tempUrl]]];
+            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]]];
             [request prepare];
             
             [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
@@ -714,6 +712,8 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)toggleMobilizer {
+    [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
+
     [UIView animateWithDuration:0.5
                      animations:^{
                          if (self.mobilized) {
@@ -722,6 +722,7 @@ static NSInteger kTitleHeight = 40;
                              self.mobilizeButton.selected = NO;
                          }
                          else {
+                             [self.webViewTimeoutTimer invalidate];
                              [self.webView stopLoading];
 
                              [self.view removeConstraint:self.readerWebViewHiddenConstraint];
@@ -776,7 +777,7 @@ static NSInteger kTitleHeight = 40;
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSDictionary *post = @{
         @"title": pageTitle,
-        @"url": [self.mobilizerUtility originalURLStringForURL:self.url]
+        @"url": self.url.absoluteString
     };
     [self showAddViewController:post];
 }
@@ -793,27 +794,24 @@ static NSInteger kTitleHeight = 40;
 
 - (void)showEditViewController {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *editUrlString = [self.mobilizerUtility originalURLStringForURL:self.url];
-        if (editUrlString) {
-            __block NSDictionary *post;
+        __block NSDictionary *post;
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-                FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[editUrlString]];
-                [results next];
-                post = [PPUtilities dictionaryFromResultSet:results];
-                [results close];
-            }];
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
+            [results next];
+            post = [PPUtilities dictionaryFromResultSet:results];
+            [results close];
+        }];
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
-                
-                if ([UIApplication isIPad]) {
-                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
+            
+            if ([UIApplication isIPad]) {
+                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
 
-                [self presentViewController:vc animated:YES completion:nil];
-            });
-        }
+            [self presentViewController:vc animated:YES completion:nil];
+        });
     });
 }
 
@@ -1085,7 +1083,11 @@ static NSInteger kTitleHeight = 40;
         [self.webViewTimeoutTimer invalidate];
         
     #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
-        self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self selector:@selector(webViewLoadTimedOut) userInfo:nil repeats:NO];
+        self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5
+                                                           target:self
+                                                         selector:@selector(webViewLoadTimedOut)
+                                                         userInfo:nil
+                                                          repeats:NO];
         [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
 
         self.numberOfRequests++;
@@ -1095,7 +1097,7 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)webViewLoadTimedOut {
-    [self updateInterfaceWithComputedWebPageBackgroundColor];
+    [self updateInterfaceWithComputedWebPageBackgroundColorTimedOut:YES];
 }
 
 #pragma mark - UIAlertViewDelegate
@@ -1118,61 +1120,69 @@ static NSInteger kTitleHeight = 40;
 #pragma mark - Utils
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor {
+    [self updateInterfaceWithComputedWebPageBackgroundColorTimedOut:NO];
+}
+
+- (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut {
     self.prefersStatusBarHidden = NO;
     UIWebView *webView = self.currentWebView;
+    UIColor *backgroundColor = [UIColor whiteColor];
+    BOOL isDark = NO;
 
-    NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
-
-    NSError *error;
-    NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
-    if (match) {
-        NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
-        NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
-        NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
-        CGFloat R = [redString floatValue] / 255;
-        CGFloat G = [greenString floatValue] / 255;
-        CGFloat B = [blueString floatValue] / 255;
-        CGFloat alpha = 1;
+    if (!timedOut) {
+        NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
         
-        NSRange alphaRange = [match rangeAtIndex:5];
-        if (alphaRange.location != NSNotFound) {
-            NSString *alphaString = [response substringWithRange:alphaRange];
-            alpha = [alphaString floatValue];
+        NSError *error;
+        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
+        if (match) {
+            NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
+            NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
+            NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
+            CGFloat R = [redString floatValue] / 255;
+            CGFloat G = [greenString floatValue] / 255;
+            CGFloat B = [blueString floatValue] / 255;
+            CGFloat alpha = 1;
+            
+            NSRange alphaRange = [match rangeAtIndex:5];
+            if (alphaRange.location != NSNotFound) {
+                NSString *alphaString = [response substringWithRange:alphaRange];
+                alpha = [alphaString floatValue];
+            }
+            
+            // Formula derived from here:
+            // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+            
+            // Alpha blending:
+            // http://stackoverflow.com/a/746937/39155
+            CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
+            CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
+            CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
+            isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
+            backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
         }
-        
-        // Formula derived from here:
-        // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-        
-        // Alpha blending:
-        // http://stackoverflow.com/a/746937/39155
-        CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
-        CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
-        CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-        BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:0.3 animations:^{
-                UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
-                self.statusBarBackgroundView.backgroundColor = backgroundColor;
-                self.toolbarBackgroundView.backgroundColor = backgroundColor;
-                webView.backgroundColor = backgroundColor;
-                
-                if (isDark) {
-                    [self tintButtonsWithColor:[UIColor whiteColor]];
-                    self.titleLabel.textColor = [UIColor whiteColor];
-                    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
-                }
-                else {
-                    [self tintButtonsWithColor:HEX(0x808D96FF)];
-                    self.titleLabel.textColor = [UIColor darkTextColor];
-                    self.preferredStatusBarStyle = UIStatusBarStyleDefault;
-                }
-
-                [self setNeedsStatusBarAppearanceUpdate];
-            }];
-        });
     }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.3 animations:^{
+            self.statusBarBackgroundView.backgroundColor = backgroundColor;
+            self.toolbarBackgroundView.backgroundColor = backgroundColor;
+            webView.backgroundColor = backgroundColor;
+            
+            if (isDark) {
+                [self tintButtonsWithColor:[UIColor whiteColor]];
+                self.titleLabel.textColor = [UIColor whiteColor];
+                self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+            }
+            else {
+                [self tintButtonsWithColor:HEX(0x808D96FF)];
+                self.titleLabel.textColor = [UIColor darkTextColor];
+                self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+            }
+
+            [self setNeedsStatusBarAppearanceUpdate];
+        }];
+    });
 }
 
 - (void)tintButtonsWithColor:(UIColor *)color {

@@ -45,7 +45,6 @@
 @property (nonatomic) BOOL isFullscreen;
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
 @property (nonatomic) BOOL shouldMobilize;
-@property (nonatomic) BOOL stopped;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 
@@ -89,7 +88,6 @@
 - (NSURL *)url;
 - (NSInteger)numberOfRequestsInProgress;
 - (void)webViewLoadTimedOut;
-- (void)updateInterfaceWithComputedWebPageBackgroundColor;
 
 - (BOOL)canMobilizeCurrentURL;
 - (void)tintButtonsWithColor:(UIColor *)color;
