@@ -158,13 +158,6 @@ static NSInteger kTitleHeight = 40;
     [self.indicator startAnimating];
     [self.toolbar addSubview:self.indicator];
 
-    self.stopButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.stopButton addTarget:self action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-    [self.stopButton setImage:stopButtonImage forState:UIControlStateNormal];
-    self.stopButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.stopButton.hidden = YES;
-    [self.toolbar addSubview:self.stopButton];
-
     UIImage *viewMobilizeButtonImage = [[UIImage imageNamed:@"mobilize"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImage *viewRawButtonImage = [[UIImage imageNamed:@"mobilized"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
@@ -215,7 +208,6 @@ static NSInteger kTitleHeight = 40;
         @"mobilize": self.mobilizeButton,
         @"action": self.actionButton,
         @"edit": self.editButton,
-        @"stop": self.stopButton,
         @"add": self.addButton,
         @"background": self.toolbarBackgroundView,
         @"border": toolbarBorderView
@@ -247,14 +239,7 @@ static NSInteger kTitleHeight = 40;
     [self.toolbar lhs_addConstraints:@"V:|[mobilize]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[action]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[stop]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[add]|" views:toolbarViews];
-    
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.stopButton attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.mobilizeButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.stopButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.mobilizeButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
 
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
     [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
@@ -457,8 +442,6 @@ static NSInteger kTitleHeight = 40;
 }
 
 - (void)enableOrDisableButtons {
-    self.stopButton.hidden = YES;
-
     if (self.numberOfRequestsInProgress <= 0) {
         self.alreadyLoaded = YES;
         self.markAsReadButton.hidden = NO;
@@ -1190,7 +1173,6 @@ static NSInteger kTitleHeight = 40;
     self.backButton.tintColor = color;
     self.editButton.tintColor = color;
     self.addButton.tintColor = color;
-    self.stopButton.tintColor = color;
     self.mobilizeButton.tintColor = color;
     self.markAsReadButton.tintColor = color;
 }
