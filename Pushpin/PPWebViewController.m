@@ -1018,7 +1018,7 @@ static NSInteger kTitleHeight = 40;
                 [self updateInterfaceWithComputedWebPageBackgroundColor];
             }
             
-            if (self.history.count > 1) {
+            if ([self.webView canGoBack]) {
                 UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
             }
