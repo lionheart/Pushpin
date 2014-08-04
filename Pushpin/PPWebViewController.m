@@ -103,12 +103,14 @@ static NSInteger kTitleHeight = 40;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
+    self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     [self.view addSubview:self.webView];
     
     self.readerWebView = [[UIWebView alloc] init];
     self.readerWebView.hidden = YES;
     self.readerWebView.backgroundColor = [UIColor whiteColor];
     self.readerWebView.delegate = self;
+    self.readerWebView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     self.readerWebView.scrollView.delegate = self;
     self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.readerWebView];
@@ -243,8 +245,21 @@ static NSInteger kTitleHeight = 40;
     [self.toolbar lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[add]|" views:toolbarViews];
 
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.addButton attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton
+                                                             attribute:NSLayoutAttributeLeft
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.addButton
+                                                             attribute:NSLayoutAttributeLeft
+                                                            multiplier:1
+                                                              constant:0]];
+    
+    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton
+                                                             attribute:NSLayoutAttributeRight
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.addButton
+                                                             attribute:NSLayoutAttributeRight
+                                                            multiplier:1
+                                                              constant:0]];
     
     [self tintButtonsWithColor:[UIColor darkGrayColor]];
 
@@ -255,7 +270,8 @@ static NSInteger kTitleHeight = 40;
         @"background": self.statusBarBackgroundView,
         @"show": self.showToolbarAndTitleBarHiddenView,
         @"webview": self.webView,
-        @"reader": self.readerWebView
+        @"reader": self.readerWebView,
+        @"bottom": self.bottomLayoutGuide
     };
 
     // Setup auto-layout constraints
@@ -276,7 +292,7 @@ static NSInteger kTitleHeight = 40;
     self.readerWebViewVisibleConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
                                                                        attribute:NSLayoutAttributeBottom
                                                                        relatedBy:NSLayoutRelationEqual
-                                                                          toItem:self.toolbar
+                                                                          toItem:self.bottomLayoutGuide
                                                                        attribute:NSLayoutAttributeTop
                                                                       multiplier:1
                                                                         constant:0];
@@ -301,7 +317,8 @@ static NSInteger kTitleHeight = 40;
     [self.view lhs_addConstraints:@"V:[show(20)]" views:views];
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
-    [self.view lhs_addConstraints:@"V:|[background][webview][toolbar(>=height)]" metrics:metrics views:views];
+    [self.view lhs_addConstraints:@"V:|[background][webview][bottom]" metrics:metrics views:views];
+    [self.view lhs_addConstraints:@"V:[toolbar(>=height)]" metrics:metrics views:views];
     
     self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide
                                                           attribute:NSLayoutAttributeBottom
