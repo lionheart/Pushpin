@@ -224,24 +224,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                     
                 case PPMainMobilizer:
-                    cell.textLabel.text = NSLocalizedString(@"Mobilizer", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Reader Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-
-                    PPMobilizerType mobilizer = [PPAppDelegate sharedDelegate].mobilizer;
-                    switch (mobilizer) {
-                        case PPMobilizerGoogle:
-                            cell.detailTextLabel.text = @"Google";
-                            break;
-
-                        case PPMobilizerReadability:
-                            cell.detailTextLabel.text = @"Readability";
-                            break;
-
-                        case PPMobilizerInstapaper:
-                            cell.detailTextLabel.text = @"Instapaper";
-                            break;
-                    }
-                    
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
 
                 case PPMainAdvanced:

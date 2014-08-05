@@ -24,7 +24,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.7;
 
     CATransform3D transform3D = CATransform3DIdentity;
     transform3D = CATransform3DTranslate(transform3D, 0, 0, -100);
-    transform3D = CATransform3DScale(transform3D, 0.9, 0.9, 0);
+    transform3D = CATransform3DScale(transform3D, 0.92, 0.92, 0);
 //    CATransform3DTranslate(transform3D, 0, 0, -10);
 
     void (^animations)();
