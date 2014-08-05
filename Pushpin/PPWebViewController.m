@@ -83,9 +83,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
     
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    self.tapGestureRecognizer.numberOfTapsRequired = 1;
-    
     self.bottomTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.bottomTapGestureRecognizer.numberOfTapsRequired = 1;
     
@@ -93,6 +90,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.userInteractionEnabled = YES;
+    self.statusBarBackgroundView.hidden = YES;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.statusBarBackgroundView];
@@ -106,11 +104,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.view addSubview:self.webView];
     
     self.readerWebView = [[UIWebView alloc] init];
-    self.readerWebView.hidden = YES;
     self.readerWebView.backgroundColor = [UIColor whiteColor];
     self.readerWebView.delegate = self;
+    self.readerWebView.alpha = 0;
     self.readerWebView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     self.readerWebView.scrollView.delegate = self;
+    self.readerWebView.scrollView.scrollsToTop = NO;
     self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.readerWebView];
     
@@ -423,6 +422,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     // Determine if we should mobilize or not
     if (self.shouldMobilize && [PPMobilizerUtility canMobilizeURL:self.url]) {
         self.mobilizeButton.selected = YES;
+        self.webView.scrollView.scrollsToTop = NO;
+        self.readerWebView.scrollView.scrollsToTop = YES;
 
         [self setReaderViewVisible:YES animated:NO completion:nil];
         [self.webViewTimeoutTimer invalidate];
@@ -730,6 +731,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.mobilizeButton.selected = !self.mobilized;
     if (self.mobilized) {
         [self.readerWebView stopLoading];
+        self.webView.scrollView.scrollsToTop = YES;
+        self.readerWebView.scrollView.scrollsToTop = NO;
 
         __weak id weakself = self;
         [self setReaderViewVisible:NO animated:YES completion:^(BOOL finished) {
@@ -739,6 +742,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }];
     }
     else {
+        self.webView.scrollView.scrollsToTop = NO;
+        self.readerWebView.scrollView.scrollsToTop = YES;
+
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
         [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
@@ -1202,9 +1208,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     if (animated) {
         [UIView animateWithDuration:0.15
-                         animations:^{
-                             UpdateConstraint();
-                         }];
+                              delay:0
+             usingSpringWithDamping:0.5
+              initialSpringVelocity:0
+                            options:0
+                         animations:UpdateConstraint
+                         completion:nil];
     }
     else {
         UpdateConstraint();
@@ -1265,23 +1274,34 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
                                                           delegate:nil
                                                      delegateQueue:nil];
-    NSURLSessionDataTask *task = [session dataTaskWithURL:mobilizedURL
-                                        completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                            if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
-                                                NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                NSData *encodedData = [NSData dataWithBase64EncodedString:string];
-                                                NSData *decryptedData = [RNDecryptor decryptData:encodedData
-                                                                                    withPassword:@"Isabelle and Dante"
-                                                                                           error:nil];
-                                                id article = [NSJSONSerialization JSONObjectWithData:decryptedData
-                                                                                             options:NSJSONReadingAllowFragments
+    NSURLRequest *request = [NSURLRequest requestWithURL:mobilizedURL
+                                             cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                         timeoutInterval:10];
+
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
+                                                    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                    NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+                                                    NSData *decryptedData = [RNDecryptor decryptData:encodedData
+                                                                                        withPassword:@"Isabelle and Dante"
                                                                                                error:nil];
-                                                completion(article, nil);
-                                            }
-                                            else {
-                                                completion(nil, error);
-                                            }
-                                        }];
+                                                    id article = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                                                                 options:NSJSONReadingAllowFragments
+                                                                                                   error:nil];
+                                                    
+                                                    if ([article[@"work_count"] isEqualToNumber:@(0)]) {
+#warning TODO
+                                                        completion(nil, nil);
+                                                    }
+                                                    else {
+                                                        completion(article, nil);
+                                                    }
+                                                }
+                                                else {
+                                                    completion(nil, error);
+                                                }
+                                            }];
     [task resume];
 }
 
