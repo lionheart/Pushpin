@@ -49,8 +49,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
 @property (nonatomic, strong) UIWebView *readerWebView;
 
-@property (nonatomic, strong) NSLayoutConstraint *readerWebViewTopConstraint;
-
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
@@ -282,21 +280,28 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.view lhs_addConstraints:@"H:|[reader]|" views:views];
     [self.view lhs_addConstraints:@"H:|[show]|" views:views];
     
-    self.readerWebViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                                   attribute:NSLayoutAttributeBottom
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.bottomLayoutGuide
-                                                                   attribute:NSLayoutAttributeTop
-                                                                  multiplier:1
-                                                                    constant:0];
-    [self.view addConstraint:self.readerWebViewTopConstraint];
-    
     // Make sure the height of the reader view is the same as the web view
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
                                                           attribute:NSLayoutAttributeHeight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:self.webView
                                                           attribute:NSLayoutAttributeHeight
+                                                         multiplier:1
+                                                           constant:0]];
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.webView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1
+                                                           constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.webView
+                                                          attribute:NSLayoutAttributeCenterY
                                                          multiplier:1
                                                            constant:0]];
     
@@ -1226,7 +1231,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (BOOL)mobilized {
     return self.readerWebView.alpha == 1;
-    return self.readerWebViewTopConstraint.constant > 0.5 * CGRectGetHeight(self.view.frame);
 }
 
 - (UIWebView *)currentWebView {
