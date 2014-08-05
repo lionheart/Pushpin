@@ -38,6 +38,7 @@
 
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
+static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 @interface PPWebViewController ()
 
@@ -48,8 +49,7 @@ static NSInteger kTitleHeight = 40;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
 @property (nonatomic, strong) UIWebView *readerWebView;
 
-@property (nonatomic, strong) NSLayoutConstraint *readerWebViewVisibleConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *readerWebViewHiddenConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *readerWebViewTopConstraint;
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
@@ -57,6 +57,7 @@ static NSInteger kTitleHeight = 40;
 - (BOOL)mobilized;
 - (UIWebView *)currentWebView;
 
+- (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated;
 
 @end
@@ -280,23 +281,15 @@ static NSInteger kTitleHeight = 40;
     [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
     [self.view lhs_addConstraints:@"H:|[reader]|" views:views];
     [self.view lhs_addConstraints:@"H:|[show]|" views:views];
-
-    self.readerWebViewHiddenConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                                      attribute:NSLayoutAttributeBottom
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:self.topLayoutGuide
-                                                                      attribute:NSLayoutAttributeTop
-                                                                     multiplier:1
-                                                                       constant:0];
     
-    self.readerWebViewVisibleConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
+    self.readerWebViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
                                                                        attribute:NSLayoutAttributeBottom
                                                                        relatedBy:NSLayoutRelationEqual
-                                                                          toItem:self.bottomLayoutGuide
+                                                                          toItem:self.topLayoutGuide
                                                                        attribute:NSLayoutAttributeTop
                                                                       multiplier:1
                                                                         constant:0];
-    [self.view addConstraint:self.readerWebViewHiddenConstraint];
+    [self.view addConstraint:self.readerWebViewTopConstraint];
     
     // Make sure the height of the reader view is the same as the web view
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
@@ -423,8 +416,13 @@ static NSInteger kTitleHeight = 40;
     }];
     
     // Determine if we should mobilize or not
-    if (self.shouldMobilize) {
-        [self toggleMobilizer];
+    if (self.shouldMobilize && [PPMobilizerUtility canMobilizeURL:self.url]) {
+        self.mobilizeButton.selected = YES;
+
+        [self setReaderViewVisible:YES animated:NO completion:nil];
+        [self.webViewTimeoutTimer invalidate];
+        [self.webView stopLoading];
+        [self.readerWebView loadHTMLString:@"<html><script type='text/javascript'>function formatArticle(content){}</script></html>" baseURL:self.url];
     }
 }
 
@@ -503,6 +501,10 @@ static NSInteger kTitleHeight = 40;
 
 - (void)backButtonTouchUp:(id)sender {
     if ([self.webView canGoBack]) {
+        if (self.mobilized) {
+            [self setReaderViewVisible:NO animated:NO completion:nil];
+        }
+
         [self.webView goBack];
     }
     else {
@@ -719,58 +721,23 @@ static NSInteger kTitleHeight = 40;
 
 - (void)toggleMobilizer {
     [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
-    void (^Animate)();
-    void (^Complete)(BOOL finished);
-    
+
     self.mobilizeButton.selected = !self.mobilized;
     if (self.mobilized) {
         [self.readerWebView stopLoading];
 
-        Animate = ^{
-            [self.view removeConstraint:self.readerWebViewVisibleConstraint];
-            [self.view addConstraint:self.readerWebViewHiddenConstraint];
-            [self.view layoutIfNeeded];
-        };
-        
-        Complete = ^(BOOL finished) {
-            if (![self alreadyLoaded]) {
-                [self loadURL];
+        __weak id weakself = self;
+        [self setReaderViewVisible:NO animated:YES completion:^(BOOL finished) {
+            if (![weakself alreadyLoaded]) {
+                [weakself loadURL];
             }
-        };
+        }];
     }
     else {
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
-
-        Animate = ^{
-            [self.webViewTimeoutTimer invalidate];
-            [self.webView stopLoading];
-            
-            [self.view removeConstraint:self.readerWebViewHiddenConstraint];
-            [self.view addConstraint:self.readerWebViewVisibleConstraint];
-            
-            [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
-            [self.view layoutIfNeeded];
-        };
-        
-        Complete = ^(BOOL finished) {};
+        [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
     }
-    
-    [UIView animateWithDuration:0.5
-                          delay:0
-                        options:UIViewAnimationOptionCurveLinear
-                     animations:Animate completion:Complete];
-}
-
-- (void)emailURL {
-    MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
-    mailComposeViewController.mailComposeDelegate = self;
-    [mailComposeViewController setMessageBody:self.url.absoluteString isHTML:NO];
-    [self presentViewController:mailComposeViewController animated:YES completion:nil];
-}
-
-- (void)copyURL {
-    [self copyURL:self.url];
 }
 
 - (void)copyURL:(NSURL *)url {
@@ -1055,6 +1022,8 @@ static NSInteger kTitleHeight = 40;
             
             self.markAsReadButton.hidden = NO;
             [self.indicator stopAnimating];
+
+            [self setReaderViewVisible:YES animated:YES completion:nil];
         }
         else {
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
@@ -1069,17 +1038,26 @@ static NSInteger kTitleHeight = 40;
                                                                                ofType:@"js"];
                         NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
                                                                                 ofType:@"css"];
-                        NSURL *cssFilePathURL = [NSURL fileURLWithPath:cssFilePath];
                         NSString *readerJS = [NSString stringWithContentsOfFile:readerFile
                                                                        encoding:NSUTF8StringEncoding
                                                                           error:nil];
                         
                         NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
                         
-                        [context evaluateScript:readerJS];
-                        JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"]]];
+                        BOOL success = [context evaluateScript:readerJS];
 
-                        [self.readerWebView loadHTMLString:[response toString] baseURL:baseURL];
+                        if (article) {
+                            @try {
+                                JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"]]];
+                                [self.readerWebView loadHTMLString:[response toString] baseURL:baseURL];
+                            }
+                            @catch (NSException *exception) {
+                                DLog(@"%@", exception);
+                            }
+                        }
+                        else {
+                            self.mobilizeButton.selected = NO;
+                        }
                     });
                 }
             }];
@@ -1247,7 +1225,7 @@ static NSInteger kTitleHeight = 40;
 #pragma mark -
 
 - (BOOL)mobilized {
-    return [[self.view constraints] containsObject:self.readerWebViewVisibleConstraint];
+    return self.readerWebViewTopConstraint.constant > 0.5 * CGRectGetHeight(self.view.frame);
 }
 
 - (UIWebView *)currentWebView {
@@ -1300,6 +1278,34 @@ static NSInteger kTitleHeight = 40;
                                             }
                                         }];
     [task resume];
+}
+
+- (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
+    void (^animations)();
+
+    if (visible) {
+        animations = ^{
+            self.readerWebViewTopConstraint.constant = CGRectGetHeight(self.view.frame);
+            [self.view layoutIfNeeded];
+        };
+    }
+    else {
+        animations = ^{
+            self.readerWebViewTopConstraint.constant = 0;
+            [self.view layoutIfNeeded];
+        };
+    }
+    
+    if (animated) {
+        [UIView animateWithDuration:kPPReaderViewAnimationDuration
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
+                         animations:animations
+                         completion:completion];
+    }
+    else {
+        animations();
+    }
 }
 
 @end

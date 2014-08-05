@@ -70,9 +70,7 @@
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
 - (void)backButtonTouchUp:(id)sender;
-- (void)copyURL;
 - (void)copyURL:(NSURL *)url;
-- (void)emailURL;
 - (void)showEditViewController;
 - (void)showAddViewController;
 - (void)showAddViewController:(NSDictionary *)data;
@@ -86,7 +84,6 @@
 - (NSInteger)numberOfRequestsInProgress;
 - (void)webViewLoadTimedOut;
 
-- (BOOL)canMobilizeCurrentURL;
 - (void)tintButtonsWithColor:(UIColor *)color;
 
 + (PPWebViewController *)webViewControllerWithURL:(NSString *)url;
