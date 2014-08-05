@@ -8,7 +8,7 @@
 
 #import "PPShrinkBackAnimator.h"
 
-static CGFloat kPPShrinkBackAnimationDuration = 0.7;
+static CGFloat kPPShrinkBackAnimationDuration = 0.6;
 
 @implementation PPShrinkBackAnimator
 
@@ -21,11 +21,11 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.7;
 
     [containerView addSubview:fromViewController.view];
     [containerView addSubview:toViewController.view];
+    containerView.backgroundColor = [UIColor blackColor];
 
     CATransform3D transform3D = CATransform3DIdentity;
     transform3D = CATransform3DTranslate(transform3D, 0, 0, -100);
-    transform3D = CATransform3DScale(transform3D, 0.92, 0.92, 0);
-//    CATransform3DTranslate(transform3D, 0, 0, -10);
+    transform3D = CATransform3DScale(transform3D, 0.925, 0.925, 0);
 
     void (^animations)();
     if (self.reverse) {
@@ -56,7 +56,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.7;
                           delay:0
          usingSpringWithDamping:10
           initialSpringVelocity:0
-                        options:UIViewAnimationOptionCurveEaseInOut
+                        options:UIViewAnimationOptionCurveEaseIn
                      animations:animations
                      completion:^(BOOL finished) {
                          [fromViewController.view removeFromSuperview];

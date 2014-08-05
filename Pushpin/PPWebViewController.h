@@ -34,7 +34,6 @@
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *bottomTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
