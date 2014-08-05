@@ -283,12 +283,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.view lhs_addConstraints:@"H:|[show]|" views:views];
     
     self.readerWebViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                                       attribute:NSLayoutAttributeBottom
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:self.topLayoutGuide
-                                                                       attribute:NSLayoutAttributeTop
-                                                                      multiplier:1
-                                                                        constant:0];
+                                                                   attribute:NSLayoutAttributeBottom
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.bottomLayoutGuide
+                                                                   attribute:NSLayoutAttributeTop
+                                                                  multiplier:1
+                                                                    constant:0];
     [self.view addConstraint:self.readerWebViewTopConstraint];
     
     // Make sure the height of the reader view is the same as the web view
@@ -1225,6 +1225,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #pragma mark -
 
 - (BOOL)mobilized {
+    return self.readerWebView.alpha == 1;
     return self.readerWebViewTopConstraint.constant > 0.5 * CGRectGetHeight(self.view.frame);
 }
 
@@ -1285,14 +1286,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
     if (visible) {
         animations = ^{
-            self.readerWebViewTopConstraint.constant = CGRectGetHeight(self.view.frame);
-            [self.view layoutIfNeeded];
+            self.readerWebView.alpha = 1;
         };
     }
     else {
         animations = ^{
-            self.readerWebViewTopConstraint.constant = 0;
-            [self.view layoutIfNeeded];
+            self.readerWebView.alpha = 0;
         };
     }
     

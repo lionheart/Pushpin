@@ -152,6 +152,8 @@
 		37802198198EAD4600CE269A /* reader-base.css in Resources */ = {isa = PBXBuildFile; fileRef = 37802197198EAD4600CE269A /* reader-base.css */; };
 		3780219A198EADE000CE269A /* reader.js in Sources */ = {isa = PBXBuildFile; fileRef = 37802199198EADE000CE269A /* reader.js */; };
 		3780219B198EB1B900CE269A /* reader.js in Resources */ = {isa = PBXBuildFile; fileRef = 37802199198EADE000CE269A /* reader.js */; };
+		3780219E199130E100CE269A /* PPFadeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3780219D199130E000CE269A /* PPFadeAnimator.m */; };
+		378021A1199130EC00CE269A /* PPFadeTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 378021A0199130EC00CE269A /* PPFadeTransition.m */; };
 		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
@@ -737,6 +739,10 @@
 		37802194198D709000CE269A /* NSData+AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES256.m"; sourceTree = "<group>"; };
 		37802197198EAD4600CE269A /* reader-base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "reader-base.css"; path = "Pushpin/reader-base.css"; sourceTree = "<group>"; };
 		37802199198EADE000CE269A /* reader.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = reader.js; path = Pushpin/reader.js; sourceTree = "<group>"; };
+		3780219C199130E000CE269A /* PPFadeAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFadeAnimator.h; sourceTree = "<group>"; };
+		3780219D199130E000CE269A /* PPFadeAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPFadeAnimator.m; sourceTree = "<group>"; };
+		3780219F199130EC00CE269A /* PPFadeTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFadeTransition.h; sourceTree = "<group>"; };
+		378021A0199130EC00CE269A /* PPFadeTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPFadeTransition.m; sourceTree = "<group>"; };
 		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
 		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
 		378482D1186CB92C00DF7A74 /* single-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag.png"; path = "Assets/single-tag.png"; sourceTree = "<group>"; };
@@ -1683,6 +1689,10 @@
 		37F78255198C34FE00C99139 /* Transitions / Animators */ = {
 			isa = PBXGroup;
 			children = (
+				3780219C199130E000CE269A /* PPFadeAnimator.h */,
+				3780219D199130E000CE269A /* PPFadeAnimator.m */,
+				3780219F199130EC00CE269A /* PPFadeTransition.h */,
+				378021A0199130EC00CE269A /* PPFadeTransition.m */,
 				37F7825C198C354D00C99139 /* PPShrinkBackAnimator.h */,
 				37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */,
 				37F78259198C354200C99139 /* PPShrinkBackTransition.h */,
@@ -2713,6 +2723,8 @@
 				3709354C1894C22100E3588E /* PPDeliciousDataSource.m in Sources */,
 				37B348C9175EFAFA00929E2E /* PPDisplaySettingsViewController.m in Sources */,
 				3728CF401872880A00155791 /* PPEditDescriptionViewController.m in Sources */,
+				3780219E199130E100CE269A /* PPFadeAnimator.m in Sources */,
+				378021A1199130EC00CE269A /* PPFadeTransition.m in Sources */,
 				375A638A16C0CB0800665CA1 /* PPFeedListViewController.m in Sources */,
 				3733251F16E155A2002E2AB0 /* PPGenericPostViewController.m in Sources */,
 				376C9E7E1746FB4300A62CB5 /* PPLoadingView.m in Sources */,
