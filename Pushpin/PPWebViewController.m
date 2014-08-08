@@ -1040,31 +1040,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        JSContext *context = [self.readerWebView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-                        context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
-                            DLog(@"%@", exception);
-                        };
-                        
-                        NSString *readerFile = [[NSBundle mainBundle] pathForResource:@"reader"
-                                                                               ofType:@"js"];
                         NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
                                                                                 ofType:@"css"];
-                        NSString *readerJS = [NSString stringWithContentsOfFile:readerFile
-                                                                       encoding:NSUTF8StringEncoding
-                                                                          error:nil];
-                        
+
                         NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
-                        
-                        BOOL success = [context evaluateScript:readerJS];
 
                         if (article) {
-                            @try {
-                                JSValue *response = [context[@"formatArticle"] callWithArguments:@[article[@"content"]]];
-                                [self.readerWebView loadHTMLString:[response toString] baseURL:baseURL];
-                            }
-                            @catch (NSException *exception) {
-                                DLog(@"%@", exception);
-                            }
+                            NSString *content = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' href='%@'></link><script type='text/javascript'>var isLoaded=true;</script></head><body>%@</body></html>", cssFilePath, article[@"content"]];
+                            [self.readerWebView loadHTMLString:content baseURL:baseURL];
                         }
                         else {
                             self.mobilizeButton.selected = NO;
@@ -1207,11 +1190,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.15
+        [UIView animateWithDuration:0.3
                               delay:0
              usingSpringWithDamping:0.5
-              initialSpringVelocity:0
-                            options:0
+              initialSpringVelocity:1
+                            options:UIViewAnimationOptionCurveEaseInOut
                          animations:UpdateConstraint
                          completion:nil];
     }
@@ -1254,7 +1237,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 + (void)mobilizedPageForURL:(NSURL *)url withCompletion:(void (^)(NSDictionary *, NSError *))completion {
-    NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString encodedURLString]]];
+    NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
     
     NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
                                                                                   port:80
@@ -1265,7 +1248,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
                                                              password:@"9346edb36e542dab1e7861227f9222b7"
-                                                          persistence:NSURLCredentialPersistencePermanent];
+                                                          persistence:NSURLCredentialPersistenceForSession];
     [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -1289,7 +1272,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                     id article = [NSJSONSerialization JSONObjectWithData:decryptedData
                                                                                                  options:NSJSONReadingAllowFragments
                                                                                                    error:nil];
-                                                    
+
                                                     if ([article[@"work_count"] isEqualToNumber:@(0)]) {
 #warning TODO
                                                         completion(nil, nil);
