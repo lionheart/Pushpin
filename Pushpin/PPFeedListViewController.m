@@ -31,6 +31,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <Reachability/Reachability.h>
 
 static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
@@ -1091,6 +1092,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
+    if (![PPAppDelegate sharedDelegate].connectionAvailable) {
+        [[[UIAlertView alloc] initWithTitle:nil
+                                    message:@"Editing feeds requires an active Internet connection."
+                                   delegate:nil
+                          cancelButtonTitle:nil
+                          otherButtonTitles:@"OK", nil] show];
+        return;
+    }
+
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Settings", nil);
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Edit", nil);
@@ -1481,10 +1491,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (BOOL)communitySectionIsHidden {
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-    return [delegate.hiddenFeedNames indexesOfObjectsPassingTest:^(NSString *feed, NSUInteger idx, BOOL *stop) {
-        return [feed hasPrefix:@"community-"];
-    }].count == [PPCommunityFeeds() count];
+    if ([PPAppDelegate sharedDelegate].connectionAvailable) {
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+        return [delegate.hiddenFeedNames indexesOfObjectsPassingTest:^(NSString *feed, NSUInteger idx, BOOL *stop) {
+            return [feed hasPrefix:@"community-"];
+        }].count == [PPCommunityFeeds() count];
+    }
+    else {
+        return YES;
+    }
 }
 
 - (PPPinboardSectionType)sectionTypeForSection:(NSInteger)section {
@@ -1595,7 +1610,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
     }
     [db commit];
-    
+
     NSMutableArray *previousFeedTitles = [NSMutableArray array];
     NSMutableArray *updatedFeedTitles = [NSMutableArray array];
     NSMutableArray *updatedFeeds = [NSMutableArray array];
