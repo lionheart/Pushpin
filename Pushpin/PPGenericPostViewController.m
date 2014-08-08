@@ -844,7 +844,13 @@ static NSInteger kToolbarHeight = 44;
         
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.backBarButtonItem.enabled = NO;
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStyleDone target:self action:@selector(toggleEditingMode:)] animated:YES];
+        
+        UIBarButtonItem *cancelBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                style:UIBarButtonItemStyleDone
+                                                                               target:self
+                                                                               action:@selector(toggleEditingMode:)];
+        [self.navigationItem setRightBarButtonItem:cancelBarButtonItem
+                                          animated:YES];
 
         [self updateTitleViewText];
         

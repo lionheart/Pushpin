@@ -48,11 +48,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) PPActivityViewController *activityView;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
 @property (nonatomic, strong) UIWebView *readerWebView;
+@property (nonatomic) BOOL mobilized;
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
-- (BOOL)mobilized;
+//- (BOOL)mobilized;
 - (UIWebView *)currentWebView;
 
 - (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
@@ -70,9 +71,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.opaque = YES;
-    self.view.backgroundColor = [UIColor whiteColor];
-
     self.prefersStatusBarHidden = NO;
     self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
@@ -89,10 +87,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self.webView selector:@selector(stopLoading) userInfo:nil repeats:NO];
     
     self.statusBarBackgroundView = [[UIView alloc] init];
-    self.statusBarBackgroundView.userInteractionEnabled = YES;
-    self.statusBarBackgroundView.hidden = YES;
-    self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
+    self.statusBarBackgroundView.userInteractionEnabled = NO;
+    self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.statusBarBackgroundView];
 
     self.webView = [[UIWebView alloc] init];
@@ -422,13 +419,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     // Determine if we should mobilize or not
     if (self.shouldMobilize && [PPMobilizerUtility canMobilizeURL:self.url]) {
         self.mobilizeButton.selected = YES;
-        self.webView.scrollView.scrollsToTop = NO;
-        self.readerWebView.scrollView.scrollsToTop = YES;
+        self.mobilized = YES;
 
         [self setReaderViewVisible:YES animated:NO completion:nil];
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
-        [self.readerWebView loadHTMLString:@"<html><script type='text/javascript'>function formatArticle(content){}</script></html>" baseURL:self.url];
+        [self.readerWebView loadHTMLString:@"<html><head><script type='text/javascript'>var isLoaded=false;</script></head></html>" baseURL:self.url];
     }
 }
 
@@ -729,25 +725,26 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
 
     self.mobilizeButton.selected = !self.mobilized;
+    self.mobilized = !self.mobilized;
     if (self.mobilized) {
+        self.webView.scrollView.scrollsToTop = NO;
+        self.readerWebView.scrollView.scrollsToTop = YES;
+        
+        [self.webViewTimeoutTimer invalidate];
+        [self.webView stopLoading];
+        [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
+    }
+    else {
         [self.readerWebView stopLoading];
         self.webView.scrollView.scrollsToTop = YES;
         self.readerWebView.scrollView.scrollsToTop = NO;
-
+        
         __weak id weakself = self;
         [self setReaderViewVisible:NO animated:YES completion:^(BOOL finished) {
             if (![weakself alreadyLoaded]) {
                 [weakself loadURL];
             }
         }];
-    }
-    else {
-        self.webView.scrollView.scrollsToTop = NO;
-        self.readerWebView.scrollView.scrollsToTop = YES;
-
-        [self.webViewTimeoutTimer invalidate];
-        [self.webView stopLoading];
-        [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
     }
 }
 
@@ -1221,10 +1218,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 #pragma mark -
 
-- (BOOL)mobilized {
-    return self.readerWebView.alpha == 1;
-}
-
 - (UIWebView *)currentWebView {
     UIWebView *webView;
     if (self.mobilized) {
@@ -1261,6 +1254,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                              cachePolicy:NSURLRequestReturnCacheDataElseLoad
                                          timeoutInterval:10];
 
+#warning Sometimes getting a 401 here. Not sure why.
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
