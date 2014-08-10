@@ -1101,100 +1101,7 @@
     return (PPAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
-#pragma mark - Properties
-
-- (void)setLastUpdated:(NSDate *)lastUpdated {
-    _lastUpdated = lastUpdated;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:lastUpdated forKey:@"io.aurora.pinboard.LastUpdated"];
-    [defaults synchronize];
-}
-
-- (NSDate *)lastUpdated {
-    if (!_lastUpdated) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
-    }
-    return _lastUpdated;
-}
-
-- (void)setPrivateByDefault:(BOOL)privateByDefault {
-    _privateByDefault = privateByDefault;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(privateByDefault) forKey:@"io.aurora.pinboard.PrivateByDefault"];
-    [defaults synchronize];
-}
-
-- (BOOL)privateByDefault {
-    if (!_privateByDefault) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _privateByDefault = [[defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"] boolValue];
-    }
-    return _privateByDefault;
-}
-
-- (BOOL)openLinksInApp {
-    if (!_openLinksInApp) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksInApp = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"] boolValue];
-    }
-    return _openLinksInApp;
-}
-
-- (void)setOpenLinksInApp:(BOOL)openLinksInApp {
-    _openLinksInApp = openLinksInApp;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(openLinksInApp) forKey:@"io.aurora.pinboard.OpenLinksInApp"];
-    [defaults synchronize];
-}
-
-- (void)setDoubleTapToEdit:(BOOL)doubleTapToEdit {
-    _doubleTapToEdit = doubleTapToEdit;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(doubleTapToEdit) forKey:@"io.aurora.pinboard.DoubleTapToEdit"];
-    [defaults synchronize];
-}
-
-- (BOOL)doubleTapToEdit {
-    if (!_doubleTapToEdit) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _doubleTapToEdit = [[defaults objectForKey:@"io.aurora.pinboard.DoubleTapToEdit"] boolValue];
-    }
-    return _doubleTapToEdit;
-}
-
-- (void)setReadByDefault:(BOOL)readByDefault {
-    _readByDefault = readByDefault;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(readByDefault) forKey:@"io.aurora.pinboard.ReadByDefault"];
-    [defaults synchronize];
-}
-
-- (BOOL)readByDefault {
-    if (!_readByDefault) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readByDefault = [[defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"] boolValue];
-    }
-    return _readByDefault;
-}
-
-- (void)setDefaultFeed:(NSString *)defaultFeed {
-    _defaultFeed = defaultFeed;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:_defaultFeed forKey:@"io.aurora.pinboard.DefaultFeed"];
-}
-
-- (NSString *)defaultFeed {
-    if (!_defaultFeed) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
-        if (!_defaultFeed) {
-            _defaultFeed = @"personal:all";
-        }
-    }
-    
-    return _defaultFeed;
-}
+#pragma mark - Helpers
 
 - (NSString *)defaultFeedDescription {
     // Build a descriptive string for the default feed
@@ -1216,281 +1123,6 @@
     }
     return feedDescription;
 }
-
-- (BOOL)compressPosts {
-    if (!_compressPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _compressPosts = [[defaults objectForKey:@"io.aurora.pinboard.CompressPosts"] boolValue];
-    }
-    return _compressPosts;
-}
-
-- (void)setCompressPosts:(BOOL)compressPosts {
-    _compressPosts = compressPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)openLinksWithMobilizer {
-    if (!_openLinksWithMobilizer) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksWithMobilizer = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"] boolValue];
-    }
-    return _openLinksWithMobilizer;
-}
-
-- (void)setOpenLinksWithMobilizer:(BOOL)openLinksWithMobilizer {
-    _openLinksWithMobilizer = openLinksWithMobilizer;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(openLinksWithMobilizer) forKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"];
-    [defaults synchronize];
-}
-
-- (BOOL)dimReadPosts {
-    if (!_dimReadPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _dimReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.DimReadPosts"] boolValue];
-    }
-    return _dimReadPosts;
-}
-
-- (void)setDimReadPosts:(BOOL)dimReadPosts {
-    _dimReadPosts = dimReadPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(dimReadPosts) forKey:@"io.aurora.pinboard.DimReadPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)markReadPosts {
-    if (!_markReadPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _markReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.MarkReadPosts"] boolValue];
-    }
-    return _markReadPosts;
-}
-
-- (void)setMarkReadPosts:(BOOL)markReadPosts {
-    _markReadPosts = markReadPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)onlyPromptToAddOnce {
-    if (!_onlyPromptToAddOnce) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
-    }
-    return _onlyPromptToAddOnce;
-}
-
-- (void)setOnlyPromptToAddOnce:(BOOL)onlyPromptToAddOnce {
-    _onlyPromptToAddOnce = onlyPromptToAddOnce;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(onlyPromptToAddOnce) forKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"];
-    [defaults synchronize];
-}
-
-- (BOOL)alwaysShowClipboardNotification {
-    if (!_alwaysShowClipboardNotification) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _alwaysShowClipboardNotification = [[defaults objectForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"] boolValue];
-    }
-    return _alwaysShowClipboardNotification;
-}
-
-- (void)setAlwaysShowClipboardNotification:(BOOL)alwaysShowClipboardNotification {
-    _alwaysShowClipboardNotification = alwaysShowClipboardNotification;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(alwaysShowClipboardNotification) forKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"];
-    [defaults synchronize];
-}
-
-- (BOOL)enableAutoCorrect {
-    if (!_enableAutoCorrect) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
-    }
-    return _enableAutoCorrect;
-}
-
-- (void)setEnableAutoCorrect:(BOOL)enableAutoCorrect {
-    _enableAutoCorrect = enableAutoCorrect;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
-    [defaults synchronize];
-}
-
-- (BOOL)enableAutoCapitalize {
-    if (!_enableAutoCapitalize) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
-    }
-    return _enableAutoCapitalize;
-}
-
-- (void)setEnableAutoCapitalize:(BOOL)enableAutoCapitalize {
-    _enableAutoCapitalize = enableAutoCapitalize;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(enableAutoCapitalize) forKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
-    [defaults synchronize];
-}
-
-- (void)setBrowser:(PPBrowserType)browser {
-    _browser = browser;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(browser) forKey:@"io.aurora.pinboard.Browser"];
-    [defaults synchronize];
-}
-
-- (PPBrowserType)browser {
-    if (!_browser) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
-        
-        if (result) {
-            _browser = [result integerValue];
-            
-            if (_browser == PPBrowserWebview) {
-                _browser = PPBrowserSafari;
-            }
-        }
-        else {
-            _browser = PPBrowserSafari;
-        }
-    }
-    return _browser;
-}
-
-- (void)setFeedToken:(NSString *)feedToken {
-    _feedToken = feedToken;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:feedToken forKey:@"io.aurora.pinboard.FeedToken"];
-    [defaults synchronize];
-}
-
-- (NSString *)feedToken {
-    if (!_feedToken) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _feedToken = [defaults objectForKey:@"io.aurora.pinboard.FeedToken"];
-    }
-    return _feedToken;
-}
-
-- (void)setReadLater:(PPReadLaterType)readLater{
-    _readLater = readLater;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(readLater) forKey:@"io.aurora.pinboard.ReadLater"];
-    [defaults synchronize];
-}
-
-- (PPReadLaterType)readLater {
-    if (!_readLater) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
-        
-        if (result) {
-            _readLater = [result integerValue];
-        }
-        else {
-            _readLater = PPReadLaterNone;
-        }
-    }
-    return _readLater;
-}
-
-- (void)setMobilizer:(PPMobilizerType)mobilizer {
-    _mobilizer = mobilizer;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(mobilizer) forKey:@"io.aurora.pinboard.Mobilizer"];
-    [defaults synchronize];
-}
-
-- (PPMobilizerType)mobilizer {
-    if (!_mobilizer) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
-        
-        if (result) {
-            _mobilizer = [result integerValue];
-        }
-        else {
-            _mobilizer = PPMobilizerInstapaper;
-        }
-    }
-    return _mobilizer;
-}
-
-- (NSArray *)hiddenFeedNames {
-    if (!_hiddenFeedNames) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _hiddenFeedNames = [defaults objectForKey:@"io.aurora.pinboard.HiddenFeedNames"];
-    }
-    return _hiddenFeedNames;
-}
-
-- (void)setHiddenFeedNames:(NSArray *)hiddenFeedNames {
-    _hiddenFeedNames = hiddenFeedNames;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:hiddenFeedNames forKey:@"io.aurora.pinboard.HiddenFeedNames"];
-    [defaults synchronize];
-}
-
-- (NSArray *)personalFeedOrder {
-    if (!_personalFeedOrder) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _personalFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.PersonalFeedOrder"];
-    }
-    return _personalFeedOrder;
-}
-
-- (void)setPersonalFeedOrder:(NSArray *)personalFeedOrder {
-    _personalFeedOrder = personalFeedOrder;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:personalFeedOrder forKey:@"io.aurora.pinboard.PersonalFeedOrder"];
-    [defaults synchronize];
-}
-
-#ifdef PINBOARD
-
-- (NSArray *)communityFeedOrder {
-    if (!_communityFeedOrder) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _communityFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.CommunityFeedOrder"];
-    }
-    return _communityFeedOrder;
-}
-
-- (void)setCommunityFeedOrder:(NSArray *)communityFeedOrder {
-    _communityFeedOrder = communityFeedOrder;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:communityFeedOrder forKey:@"io.aurora.pinboard.CommunityFeedOrder"];
-    [defaults synchronize];
-}
-
-#endif
-
-- (void)setToken:(NSString *)token {
-    _token = token;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:token forKey:@"io.aurora.pinboard.Token"];
-    [defaults synchronize];
-}
-
-- (NSString *)token {
-#ifdef TOKEN
-    return TOKEN;
-#else
-    if (!_token) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _token = [defaults objectForKey:@"io.aurora.pinboard.Token"];
-    }
-    return _token;
-#endif
-}
-
-#pragma mark - Helpers
 
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
@@ -1785,6 +1417,375 @@
 
         [db executeUpdate:@"PRAGMA user_version=0;"];
     }];
+}
+
+#pragma mark - Properties
+
+- (BOOL)compressPosts {
+    if (!_compressPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _compressPosts = [[defaults objectForKey:@"io.aurora.pinboard.CompressPosts"] boolValue];
+    }
+    return _compressPosts;
+}
+
+- (void)setCompressPosts:(BOOL)compressPosts {
+    _compressPosts = compressPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)openLinksWithMobilizer {
+    if (!_openLinksWithMobilizer) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _openLinksWithMobilizer = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"] boolValue];
+    }
+    return _openLinksWithMobilizer;
+}
+
+- (void)setOpenLinksWithMobilizer:(BOOL)openLinksWithMobilizer {
+    _openLinksWithMobilizer = openLinksWithMobilizer;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(openLinksWithMobilizer) forKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"];
+    [defaults synchronize];
+}
+
+- (BOOL)dimReadPosts {
+    if (!_dimReadPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _dimReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.DimReadPosts"] boolValue];
+    }
+    return _dimReadPosts;
+}
+
+- (void)setDimReadPosts:(BOOL)dimReadPosts {
+    _dimReadPosts = dimReadPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(dimReadPosts) forKey:@"io.aurora.pinboard.DimReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)markReadPosts {
+    if (!_markReadPosts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _markReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.MarkReadPosts"] boolValue];
+    }
+    return _markReadPosts;
+}
+
+- (void)setMarkReadPosts:(BOOL)markReadPosts {
+    _markReadPosts = markReadPosts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)onlyPromptToAddOnce {
+    if (!_onlyPromptToAddOnce) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
+    }
+    return _onlyPromptToAddOnce;
+}
+
+- (void)setOnlyPromptToAddOnce:(BOOL)onlyPromptToAddOnce {
+    _onlyPromptToAddOnce = onlyPromptToAddOnce;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(onlyPromptToAddOnce) forKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"];
+    [defaults synchronize];
+}
+
+- (BOOL)alwaysShowClipboardNotification {
+    if (!_alwaysShowClipboardNotification) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _alwaysShowClipboardNotification = [[defaults objectForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"] boolValue];
+    }
+    return _alwaysShowClipboardNotification;
+}
+
+- (void)setAlwaysShowClipboardNotification:(BOOL)alwaysShowClipboardNotification {
+    _alwaysShowClipboardNotification = alwaysShowClipboardNotification;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(alwaysShowClipboardNotification) forKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"];
+    [defaults synchronize];
+}
+
+- (BOOL)enableAutoCorrect {
+    if (!_enableAutoCorrect) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
+    }
+    return _enableAutoCorrect;
+}
+
+- (void)setEnableAutoCorrect:(BOOL)enableAutoCorrect {
+    _enableAutoCorrect = enableAutoCorrect;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
+    [defaults synchronize];
+}
+
+- (BOOL)enableAutoCapitalize {
+    if (!_enableAutoCapitalize) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
+    }
+    return _enableAutoCapitalize;
+}
+
+- (void)setEnableAutoCapitalize:(BOOL)enableAutoCapitalize {
+    _enableAutoCapitalize = enableAutoCapitalize;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(enableAutoCapitalize) forKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
+    [defaults synchronize];
+}
+
+- (void)setBrowser:(PPBrowserType)browser {
+    _browser = browser;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(browser) forKey:@"io.aurora.pinboard.Browser"];
+    [defaults synchronize];
+}
+
+- (PPBrowserType)browser {
+    if (!_browser) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
+        
+        if (result) {
+            _browser = [result integerValue];
+            
+            if (_browser == PPBrowserWebview) {
+                _browser = PPBrowserSafari;
+            }
+        }
+        else {
+            _browser = PPBrowserSafari;
+        }
+    }
+    return _browser;
+}
+
+- (void)setFeedToken:(NSString *)feedToken {
+    _feedToken = feedToken;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:feedToken forKey:@"io.aurora.pinboard.FeedToken"];
+    [defaults synchronize];
+}
+
+- (NSString *)feedToken {
+    if (!_feedToken) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _feedToken = [defaults objectForKey:@"io.aurora.pinboard.FeedToken"];
+    }
+    return _feedToken;
+}
+
+- (void)setReadLater:(PPReadLaterType)readLater{
+    _readLater = readLater;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(readLater) forKey:@"io.aurora.pinboard.ReadLater"];
+    [defaults synchronize];
+}
+
+- (PPReadLaterType)readLater {
+    if (!_readLater) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
+        
+        if (result) {
+            _readLater = [result integerValue];
+        }
+        else {
+            _readLater = PPReadLaterNone;
+        }
+    }
+    return _readLater;
+}
+
+- (void)setMobilizer:(PPMobilizerType)mobilizer {
+    _mobilizer = mobilizer;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(mobilizer) forKey:@"io.aurora.pinboard.Mobilizer"];
+    [defaults synchronize];
+}
+
+- (PPMobilizerType)mobilizer {
+    if (!_mobilizer) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
+        
+        if (result) {
+            _mobilizer = [result integerValue];
+        }
+        else {
+            _mobilizer = PPMobilizerInstapaper;
+        }
+    }
+    return _mobilizer;
+}
+
+- (NSArray *)hiddenFeedNames {
+    if (!_hiddenFeedNames) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _hiddenFeedNames = [defaults objectForKey:@"io.aurora.pinboard.HiddenFeedNames"];
+    }
+    return _hiddenFeedNames;
+}
+
+- (void)setHiddenFeedNames:(NSArray *)hiddenFeedNames {
+    _hiddenFeedNames = hiddenFeedNames;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:hiddenFeedNames forKey:@"io.aurora.pinboard.HiddenFeedNames"];
+    [defaults synchronize];
+}
+
+- (NSArray *)personalFeedOrder {
+    if (!_personalFeedOrder) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _personalFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.PersonalFeedOrder"];
+    }
+    return _personalFeedOrder;
+}
+
+- (void)setPersonalFeedOrder:(NSArray *)personalFeedOrder {
+    _personalFeedOrder = personalFeedOrder;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:personalFeedOrder forKey:@"io.aurora.pinboard.PersonalFeedOrder"];
+    [defaults synchronize];
+}
+
+#ifdef PINBOARD
+
+- (NSArray *)communityFeedOrder {
+    if (!_communityFeedOrder) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _communityFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.CommunityFeedOrder"];
+    }
+    return _communityFeedOrder;
+}
+
+- (void)setCommunityFeedOrder:(NSArray *)communityFeedOrder {
+    _communityFeedOrder = communityFeedOrder;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:communityFeedOrder forKey:@"io.aurora.pinboard.CommunityFeedOrder"];
+    [defaults synchronize];
+}
+
+#endif
+
+- (void)setToken:(NSString *)token {
+    _token = token;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:token forKey:@"io.aurora.pinboard.Token"];
+    [defaults synchronize];
+}
+
+- (NSString *)token {
+#ifdef TOKEN
+    return TOKEN;
+#else
+    if (!_token) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _token = [defaults objectForKey:@"io.aurora.pinboard.Token"];
+    }
+    return _token;
+#endif
+}
+
+
+- (void)setLastUpdated:(NSDate *)lastUpdated {
+    _lastUpdated = lastUpdated;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:lastUpdated forKey:@"io.aurora.pinboard.LastUpdated"];
+    [defaults synchronize];
+}
+
+- (NSDate *)lastUpdated {
+    if (!_lastUpdated) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
+    }
+    return _lastUpdated;
+}
+
+- (void)setPrivateByDefault:(BOOL)privateByDefault {
+    _privateByDefault = privateByDefault;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(privateByDefault) forKey:@"io.aurora.pinboard.PrivateByDefault"];
+    [defaults synchronize];
+}
+
+- (BOOL)privateByDefault {
+    if (!_privateByDefault) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _privateByDefault = [[defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"] boolValue];
+    }
+    return _privateByDefault;
+}
+
+- (BOOL)openLinksInApp {
+    if (!_openLinksInApp) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _openLinksInApp = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"] boolValue];
+    }
+    return _openLinksInApp;
+}
+
+- (void)setOpenLinksInApp:(BOOL)openLinksInApp {
+    _openLinksInApp = openLinksInApp;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(openLinksInApp) forKey:@"io.aurora.pinboard.OpenLinksInApp"];
+    [defaults synchronize];
+}
+
+- (void)setDoubleTapToEdit:(BOOL)doubleTapToEdit {
+    _doubleTapToEdit = doubleTapToEdit;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(doubleTapToEdit) forKey:@"io.aurora.pinboard.DoubleTapToEdit"];
+    [defaults synchronize];
+}
+
+- (BOOL)doubleTapToEdit {
+    if (!_doubleTapToEdit) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _doubleTapToEdit = [[defaults objectForKey:@"io.aurora.pinboard.DoubleTapToEdit"] boolValue];
+    }
+    return _doubleTapToEdit;
+}
+
+- (void)setReadByDefault:(BOOL)readByDefault {
+    _readByDefault = readByDefault;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(readByDefault) forKey:@"io.aurora.pinboard.ReadByDefault"];
+    [defaults synchronize];
+}
+
+- (BOOL)readByDefault {
+    if (!_readByDefault) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _readByDefault = [[defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"] boolValue];
+    }
+    return _readByDefault;
+}
+
+- (void)setDefaultFeed:(NSString *)defaultFeed {
+    _defaultFeed = defaultFeed;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:_defaultFeed forKey:@"io.aurora.pinboard.DefaultFeed"];
+}
+
+- (NSString *)defaultFeed {
+    if (!_defaultFeed) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
+        if (!_defaultFeed) {
+            _defaultFeed = @"personal:all";
+        }
+    }
+    
+    return _defaultFeed;
 }
 
 @end
